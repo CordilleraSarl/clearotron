@@ -19,22 +19,46 @@ no gateway, no platform, and nothing about your matters reaches us.
 
 ## Install
 
+**Install from source.** The `clearotron` name on npm is currently a placeholder that carries no code,
+so `npm install -g clearotron` will not give you the command yet.
+
 ```bash
-npm install -g clearotron
+git clone https://github.com/CordilleraSarl/clearotron.git
+cd clearotron
+npm install                    # every workspace
+npm run build -w portal-ui     # the browser bundle is not committed — build it once
 ```
 
-Node 22 or newer, on macOS, Linux, or Windows via WSL2. To try it without installing anything, skip
-straight to `npx clearotron demo` instead.
+Node 22 or newer, on macOS, Linux, or Windows via WSL2. Everything below is `npx clearotron …`, run
+from that directory; the bare `clearotron` command arrives with the published package.
+
+```bash
+npm install -g clearotron      # once 0.1.0 is on the registry
+```
 
 ## Quick start
 
+Check the install before it does anything. `doctor` only reads — it writes nothing, calls nobody, and
+names whatever is still missing:
+
 ```bash
-clearotron demo
+npx clearotron doctor
 ```
 
-A finished clearance opens in your browser — no keys, no model calls, no account. The demo republishes
-a real run from artifacts that ship with the package. **The mark VENQORI is invented; the EUIPO
-register data behind it is real and live**, and the report says so on its own face.
+Then start the product and open the portal it prints:
+
+```bash
+npx clearotron start
+```
+
+That is the portal a brand owner uses. Ordering a clearance is the same screen — describe it in a
+sentence, or set the classes, marketplaces and search depth yourself:
+
+![The new-clearance screen — classes, marketplaces and the four search depths](docs/assets/portal-new-clearance.png)
+
+A finished clearance reads like this — the verdict, the risk band and the four answers. **The mark
+VENQORI is invented; the EUIPO register data behind it is real and live**, and the report says so on
+its own face:
 
 ![A finished clearance report — the verdict, the risk band and the four answers](docs/assets/portal-clearance-report.jpg)
 
@@ -43,16 +67,11 @@ rights-holders behind them by jurisdiction:
 
 ![The conflict landscape, with rights-holders grouped by jurisdiction](docs/assets/portal-conflict-landscape.jpg)
 
-Ordering one is the same screen a brand owner uses — describe it in a sentence, or set the classes,
-marketplaces and search depth yourself:
-
-![The new-clearance screen — classes, marketplaces and the four search depths](docs/assets/portal-new-clearance.png)
-
-Then run your own:
+Then run your own. `install` asks one question at a time and checks each credential before it saves it:
 
 ```bash
-clearotron install                    # one question at a time; each credential checked before it is saved
-clearotron run --job my-job.json
+npx clearotron install
+npx clearotron run --job my-job.json
 ```
 
 ## How it fits together
