@@ -36,6 +36,14 @@ from that directory; the bare `clearotron` command arrives with the published pa
 npm install -g clearotron      # once 0.1.0 is on the registry
 ```
 
+That puts `clearotron` on your `PATH`, and from then on you can stop typing `npx` — the same commands
+in their short form:
+
+```bash
+clearotron doctor
+clearotron start
+```
+
 ## Quick start
 
 Check the install before it does anything. `doctor` only reads — it writes nothing, calls nobody, and
