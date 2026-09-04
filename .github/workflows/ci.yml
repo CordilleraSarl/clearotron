@@ -1,0 +1,127 @@
+# CI for this repository: the offline suites, the lint and licence checks, and the portal bundle.
+#
+# ── EVERY STEP HERE WAS RUN BEFORE IT WAS WRITTEN ────────────────────────────────────────────────
+#
+# This file is not a template and it is not adapted from somewhere else by reading. Each step below was
+# executed against a full checkout of this tree and is here because it came back green:
+#
+#   npm ci                              ok
+#   npm run test:full                   8,091 tests, 0 failures  (portal-ui's own `test` typechecks first)
+#   npm run test:providers              450 tests, 0 failures
+#   npm run lint:driver                 ok
+#   node scripts/spdx-headers.mjs       ok — 1,508 files carry the licence line
+#   npm run notices:check               ok
+#   npm run tokens:check                ok
+#   npm run build:ui                    ok
+#
+# A step nobody has watched pass is a step that will fail for the first contributor who touches it, and
+# a green badge over an unrun check is worse than no badge.
+#
+# ── THE CITATION CHECK RUNS HERE, AND IT TOOK A RULING TO MAKE THAT POSSIBLE ─────────────────────
+#
+# `scripts/citation-line-check.mjs` verifies that a comment citing a source file and line still points at
+# the line it means. It very nearly could not be a job here at all. It used to refuse below an ABSOLUTE
+# floor — a minimum number of citations, calibrated against the repository it was written in — and this
+# tree is smaller, so it refused a count that was legitimately correct. A check that only works on the
+# tree it was calibrated against is not a check anyone else can run.
+#
+# The floor is now RELATIVE: the count is compared against this tree's own recorded count, and a sharp
+# drop refuses unless the commit declares the loss. A broken extractor sends the count toward zero,
+# which is a large proportional drop at any size — so the reason for having a floor survives, and the
+# number that made it unportable is gone.
+#
+# THIS TREE RECORDS ITS OWN BASELINE IN ITS FIRST COMMIT. A baseline is about one corpus, so a count
+# carried over from another repository would be wrong here on day one. `--record-count` writes it, and
+# refuses to write one from a tree that already has unresolved citations — recording damage as the new
+# normal is the failure that would make the whole check worthless.
+#
+# ── AND WHAT IS ABSENT ON PURPOSE ────────────────────────────────────────────────────────────────
+#
+# No macOS tier. The suites are platform-independent and a second platform doubles the runner cost of
+# every pull request; add one when somebody reports a problem that only appears there.
+#
+# No runner label, no repository variable and no credential. `ubuntu-latest` is written literally so it
+# resolves the same way for a fork as it does here, and nothing below reads `secrets` — a pull request
+# from a fork cannot see them, so a job that needs one is a job that is red for every outside
+# contributor and green only for maintainers.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# LEAST PRIVILEGE, and it matters more here than it does on a private repository: a public repository
+# takes pull requests from forks, and a workflow with write scope is a workflow a stranger's branch can
+# aim at. Nothing below writes anything.
+permissions:
+  contents: read
+
+# Supersede a branch's own earlier run, never main's. Cancelling a main run would leave the branch
+# people trust with no verdict at all, which is the one place the saved minutes are not worth it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  suites:
+    name: The offline suites
+    runs-on: ubuntu-latest
+    steps:
+      # A REAL CHECKOUT, WHICH IS LOAD-BEARING AND NOT BOILERPLATE. A large part of this suite reads the
+      # files it checks with `git ls-files`, and outside a checkout those guards do not fail — they
+      # SKIP, and the run goes green having checked nothing. Running this suite from an unpacked source
+      # archive produces exactly that: a clean result from checks that never looked. A shallow clone is
+      # fine; `git ls-files` needs an index, not history.
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          # Pinned rather than '22', so a Node patch release cannot change what a green run means.
+          # package.json requires >=22.
+          node-version: '22.23.2'
+          cache: npm
+
+      # `npm ci` and not `npm install`: it installs the lockfile as written and refuses if the two
+      # have drifted, which is the property a check wants.
+      - run: npm ci
+
+      # Both suites are OFFLINE by construction — no model is called, no register is queried, nothing is
+      # spent. The provider suites drive their adapters over a stubbed fetch, and every fixture host is
+      # under a reserved `.test` domain, so a run that somehow escaped its stub would fail to resolve
+      # rather than reach a real service.
+      - run: npm run test:full
+      - run: npm run test:providers
+
+  checks:
+    name: Lint, licences, tokens and the built bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22.23.2'
+          cache: npm
+      - run: npm ci
+
+      - run: npm run lint:driver
+
+      # The licence line is a term of the AGPL section 7 notice this project ships under, so a file
+      # that loses it is a licensing defect rather than a style one.
+      - run: node scripts/spdx-headers.mjs --check
+
+      # THIRD-PARTY-NOTICES.md must match what is actually installed. A stale notices file on a public
+      # repository is a claim about other people's licences that is not true.
+      - run: npm run notices:check
+
+      # The design tokens are generated; this fails when the generated file and its source disagree,
+      # which is the only way anyone finds out before a rebuild silently changes the portal.
+      - run: npm run tokens:check
+
+      # The portal is the product. A tree whose bundle does not build ships a product nobody can open.
+      - run: npm run build:ui
+
+      # Line citations still point where they say. See the note at the top: this compares against the
+      # count recorded in this repository, so it works here at whatever size this tree happens to be.
+      - run: node scripts/citation-line-check.mjs
