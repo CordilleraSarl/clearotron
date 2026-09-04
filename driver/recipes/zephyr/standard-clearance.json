@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "label": "Standard clearance, five-day window",
+  "base": "multi-country-focus-search",
+  "extras": {
+    "defaultDeadlineDays": 5,
+    "standingInstructions": "Focus on EU and US markets first; mention any streaming-platform findings prominently."
+  },
+  "archived": false,
+  "createdBy": "seed@dev",
+  "createdAt": "2026-07-18T00:00:00.000Z"
+}

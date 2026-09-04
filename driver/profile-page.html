@@ -1,0 +1,560 @@
+<!doctype html>
+<!-- profile-page.html — the per-customer config editor (plan §E). Static page served by Caddy from the pool
+     at trademark.example.com/profiles.html (behind CF Access); it calls the loopback profile-service via
+     the /profiles/* reverse-proxy route. The page is dumb — ALL validation + the git auto-commit happen
+     server-side (profile-service.mjs). NOTE the trailing slash on /profiles/ (the Caddy matcher is /profiles/*;
+     bare /profiles would fall through to the file_server). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Customer profiles · Clearotron</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"><!--FAVICON-->
+<!-- Pre-paint theme init (localStorage 'cordillera-theme' + the .theme-toggle click handler) — injected
+     from the SINGLE source brand.mjs THEME_INIT by publish/profiles-page.mjs. Staff page: OS auto-dark. -->
+<!--THEME-INIT-->
+<style>
+/* Brand :root injected from the SINGLE source brand.mjs WARM_ROOT by publish/profiles-page.mjs — no
+   hand-copied palette to drift out of sync with the other staff pages. */
+/*BRAND-ROOT*/
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.6 'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 20px 80px}
+header.rep{background:transparent;color:var(--ink);border-bottom:1px solid var(--line);border-radius:0;padding:6px 0 18px;margin-bottom:18px}
+header.rep .tag{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--crimson-mid)}
+header.rep h1{margin:.24em 0 .12em;font-size:28px;letter-spacing:-.02em;line-height:1.08;font-weight:700}
+header.rep .meta{font-size:12.5px;color:var(--muted)}
+/* Floating cross-page nav CSS is injected from the SINGLE source (site-nav.mjs NAV_CSS) by
+   publish/profiles-page.mjs — no hand-copied bar to drift out of sync with the generated staff pages. */
+/*NAV-CSS*/
+.cols{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson-mid);font-weight:700;margin:0 0 8px}
+ul.roster{list-style:none;margin:0;padding:0}
+ul.roster li{padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14px;border:1px solid transparent}
+ul.roster li:hover{background:var(--bg)}
+ul.roster li.sel{background:var(--bg);border-color:var(--line);font-weight:700}
+/* the sub-line truncates (2-line clamp) — a long industry string (aurora's is ~110 chars) must never
+   stretch the 240px roster column into an overflowing wall of text */
+ul.roster li .ind{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11.5px;color:var(--muted);font-weight:400}
+ul.roster li .ind code.slug{font-size:10.5px;letter-spacing:.02em}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--crimson);background:var(--crimson);color:#fff;font-weight:700;font-size:13px;padding:8px 14px}
+button.ghost{background:transparent;color:var(--crimson)}
+button:disabled{opacity:.5;cursor:default}
+.newbtn{width:100%;margin-top:10px}
+.field{margin:0 0 12px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.field .hint{font-size:11.5px;color:var(--muted);font-weight:400;margin-bottom:4px}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:13.5px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+textarea{resize:vertical;min-height:54px}
+textarea.pack{min-height:150px;font-size:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.chk input{width:auto}
+.ro{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.ro b{color:var(--ink)}
+.bar{display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.msg{flex:1;min-width:200px;font-size:13px}
+.msg.ok{color:var(--h-green);font-weight:700}
+.msg.err{color:var(--crimson);font-weight:700}
+.msg ul{margin:4px 0 0;padding-left:18px;font-weight:400;color:var(--ink)}
+.sectionh{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--crimson-mid);font-weight:700;margin:18px 0 8px;border-top:1px solid var(--line);padding-top:12px}
+code{font-family:'Fira Code',ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
+.empty{color:var(--muted);font-size:14px;padding:20px 4px}
+.req{color:var(--crimson);font-weight:700}
+.reqtag{color:var(--crimson);font-weight:700}
+input.invalid,textarea.invalid,select.invalid{border-color:var(--crimson);box-shadow:0 0 0 2px rgba(134,15,9,.12)}
+.fielderr{font-size:11.5px;color:var(--crimson);font-weight:600;margin-top:4px}
+details.more{margin:8px 0 4px;border-top:1px solid var(--line);padding-top:8px}
+details.more>summary{cursor:pointer;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--crimson-mid);font-weight:700;list-style:none;padding:6px 0;user-select:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"\25B8  ";font-size:10px}
+details.more[open]>summary::before{content:"\25BE  "}
+/* framework box (doc 50): the band-meanings block beside the ladder + the prominent source-deck line */
+.bm{margin:8px 0 6px}
+.bm .bmh{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--crimson-mid);font-weight:700;margin:0 0 4px}
+.bm .bmrow{display:grid;grid-template-columns:104px 1fr;gap:8px;align-items:baseline;padding:2px 0;font-size:12.5px;color:var(--ink)}
+.bm .pill{display:inline-block;justify-self:start;white-space:nowrap;padding:2px 9px;border-radius:999px;color:#fff;font-size:11px;font-weight:700}
+.bm .bmresp{color:var(--muted)}
+.srcdeck{font-size:12.5px;color:var(--ink);margin:6px 0 4px}
+.srcdeck .srclbl{font-weight:700}
+@media (max-width:760px){ .cols{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
+/* Dark theme injected from the SINGLE source brand.mjs WARM_ROOT_DARK by publish/profiles-page.mjs
+   (staff page: explicit [data-theme=dark] + @media auto-dark — keep in sync with site-nav.mjs). */
+/*BRAND-DARK*/
+/* Page-local dark overrides (hand-written — the only rules this template owns): the form controls carry a
+   hardcoded #fff background above, and this page's error/ghost crimson TEXT needs the lightened #e0736b.
+   Same dual gating as the injected block: explicit choice + OS auto-dark, explicit light always wins. */
+[data-theme="dark"] input[type=text],[data-theme="dark"] textarea,[data-theme="dark"] select{background:#1b1714;color:var(--ink);border-color:var(--line)}
+[data-theme="dark"] button.ghost,[data-theme="dark"] .msg.err,[data-theme="dark"] .fielderr,[data-theme="dark"] .req,[data-theme="dark"] .reqtag{color:#e0736b}
+[data-theme="dark"] button.ghost{border-color:#e0736b}
+@media (prefers-color-scheme:dark){
+html:not([data-theme="light"]) input[type=text],html:not([data-theme="light"]) textarea,html:not([data-theme="light"]) select{background:#1b1714;color:var(--ink);border-color:var(--line)}
+html:not([data-theme="light"]) button.ghost,html:not([data-theme="light"]) .msg.err,html:not([data-theme="light"]) .fielderr,html:not([data-theme="light"]) .req,html:not([data-theme="light"]) .reqtag{color:#e0736b}
+html:not([data-theme="light"]) button.ghost{border-color:#e0736b}
+}
+</style>
+<!-- DEMO ANON head (CSS + baked config + anti-FOUC) — injected by publish/profiles-page.mjs from the
+     SINGLE source shared/anon-config.json. Empty when opened raw / when the feature is disabled. -->
+<!--ANON-HEAD-->
+</head>
+<body class="has-glow watermark">
+<!-- Nav injected from the SINGLE source siteNav('profiles') by publish/profiles-page.mjs — same bar
+     (dropdown Clients, mobile hamburger, pinned privacy toggle) as the four generated staff pages. -->
+<!--SITE-NAV-->
+<div class="wrap">
+  <header class="rep">
+    <div class="tag">Clearotron · Trademark clearance</div>
+    <h1>Customer profiles</h1>
+    <div class="meta">Everything on this page shapes how a customer's clearance searches run and how their report reads. Changes are checked and saved automatically. Each customer is rated by the risk framework on file for them — their own framework where one is set up, otherwise the firm's Generic default; the page shows which is in force. Frameworks are maintained by the legal team in code and can't be edited here.</div>
+  </header>
+  <div class="cols">
+    <div class="panel">
+      <p class="lbl">Customers</p>
+      <ul class="roster" id="roster"><li class="empty">Loading…</li></ul>
+      <button class="ghost newbtn" id="newbtn">+ New customer</button>
+    </div>
+    <div class="panel" id="editor"><div class="empty">Select a customer on the left, or add a new one.</div><div class="msg" id="msg"></div></div>
+  </div>
+</div>
+<script>
+const API = "/profiles/";                       // trailing slash — Caddy matcher is /profiles/*
+const $ = (id) => document.getElementById(id);
+let current = null;                             // {key, isNew} — the customer being edited
+let currentProject = null;                      // spec 62 — {customer, project, isNew} when editing a project overlay
+let roster = [];
+let PRODUCTS = [];   // the four searches, as the profile-service serves them (productRows())
+// spec 62 — the project-level (overlay) keys, mirroring profiles.mjs PROJECT_KEYS (client-side copy).
+const PKEYS = ["platforms","defaultClasses","defaultJurisdictions","delivery","riskAppetite","industry"];
+
+const jget = async (u) => { const r = await fetch(u, {headers:{accept:"application/json"}}); return {status:r.status, json: await r.json().catch(()=>({}))}; };
+const jpost = async (u, body) => { const r = await fetch(u, {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(body)}); return {status:r.status, json: await r.json().catch(()=>({}))}; };
+const esc = (s) => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const lines = (s) => String(s||"").split("\n").map(x=>x.trim()).filter(Boolean);
+const csv = (s) => String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
+const fwName = (path) => { const m = String(path||"").match(/risk-framework-([a-z0-9-]+)\.md/i); return m ? (m[1].charAt(0).toUpperCase() + m[1].slice(1) + " framework") : "Generic default framework"; };
+// doc 50 — the band ladder preview, from the manifest the service serves (tones map to the page palette).
+const TONE_BG = {severe:"#b3261e", high:"#c75b13", medium:"#9a8400", low:"#4e7a31", minimal:"#2f55a4"};
+const bandLadder = (m) => m && m.bands ? `<div style="margin:6px 0 2px">${m.bands.map(b=>`<span style="display:inline-block;margin:0 6px 4px 0;padding:2px 9px;border-radius:999px;background:${TONE_BG[b.tone]||"#666"};color:#fff;font-size:11px;font-weight:700">${esc(b.label)}</span>`).join("")}</div>` : "";
+// doc 50 — "What the bands mean": deck-native prose the service lifts from the framework .md at view time
+// (display-only; omitted whenever extraction missed). The decks are Privileged & Confidential, so the prose
+// is wrapped in data-anon="mark" — the demo privacy blur must cover it.
+const bandTone = (m, band) => { const b = m && (m.bands||[]).find(x => x.label === band); return b ? b.tone : null; };
+const bandMeaningsBlock = (fw, m) => {
+  const rows = fw && fw.bandMeanings;
+  if (!m || !Array.isArray(rows) || !rows.length) return "";
+  return `<div class="bm"><div class="bmh">What the bands mean</div>${rows.map(r =>
+    `<div class="bmrow"><span class="pill" style="background:${TONE_BG[bandTone(m, r.band)]||"#666"}">${esc(r.band)}</span><span class="bmtxt" data-anon="mark">${esc(r.meaning)}${r.response?` <span class="bmresp">— ${esc(r.response)}</span>`:""}</span></div>`).join("")}</div>`;
+};
+
+// sentence-case the industry's FIRST char at render only — the stored value is never transformed
+const indCase = (s) => { s = String(s||""); return s.charAt(0).toUpperCase() + s.slice(1); };
+
+async function loadRoster(sel) {
+  const r = await jget(API);
+  if (r.status !== 200) {   // a failed fetch is NOT an empty roster — say what actually happened
+    $("roster").innerHTML = `<li class="empty">Couldn’t load customers — service error or sign-in expired (${esc(r.status)}).</li>`;
+    return;
+  }
+  roster = (r.json.profiles||[]);
+  // THE OFFERING, served by the profile-service from productRows() — never a menu typed into this page.
+  // The page carried a hand-written "Default search depth" list of five RETIRED level keys, and every
+  // save it produced was refused by the loader as an unknown key. A menu the machine writes cannot
+  // outlive the thing it offers.
+  PRODUCTS = (r.json.products||[]);
+  $("roster").innerHTML = roster.map(p =>
+    `<li data-key="${esc(p.key)}" class="${p.key===sel?'sel':''}"><span data-anon="client" data-anon-key="${esc(p.key)}">${esc(p.name||p.key)}</span><span class="ind" data-anon="mark" data-anon-key="${esc(p.key)}"><code class="slug">${esc(p.key)}</code>${p.industry?" · "+esc(indCase(p.industry)):""}</span></li>`).join("") || `<li class="empty">No customers.</li>`;
+  [...$("roster").querySelectorAll("li[data-key]")].forEach(li => li.onclick = () => openCustomer(li.dataset.key));
+}
+
+// `anon` (DEMO): tag the input/textarea as data-anon="mark" so the privacy overlay BLURS it visually.
+// Display-only — the value is never altered, so collect()/Save still post the real data.
+function f(label, id, val, hint, ph, anon) {
+  return `<div class="field"><label for="${id}">${label}</label>${hint?`<div class="hint">${hint}</div>`:""}<input type="text" id="${id}"${anon?' data-anon="mark"':''} value="${esc(val)}" placeholder="${esc(ph||"")}"></div>`;
+}
+function ta(label, id, val, hint, cls, anon) {
+  return `<div class="field"><label for="${id}">${label}</label>${hint?`<div class="hint">${hint}</div>`:""}<textarea id="${id}" class="${cls||""}"${anon?' data-anon="mark"':''}>${esc(val)}</textarea></div>`;
+}
+
+function renderEditor(key, p, contextPack, derived, framework, isNew) {
+  current = {key, isNew, profile: p};   // keep the LOADED profile in scope — collect() merges over it
+  const d = p.delivery || {email:"summary", privileged:false};
+  // doc 50 — the framework IN FORCE is unmistakable: the customer's OWN framework (it rates their
+  // matters) vs the Generic default (no custom framework on file). Read-only either way — frameworks are
+  // legal-team work, maintained in code — but the page never again claims one shared method for everyone.
+  const fw = framework || {};
+  const m = fw.manifest || null;
+  const fwTitle = m ? m.title : fwName(fw.path);
+  const methodBlock = isNew ? `
+    <div class="sectionh" style="margin-top:0;border-top:none;padding-top:0">Risk framework</div>
+    <div class="ro"><b>Generic default</b> — a new customer starts with no custom framework on file: their matters are rated under the firm's generic framework until the legal team puts one on file (a code change, not a form field).</div>` : `
+    <div class="sectionh" style="margin-top:0;border-top:none;padding-top:0">Risk framework in force</div>
+    <div class="ro">${fw.custom
+      ? `<b>Custom framework: <span data-anon="mark">${esc(fwTitle)}</span></b> — this customer's own framework rates every matter for them${m ? `, in its own words` : ``}.`
+      : `<b>Generic default</b> — no custom framework is on file for this customer; their matters are rated under the firm's generic framework.`}
+    ${bandLadder(m)}
+    ${bandMeaningsBlock(fw, m)}
+    ${m && m.structure && Array.isArray(m.structure.axes) && m.structure.axes.length ? `<span style="font-size:11.5px">Rated on: <b>${m.structure.axes.map(esc).join(" × ")}</b></span><br>` : ""}
+    ${m ? `<span style="font-size:11.5px">Entity in prose: <b>${esc(m.entity_label)}</b>${m.structure && m.structure.kind === "matrix" ? ` · matrix-shaped${m.structure.display_note ? ` — ${esc(m.structure.display_note)}` : ""}` : ""}</span>` : ""}
+    ${m && m.source_deck ? `<div class="srcdeck"><span class="srclbl">Source deck:</span> <span data-anon="mark">${esc(m.source_deck)}</span></div>` : ""}
+    <span style="font-size:11px">Maintained by the legal team in code — not editable on this page. Files: <code><span data-anon="mark">${esc(fw.path||"risk-framework.md")}</span></code>${fw.workedExamples?` · examples <code><span data-anon="mark">${esc(fw.workedExamples)}</span></code>`:""}</span></div>`;
+  const coverageNote = isNew ? "" : `<div class="hint" style="margin:-6px 0 12px">Search batching (calculated automatically): about <b>${esc(derived.batchSize)}</b> search variants per pass across <b>${esc(derived.minCellsPerVariant)}</b> sources. This is how the work is divided, not how much is searched.</div>`;
+  // Existing customer with any advanced field set ⇒ open "More options" so editing isn't hidden behind a click.
+  const advancedSet = !isNew && !!(p.industry || (p.defaultClasses||[]).length || (p.defaultJurisdictions||[]).length || (p.matchDomains||[]).length || (p.selfExclusionOwners||[]).length || p.riskAppetite || (contextPack||"").trim() || d.email==="table" || d.privileged || p.defaultProduct);
+  const REQ = ` <span class="req">*</span>`;
+  $("editor").innerHTML = `
+    ${isNew ? f("Customer key"+REQ, "f_key", "", `<span class="reqtag">Required.</span> A short lowercase id — letters, numbers and hyphens only. It becomes the customer's filename and can't be changed later.`, "e.g. acme-health") : `<div class="ro">Editing <b><span data-anon="mark" data-anon-key="${esc(key)}">${esc(key)}</span></b></div>`}
+    ${f("Customer name"+REQ, "f_name", p.name||"", `<span class="reqtag">Required.</span> The customer's name. We use it to recognise their own marks so we never flag the customer against itself.`, undefined, true)}
+    ${ta("Marketplaces and registers to search"+REQ, "f_platforms", (p.platforms||[]).join("\n"), `<span class="reqtag">Required — at least one.</span> One website per line (e.g. amazon.com). These are where we look for real-world use of a mark. Don't add 'web' — the general web is always searched.`, "", true)}
+    ${coverageNote}
+    <details class="more"${advancedSet?" open":""}>
+      <summary>More options</summary>
+      ${methodBlock}
+      ${f("Industry", "f_industry", p.industry||"", "The customer's sector (e.g. gaming, beverages). Helps focus the search on the right markets. It never changes a risk rating.", undefined, true)}
+      <div class="row2">
+        ${f("Default trademark classes", "f_classes", (p.defaultClasses||[]).join(", "), "Comma-separated Nice class numbers (e.g. 9, 41). Used only when a request doesn't list its own classes.")}
+      </div>
+      ${f("Default countries", "f_juris", (p.defaultJurisdictions||[]).join(", "), "Comma-separated country codes (e.g. US, EU, UK) that matter to this customer. A request can override or add to these.")}
+      ${f("Email domains", "f_match", (p.matchDomains||[]).join(", "), "Email domains that automatically map a request to this customer (e.g. acme.com). Usually left empty — intake normally tags the customer directly.", undefined, true)}
+      ${ta("The customer's own names", "f_excl", (p.selfExclusionOwners||[]).join("\n"), "The customer's own and affiliated company names, one per line. We never flag the customer against its own marks.", undefined, true)}
+      <div class="sectionh">Default search</div>
+      ${PRODUCTS.length ? `
+      <div class="field"><label for="f_product">Default search</label><div class="hint">Which of our searches runs when a request doesn't name one. Leave it unset and the request's own countries decide: one country is a full country search, two or more (or a region) a multi-country focus search, none at all a global preliminary search. This never changes how findings are rated — only how wide and deep we look.</div>
+        <select id="f_product">
+          <option value=""${!p.defaultProduct?" selected":""}>Unset — the request's own countries decide</option>
+          ${PRODUCTS.map(pr=>`<option value="${esc(pr.key)}"${p.defaultProduct===pr.key?" selected":""}>${esc(pr.name)} — ${esc(pr.geography)}; up to ${esc(pr.maxNames)} name${pr.maxNames===1?"":"s"}</option>`).join("")}
+        </select></div>` : `
+      <div class="ro">The list of searches could not be read from the service, so this control is not shown. ${p.defaultProduct?`This customer's default stays <b>${esc(p.defaultProduct)}</b>`:`This customer has no default set`} and saving leaves it untouched. Reload the page.</div>`}
+      <div class="sectionh">What the customer receives</div>
+      <div class="field"><label for="f_email">Cover email format</label><div class="hint">How the findings appear in the cover email to the customer.</div><select id="f_email"><option value="summary"${d.email!=="table"?" selected":""}>Summary — a short plain-language write-up</option><option value="table"${d.email==="table"?" selected":""}>Table — a per-mark review table</option></select></div>
+      <div class="field"><label for="f_priv">Confidentiality marking</label><div class="hint">Every report carries the marking unless a customer has asked for it to be left off.</div><select id="f_priv"><option value=""${d.privileged===false?"":" selected"}>Privileged &amp; Confidential</option><option value="no"${d.privileged===false?" selected":""}>No marking</option></select></div>
+      <div class="sectionh">Customer posture &amp; background</div>
+      <p class="hint" style="margin:-2px 0 10px">These shape what the report emphasises and how it reads. They never change a risk rating.</p>
+      ${ta("Customer posture", "f_appetite", p.riskAppetite||"", "How this customer wants risk communicated — what to emphasise, the recommendation lean, and the tone / phrasing (e.g. “conservative; lead with a clear go / no-go; concise, plain English”). Plain prose, no numbers or cut-offs.", undefined, true)}
+      ${ta("Background &amp; standing concerns", "f_pack", contextPack||"", "Useful background about the customer — competitors to watch, recurring concerns, and lessons from past matters. Write facts and concerns, not rules. Up to 8000 characters.", "pack", true)}
+    </details>
+    ${isNew ? "" : `<div class="sectionh">Projects (engagements)</div>
+    <p class="hint" style="margin:-2px 0 10px">Optional. A <b>project</b> runs its own marketplaces, classes, sector and posture on top of this customer — while the customer's identity, own-marks list and risk framework stay in charge. A matter with no project uses the customer settings above.</p>
+    <div id="projects"><div class="empty" style="padding:8px 0">Loading projects…</div></div>`}
+    <div class="bar">
+      <button id="btn_validate" class="ghost">Check first</button>
+      <button id="btn_save">Save</button>
+      <div class="msg" id="msg"></div>
+    </div>`;
+  $("btn_validate").onclick = () => submit(false);
+  $("btn_save").onclick = () => submit(true);
+  if (!isNew) loadProjectList(key);   // spec 62 — populate the nested project list
+}
+
+function collect() {
+  const key = current.isNew ? ($("f_key").value||"").trim() : current.key;
+  // merge over the LOADED profile's delivery — the form only edits email + privileged, so style/template
+  // (set outside this page) must survive a save round-trip instead of being silently rewritten
+  const delivery = { ...((current.profile && current.profile.delivery) || {}), email: $("f_email").value };
+  // THE MARKING IS THREE-STATE ON THE WIRE and this control has two live options, so the default one
+  // writes ABSENCE and never `false` (tracker issue 1991). It was a checkbox, which rendered absent and
+  // `false` identically and wrote a boolean on every save — so a customer who had given no instruction
+  // was recorded as "strip the line" the first time anybody pressed Save on an unrelated field, and
+  // their next report shipped with no confidentiality line. That is #761's incident on this door.
+  // `true` is retired and renders as the default (shared/brand.mjs confPosture), so it folds to the same
+  // option and saves as absence rather than storing a distinction the output can no longer carry.
+  if ($("f_priv").value === "no") delivery.privileged = false; else delete delivery.privileged;
+  const profile = {
+    name: ($("f_name").value||"").trim(),
+    matchDomains: csv($("f_match").value),
+    platforms: lines($("f_platforms").value),
+    defaultClasses: csv($("f_classes").value).map(Number).filter(n=>Number.isFinite(n)),
+    defaultJurisdictions: csv($("f_juris").value),
+    selfExclusionOwners: lines($("f_excl").value),
+    delivery,
+  };
+  const industry = ($("f_industry").value||"").trim(); if (industry) profile.industry = industry;
+  const appetite = ($("f_appetite").value||"").trim(); if (appetite) profile.riskAppetite = appetite;
+  // ALWAYS sent WHEN THE CONTROL IS THERE: "" is the EXPLICIT unset (the request's own countries
+  // decide). When it is NOT there — a stale tab, or a roster fetch that failed so the offering never
+  // arrived — the key is OMITTED and the server preserves the on-disk value. That guard is load-bearing
+  // rather than defensive: `normalizeDefaultProduct` DELETES the key on "", so a menu rendered empty
+  // would silently CLEAR an account's default the first time anybody pressed Save on an unrelated field.
+  if ($("f_product")) profile.defaultProduct = $("f_product").value;
+  return { key, profile, contextPack: ($("f_pack").value||"").trim() };
+}
+
+function showMsg(kind, text, errors) {
+  const el = $("msg"); if (!el) return;   // null-safe: never crash while trying to report a problem
+  el.className = "msg " + kind;
+  el.innerHTML = esc(text) + (errors&&errors.length ? "<ul>"+errors.map(e=>`<li>${esc(e)}</li>`).join("")+"</ul>" : "");
+}
+
+// ── field-level error affordance ──────────────────────────────────────────────────────────────────────
+function clearFieldErrors() {
+  [...$("editor").querySelectorAll(".invalid")].forEach(el => el.classList.remove("invalid"));
+  [...$("editor").querySelectorAll(".fielderr")].forEach(el => el.remove());
+}
+function markField(id, message) {
+  const el = $(id); if (!el) return;
+  el.classList.add("invalid");
+  const det = el.closest("details"); if (det) det.open = true;   // surface a highlight hidden under More options
+  const field = el.closest(".field") || el.parentElement;
+  if (field && message && !field.querySelector(".fielderr")) {   // one inline note per field; the list carries the rest
+    const note = document.createElement("div"); note.className = "fielderr"; note.textContent = message; field.appendChild(note);
+  }
+}
+
+// Client-side pre-checks — a UX accelerator that surfaces EVERY form-producible problem at once, in plain
+// language tied to the visible labels, before any round-trip. The server (profiles.mjs validateProfileShape)
+// stays the authoritative gate; these two regexes deliberately MIRROR its assertProfileKey + platforms-domain
+// checks (keep them in lockstep with driver/profiles.mjs if those rules ever change).
+const KEY_RE = /^[a-z0-9][a-z0-9-]{1,38}$/;
+const DOMAIN_RE = /^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/;
+function clientValidate({ key, profile }) {
+  const problems = [];
+  if (current.isNew) {
+    if (!key) problems.push({ id:"f_key", message:"Enter a customer key (a short id like “acme-health”)." });
+    else if (!KEY_RE.test(key)) problems.push({ id:"f_key", message:"The customer key can only use lowercase letters, numbers and hyphens (2–39 characters)." });
+  }
+  if (!profile.name) problems.push({ id:"f_name", message:"Enter the customer’s name." });
+  const plats = profile.platforms || [];
+  if (!plats.length) {
+    problems.push({ id:"f_platforms", message:"Add at least one marketplace or register to search — a website like amazon.com, one per line." });
+  } else {
+    const seen = new Set();
+    for (const x of plats) {
+      const dom = x.toLowerCase();
+      if (dom === "web") { problems.push({ id:"f_platforms", message:"Don’t list “web” — the general web is always searched. Remove it." }); continue; }
+      if (!DOMAIN_RE.test(dom) || /\s/.test(dom)) { problems.push({ id:"f_platforms", message:`“${x}” doesn’t look like a website address — use a domain like amazon.com.` }); continue; }
+      if (seen.has(dom)) { problems.push({ id:"f_platforms", message:`“${x}” is listed twice.` }); continue; }
+      seen.add(dom);
+    }
+  }
+  return problems;
+}
+
+// Translate an authoritative server error into plain language + the field to highlight. Anything unmapped
+// falls through to its raw text (id:null) so a real backstop error is never hidden.
+function prettyServerError(msg) {
+  const M = String(msg||"");
+  const MAP = [
+    [/name \(string\) is required/i,                    "f_name",      "Enter the customer’s name."],
+    [/platforms must be a non-empty array/i,            "f_platforms", "Add at least one marketplace or register to search — a website like amazon.com, one per line."],
+    [/must not list "web"/i,                            "f_platforms", "Don’t list “web” — the general web is always searched. Remove it."],
+    [/must be a bare store DOMAIN/i,                     "f_platforms", "One of the marketplaces isn’t a website address — use domains like amazon.com, one per line."],
+    [/is duplicated/i,                                  "f_platforms", "A marketplace is listed twice — remove the duplicate."],
+    [/profile key .* must be a lowercase slug/i,         "f_key",       "The customer key can only use lowercase letters, numbers and hyphens (2–39 characters)."],
+    [/appetite must be PROSE-POSTURE/i,                  "f_appetite",  "Customer posture can’t contain numbers or cut-offs — describe the lean in words (e.g. “conservative; lead with a clear go / no-go”)."],
+    [/must be CONTEXT[\s\S]*not a decision rule/i,       "f_pack",      "Background must be facts and concerns, not rules — rephrase any rule as a concern or a question."],
+    [/exceeds the \d+-char budget/i,                     "f_pack",      "Background is too long — keep it under 8000 characters."],
+    [/delivery\.email must be/i,                         "f_email",     "Pick a cover email format from the list."],
+  ];
+  for (const [re, id, friendly] of MAP) if (re.test(M)) return { id, friendly };
+  return { id:null, friendly:M };
+}
+function showServerErrors(headline, errors) {
+  clearFieldErrors();
+  const mapped = (errors||[]).map(prettyServerError);
+  mapped.forEach(m => { if (m.id) markField(m.id, m.friendly); });
+  showMsg("err", headline, mapped.map(m => m.friendly));
+}
+
+async function submit(write) {
+  try {
+    clearFieldErrors();
+    const collected = collect();
+    const { key, profile, contextPack } = collected;
+    const problems = clientValidate(collected);
+    if (problems.length) {
+      problems.forEach(p => markField(p.id, p.message));
+      const head = problems.length === 1 ? "1 thing needs fixing before you can save:" : `${problems.length} things need fixing before you can save:`;
+      showMsg("err", head, problems.map(p => p.message));
+      const first = $(problems[0].id); if (first) first.scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+    showMsg("", write ? "Saving…" : "Checking…");
+    const action = write ? "save" : "validate";
+    const r = await jpost(`${API}${encodeURIComponent(key)}/${action}`, { profile, contextPack });
+    if (!write) {
+      if (r.json.ok) showMsg("ok", r.json.isNew ? "Looks good — ready to create this customer." : "Looks good — ready to save.");
+      else showServerErrors("Almost there — please fix:", r.json.errors);
+      return;
+    }
+    if (r.status === 200 && r.json.written) {
+      showMsg("ok", `Saved — ${r.json.created?"created":"updated"} ${key} · commit ${String(r.json.commit||"").slice(0,9)}`);
+      await loadRoster(key);
+      if (current.isNew) openCustomer(key);
+    } else if (r.json.error === "validation_failed") {
+      showServerErrors("Couldn’t save — please fix:", r.json.errors);
+    } else {
+      showMsg("err", `Couldn’t save (${r.status}). ${r.json.error||"Please try again."}`);
+    }
+  } catch (e) {
+    showMsg("err", `Something went wrong — ${e && e.message ? e.message : e}. Check your connection or sign-in, then try again.`);
+  }
+}
+
+async function openCustomer(key) {
+  try {
+    [...$("roster").querySelectorAll("li[data-key]")].forEach(li => li.classList.toggle("sel", li.dataset.key===key));
+    const r = await jget(`${API}${encodeURIComponent(key)}`);
+    if (r.status !== 200) return showMsg("err", `Could not load ${key} (${r.status}).`);
+    renderEditor(key, r.json.profile||{}, r.json.contextPack||"", r.json.derived||{}, r.json.framework||{}, false);
+  } catch (e) {
+    showMsg("err", `Couldn’t open ${key} — ${e && e.message ? e.message : e}.`);
+  }
+}
+
+function newCustomer() {
+  [...$("roster").querySelectorAll("li.sel")].forEach(li => li.classList.remove("sel"));
+  renderEditor("", {platforms:[], delivery:{email:"summary",privileged:false,template:"standard"}}, "", {}, {}, true);
+}
+
+// ── spec 62 — projects (engagements) under a customer ─────────────────────────────────────────────────
+async function loadProjectList(customer) {
+  const box = $("projects"); if (!box) return;
+  const r = await jget(`${API}${encodeURIComponent(customer)}/projects`);
+  if (r.status !== 200) { box.innerHTML = `<div class="empty" style="padding:8px 0">Couldn’t load projects (${esc(r.status)}).</div>`; return; }
+  const list = r.json.projects || [];
+  box.innerHTML =
+    (list.length ? `<ul class="roster proj">${list.map(p => `<li data-proj="${esc(p.key)}"><span data-anon="mark">${esc(p.name||p.key)} <code class="slug">${esc(p.key)}</code></span></li>`).join("")}</ul>`
+                 : `<div class="empty" style="padding:6px 0 2px">No projects yet.</div>`)
+    + `<button class="ghost" id="newproj" style="margin-top:8px">+ Add project</button>`;
+  [...box.querySelectorAll("li[data-proj]")].forEach(li => li.onclick = () => openProject(customer, li.dataset.proj));
+  $("newproj").onclick = () => newProject(customer);
+}
+
+async function openProject(customer, project) {
+  try {
+    const r = await jget(`${API}${encodeURIComponent(customer)}/projects/${encodeURIComponent(project)}`);
+    if (r.status !== 200) return showMsg("err", `Could not load project ${project} (${r.status}).`);
+    renderProjectEditor(customer, project, r.json, false);
+  } catch (e) { showMsg("err", `Couldn’t open ${project} — ${e && e.message ? e.message : e}.`); }
+}
+
+async function newProject(customer) {
+  try {
+    const r = await jget(`${API}${encodeURIComponent(customer)}`);   // the customer profile → inherited values to hint against
+    const cp = (r.json && r.json.profile) || {};
+    const inherited = {}; for (const k of PKEYS) inherited[k] = cp[k] ?? null;
+    renderProjectEditor(customer, "", { customer, customerName: cp.name || customer, overlay: {}, inherited, contextPack: "" }, true);
+  } catch (e) { showMsg("err", `Couldn’t start a new project — ${e && e.message ? e.message : e}.`); }
+}
+
+function renderProjectEditor(customer, project, data, isNew) {
+  currentProject = { customer, project, isNew };
+  current = null;                                    // no longer editing a customer
+  const ov = data.overlay || {};
+  const inh = data.inherited || {};
+  const cname = data.customerName || customer;
+  const d = ov.delivery || null;
+  const REQ = ` <span class="req">*</span>`;
+  const inheritHint = (val) => `Leave blank to inherit — customer: <b>${esc(val)}</b>.`;
+  $("editor").innerHTML = `
+    <div class="ro"><button class="ghost" id="p_back" style="padding:4px 10px;margin-right:8px">← ${esc(cname)}</button> ${isNew ? "New project under" : "Project under"} <b><span data-anon="client">${esc(cname)}</span></b></div>
+    <p class="hint" style="margin:-4px 0 12px">A project overlays this customer — fill in only what differs; anything left blank inherits the customer's setting. A project can't change the customer's name, own-marks list, or risk framework.</p>
+    ${isNew ? f("Project id"+REQ, "p_key", "", `<span class="reqtag">Required.</span> A short lowercase id — letters, numbers and hyphens only. It becomes the project's filename and can't be changed later.`, "e.g. console-ecosystem") : `<div class="ro">Project <b><code>${esc(project)}</code></b></div>`}
+    ${f("Project name"+REQ, "p_name", ov.projectName||"", `<span class="reqtag">Required.</span> The engagement's display name.`, "e.g. Console ecosystem", true)}
+    ${ta("Marketplaces and registers", "p_platforms", (ov.platforms||[]).join("\n"), `Leave blank to inherit the customer's <b>${esc((inh.platforms||[]).length)}</b> marketplaces. One website per line; don't add 'web'.`, "", true)}
+    ${f("Industry / sector", "p_industry", ov.industry||"", inheritHint(inh.industry||"—"), undefined, true)}
+    <div class="row2">
+      ${f("Default classes", "p_classes", (ov.defaultClasses||[]).join(", "), inheritHint((inh.defaultClasses||[]).join(", ")||"—"))}
+    </div>
+    ${f("Default countries", "p_juris", (ov.defaultJurisdictions||[]).join(", "), inheritHint((inh.defaultJurisdictions||[]).join(", ")||"—"))}
+    <div class="field"><label for="p_email">Cover email format</label><div class="hint">Inherit, or set just for this project.</div>
+      <select id="p_email"><option value=""${!d?" selected":""}>Inherit</option><option value="summary"${d&&d.email!=="table"?" selected":""}>Summary</option><option value="table"${d&&d.email==="table"?" selected":""}>Table</option></select></div>
+    <div class="field"><label for="p_priv">Confidentiality marking</label><div class="hint">Only applies when a format is set above.</div><select id="p_priv"><option value=""${d&&d.privileged===false?"":" selected"}>Privileged &amp; Confidential</option><option value="no"${d&&d.privileged===false?" selected":""}>No marking</option></select></div>
+    ${ta("Project posture", "p_appetite", ov.riskAppetite||"", "Leave blank to inherit the customer's posture. Plain prose, no numbers or cut-offs.", undefined, true)}
+    ${ta("Project background &amp; concerns", "p_pack", data.contextPack||"", "Background specific to this project — facts and concerns, not rules. Up to 8000 characters.", "pack", true)}
+    <div class="bar">
+      <button id="pbtn_validate" class="ghost">Check first</button>
+      <button id="pbtn_save">Save project</button>
+      <div class="msg" id="msg"></div>
+    </div>`;
+  $("p_back").onclick = () => openCustomer(customer);
+  $("pbtn_validate").onclick = () => submitProject(false);
+  $("pbtn_save").onclick = () => submitProject(true);
+}
+
+// Assemble the SPARSE overlay: include a field ONLY when the user set it — a blank field means "inherit",
+// never "override to empty" (the delta model). projectName is the one always-present field.
+function collectProject() {
+  const o = { projectName: ($("p_name").value||"").trim() };
+  const plats = lines($("p_platforms").value); if (plats.length) o.platforms = plats;
+  const ind = ($("p_industry").value||"").trim(); if (ind) o.industry = ind;
+  const cls = csv($("p_classes").value).map(Number).filter(n=>Number.isFinite(n)); if (cls.length) o.defaultClasses = cls;
+  const jur = csv($("p_juris").value); if (jur.length) o.defaultJurisdictions = jur;
+  // delivery is merged as a WHOLE field (project → customer): overriding it here intentionally replaces the
+  // customer's delivery, so a project's delivery carries only email + privileged (style/template are the
+  // customer's presentation defaults; a project that needs its own sets them via a code change, like the framework).
+  // Same three-state rule as the customer form (tracker issue 1991): the default option writes NO key, so
+  // an overlay never invents "strip the marking" for a project that gave no instruction.
+  const email = $("p_email").value; if (email) { o.delivery = { email }; if ($("p_priv").value === "no") o.delivery.privileged = false; }
+  const app = ($("p_appetite").value||"").trim(); if (app) o.riskAppetite = app;
+  return { slug: currentProject.isNew ? ($("p_key").value||"").trim() : currentProject.project, profile: o, contextPack: ($("p_pack").value||"").trim() };
+}
+
+function clientValidateProject(c) {
+  const problems = [];
+  if (currentProject.isNew) {
+    if (!c.slug) problems.push({ id:"p_key", message:"Enter a project id (like “console-ecosystem”)." });
+    else if (!KEY_RE.test(c.slug)) problems.push({ id:"p_key", message:"The project id can only use lowercase letters, numbers and hyphens (2–39 characters)." });
+  }
+  if (!c.profile.projectName) problems.push({ id:"p_name", message:"Enter the project name." });
+  const seen = new Set();
+  for (const x of (c.profile.platforms||[])) {
+    const dom = x.toLowerCase();
+    if (dom === "web") { problems.push({ id:"p_platforms", message:"Don’t list “web” — the general web is always searched. Remove it." }); break; }
+    if (!DOMAIN_RE.test(dom) || /\s/.test(dom)) { problems.push({ id:"p_platforms", message:`“${x}” doesn’t look like a website address — use a domain like amazon.com.` }); break; }
+    if (seen.has(dom)) { problems.push({ id:"p_platforms", message:`“${x}” is listed twice.` }); break; }
+    seen.add(dom);
+  }
+  return problems;
+}
+
+async function submitProject(write) {
+  try {
+    clearFieldErrors();
+    const c = collectProject();
+    const problems = clientValidateProject(c);
+    if (problems.length) {
+      problems.forEach(p => markField(p.id, p.message));
+      showMsg("err", problems.length === 1 ? "1 thing needs fixing before you can save:" : `${problems.length} things need fixing before you can save:`, problems.map(p => p.message));
+      const first = $(problems[0].id); if (first) first.scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+    showMsg("", write ? "Saving…" : "Checking…");
+    const r = await jpost(`${API}${encodeURIComponent(currentProject.customer)}/projects/${encodeURIComponent(c.slug)}/${write?"save":"validate"}`, { profile: c.profile, contextPack: c.contextPack });
+    if (!write) {
+      if (r.json.ok) showMsg("ok", r.json.isNew ? "Looks good — ready to create this project." : "Looks good — ready to save.");
+      else showServerErrors("Almost there — please fix:", r.json.errors);
+      return;
+    }
+    if (r.status === 200 && r.json.written) {
+      showMsg("ok", `Saved — ${r.json.created?"created":"updated"} project ${c.slug} · commit ${String(r.json.commit||"").slice(0,9)}`);
+      openProject(currentProject.customer, c.slug);   // reopen (now existing) so the slug locks + re-reads inherited/effective
+    } else if (r.json.error === "validation_failed") {
+      showServerErrors("Couldn’t save — please fix:", r.json.errors);
+    } else {
+      showMsg("err", `Couldn’t save (${r.status}). ${r.json.error||"Please try again."}`);
+    }
+  } catch (e) {
+    showMsg("err", `Something went wrong — ${e && e.message ? e.message : e}. Check your connection or sign-in, then try again.`);
+  }
+}
+
+$("newbtn").onclick = newCustomer;
+// Delegated on the persistent #editor (renderEditor replaces its innerHTML) — clear a field's error
+// affordance as soon as the user starts fixing it, so stale red borders don't linger.
+$("editor").addEventListener("input", (e) => {
+  const t = e.target;
+  if (t && t.classList && t.classList.contains("invalid")) {
+    t.classList.remove("invalid");
+    const field = t.closest(".field"); const note = field && field.querySelector(".fielderr");
+    if (note) note.remove();
+  }
+});
+loadRoster().catch(e => { $("roster").innerHTML = `<li class="empty">Failed to load (${esc(e.message)}). Is the profile-service deployed?</li>`; });
+</script>
+<!-- DEMO ANON overlay (the masking/toggle JS) — injected by publish/profiles-page.mjs from the single
+     source shared/anon-overlay.mjs. Empty when opened raw / when the feature is disabled. -->
+<!--ANON-JS-->
+</body>
+</html>

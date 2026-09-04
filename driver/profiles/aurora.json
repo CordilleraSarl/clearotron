@@ -1,0 +1,44 @@
+{
+  "name": "Aurora Interactive",
+  "demoData": true,
+  "matchDomains": [
+    "aurora-interactive.example"
+  ],
+  "industry": "gaming",
+  "platforms": [
+    "store.steampowered.com",
+    "store.epicgames.com",
+    "play.google.com",
+    "apps.apple.com",
+    "gog.com",
+    "itch.io"
+  ],
+  "defaultClasses": [
+    9,
+    28,
+    41,
+    42
+  ],
+  "defaultJurisdictions": [
+    "NZ",
+    "PH",
+    "IN",
+    "RU",
+    "ID",
+    "ZA",
+    "TR"
+  ],
+  "selfExclusionOwners": [
+    "Aurora Interactive",
+    "Aurora Interactive Ltd",
+    "Northwind Studios",
+    "Emberforge Games"
+  ],
+  "delivery": {
+    "email": "table",
+    "privileged": true
+  },
+  "riskAppetite": "Defensibility-first and conservative: lead every matter with a clear go / no-go and the practical 'would they actually enforce' read beside the legal level. Foreground famous-mark, partner-relationship, and brand-safety sensitivities as prominent call-outs, and surface a parallel alternative-name track early whenever a headline conflict looks severe. Keep minor crowded-field or descriptive noise brief.",
+  "frameworkPath": "skills/prelim-search/risk-framework-aurora.md",
+  "workedExamplesPath": "skills/prelim-search/worked-examples-aurora.md"
+}

@@ -1,0 +1,11 @@
+# ── #1827 — driver/suite-census.json merges by UNION, not by text ────────────────────────────────────
+#
+# The census is a persisted expectation and must stay committed: only something written down beforehand
+# notices a test file that was deleted, renamed out of the glob, or gutted. The cost is that two branches
+# which both re-stamped it conflict — git merges LINES, and two entries added in the same alphabetical
+# neighbourhood of a 687-key object land in one hunk.
+#
+# This names the driver. It does NOT install it: a merge driver has to be registered in git config per
+# clone, which `npm run hooks:install` now does alongside the pre-push hook. A clone that never ran that
+# gets today's behaviour — an ordinary conflict it resolves by re-minting — which is what it has now.
+driver/suite-census.json merge=suite-census

@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here. Every path,
+# queue and credential comes from EnvironmentFile=%h/.env, which is where a SERVER's configuration lives
+# (INSTALL.md §3; render-units.mjs defaults --env to the same file).
+#
+# ── WHY THIS UNIT EXISTS (tracker issue 1863) ────────────────────────────────────────────────────────
+#
+# It did not, and its absence was the one that cost a report rather than a restart. `bin/start.mjs`
+# supervises THREE children — the portal, the engine door, and this worker (`:904`). Units shipped for
+# the first two under 1925. The only units that ever ran the worker were `prelim-driver.service` and
+# `prelim-driver.timer`, and the owner's ruling of 2026-08-26, restated 2026-08-31, retires that whole
+# path-watcher/timer posture.
+#
+# So retiring those units without writing this one leaves a hosted deployment with its portal up, its
+# engine door up, and NOTHING DRAINING THE QUEUE. Jobs land, no unit fails, no log line appears, and the
+# box reports healthy while no client ever receives a report. That is the failure the retired `.path`
+# unit's own header warned about, arriving through the other door.
+#
+# ── WHY ExecStart IS THE ENTRYPOINT AND NOT `clearotron start` (owner ruling, 2026-08-31) ────────────
+#
+# "The simple shape wins, implemented the standard way." Per standard service practice the unit invokes
+# the server entrypoint directly under its own EnvironmentFile; it does not shell through the
+# `clearotron start` CLI wrapper. That wrapper stays the laptop/dev command and KEEPS its 1925 guard —
+# the refusal that stops a hand-run second engine reading different config on a server box. Shelling
+# through it here would have made that refusal fire against the unit itself.
+#
+# ── ONE DRAINER, AND THE LOCK IS WHAT ENFORCES IT ────────────────────────────────────────────────────
+#
+# A second claimant on one queue is this lane's recurring defect (tracker issue 1883). This unit takes no
+# special precaution against it because none would work: the guarantee is CLEAROTRON_RUN_LOCK_DIR, which
+# this worker and a hand-started `node driver/runner.mjs` already share, so the cap holds across both.
+# What this unit must not do is run beside a FOREGROUND `clearotron start`, which supervises its own
+# worker child. `clearotron start --background` is not that case and is the opposite: it PINS this unit,
+# because background mode is the unit posture — three units there mirroring the three children the
+# foreground run supervises, one for one.
+
+[Unit]
+Description=Clearotron worker — drains the job queue and runs the clearance
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/02-architecture.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=CLEAROTRON_NO_ENV_FILE=1
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

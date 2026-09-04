@@ -1,0 +1,21 @@
+# blank_issues_enabled: false is the load-bearing line. Both templates carry a required checkbox
+# saying the report holds no run artifact; a blank issue walks straight past it, and a run artifact
+# posted to a public tracker cannot be recalled.
+#
+# The URL below is the ONE string in this directory that depends on the repository's name. It is
+# absolute because GitHub requires contact_links to be — everything else here and in the two forms
+# uses relative links, which survive a rename or a move to the public repository.
+#
+# IT NAMED THE PRIVATE, ARCHIVED REPOSITORY UNTIL 2026-08-24, so the one link a security reporter is
+# told to follow 404'd for every reader who is not us. It now names the public repository, which is
+# the same answer `shared/product-identity.mjs` gives for the §13 source offer and for the same
+# reason: a link a stranger is asked to follow has to resolve for a stranger.
+# driver/test/publication-scrub.test.mjs holds the two in agreement, so this cannot drift back.
+#
+# STILL OWED ON THE PUBLIC REPOSITORY ITSELF: turn on private vulnerability reporting
+# (Settings → Security), or this link 404s again and SECURITY.md's interim channel does not exist.
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability — report privately, never as an issue
+    url: https://github.com/CordilleraSarl/Clearotron/security/advisories/new
+    about: See SECURITY.md. A public issue naming a real weakness is a second incident.

@@ -1,0 +1,82 @@
+# GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific values live here; hostnames,
+# credentials and paths all come from EnvironmentFile=%h/.env. (Contrast the TEMPLATE units — profile/
+# recipe/portal-service, remote/client-mcp — whose live copies hold real CF Access values and must be
+# diffed, never overwritten. Both kinds are inventoried in docs/architecture/05-config-governance.md.)
+[Unit]
+Description=Prelim-search deterministic driver — drain the job queue
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/README.md
+# No gateway dependency: compute runs on the standalone engine and delivery defaults to handoff
+# (outbox packets) — see docs/DELIVERY.md. Nothing here needs OpenClaw.
+# Type=oneshot fired by prelim-driver.path: if the runner fails its preflight on every retrigger
+# (exit 3 — no longer reachable since #1014 deleted the gateway preflight; kept because the
+# start-limit interaction below is a property of Type=oneshot, not of that preflight), the default
+# start-limit (5 failures in 10s) locks the service out and can drive the .path unit's TriggerLimit
+# (200/2s) into a permanently failed state. Never rate-limit starts (Type=oneshot, no Restart= —
+# nothing here can loop unbounded); the runner also sleeps before its preflight-fail exit so the
+# retrigger cadence stays slow.
+StartLimitIntervalSec=0
+
+[Service]
+# oneshot: systemd guarantees a single instance, so two queue events can't start two concurrent drains.
+Type=oneshot
+EnvironmentFile=%h/.env
+# BOTH ROUTES THE DOCUMENTS PERMIT. INSTALL.md §1 requires "a coding CLI on your PATH, signed in" and
+# deliberately names no install route, so the reader picks one. The npm-global layout was the only one
+# on this line; claude.ai/install.sh -- the route a reader most often takes -- lands the binary in
+# ~/.local/bin, which was not here. The engine then failed `spawn claude ENOENT` and every stage burned
+# its full retry ladder for zero tokens, a failure that reads as a model problem and is not one.
+# CLEAROTRON_CLAUDE_PATH in the EnvironmentFile above is the exact answer for any other location; this
+# line is what makes the two documented layouts work without one.
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=OPENCLAW_HOME=%h
+# THIS deployment's configuration is the EnvironmentFile above and nothing else. runner.mjs is one of
+# the CLI entries that reads <repo>/.env for a laptop first run (shared/env-local.mjs); a checkout has
+# no .env today, so this changes nothing — which is the point. It makes "no .env in the checkout" a
+# guarantee instead of a coincidence, so a stray file left by a debugging session cannot quietly
+# reconfigure the queue drain. Same line on trademark-artifacts-http.service, the other unit that
+# starts a wired entry.
+Environment=CLEAROTRON_NO_ENV_FILE=1
+# Deployment hostnames (CLEAROTRON_REPORTS_URL, CLEAROTRON_MCP_URL, CLEAROTRON_CLIENT_MCP_URL, CLEAROTRON_ACCESS_DOMAIN,
+# CLEAROTRON_STAFF_POOL_ROOT) live in the EnvironmentFile above, NOT here — this unit is git-tracked and generic, so a
+# hostname baked in becomes every deployment's hostname. They are non-secret; .env is simply the one place
+# this deployment's config already lives (docs/architecture/04-configuration-reference.md).
+#
+# Do NOT reintroduce a placeholder value for any of them. CLEAROTRON_CLIENT_MCP_URL was pinned here to a
+# example.com host, which is WORSE than leaving it unset: render.mjs's spec 61 §E fail-closed branch omits
+# the client connector when the var is EMPTY, so a placeholder defeated the guard and shipped a dead
+# tokenised link in the client export (2026-07-19). Unset ⇒ omitted; wrong ⇒ delivered.
+# NO WorkingDirectory=, DELIBERATELY, and this is the line not to re-add defensively.
+#
+# systemd does not expand environment variables in WorkingDirectory= -- it takes a path and specifiers
+# only -- so a config-derived checkout cannot go there. It does expand ${VAR} in ExecStart= ARGUMENTS,
+# which is where the path below sits.
+#
+# Dropping it is safe because nothing here reads the working directory: runner.mjs never calls
+# process.cwd(), and driver/driver.config.mjs:24 resolves REPO_ROOT as dirname(DRIVER_DIR) from
+# import.meta.url. The code finds itself from where its file is, not from where it was started.
+#
+# THE HARDCODED NAME THIS REPLACES could not work after a documented install. INSTALL.md §2 says
+# `git clone <this-repo> && cd <repo>`, which produces a directory named after the repository -- and
+# the name in this unit was the repository this one was cut FROM. WorkingDirectory then failed and the
+# unit never started, on a host nobody is watching.
+# runner.mjs claims each queued job atomically, runs the pipeline, marks .done/.failed.
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs
+# Refresh the portal's flag snapshot after every drain, from THIS unit precisely because it has the
+# engine EnvironmentFile — the portal deliberately has none (AUD-shadowing rule) and reads the file.
+# A snapshot that only refreshes when somebody remembers eventually describes a configuration nobody
+# is running (flag-snapshot.mjs header). `-` prefix: a snapshot failure must never fail the drain.
+ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs
+# Ceiling for a WEDGED runner ONLY — never a deadline for honest work. oneshot means the WHOLE drain
+# runs inside "activating", and a multi-job backlog (runs ~1.5h+ each; one observed gather member alone
+# ~2h26m) makes honest activations unbounded. The runner bounds its own wall time instead: past its
+# admission budget (runner.mjs CLEAROTRON_ADMISSION_BUDGET_MS, default 2h) it claims no NEW jobs, finishes
+# what's in flight and exits 0 — leftover queue *.json re-match the .path glob, which retriggers a fresh
+# activation with a fresh clock. So a legit activation is bounded by budget (2h) + one run's wall
+# (worst observed component ~2h30m), and this ceiling MUST stay above that sum (see
+# driver/test/runner.admission-budget.test.mjs) so it only ever fires on a wedged runner (one
+# SIGTERM-immune engine child). Was 0 (infinite), which let that wedge hold the unit "activating"
+# forever with no backstop.
+TimeoutStartSec=6h
+Nice=5
+
+# NOTE: not [Install]ed — it is activated by prelim-driver.path, not enabled standalone.

@@ -1,0 +1,2171 @@
+/* Base layer. Tokens live in tokens.css (generated from brand.mjs); this file is layout and reset only,
+   and every colour in it is a var() — a literal hex here would be a colour that brand.mjs does not know
+   about, which is the drift the token bridge exists to prevent. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Focus is never removed, only restyled. Keyboard users are how staff actually work through a list. */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── privacy blur ────────────────────────────────────────────────────────────────────────────────────
+   The shipped idiom, sharing the `[data-anon="mark"]` attribute with shared/anon-overlay.mjs. It does
+   NOT share its reach: that overlay masks the internal archive and profile pages, which carry their own
+   per-name markup, and a portal report carries none — this rule cannot cross into a null-origin frame
+   at all. A report is covered by tagging the frame's CONTAINER (Result.tsx), which blurs the document
+   whole. The comment here used to claim the two blurred "the portal and an embedded report
+   identically", which was read as a guarantee and was not one.
+   The design pack proposed a `.cord-blur` class with a 6px blur; the product already
+   had `[data-anon="mark"]` with a .42em blur, which scales with type size instead of over-blurring small
+   text and under-blurring headings. The shipped one wins — two privacy mechanisms is one too many. */
+html.anon-on [data-anon='mark']:not(.anon-clear) {
+  filter: blur(0.42em);
+  user-select: none;
+}
+
+[data-anon='mark'] {
+  transition: filter 0.18s var(--ease-out);
+}
+
+/* ── the app frame ───────────────────────────────────────────────────────────────────────────────── */
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* THE READING MEASURE — how wide a column of fields and prose gets INSIDE the 1120px frame below.
+   Two different caps doing two different jobs, which is why they are not merged: `.screen` is pinned
+   to the delivered report's own width and cannot move (see the note under it), while this one is
+   typographic and is free to.
+
+   It exists because the measure used to be an inline `maxWidth` restated at nine call sites across
+   eight screens, in three different values, with one screen disagreeing with itself between its two
+   branches. A screen that needs a different measure now overrides the property rather than opting out
+   of the mechanism, so the deviations are greppable instead of invisible.
+
+   `max-width` and nothing else. These containers are deliberately left-aligned inside the centred
+   `.screen` column — adding margin or padding here would shift all nine. */
+:root {
+  --screen-measure: 760px;
+  --prose-measure: 640px;
+}
+
+.measure {
+  max-width: var(--screen-measure);
+}
+
+/* ── THE WIDTH VOCABULARY (tracker issue 2086) ────────────────────────────────────────────────────
+   Owner, on his own screens: "we INCONSISTENTLY use screen width … consistency is important."
+   Measured: seventeen inline maxWidth literals across seven screens, in nine different values — each
+   its author's guess. Width is now a zone-type decision made HERE, once:
+
+     data tables and lists   the .screen frame itself (1120px) — Clearances, the approved reference
+     reading prose           .prose — one readable measure, left-aligned in the frame
+     form fields             .fld-narrow / .fld-medium / .fld-wide by INPUT TYPE — a short code never
+                             inherits the width of the screen it sits on
+
+   No screen states a width literal of its own; the arm in portal-ui/test/widthVocabulary.test.ts
+   refuses one. A zone that genuinely needs a new width adds it HERE with its reason, so deviations
+   stay greppable — the same rule .measure already carries. */
+.prose {
+  max-width: var(--prose-measure);
+}
+.fld-narrow { max-width: 220px; }   /* short codes: a class number, a reference, a deadline */
+.fld-medium { max-width: 340px; }   /* names, emails, single-word marks */
+.fld-wide   { max-width: 560px; }   /* descriptions, goods phrases, expansion blocks */
+
+/* Every screen is the same centred column, so headers and widths never jump between screens. */
+.screen {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 30px 90px;
+}
+
+/* The report screen is WIDER than the rest, and it scrolls like the rest.
+
+   Both halves of that used to be the other way round, for reasons worth recording because they were
+   each correct about a real defect and wrong about the fix.
+
+   WIDTH. This screen used to inherit the 1120px measure, and the note here said that removing the cap
+   "did not widen a single table — the document never used the space". True, and the wrong conclusion:
+   the document did not use the space because the DOCUMENT caps itself at `.wrap{max-width:1120px}`.
+   Widening the frame alone could only ever add margin. The embed layer in driver/portal-report.mjs now
+   uncaps `.wrap`, so the measure below is the real one — the report's fr-based grids (.heroGrid,
+   .landwrap, .meters, .cov) stretch into it. Tune this number, not the one in the document.
+
+   SCROLL. This screen used to be a viewport-locked flex column so the frame owned the only scrollbar,
+   fixing a genuine bug where the report scrolled inside its own box while the page scrolled behind it.
+   The cost was that the report behaved unlike every other screen and read as a panel rather than a
+   page. The frame now reports its own height (portal-report.mjs) and Result.tsx sizes it to fit, so
+   there is still exactly one scrollbar — the browser's — and the sidebar and topbar stay put because
+   they are already position:sticky. */
+.screen.report {
+  max-width: 1500px;
+  padding: 18px 30px 60px;
+}
+
+/* The report's own header, pinned under the shell topbar.
+
+   The report screen scrolls like every other page now, and the first thing that cost was this header:
+   the mark name and the Export button left the screen as soon as the reader started reading, in a
+   document that is routinely six thousand pixels tall. `top` is the height of `.topbar`, which is itself
+   `position:sticky; top:0`, so the two stack rather than overlap. This works only because
+   `.screen.report` no longer sets `overflow` — an overflow ancestor silently defeats sticky. */
+.report-head {
+  position: sticky;
+  top: 56px;
+  z-index: 20;
+  background: var(--surface-page);
+  padding: 10px 0 12px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+/* ── sidebar ─────────────────────────────────────────────────────────────────────────────────────── */
+
+.sidebar {
+  flex: none;
+  width: 252px;
+  background: var(--surface-raised);
+  border-right: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  transition: width 0.22s var(--ease-out);
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar-head {
+  padding: 20px 18px 14px;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 10px;
+}
+
+.sidebar-foot {
+  padding: 10px;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.eyebrow {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 9px 12px;
+  margin: 1px 0;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: var(--surface-sunken);
+  color: var(--text-strong);
+}
+
+.nav-item.active {
+  background: var(--accent-wash);
+  border-left-color: var(--accent);
+  color: var(--text-accent);
+  font-weight: 700;
+}
+
+.nav-sub {
+  margin: 2px 0 6px 12px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border-hairline);
+}
+
+.nav-sub .nav-item {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.nav-group {
+  margin: 10px 0 3px 10px;
+}
+
+/* ── top bar ─────────────────────────────────────────────────────────────────────────────────────── */
+
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 30px;
+  border-bottom: 1px solid var(--border-hairline);
+  background: var(--surface-page);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.crumb {
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.icon-btn:hover,
+.icon-btn[aria-pressed='true'] {
+  background: var(--surface-sunken);
+  color: var(--text-strong);
+}
+
+.float {
+  background: var(--surface-float);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ── table ───────────────────────────────────────────────────────────────────────────────────────── */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table.data {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table.data th {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-strong);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+table.data th button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+table.data td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-hairline);
+  vertical-align: top;
+}
+
+/* #276 — THE GRID IS DECLARED, NOT EMERGENT.
+   Without `table-layout: fixed` a table's columns are sized by their content, so every cell in every row
+   is a vote on where the columns sit. That is why opening a row on Clearances could re-flow the parent
+   table and truncate the `Updated` header to `Upd`, and why the alignment of an expanded read was
+   coincidental — decided by the length of the text beside each value rather than by a column. Fixed
+   layout means the header's own colgroup decides the columns once and nothing below can move them, which
+   is also what lets an expanded read be a REAL ROW in the same grid instead of a panel positioned to look
+   like one. Opt-in via `.fixed`, so every other table on the site keeps its content sizing. */
+table.data.fixed {
+  table-layout: fixed;
+}
+
+/* #280 — THE FIXED TABLE HAS NO FLOOR OF ITS OWN.
+   `table.data` sets `min-width: 760px` so a content-sized table cannot collapse into unreadable slivers.
+   Under fixed layout that floor is not a safety net, it is the thing that overflows: the columns are
+   already declared as percentages of the container, so the table has a shape at any width, and a floor
+   only stops it reaching the container it is in.
+   Measured in CI: a 769px wrapper holding a table pinned at 788px — a 19px horizontal scrollbar on a
+   client-facing page, for no reason but the floor. */
+table.data.fixed {
+  min-width: 0;
+}
+
+/* #280 — THE HEADER MUST BE ALLOWED TO WRAP, or the font decides whether the table scrolls.
+   `table.data th` sets `white-space: nowrap`, which is right for a content-sized table and wrong here:
+   under fixed layout the cells can shrink (overflow-wrap: anywhere) but the header cannot, so the
+   letterspaced caps alone set an unshrinkable floor. When the brand webfont is unavailable — no network,
+   a blocked CDN, a first paint — the fallback is wider, that floor grows, and the table overflows its
+   wrapper.
+   Found in CI, which has no route to the font host: this passed on a developer machine and failed there.
+   A two-line header is a far better failure than a horizontal scrollbar, and it is the only one of the
+   two that does not depend on which fonts happened to load. */
+table.data.fixed th {
+  white-space: normal;
+}
+
+/* And nothing INSIDE a cell may set a floor either. `overflow-wrap: anywhere` on the cell does not reach
+   into an inline-block child, so a pill or a status chip keeps its own min-content and holds the column
+   open. These are the children this table actually has. */
+table.data.fixed td .pill,
+table.data.fixed td .status,
+table.data.fixed td .sub,
+table.data.fixed td .mono {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The two narrow columns get tighter padding — 12px each side around a 15px checkbox is 39px of floor on
+   a 5% column. */
+table.data.fixed th:first-child,
+table.data.fixed td:first-child,
+table.data.fixed th:nth-child(2),
+table.data.fixed td:nth-child(2) {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+
+
+/* Under fixed layout a cell no longer widens for its content, so long unbroken text OVERFLOWS its column
+   instead of pushing it. Wrapping is the right failure for a mark or a status sentence; #280 sizes the
+   columns so the common case never reaches it. */
+table.data.fixed td {
+  overflow-wrap: anywhere;
+}
+
+/* An expanded read: quiet enough to read as subordinate to the row it belongs to. The indent is on the
+   cells, not here, because it is structural — see ReadRow. */
+table.data tr.read-row > td {
+  background: var(--surface-sunken);
+}
+
+/* #278 — the whole read row opens its report.
+   The affordance is on the thing you can click, across the WHOLE row, which is the point: the only way
+   in used to be a text button at the far right edge, furthest from the run title the reader has just
+   read, on a row with `cursor: auto` and no hover state at all. People concluded there was no report.
+   A read with no report gets none of this — not the pointer, not the hover, not the focus ring. A dead
+   target is worse than no target. */
+table.data tr.read-row.openable > td {
+  cursor: pointer;
+}
+table.data tr.read-row.openable:hover > td {
+  background: var(--surface-raised);
+}
+/* focus-visible, not focus: a keyboard user must see where they are, a mouse user must not get a ring
+   they did not ask for. The outline is on the ROW, so it reads as one target rather than six cells. */
+table.data tr.read-row.openable:focus {
+  outline: none;
+}
+table.data tr.read-row.openable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+/* The cue that the row leads somewhere. It brightens with the row rather than being a control of its
+   own — clicking it is clicking the row, because it is not clickable separately. */
+.read-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+table.data tr.read-row.openable:hover .read-go,
+table.data tr.read-row.openable:focus-visible .read-go {
+  color: var(--accent);
+}
+
+table.data tr.row {
+  cursor: pointer;
+}
+
+/* #284 — the row disclosure is a real button.
+   It was a bare span with aria-hidden, inside a <tr onClick>: silent to a screen reader AND with no
+   keyboard path to open a row at all. The button carries the name and the state; these rules make it
+   look exactly as the span did, so the fix is behavioural rather than visual.
+   The focus ring is the one deliberate difference — a keyboard user has to see where they are, and it
+   was the absence of any such cue that made the page's primary navigation unusable without a mouse. */
+button.twisty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin: -2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button.twisty:focus {
+  outline: none;
+}
+
+button.twisty:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* #281 — the grouping toggle. In the toolbar, beside the other view controls, so its state is visible
+   WITHOUT opening a menu: a toggle whose state you have to go looking for is a toggle that explains
+   nothing about why the sort looked wrong. */
+.group-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+table.data tr.row:hover td {
+  background: var(--surface-sunken);
+}
+
+/* #277 — A SECTION HEADER, not a decorative divider.
+   Brand owner is the organising principle of the whole list, and a reader had to work it out: the name
+   was set in the smallest, lowest-contrast, most letterspaced type on the page, which reads as a rule
+   BETWEEN rows rather than as "everything below this belongs to Aurora Interactive".
+   Body-text size, medium weight, full-strength ink, sentence case rather than letterspaced caps — and a
+   hairline rule spanning the table beneath it, so containment is visible without reading anything. */
+table.data tr.group-head td {
+  padding: 22px 12px 7px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+table.data tr.group-head .owner-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-strong);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+table.data tr.group-head .owner-count {
+  margin-left: 10px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* Child rows sit one step in from their owner, so the containment reads structurally rather than by
+   proximity alone. On the first cell only — indenting every cell would move the columns. */
+table.data tr.group-head ~ tr.row > td:first-child {
+  padding-left: 22px;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 2px 22px;
+}
+
+.pager button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--text-strong);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pager button:hover:not(:disabled) {
+  background: var(--surface-sunken);
+}
+
+/* Disabled rather than hidden. A Previous button that vanishes on page 1 moves Next under the cursor,
+   so the next click lands on a different control than the one the user aimed at. */
+.pager button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.pill {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* ── status + risk ───────────────────────────────────────────────────────────────────────────────── */
+
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.dot.queued {
+  background: none;
+  border: 2px solid var(--text-faint);
+}
+
+.dot.running {
+  background: var(--accent);
+  animation: cordPulse 1.4s ease-in-out infinite;
+}
+
+.dot.paused {
+  border-radius: 2px;
+  border: 2px dashed var(--text-muted);
+  background: none;
+}
+
+@keyframes cordPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot.running {
+    animation: none;
+  }
+  .sidebar {
+    transition: none;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.status.failed {
+  color: var(--tone-high);
+}
+
+/* ── notices ─────────────────────────────────────────────────────────────────────────────────────── */
+
+.notice {
+  border: 1px solid var(--border-hairline);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: var(--surface-raised);
+  padding: 16px 18px;
+  margin: 14px 0;
+}
+
+.notice.quiet {
+  border-left-color: var(--border-strong);
+}
+
+/* #282 — A TRANSIENT SURFACE, which this codebase did not have one of.
+   The selection bar used `.notice`. That treatment is not a one-off: it is what the error and empty
+   states on the same screen use — which is exactly why it was wrong here. A notice is a persistent
+   thing you READ; a selection bar is a transient thing you ACT on, and it appears and vanishes as you
+   tick boxes.
+   Pinned to the bottom of the viewport rather than inserted above the table, because inserting it
+   pushed the whole table down and the page jumped under the cursor. Overlaying moves nothing. Reserving
+   its height would also stop the jump and leave an empty band on every visit, which the issue rejects. */
+.selection-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: min(920px, calc(100vw - 32px));
+  padding: 12px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface-raised);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* #282 — THE CHECKBOX, in the palette, in every state.
+   It rendered in the browser default blue: the only blue on an otherwise warm and maroon page, and the
+   single clearest sign that a control had been dropped in and never dressed.
+   `accent-color` handles unchecked and checked in one property. Focus and disabled are separate because
+   `accent-color` does not reach either.
+   Deliberately NOT --high: shared/brand.mjs records that --high was un-aliased from --accent because a
+   High risk dot read as a Start button. This sits two columns from a risk dot, so it stays on --accent
+   and stays square — a round maroon dot beside a round tone dot is that collision again. */
+input[type='checkbox'].pickbox {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+input[type='checkbox'].pickbox:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input[type='checkbox'].pickbox:disabled {
+  accent-color: var(--border-strong);
+  cursor: default;
+  opacity: 0.5;
+}
+
+.empty {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--text-muted);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 10px;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+}
+
+.segmented button {
+  border: 0;
+  background: none;
+  border-radius: 7px;
+  padding: 5px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--surface-raised);
+  color: var(--text-strong);
+  box-shadow: var(--shadow-lg);
+}
+
+input.filter {
+  width: 224px;
+  padding: 6px 11px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  background: var(--surface-raised);
+}
+
+/* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 899px) {
+  .sidebar {
+    position: fixed;
+    z-index: 60;
+    width: 266px;
+    transform: translateX(-100%);
+    transition: transform 0.26s var(--ease-out);
+  }
+  .sidebar.open {
+    transform: none;
+  }
+  .sidebar.collapsed {
+    width: 266px;
+  }
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(37, 9, 2, 0.4);
+    border: 0;
+  }
+  .screen,
+  .topbar {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+@media (min-width: 900px) {
+  .scrim {
+    display: none;
+  }
+}
+
+/* ── the risk framework block (Brand profile) ────────────────────────────────────────────────────
+   The framework is the most consequential thing on this page — it decides how every one of this
+   account's matters is RATED (doc 50) — so it is styled as a section of the page rather than as a
+   footnote, and it sits above the editable fields.
+
+   These are ports of the old staff editor's own rules (driver/profile-page.html: .sectionh, .ro, .bm,
+   .bmrow). That page's crimson is this bundle's --text-accent, so the treatment carries over exactly
+   while gaining a dark theme the hardcoded original never had. */
+
+.fw-sectionh {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+/* The in-force statement. Filled and bordered so WHICH framework rates this account is a stated fact
+   rather than a sentence in the flow — a client reading this page is usually here for exactly that. */
+.fw-ro {
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+.fw-ro b {
+  color: var(--text-strong);
+}
+
+.fw-ladder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 4px;
+}
+
+.fw-bmh {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  font-weight: 700;
+  margin: 16px 0 6px;
+}
+
+/* THE rule that makes this read as a rated ladder instead of a bullet list: a fixed pill column and a
+   text column, so every meaning starts at the same left edge no matter how wide its band label is.
+   A flex row here lets each pill size itself and leaves the prose ragged — that is what the first
+   restoration shipped, and it is the single change that made the block unrecognisable. */
+.fw-bmrow {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 10px;
+  align-items: baseline;
+  padding: 3px 0;
+  font-size: 12.5px;
+}
+.fw-bmrow > .pill {
+  justify-self: start;
+}
+.fw-bmtxt {
+  color: var(--text-muted);
+}
+.fw-bmresp {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* tracker issue 2061 — three labelled rungs where there used to be one line. The requirement is that a
+   reader can tell the legal read from the consequences AT A GLANCE, so the label is its own strong
+   column rather than a lead-in sentence: three sentences run together in the old single-line cell would
+   be more text and no more legible, which is the failure this replaces. */
+/* ONE grid for ALL rungs, not one per row (tracker issue 2085): each row being its own grid sized
+   its label column with max-content PER ROW, so the text column started at a different x on every
+   line and a long qualifier ("(one or more)") deformed its own row's grid — the owner's screenshot.
+   The rows become display:contents so every label shares a single column, sized to the longest label
+   but capped by fit-content — past the cap a label WRAPS in its own cell instead of pushing the whole
+   text column right. */
+.fw-bmrungs {
+  display: grid;
+  grid-template-columns: fit-content(200px) 1fr;
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: baseline;
+}
+.fw-bmrung {
+  display: contents;
+}
+.fw-bmrunglbl {
+  color: var(--text-body);
+  font-weight: 600;
+}
+@media (max-width: 640px) {
+  /* Stacked: one column, and the display:contents rows flow label-above-text in source order. */
+  .fw-bmrungs {
+    grid-template-columns: 1fr;
+    row-gap: 1px;
+  }
+}
+
+.footer-demo-note {
+  max-width: 420px;   /* tracker issue 2086 — the note's width is the note's own, not its call site's */
+}
+
+.fw-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.fw-meta b {
+  color: var(--text-strong);
+}
+
+/* Narrow viewports: the fixed pill column would squeeze the prose to a sliver, so the row stacks. */
+@media (max-width: 560px) {
+  .fw-bmrow {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 6px 0;
+  }
+}
+
+/* ── the New clearance composer ──────────────────────────────────────────────────────────────────────
+
+   Values are the design pack's own (design_handoff_trademark_portal, New clearance §3). They live here
+   rather than as inline styles for one reason that matters more than tidiness: the FOOTER cannot be
+   expressed inline. It bleeds past its parent's padding with negative margins and pins with `sticky`,
+   and sticky is silently defeated by any ancestor whose overflow is not `visible` — so it has to be a
+   child of `.screen`, and its geometry has to stay tied to `.screen`'s padding. Both facts belong in one
+   place, next to each other, where changing one shows the other. */
+
+.ctx-card {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface-raised);
+  padding: 15px 17px;
+}
+
+.field-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.ctx-select {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 9px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface-page);
+  color: var(--text-strong);
+  cursor: pointer;
+}
+
+.ctx-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-page);
+  border-radius: 8px;
+  color: var(--text-strong);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+}
+
+/* Chips. Inherited reads quiet; a value the user set for THIS search reads as chosen — crimson means
+   "you chose this", which is the one thing the palette reserves it for. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-hairline);
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.chip-own {
+  padding: 5px 8px 5px 11px;
+  background: var(--accent-wash);
+  border-color: var(--accent-ink);
+  font-weight: 600;
+  color: var(--text-accent);
+}
+
+.chip-mono {
+  padding: 4px 11px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.chip-more {
+  padding: 4px 11px;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-accent);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.chip-x {
+  display: inline-flex;
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.65;
+}
+.chip-x:hover {
+  opacity: 1;
+}
+
+/* A dropdown that is a real list of options rather than the browser's substring guess. `--surface-float`
+   is the popover surface; light has nowhere above `--card` to go, so elevation is the shadow + border. */
+.typeahead {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  background: var(--surface-float);
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden auto;
+  max-height: 230px;
+}
+
+/* ── Refs tracker issue 2075 — a territory the wired register does not reach ────────────────────────
+   Shown and selectable, never absent: an absent entry teaches a reader nothing, because they cannot
+   tell an unsupported territory from one they mistyped. The marker is a statement, not a warning — the
+   choice is legitimate and the report discloses it. */
+.chip-deferred {
+  border-style: dashed;
+  color: var(--text-body);
+}
+
+.typeahead-note {
+  float: right;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.typeahead button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 13px;
+  border: none;
+  background: transparent;
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.typeahead button:hover {
+  background: var(--surface-page);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12.5px;
+  text-decoration: underline;
+}
+
+/* The two ways in. */
+.entry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .entry-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.entry-card {
+  text-align: left;
+  padding: 18px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-raised);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.entry-card:hover {
+  border-color: var(--accent-ink);
+}
+
+.entry-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.entry-body {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.start-pill {
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-body);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.start-pill:hover {
+  border-color: var(--accent-ink);
+  color: var(--text-accent);
+}
+
+/* A saved search is the customer's own, so its pill is dashed. The dash is REINFORCEMENT and never the
+   distinction: it was once the only thing separating these pills from the four products, under a heading
+   that said "four" and then showed more than four, and a border style says nothing at all to somebody
+   who has not been told the convention. The group heading in NewClearance.tsx is what carries it. */
+.start-pill-saved {
+  border-style: dashed;
+  color: var(--text-muted);
+}
+
+.segmented-entry {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-sunken);
+  border-radius: 9px;
+  border: 1px solid var(--border-hairline);
+  margin-top: 18px;
+}
+
+.segmented-entry button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.segmented-entry button[aria-pressed='true'] {
+  background: var(--surface-raised);
+  color: var(--text-strong);
+}
+
+/* The column the wizard's steps live in. 720px, the design's measure for a form — NOT the footer's,
+   which spans the screen. */
+/* ── Refs tracker issue 1937 §B — THE MEASURE MOVES OFF THE COLUMN AND ONTO ITS BLOCKS ─────────────
+   The owner: the New clearance page "is bound to an artificially narrow width; the table side-scrolls
+   or wraps and looks worse than its content deserves. The top panel already fits the screen width."
+   720px is the right measure for a COLUMN OF FIELDS and the wrong one for a five-column comparison. So
+   the column itself is no longer capped and every block in it is — which leaves each field line exactly
+   as wide as it was, and lets one block opt out by saying so.
+
+   MEASURED IN A REAL BROWSER, and the first attempt failed there. Capping the block at the SCREEN's
+   measure (`min(1060px, calc(100vw - 60px))`) pushed the page sideways by 62px: the viewport is not the
+   container — the shell's navigation rail takes part of it, and `100vw` includes the scrollbar. Nothing
+   derived from `vw` can be right here. `max-width` on the children is bounded by the parent that
+   actually holds them, at every viewport, with no arithmetic to get wrong. */
+.composer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin-top: 18px;
+}
+
+.composer-col > * {
+  max-width: 720px;
+  width: 100%;
+}
+
+.composer-wide {
+  max-width: none;
+}
+
+/* ── Refs tracker issue 1937 §B — "what this search includes", in or out at a glance ────────────────
+   The list read as three sentences of equal weight, and whether an axis ran at all was buried in the
+   clause after the dash. The tick and the cross carry the answer; the colour is a reinforcement, never
+   the only signal, because a marker distinguishable by hue alone is not a marker for every reader. */
+.carries {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.carries li {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  padding: 2px 0;
+}
+
+.carries-mark {
+  flex: none;
+  width: 15px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.carries-in .carries-mark { color: var(--tone-low, var(--accent)); }
+.carries-out .carries-mark { color: var(--text-faint); }
+.carries-out { color: var(--text-faint); }
+
+/* Refs tracker issue 2144 — THE SELECTOR'S DEPTH ICONS ARE GONE, by the owner's ruling of
+   2026-09-03: "in the summary things rescale and work great. in product selector … we can remove
+   these next to the product description, tiny fixed icons. barely visible." The ladder they drew was
+   correct and unreadable at the size the row gave it. The FINAL SUMMARY's effort bars stay exactly as
+   built — they are `.bar`/`.bar-on` and `.dot`/`.dot-on`, a different set entirely, which is what made
+   this deletion safe to make without touching the thing he asked to keep. */
+
+.section-title {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin-bottom: 3px;
+}
+
+.section-hint {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.names-box {
+  width: 100%;
+  min-height: 74px;
+  padding: 11px 13px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-page);
+  border-radius: 9px;
+  color: var(--text-strong);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.badge-custom {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--accent-wash);
+  border: 1px solid var(--accent-ink);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+.pick-row {
+  text-align: left;
+  padding: 13px 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pick-row:hover {
+  border-color: var(--accent-ink);
+}
+
+.pick-row-on {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+/* ── Refs tracker issue 2075 — A ROW THAT CANNOT BE PICKED HAS TO LOOK LIKE ONE ─────────────────────
+   The class was applied by the component and NO RULE EXISTED for it, so a disabled row rendered
+   identically to a live one: same border, same surface, same hover. That is exactly what the owner
+   reported — "it doesnt appear disabled, no message etc - but i cant select it."
+   NOT `opacity`, which is how every other disabled control on this page is dimmed. Opacity composites
+   through to the children, so it would wash out the very sentence the row exists to make readable.
+   The surface recedes and the cursor says so; the text does not move. */
+.pick-row-off {
+  background: var(--surface-sunken);
+  border-style: dashed;
+  cursor: default;
+}
+
+.pick-row-off:hover {
+  border-color: var(--border-hairline);
+}
+
+/* The reason, at normal reading contrast and given its own band. Its own line rather than a trailing
+   clause: it is the only thing on the row a reader can act on. */
+.pick-row-why {
+  display: block;
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-hairline);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-strong);
+}
+
+/* The coverage disclosure on a LIVE row — quieter than a refusal, because it qualifies a choice rather
+   than blocking one, and never the faint token. */
+.pick-row-coverage {
+  display: block;
+  margin-top: 7px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ── Refs tracker issue 2087 — a lane this search needs and this deployment does not have ───────────
+   Louder than the coverage note beside it: coverage narrows what a report covers, this removes a whole
+   section of the reasoning. Still not a refusal — the search runs and the report states the gap. */
+.pick-row-capability {
+  display: block;
+  margin-top: 7px;
+  padding-left: 9px;
+  border-left: 2px solid var(--tone-medium);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.radio {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-on {
+  border-color: var(--accent);
+}
+
+.radio-on::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* The saved-search book SCROLLS rather than growing the page. A customer with forty of them should not
+   push the levers below the fold. */
+.saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: 224px;
+  overflow-y: auto;
+}
+
+.saved-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 14px;
+  border-radius: 9px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+  cursor: pointer;
+}
+
+.saved-row:hover {
+  border-color: var(--accent-ink);
+}
+
+.saved-row-on {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+.saved-retire {
+  flex: none;
+  display: inline-flex;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.saved-retire:hover {
+  color: var(--text-accent);
+}
+
+.lever {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 14px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.lever:hover {
+  border-color: var(--accent-ink);
+}
+
+.lever-on {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
+.lever-coming {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.lever-box {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 4px;
+  background: transparent;
+}
+
+.lever-box-on {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.coming {
+  margin-left: auto;
+  flex: none;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 700;
+  padding: 2px 7px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 999px;
+}
+
+.sunken-block {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 10px;
+  background: var(--surface-sunken);
+}
+
+.script-chip {
+  padding: 5px 12px;
+  border: 1px solid var(--border-hairline);
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.script-chip-on {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--text-accent);
+}
+
+/* A script we already transliterate but do not yet deep-dive. Dashed and inert, never hidden: a client
+   cannot ask for what they cannot see. */
+.script-chip-off {
+  border-style: dashed;
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.script-chip-off .coming {
+  margin-left: 0;
+  border: none;
+  padding: 0;
+  font-size: 9px;
+}
+
+/* The receipt a brief-read leaves behind.
+ *
+ * Deliberately QUIETER than .callout-accent beside it: an accent block is how this screen says "read
+ * me, this changes what you are buying", and a receipt is a confirmation of what the reader can
+ * already see in the fields below. Giving it the accent treatment would make every successful read
+ * shout, and the one accent block that matters — the deep-dive callout — would stop standing out. */
+.read-receipt {
+  padding: 11px 14px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.read-receipt-head {
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.read-receipt ul {
+  margin: 5px 0 0;
+  padding-left: 17px;
+}
+.read-receipt li { margin: 2px 0; }
+
+.callout-accent {
+  margin-top: 10px;
+  padding: 9px 13px;
+  border: 1px solid var(--accent-ink);
+  border-left-width: 3px;
+  border-radius: 8px;
+  background: var(--accent-wash);
+  font-size: 12px;
+  color: var(--text-accent);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ── the footer ──────────────────────────────────────────────────────────────────────────────────────
+
+   A FOOTER, not a floating panel. It spans the content column and pins to the bottom of the viewport,
+   so the running total is the last thing on the page and the thing always in view.
+
+   The negative margin cancels `.screen`'s 30px side padding so the bar reaches both edges of the column
+   while its own padding keeps the content aligned with everything above it. Change `.screen`'s padding
+   and this must change with it — which is why they live in the same file.
+
+   `position: sticky` here works only because no ancestor sets an overflow. That is a standing constraint
+   on `.screen`, not a detail of this rule. */
+.composer-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  margin: 26px -30px 0;
+  padding: 13px 30px;
+  background: var(--surface-raised);
+  border-top: 1px solid var(--border-strong);
+  box-shadow: 0 -10px 30px -14px rgba(37, 9, 2, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+:root[data-theme='dark'] .composer-footer {
+  box-shadow: 0 -10px 30px -14px rgba(0, 0, 0, 0.75);
+}
+
+.footer-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.bar {
+  width: 8px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--surface-sunken);
+}
+
+.bar-on {
+  background: var(--accent-quiet);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  display: inline-block;
+}
+
+.dot-on {
+  background: var(--accent-quiet);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-body);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  border-color: var(--text-strong);
+}
+
+/* ── the confirm dialog ─────────────────────────────────────────────────────────────────────────────
+   The mandatory step. Nothing is spent until Start is pressed, and Back returns to a fully preserved
+   form — so the scrim closes it rather than trapping anyone. */
+.modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(15, 14, 12, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 52px 20px;
+  overflow-y: auto;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-hairline);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-head {
+  position: relative;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+/* ── Refs tracker issue 2076 — the two trades, side by side at the press ────────────────────────────
+   Each option is a BLOCK a reader can read before clicking, not a button with a word on it: the whole
+   point of the question is that the two cost different things, and a row of verbs would hide that.
+   The safe one is first and plain; "Stop now" is marked but not alarmed — the owner asked for it
+   because his money was burning, and a control dressed as dangerous is one people hesitate over. */
+.stop-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 24px 0;
+}
+
+.stop-choice-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 13px 15px;
+  border-radius: 10px;
+  border: 1px solid var(--border-hairline);
+  background: var(--surface-raised);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.stop-choice-opt:hover {
+  border-color: var(--accent-ink);
+}
+
+.stop-choice-opt b {
+  display: block;
+  font-size: 14px;
+  color: var(--text-strong);
+  margin-bottom: 3px;
+}
+
+.stop-choice-opt span {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.stop-choice-now {
+  border-color: var(--tone-medium);
+}
+
+.modal-rule {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+}
+
+.modal-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.modal-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 16px 24px 20px;
+}
+
+/* ── Home ────────────────────────────────────────────────────────────────────────────────────────────
+   The Portal Home handoff, translated into this kit rather than pasted from it.
+
+   EVERY COLOUR IS A var(). A literal hex here would be a colour brand.mjs does not know about, which is
+   the drift the token bridge exists to prevent — and the handoff's own state hexes are the LIGHT values,
+   so pasting them would render light-mode chrome on a dark surface in the one theme the handoff says
+   works identically. The pack's `--surface-high` and `--on-accent` are ITS names: this kit ships
+   `--surface-float` and `--text-on-accent`, and `--surface-high` is reserved for report chrome. */
+
+.home2 { max-width: 1120px; margin: 0 auto; padding: 26px 30px 90px; }
+
+/* THE SECTION HEADER IS A GRID, not a spacer plus flex-wrap. The button stays pinned right at every
+   width; wrapping drops it onto its own line exactly when the note is longest and the row busiest. */
+.home2-band {
+  display: grid;
+  grid-template-columns: auto auto minmax(20px, 1fr) minmax(0, auto) auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.home2-band-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-strong); white-space: nowrap;
+}
+.home2-band-label.faint { color: var(--text-faint); }
+.home2-band-count { font-size: 11.5px; color: var(--text-faint); }
+.home2-band-rule { height: 1px; background: var(--border-hairline); }
+.home2-band-note {
+  font-size: 11.5px; color: var(--text-faint); text-align: right;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.home2-new {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 15px; border: 1px solid var(--accent); background: var(--accent);
+  color: var(--text-on-accent); border-radius: 8px;
+  font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
+}
+.home2-new:hover { background: var(--accent-hover); }
+.home2-new svg { width: 14px; height: 14px; }
+
+.home2-notice {
+  margin: 0 0 13px; padding: 11px 14px; font-size: 13px; color: var(--text-body);
+  border: 1px solid var(--border-hairline); border-radius: 11px; background: var(--surface-raised);
+}
+
+/* 340px minimum is LOAD-BEARING: the depth label must never be clipped, and three of the five depths
+   differ only in their suffix. */
+.home2-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 13px; }
+
+.home2-card {
+  border: 1px solid var(--border-hairline); border-radius: 11px;
+  background: var(--surface-raised); overflow: hidden;
+}
+.home2-card:hover { border-color: var(--border-strong); }
+.home2-card.failed { border-color: var(--tone-high); }
+.home2-card-rule { display: block; height: 2px; background: var(--border-hairline); }
+.home2-card-rule.running { background: var(--accent-gradient); }
+.home2-card-rule.paused { background: var(--tone-medium); }
+.home2-card-rule.failed { background: var(--tone-high); }
+.home2-card-rule.cancelled { background: var(--text-faint); }
+.home2-card-body { padding: 15px 17px; }
+.home2-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+
+/* WRAPS, NEVER ELLIPSIS. Truncated, "Preliminary · registers + marketplace" and "Preliminary ·
+   registers only" become the same string, and they are close to opposite. */
+.home2-depth {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent-quiet); line-height: 1.5; min-width: 0;
+}
+
+.home2-chip {
+  flex: none; display: inline-flex; align-items: center; gap: 7px; padding-top: 1px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em;
+}
+.home2-chip .home2-dot { width: 8px; height: 8px; border: 1.5px solid currentColor; }
+.home2-chip.running { color: var(--text-accent); }
+.home2-chip.running .home2-dot {
+  border-radius: 50%; background: currentColor; animation: home2Pulse 1.4s ease-in-out infinite;
+}
+.home2-chip.paused { color: var(--tone-medium); }
+.home2-chip.paused .home2-dot { border-radius: 2px; background: transparent; border-style: dashed; }
+.home2-chip.failed { color: var(--tone-high); }
+.home2-chip.failed .home2-dot { border-radius: 2px; background: transparent; }
+.home2-chip.cancelled { color: var(--text-faint); }
+.home2-chip.cancelled .home2-dot { border-radius: 2px; background: transparent; }
+
+@keyframes home2Pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* A pulse is decoration; someone who asked the OS to stop animation meant this too. */
+@media (prefers-reduced-motion: reduce) { .home2-chip.running .home2-dot { animation: none; } }
+
+.home2-card-mark {
+  font-size: 20px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+  color: var(--text-strong); margin-top: 9px;
+}
+.home2-card-owner { font-size: 12px; color: var(--text-faint); margin-top: 3px; }
+.home2-step { margin-top: 16px; font-size: 14.5px; color: var(--text-body); }
+
+.home2-pips { display: flex; gap: 3px; margin-top: 9px; }
+.home2-pip { flex: 1; height: 5px; border-radius: 2.5px; background: var(--border-hairline); }
+.home2-pip.on.running { background: var(--accent-quiet); }
+.home2-pip.on.paused { background: var(--tone-medium); }
+.home2-pip.on.failed { background: var(--tone-high); }
+.home2-pip.on.cancelled { background: var(--text-faint); }
+
+.home2-card-foot {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-hairline);
+  display: flex; align-items: center; gap: 10px;
+}
+.home2-reason { flex: 1; min-width: 0; font-size: 12.5px; color: var(--text-muted); }
+.home2-reason.paused { color: var(--tone-medium); }
+.home2-reason.failed { color: var(--tone-high); }
+.home2-stop, .home2-cancel, .home2-ack {
+  flex: none; padding: 5px 12px; border: 1px solid var(--border-hairline); background: transparent;
+  color: var(--text-muted); border-radius: 7px; font-size: 11.5px; font-weight: 600;
+  white-space: nowrap; cursor: pointer;
+}
+.home2-stop:hover, .home2-cancel:hover, .home2-ack:hover { border-color: var(--border-strong); color: var(--text-body); }
+/* tracker issue 1986 — the honest face of a Stop this deployment cannot serve. NOT home2-stop: the
+   browser check counts that class as a Stop that can act. */
+.home2-stop-unavailable {
+  font-size: 12px;
+  color: var(--text-faint);
+  background: none;
+  border: 1px solid var(--border-hairline);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: not-allowed;
+}
+
+/* tracker issue 2076 — the sentence that replaces the Stop button while a stop is in flight. */
+.home2-stopping {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.home2-stop:disabled, .home2-cancel:disabled, .home2-ack:disabled { opacity: 0.55; cursor: default; }
+
+/* ── #613: acknowledged, behind a count ──────────────────────────────────────────────────────────
+   Quiet on purpose. These are runs the reader has already dealt with, and the whole point of the
+   feature is that they stop competing with live work for attention — a panel styled like the queue
+   would put them back in the fight it just took them out of. */
+.home2-acked { margin-top: 13px; }
+.home2-acked-toggle {
+  padding: 0; background: none; border: 0; cursor: pointer; font: inherit; font-size: 12.5px;
+  color: var(--text-faint); text-decoration: underline;
+}
+.home2-acked-toggle:hover { color: var(--text-muted); }
+.home2-acked-list { list-style: none; margin: 9px 0 0; padding: 0; }
+.home2-acked-list li {
+  display: flex; align-items: center; gap: 10px; padding: 7px 0;
+  border-top: 1px solid var(--border-hairline); font-size: 12.5px; color: var(--text-muted);
+}
+.home2-acked-list li > span:first-child { flex: 1; min-width: 0; }
+.home2-acked-state { flex: none; color: var(--text-faint); }
+.home2-acked-undo {
+  flex: none; padding: 3px 10px; border: 1px solid var(--border-hairline); background: transparent;
+  color: var(--text-muted); border-radius: 7px; font-size: 11.5px; font-weight: 600;
+  white-space: nowrap; cursor: pointer;
+}
+.home2-acked-undo:hover { border-color: var(--border-strong); color: var(--text-body); }
+.home2-acked-undo:disabled { opacity: 0.55; cursor: default; }
+
+/* ── waiting for a slot ───────────────────────────────────────────────────────────────────────── */
+.home2-queue {
+  margin-top: 13px; border: 1px solid var(--border-hairline); border-radius: 11px;
+  background: var(--surface-raised); overflow: hidden;
+}
+.home2-queue-bar {
+  display: flex; align-items: center; gap: 13px; width: 100%; padding: 14px 17px;
+  background: transparent; border: 0; cursor: pointer; text-align: left; color: inherit; font: inherit;
+}
+.home2-queue-bar:hover { background: var(--surface-float); }
+.home2-queue-ring { flex: none; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--text-faint); }
+.home2-queue-count { font-size: 14.5px; color: var(--text-body); white-space: nowrap; }
+.home2-queue-count strong { color: var(--text-strong); font-weight: 700; }
+.home2-queue-spacer { flex: 1; min-width: 12px; }
+.home2-queue-note { font-size: 12px; color: var(--text-faint); text-align: right; }
+.home2-queue-chev { display: inline-flex; color: var(--text-faint); transition: transform 0.15s var(--ease-out); }
+.home2-queue-chev.open { transform: rotate(90deg); }
+.home2-queue-chev svg { width: 16px; height: 16px; }
+.home2-queue-rows {
+  border-top: 1px solid var(--border-hairline); padding: 4px 17px 10px;
+  max-height: 300px; overflow-y: auto;
+}
+
+/* A GRID, not flex-with-spacer: the last cell mis-aligns the moment any content wraps. Cell 4 (the
+   owner) is the one that shrinks. */
+.home2-qrow {
+  display: grid;
+  grid-template-columns: 18px 20px minmax(0, auto) minmax(0, 1fr) auto auto;
+  align-items: center; gap: 13px; padding: 11px 0;
+  border-bottom: 1px solid var(--border-hairline);
+  border-top: 2px solid transparent;
+  cursor: grab;
+}
+.home2-qrow:hover { background: var(--surface-float); }
+.home2-qrow.dragging { background: var(--surface-float); opacity: 0.45; }
+.home2-qrow.target { border-top-color: var(--accent); }
+.home2-grip { display: inline-flex; color: var(--text-faint); }
+.home2-grip svg { width: 14px; height: 14px; }
+.home2-pos { font-size: 12.5px; font-weight: 600; color: var(--text-faint); }
+.home2-pos.first { color: var(--text-accent); }
+.home2-qmark {
+  font-size: 14.5px; font-weight: 700; letter-spacing: -0.01em; color: var(--text-strong);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.home2-qowner {
+  font-size: 12.5px; color: var(--text-faint);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.home2-qdepth {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent-quiet); white-space: nowrap;
+}
+
+/* ── last finished ────────────────────────────────────────────────────────────────────────────── */
+.home2-done-band { margin-top: 26px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.home2-done {
+  display: flex; align-items: center; gap: 13px; padding: 14px 2px; flex-wrap: wrap; cursor: pointer;
+}
+.home2-done:hover { opacity: 0.72; }
+.home2-done-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--text-faint); }
+.home2-done-mark { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; color: var(--text-strong); }
+.home2-done-verdict { font-size: 15px; color: var(--text-body); }
+.home2-done-meta { font-size: 13px; color: var(--text-faint); }
+.home2-done-spacer { flex: 1; }
+.home2-all {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+  white-space: nowrap; background: transparent; border: 0; color: var(--text-accent); cursor: pointer;
+}
+.home2-all svg { width: 14px; height: 14px; }
+
+/* ── limits ───────────────────────────────────────────────────────────────────────────────────────
+   A SWAPPABLE SLOT. Capping may move to tokens or another billing model, so it stays one line in one
+   place with nothing depending on it, and can be replaced or removed without touching the layout. */
+.home2-limits {
+  margin: 22px 0 0; padding-top: 14px; border-top: 1px solid var(--border-hairline);
+  font-size: 11px; color: var(--text-faint);
+}
+
+.home2-firstrun { padding: 40px 0 8px; text-align: center; }
+.home2-firstrun p { margin: 0 0 16px; color: var(--text-muted); max-width: 56ch; margin-inline: auto; }
+
+@media (max-width: 700px) {
+  .home2 { padding: 20px 16px 70px; }
+  .home2-queue-note { display: none; }
+  .home2-qrow { grid-template-columns: 18px 20px minmax(0, 1fr) auto; }
+  .home2-qowner, .home2-qdepth { display: none; }
+}
+
+/* ── Refs tracker issue 2143 — THE USE-YOUR-AI PAGE ─────────────────────────────────────────────────
+   The owner walked this page against the standing test — "I am a lawyer, only slightly technical" —
+   and failed it. Four of the seven defects he listed were layout, and one of them was one word: the
+   buttons carried `className="btn"`, and there is no `.btn` in this file. They rendered as bare
+   user-agent buttons in an app that styles everything else, which is what "no formatting consistent
+   with the rest of the app" describes. They use `.btn-ghost` now, the vocabulary that already existed.
+
+   WIDTH. He reported the page as "width-bound and narrow — text wraps and looks bad". Its paragraphs
+   were on `.prose` (640px) inside a 1120px frame, which is the right measure for a page of reading and
+   the wrong one for a page of controls: the buttons stacked one per row down a 640px column with two
+   thirds of the frame empty beside them. The text keeps a readable measure (`--screen-measure`, the
+   vocabulary's own, not a ninth invented number) and the buttons take the frame and wrap. No new width
+   is declared here, deliberately — tracker issue 2086 rules that a new one needs its own reason, and
+   this page did not need one, it needed to stop using the narrowest one for everything. */
+.ai-screen h2 {
+  font-size: 17px;
+  margin: 26px 0 8px;
+  color: var(--text-strong);
+}
+
+.ai-title { font-size: 27px; margin: 4px 0 6px; color: var(--text-strong); }
+
+.ai-lead {
+  max-width: var(--screen-measure);
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 16px;
+}
+
+/* WHAT YOU CAN DO — first on the page and looking like it. The owner asked for clear bullets with
+   weight ("bold/accent … make it look nice"); this is the one block a reader deciding whether to set
+   this up at all actually needs, so it carries the accent rule and the strong ink. */
+.ai-can {
+  max-width: var(--screen-measure);
+  margin: 20px 0 0;
+  padding: 4px 0 4px 18px;
+  border-left: 3px solid var(--accent);
+}
+
+.ai-can h2 { margin: 0 0 8px; }
+
+.ai-can ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text-strong);
+  line-height: 1.75;
+}
+
+.ai-can li { margin-bottom: 3px; }
+
+.ai-can-foot { margin: 12px 0 0; color: var(--text-muted); }
+
+.ai-doors {
+  max-width: var(--screen-measure);
+  margin: 22px 0 0;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.ai-doors strong { color: var(--text-strong); }
+
+.ai-connect-head { margin-top: 28px; }
+
+/* The buttons take the frame and wrap, rather than stacking down a reading column. One height, because
+   they are one kind of thing — the owner reported "stacked, inconsistent heights". */
+.ai-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.ai-row { display: flex; flex-direction: column; gap: 8px; }
+
+.ai-btn { min-height: 38px; }
+
+/* The open one is marked, so a reader with several expanded can see which is which. */
+.ai-btn-on {
+  border-color: var(--accent);
+  color: var(--text-strong);
+}
+
+.ai-open {
+  max-width: var(--screen-measure);
+  color: var(--text-muted);
+}
+
+.ai-steps {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.7;
+  color: var(--text-body);
+}
+
+.ai-said { margin: 0 0 6px; }
+
+.ai-advanced { margin: 8px 0 0; }
+
+.ai-advanced > summary {
+  cursor: pointer;
+  color: var(--text-faint);
+  font-size: 12.5px;
+}
+
+.ai-pre {
+  margin: 0;
+  padding: 10px;
+  overflow-x: auto;
+  background: var(--surface-sunken);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.ai-absent { margin: 18px 0 0; max-width: var(--screen-measure); }
+
+.ai-absent-row { padding: 10px 0; color: var(--text-muted); }
+
+.ai-absent-row strong { color: var(--text-strong); }
+
+/* The help a person needs, on the page. The link to the document keeps an honest label beside it. */
+.ai-help { margin: 30px 0 0; max-width: var(--screen-measure); }
+
+.ai-help > summary {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.ai-help-body { margin: 10px 0 0; color: var(--text-muted); line-height: 1.65; }
+
+.ai-help-body p { margin: 0 0 10px; }
+
+.ai-help-doc { font-size: 13px; }

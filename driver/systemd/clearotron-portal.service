@@ -1,0 +1,44 @@
+# GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here. The door, the
+# listener and every hostname come from EnvironmentFile=%h/.env, which is where a SERVER's configuration
+# lives (INSTALL.md §3; render-units.mjs defaults --env to the same file).
+#
+# ── WHY THIS UNIT EXISTS (tracker issue 1925) ─────────────────────────────────────────────────────────
+#
+# It did not, and that was the gap under the whole issue. `bin/start.mjs` supervises exactly two children
+# — this process and the MCP face — and NOTHING ran either under systemd. So the two processes the door
+# configures had no service to attach to, a hosted deployment kept them alive with a hand launcher, and
+# `clearotron start`'s refusal had nothing to point at.
+#
+# ── ONE CONFIGURATION PER SERVER BOX (owner ruling, 2026-08-26) ───────────────────────────────────────
+#
+# `EnvironmentFile=%h/.env`, like prelim-driver.service, and the CF Access audience lives there. The
+# alternative — explicit `Environment=` lines carrying the audience, as profile-service.service used to —
+# existed to stop `~/.env` shadowing the trademark AUD. That protection was against a SECOND SOURCE OF
+# TRUTH, and the ruling removes the second source rather than defending against it: a box with these
+# units installed has one configuration and `clearotron start` now refuses on it outright.
+[Unit]
+Description=Clearotron portal — the UI, the API, the sign-in and the config surface
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/02-architecture.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.env
+# BOTH DOCUMENTED INSTALL LAYOUTS, for the same reason prelim-driver.service carries this line: a reader
+# who took the vendor's install script has the binary in ~/.local/bin, and one who took the npm route has
+# it in ~/.npm-global/bin. INSTALL.md §1 names neither, so both are on the path.
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+# THIS deployment's configuration is the EnvironmentFile above and nothing else. portal-service.mjs is one
+# of the CLI entries that reads <repo>/.env for a laptop first run (shared/env-local.mjs); a server must
+# never take configuration from inside its own checkout, so a stray file left by a debugging session
+# cannot quietly reconfigure the door.
+Environment=CLEAROTRON_NO_ENV_FILE=1
+# NO WorkingDirectory=, deliberately — systemd does not expand variables there, only in ExecStart
+# arguments, and nothing here reads the working directory: the code finds itself from its own file URL.
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/portal-service.mjs
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

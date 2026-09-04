@@ -1,0 +1,37 @@
+[Unit]
+Description=Prelim delivery — wake the forwarder agent to send finished runs (prelim-deliver)
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/README.md
+# This unit is the OPENCLAW-ADJACENT reference integration (deliver-trigger.sh wakes an OpenClaw
+# agent to send). A headless integrator replaces this pair with their own outbox watcher — the
+# contract is docs/DELIVERY.md, not this unit.
+After=openclaw-gateway.service
+Wants=openclaw-gateway.service
+
+[Service]
+# oneshot: systemd serializes, so two outbox events can't start two concurrent wakes.
+Type=oneshot
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=OPENCLAW_HOME=%h
+# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
+# not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
+# here reads the working directory: this entry point resolves what it needs from its OWN file location.
+# Reads each *.pending marker, wakes the named agent ONCE to run the prelim-deliver skill (which sends every
+# sendPending run VERBATIM + marks .sent, idempotent), then clears the markers. The marker is only an
+# edge-trigger; status.sendPending + the .sent guard are the source of truth and the 55m HEARTBEAT watch is
+# the backstop, so a cleared/lost marker never loses a delivery and never double-sends.
+ExecStart=/bin/bash ${CLEAROTRON_CHECKOUT_DIR}/driver/deliver-trigger.sh
+# 2026-07-04 incident: TimeoutStartSec=0 (no ceiling) let ONE hung wake wedge the whole lane for 19h —
+# 1500 covers the v2+C5 trigger worst case: wake wall 870s + drain-wait 180s + backoff pacing sleep ≤300s.
+# the openclaw CLI completed its agent turn (stopReason=stop) but never exited (event loop parked in
+# ep_poll; its own --timeout did not enforce process exit), so the oneshot sat "activating" forever and
+# every later .pending marker was silently swallowed (marble-spire's delivery + VENZY's failure notice).
+# A real ceiling makes the unit SELF-HEALING: on timeout systemd kills the cgroup and fails the unit;
+# PathExistsGlob re-fires while markers remain, and the sendPending/.sent guards keep re-wakes idempotent.
+# 900s comfortably covers the slowest observed legitimate wake (copper-spire: ~13 min agent turn) — sends
+# that complete are never cut mid-flight because the ceiling exceeds the turn wall.
+TimeoutStartSec=1500
+TimeoutStopSec=30
+Nice=5
+
+# NOTE: not [Install]ed — it is activated by prelim-outbox.path, not enabled standalone.

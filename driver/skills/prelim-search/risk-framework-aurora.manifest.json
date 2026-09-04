@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "framework_key": "aurora",
+  "title": "Aurora Interactive risk framework (synthetic demo)",
+  "source_deck": "Synthetic demo transposition of a customer risk deck (structure faithful, content invented), doc 50 shape",
+  "entity_label": "Aurora Interactive",
+  "bands": [
+    { "label": "Very High", "tone": "severe" },
+    { "label": "High", "tone": "high" },
+    { "label": "Medium", "tone": "medium" },
+    { "label": "Manageable", "tone": "low" },
+    { "label": "Low", "tone": "minimal" }
+  ],
+  "structure": {
+    "kind": "matrix",
+    "axes": ["Legal Risk Level (A–E)", "Dispute Type"],
+    "display_note": "The band is read off this framework's Level × Dispute Type matrix; the matrix ceilings are stated in the deck and honoured as written."
+  }
+}

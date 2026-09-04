@@ -1,0 +1,92 @@
+name: Bug report
+description: Something behaves differently from what the docs or the code say it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never attach a run artifact.** Reports, audit workbooks, run directories, pool contents,
+        `status.json`, `run.jsonl` and delivery packets can carry client names, marks and matter
+        numbers. Once posted here they are public and cannot be recalled.
+
+        Reproduce against the repo's own synthetic fixtures instead — the demo customers
+        (`aurora`, `zephyr`, `petcary`) and the $0 mock recipe in
+        `docs/E2E.md` (§ Tier 1) exercise the whole spine with no client data in
+        sight. If a stack trace or a log line is the evidence, paste that line, with any mark, party
+        or matter number replaced by `REDACTED`.
+
+        Found a security problem? Do not file it here — see
+        `SECURITY.md` in the repository root.
+
+  - type: checkboxes
+    id: no-artifacts
+    attributes:
+      label: Client data
+      options:
+        - label: This report contains no run artifact, report, audit workbook, pool path, real mark, real party name, or matter number.
+          required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what happened, and what you expected instead.
+      placeholder: |
+        I ran `npm run example` on a fresh clone.
+        It exited 1 with "…".
+        I expected the report to open.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Smallest reproduction
+      description: The shortest sequence of commands that shows it, starting from a fresh clone.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node version
+      description: "`node --version`. The floor is 22."
+      placeholder: v22.23.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Linux
+        - Windows (WSL2)
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part
+      options:
+        - "driver (the clearance pipeline)"
+        - "mcp-server (interrogating a finished run)"
+        - "providers (register / research adapters)"
+        - "portal-ui (the staff portal)"
+        - "publish / report rendering"
+        - "setup wizard or demo"
+        - "docs"
+        - "not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The error or the surprising output. Redact any client identity before pasting.
+      render: shell

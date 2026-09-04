@@ -1,0 +1,58 @@
+# Extends the default ruleset — this file only ever ADDS allowlist entries, never removes rules.
+# CI runs `gitleaks detect --source=/repo --no-git` (ci.yml); gitleaks picks this file up from the
+# scan root automatically.
+[extend]
+useDefault = true
+
+[allowlist]
+description = """The frozen example run's register plan carries computed FNV-1 fingerprints
+(variants_fingerprint et al.) whose entropy trips generic-api-key. The file is plan metadata from a
+published demo run — verified to hold no credential material (the engine never writes credentials
+into run artifacts; the freeze tool prunes telemetry and its scrub greps run on every freeze)."""
+paths = [
+  '''examples/sample-run/run/_driver/register-plan\.json''',
+]
+
+# A RESERVED SYNTHETIC MATTER KEY IS NOT A CREDENTIAL, and generic-api-key cannot tell the difference
+# because it is judging ENTROPY, not meaning. `TMP9999-<mark slug>` is the shape the identity guard
+# already polices from the other side: driver/test/no-client-identifiers.test.mjs allows matter numbers
+# ONLY in the reserved TMP 0/1/2/8/9-thousand bands, so anything matching this regex has been asserted
+# to be synthetic by a check that fails loudly if a real matter number appears.
+#
+# It surfaced when #1006 renamed the mark in the slug: the previous name scored below the entropy
+# threshold and the replacement scored above it. That is the tell that the rule was never reading a
+# secret — the same line, the same shape, a different invented word. The wrong fix is to pick mark names
+# a scanner finds boring, which would put an entropy heuristic in charge of the doctrine's vocabulary.
+#
+# NARROW BY CONSTRUCTION: the reserved bands only, a kebab slug only, and no path widening — a real
+# credential sitting anywhere in this repo still fails, including on these two lines.
+#
+# THE SECOND ENTRY IS THE SAME CLASS AND ARRIVED THE SAME WAY, but what it taught is worse than the
+# finding. `prelim-tmptest<n>-<mark slug>-<stage>` is the per-attempt CACHE KEY a test fixture writes
+# into its own telemetry — mcp-server/test/_fixture.mjs, no credential, a literal a reader can see is
+# synthetic. It scores 3.704 against generic-api-key's 3.7 threshold, so it has been a finding all along.
+#
+# IT DOES NOT FIRE ON MAIN, AND THAT IS NOT BECAUSE MAIN IS CLEAN. Measured with the pinned 8.18.4
+# binary while landing #1838: the identical file scans clean, and the SAME file with seven bytes of
+# padding prepended reports the leak. The scan result depends on where the bytes fall, so any unrelated
+# edit anywhere above it can surface or hide this — #1838 shifted bytes across 352 files and surfaced it.
+# A scan this repository treats as a security record must not be decided by alignment, so the entry goes
+# in rather than waiting for the next sweep to find it again.
+#
+# ── A MODEL IDENTIFIER IS NOT A CREDENTIAL, AND THE RULE IS READING ITS NEIGHBOUR (tracker issue 1948)
+#
+# Surfaced by moving the pin from 8.18.4 to 8.30.1. Measured over the whole tracked tree, that move
+# takes the scan from 0 findings to 3 — and all three are ONE string, in ONE file
+# (`driver/test/billing-composition-states-the-mix.test.mjs`), and it is a published model name.
+#
+# `generic-api-key` matched it because the test places the identifier beside the literal `"api-key"`,
+# which is one of the rule's CONTEXT WORDS. The entropy is 3.7337 against a 3.7 threshold — the same
+# knife-edge every entry in this file sits on. The rule is reading the neighbour, not the value.
+#
+# NARROW BY CONSTRUCTION: the vendor's own model-name shape, dated, and nothing else. A real credential
+# on the same line still fails.
+regexes = [
+  '''TMP[01289]\d{3}-[a-z0-9-]+''',
+  '''prelim-tmptest\d+-[a-z0-9-]+''',
+  '''claude-[a-z0-9]+-[0-9]+(?:-[0-9]+)*-[0-9]{8}''',
+]

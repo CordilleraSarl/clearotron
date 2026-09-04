@@ -1,0 +1,14 @@
+[Unit]
+Description=Prelim-driver queue-drain fallback — re-scan every agent queue on a fixed cadence
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/README.md
+
+[Timer]
+# Safety net behind the event-driven prelim-driver.path. runner.mjs claims jobs atomically, so a periodic
+# re-drain is cheap and can NEVER double-run a job the .path already picked up. It guarantees any queue the .path doesn't explicitly watch (e.g. a brand-new agent workspace) still
+# drains within ~90s — the self-healing backstop whose absence let a Alex-forwarded job silently never-run.
+OnBootSec=2min
+OnUnitActiveSec=90s
+Unit=prelim-driver.service
+
+[Install]
+WantedBy=timers.target

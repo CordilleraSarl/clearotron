@@ -1,0 +1,33 @@
+{
+  "name": "trademark-clearance-account-pack",
+  "version": "1.1.0",
+  "audience": "account",
+  "description": "Teaches a client's AI assistant to work with their own clearance account over the signed-in / API-key connector: read finished searches and the audit chain behind them, and commission new ones properly (preview first, applicant named, allowance respected).",
+  "files": [],
+  "skill": {
+    "directory": "skills/clearotron-account",
+    "files": [
+      "SKILL.md"
+    ]
+  },
+  "tools": [
+    "describe_options",
+    "list_runs",
+    "brief",
+    "list_findings",
+    "read_artifact",
+    "list_evidence",
+    "list_searches",
+    "get_search_coverage",
+    "get_run",
+    "trace",
+    "decision_timeline",
+    "get_finding",
+    "what_if_plan",
+    "what_if_run",
+    "what_if_result",
+    "plan_run",
+    "start_run",
+    "stop_run"
+  ]
+}

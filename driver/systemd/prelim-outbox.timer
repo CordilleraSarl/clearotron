@@ -1,0 +1,21 @@
+[Unit]
+Description=Prelim delivery rescan — fixed-cadence backstop behind the outbox watcher
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/README.md
+
+[Timer]
+# C5 — deterministic delivery backstop. The instant lane (prelim-outbox.path) is edge-triggered off
+# *.pending markers, and its former backstop — the 55m HEARTBEAT completion-watch — does not run
+# 22:00–05:00 (activeHours), so a wake that FAILED (turn error, CLI hang, gateway-restart collision)
+# could leave a finished run undelivered all night. This timer fires the SAME prelim-outbox.service:
+# deliver-trigger.sh's rescan step re-drops a <runId>.pending marker for every run still
+# sendPending==true with no .sent, then processes them. Idempotent and paced: sendPending/.sent (and
+# the per-channel send receipts) are the source of truth, and the backoff sidecars in
+# prelim-outbox/backoff/ keep a persistently failing wake from hot-retrying.
+# OnUnitActiveSec is measured from prelim-outbox.service's LAST activation (the .path triggers the same
+# unit), so the rescan self-defers while the instant lane is busy — "hourly-ish", never stacked.
+OnBootSec=10min
+OnUnitActiveSec=50min
+Unit=prelim-outbox.service
+
+[Install]
+WantedBy=timers.target

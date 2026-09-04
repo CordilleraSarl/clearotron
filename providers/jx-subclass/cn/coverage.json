@@ -1,0 +1,470 @@
+{
+  "office": "CN",
+  "layer": "cross_reference",
+  "source_document": "《类似商品和服务区分表——基于尼斯分类第十二版（2023文本）》, 商标局 — read end to end by MinerU 3.4.4, printed 4-123 and 124-252 in two runs",
+  "edition": "12th edition (2023 text)",
+  "printed_pages_total": 252,
+  "read_pages": "4-252",
+  "unread_pages": "none",
+  "_why": [
+    "COVERAGE IS STATED, NEVER DERIVED FROM THE ROWS THAT LANDED. A class that was read and carries no",
+    "note produces the same zero rows as a class nobody opened. Class 15 is the live example: groups 1501",
+    "and 1502 were read and genuinely carry no 注 block, and that fact survived only in a 126-byte stray",
+    "file (cn/tranche1/class15-16-progress.json). Deriving coverage from the data would have called it",
+    "'not reached'; deriving it the other way would call class 30 'empty'. Both are the false clear this",
+    "table exists to stop.",
+    "",
+    "CLASS 24 IS PARTIAL, NOT EXTRACTED. Tranche 1 stopped at printed page 160, which carries group 2401",
+    "and the class intro only. Printed 161 (PDF 187) opens on 2402, so every group from 2402 up is unread.",
+    "Calling class 24 extracted would answer 'no cross-references' for two thirds of a class that has not",
+    "been opened."
+  ],
+  "classes": {
+    "1": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "0103",
+        "0111",
+        "0112",
+        "0116"
+      ]
+    },
+    "2": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "0203"
+      ]
+    },
+    "3": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "0304",
+        "0308"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "4": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "0405",
+        "0406"
+      ]
+    },
+    "5": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "0507",
+        "0508"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "6": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "0605",
+        "0611",
+        "0614",
+        "0615",
+        "0616",
+        "0619",
+        "0621",
+        "0622",
+        "0623",
+        "0624"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "7": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "0708",
+        "0711",
+        "0714",
+        "0715",
+        "0717",
+        "0719",
+        "0720",
+        "0722",
+        "0727",
+        "0728",
+        "0729",
+        "0730",
+        "0731",
+        "0732",
+        "0739",
+        "0740",
+        "0741",
+        "0744",
+        "0745",
+        "0746",
+        "0747"
+      ]
+    },
+    "8": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "9": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "0904",
+        "0906",
+        "0915",
+        "0918"
+      ]
+    },
+    "10": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "1005",
+        "1007",
+        "1009"
+      ]
+    },
+    "11": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "1112",
+        "1113"
+      ]
+    },
+    "12": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "13": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "1302",
+        "1303",
+        "1304"
+      ]
+    },
+    "14": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "15": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "1501",
+        "1502"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share. Every group in this class was read and carries NO 注 block — a clean negative, not an absence of work."
+    },
+    "16": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "1617",
+        "1621"
+      ]
+    },
+    "17": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "1707",
+        "1708"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "18": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "1804",
+        "1805"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "19": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "1903",
+        "1904",
+        "1908",
+        "1911",
+        "1913",
+        "1914",
+        "1915"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "20": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2004",
+        "2008",
+        "2011"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "21": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2108",
+        "2113"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "22": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2201",
+        "2204"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "23": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "24": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share.",
+      "groups_no_notes": [
+        "2401",
+        "2402",
+        "2404",
+        "2410",
+        "2411"
+      ]
+    },
+    "25": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2508",
+        "2509",
+        "2510",
+        "2511"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "26": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2604",
+        "2606",
+        "2607",
+        "2608",
+        "2609",
+        "2611"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "27": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2702",
+        "2703"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "28": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2804",
+        "2806",
+        "2810",
+        "2811"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "29": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "2903",
+        "2906",
+        "2908",
+        "2910",
+        "2912"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "30": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3012",
+        "3017"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "31": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3102",
+        "3104",
+        "3107",
+        "3108",
+        "3109",
+        "3110"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "32": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3201"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "33": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3301"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share. Every group in this class was read and carries NO 注 block — a clean negative, not an absence of work."
+    },
+    "34": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3401",
+        "3404",
+        "3405",
+        "3406"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "35": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3501",
+        "3502",
+        "3503",
+        "3506"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "36": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3603",
+        "3605",
+        "3606",
+        "3607",
+        "3608"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "37": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3703",
+        "3705",
+        "3710",
+        "3711",
+        "3712",
+        "3714",
+        "3715",
+        "3717"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "38": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "39": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "3908",
+        "3909"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "40": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "4005",
+        "4009",
+        "4014"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "41": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "4102",
+        "4103",
+        "4106"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "42": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "groups_no_notes": [
+        "4213",
+        "4216",
+        "4220",
+        "4224"
+      ],
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "43": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "44": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    },
+    "45": {
+      "status": "extracted",
+      "read_pages": "4-252",
+      "note": "Read from MinerU 3.4.4 (hybrid, OCR on) over the whole document, printed 4-252. Relation typing scored 1220/1240 against the 690 hand-checked tranche-1 notes; the two runs agree character for character on the 11 pages they share."
+    }
+  },
+  "groups_no_notes_itemised_through_class": 45,
+  "_groups_no_notes_caveat": "Itemised in FULL for all 45 classes: every group header on printed 4-252 carrying no 注 block is listed, and that is a CONFIRMED empty, not an unread one. The earlier caveat — absence meaning NOT ITEMISED beyond class 6 — no longer applies now the whole document has been read by one instrument."
+}

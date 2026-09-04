@@ -1,0 +1,16 @@
+{
+  "id": "example-euipo-0001",
+  "msgId": "<example-euipo-0001@example.com>",
+  "forwarder": "alex",
+  "forwarderEmail": "alex@example.com",
+  "forwarderDomain": "example.com",
+  "markName": "VENQORI",
+  "classes": [9, 41],
+  "goods": "downloadable software for water-quality monitoring; online training services",
+  "jurisdictions": ["EU"],
+  "product": "multi-country-focus-search",
+  "profileKey": "generic",
+  "customerUnknown": true,
+  "ref": "TMP-0001",
+  "upfrontInstructions": "EU register only. Nothing outside the EU is in scope for this example."
+}

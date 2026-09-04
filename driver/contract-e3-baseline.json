@@ -1,0 +1,195 @@
+{
+  "byStage": {
+    "matter-frame": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "prelim-variants": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "blind-frame": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 0
+    },
+    "common-law": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 3,
+      "dictated-line-shape": 0
+    },
+    "common-law-half": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "register-unit": {
+      "literal-json-skeleton": 4,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 1
+    },
+    "placement-inquiry": {
+      "literal-json-skeleton": 4,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 1
+    },
+    "register-digest": {
+      "literal-json-skeleton": 1,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 2
+    },
+    "skeptic": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "frame-diff": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 0
+    },
+    "synthesis": {
+      "literal-json-skeleton": 10,
+      "exactly-these-keys": 9,
+      "dictated-line-shape": 5
+    },
+    "case-law": {
+      "literal-json-skeleton": 1,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 1
+    },
+    "narrative-refutation": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "report-overview": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "report-card": {
+      "literal-json-skeleton": 1,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "doubt-closure": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    }
+  },
+  "files": {
+    "stages.mjs#re-dispatch-builders": {
+      "literal-json-skeleton": 3,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 1
+    },
+    "stages-knockout.mjs": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 1
+    },
+    "skills/matter-frame/SKILL.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 1
+    },
+    "skills/prelim-variants/SKILL.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 1
+    },
+    "skills/prelim-variants/transliteration-scripts.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 1
+    },
+    "skills/blind-frame/SKILL.md": {
+      "literal-json-skeleton": 4,
+      "exactly-these-keys": 2,
+      "dictated-line-shape": 0
+    },
+    "skills/prelim-common-law/SKILL.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 2,
+      "dictated-line-shape": 2
+    },
+    "skills/prelim-register/SKILL.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 4
+    },
+    "skills/prelim-register/unit.md": {
+      "literal-json-skeleton": 5,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 6
+    },
+    "skills/placement-inquiry/SKILL.md": {
+      "literal-json-skeleton": 1,
+      "exactly-these-keys": 4,
+      "dictated-line-shape": 1
+    },
+    "skills/prelim-register/digest.md": {
+      "literal-json-skeleton": 1,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 4
+    },
+    "skills/prelim-search/phase2-execution.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 2,
+      "dictated-line-shape": 3
+    },
+    "skills/frame-diff/SKILL.md": {
+      "literal-json-skeleton": 4,
+      "exactly-these-keys": 2,
+      "dictated-line-shape": 0
+    },
+    "skills/prelim-search/synthesis-rules.md": {
+      "literal-json-skeleton": 1,
+      "exactly-these-keys": 7,
+      "dictated-line-shape": 2
+    },
+    "skills/prelim-search/firm-wide-reasoning.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 2,
+      "dictated-line-shape": 0
+    },
+    "skills/prelim-search/risk-framework.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "skills/prelim-search/worked-examples.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 1
+    },
+    "skills/prelim-search/report-prose.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "skills/case-law-citation/SKILL.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 1
+    },
+    "skills/narrative-refutation/SKILL.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 3,
+      "dictated-line-shape": 1
+    },
+    "skills/prelim-search/delivery-contract.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 1,
+      "dictated-line-shape": 1
+    }
+  },
+  "totals": {
+    "stages": 47,
+    "files": 78
+  }
+}

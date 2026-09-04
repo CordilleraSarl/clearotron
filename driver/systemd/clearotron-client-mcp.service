@@ -1,0 +1,59 @@
+# GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here.
+#
+# ── INSTALLED WITH THE PRODUCT (owner ruling 2026-09-03, tracker issue 2148, settled point 2) ───────
+#
+# This is the CLIENT door: the only surface that accepts a key acting for a brand owner's account. It is
+# a SEPARATE PROCESS from the engine door (clearotron-mcp-face.service), which refuses an account key
+# outright — the two are not two configurations of one server, and that distinction is the whole reason
+# a reader following "mint a key against the loopback door" got a key that was rejected on use.
+#
+# UNTIL 2026-09-03 THIS HEADER SAID THE OPPOSITE, and it was right under the ruling it cited. The owner's
+# 2026-08-31 "On demand is fine" made starting this unit the CONSENT that opened client-account access,
+# so `clearotron connect` was the only thing allowed to install it. He superseded that knowingly: the
+# door comes up with the product and THE PER-ACCOUNT KEY IS THE GATE, not whether a process runs. A door
+# with no key issued refuses everything.
+#
+# ── THE VALUES THIS DOOR CANNOT START WITHOUT, AND WHO WRITES THEM NOW ──────────────────────────────
+#
+# CLIENT_MCP_TOKEN_ONLY=1 makes this the API-key door; without it the server demands an OIDC audience
+# plus a CF Access team or issuer and refuses to start fail-closed, which a local install can never
+# satisfy. Token-only in turn requires CLIENT_MCP_ACCOUNT_ACCESS=1, TRADEMARK_MCP_TOKEN_SECRET and the
+# allow-list below, and account access requires CLEAROTRON_ACCESS_FILE to name a grants file
+# (http-server-client.mjs refuses on each by name).
+#
+# ALL OF THEM COME FROM THE EnvironmentFile, and BOTH install paths now write them from one authority —
+# `enablePlan` in shared/client-door.mjs, called by `render-units.mjs --apply` and by `clearotron start
+# --background` BEFORE either places this file. Neither is an Environment= line here: a unit that
+# hard-coded the fence would turn it on for anyone who merely copied the file somewhere, and a unit that
+# hard-coded a secret would ship one.
+#
+# ── THE PORT IS NAMED, NEVER DEFAULTED ──────────────────────────────────────────────────────────────
+#
+# `http-server-client.mjs` defaults to 18811, and #1194 is about exactly what that default costs: on a
+# box where production's client face is briefly down, a second instance with no explicit port binds
+# cleanly and serves the wrong instance's runs to a client's AI, silently. So the port is stated. The
+# EnvironmentFile wins over this line, which is the documented precedence and what lets an install that
+# already allocates the port keep its own value.
+[Unit]
+Description=Clearotron client MCP door — the surface that accepts an account-scoped key
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/mcp-server/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=CLEAROTRON_NO_ENV_FILE=1
+# Loopback, and not configurable here for the same reason bin/start.mjs gives: this door carries a
+# credential in clear, and reaching this install from another machine is a TLS-terminating proxy in
+# front of it — which is a deployment, and a deployment brings its own doors.
+Environment=CLIENT_MCP_HTTP_HOST=127.0.0.1
+Environment=CLIENT_MCP_HTTP_PORT=18811
+Environment=CLIENT_MCP_ALLOWED_HOSTS=127.0.0.1:18811,localhost:18811
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server-client.mjs
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

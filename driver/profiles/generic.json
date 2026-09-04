@@ -1,0 +1,14 @@
+{
+  "name": "Generic default",
+  "matchDomains": [],
+  "marketplaceDensity": "dense",
+  "platforms": [
+    "amazon.com",
+    "apps.apple.com",
+    "play.google.com"
+  ],
+  "defaultClasses": [],
+  "defaultJurisdictions": [],
+  "selfExclusionOwners": [],
+  "delivery": { "email": "summary" }
+}

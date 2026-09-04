@@ -1,0 +1,198 @@
+#!/usr/bin/env node
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+// clearotron demo — show a real clearance report to somebody who has nothing, IN THE REAL PORTAL.
+//
+//   npx clearotron demo                    replay examples/sample-run into ~/trademark-demo and open the portal
+//   npx clearotron demo --run-dir <dir>    replay a frozen example from somewhere else
+//   npx clearotron demo --base <dir>       put the whole demo somewhere else (remove it with one rm -rf)
+//   npx clearotron demo --port 9000        serve on another port
+//   npx clearotron demo --no-open          do not try to open a browser
+//   npm run example -- --once              publish and exit; do not open the portal
+//   npm run example -- --once --pool <dir> publish somewhere else; only valid with --once
+//
+// NO CREDENTIALS, NO MODEL, NO ENGINE. This does not run a clearance. It takes a run that already
+// finished and pushes it back through the ordinary publisher — the same publishReport that wrote the
+// real thing — into a local pool, then serves that pool over loopback. Everything it touches is a file
+// on this machine. That is also why it works anywhere Node does: nothing here spawns a subprocess.
+//
+// (One caveat on "no subprocess": publishReport stamps the engine's commit via engine-build.mjs, which
+// shells out to `git rev-parse`. It is best-effort, catches everything, and the stamp is null off a
+// checkout. There is no other spawn on this path.)
+//
+// THE POOL GUARD IS THE POINT OF THIS FILE'S CAUTION
+// `startPortal` and `config.poolRoot` used to default to the PRODUCTION archive (/srv/trademark-archive).
+// On a deployed VM, a demo that forgot one option would publish a sample into real client matter and
+// then serve that matter over loopback. removed that default — an unset CLEAROTRON_REPORTS_DIR now
+// refuses — and NONE OF THE CHECKS BELOW ARE RELAXED BY IT. A demo runs ON deployed VMs, where the
+// variable is set and set to the real archive, which is the case a refusal does nothing about. So the
+// demo pool is still checked against every root that could be the real one, by realpath and by
+// containment, BEFORE anything is written or served — and every path startPortal can fall back on is
+// still passed explicitly rather than left to a default.
+
+import "../shared/env-local.mjs";   // step 4 / — FIRST: this program read a
+// retired spelling and never reached the alias layer, so an operator who set the name in force
+// handed it nothing and the read fell through to a default. Proven both ways from one
+// environment: without this import the value is invisible, with it the retired spelling is
+// back-filled. Placed above every other import because a side-effecting import runs in order.
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
+import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
+import { join, resolve, dirname, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+import { spawn } from "node:child_process";
+import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
+import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+import { usageBlock } from "../shared/usage-block.mjs";   // tracker issues 1861/1882
+const argv = process.argv.slice(2);
+const flag = (n, d = null) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : d; };
+const has = (n) => argv.includes(n);
+
+if (has("--help") || has("-h")) {
+  // — was slice(1, 8): a hand-counted window starting at the licence header.
+  console.log(usageBlock(readFileSync(fileURLToPath(import.meta.url), "utf8")));
+  process.exit(0);
+}
+
+const die = (...lines) => { console.error(`\n${lines.join("\n")}\n`); process.exit(1); };
+
+// ── 1. the frozen example ─────────────────────────────────────────────────────────────────────────────
+const sampleDir = resolve(flag("--run-dir") ?? join(REPO, "examples", "sample-run"));
+if (!existsSync(join(sampleDir, "meta.json")) || !existsSync(join(sampleDir, "run", "report.md"))) {
+  die(
+    `example: no frozen example at ${sampleDir}`,
+    "",
+    "A frozen example is a directory holding meta.json and run/report.md, produced by",
+    "  node scripts/freeze-example-run.mjs --run-dir <a finished run> --out <dir>",
+    "",
+    "Point the demo at one with:  npm run example -- --run-dir <dir>",
+  );
+}
+const meta = JSON.parse(readFileSync(join(sampleDir, "meta.json"), "utf8"));
+if (!meta?.runId) die(`example: ${join(sampleDir, "meta.json")} names no runId — it is not a frozen example manifest.`);
+
+// ── 2. the pool guard ────────────────────────────────────────────────────────────────────────────────
+// Resolve through symlinks. A $HOME that resolves inside the archive is exactly the shape a `===` test
+// waves through, and the demo pool may not exist yet — so walk up to the nearest ancestor that does.
+const realOf = (p) => {
+  let cur = resolve(p);
+  for (;;) {
+    try { return join(realpathSync(cur), resolve(p).slice(cur.length)); } catch { /* not there yet */ }
+    const up = dirname(cur);
+    if (up === cur) return resolve(p);
+    cur = up;
+  }
+};
+const contains = (parent, child) => parent === child || child.startsWith(parent.endsWith(sep) ? parent : parent + sep);
+
+// ── — THE DEMO'S BASE, AND WHY `--pool` NARROWED ───────────────────────────
+//
+// The demo brings up the real portal now, and the portal serves the pool inside its own base directory
+// (`installPaths` in bin/start.mjs owns that layout — one place, not two). So the pool is derived from
+// the base rather than chosen beside it. `--pool` still means what it always did on the publish-only
+// path, and is REFUSED with the portal, because publishing into one directory while serving another is
+// a demo that shows a reader an empty archive and says nothing about why.
+const demoBase = resolve(flag("--base") ?? join(homedir(), "trademark-demo"));
+if (flag("--pool") && !has("--once")) die(
+  "demo: --pool is for --once, which publishes and exits.",
+  "",
+  "The demo serves the portal's own archive, which lives inside its base directory, so a pool chosen",
+  "somewhere else would be published to and never served. Move the whole demo instead:",
+  `  ${invoke("demo")} --base <dir>`,
+);
+const poolRoot = realOf(flag("--pool") ?? join(demoBase, "pool"));
+// Every root that could be the real archive: the archive itself, whatever this environment configures,
+// and the staff-CLI alias that carries the same literal.
+//
+// THE FIRST ENTRY IS NOT A DEFAULT AND MUST NOT BE DELETED WITH ONE. stopped the code guessing
+// this path; it did not move the archive. /srv/trademark-archive is where the deployed engine publishes
+// client matter, named here for the same reason driver/production-pool-guard.mjs names it — this list
+// answers "could this be somebody's real archive?", which no change to a code default can make false.
+const FORBIDDEN = [
+  ["/srv/trademark-archive", "the production archive — where the deployed engine publishes client matter"],
+  [envFrom(process.env, "CLEAROTRON_REPORTS_DIR"), "CLEAROTRON_REPORTS_DIR — this environment's configured pool"],
+  [process.env.CLEAROTRON_STAFF_POOL_ROOT, "CLEAROTRON_STAFF_POOL_ROOT — the staff-page CLI pool"],
+].filter(([p]) => p && String(p).trim()).map(([p, why]) => [realOf(p), why]);
+
+for (const [forbidden, why] of FORBIDDEN) {
+  if (contains(forbidden, poolRoot)) die(
+    `demo: refusing to publish into ${poolRoot}`,
+    `That is inside ${forbidden} — ${why}.`,
+    "The demo writes a example report; a real pool holds real client matter. Pass --pool <dir> elsewhere.",
+  );
+  if (contains(poolRoot, forbidden)) die(
+    `demo: refusing to serve ${poolRoot}`,
+    `It contains ${forbidden} — ${why}.`,
+    "Serving it would put real client matter behind the demo's browser link. Pass --pool <dir> narrower.",
+  );
+}
+if (existsSync(poolRoot) && !statSync(poolRoot).isDirectory()) die(`demo: ${poolRoot} exists and is not a directory.`);
+
+// ── 3. replay ────────────────────────────────────────────────────────────────────────────────────────
+console.log(`\n  ${BRAND.name} ${BRAND.product.toLowerCase()} — demo\n`);
+console.log(`  sample:  ${sampleDir}`);
+console.log(`  pool:    ${poolRoot}\n`);
+
+mkdirSync(poolRoot, { recursive: true });
+const { republishRun } = await import(join(REPO, "driver", "publish", "report-registry.mjs"));
+let published;
+try {
+  // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
+  // public URL. This one is served from this process, at a port picked below.
+  published = await republishRun({ runId: meta.runId, meta, pool: poolRoot, poolUrl: "", runDir: join(sampleDir, "run") });
+} catch (e) {
+  die(`demo: replaying the sample failed: ${String(e?.message ?? e)}`);
+}
+
+// THE LABEL. The reader is about to look at a document that reads like advice about a real mark. It is
+// not, and the demo says so before the browser opens rather than in a footnote nobody reaches.
+console.log("  Real engine output for the fictional mark VENQORI — captured 2026-08-11 against the");
+console.log("  production EU register, replayed locally: no keys, no model calls, no register queried.");
+console.log("  Every number, band and citation below was produced by that real run and is being");
+console.log("  re-rendered from its artifacts. It is an example, not advice.\n");
+// NAMES THE POPULATION. This printed "13 finding(s)" beside a report showing
+// twelve, in the first sentence a reader meets. The number is not wrong — it comes from the audit
+// spine (`driver/publish/audit-from-spine.mjs`, `counts.findings`), which counts every finding the run
+// recorded, including ones the report correctly drops. Two populations, one label, and the label was
+// the one the reader was about to check. So the label says which.
+console.log(`  published: ${published.runId}  (${published.counts?.findings ?? "?"} finding(s) recorded in the`);
+console.log(`             run's audit spine; the report shows the ones it retains)`);
+
+if (has("--once")) {
+  console.log(`\n  report: ${join(poolRoot, meta.runId, "report.html")}\n`);
+  process.exit(0);
+}
+
+// ── 4. hand over to the real portal ──────────────────────────────────────────────────────────────────
+//
+//. This used to serve driver/dev-portal.mjs, whose own first paragraph says it
+// is not the product and not how you start it: a loopback pool browser, accurate in its name and wrong
+// as the thing a first-time reader is shown. Everything the website shows a visitor — ordering, the
+// product picker, a finished report in the portal — is the REAL portal, so a demo that opened anything
+// else taught a newcomer that the screenshots were of something they cannot reach.
+//
+// ONE SUPERVISOR, NOT A SECOND ONE. bin/start.mjs already starts the portal and the engine door, and it
+// has a `--demo` posture: its own data directory, nothing persisted to <repo>/.env, and the Start
+// control greyed with the reason at it. Re-implementing that here is how there came to be two portals
+// in the first place, so this hands over rather than copies. The dev cockpit keeps its job as a
+// contributor tool; it simply stops being what `demo` opens.
+const startArgs = ["--demo", "--base", demoBase];
+if (flag("--port")) startArgs.push("--port", flag("--port"));
+if (has("--no-open")) startArgs.push("--no-open");
+
+console.log(`  Removing this demo later is one directory:  rm -rf ${demoBase}`);
+console.log("");
+
+const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), ...startArgs], {
+  cwd: REPO, stdio: ["ignore", "inherit", "inherit"],
+});
+child.on("error", (e) => die(`demo: could not start the portal: ${String(e?.message ?? e)}`));
+// Its exit code is the demo's. A supervisor that swallowed a child's refusal would report a demo that
+// is up when nothing is listening.
+child.on("exit", (code, signal) => process.exit(signal ? 1 : (code ?? 0)));
+// Ctrl-C reaches the child through the shared terminal; this process waits for it to finish tearing
+// down rather than exiting first and orphaning it.
+process.on("SIGINT", () => {});

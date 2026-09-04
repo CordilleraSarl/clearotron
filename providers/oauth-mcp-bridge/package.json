@@ -1,0 +1,13 @@
+{
+  "name": "trademark-oauth-mcp-bridge",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "description": "OAuth 2.1 MCP stdio bridge used by the engine's case-law gather stage (courtlistener / legaldatahunter).",
+  "type": "module",
+  "main": "bridge.mjs",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "engines": { "node": ">=22" }
+}

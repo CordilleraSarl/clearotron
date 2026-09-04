@@ -1,0 +1,111 @@
+{
+  "name": "clearotron",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "description": "Clearotron \u2014 trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "driver",
+    "mcp-server",
+    "providers/oauth-mcp-bridge",
+    "portal-ui"
+  ],
+  "overrides": {
+    "buffers": "$buffers",
+    "uuid": "^11.1.1",
+    "browserslist": "^4.28.8"
+  },
+  "scripts": {
+    "postinstall": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');if(existsSync('scripts/install-hooks.mjs'))execFileSync(process.execPath,['scripts/install-hooks.mjs'],{stdio:'inherit'})\"",
+    "prepack": "node scripts/write-build-info.mjs",
+    "prepublishOnly": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');if(existsSync('scripts/publication-scan.mjs'))execFileSync(process.execPath,['scripts/publication-scan.mjs'],{stdio:'inherit'})\"",
+    "test": "npm test --workspaces --if-present",
+    "test:full": "npm run test:full --workspaces --if-present",
+    "test:driver": "npm run test:full -w driver",
+    "test:providers": "node scripts/test-run.mjs node --test providers/_shared/test/*.test.mjs providers/*/test/*.test.mjs",
+    "test:mcp": "npm test -w mcp-server",
+    "start": "node bin/start.mjs",
+    "build:ui": "npm run build -w portal-ui",
+    "setup": "node bin/onboard.mjs",
+    "example": "node bin/example.mjs",
+    "demo": "node bin/example.mjs",
+    "contract-dictation": "node scripts/contract-dictation-scan.mjs",
+    "drain-preflight": "node scripts/drain-preflight.mjs",
+    "report-frame-check": "node scripts/report-frame-check.mjs",
+    "dead-names": "node scripts/dead-names.mjs",
+    "authority-probe": "node scripts/authority-boundary-probe.mjs",
+    "engine-probe": "node scripts/engine-probe.mjs",
+    "seat-retry": "node scripts/seat-retry-report.mjs",
+    "tokens": "node shared/tools/emit-tokens.mjs",
+    "tokens:check": "node shared/tools/emit-tokens.mjs --check",
+    "sync:uspto": "node bin/uspto-sync.mjs",
+    "bench:uspto": "node providers/uspto-local/bench/bench.mjs",
+    "verify:uspto": "node providers/uspto-local/bin/verify-index.mjs",
+    "lint:driver": "eslint --max-warnings 0 --config eslint.driver.config.mjs \"driver/**/*.mjs\" \"bin/**/*.mjs\" \"shared/**/*.mjs\" \"mcp-server/**/*.mjs\" \"scripts/**/*.mjs\" \"cut/**/*.mjs\"",
+    "deploy:drift": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/deploy-drift-check.mjs';if(!existsSync(p)){console.error('npm run deploy:drift requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
+    "doctrine-report": "node scripts/doctrine-report.mjs",
+    "notices": "node scripts/third-party-notices.mjs",
+    "notices:check": "node scripts/third-party-notices.mjs --check",
+    "grant": "node bin/grant.mjs",
+    "generators": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/regen-baselines.mjs';if(!existsSync(p)){console.error('npm run generators requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
+    "assert-census": "node scripts/unexecuted-asserts.mjs",
+    "guard:messages": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/commit-message-guard.mjs';if(!existsSync(p)){console.error('npm run guard:messages requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
+    "guard:messages:self-test": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/commit-message-guard.mjs';if(!existsSync(p)){console.error('npm run guard:messages:self-test requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p,'--self-test'],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
+    "hooks:install": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/install-hooks.mjs';if(!existsSync(p)){console.error('npm run hooks:install requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\"",
+    "hooks:check": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');const p='scripts/install-hooks.mjs';if(!existsSync(p)){console.error('npm run hooks:check requires '+p+', internal tooling that is not included in this distribution.');process.exit(1)}try{execFileSync(process.execPath,[p,'--check'],{stdio:'inherit'})}catch(e){process.exit(typeof e.status==='number'?e.status:1)}\""
+  },
+  "devDependencies": {
+    "@changesets/cli": "3.0.1",
+    "@types/node": "^22",
+    "acorn": "^8.18.0",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.112.5",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "buffers": "file:vendor/buffers",
+    "exceljs": "^4.4.0",
+    "jose": "^6.2.3",
+    "undici": "^6.24.1"
+  },
+  "bin": {
+    "clearotron": "bin/clearotron.mjs"
+  },
+  "bundleDependencies": [
+    "buffers",
+    "exceljs"
+  ],
+  "files": [
+    "build-info.json",
+    "ADDITIONAL-TERMS.md",
+    "INSTALL.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "TRADEMARKS.md",
+    ".nvmrc",
+    "docs/",
+    "bin/",
+    "driver/",
+    "mcp-server/",
+    "providers/",
+    "scripts/",
+    "shared/",
+    "vendor/",
+    "examples/",
+    "skills/",
+    "portal-ui/dist/",
+    "portal-ui/package.json",
+    ".env.example",
+    "!**/test/",
+    "!**/bench/",
+    "!**/*.test.mjs",
+    "!**/*.test.ts",
+    "!**/fixtures/"
+  ]
+}

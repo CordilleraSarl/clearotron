@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl
+#
+# #1839 item 3 — WITHOUT THIS, THE WAY WE LEARN ABOUT A VULNERABLE DEPENDENCY ON A PUBLIC REPO IS A
+# STRANGER OPENING AN ISSUE ABOUT IT. The tree carries 334 packages.
+#
+# GROUPED, and the grouping is the part that decides whether this survives. Ungrouped, a four-workspace
+# npm tree opens PRs faster than anyone triages them, the notifications get muted, and an ignored
+# security PR is worse than no bot — the issue says so in those words. So: one PR per workspace per
+# week for ordinary updates, and security updates left OUTSIDE the grouping so they arrive alone and
+# unmissable rather than buried in a batch of twelve patch bumps.
+#
+# ONE ENTRY PER WORKSPACE, plus the root. npm workspaces do not hoist the manifests — each has its own
+# package.json — and a single root entry would leave three of them unwatched while looking complete.
+# The list mirrors `package.json`'s `workspaces` array; if that array grows, this file has to grow with
+# it, and the guard in driver/test/public-repo-furniture.test.mjs is what says so out loud.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
+    open-pull-requests-limit: 2
+    groups:
+      # PATCH AND MINOR TOGETHER, MAJORS APART FROM THEM — that separation is the point: a major can
+      # change behaviour this engine's answers depend on, and batching one with nine patch bumps hides
+      # the decision inside a diff nobody reads to the end.
+      #
+      # MEASURED, THE HOUR THIS LANDED: majors with no group of their own open ONE PR EACH. The first
+      # dependabot pass produced ten PRs, seven of them single majors, and they queued ahead of build
+      # branches on shared self-hosted runners until overwatch cancelled them. So majors group WITH EACH
+      # OTHER — still their own diff, still never mixed with patches, but one per workspace.
+      root-minor-and-patch:
+        update-types: [minor, patch]
+      root-major:
+        update-types: [major]
+    labels: [dependencies]
+
+  - package-ecosystem: npm
+    directory: /driver
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
+    open-pull-requests-limit: 2
+    groups:
+      driver-minor-and-patch:
+        update-types: [minor, patch]
+      driver-major:
+        update-types: [major]
+    labels: [dependencies]
+
+  - package-ecosystem: npm
+    directory: /mcp-server
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
+    open-pull-requests-limit: 2
+    groups:
+      mcp-server-minor-and-patch:
+        update-types: [minor, patch]
+      mcp-server-major:
+        update-types: [major]
+    labels: [dependencies]
+
+  - package-ecosystem: npm
+    directory: /providers/oauth-mcp-bridge
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
+    open-pull-requests-limit: 2
+    groups:
+      oauth-mcp-bridge-minor-and-patch:
+        update-types: [minor, patch]
+      oauth-mcp-bridge-major:
+        update-types: [major]
+    labels: [dependencies]
+
+  - package-ecosystem: npm
+    directory: /portal-ui
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
+    open-pull-requests-limit: 2
+    groups:
+      portal-ui-minor-and-patch:
+        update-types: [minor, patch]
+      portal-ui-major:
+        update-types: [major]
+    labels: [dependencies]
+
+  # THE WORKFLOW ACTIONS TOO. A pinned action with a published advisory is the same class of problem as
+  # a package, and nothing else in this repository watches them.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Europe/Zurich }
+    open-pull-requests-limit: 2
+    groups:
+      actions-all:
+        patterns: ["*"]
+    labels: [dependencies]

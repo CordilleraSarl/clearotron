@@ -1,0 +1,41 @@
+{
+  "tenants": {
+    "the-firm": {
+      "accounts": "*",
+      "users": {
+        "principal@firm.example": "*",
+        "associate@firm.example": [
+          "aurora"
+        ]
+      }
+    },
+    "aurora-direct": {
+      "accounts": [
+        "aurora"
+      ],
+      "users": {
+        "*@aurora.example": "*"
+      }
+    },
+    "evaluation": {
+      "accounts": [
+        "zephyr",
+        "petcary"
+      ],
+      "users": {
+        "reviewer@partner.example": "*",
+        "observer@partner.example": [
+          "zephyr"
+        ]
+      }
+    },
+    "demo-org": {
+      "accounts": [
+        "demo-brand-owner"
+      ],
+      "users": {
+        "*@demo-org.example": "*"
+      }
+    }
+  }
+}

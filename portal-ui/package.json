@@ -1,0 +1,29 @@
+{
+  "name": "portal-ui",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "description": "The unified trademark portal UI. One address, one login: who you are decides what you see. Built as a static bundle, served by driver/portal-service.mjs — the browser never reaches profile-service or recipe-service.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && node ../scripts/test-run.mjs node --test test/*.test.ts",
+    "test:full": "npm run test"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}

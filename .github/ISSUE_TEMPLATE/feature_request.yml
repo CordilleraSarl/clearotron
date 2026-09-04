@@ -1,0 +1,57 @@
+name: Feature or jurisdiction request
+description: Something the engine should do and does not — including a new jurisdiction, register, or doctrine test case.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never attach a run artifact.** Reports, audit workbooks, run directories and pool contents
+        can carry client names, marks and matter numbers, and an issue here is public and permanent.
+        Describe the shape of the case instead, or use a fictional mark.
+
+  - type: checkboxes
+    id: no-artifacts
+    attributes:
+      label: Client data
+      options:
+        - label: This request contains no run artifact, real mark, real party name, or matter number. Any example is fictional.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What can't you do today
+      description: The problem, not the solution. What did you try, and where did it stop?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What should happen instead
+      description: If you have a design in mind, say it. If you have a patch in mind, say that too.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - "New jurisdiction or register adapter"
+        - "Clearance doctrine — a case the engine reasons about wrongly"
+        - "Report or audit output"
+        - "Setup, install, or first run"
+        - "MCP server / interrogating a run"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reference
+    attributes:
+      label: How would we know it worked
+      description: >
+        For doctrine and jurisdiction work this is the important box. What is the right answer, and
+        who says so — a statute, an office practice note, a decision? A test case with a known
+        answer is worth more here than a description.

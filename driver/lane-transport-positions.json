@@ -1,0 +1,6 @@
+{
+  "_what": "Every LANE that could own a typed return path, and where it stands. A lane is a pipeline with its own stage table; a lane serving several products declares ONCE and is visibly shared.",
+  "_why": "Both transport censuses DERIVE their population, and a derived population cannot report a lane with ZERO members. Both read '15/15 clean' while the knockout lane — a client-facing product family with no typed transport at all — sat outside the denominator, unremarked. That is not an empty check; it is an empty DENOMINATOR, and no check-level guard can see it.",
+  "_rule": "A lane whose stages hold no recording grant MUST have a row here naming a reason and a tracker issue. A lane that gains coverage has its row DELETED in the same commit. A lane in neither state reds the arm by name. An EMPTY list is the fully-converted state, not a disabled check: the arm requiring a row is keyed on a lane having zero coverage, so it still fires for the next lane that arrives unconverted.",
+  "unconverted": []
+}

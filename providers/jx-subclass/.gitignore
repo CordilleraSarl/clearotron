@@ -1,0 +1,18 @@
+# The office SOURCE DOCUMENTS and the verbatim extractions of them are not committed. What IS
+# committed is public/ — every column a lookup reads, with the offices' own sentences left out.
+#
+# TIPO publishes under an open government licence; CNIPA's site notice permits no commercial
+# reproduction, KIPO publishes none, JPO's PDL1.0 has unconfirmed carve-outs. One rule for all four:
+# data travels, quotation does not. See export-public.mjs for what that means column by column.
+#
+# An absent source is not an empty one: coverage.mjs refuses by name for anything unbuilt.
+similar-groups.db
+merged/
+jp/
+tw/
+kr/
+cn/*.jsonl
+cn/tranche1/
+cn/tranche2/
+cn/pages/
+cn/goods/

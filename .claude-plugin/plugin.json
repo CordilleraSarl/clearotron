@@ -1,0 +1,8 @@
+{
+  "name": "clearotron",
+  "version": "1.0.0",
+  "description": "Connect an assistant to a clearotron trademark-clearance install: the MCP server, plus the three connector skills that teach an assistant to use it well.",
+  "author": { "name": "Cordillera Sàrl" },
+  "license": "AGPL-3.0-only",
+  "homepage": "https://github.com/CordilleraSarl/Clearotron"
+}

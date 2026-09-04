@@ -1,0 +1,69 @@
+# ── TEMPLATE UNIT ────────────────────────────────────────────────────────────────────────────
+# The example.com values below are PLACEHOLDERS a new deployment must replace.
+# NEVER copy this file over an already-deployed unit — a placeholder that looks configured is worse
+# than unset (2026-07-19 incident). Deploy rule: diff repo unit vs live unit; sync only generic units.
+#
+# client-mcp-apikey.service — the API-KEY door (docs/CLIENT-MCP.md, "The API-key door").
+#
+# Same binary and same CLIENT surface as client-mcp.service, reached with a credential instead of a
+# Cloudflare browser sign-in — for connectors whose settings offer one fixed "API key" box and no control
+# over headers. It is a SEPARATE PROCESS on its own port and hostname, not a flag on the client door,
+# because a difference in security posture should be a fact about which binary is listening.
+#
+# WHAT IS DIFFERENT, AND WHY IT IS SAFE
+#   • No Cloudflare Access in front (Access cannot gate on a custom header value), so there is no CF
+#     team/AUD here — those lines are deliberately absent, not forgotten.
+#   • In its place, CLIENT_MCP_TOKEN_ONLY=1 makes a valid `account` key MANDATORY on every request. There
+#     is no synthetic identity to fall back to; an unkeyed request is a 401 before body, session or data.
+#   • The key names an identity; CLEAROTRON_ACCESS_FILE decides what that identity may reach, re-read on every
+#     request. Revoke by deleting the grants row, or by adding the key's jti to the denylist.
+#   • Refuses to start without the signing secret, without account access, without allowed-hosts, on a
+#     non-loopback bind, or combined with CLIENT_MCP_AUTH_DISABLED.
+#
+# Mint a key:  node mcp-server/mint-token.mjs --scope account --sub <email-in-grants> --ttl-days 90
+# Give the key an account with real runCaps — NEVER `generic`, which is cap-exempt.
+
+[Unit]
+Description=trademark-artifacts MCP — CLIENT API-key door (token-only; no auth proxy in front)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# ~/.env supplies TRADEMARK_MCP_TOKEN_SECRET — without it this door refuses to start.
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=CLIENT_MCP_TOKEN_ONLY=1
+Environment=CLIENT_MCP_ACCOUNT_ACCESS=1
+Environment=CLEAROTRON_ACCESS_FILE=%h/portal-grants.json
+Environment=CLIENT_MCP_HTTP_HOST=127.0.0.1
+# :18812 — one above the CF-fronted client door (:18811); both sit above the warm-MCP block
+# (ghostfolio :18795, openbb :18796, courtlistener :18797). The tunnel route for the API-key
+# hostname must point here, and that hostname must have NO Access application in front of it.
+Environment=CLIENT_MCP_HTTP_PORT=18812
+Environment=CLIENT_MCP_ALLOWED_HOSTS=agent-mcp.example.com
+# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
+# not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
+# here reads the working directory: this entry point resolves what it needs from its OWN file location.
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server-client.mjs
+Restart=on-failure
+RestartSec=10
+# Hardening: this process only reads run-dirs + serves HTTP on loopback (mirrors client-mcp.service).
+NoNewPrivileges=true
+ProtectSystem=strict
+# #774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
+# by existence (providers/_shared/ledger-path.mjs, mcp-server/lib/audit.mjs): a box that already has
+# a ledger or an access log under the old path keeps appending to it and needs it writable, while a
+# fresh box writes to the new one. `-` on both so a missing directory does not fail the unit to
+# START — with ProtectSystem=strict, a ReadWritePaths naming a path that is not there is an error.
+#
+# ON A FRESH DEPLOYMENT, CREATE THE DIRECTORY BEFORE FIRST START: `mkdir -p %h/trademark/telemetry`.
+# systemd resolves these at unit start, so a `-` path that does not exist yet is simply skipped and
+# never becomes writable — and the append that then fails is best-effort by design, so the telemetry
+# is lost with nothing in the journal. An UPGRADED box needs no action: it resolves to the old path.
+ReadWritePaths=-%h/.openclaw/telemetry
+ReadWritePaths=-%h/trademark/telemetry
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

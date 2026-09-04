@@ -1,0 +1,20 @@
+# cloudflared-ingress.example.yml — route a public hostname to the loopback HTTP MCP through a Cloudflare
+# Tunnel. Add this ingress rule to your existing cloudflared config (the same tunnel that already fronts
+# trademark.example.com can carry another hostname), or create a dedicated tunnel.
+#
+#   cloudflared tunnel login
+#   cloudflared tunnel create trademark-mcp           # if a new tunnel
+#   # put this file at ~/.cloudflared/config.yml (merge ingress with any existing rules)
+#   cloudflared tunnel route dns <tunnel> tm-mcp.example.com
+#   systemctl --user enable --now cloudflared    (or your existing cloudflared service)
+#
+# The `hostname` here MUST match the Cloudflare Access application you create in REMOTE-SETUP.md.
+
+tunnel: <your-tunnel-id-or-name>
+credentials-file: /home/<your-user>/.cloudflared/<your-tunnel-id>.json
+
+ingress:
+  - hostname: tm-mcp.example.com
+    service: http://127.0.0.1:18790
+  # --- keep any existing ingress rules above the catch-all ---
+  - service: http_status:404

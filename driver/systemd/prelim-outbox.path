@@ -1,0 +1,27 @@
+[Unit]
+Description=Watch the prelim delivery outbox for finished-run markers
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/README.md
+
+[Path]
+# Workstream B — instant delivery. When a handoff-mode run finishes, the driver drops <runId>.pending here
+# (the marker's first line names the forwarder agent). inotify-backed, sub-second: a marker fires
+# prelim-outbox.service, which wakes that agent to run the prelim-deliver skill NOW instead of waiting up to
+# 55m for the HEARTBEAT completion-watch (which stays enabled as the backstop). Event-driven; nothing of
+# ours runs except while a delivery is being dispatched.
+# ── #774 — THIS GLOB IS THIS DEPLOYMENT'S OUTBOX, NOT THE CODE DEFAULT ───────────────────────────────
+#
+# Same hazard as prelim-driver.path, and read that unit's note for the full version. A .path unit cannot
+# read an environment variable, so this literal and the driver's `config.outboxDir`
+# (CLEAROTRON_OUTBOX_DIR, else <CLEAROTRON_WORK_DIR>/prelim-outbox) are two spellings of one fact with
+# nothing checking them against each other. Disagree, and finished runs drop their `.pending` markers
+# where this watcher is not looking: no delivery wake, no failure, no log — the 55m completion-watch
+# backstop quietly becomes the delivery path.
+#
+# #774 moved the CODE default for the workspace root; this glob did not move, because the deployment
+# pins `CLEAROTRON_WORK_DIR` and `CLEAROTRON_OUTBOX_DIR` explicitly (the production env example). Change this line
+# only together with those variables, on the same box, in the same change.
+PathExistsGlob=%h/.openclaw/prelim-outbox/*.pending
+Unit=prelim-outbox.service
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "framework_key": "zephyr",
+  "title": "Zephyr Beverages risk framework (synthetic demo)",
+  "source_deck": "Synthetic demo transposition of a customer risk deck (structure faithful, content invented), doc 50 shape",
+  "entity_label": "Zephyr/Volt/Kaskade",
+  "bands": [
+    { "label": "Very High", "tone": "severe" },
+    { "label": "High", "tone": "high" },
+    { "label": "Medium", "tone": "medium" },
+    { "label": "Manageable", "tone": "low" }
+  ],
+  "structure": { "kind": "bands" }
+}

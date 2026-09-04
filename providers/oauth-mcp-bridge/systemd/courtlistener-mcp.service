@@ -1,0 +1,21 @@
+[Unit]
+Description=CourtListener warm MCP — persistent loopback streamable-http (127.0.0.1:18797) OAuth proxy for MCP clients
+Documentation=file:@CLEAROTRON_CHECKOUT_DIR@/providers/oauth-mcp-bridge/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Reads the OAuth cache at ~/.config/clawdi/oauth-mcp/courtlistener.json (no ~/.env needed).
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+# ── RESOLVED AT INSTALL (tracker issue 1876 option B) ────────────────────────────────────────
+# `@CLEAROTRON_CHECKOUT_DIR@` is substituted by render-units.mjs when it writes the resolved copy.
+# This unit deliberately loads no EnvironmentFile — one would let ~/.env override the PATH set above —
+# so it cannot use the `${CLEAROTRON_CHECKOUT_DIR}` form the lane services use.
+ExecStart=/usr/bin/node @CLEAROTRON_CHECKOUT_DIR@/providers/oauth-mcp-bridge/warm-server.mjs --server courtlistener --port 18797
+Restart=always
+# 15s (not 5s): if the refresh token is revoked the process exits on startup and
+# would otherwise hot-loop; the slower cadence keeps the REVOKED log readable.
+RestartSec=15
+
+[Install]
+WantedBy=default.target

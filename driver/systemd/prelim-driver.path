@@ -1,0 +1,69 @@
+[Unit]
+Description=Watch the prelim-search driver queue for new job files
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/README.md
+
+[Path]
+# Watch EVERY prelim-capable agent's queue (inotify-backed). When a *.json job lands in any of them, start
+# the drain service — which runs the job as the agent whose workspace it sits in. One PathExistsGlob per
+# watched queue ("Multiple directives may be combined … to watch multiple paths" — systemd.path(5)).
+# Event-driven, sub-second; nothing of ours runs except while a job is being processed. The
+# prelim-driver.timer fallback re-drains every ~90s so a queue NOT listed here (e.g. a brand-new agent, or
+# a mid-path glob systemd fails to arm) still gets picked up — the watcher is an optimisation over the timer,
+# never the sole drain path.
+#
+# These lines MUST mirror config.queueDirs (driver.config.mjs) — the runner drains those regardless, so any
+# queue the runner scans but the watcher misses only pays the ≤90s timer latency (the pre-fix bug: this unit
+# watched only the headless dir below, which does not exist in an agent-workspace deployment, so event-driven
+# pickup was dead and the queue drained on the timer alone — and wedged entirely whenever the timer was down).
+#
+# ── #774 — THESE GLOBS ARE THIS DEPLOYMENT'S WORKSPACE ROOT, NOT THE CODE DEFAULT ────────────────────
+#
+# A .path unit CANNOT read an environment variable. There is no `%E`, no EnvironmentFile, no expansion:
+# the prefix below is a literal, and it is the one thing in the queue lane that CLEAROTRON_WORK_DIR
+# cannot reach. So this file and `CLEAROTRON_WORK_DIR` in %h/.env are two spellings of one fact, and
+# nothing at runtime notices when they stop agreeing.
+#
+# WHAT DISAGREEMENT LOOKS LIKE: the runner drains $CLEAROTRON_WORK_DIR; this watcher arms an inotify on
+# a path nothing writes to. Jobs land, the watcher never fires, no unit fails, no log line appears, and
+# the only thing still draining is the 90s prelim-driver.timer — so the lane looks alive and every job is
+# late. If the timer is also down, the queue simply stops.
+#
+# #774 moved the CODE default for CLEAROTRON_WORK_DIR from `$HOME/.openclaw` to
+# `$HOME/trademark/workspace`. These globs did NOT move with it, and that is correct: they must track the
+# deployment, and the deployment pins `CLEAROTRON_WORK_DIR=<home>/.openclaw` in its EnvironmentFile
+# (the production env example) precisely so its run directories do not move under a live queue. Change one of
+# these three lines only together with that variable, on the same box, in the same change.
+# driver/test/data-plane-defaults.test.mjs asserts this file and the production env example still agree.
+#
+# AGENT-WORKSPACE deployment (this VM): one line per prelim-capable agent. We watch each CONCRETE queue dir
+# (only the final *.json is a wildcard) so systemd arms an inotify watch directly on the queue directory —
+# a mid-path `workspace-*` glob is not reliably armed. Add a line when a new prelim agent is onboarded; until
+# then the 90s timer + dynamic config.queueDirs still pick its jobs up.
+# ── RESOLVED AT INSTALL (tracker issue 1876 option B) ────────────────────────────────────────
+# `@CLEAROTRON_WORK_DIR@` is substituted by render-units.mjs when it writes the resolved copy into
+# ~/.config/systemd/user/. That closes the half of the disagreement above that VARIES BY MACHINE: the
+# workspace root is now taken from the same value the runner drains, so the two spellings cannot drift
+# apart on an install.
+#
+# THE AGENT SEGMENT IS NOT SUBSTITUTED, AND THAT IS A LIMIT WORTH STATING RATHER THAN HIDING.
+# `driver.config.mjs` builds the queue as join(workspaceRoot, workspaceDirName(agent), "studio",
+# "prelim-search", "queue") — so the root is configuration and `workspace-clawdi` is a per-deployment
+# choice, already documented by the commented alternative below. Substituting it would need a variable
+# nothing sets today, and inventing one to make this line look fully resolved would be the more
+# dangerous kind of fix: it would read as configured while resolving to whatever the default happened
+# to be. One real value substituted beats two that look substituted.
+PathExistsGlob=@CLEAROTRON_WORK_DIR@/workspace-clawdi/studio/prelim-search/queue/*.json
+# One line per ADDITIONAL prelim-capable agent this deployment onboards, e.g.
+#PathExistsGlob=%h/.openclaw/workspace-<agent>/studio/prelim-search/queue/*.json
+# Two lines here named individual people at this firm and shipped their identities to every clone
+# (#1014). They are a deployment's own roster, not the product's. Omitting a line costs LATENCY and
+# not correctness: as the note above says, the 90s timer and the dynamic config.queueDirs still
+# collect that agent's jobs — the watch only makes them immediate.
+# HEADLESS deployment (docs/INTAKE.md): a standalone product with no agent workspaces instead watches the one
+# explicit queue named by CLEAROTRON_QUEUE_DIR (default ~/prelim-queue). Uncomment for that mode; harmless to
+# leave active in a mixed deployment (never matches when the dir is absent), mirroring the additive queueDirs.
+#PathExistsGlob=%h/prelim-queue/*.json
+Unit=prelim-driver.service
+
+[Install]
+WantedBy=default.target

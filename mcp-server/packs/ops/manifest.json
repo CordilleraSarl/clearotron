@@ -1,0 +1,33 @@
+{
+  "name": "trademark-clearance-ops-pack",
+  "version": "1.0.0",
+  "audience": "integrator",
+  "description": "Teaches an integrator/operator agent to start and monitor clearance searches over the ops MCP verbs, and to courier the engine's outbox events to requesters.",
+  "files": [
+    "CONNECT.md",
+    "EXAMPLES.md"
+  ],
+  "skill": {
+    "directory": "skills/clearotron-ops",
+    "files": [
+      "SKILL.md",
+      "COURIER.md"
+    ]
+  },
+  "tools": [
+    "plan_run",
+    "start_run",
+    "feed_context",
+    "stop_run",
+    "list_profiles",
+    "list_runs",
+    "get_run",
+    "decision_timeline",
+    "get_coverage",
+    "get_telemetry",
+    "list_outbox_events",
+    "get_delivery_packet",
+    "mark_sent",
+    "ack_event"
+  ]
+}

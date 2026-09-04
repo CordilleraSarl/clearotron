@@ -1,0 +1,32 @@
+{
+  "name": "Petcary",
+  "demoData": true,
+  "matchDomains": [],
+  "industry": "animal health — veterinary pharmaceuticals, supplements, diagnostics & services",
+  "marketplaceDensity": "dense",
+  "platforms": [
+    "animaldrugsatfda.fda.gov",
+    "ema.europa.eu",
+    "vmd.defra.gov.uk",
+    "chewy.com",
+    "amazon.com",
+    "zooplus.com"
+  ],
+  "defaultClasses": [
+    5,
+    10,
+    42,
+    44
+  ],
+  "defaultJurisdictions": [
+    "US",
+    "EU",
+    "UK",
+    "AU"
+  ],
+  "selfExclusionOwners": [],
+  "delivery": {
+    "email": "summary",
+    "privileged": false
+  }
+}

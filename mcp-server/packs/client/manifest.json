@@ -1,0 +1,21 @@
+{
+  "name": "trademark-clearance-client-pack",
+  "version": "1.1.0",
+  "audience": "client",
+  "description": "Teaches a report recipient's AI assistant to interpret a preliminary trademark clearance report over the read-only, single-run connector link embedded in the report.",
+  "files": [
+    "CONNECT.md",
+    "EXAMPLES.md"
+  ],
+  "skill": {
+    "directory": "skills/clearotron-client",
+    "files": [
+      "SKILL.md"
+    ]
+  },
+  "tools": [
+    "brief",
+    "list_findings",
+    "read_artifact"
+  ]
+}

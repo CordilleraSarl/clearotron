@@ -1,0 +1,20 @@
+{
+  "name": "prelim-driver",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "description": "Deterministic driver for the trademark clearance workflow: orchestration in code (fan-out, fan-in barrier, gating, retries); the model does judgment leaves only, through a reasoning CLI spawned per stage.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node ../scripts/test-run.mjs node ../scripts/test-fast.mjs test/*.test.mjs",
+    "test:full": "node ../scripts/test-run.mjs node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.112.5",
+    "exceljs": "^4.4.0",
+    "undici": "^6.24.1"
+  }
+}

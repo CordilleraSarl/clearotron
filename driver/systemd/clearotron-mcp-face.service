@@ -1,0 +1,30 @@
+# GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific value lives here. See
+# clearotron-portal.service for why this unit exists and why it takes an EnvironmentFile rather than
+# explicit Environment= lines (tracker issue 1925, owner ruling 2026-08-26).
+#
+# This is the engine door the portal's Start button calls over real MCP. It is the OTHER of the two
+# children bin/start.mjs supervises, and the other one that had no unit.
+#
+# ── THE ONE VARIABLE THIS DOOR CANNOT START WITHOUT ──────────────────────────────────────────────────
+#
+# TRADEMARK_MCP_ALLOWED_HOSTS arms the transport's DNS-rebinding protection and the server REFUSES TO
+# START without it — the protection is treated as load-bearing rather than optional. It belongs in the
+# EnvironmentFile beside the port it must agree with; a value that disagrees with the listener's own port
+# turns every request away, which reads as a dead door rather than as a misconfiguration.
+[Unit]
+Description=Clearotron MCP face — the engine door the portal calls over MCP
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/mcp-server/remote/REMOTE-SETUP.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=CLEAROTRON_NO_ENV_FILE=1
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server.mjs
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

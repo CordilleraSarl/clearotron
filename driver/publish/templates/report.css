@@ -1,0 +1,429 @@
+  /* Brand :root tokens live in shared/brand.mjs (REPORT_ROOT) and are prepended by render.mjs. */
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 26px 110px}
+  .label{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .mono{font-family:var(--mono)}
+  a{color:var(--crimson);text-decoration:none}
+  .print-hidden{display:none!important}
+
+  /* sticky bar */
+  /* One sticky header: the cross-page nav + the report action bar pin together as a unit (see render.mjs).
+     Previously the nav was forced position:static and scrolled away while only .topbar stayed — the "nav
+     disappears on scroll" bug. .rep-stickyhead is the single sticky element now; nav + topbar sit inside it. */
+  /* ONE cohesive header: the whole .rep-stickyhead is a single translucent, blurred surface with a single
+     bottom hairline. Row 1 is the cross-page nav (transparent, no border — the wrapper carries the look);
+     row 2 (.topbar) is a LIGHT strip of the report's own variables (back · risk · matter · issued · export),
+     not a second bar. */
+  .rep-stickyhead{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar{z-index:40;display:flex;align-items:center;gap:10px;padding:6px max(26px,calc((100% - 1120px)/2)) 8px}
+  .wm{display:inline-flex;align-items:center;font-weight:900;font-size:15px;letter-spacing:.02em;color:var(--crimson)}
+  .wm .ridge{margin-right:6px}
+  .wm small{color:var(--faint);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:9px;margin-left:8px}
+  .topbar .sp{flex:1}
+  .tb-risk{font-size:10.5px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--med);padding:4px 11px;border-radius:30px}
+  .tbbtn{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line2);background:var(--card);
+    color:var(--ink);border-radius:30px;padding:7px 14px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
+  .tbbtn:hover{border-color:var(--crimson);color:var(--crimson)}
+  .tbbtn.primary{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .tbbtn.primary:hover{background:var(--maroon);color:#fff}
+
+  /* hero */
+  header.hero{padding:46px 0 8px}
+  .conf{display:flex;align-items:center;gap:9px;margin-bottom:22px}
+  .conf .dot{width:6px;height:6px;border-radius:50%;background:var(--crimson)}
+  h1.mark{font-weight:900;font-size:58px;line-height:1.0;letter-spacing:-.022em;margin:0 0 14px}
+  .sub{font-size:17.5px;color:var(--slate);max-width:700px;line-height:1.5;margin:0 0 30px}
+  .sub b{color:var(--ink);font-weight:700}
+  /* #470 — the hero caption folds to its first sentence; the remainder sits behind this disclosure.
+     The visible sentence loses its bottom margin (the fold row carries the spacing instead) so a folded
+     caption occupies the same vertical run as an unfolded one. `details.sub-more` is styled here and NOT
+     in the frozen renderer, and the existing @media print rule that forces every <details> open already
+     covers it — the exported PDF carries the whole caption, which is #470's rule for print. */
+  details.sub-more{margin:0 0 30px;max-width:700px}
+  details.sub-more>summary{cursor:pointer;list-style:none;font-size:12.5px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  details.sub-more>summary::-webkit-details-marker{display:none}
+  details.sub-more>summary::before{content:"▸";margin-right:7px;display:inline-block;transition:.15s;color:var(--rose)}
+  details.sub-more[open]>summary::before{transform:rotate(90deg)}
+  details.sub-more .sub{margin:10px 0 0}
+  .sub.sub-lead{margin-bottom:10px}
+  .heroGrid{display:grid;grid-template-columns:1.32fr 1fr;gap:22px;margin-top:6px}
+  @media(max-width:780px){.heroGrid{grid-template-columns:1fr}h1.mark{font-size:42px}}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .gauge{padding:22px 24px}
+  .gauge .label{margin-bottom:18px}
+  /* #761 — the framework that owns the ticks, named where they are read. Normal case and un-tracked on
+     purpose: `.label` is an uppercase eyebrow, and a proper name in the eyebrow's own letterforms reads
+     as a second heading rather than as the thing being cited. */
+  .gauge .label .gauge-fw{display:block;margin-top:5px;font-size:11px;font-weight:600;letter-spacing:0;
+    text-transform:none;color:var(--slate)}
+  .scale{position:relative;height:11px;border-radius:8px;margin:34px 0 10px;
+    background:linear-gradient(90deg,var(--clear) 0%,var(--low) 26%,var(--med) 52%,var(--high) 79%,var(--severe) 100%)}
+  .ticks{display:flex;justify-content:space-between;margin-top:13px}
+  .ticks span{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);flex:1;text-align:center}
+  .ticks span.on{color:var(--med)}
+  .marker{position:absolute;top:-32px;left:52%;transform:translateX(-50%);text-align:center}
+  .marker .pill{font-weight:900;font-size:14px;letter-spacing:.02em;color:#fff;background:var(--med);
+    /* the glow is --med in DECIMAL (200,135,27 == #C8871B) — a hex grep will not find it; recolor with the ramp */
+    padding:4px 13px;border-radius:30px;white-space:nowrap;box-shadow:0 5px 14px rgba(200,135,27,.4)}
+  .marker .needle{width:2px;height:15px;background:var(--med);margin:4px auto 0;border-radius:2px}
+  .gauge p{font-size:12.5px;color:var(--slate);margin:18px 0 2px;line-height:1.5}
+
+  .facts{padding:4px 24px}
+  .facts .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .facts .row:last-child{border-bottom:0}
+  .facts .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .facts .v{font-size:13.5px;font-weight:700;text-align:right}
+  .chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;padding:3px 10px;border-radius:30px}
+  .chip.open{background:var(--high-soft);color:var(--high-tx)}
+
+  /* utility buttons — used by the topbar Export popover and the Ask-AI banner */
+  .util{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line2);background:var(--bg);
+    color:var(--ink);border-radius:30px;padding:7px 13px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
+  .util:hover{border-color:var(--crimson);color:var(--crimson)}
+  .util.primary{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .util.primary:hover{background:var(--maroon);color:#fff}
+
+  .firstUp{display:flex;gap:16px;align-items:flex-start;background:linear-gradient(180deg,#FFFDF9,#FBF3E2);
+    border:1px solid #E7D2A6;border-left:4px solid var(--med);border-radius:16px;padding:19px 22px;margin:14px 0 8px;box-shadow:var(--shadow)}
+  .firstUp .ic{flex:none;width:36px;height:36px;border-radius:11px;background:var(--med-soft);color:var(--med-tx);
+    display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900}
+  .firstUp .tcrit{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--high-tx);text-transform:uppercase}
+  .firstUp h3{margin:2px 0 4px;font-size:16px;letter-spacing:-.01em}
+  .firstUp p{margin:0;font-size:14px;color:var(--slate);line-height:1.5}
+
+  /* WP-56 B2 — the standing mark-itself block (top of the report, both variants). Tokens only, so it
+     dark-adapts through the brand.mjs theme token swap with no extra rules here. */
+  .markassess{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--med);
+    border-radius:16px;padding:16px 22px;margin:14px 0 8px;box-shadow:var(--shadow)}
+  .markassess p{margin:6px 0;font-size:14px;color:var(--slate);line-height:1.55}
+  .markassess p strong{color:var(--ink)}
+
+  /* wp50/wi5 — the # Actions panel (Answers to your instructions / Checks we ran / Only you can close) */
+  .panel.actions{padding:20px 24px;margin:14px 0 8px}
+  .panel.actions .actgrp{margin:0 0 14px} .panel.actions .actgrp:last-child{margin-bottom:0}
+  .panel.actions h3{margin:0 0 6px;font-size:14px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  .panel.actions .actic{flex:none;width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;background:var(--clear-soft,#EAF3E6);color:var(--clear-tx,#2e6b32)}
+  .panel.actions .act-ans .actic{background:#EDF1FA;color:#2c4a9a}
+  .panel.actions .act-you .actic{background:var(--med-soft);color:var(--med-tx)}
+  .panel.actions p,.panel.actions li{font-size:13.5px;color:var(--slate);line-height:1.55}
+  .panel.actions ul{margin:0;padding-left:20px} .panel.actions li{margin:3px 0}
+
+  .sec{margin:56px 0 18px;display:flex;align-items:baseline;gap:15px;border-top:2px solid var(--ink);padding-top:14px}
+  .sec .num{font-family:var(--mono);font-size:13px;color:var(--crimson);font-weight:600}
+  .sec h2{font-weight:900;font-size:25px;margin:0;letter-spacing:-.015em}
+  .sec .note{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--faint);text-transform:uppercase;align-self:flex-end}
+
+  .landwrap{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+  @media(max-width:820px){.landwrap{grid-template-columns:1fr}}
+  .land{padding:14px 14px 6px}
+  .land svg{width:100%;height:auto;display:block}
+  .land svg a{cursor:pointer}
+  .keypanel{padding:16px 18px;display:flex;flex-direction:column}
+  .keypanel .label{margin-bottom:6px}
+  .keyhint{font-size:11.5px;color:var(--faint);margin:0 0 12px}
+  .keyrow{display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:10px;color:var(--ink);transition:.12s;border:1px solid transparent}
+  .keyrow:hover{background:var(--bg2);border-color:var(--line)}
+  .kn{flex:none;width:23px;height:23px;border-radius:50%;color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .kw{flex:1;min-width:0;font-size:13px;font-weight:700;line-height:1.2}
+  .kw em{display:block;font-style:normal;font-weight:500;font-size:11px;color:var(--slate);margin-top:1px}
+  .kw .cm-mark{font-size:12px;padding:1px 7px}
+  .kc{flex:none;font-size:10px;font-weight:700;letter-spacing:.03em;padding:3px 8px;border-radius:30px}
+  .kc.med{background:var(--med-soft);color:var(--med-tx)} .kc.low{background:var(--clear-soft);color:var(--clear-tx)} .kc.off{background:#EDE6D9;color:var(--slate)}
+  .keyrow .arr{flex:none;color:var(--faint);font-size:13px;opacity:0;transition:.12s}
+  .keyrow:hover .arr{opacity:1}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;padding:8px 8px 4px;font-size:11px;color:var(--slate)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-bottom:15px;box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:70px}
+  .card .top{display:flex;gap:17px;padding:20px 22px}
+  .rail{flex:none;width:4px;align-self:stretch;border-radius:4px}
+  .rail.med{background:var(--med)} .rail.low{background:var(--low)} .rail.off{background:var(--taupe)}
+  .card .body{flex:1;min-width:0}
+  .cardhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .pick{display:inline-flex;align-items:center}
+  .pick input{width:16px;height:16px;cursor:pointer;accent-color:var(--crimson)}
+  .fnum{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--faint)}
+  .who{font-weight:900;font-size:19px;letter-spacing:-.01em}
+  /* the contentious MARK + the classes it matched in, next to the holder (which mark/class the conflict IS) */
+  .cmark{display:inline-flex;align-items:center;gap:7px;font-size:13px;min-width:0}
+  .cm-mark{font-weight:800;color:var(--crimson);background:#fbece9;padding:2px 9px;border-radius:6px;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:32ch}
+  .ccl{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--slate);background:#eef1f2;padding:2px 7px;border-radius:5px;white-space:nowrap}
+  .src{font-size:9.5px;font-weight:700;letter-spacing:.07em;padding:3px 9px;border-radius:30px;text-transform:uppercase}
+  .src.reg{background:#F3E7C9;color:#7a5a08}.src.cl{background:#DEE7E9;color:#2c5560}.src.both{background:var(--clear-soft);color:var(--clear-tx)}
+  .tier{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--med)}
+  .tier .lv{color:#fff;border-radius:7px;padding:3px 8px;letter-spacing:.03em}
+  .tier.med .lv{background:var(--med)} .tier.low .lv{background:var(--low)} .tier.off .lv{background:var(--taupe)}
+  .oneline{font-size:14.5px;color:var(--ink);margin:9px 0 16px;line-height:1.5}
+  .meters{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+  @media(max-width:640px){.meters{grid-template-columns:repeat(2,1fr)}}
+  .meter .ml{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+  .pips{display:flex;gap:4px}
+  .pips i{width:100%;height:5px;border-radius:3px;background:#E9E0D1}
+  .pips.l3 i:nth-child(-n+3){background:var(--high)} .pips.l2 i:nth-child(-n+2){background:var(--med)} .pips.l1 i:nth-child(-n+1){background:var(--low)}
+  .pips.g3 i{background:var(--clear)} .pips.g2 i:nth-child(-n+2){background:var(--clear)}
+  .mv{font-size:11px;color:var(--slate);margin-top:6px;font-weight:500;line-height:1.3}
+  /* #762 D4 — the meter's SECOND position: how well the fact above it is evidenced. It is subordinate
+     to .mv on purpose (lighter, smaller): the finding is the fact, the receipt is the footnote. It
+     wraps inside its own 1fr grid track, so a long evidence clause costs height, never overflow. */
+  .mev{font-size:10px;color:var(--faint);margin-top:3px;font-weight:500;line-height:1.3}
+
+  details.drill{border-top:1px solid var(--line)}
+  details.drill>summary{cursor:pointer;list-style:none;padding:13px 22px 13px 43px;font-size:11px;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--crimson)}
+  details.drill>summary::-webkit-details-marker{display:none}
+  details.drill>summary::before{content:"▸";margin-right:9px;display:inline-block;transition:.15s;color:var(--rose)}
+  details.drill[open]>summary::before{transform:rotate(90deg)}
+  details.read>summary{background:var(--bg2)}
+  .drillbody{padding:2px 22px 18px 43px;font-size:13.5px;color:var(--slate);line-height:1.62}
+  .drillbody.lead{font-size:14px;color:var(--ink)}
+  .drillbody b{color:var(--ink);font-weight:700}
+  .drillbody ul{margin:8px 0;padding-left:18px}
+  .drillbody li{margin:6px 0}
+  .internal{background:#F6ECF7;border:1px dashed #C9A9CC;border-radius:9px;padding:9px 12px;margin-top:11px;font-size:12.5px;color:#6a2b6e}
+  .internal .tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a3a8f;display:block;margin-bottom:3px}
+  /* (spec-49 T4: the collapsible QC-banner rules died with the quarantine/review banners.) */
+  .prov{margin-top:10px;font-size:12px;color:var(--faint);font-family:var(--mono)}
+
+  .card.compact .top{padding:15px 20px}
+  .card.compact .who{font-size:16px}
+  .card.compact .oneline{margin:7px 0 0}
+
+  .cov{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:640px){.cov{grid-template-columns:1fr}}
+  .covcell{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+  .covcell .ck{flex:none;width:23px;height:23px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;margin-top:1px}
+  .covcell.ok .ck{background:var(--clear)} .covcell.warn .ck{background:var(--med)}
+  .covcell.warn{border-color:#E7D2A6;background:#FFFDF7}
+  /* wp50/wi9 — neutral styling for routine next-steps/monitor rows (warn stays for genuine alarms) */
+  .covcell.todo .ck{background:#8B94A6} .covcell.todo{border-color:var(--line);background:var(--bg2)}
+  .covcell.info .ck{background:#A9B4C6} .covcell.info{border-color:var(--line)}
+  .covcell .cst{font-weight:600;color:var(--faint);font-size:11.5px}
+  .covnext{margin:16px 0 10px;font-size:13px;color:var(--slate)}
+  .covcell .ct{font-size:13px;font-weight:700;margin-bottom:2px}
+  .covcell .cd{font-size:12px;color:var(--slate);line-height:1.45}
+
+  details.method{border:1px solid var(--line);border-radius:16px;background:var(--card);margin-top:16px;box-shadow:var(--shadow)}
+  details.method>summary{cursor:pointer;list-style:none;padding:17px 22px;font-weight:700;font-size:14px}
+  details.method>summary::-webkit-details-marker{display:none}
+  details.method>summary::after{content:"▾";float:right;color:var(--faint)}
+  details.method[open]>summary::after{content:"▴"}
+  .method .mbody{padding:0 22px 20px;font-size:13px;color:var(--slate);line-height:1.62}
+
+  /* Ask-your-AI launcher (PR #207 addendum) */
+  .askai{position:relative;display:inline-block}
+  .askai-pop{position:absolute;z-index:30;top:calc(100% + 8px);left:0;width:340px;max-width:88vw;background:var(--card);
+    border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+  .askai-hint{font-size:11.5px;color:var(--slate);margin:9px 0 8px;line-height:1.45}
+  .askai-field{display:flex;gap:6px;align-items:center;background:var(--bg2);border-radius:9px;padding:6px 8px;margin-bottom:8px}
+  .askai-url{font-family:var(--mono);font-size:11px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .askai-steps>summary{cursor:pointer;font-size:11.5px;font-weight:700;color:var(--crimson);padding:4px 0;list-style:none}
+  .askai-steps>summary::-webkit-details-marker{display:none}
+  .askai-steps ol{margin:4px 0 8px;padding-left:18px;font-size:11.5px;color:var(--slate)}
+
+  footer{margin-top:54px;padding-top:20px;border-top:2px solid var(--ink);font-size:12px;color:var(--faint);line-height:1.6;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  footer .wm{font-size:13px}
+
+  /* ══ redesign (clearance report) ══════════════════════════════════════════════════════════════════
+     Structure/markup/CSS reproduced from the redesign reference; brand :root tokens stay the single colour
+     source. The internal toolbar keeps the established purple INTERNAL-note convention (cf. .internal)
+     — intentionally off the brand risk palette so it never reads as client-facing. */
+
+  /* topbar controls: back link · matter · issued · Export popover */
+  .topbar{flex-wrap:nowrap;gap:10px}
+  .tb-back{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:30px;padding:6px 12px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .tb-back:hover{border-color:var(--crimson);color:var(--crimson)}
+  .tb-matter{white-space:nowrap}
+  .tb-issued{font-size:11px;color:var(--faint);white-space:nowrap}
+  .tb-menu{position:relative;display:inline-flex}
+  .tb-menu .tbbtn{white-space:nowrap}
+  .tb-pop{position:absolute;top:calc(100% + 8px);right:0;width:282px;max-width:88vw;background:var(--card);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);padding:12px;z-index:50}
+  .tb-pop-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+  .tb-pop .util{width:100%;text-align:center;margin-bottom:7px;box-sizing:border-box}
+  .tb-row{display:flex;gap:7px;margin-bottom:7px}.tb-row .util{flex:1;margin:0}
+  .tb-sep{height:1px;background:var(--line);margin:2px 0 9px}
+  .tb-hint{font-size:11px;color:var(--faint);line-height:1.4;margin:2px 2px 0}
+  @media(max-width:860px){.tb-matter{display:none}}
+  @media(max-width:640px){.tb-issued{display:none}}
+  @media(max-width:560px){.wm small{display:none}.tb-back-lbl{display:none}.tb-lbl{display:none}}
+
+  /* hero: conclusion card (dial + verdict) + scope card jurisdiction chips */
+  .heroGrid .gauge{display:flex;flex-direction:column;justify-content:flex-start}
+  .gconc{margin-top:20px;border-top:1px solid var(--line)}
+  .gconc .grow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .gconc .grow:last-child{border-bottom:0}
+  .gconc .gk{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .gconc .gv{font-size:13.5px;font-weight:700;text-align:right}
+  .gconc .gv-rec{color:var(--med-tx)}
+  .facts .row.jrow{flex-direction:column;align-items:flex-start;gap:8px}
+  .jchips{display:flex;flex-wrap:wrap;gap:5px}
+  .jchip{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--slate);background:var(--bg2);border:1px solid var(--line);padding:2px 7px;border-radius:5px}
+  .jchip.lim{color:var(--faint);border-style:dashed}
+  .jchip.ww{font-family:inherit;letter-spacing:.03em;color:var(--clear-tx,#2e6b32);background:var(--clear-soft,#EAF3E6);border-color:transparent}
+  .jnote{font-size:10.5px;color:var(--faint);line-height:1.4}
+
+  /* spec-49 T4 retired the review-notes caveat body; #265 retired the slim internal toolbar that
+     survived it, because the Flag/Etch capture controls it hosted are gone. The .review rules stay:
+     reports ALREADY DELIVERED are frozen bytes carrying that markup, and portal-report.mjs strips
+     it at serve time against these selectors. */
+  .review{border:1px dashed #C9A9CC;background:#F8F1F8;border-radius:11px;margin:18px 0 0;overflow:visible}
+  .rv-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 14px}
+  .rv-head{font-weight:700;font-size:13px;color:#5d2a61}
+  .rv-tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a06aa3}
+  .rv-spacer{flex:1;min-width:16px}
+
+  /* Ask-AI banner (collapsible) */
+  details.askband{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--crimson);border-radius:14px;padding:16px 18px;margin:20px 0 0;box-shadow:var(--shadow)}
+  details.askband>summary{cursor:pointer;list-style:none;display:flex;gap:14px;align-items:flex-start}
+  details.askband>summary::-webkit-details-marker{display:none}
+  .askband-ic{flex:none;width:38px;height:38px;border-radius:11px;background:var(--high-soft);color:var(--high-tx);display:flex;align-items:center;justify-content:center;font-size:18px}
+  .askband-main{flex:1;min-width:0}
+  .askband-title{font-weight:900;font-size:16px;letter-spacing:-.01em;margin:0 0 3px}
+  .askband-sub{font-size:13px;color:var(--slate);line-height:1.5;margin:0}
+  .askband-exp{display:inline-block;transition:.15s;color:var(--faint);font-size:12px;margin-left:4px}
+  details.askband[open] .askband-exp{transform:rotate(180deg)}
+  details.askband .askband-body{margin-top:12px;padding-left:52px;max-width:560px}
+  details.askband .askband-body .askai-hint{margin-top:0}
+  @media(max-width:560px){details.askband .askband-body{padding-left:0}}
+
+  /* cross-region rights-holder rows (.rrow) + secondary region groups (.rgroup) */
+  .keypanel{overflow-y:auto}
+  .rrow{border-top:1px solid var(--line)}
+  .rrow:first-of-type{border-top:0}
+  .rrow>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;padding:8px 4px}
+  .rrow>summary::-webkit-details-marker{display:none}
+  .rrow>summary::before{content:"▸";color:var(--rose);font-size:10px;transition:.15s;flex:none}
+  .rrow[open]>summary::before{transform:rotate(90deg)}
+  .rcode{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--slate);background:var(--bg2);border:1px solid var(--line);padding:2px 6px;border-radius:5px;min-width:30px;text-align:center;flex:none}
+  .rname{font-weight:700;font-size:13px;flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rsub{flex:1;min-width:0;font-size:11px}
+  .rcount{font-size:11px;font-weight:700;color:var(--slate);flex:none}
+  .rbody{padding:2px 2px 6px 8px}
+  .rgroup{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:13px;box-shadow:var(--shadow);overflow:hidden}
+  .rgroup>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:11px;padding:14px 20px}
+  .rgroup>summary::-webkit-details-marker{display:none}
+  .rgroup>summary::before{content:"▸";color:var(--rose);font-size:12px;transition:.15s;flex:none}
+  .rgroup[open]>summary::before{transform:rotate(90deg)}
+  .gname{font-weight:900;font-size:16px;letter-spacing:-.01em}
+  .gsub{flex:1;min-width:0;font-size:11px}
+  .gcount{font-size:11px;font-weight:700;color:var(--slate)}
+  .gbody{padding:0 12px 8px}
+  .rgroup .card{margin:0 0 10px} .rgroup .card:last-child{margin-bottom:4px}
+
+  /* #242 — a grouped reasoned negative. The shared ground is in the .fold-lead above the run of rows;
+     each row carries only what is its own, so the line has to stay ONE line's worth of weight: the mark
+     and owner anchor it, the jurisdictions/classes sit quiet, and the finding's own sentence takes the
+     remaining width and wraps rather than truncating. Denser than .rgroup because these are cleared
+     items — a reader scans them and stops at the one that surprises. */
+  .rn{margin-bottom:7px}
+  .rn>summary{align-items:baseline;flex-wrap:wrap;padding:10px 18px;gap:8px}
+  .rn-mark{font-weight:900;font-size:14px;letter-spacing:-.01em}
+  .rn-who{font-size:12px;color:var(--slate)}
+  .rn-facts{font-size:11px;font-weight:700;color:var(--slate);white-space:nowrap}
+  .rn-why{flex:1 1 100%;font-size:12.5px;line-height:1.45}
+  @media (min-width:760px){.rn-why{flex:1 1 46%;min-width:280px}}
+
+  @media print{
+    .topbar,.no-print,.review,.askband,.int-note{display:none!important}
+    body{background:#fff}
+    .panel,.card,.land,.firstUp,.method{box-shadow:none}
+    /* Only PURE TOGGLES hide their summary line in print — the drill toggles ("The read" / "Full detail
+       & provenance"), the method note, and the hero caption's fold. Summaries that CARRY content — region
+       rows (.rrow), secondary groups (.rgroup), the scope section title (details.scope) — print as static
+       headers; the old blanket details>summary hide deleted every region/group header and the scope title
+       from the exported PDF.
+       EVERY <details> THE RENDERERS EMIT MUST BE IN ONE LIST OR THE OTHER, and render-css.test.mjs walks
+       a rendered page to say so. `details.sub-more` (#470) was in NEITHER, so the exported PDF — the
+       client-facing legal document — printed an inert "MORE" label and a right-pointing COLLAPSED marker
+       in the hero, directly above text that was already fully expanded. Measured in Chrome: the caption's
+       own content was carried correctly and only the control leaked, which is why the commit that added
+       the fold could check the half it thought about and ship the half it did not. */
+    details.drill>summary,details.method>summary,details.sub-more>summary{display:none!important}
+    /* #470 made this line load-bearing for the document's CONTENT, not just its completeness. The
+       legal/practical reads now live inside .drillbody, so without this rule the exported PDF would
+       carry the one-line verdicts and none of the reasoning behind them. The export prints everything a
+       reader could open — ruled on #470, deliberately unchanged. Ticked-card selection (.print-hidden)
+       and internal notes (.int-note, hidden above) are the only two things print ever drops. */
+    details>*:not(summary){display:block!important}
+    details>summary{list-style:none;cursor:default}
+    .rrow>summary::before,.rgroup>summary::before,details.scope>summary::before{content:""!important}
+    details{border-top:1px solid var(--line)}
+    /* …AND THE HERO'S FOLD IS NOT A SECTION. The rule above separates the disclosures that ARE sections
+       of the document; `details.sub-more` is one paragraph of the verdict caption folded away from
+       another, and a hairline drawn between them splits a sentence from its own reasoning at the top of
+       the first page. Measured under print emulation: `0px none` on screen, `1px solid` in print. */
+    details.sub-more{border-top:0}
+    .card,.rgroup,.rrow{break-inside:avoid}
+  }
+
+  /* ── P4 (spec 2026-07-30) — one spine + mark-itself disclosures + depth strip ─────────────────────
+     This file is NOT hash-frozen; visual rules for the restructure live here (freeze-header rule 2).
+     Colors ride existing tokens (--ma-toggle has a dedicated dark value in shared/brand.mjs) so both
+     themes hold without an OS-theme media query in this shared sheet (the client export must never
+     carry one). */
+  /* charter ruling 1 — the masthead names the depth and what it adds/omits, visibly. */
+  .depth-strip{margin:10px 0 14px;padding:7px 12px;border:1px solid var(--line);border-left:3px solid var(--ma-toggle);
+    border-radius:8px;font-size:12.5px;line-height:1.5;color:var(--slate);background:var(--card)}
+  /* the mark-itself collapsed detail (read visible, typed rows behind toggles) */
+  .markassess details.ma-more{margin:10px 0 0}
+  .markassess details.ma-more>summary{cursor:pointer;font-size:12.5px;font-weight:700;
+    color:var(--ma-toggle);list-style:none;padding:3px 0}
+  .markassess details.ma-more>summary:hover{text-decoration:underline}
+  .markassess details.ma-more>summary::-webkit-details-marker{display:none}
+  .markassess details.ma-more>summary::before{content:"\25B8  ";font-weight:900}
+  .markassess details.ma-more[open]>summary::before{content:"\25BE  "}
+  .markassess ul.ma-rows{margin:8px 0 4px 0;padding-left:18px}
+  .markassess ul.ma-rows li{margin:0 0 6px;font-size:13.5px;line-height:1.5;color:var(--slate)}
+  /* an absorbed 04/diligence heading demoted to a lead-in inside 03 (spec §3) */
+  p.fold-lead{margin:22px 0 8px;font-size:13px;color:var(--slate)}
+
+  /* ── P5 (charter 2026-07-30) — content model: legal/practical split · manageable category · the
+     four answers. This file is NOT hash-frozen; the render emits the markup, the rules live here. */
+  /* the legal vs practical pair — two labelled reads, never blurred.
+     #470: these moved out of the card body and into the "Full detail & provenance" drawer, where they
+     LEAD, so they are sized for the drawer's own reading text (.drillbody is 13.5px/1.62) instead of the
+     tighter card body they used to sit in. The first block has no top margin — .drillbody's padding is
+     the gap — and the last one is spaced off the structured <ul> that follows it. */
+  .drillbody>.lp-split{margin:0 0 10px}
+  .drillbody>.lp-split+.lp-split{margin-top:-4px}
+  .lp-split p.lp{margin:0 0 6px;font-size:13.5px;line-height:1.62;color:var(--slate)}
+  .lp-split p.lp:last-child{margin-bottom:0}
+  .lp-split p.lp b{color:var(--ink)}
+  /* the four answers — a hero panel decomposing the verdict into its four questions */
+  .fourans{margin-top:14px;padding:14px 16px}
+  .fourans .fa-row{display:flex;gap:12px;margin:0 0 8px;font-size:13.5px;line-height:1.55}
+  .fourans .fa-row:last-child{margin-bottom:0}
+  .fourans .fa-k{flex:0 0 172px;font-weight:700;color:var(--ink)}
+  .fourans .fa-v{flex:1;color:var(--slate)}
+  .fourans .fa-token{font-weight:700;color:var(--ink)}
+  .fourans .fa-basis{font-size:12px;color:var(--faint)}
+  .fourans .fa-ords a{font-size:12px;margin-left:2px}
+  .fourans ul.fa-obstacles{margin:6px 0 0;padding-left:18px}
+  .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
+  @media (max-width:640px){.fourans .fa-row{flex-direction:column;gap:2px}.fourans .fa-k{flex:auto}}
+
+  /* ── #763 — the coverage ledger stops being the page's smallest print ─────────────────────────────
+     `details.scope` had NO screen rule at all: its summary rendered at the browser default, in the
+     browser's default weight, under the browser's default triangle, at the foot of a document whose
+     every other section carries a numbered spine header. The section that states what the search did
+     NOT cover was the one region on the page a reader's eye had no reason to stop at.
+     This is the styling half of #763 and it costs no hash bump — the markup is unchanged. */
+  details.scope>summary{cursor:pointer;list-style:none;margin:22px 0 0;padding:12px 0 10px;
+    border-top:1px solid var(--line);font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+  details.scope>summary::-webkit-details-marker{display:none}
+  details.scope>summary::before{content:"›";display:inline-block;width:16px;color:var(--faint);
+    font-weight:700;transition:transform .12s ease}
+  details.scope[open]>summary::before{transform:rotate(90deg)}
+  details.scope>summary:hover{color:var(--med-tx,var(--ink))}
+  /* print already draws the section hairline on the <details> itself (`details{border-top:…}` in the
+     print block above), so the summary must not draw a second one an eighth of an inch below it. */
+  @media print{details.scope>summary{border-top:0;margin-top:0}}
+  /* the checks bucket now sits OUTSIDE the fold (render.mjs scopeSection), so it needs the h4 the fold
+     never sized — the panel's own h3 rule does not reach it. Same size and weight as a panel heading. */
+  .panel.actions.scope-ran{margin-top:22px}
+  .panel.actions.scope-ran h4{margin:0 0 6px;font-size:14px;letter-spacing:-.01em;
+    display:flex;align-items:center;gap:9px}

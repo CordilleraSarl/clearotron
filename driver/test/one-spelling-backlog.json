@@ -1,0 +1,1053 @@
+{
+  "_what": "#1673 — the sites that pin ONE spelling of a renamed variable, as measured on the commit this file landed on.",
+  "_why": "A RATCHET, not an allowlist. The guard fails on anything NOT here, so the class cannot grow while the migration is done safely. Entries are removed as sites are fixed; nothing is ever added.",
+  "_how": "Regenerate with: node --test driver/test/one-spelling-of-a-renamed-variable-loses.test.mjs (it prints every site it finds).",
+  "_measured": {
+    "sites": 260,
+    "files": 107
+  },
+  "sites": [
+    {
+      "file": "driver/portal-service.mjs",
+      "pins": "CLEAROTRON_CUSTOMERS_DIR"
+    },
+    {
+      "file": "driver/test/a-warm-turn-that-never-landed-costs-no-rung.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/ab-tooling-honesty.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/alias-rule-owner-gate.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/audit-grid-log.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/band-truth-gate.pipeline.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/band-truth-gate.pipeline.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/band-truth-gate.pipeline.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/best-draft.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/brand-reads-both-spellings.test.mjs",
+      "pins": "CLEAROTRON_NO_ENV_FILE"
+    },
+    {
+      "file": "driver/test/carry-through-sees-outside-the-reference.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/common-law-split.merge-converge.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/common-law-split.merge-converge.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/common-law-split.merge-converge.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/common-law-split.merge-converge.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/commonlaw-closure-deterministic.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/commonlaw-closure-deterministic.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/commonlaw-closure-deterministic.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/commonlaw-closure-deterministic.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/config-inventory.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/config-inventory.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/config-inventory.test.mjs",
+      "pins": "CLEAROTRON_AI_BILLING"
+    },
+    {
+      "file": "driver/test/config-inventory.test.mjs",
+      "pins": "CLEAROTRON_DATABASE"
+    },
+    {
+      "file": "driver/test/convergence-ledger.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/corrective-cycle.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/corrective-cycle.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/corrective-cycle.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/corrective-cycle.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/coverage-judgment-rows.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/data-plane-defaults.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/data-plane-defaults.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/deliver-trigger.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/deliver-trigger.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/deployment-hostnames.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_URL"
+    },
+    {
+      "file": "driver/test/digest-funnel.pipeline.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/digest-funnel.pipeline.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/digest-funnel.pipeline.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/e2e-pair-workflow.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/e2e-pair-workflow.test.mjs",
+      "pins": "CLEAROTRON_QUEUE_DIR"
+    },
+    {
+      "file": "driver/test/e2e-pair-workflow.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/e2e-product-comparison.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/e2e-scenario-store.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/e2e-scenario-store.test.mjs",
+      "pins": "CLEAROTRON_QUEUE_DIR"
+    },
+    {
+      "file": "driver/test/e2e-turnaround-band.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/e2e-turnaround-band.test.mjs",
+      "pins": "CLEAROTRON_QUEUE_DIR"
+    },
+    {
+      "file": "driver/test/e2e-turnaround-band.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/engine-overflow-cap.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/engine-pin-must-win.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/engine-probe.test.mjs",
+      "pins": "CLEAROTRON_AI_BILLING"
+    },
+    {
+      "file": "driver/test/engine-probe.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/engine-turn-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/engine-turn-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/engine-turn-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/engine-turn-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/engine.anthropic.test.mjs",
+      "pins": "CLEAROTRON_AI_BILLING"
+    },
+    {
+      "file": "driver/test/engine.anthropic.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/engine.openai.integration.test.mjs",
+      "pins": "CLEAROTRON_CODEX_PATH"
+    },
+    {
+      "file": "driver/test/engine.openai.integration.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/engine.openai.test.mjs",
+      "pins": "CLEAROTRON_CODEX_PATH"
+    },
+    {
+      "file": "driver/test/engine.openai.test.mjs",
+      "pins": "CLEAROTRON_AI_BILLING"
+    },
+    {
+      "file": "driver/test/enqueue-cli.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/enqueue-cli.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/enqueue-cli.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/enqueue-cli.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/enqueue-schema.test.mjs",
+      "pins": "CLEAROTRON_CUSTOMERS_DIR"
+    },
+    {
+      "file": "driver/test/example-replay.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/example-replay.test.mjs",
+      "pins": "CLEAROTRON_DATABASE"
+    },
+    {
+      "file": "driver/test/exit1-artifact-rescue.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/experiment-context.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/flag-snapshot.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/frame-diff-resume-freshness.pipeline.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/frame-diff-resume-freshness.pipeline.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/frame-diff-resume-freshness.pipeline.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/freeze-example-run.test.mjs",
+      "pins": "CLEAROTRON_DATABASE"
+    },
+    {
+      "file": "driver/test/gateway-call-sites-are-pinned.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/grant-command.test.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "driver/test/instrumentation-house-rule.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/intake-reject.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/intake-reject.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/intake-reject.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/intake-reject.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/intake-reject.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/knockout-buckets-carry-the-ordinal.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/knockout-runs-without-a-research-key.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/ladder-break.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/listen-port-in-use.test.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "driver/test/named-band-missing.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/named-band-missing.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/onboard-wizard.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/onboard-wizard.test.mjs",
+      "pins": "CLEAROTRON_CODEX_PATH"
+    },
+    {
+      "file": "driver/test/onboard-wizard.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/onboard-wizard.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/onboard-wizard.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/operability.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.anthropic.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/pipeline.anthropic.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.anthropic.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.anthropic.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registergap.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registergap.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registergap.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registergap.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registeronly.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registeronly.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registeronly.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.mock.registeronly.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.mock.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/pipeline.mock.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.mock.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.mock.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.openai.test.mjs",
+      "pins": "CLEAROTRON_CODEX_PATH"
+    },
+    {
+      "file": "driver/test/pipeline.openai.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.openai.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.openai.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.receipts.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/pipeline.receipts.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/pipeline.receipts.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/pipeline.receipts.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/portal-service-boot.test.mjs",
+      "pins": "CLEAROTRON_QUEUE_DIR"
+    },
+    {
+      "file": "driver/test/preflight-engine-binary.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/preflight-engine-binary.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/preflight-engine-binary.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/preflight-engine-binary.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/preflight-free-space.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/preflight-free-space.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/preflight-free-space.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/preflight-free-space.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/preflight-free-space.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/production-pool-guard.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/production-pool-guard.test.mjs",
+      "pins": "CLEAROTRON_CODEX_PATH"
+    },
+    {
+      "file": "driver/test/purge-runs.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/purge-runs.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/rate-limit-postpone.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/rate-limit-postpone.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/rate-limit-postpone.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/rate-limit-postpone.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/recall-cap-is-split-by-probe-kind.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/recall-cap-is-split-by-probe-kind.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/recall-cap-is-split-by-probe-kind.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/recall-cap-is-split-by-probe-kind.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/refusal-names-the-graded-form.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/research-credential-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/research-credential-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/research-credential-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/research-credential-door.pipeline.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/retry-backoff.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/retry-by-failure-shape.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.admission-budget.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.admission-budget.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.admission-budget.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.admission-budget.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.admission.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.admission.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.admission.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.admission.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.cancel.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.cancel.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.cancel.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.cancel.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.claim-liveness.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.claim-liveness.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.claim-liveness.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/runner.claim-liveness.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.claim-liveness.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.crash-identity.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.crash-identity.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.crash-identity.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/runner.crash-identity.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.crash-identity.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.dedup.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.dedup.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.dedup.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.dedup.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.failure-backstop.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.failure-backstop.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.failure-backstop.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/runner.failure-backstop.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.failure-backstop.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.graceful-stop.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.graceful-stop.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.graceful-stop.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/runner.graceful-stop.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.graceful-stop.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.jx-e2e.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.jx-e2e.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.jx-jako-e2e.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.jx-jako-e2e.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.jx-p4-e2e.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.jx-p4-e2e.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.knockout-e2e.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.knockout-e2e.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.knockout-e2e.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.knockout-e2e.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.promptparts.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.promptparts.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.promptparts.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.promptparts.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.queue-order.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.queue-order.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.queue-order.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.queue-order.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.queue.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.queue.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.queue.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.queue.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.reclaim-bound.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.reclaim-bound.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.reclaim-bound.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/runner.reclaim-bound.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.reclaim-bound.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.search-policy-gate.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.search-policy-gate.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.search-policy-gate.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.search-policy-gate.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.takeover.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/runner.takeover.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/runner.takeover.test.mjs",
+      "pins": "CLEAROTRON_OUTBOX_DIR"
+    },
+    {
+      "file": "driver/test/runner.takeover.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/runner.takeover.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/runner.watch-loop.test.mjs",
+      "pins": "CLEAROTRON_NO_ENV_FILE"
+    },
+    {
+      "file": "driver/test/satprobe-codeside.pipeline.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/satprobe-codeside.pipeline.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/satprobe-codeside.pipeline.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/score-boundary-carries-ordinal.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/score-previous-auto.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/screen-gate-disclose.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/screen-gate-disclose.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/screen-gate-disclose.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/skills-store-provenance.test.mjs",
+      "pins": "CLEAROTRON_INSTRUCTIONS_DIR"
+    },
+    {
+      "file": "driver/test/stage-cwd.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/store-in-repo.test.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "driver/test/store-in-repo.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/store-in-repo.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/synthesis-structural-input.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/the-attempt-record-carries-tool-time.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/the-record-cannot-contradict-itself.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/v4-closure.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/v4-closure.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/v4-closure.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/v4-closure.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/v4-gates.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/v4-gates.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/v4-gates.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/v4-gates.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/v4-run-lock.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/v4-run-lock.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/v4-run-lock.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/v4-run-lock.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/validate-profiles-cli.test.mjs",
+      "pins": "CLEAROTRON_CUSTOMERS_DIR"
+    },
+    {
+      "file": "driver/test/veto-resume-ruled-none.test.mjs",
+      "pins": "CLEAROTRON_CLAUDE_PATH"
+    },
+    {
+      "file": "driver/test/veto-resume-ruled-none.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/veto-resume-ruled-none.test.mjs",
+      "pins": "CLEAROTRON_REPORTS_DIR"
+    },
+    {
+      "file": "driver/test/veto-resume-ruled-none.test.mjs",
+      "pins": "CLEAROTRON_WORK_DIR"
+    },
+    {
+      "file": "driver/test/warm-retry.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "driver/test/write-time-form.test.mjs",
+      "pins": "CLEAROTRON_AI"
+    },
+    {
+      "file": "mcp-server/http-smoke.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "mcp-server/test/account-principal.test.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "mcp-server/test/api-key-door.test.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "mcp-server/test/roster-boot-check.test.mjs",
+      "pins": "CLEAROTRON_ACCESS_FILE"
+    },
+    {
+      "file": "scripts/engine-probe.mjs",
+      "pins": "CLEAROTRON_AI"
+    }
+  ],
+  "_covers": "#1799 — WHAT THIS COUNT IS, AND WHAT IT IS NOT. Every entry here was found by the variable's LITERAL NAME appearing in the file. A helper that writes names its CALLER supplies (`for (const [k,v] of Object.entries(vars)) env[k] = v`) has no literal name at the write, so the sweep cannot see it. Treat this number as a floor over the literal-name shape, never as the size of the class.",
+  "_covers_measured": "Measured at 1ed4ab0f, and the gap is theoretical rather than open: 239 computed-key env writes across 84 files, of which 110 are deletes and 12 restore a saved snapshot. 19 are the helper shape, across 17 files. 12 of those files are already tracked here via their call sites, which DO name literally. The remaining 5 are quiet because they already route through the alias helpers (currentName/spellingsOf) or name no aliased variable at all. NO live instance was found. That is why this is a note and not a guard: a wider pattern cannot help, because the same syntax is benign in a restore loop and defective in a pinning one."
+}

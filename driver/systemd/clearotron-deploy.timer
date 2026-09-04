@@ -1,0 +1,16 @@
+[Unit]
+Description=Clearotron deploy — hourly fast-forward, skipped whenever a run is live
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/06-operations-runbook.md
+
+[Timer]
+# Hourly, and the cadence is the point rather than the speed: a deployment that updates on a schedule is
+# one whose staleness is bounded by an hour instead of by whoever remembers. A box that is busy simply
+# skips — the service refuses and exits clean, and the next firing tries again.
+OnBootSec=5min
+OnUnitActiveSec=1h
+# A box asleep through several firings does ONE catch-up, not a queue of them.
+Persistent=true
+Unit=clearotron-deploy.service
+
+[Install]
+WantedBy=timers.target

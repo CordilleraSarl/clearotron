@@ -1,0 +1,52 @@
+# trademark-artifacts-http.service — the REMOTE, read-only HTTP MCP face for the identities you admit.
+# Runs as a systemd *user* service (the same user that owns the run-dirs). Binds loopback only; the sole
+# public ingress is a Cloudflare Tunnel → Cloudflare Access (Entra IdP). See remote/REMOTE-SETUP.md.
+#
+# Install (as that user):
+#   cp "$CLEAROTRON_CHECKOUT_DIR"/mcp-server/remote/trademark-artifacts-http.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now trademark-artifacts-http.service
+#   journalctl --user -u trademark-artifacts-http.service -f
+#
+# Requires CF_ACCESS_TEAM, CLEAROTRON_OIDC_AUDIENCE, MCP_ALLOWED_EMAIL_DOMAINS, TRADEMARK_MCP_ALLOWED_HOSTS in ~/.env
+# (the service fails closed and refuses to start if auth is enabled but CF_ACCESS_* are unset).
+
+[Unit]
+Description=trademark-artifacts MCP — remote read-only HTTP face (behind Cloudflare Access + Entra)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+# This face is an auth surface: CF_ACCESS_*, the allowed-domain list and the token secret all arrive
+# from the EnvironmentFile above. http-server.mjs is a CLI entry that reads <repo>/.env for a laptop
+# first run (shared/env-local.mjs), so pin the door shut — a file inside the checkout must never be
+# able to contribute to who this process admits. Same line on prelim-driver.service.
+Environment=CLEAROTRON_NO_ENV_FILE=1
+# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
+# not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
+# here reads the working directory: this entry point resolves what it needs from its OWN file location.
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server.mjs
+Restart=on-failure
+RestartSec=10
+# Hardening: this process only reads run-dirs + serves HTTP on loopback.
+NoNewPrivileges=true
+ProtectSystem=strict
+# #774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
+# by existence (providers/_shared/ledger-path.mjs, mcp-server/lib/audit.mjs): a box that already has
+# a ledger or an access log under the old path keeps appending to it and needs it writable, while a
+# fresh box writes to the new one. `-` on both so a missing directory does not fail the unit to
+# START — with ProtectSystem=strict, a ReadWritePaths naming a path that is not there is an error.
+#
+# ON A FRESH DEPLOYMENT, CREATE THE DIRECTORY BEFORE FIRST START: `mkdir -p %h/trademark/telemetry`.
+# systemd resolves these at unit start, so a `-` path that does not exist yet is simply skipped and
+# never becomes writable — and the append that then fails is best-effort by design, so the telemetry
+# is lost with nothing in the journal. An UPGRADED box needs no action: it resolves to the old path.
+ReadWritePaths=-%h/.openclaw/telemetry
+ReadWritePaths=-%h/trademark/telemetry
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

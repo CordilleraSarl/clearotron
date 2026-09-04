@@ -1,0 +1,22 @@
+{
+  "name": "trademark-artifacts-mcp",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "description": "MCP server to interrogate prelim trademark-clearance runs — list/read artifacts, trace the full decision flow, telemetry/cost, coverage, single-run search, and a gated single-step what-if. Imports the prelim-driver read-only; touches no driver/template/deploy files.",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "start:http": "node http-server.mjs",
+    "test": "node ../scripts/test-run.mjs node --test test/*.test.mjs",
+    "test:full": "npm run test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "jose": "^6.2.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

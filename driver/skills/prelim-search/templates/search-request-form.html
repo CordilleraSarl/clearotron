@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trademark Search Request Form</title>
+<style>
+  body {
+    font-family: Aptos, Calibri, Helvetica, sans-serif;
+    font-size: 12pt;
+    color: #000;
+    padding: 20px;
+  }
+  p.confidential {
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
+  table.request-form {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  table.request-form td {
+    border: 1pt solid windowtext;
+    padding: 4pt;
+    vertical-align: top;
+  }
+  .header-row td {
+    background-color: #000;
+    color: #fff;
+    font-weight: bold;
+  }
+  .label-col {
+    width: 15%;
+    font-weight: bold;
+  }
+  .value-col {
+    width: 85%;
+  }
+  .deadline-value {
+    color: #ee0000;
+    font-weight: bold;
+  }
+  /* Reporting template risk colours */
+  .risk-header {
+    background-color: #bfbfbf;
+    text-align: center;
+    font-weight: bold;
+  }
+  .risk-low {
+    background-color: #4472C4;
+    text-align: center;
+    font-weight: bold;
+  }
+  .risk-manageable {
+    background-color: #70AD47;
+    text-align: center;
+    font-weight: bold;
+  }
+  .risk-medium {
+    background-color: #ffff00;
+    text-align: center;
+    font-weight: bold;
+  }
+  .risk-high {
+    background-color: #ED7D31;
+    text-align: center;
+    font-weight: bold;
+  }
+  .risk-very-high {
+    background-color: #ff0000;
+    text-align: center;
+    font-weight: bold;
+  }
+  ul { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<p class="confidential">Privileged &amp; Confidential</p>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SEARCH REQUEST FORM
+     Fill in the placeholders marked {{LIKE_THIS}} before sending.
+════════════════════════════════════════════════════════════════ -->
+<table class="request-form" cellspacing="0" cellpadding="0" border="0">
+  <tbody>
+
+    <!-- Title row -->
+    <tr class="header-row">
+      <td colspan="2"><b>TRADEMARK SEARCH REQUEST FORM</b></td>
+    </tr>
+
+    <!-- Deadline -->
+    <tr>
+      <td class="label-col"><b>Deadline:</b></td>
+      <td class="value-col"><span class="deadline-value"><b>{{DEADLINE}}</b></span></td>
+    </tr>
+
+    <!-- Reference No. -->
+    <tr>
+      <td class="label-col"><b>Reference No.:</b></td>
+      <td class="value-col">{{TMP_REFERENCE}}</td>
+    </tr>
+
+    <!-- Names -->
+    <tr>
+      <td class="label-col"><b>Names:</b></td>
+      <td class="value-col">
+        <ul>
+          <li><b>{{TRADEMARK_NAME_1}}</b></li>
+          <!-- Add additional names as needed:
+          <li><b>{{TRADEMARK_NAME_2}}</b></li>
+          -->
+        </ul>
+      </td>
+    </tr>
+
+    <!-- Classes -->
+    <tr>
+      <td class="label-col"><b>Classes:</b></td>
+      <td class="value-col">{{NICE_CLASSES}} (and any other you deem necessary based on the information provided).</td>
+    </tr>
+
+    <!-- Description -->
+    <tr>
+      <td class="label-col"><b>Description:</b></td>
+      <td class="value-col">{{DESCRIPTION}}</td>
+    </tr>
+
+    <!-- Manner of Use -->
+    <tr>
+      <td class="label-col"><b>Manner of Use:</b></td>
+      <td class="value-col">{{MANNER_OF_USE}}</td>
+    </tr>
+
+    <!-- Additional Info -->
+    <tr>
+      <td class="label-col"><b>Additional Info:</b></td>
+      <td class="value-col">
+        <p>{{ADDITIONAL_INFO}}</p>
+        <!-- Common fields seen in practice:
+        <p>+3 months to change.</p>
+        <p>Tier [1|2|3].</p>
+        <p>Will [not] be localized.</p>
+        <p>Global / [specific regions].</p>
+        <p><b>Note:</b> {{SPECIFIC_NOTES}}</p>
+        -->
+      </td>
+    </tr>
+
+    <!-- Send Response To -->
+    <tr>
+      <td class="label-col"><b>Send Response to:</b></td>
+      <td class="value-col">
+        <a href="mailto:{{RECIPIENT_EMAIL_1}}">{{RECIPIENT_EMAIL_1}}</a>;
+        <!-- Add additional recipients as needed:
+        <a href="mailto:{{RECIPIENT_EMAIL_2}}">{{RECIPIENT_EMAIL_2}}</a>;
+        -->
+      </td>
+    </tr>
+
+    <!-- Invoicing section -->
+    <tr class="header-row">
+      <td colspan="2"><b>INVOICING</b></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="background-color:#fff; padding:4pt;">
+        All invoices related to searches must be billed to the reference number* noted in the search request AND must include the name of the term that was searched in either the "Invoice Description" field or in the Line Item "Narrative" field.
+        <b>Invoices that do not include this information will be rejected.</b>
+        *In our T360 billing system, the TMP reference number is shown in the "Matter Name" field, not in the "Matter Number" field.
+      </td>
+    </tr>
+
+    <!-- Reporting Template section -->
+    <tr class="header-row">
+      <td colspan="2">
+        <b>REPORTING TEMPLATE</b><br>
+        <span style="font-size:10pt; color:yellow;"><b>Instructions: Based on the level of risk, complete the appropriate section, removing any additional text that is not needed from the template. Any risk level not used can be removed from the table.</b></span>
+      </td>
+    </tr>
+
+    <!-- Risk table header -->
+    <tr>
+      <td class="risk-header" style="text-align:center;"><b>NAME<br>RISK RATING</b></td>
+      <td class="risk-header" style="text-align:center;"><b>ANALYSIS / NOTES</b></td>
+    </tr>
+
+    <!-- LOW -->
+    <tr>
+      <td class="risk-low">
+        <b>{{NAME}}</b><br><b>LOW</b>
+      </td>
+      <td>No comments required.</td>
+    </tr>
+
+    <!-- MANAGEABLE -->
+    <tr>
+      <td class="risk-manageable">
+        <b>{{NAME}}</b><br><b>MANAGEABLE</b>
+      </td>
+      <td>No comments required unless you would like to flag up major competitors or major brand owners with rights or use in a similar name, although their claim is not strong.</td>
+    </tr>
+
+    <!-- MEDIUM -->
+    <tr>
+      <td class="risk-medium">
+        <b>{{NAME}}</b><br><b>MEDIUM</b>
+      </td>
+      <td>
+        <p>List material adverse parties from highest to lowest risk providing the following for each:</p>
+        <p><b>Use format for listing each hit:</b></p>
+        <ul>
+          <li>Legal Risk + Dispute type – [Acme, Inc.&lt;<a href="http://www.acme.com/">Acme, Inc.</a>&gt;] has rights in [jurisdiction(s)] for MARK covering [insert a paraphrased list of goods/services which best explains the most problematic overlap – please do not copy/paste long specifications].</li>
+        </ul>
+        <p><b>Example:</b></p>
+        <ul>
+          <li>C + Paper - <a href="https://www.thyssenkrupp.com/en/company">Thyssenkrupp AG</a> has rights in the EU for <a href="https://www.thyssenkrupp.com/garage">MYNDPOOL</a> covering computer hardware/software for information retrieval, analytics and ML.</li>
+        </ul>
+        <p><b><u>NOTE:</u></b> If there is more detail that is crucial to understand the risk involving the hit, please include it.</p>
+      </td>
+    </tr>
+
+    <!-- HIGH -->
+    <tr>
+      <td class="risk-high">
+        <b>{{NAME}}</b><br><b>HIGH</b>
+      </td>
+      <td>See Medium Risk for formatting.</td>
+    </tr>
+
+    <!-- VERY HIGH -->
+    <tr>
+      <td class="risk-very-high">
+        <b>{{NAME}}</b><br><b>VERY HIGH</b>
+      </td>
+      <td>See Medium Risk for formatting.</td>
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

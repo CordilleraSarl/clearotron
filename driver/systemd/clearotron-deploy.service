@@ -1,0 +1,38 @@
+# GENERIC UNIT — safe to sync verbatim on deploy: no deployment-specific values live here; the checkout
+# path comes from EnvironmentFile=%h/.env, as it does for prelim-driver.service.
+[Unit]
+Description=Clearotron deploy — fast-forward this checkout to origin/main, never over a live run
+Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/docs/architecture/06-operations-runbook.md
+
+[Service]
+# oneshot: systemd guarantees a single instance, so two timer firings cannot run two `npm ci` at once.
+Type=oneshot
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+# Same reason as prelim-driver.service: this deployment's configuration is the EnvironmentFile above and
+# nothing else, so a stray .env left in the checkout cannot reconfigure a deploy.
+Environment=CLEAROTRON_NO_ENV_FILE=1
+
+# `clearotron update` is the whole mechanism, and it already owns both refusals:
+#
+#   1. it refuses over a configuration store kept INSIDE the checkout (#1723) — an upgrade there is a
+#      merge conflict at best and a silent overwrite of the operator's own doctrine at worst;
+#   2. it refuses while a run is queued, claimed or in flight (#1883) — `npm ci` rebuilds node_modules
+#      under whatever is running, and a clearance assembled from halves of two builds does not fail, it
+#      answers wrongly and says nothing.
+#
+# The second test reads the RESOLVED queue directories and the run-slot locks, never systemd, so it is
+# the same answer whichever drainer this box runs. THIS UNIT DELIBERATELY DOES NOT DECIDE THAT QUESTION:
+# it neither starts nor stops a drainer, and it holds no ordering against one.
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/bin/clearotron.mjs update
+
+# EXIT 4 ONLY, and the distinction is the issue's own lesson. Exit 4 is "a run is live" — transient,
+# expected on a busy box, and the next firing tries again; painting the unit failed for it would page
+# somebody hourly for the guard working. Exit 3 is "the configuration store is inside the checkout",
+# which is PERMANENT and needs a human: marking it success would leave a deployment that never updates
+# and never says so, which is exactly the invisible failure this unit exists to end.
+SuccessExitStatus=4
+
+# Bounded, because a hung `npm ci` holding the unit activating would block every later firing.
+TimeoutStartSec=30min
+Nice=10

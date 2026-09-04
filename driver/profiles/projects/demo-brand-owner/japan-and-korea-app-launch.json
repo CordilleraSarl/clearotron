@@ -1,0 +1,11 @@
+{
+  "projectName": "Japan and Korea app launch",
+  "industry": "consumer mobile app for water-quality readings, sold through app stores rather than through the trade",
+  "marketplaceDensity": "dense",
+  "platforms": ["rakuten.co.jp", "kakaku.com", "naver.com", "coupang.com", "line.me"],
+  "defaultClasses": [9, 42],
+  "defaultJurisdictions": ["JP", "KR"],
+  "delivery": { "email": "summary", "privileged": true },
+  "defaultProduct": "multi-country-focus-search",
+  "riskAppetite": "A consumer launch into two scripts. Treat transliterations and native-script equivalents as first-class marks, not variants — and say which script a conflict actually sits in."
+}

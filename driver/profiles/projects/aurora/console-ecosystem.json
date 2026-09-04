@@ -1,0 +1,20 @@
+{
+  "projectName": "Console ecosystem",
+  "industry": "Console gaming hardware, controllers and peripherals, and the first-party game software and online services built around them",
+  "platforms": [
+    "amazon.com",
+    "walmart.com",
+    "bestbuy.com",
+    "target.com",
+    "newegg.com",
+    "ebay.com",
+    "store.steampowered.com",
+    "apps.apple.com",
+    "play.google.com"
+  ],
+  "defaultClasses": [
+    9,
+    28,
+    41
+  ]
+}

@@ -1,0 +1,5957 @@
+{
+  "_README": [
+    "#1010 — THE SUITE'S SELF-CENSUS. Minted and checked by shared/suite-census.mjs's ONE counter, so the",
+    "minting side cannot drift from the checking side and manufacture its own findings.",
+    "",
+    "Collection is a glob, so a test file that is DELETED or RENAMED out of it simply stops being",
+    "collected: the runner reports a smaller total and exits 0. Nothing pinned assertion counts either, so",
+    "a GUTTED file — names intact, assertions gone — reported the same green.",
+    "",
+    "This file is the persisted expectation that makes those three visible, and only a persisted",
+    "expectation can: a committed deletion vanishes from git, from the glob and from the TAP output at the",
+    "same instant, so no pairwise comparison at run time has anything left to compare.",
+    "",
+    "THE COUNTS ARE A FLOOR, NOT A TARGET. 93% of assert sites are one-site-one-execution, so this",
+    "UNDERSTATES how bad a gutting is and never whether one happened. Do not tighten it into an exact",
+    "count — that would have to model loops, and a census that fails on an honest refactor gets deleted.",
+    "",
+    "RE-STAMP DELIBERATELY:  node scripts/mint-suite-census.mjs --apply"
+  ],
+  "workspaces": {
+    "driver": {
+      "ext": "mjs",
+      "perFile": {
+        "a-backgrounded-install-can-actually-run-a-clearance.test.mjs": {
+          "tests": 7,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-backtick-in-a-comment-ends-the-template.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-bail-on-an-unmeetable-precondition-is-a-skip.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 3,
+          "todos": 0
+        },
+        "a-bare-territory-per-provider.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-cancel-marker-names-its-actor.test.mjs": {
+          "tests": 14,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-cancelled-run-stays-cancelled.test.mjs": {
+          "tests": 14,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-capability-is-named-before-the-report-names-it.test.mjs": {
+          "tests": 6,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-capped-list-shows-the-filings-that-matter.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-capture-allocates-a-sequence.test.mjs": {
+          "tests": 2,
+          "asserts": 2,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-capture-records-the-call-not-one-field.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 2,
+          "todos": 0
+        },
+        "a-case-law-gap-names-the-right-reason.test.mjs": {
+          "tests": 8,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-claim-may-not-outlive-its-evidence.test.mjs": {
+          "tests": 14,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-credential-is-not-a-wired-lane.test.mjs": {
+          "tests": 10,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-deduped-read-must-exist-on-the-card.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-delivered-finding-is-not-reported-as-reaching-nothing.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-demo-report-declares-itself.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-demo-run-and-a-demo-account-must-agree.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-demo-says-what-it-is-not-what-it-lacks.test.mjs": {
+          "tests": 4,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-detached-group-dies-with-its-script.test.mjs": {
+          "tests": 14,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-directory-over-four-files-has-a-front-door.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-discovered-set-can-be-empty-and-still-pass.test.mjs": {
+          "tests": 6,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-document-carries-the-controls-the-shell-offers.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-door-does-not-build-its-url-from-the-callers-host.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-doubt-cannot-answer-itself.test.mjs": {
+          "tests": 17,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-euipo-receipt-names-the-corpus-that-answered.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-fact-about-a-named-party.test.mjs": {
+          "tests": 30,
+          "asserts": 80,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-failed-repair-rolls-back.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-failed-run-points-at-evidence-that-resolves.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-failed-run-tells-the-client-what-to-do.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-finding-the-digest-ended-cannot-vanish-in-silence.test.mjs": {
+          "tests": 11,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-gone-session-meets-a-door-not-a-json-body.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-guard-that-refuses-on-a-pattern-prints-the-match.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-han-mark-is-not-a-longer-mark.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-jq-program-in-a-js-string-keeps-its-backslash.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-jx-lane-runs-on-the-program-the-run-chose.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-killed-browser-takes-its-children.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
+          "tests": 9,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-matter-directory-nobody-created-is-visible.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-memo-over-a-delivered-report-leaves-it-alone.test.mjs": {
+          "tests": 9,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-mid-run-mint-cannot-lose-a-mark.test.mjs": {
+          "tests": 10,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-park-resume-leaves-a-record.test.mjs": {
+          "tests": 5,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-parked-cancel-frees-its-matter.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
+          "tests": 11,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-pool-copy-is-not-a-refusal.test.mjs": {
+          "tests": 8,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-printed-command-runs-from-where-the-reader-stands.test.mjs": {
+          "tests": 14,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-project-cannot-break-the-tree-it-joins.test.mjs": {
+          "tests": 13,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-public-clone-is-told-why-a-command-cannot-run.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-queued-job-is-visible-before-a-worker-claims-it.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-real-install-starts-with-an-empty-archive.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-recall-probe-does-not-close-on-having-run.test.mjs": {
+          "tests": 10,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-record-asked-for-and-never-delivered.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refusal-is-not-a-pass.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refusal-names-what-resolves-it.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refused-mcp-call-is-not-a-call-nobody-made.test.mjs": {
+          "tests": 7,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-removed-control-does-not-delete-the-setting-behind-it.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-retrieval-group-does-not-vote-on-seat-writes.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-retry-asks-only-for-what-is-unanswered.test.mjs": {
+          "tests": 7,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-that-cannot-settle-says-so.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-that-never-published-can-still-be-retired.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-save-that-cannot-commit-says-so.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-schedule-event-has-no-range-to-name.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-section-the-skill-spells-two-ways-is-not-a-missing-section.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
+          "tests": 10,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-skill-that-points-at-a-sibling.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stopped-run-says-why-it-stopped.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 1,
+          "todos": 0
+        },
+        "a-terminal-guard-delivers-and-clamps.test.mjs": {
+          "tests": 11,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-test-never-reaches-a-network-it-does-not-need.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 2,
+          "todos": 0
+        },
+        "a-unit-configuration-cannot-reach-is-resolved-at-install.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-verbatim-mark-variant-has-a-route.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-verifier-takes-its-issuer-from-configuration.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 2,
+          "todos": 0
+        },
+        "a-wait-the-driver-could-not-measure-says-so.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-warm-turn-that-never-landed-costs-no-rung.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-what-if-claims-only-what-the-manifest-shows.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-write-free-stage-hands-paths-over-to-read.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "ab-tooling-honesty.test.mjs": {
+          "tests": 15,
+          "asserts": 71,
+          "skips": 0,
+          "todos": 0
+        },
+        "absent-path-citations.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 1,
+          "todos": 0
+        },
+        "access-model-stated-once.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 1,
+          "todos": 0
+        },
+        "acknowledge-is-per-viewer.test.mjs": {
+          "tests": 9,
+          "asserts": 43,
+          "skips": 1,
+          "todos": 0
+        },
+        "action-fits-bound-line.test.mjs": {
+          "tests": 7,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "action-party-references.test.mjs": {
+          "tests": 10,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "alias-exact-floor.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "alias-rule-owner-gate.test.mjs": {
+          "tests": 8,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "allocation-failure-is-not-a-red-main.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-account-is-never-created-unable-to-start.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-archived-run-says-whether-it-was-delivered.test.mjs": {
+          "tests": 8,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-arm-can-reach-the-corrective-seam.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-arm-that-produced-nothing-is-not-ok.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-evidence-demand-that-cannot-be-met.test.mjs": {
+          "tests": 9,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-executed-probe-says-what-came-back.test.mjs": {
+          "tests": 14,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-experiment-receipt-names-its-engine.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-mcp-route-says-which-challenge-it-answers-with.test.mjs": {
+          "tests": 8,
+          "asserts": 25,
+          "skips": 1,
+          "todos": 0
+        },
+        "an-operator-facing-name-is-the-one-they-set.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "anchor-and-script-aware-quote.test.mjs": {
+          "tests": 12,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "anchor-directive.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "anchor-reader.test.mjs": {
+          "tests": 2,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "archive-index.test.mjs": {
+          "tests": 15,
+          "asserts": 85,
+          "skips": 0,
+          "todos": 0
+        },
+        "artifacts-say-what-produced-them.test.mjs": {
+          "tests": 8,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "ask-answer-label.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "ask-ledger.test.mjs": {
+          "tests": 21,
+          "asserts": 100,
+          "skips": 0,
+          "todos": 0
+        },
+        "attributed-span.test.mjs": {
+          "tests": 7,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "audit-from-spine.test.mjs": {
+          "tests": 12,
+          "asserts": 54,
+          "skips": 0,
+          "todos": 0
+        },
+        "audit-grid-log.test.mjs": {
+          "tests": 13,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "audit-workbook-commonlaw-unlogged.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "audit-workbook.test.mjs": {
+          "tests": 20,
+          "asserts": 74,
+          "skips": 0,
+          "todos": 0
+        },
+        "backfill-started-at.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "band-borderline.test.mjs": {
+          "tests": 8,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "band-server.test.mjs": {
+          "tests": 24,
+          "asserts": 126,
+          "skips": 0,
+          "todos": 0
+        },
+        "band-shape-probe.test.mjs": {
+          "tests": 10,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "band-shape.test.mjs": {
+          "tests": 14,
+          "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
+        "band-truth-gate.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "band-truth-gate.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "bash-write-detector.test.mjs": {
+          "tests": 9,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "basis-derivation.test.mjs": {
+          "tests": 9,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "best-draft.test.mjs": {
+          "tests": 7,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "billing-composition-states-the-mix.test.mjs": {
+          "tests": 16,
+          "asserts": 64,
+          "skips": 0,
+          "todos": 0
+        },
+        "binding-layers.test.mjs": {
+          "tests": 19,
+          "asserts": 68,
+          "skips": 0,
+          "todos": 0
+        },
+        "blank-numeric-setting-is-unset.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "blind-frame-model.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "blind-frame-record.test.mjs": {
+          "tests": 7,
+          "asserts": 25,
+          "skips": 2,
+          "todos": 0
+        },
+        "borderline-placement-is-adjudicated-or-named.test.mjs": {
+          "tests": 10,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "both-doors-start-on-both-paths.test.mjs": {
+          "tests": 8,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "both-lanes-seed-identity.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 1,
+          "todos": 0
+        },
+        "bounded-sample.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "brand.test.mjs": {
+          "tests": 10,
+          "asserts": 58,
+          "skips": 0,
+          "todos": 0
+        },
+        "browser-check-membership.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 4,
+          "todos": 0
+        },
+        "cannot-repair-is-a-fact.test.mjs": {
+          "tests": 9,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "card-budget.test.mjs": {
+          "tests": 7,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "card-concurrency.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "carry-through-sees-outside-the-reference.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "case-law-join.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "case-law-ledger.test.mjs": {
+          "tests": 10,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "case-law-lever.test.mjs": {
+          "tests": 13,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "caselaw-bridge-audit.test.mjs": {
+          "tests": 8,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "census-merge-driver.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "channel-coverage-at-stage-exit.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "channel-fallback-silence.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "channel-plan-reaches-the-trace.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "channels-plan-vs-executed.test.mjs": {
+          "tests": 11,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "charged-rating-carries-its-grounds.test.mjs": {
+          "tests": 11,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "ci-duplicate-skip.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "citation-drift-at-the-diff.test.mjs": {
+          "tests": 9,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "citation-line-check.test.mjs": {
+          "tests": 46,
+          "asserts": 112,
+          "skips": 1,
+          "todos": 0
+        },
+        "claim-fixtures.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "claim-liveness.test.mjs": {
+          "tests": 17,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "cleared-signatures.test.mjs": {
+          "tests": 9,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "client-door.test.mjs": {
+          "tests": 29,
+          "asserts": 132,
+          "skips": 0,
+          "todos": 0
+        },
+        "client-gate.test.mjs": {
+          "tests": 13,
+          "asserts": 69,
+          "skips": 0,
+          "todos": 0
+        },
+        "client-surface-vocabulary.test.mjs": {
+          "tests": 15,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "close-verify.test.mjs": {
+          "tests": 9,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "cn-scope-honesty.test.mjs": {
+          "tests": 22,
+          "asserts": 96,
+          "skips": 0,
+          "todos": 0
+        },
+        "code-side-is-not-unknown.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "codename-freshness.test.mjs": {
+          "tests": 5,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "commit-message-guard.test.mjs": {
+          "tests": 37,
+          "asserts": 130,
+          "skips": 0,
+          "todos": 0
+        },
+        "common-law-receipts.test.mjs": {
+          "tests": 36,
+          "asserts": 129,
+          "skips": 0,
+          "todos": 0
+        },
+        "common-law-seat-tier.test.mjs": {
+          "tests": 10,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "common-law-split.merge-converge.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "commonlaw-candidate-cardinality.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "commonlaw-carry-degenerate-is-linted.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "commonlaw-carry-ratchet.test.mjs": {
+          "tests": 11,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "commonlaw-carry.test.mjs": {
+          "tests": 25,
+          "asserts": 90,
+          "skips": 0,
+          "todos": 0
+        },
+        "commonlaw-closure-deterministic.test.mjs": {
+          "tests": 8,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "commonlaw-reconciliation-callsite.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "compose-read.test.mjs": {
+          "tests": 23,
+          "asserts": 87,
+          "skips": 0,
+          "todos": 0
+        },
+        "config-inventory.test.mjs": {
+          "tests": 18,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "config-resolves-outside-the-checkout.test.mjs": {
+          "tests": 9,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-clients-are-data.test.mjs": {
+          "tests": 12,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-help-publishes-nothing-private.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-key-mints-for-the-caller.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-prints-the-steps-it-already-holds.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "connect-reasons-about-the-running-product.test.mjs": {
+          "tests": 8,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "connotation-errored.test.mjs": {
+          "tests": 9,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "connotation-obligations.test.mjs": {
+          "tests": 13,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "connotation-quote-unbound.test.mjs": {
+          "tests": 12,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "connotation-reason-vocabulary.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "connotation-receipt-identity.test.mjs": {
+          "tests": 14,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "connotation-search.test.mjs": {
+          "tests": 23,
+          "asserts": 83,
+          "skips": 0,
+          "todos": 0
+        },
+        "consolidation-key-cjk.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "consumption-ledger.test.mjs": {
+          "tests": 6,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "context-pack.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "contract-audit.test.mjs": {
+          "tests": 52,
+          "asserts": 164,
+          "skips": 0,
+          "todos": 0
+        },
+        "contract-dictation.test.mjs": {
+          "tests": 19,
+          "asserts": 42,
+          "skips": 4,
+          "todos": 0
+        },
+        "convergence-ledger.test.mjs": {
+          "tests": 10,
+          "asserts": 60,
+          "skips": 0,
+          "todos": 0
+        },
+        "corrections-are-the-reviewers-flags.test.mjs": {
+          "tests": 20,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "corrections-feedforward.test.mjs": {
+          "tests": 13,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "corrective-cycle.test.mjs": {
+          "tests": 8,
+          "asserts": 75,
+          "skips": 0,
+          "todos": 0
+        },
+        "corrective-message.test.mjs": {
+          "tests": 22,
+          "asserts": 107,
+          "skips": 0,
+          "todos": 0
+        },
+        "could-not-look-is-not-not-armed.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-absence-declaration.test.mjs": {
+          "tests": 6,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-aside.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-axis-hint.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-call.test.mjs": {
+          "tests": 20,
+          "asserts": 103,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-disclosure-carries-no-engine-output.test.mjs": {
+          "tests": 8,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-form-differential.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-form-fail-closed.test.mjs": {
+          "tests": 13,
+          "asserts": 66,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-form-seat-axis.test.mjs": {
+          "tests": 23,
+          "asserts": 77,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-form-taint-park.test.mjs": {
+          "tests": 3,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-form.test.mjs": {
+          "tests": 29,
+          "asserts": 92,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-incomplete-names-the-block.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-is-disclosed-never-refused.test.mjs": {
+          "tests": 10,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-judgment-rows.test.mjs": {
+          "tests": 9,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-ledger-unreached-office.test.mjs": {
+          "tests": 13,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-ledger.test.mjs": {
+          "tests": 32,
+          "asserts": 110,
+          "skips": 0,
+          "todos": 0
+        },
+        "coverage-union.test.mjs": {
+          "tests": 11,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "crowd-context.test.mjs": {
+          "tests": 17,
+          "asserts": 86,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-dangling-declared.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 2,
+          "todos": 0
+        },
+        "cut-dangling-refs.test.mjs": {
+          "tests": 7,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-graft-proof.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 1,
+          "todos": 0
+        },
+        "cut-harness.test.mjs": {
+          "tests": 27,
+          "asserts": 79,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-preflight.test.mjs": {
+          "tests": 9,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-private-names.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 1,
+          "todos": 0
+        },
+        "cut-publish.test.mjs": {
+          "tests": 16,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-reconcile.test.mjs": {
+          "tests": 13,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-run-export.test.mjs": {
+          "tests": 9,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-ships.test.mjs": {
+          "tests": 10,
+          "asserts": 47,
+          "skips": 5,
+          "todos": 0
+        },
+        "cut-strip-refs.test.mjs": {
+          "tests": 15,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "cut-vendor-keys.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 2,
+          "todos": 0
+        },
+        "cut-write.test.mjs": {
+          "tests": 10,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "data-plane-defaults.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "dead-end-passage-is-named-not-blamed.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "dead-names.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 3,
+          "todos": 0
+        },
+        "declaration-sources-are-split-not-filtered.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "declared-park-excuses-proof-not-judgment.test.mjs": {
+          "tests": 9,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "declination-duty.test.mjs": {
+          "tests": 14,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "declination-is-stated-not-inferred.test.mjs": {
+          "tests": 20,
+          "asserts": 60,
+          "skips": 0,
+          "todos": 0
+        },
+        "default-port-is-a-guess.test.mjs": {
+          "tests": 15,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "deferred-coverage-surface.test.mjs": {
+          "tests": 10,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "deliver-trigger.test.mjs": {
+          "tests": 10,
+          "asserts": 35,
+          "skips": 2,
+          "todos": 0
+        },
+        "delivery-style.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "demo-data-never-starts-a-real-clearance.test.mjs": {
+          "tests": 6,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "deny-authority-write.test.mjs": {
+          "tests": 17,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "dependency-repair.test.mjs": {
+          "tests": 11,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "deploy-drift-check.test.mjs": {
+          "tests": 14,
+          "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "deploy-refuses-over-a-live-run.test.mjs": {
+          "tests": 13,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "deploy-validate-says-what-happened.test.mjs": {
+          "tests": 12,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "deployment-hostnames.test.mjs": {
+          "tests": 13,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-loop-bounds.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-prose-rung.test.mjs": {
+          "tests": 9,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-reaches-the-prompt.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-resolves-on-the-real-path.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-run-record.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-rung-discipline.test.mjs": {
+          "tests": 8,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "depth-ladder-table.test.mjs": {
+          "tests": 11,
+          "asserts": 25,
+          "skips": 1,
+          "todos": 0
+        },
+        "designed-refusal.test.mjs": {
+          "tests": 10,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "dev-portal.test.mjs": {
+          "tests": 4,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "digest-funnel.pipeline.test.mjs": {
+          "tests": 5,
+          "asserts": 90,
+          "skips": 0,
+          "todos": 0
+        },
+        "digest-queue.test.mjs": {
+          "tests": 12,
+          "asserts": 54,
+          "skips": 0,
+          "todos": 0
+        },
+        "dispatch-grant-recorded.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "dispatch-record.test.mjs": {
+          "tests": 7,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-call-audit.test.mjs": {
+          "tests": 17,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-call-firing.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-call.test.mjs": {
+          "tests": 26,
+          "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-dictation-binding.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-field-set.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-form-tool.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-index-selection.test.mjs": {
+          "tests": 26,
+          "asserts": 78,
+          "skips": 2,
+          "todos": 0
+        },
+        "disposition-row-kinds-documented.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 1,
+          "todos": 0
+        },
+        "disposition-set-has-one-author.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-tool.test.mjs": {
+          "tests": 15,
+          "asserts": 50,
+          "skips": 1,
+          "todos": 0
+        },
+        "disposition-union.test.mjs": {
+          "tests": 20,
+          "asserts": 75,
+          "skips": 0,
+          "todos": 0
+        },
+        "disposition-verdict-ledger.test.mjs": {
+          "tests": 21,
+          "asserts": 104,
+          "skips": 0,
+          "todos": 0
+        },
+        "doc-constants.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "doc-subject-stated-once.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 3,
+          "todos": 0
+        },
+        "doctor-names-who-is-in-the-store.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "doctor-reads-the-units-not-the-shell.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "doctor-reports-the-doctrine-overlay.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
+          "skips": 1,
+          "todos": 0
+        },
+        "doctrine-overlay-report.test.mjs": {
+          "tests": 9,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "door-pages-take-their-colours-from-brand.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "door-report-names-the-reason.test.mjs": {
+          "tests": 9,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "doors-agree.test.mjs": {
+          "tests": 19,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "doubt-closure-budget.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "doubt-closure-call.test.mjs": {
+          "tests": 13,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "doubt-closure-grading-cannot-bind.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "doubt-closure-tool.test.mjs": {
+          "tests": 19,
+          "asserts": 65,
+          "skips": 1,
+          "todos": 0
+        },
+        "doubt-closure.test.mjs": {
+          "tests": 5,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "doubt-ledger-citations-are-anchored.test.mjs": {
+          "tests": 5,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "doubt-ledger.test.mjs": {
+          "tests": 23,
+          "asserts": 87,
+          "skips": 0,
+          "todos": 0
+        },
+        "drain-preflight.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "drainer-identity.test.mjs": {
+          "tests": 17,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "driver-dir-has-one-creator.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 1,
+          "todos": 0
+        },
+        "e2e-assertions.test.mjs": {
+          "tests": 86,
+          "asserts": 242,
+          "skips": 1,
+          "todos": 0
+        },
+        "e2e-mark-provenance.test.mjs": {
+          "tests": 15,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-pair-workflow.test.mjs": {
+          "tests": 14,
+          "asserts": 72,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-product-comparison.test.mjs": {
+          "tests": 26,
+          "asserts": 83,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-rounds.test.mjs": {
+          "tests": 23,
+          "asserts": 116,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-run-token.test.mjs": {
+          "tests": 7,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-scenario-store.test.mjs": {
+          "tests": 17,
+          "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-state-not-shape.test.mjs": {
+          "tests": 49,
+          "asserts": 186,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-store-sweep-scope.test.mjs": {
+          "tests": 11,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-turnaround-band.test.mjs": {
+          "tests": 26,
+          "asserts": 98,
+          "skips": 0,
+          "todos": 0
+        },
+        "e2e-unread-terminals.test.mjs": {
+          "tests": 26,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "effective-scope.test.mjs": {
+          "tests": 15,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "email-audit-link.test.mjs": {
+          "tests": 13,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "email-compose.test.mjs": {
+          "tests": 16,
+          "asserts": 81,
+          "skips": 0,
+          "todos": 0
+        },
+        "engagement-receipt.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine-build-at-run-start.test.mjs": {
+          "tests": 11,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine-overflow-cap.test.mjs": {
+          "tests": 1,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine-pin-must-win.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 2,
+          "todos": 0
+        },
+        "engine-probe-standalone.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine-probe.test.mjs": {
+          "tests": 21,
+          "asserts": 94,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine-turn-door.pipeline.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.anthropic.test.mjs": {
+          "tests": 60,
+          "asserts": 215,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.codex-config.test.mjs": {
+          "tests": 12,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.common.test.mjs": {
+          "tests": 18,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.fetch-server.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.gather.test.mjs": {
+          "tests": 20,
+          "asserts": 116,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.openai.integration.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "engine.openai.test.mjs": {
+          "tests": 37,
+          "asserts": 132,
+          "skips": 0,
+          "todos": 0
+        },
+        "enqueue-cli.test.mjs": {
+          "tests": 6,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "enqueue-into-an-unwatched-queue-says-so.test.mjs": {
+          "tests": 15,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "enqueue-schema-archived-project.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "enqueue-schema-class-inheritance.test.mjs": {
+          "tests": 11,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "enqueue-schema-unreadable-store.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "enqueue-schema.test.mjs": {
+          "tests": 48,
+          "asserts": 188,
+          "skips": 0,
+          "todos": 0
+        },
+        "entrypoint-guard-survives-a-symlink.test.mjs": {
+          "tests": 7,
+          "asserts": 25,
+          "skips": 1,
+          "todos": 0
+        },
+        "env-classification-is-reproducible.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "env-governance.test.mjs": {
+          "tests": 52,
+          "asserts": 129,
+          "skips": 32,
+          "todos": 0
+        },
+        "env-idiom.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "env-local-precedes-capture.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 2,
+          "todos": 0
+        },
+        "env-local.test.mjs": {
+          "tests": 14,
+          "asserts": 47,
+          "skips": 3,
+          "todos": 0
+        },
+        "envelope-settle.test.mjs": {
+          "tests": 15,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "envelope.test.mjs": {
+          "tests": 20,
+          "asserts": 63,
+          "skips": 0,
+          "todos": 0
+        },
+        "euipo-environment-doctrine.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-client-surface-declares-a-demo.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-dispatch-carries-the-charter.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-lane-declares-its-transport-position.test.mjs": {
+          "tests": 7,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-obligation-loop-has-a-bound.test.mjs": {
+          "tests": 15,
+          "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-recording-stage-has-a-mock-that-calls-its-tool.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-skip-is-declared.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 2,
+          "todos": 0
+        },
+        "every-tool-declares-what-it-does.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-verb-answers-help.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "example-replay.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "examples-jobs.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "exit-cause-survives-the-digest.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "exit1-artifact-rescue.test.mjs": {
+          "tests": 20,
+          "asserts": 79,
+          "skips": 0,
+          "todos": 0
+        },
+        "experiment-context.test.mjs": {
+          "tests": 20,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "experiment-tool-wiring.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "f6-an-absent-pile-is-no-surface.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "f6-reads-the-fate-codes.test.mjs": {
+          "tests": 5,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "failure-packet.test.mjs": {
+          "tests": 13,
+          "asserts": 67,
+          "skips": 1,
+          "todos": 0
+        },
+        "failure-text-not-engine-string.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "family-ungroup-discoverable.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 1,
+          "todos": 0
+        },
+        "feedback-issues.test.mjs": {
+          "tests": 13,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "feedback-store.test.mjs": {
+          "tests": 6,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "findings-gate-token.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "findings-model.test.mjs": {
+          "tests": 67,
+          "asserts": 253,
+          "skips": 0,
+          "todos": 0
+        },
+        "findings-p5.test.mjs": {
+          "tests": 12,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "findings-read-rejection.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "findings-v5.test.mjs": {
+          "tests": 12,
+          "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "flag-snapshot.test.mjs": {
+          "tests": 24,
+          "asserts": 82,
+          "skips": 0,
+          "todos": 0
+        },
+        "floor-duty-resume.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "floor-duty.test.mjs": {
+          "tests": 31,
+          "asserts": 92,
+          "skips": 0,
+          "todos": 0
+        },
+        "form-field-set-binding.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "form-floor-honours-judgment.test.mjs": {
+          "tests": 19,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "form-neighbourhood.test.mjs": {
+          "tests": 17,
+          "asserts": 68,
+          "skips": 0,
+          "todos": 0
+        },
+        "four-transports-keep-what-a-repair-does-not-resend.test.mjs": {
+          "tests": 9,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "frame-diff-dominant-bind.test.mjs": {
+          "tests": 6,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "frame-diff-model.test.mjs": {
+          "tests": 32,
+          "asserts": 105,
+          "skips": 0,
+          "todos": 0
+        },
+        "frame-diff-resume-freshness.pipeline.test.mjs": {
+          "tests": 3,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "framework-freeze.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "framework-lint.test.mjs": {
+          "tests": 8,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "framework-prompt.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "free-tier-credential-sites.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "freeze-example-run.test.mjs": {
+          "tests": 8,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "gate-metrics.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "gateway-call-sites-are-pinned.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "gathered-evidence-declares-its-filter.test.mjs": {
+          "tests": 8,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "grant-command.test.mjs": {
+          "tests": 12,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "grounds-grammar.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "head-arrived-gated.test.mjs": {
+          "tests": 12,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "health-carries-the-build.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "health-names-its-age-and-its-instance.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "hints-state-the-requirement.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "history-corpus-completeness.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "home-link.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "http-dispatcher.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "identity-seed-before-refusal.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "install-doc-describes-this-machine.test.mjs": {
+          "tests": 7,
+          "asserts": 14,
+          "skips": 1,
+          "todos": 0
+        },
+        "instrumentation-house-rule.test.mjs": {
+          "tests": 17,
+          "asserts": 113,
+          "skips": 0,
+          "todos": 0
+        },
+        "intake-reject.test.mjs": {
+          "tests": 1,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "invocation-prefix.test.mjs": {
+          "tests": 9,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "issuing-a-key-loads-the-install-it-is-issuing-for.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "jurisdiction-codes.test.mjs": {
+          "tests": 5,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "jurisdiction-systems.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "jx-p4-cores.test.mjs": {
+          "tests": 14,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "jx-p4-units.test.mjs": {
+          "tests": 24,
+          "asserts": 131,
+          "skips": 0,
+          "todos": 0
+        },
+        "jx-shadow-lane-note.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "jx-slice-statement.test.mjs": {
+          "tests": 19,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "jx-units.test.mjs": {
+          "tests": 25,
+          "asserts": 164,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-assess-guarded-write.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-buckets-carry-the-ordinal.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-classes-predicate.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-ladder-observable.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
+          "skips": 1,
+          "todos": 0
+        },
+        "knockout-record-link-host.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-recovery-ladder.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-report-md-routes.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-runs-without-a-research-key.test.mjs": {
+          "tests": 6,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-seats-do-not-describe-the-register-lane.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-structured-read.test.mjs": {
+          "tests": 10,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-sweep-outage.test.mjs": {
+          "tests": 11,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-typed-finding.test.mjs": {
+          "tests": 12,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "knockout-units.test.mjs": {
+          "tests": 49,
+          "asserts": 273,
+          "skips": 0,
+          "todos": 0
+        },
+        "known-conflicts.test.mjs": {
+          "tests": 17,
+          "asserts": 87,
+          "skips": 0,
+          "todos": 0
+        },
+        "ladder-break.test.mjs": {
+          "tests": 13,
+          "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
+        "lane-depth-ask-vs-got.test.mjs": {
+          "tests": 12,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "lane-switch-one-reader.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 2,
+          "todos": 0
+        },
+        "lane-wedge.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "ledger-folded-once-per-ledger.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "ledger-too-large.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "listen-port-in-use.test.mjs": {
+          "tests": 11,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "local-imports.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "lost-declines-without-a-retrieved-corpus.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "machine-receipts.test.mjs": {
+          "tests": 8,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "main-gate-gaps.test.mjs": {
+          "tests": 20,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "manager-groups-verdict.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "manifest-term-annotation-is-a-reask.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "matter-frame-record.test.mjs": {
+          "tests": 12,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "meaning-seat.test.mjs": {
+          "tests": 13,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "merge-asks-the-recovery-question.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "merge-preflight.test.mjs": {
+          "tests": 81,
+          "asserts": 250,
+          "skips": 0,
+          "todos": 0
+        },
+        "merge-presence-check.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "meter-indeterminate.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "methodology-witness.test.mjs": {
+          "tests": 10,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "mock-closure-fixture.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "mock-write-mandate.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "named-band-missing.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "named-band-record-shape.test.mjs": {
+          "tests": 11,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "named-band.test.mjs": {
+          "tests": 19,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "narrative-refutation-record.test.mjs": {
+          "tests": 15,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "nightly-notice.test.mjs": {
+          "tests": 24,
+          "asserts": 81,
+          "skips": 1,
+          "todos": 0
+        },
+        "no-alias-sits-beside-its-real-name.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
+        "no-caveat-repair.test.mjs": {
+          "tests": 10,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-client-delivery-defect-claims.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-client-identifiers.test.mjs": {
+          "tests": 29,
+          "asserts": 104,
+          "skips": 9,
+          "todos": 0
+        },
+        "no-client-surface-follows-the-os.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-credential-rides-the-supplemental-mint.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-default-path-vars-refuse.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-nul-bytes.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 2,
+          "todos": 0
+        },
+        "no-private-repository-name-outside-its-declarations.test.mjs": {
+          "tests": 3,
+          "asserts": 4,
+          "skips": 2,
+          "todos": 0
+        },
+        "no-vendor-provenance-in-the-public-cut.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-vendor-terms-or-verdicts.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "numeric-setting-refuses.test.mjs": {
+          "tests": 15,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "onboard-wizard.test.mjs": {
+          "tests": 49,
+          "asserts": 188,
+          "skips": 2,
+          "todos": 0
+        },
+        "onboarding-sets-the-framework-it-says-it-set.test.mjs": {
+          "tests": 27,
+          "asserts": 65,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-authored-wording-per-finding.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-bracket-geometry.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-clause-net.test.mjs": {
+          "tests": 22,
+          "asserts": 76,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-country-report-is-byte-identical.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-job-owns-the-node-modules-cache.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-name-per-command.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 2,
+          "todos": 0
+        },
+        "one-repeat-detector-three-receivers.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "operability.test.mjs": {
+          "tests": 30,
+          "asserts": 177,
+          "skips": 0,
+          "todos": 0
+        },
+        "order-probe.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "outbox-backoff.test.mjs": {
+          "tests": 17,
+          "asserts": 65,
+          "skips": 0,
+          "todos": 0
+        },
+        "outbox-preflight.test.mjs": {
+          "tests": 11,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "output-stamp-honesty.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 2,
+          "todos": 0
+        },
+        "own-rights.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "owner-descriptor-claims-only-what-it-observes.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "owner-name-romanisation.test.mjs": {
+          "tests": 14,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "owner-screen.test.mjs": {
+          "tests": 11,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "park-clock-names-its-kind.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "park-survives-the-half-merge.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "park-tells-the-truth.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "park-unrulable-row.test.mjs": {
+          "tests": 16,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "parked-row-is-accounted-not-owed.test.mjs": {
+          "tests": 14,
+          "asserts": 50,
+          "skips": 1,
+          "todos": 0
+        },
+        "per-finding-objections.test.mjs": {
+          "tests": 8,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "perplexity-call-log.test.mjs": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "phonetic-key.test.mjs": {
+          "tests": 6,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.anthropic.test.mjs": {
+          "tests": 3,
+          "asserts": 75,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.mock.registergap.test.mjs": {
+          "tests": 5,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.mock.registeronly.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.mock.test.mjs": {
+          "tests": 93,
+          "asserts": 783,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.openai.test.mjs": {
+          "tests": 2,
+          "asserts": 52,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.receipts.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "pipeline.resume-line.test.mjs": {
+          "tests": 14,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "placement-carry.test.mjs": {
+          "tests": 17,
+          "asserts": 75,
+          "skips": 0,
+          "todos": 0
+        },
+        "placement-diff.test.mjs": {
+          "tests": 12,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "placement-form.test.mjs": {
+          "tests": 13,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "placement-model.test.mjs": {
+          "tests": 14,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "plan-qid-is-an-identity.test.mjs": {
+          "tests": 10,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "pool-admin-reassign.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-access.test.mjs": {
+          "tests": 9,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-audit-route.test.mjs": {
+          "tests": 9,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-batch-report-link.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
+          "skips": 1,
+          "todos": 0
+        },
+        "portal-carries.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-config-view.test.mjs": {
+          "tests": 33,
+          "asserts": 84,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-families.test.mjs": {
+          "tests": 25,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-local-auth.test.mjs": {
+          "tests": 20,
+          "asserts": 75,
+          "skips": 1,
+          "todos": 0
+        },
+        "portal-local-login.test.mjs": {
+          "tests": 22,
+          "asserts": 89,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-mcp-client.test.mjs": {
+          "tests": 9,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-queue-order.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-report.test.mjs": {
+          "tests": 64,
+          "asserts": 203,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-run-control.test.mjs": {
+          "tests": 16,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-run-rows.test.mjs": {
+          "tests": 7,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-service-boot.test.mjs": {
+          "tests": 28,
+          "asserts": 137,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-service.test.mjs": {
+          "tests": 116,
+          "asserts": 618,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-static.test.mjs": {
+          "tests": 13,
+          "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-upstream.test.mjs": {
+          "tests": 36,
+          "asserts": 108,
+          "skips": 0,
+          "todos": 0
+        },
+        "precondition-refusal.test.mjs": {
+          "tests": 9,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "predelivery-lint.test.mjs": {
+          "tests": 98,
+          "asserts": 362,
+          "skips": 0,
+          "todos": 0
+        },
+        "preflight-credentials.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "preflight-engine-binary.test.mjs": {
+          "tests": 14,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "preflight-free-space.test.mjs": {
+          "tests": 11,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "preflight-research-credential.test.mjs": {
+          "tests": 11,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "preflight.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "prelim-variants-record.test.mjs": {
+          "tests": 13,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "presence-reconciliation.test.mjs": {
+          "tests": 10,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "product-identity.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 1,
+          "todos": 0
+        },
+        "product-rows.test.mjs": {
+          "tests": 11,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "production-pool-guard.test.mjs": {
+          "tests": 14,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "products.test.mjs": {
+          "tests": 23,
+          "asserts": 129,
+          "skips": 0,
+          "todos": 0
+        },
+        "profile-lever-coverage.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "profile-service.test.mjs": {
+          "tests": 31,
+          "asserts": 157,
+          "skips": 0,
+          "todos": 0
+        },
+        "profile-store-resolution.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "profiles-page.test.mjs": {
+          "tests": 9,
+          "asserts": 69,
+          "skips": 0,
+          "todos": 0
+        },
+        "profiles.test.mjs": {
+          "tests": 43,
+          "asserts": 241,
+          "skips": 0,
+          "todos": 0
+        },
+        "progress.test.mjs": {
+          "tests": 24,
+          "asserts": 86,
+          "skips": 0,
+          "todos": 0
+        },
+        "project-defaults-never-widen-an-order.test.mjs": {
+          "tests": 12,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "prompt-payload-names-no-tracker-issue.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 1,
+          "todos": 0
+        },
+        "prose-voice.test.mjs": {
+          "tests": 8,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "provider-hard-error-deferral.test.mjs": {
+          "tests": 16,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "provider-neutral-prose.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "provider-usage.test.mjs": {
+          "tests": 18,
+          "asserts": 65,
+          "skips": 0,
+          "todos": 0
+        },
+        "public-repo-furniture.test.mjs": {
+          "tests": 7,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "publication-scrub.test.mjs": {
+          "tests": 14,
+          "asserts": 51,
+          "skips": 7,
+          "todos": 0
+        },
+        "publish-input-coverage.test.mjs": {
+          "tests": 6,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "publish-stamp.test.mjs": {
+          "tests": 3,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "published-documents-have-routes.test.mjs": {
+          "tests": 7,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "purge-fails-closed.test.mjs": {
+          "tests": 11,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "purge-runs.test.mjs": {
+          "tests": 19,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "push-guards-are-armed.test.mjs": {
+          "tests": 4,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "pushed-content-guard.test.mjs": {
+          "tests": 9,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "quarantined-condition-clamp.test.mjs": {
+          "tests": 8,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "queue-door-coherence.test.mjs": {
+          "tests": 15,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "queue-markers.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "queue-watch-verdict.test.mjs": {
+          "tests": 20,
+          "asserts": 52,
+          "skips": 0,
+          "todos": 0
+        },
+        "rate-limit-postpone.test.mjs": {
+          "tests": 2,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "rate-limit-probe.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "readme-example-screenshot.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "reason-cut-is-visible.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "reasoned-negatives.test.mjs": {
+          "tests": 23,
+          "asserts": 71,
+          "skips": 0,
+          "todos": 0
+        },
+        "reasoning-tripwires.test.mjs": {
+          "tests": 17,
+          "asserts": 83,
+          "skips": 0,
+          "todos": 0
+        },
+        "recall-cap-is-split-by-probe-kind.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "recall-reconciliation.test.mjs": {
+          "tests": 19,
+          "asserts": 87,
+          "skips": 0,
+          "todos": 0
+        },
+        "recent-activity.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "recipe-extras-wire.test.mjs": {
+          "tests": 14,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "recipe-scope-fold.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "recipe-service.test.mjs": {
+          "tests": 12,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "reconcile-runs.test.mjs": {
+          "tests": 17,
+          "asserts": 52,
+          "skips": 0,
+          "todos": 0
+        },
+        "record-carry-scope.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "record-carry.test.mjs": {
+          "tests": 28,
+          "asserts": 121,
+          "skips": 0,
+          "todos": 0
+        },
+        "record-discard.test.mjs": {
+          "tests": 23,
+          "asserts": 82,
+          "skips": 0,
+          "todos": 0
+        },
+        "record-links-honour-the-allowlist.test.mjs": {
+          "tests": 8,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "record-url-host.test.mjs": {
+          "tests": 17,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "recording-agreement.test.mjs": {
+          "tests": 34,
+          "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
+        "recording-grant-preservation.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "recover-winning-attempt.test.mjs": {
+          "tests": 4,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "reference-integrity-candidates.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "reference-score-counts.test.mjs": {
+          "tests": 13,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "reference-score-mark-coverage.test.mjs": {
+          "tests": 25,
+          "asserts": 110,
+          "skips": 0,
+          "todos": 0
+        },
+        "reference-score-owner-identity.test.mjs": {
+          "tests": 9,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "reference-score-territories.test.mjs": {
+          "tests": 67,
+          "asserts": 279,
+          "skips": 0,
+          "todos": 0
+        },
+        "reference-score.test.mjs": {
+          "tests": 63,
+          "asserts": 213,
+          "skips": 0,
+          "todos": 0
+        },
+        "refusal-names-the-graded-form.test.mjs": {
+          "tests": 12,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "refusal-that-names-no-row.test.mjs": {
+          "tests": 12,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "refused-slice-is-not-a-counted-zero.test.mjs": {
+          "tests": 10,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
+        "regen-baselines.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "regen-surfaces.test.mjs": {
+          "tests": 1,
+          "asserts": 1,
+          "skips": 0,
+          "todos": 0
+        },
+        "regions.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-advertisement-vs-grant.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-availability.test.mjs": {
+          "tests": 19,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-capabilities.test.mjs": {
+          "tests": 33,
+          "asserts": 263,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-count.test.mjs": {
+          "tests": 20,
+          "asserts": 145,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-coverage-doors.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-coverage-wire.test.mjs": {
+          "tests": 9,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-coverage.test.mjs": {
+          "tests": 13,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-digest-record.test.mjs": {
+          "tests": 30,
+          "asserts": 102,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-ledger-rename.test.mjs": {
+          "tests": 12,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-office-split.test.mjs": {
+          "tests": 17,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-only.test.mjs": {
+          "tests": 28,
+          "asserts": 99,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-plan.test.mjs": {
+          "tests": 82,
+          "asserts": 391,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-positions.test.mjs": {
+          "tests": 10,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-provider-required.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-record-log-run-scoped.test.mjs": {
+          "tests": 9,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-records.test.mjs": {
+          "tests": 17,
+          "asserts": 93,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-review-fixes.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-steering.test.mjs": {
+          "tests": 9,
+          "asserts": 68,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-taint.test.mjs": {
+          "tests": 13,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-unit-lane.test.mjs": {
+          "tests": 6,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "register-variants.test.mjs": {
+          "tests": 8,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "registry-correct-freshness.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "registry-fidelity-deadlines.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "registry-fidelity.test.mjs": {
+          "tests": 48,
+          "asserts": 196,
+          "skips": 0,
+          "todos": 0
+        },
+        "release-pipeline.test.mjs": {
+          "tests": 12,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "remedy-accounting.test.mjs": {
+          "tests": 13,
+          "asserts": 65,
+          "skips": 0,
+          "todos": 0
+        },
+        "render-check-fixture-pool.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "render-check-waits.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "render-frozen.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "render-knockout.test.mjs": {
+          "tests": 51,
+          "asserts": 256,
+          "skips": 0,
+          "todos": 0
+        },
+        "render.test.mjs": {
+          "tests": 152,
+          "asserts": 621,
+          "skips": 0,
+          "todos": 0
+        },
+        "repair-composer-registry.test.mjs": {
+          "tests": 10,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "repair-contract.test.mjs": {
+          "tests": 5,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "repair-digest.test.mjs": {
+          "tests": 9,
+          "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
+        "repair-write-mode.test.mjs": {
+          "tests": 15,
+          "asserts": 66,
+          "skips": 0,
+          "todos": 0
+        },
+        "repairs.test.mjs": {
+          "tests": 60,
+          "asserts": 204,
+          "skips": 0,
+          "todos": 0
+        },
+        "replay-archive.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-assemble.test.mjs": {
+          "tests": 21,
+          "asserts": 109,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-card-frame.test.mjs": {
+          "tests": 11,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-card-projection.pipeline.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-card-record.test.mjs": {
+          "tests": 17,
+          "asserts": 65,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-card-source-bullet.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-card-validator-join.test.mjs": {
+          "tests": 8,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-data.test.mjs": {
+          "tests": 5,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-external-links.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-feedback-is-switched-off.test.mjs": {
+          "tests": 11,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-frame-sandbox.test.mjs": {
+          "tests": 4,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-overview-record.test.mjs": {
+          "tests": 15,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-prose-standard.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-record-link-host.test.mjs": {
+          "tests": 3,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "report-registry.test.mjs": {
+          "tests": 12,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "research-credential-door.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "result-nouns-are-classified.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
+        "resume-claim-recovery.test.mjs": {
+          "tests": 12,
+          "asserts": 17,
+          "skips": 1,
+          "todos": 0
+        },
+        "retired-envelope-is-not-an-absent-value.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "retired-platform-leaves-no-trace.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 3,
+          "todos": 0
+        },
+        "retired-settings-are-really-retired.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "retry-backoff.test.mjs": {
+          "tests": 8,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "retry-by-failure-shape.test.mjs": {
+          "tests": 5,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "roster-verdict.test.mjs": {
+          "tests": 11,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "row-address-is-a-position.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "rule-shape.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-activity.test.mjs": {
+          "tests": 9,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-caps.test.mjs": {
+          "tests": 10,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-dir-grant-is-earned.test.mjs": {
+          "tests": 10,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-economics.test.mjs": {
+          "tests": 21,
+          "asserts": 129,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-integrity.test.mjs": {
+          "tests": 19,
+          "asserts": 56,
+          "skips": 1,
+          "todos": 0
+        },
+        "run-quote.test.mjs": {
+          "tests": 14,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "run-retire-not-delete.test.mjs": {
+          "tests": 10,
+          "asserts": 43,
+          "skips": 1,
+          "todos": 0
+        },
+        "runcaps-default.test.mjs": {
+          "tests": 9,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.admission-budget.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.admission.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.cancel.test.mjs": {
+          "tests": 6,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.claim-liveness.test.mjs": {
+          "tests": 7,
+          "asserts": 34,
+          "skips": 1,
+          "todos": 0
+        },
+        "runner.claim-sweep.test.mjs": {
+          "tests": 7,
+          "asserts": 57,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.crash-identity.test.mjs": {
+          "tests": 8,
+          "asserts": 58,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.dedup.test.mjs": {
+          "tests": 4,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.failure-backstop.test.mjs": {
+          "tests": 3,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.graceful-stop.test.mjs": {
+          "tests": 3,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.jx-e2e.test.mjs": {
+          "tests": 2,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.jx-jako-e2e.test.mjs": {
+          "tests": 2,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.jx-p4-e2e.test.mjs": {
+          "tests": 2,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.knockout-e2e.test.mjs": {
+          "tests": 3,
+          "asserts": 112,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.postpone-identity.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.promptparts.test.mjs": {
+          "tests": 1,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.queue-order.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.queue.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
+          "skips": 1,
+          "todos": 0
+        },
+        "runner.reclaim-bound.test.mjs": {
+          "tests": 2,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.search-policy-gate.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.self-resume.test.mjs": {
+          "tests": 2,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.takeover.test.mjs": {
+          "tests": 12,
+          "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "runner.watch-loop.test.mjs": {
+          "tests": 8,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "sample-run-render.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "satprobe-codeside.pipeline.test.mjs": {
+          "tests": 5,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "satprobe-codeside.test.mjs": {
+          "tests": 6,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "scenario-provenance.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "scenario-tier-selects-and-refuses.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "scope-facts.test.mjs": {
+          "tests": 15,
+          "asserts": 62,
+          "skips": 0,
+          "todos": 0
+        },
+        "scope-ledger.test.mjs": {
+          "tests": 11,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "scope-origins-callsite.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "scope-rules.test.mjs": {
+          "tests": 14,
+          "asserts": 97,
+          "skips": 0,
+          "todos": 0
+        },
+        "score-boundary-carries-ordinal.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "score-previous-auto.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "score-prints-the-reviewers-verdict.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "screen-gate-disclose.test.mjs": {
+          "tests": 7,
+          "asserts": 52,
+          "skips": 0,
+          "todos": 0
+        },
+        "screen-gate-zero-names-its-cause.test.mjs": {
+          "tests": 15,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "screen-gate.test.mjs": {
+          "tests": 32,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
+        "screen-verdict-reaches-the-floor-row.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "script-exact-floor.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "script-floor.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "search-policy-freeze.test.mjs": {
+          "tests": 7,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "search-policy.test.mjs": {
+          "tests": 34,
+          "asserts": 177,
+          "skips": 0,
+          "todos": 0
+        },
+        "seat-outputs-outside-driver-tree.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "seat-retry-report.test.mjs": {
+          "tests": 18,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "section-13-source-offer.test.mjs": {
+          "tests": 10,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "seed-pool.test.mjs": {
+          "tests": 8,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "seed-write-failure-recorded.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "segment-pointing.test.mjs": {
+          "tests": 12,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "senior-rights.test.mjs": {
+          "tests": 8,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "sent-clear-receipts.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
+        "server-tools-granted-or-stated.test.mjs": {
+          "tests": 13,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "shipped-brand-is-the-product.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 2,
+          "todos": 0
+        },
+        "signa-mock-lane-is-unreachable-from-a-run.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 3,
+          "todos": 0
+        },
+        "similar-group-lookup-answers-by-name.test.mjs": {
+          "tests": 10,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "site-nav.test.mjs": {
+          "tests": 10,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "skeptic-consumed-surface.test.mjs": {
+          "tests": 5,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "skeptic-record.test.mjs": {
+          "tests": 9,
+          "asserts": 50,
+          "skips": 2,
+          "todos": 0
+        },
+        "skeptic-search.test.mjs": {
+          "tests": 23,
+          "asserts": 57,
+          "skips": 1,
+          "todos": 0
+        },
+        "skill-contract-enumerations.test.mjs": {
+          "tests": 47,
+          "asserts": 172,
+          "skips": 0,
+          "todos": 0
+        },
+        "skills-overlay.test.mjs": {
+          "tests": 10,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "skills-store-provenance.test.mjs": {
+          "tests": 22,
+          "asserts": 56,
+          "skips": 1,
+          "todos": 0
+        },
+        "slot-lock-xproc.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "snapshot-pair-classification.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "spdx-headers.test.mjs": {
+          "tests": 7,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "stage-cwd.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "stage-event-names-what-ran.test.mjs": {
+          "tests": 11,
+          "asserts": 20,
+          "skips": 1,
+          "todos": 0
+        },
+        "stage-freshness.test.mjs": {
+          "tests": 23,
+          "asserts": 60,
+          "skips": 0,
+          "todos": 0
+        },
+        "stage-thinking-override.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "stages-followup.test.mjs": {
+          "tests": 9,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "start-background-units.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "start-command.test.mjs": {
+          "tests": 27,
+          "asserts": 114,
+          "skips": 0,
+          "todos": 0
+        },
+        "start-refuses-on-a-box-that-has-the-services.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "status-says-when-a-service-predates-its-config.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "status-snapshot.test.mjs": {
+          "tests": 6,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "stdin-exit.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "stop-is-a-stop.test.mjs": {
+          "tests": 6,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "store-in-repo.test.mjs": {
+          "tests": 19,
+          "asserts": 54,
+          "skips": 0,
+          "todos": 0
+        },
+        "stray-artifacts.test.mjs": {
+          "tests": 13,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "strip-internal.test.mjs": {
+          "tests": 7,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "suite-cannot-reach-a-real-engine.test.mjs": {
+          "tests": 10,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "suite-cannot-reach-live-data-plane.test.mjs": {
+          "tests": 11,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "suite-census.test.mjs": {
+          "tests": 17,
+          "asserts": 81,
+          "skips": 4,
+          "todos": 0
+        },
+        "suite-failure-names-the-test.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "suite-ledger-is-not-the-box-ledger.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "supplemental.test.mjs": {
+          "tests": 23,
+          "asserts": 148,
+          "skips": 0,
+          "todos": 0
+        },
+        "surface-duty.test.mjs": {
+          "tests": 11,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "surface-prose-names-what-renders.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "symbol-citation-survives-a-move.test.mjs": {
+          "tests": 8,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "synthesis-record.test.mjs": {
+          "tests": 39,
+          "asserts": 102,
+          "skips": 0,
+          "todos": 0
+        },
+        "synthesis-rules-disposition-binding.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "synthesis-structural-input.test.mjs": {
+          "tests": 8,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "t3a-deliver-with-open-points.test.mjs": {
+          "tests": 12,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "teardown-leaves-nothing-claimable.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "teardown-refuses-unread-terminals.test.mjs": {
+          "tests": 16,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "term-shape.test.mjs": {
+          "tests": 10,
+          "asserts": 81,
+          "skips": 0,
+          "todos": 0
+        },
+        "term-substance.test.mjs": {
+          "tests": 7,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "terminal-reason-fields.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "terminal-run-says-when-it-stopped.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "territory-tiers.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "test-run-deps.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "test-run-tmpdir.test.mjs": {
+          "tests": 10,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "test-tiers.test.mjs": {
+          "tests": 10,
+          "asserts": 41,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-attempt-record-carries-tool-time.test.mjs": {
+          "tests": 13,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-audit-row-rides-in-the-commit.test.mjs": {
+          "tests": 11,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-audit-stores-register-presence.test.mjs": {
+          "tests": 11,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-bands-box-shows-the-whole-band.test.mjs": {
+          "tests": 9,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-boot-line-cannot-claim-a-lane-it-has-not-got.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-bundled-roster-is-read-not-remembered.test.mjs": {
+          "tests": 8,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-card-shows-the-raters-read.test.mjs": {
+          "tests": 10,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-caveat-is-owed-only-when-it-is-true.test.mjs": {
+          "tests": 12,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-classifier-names-what-the-validator-named.test.mjs": {
+          "tests": 13,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-connect-route-has-one-author.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-corrections-section-is-an-allowlist.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-corrective-pass-inherits-the-depth-rung.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-corrective-pass-names-what-it-removes.test.mjs": {
+          "tests": 8,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-cut-record-does-not-ship-and-its-readers-degrade-stricter.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-demo-account-shows-a-configured-customer.test.mjs": {
+          "tests": 4,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-door-answers-the-address-it-advertises.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-doubt-carries-its-placement-tier.test.mjs": {
+          "tests": 17,
+          "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-driver-lists-the-profiles.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-dry-run-asks-the-wall.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-effort-model-predicts-the-run-it-quotes.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
+          "tests": 15,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-family-tag-is-writable-and-sweeps-contains.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-fold-receipt-names-the-model.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-freeze-carries-what-the-run-reads.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-glossary-describes-the-model-the-code-enforces.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-grant-sentence-and-its-carve-out-hold-per-provider.test.mjs": {
+          "tests": 6,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-hit-list-owes-one-fate-per-line.test.mjs": {
+          "tests": 16,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-install-can-keep-itself-current.test.mjs": {
+          "tests": 8,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-install-places-what-a-server-needs.test.mjs": {
+          "tests": 20,
+          "asserts": 44,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-wears-the-reports-card.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-lockfile-agrees-about-install-scripts.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-marketplace-rule-is-the-same-on-both-sides.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-narrative-is-checked-against-its-depth-rules.test.mjs": {
+          "tests": 15,
+          "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-narrative-seat-does-not-describe-the-fetch-lane.test.mjs": {
+          "tests": 8,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-passphrase-is-in-the-block-not-the-log.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-passphrase-line-tells-the-truth-on-a-first-start.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-process-table-reads-a-box-with-no-proc.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-providers-suite-is-censused.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 1,
+          "todos": 0
+        },
+        "the-published-door-must-answer-not-merely-exist.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-readmes-commands-run-as-written.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-record-cannot-contradict-itself.test.mjs": {
+          "tests": 12,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-record-half-of-an-add-must-reach-git.test.mjs": {
+          "tests": 11,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-repair-order-and-the-tool-schema-agree.test.mjs": {
+          "tests": 6,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-repair-verdict-reaches-the-log.test.mjs": {
+          "tests": 10,
+          "asserts": 19,
+          "skips": 1,
+          "todos": 0
+        },
+        "the-report-shell-keeps-what-a-repair-does-not-resend.test.mjs": {
+          "tests": 6,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-root-strip-rule-survives-and-can-only-widen.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-run-key-is-unique-where-it-is-read.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-run-s-own-materiality-orders-the-table.test.mjs": {
+          "tests": 9,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-scope-section-states-the-run-it-heads.test.mjs": {
+          "tests": 10,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-seats-attestation-decides-the-use-source.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-secret-scan-sees-across-a-chunk-boundary.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 2,
+          "todos": 0
+        },
+        "the-settings-surface-reads-the-customer-store.test.mjs": {
+          "tests": 9,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-shipped-readme-links-resolve-in-the-tarball.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-source-offer-names-a-commit-on-a-packaged-install.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-staff-editor-cannot-invent-a-confidentiality-instruction.test.mjs": {
+          "tests": 6,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-summary-carries-structure.test.mjs": {
+          "tests": 12,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-two-env-files-are-named-where-they-appear.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-verb-table-resolves-to-files-that-ship.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-worklist-comes-from-the-call-not-the-document.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-xcheck-cap-counts-queries.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "third-party-notices.test.mjs": {
+          "tests": 14,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "tokens.test.mjs": {
+          "tests": 10,
+          "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
+        "tool-free-argv-baseline.test.mjs": {
+          "tests": 16,
+          "asserts": 81,
+          "skips": 0,
+          "todos": 0
+        },
+        "tool-schema-matches-accepted-shape.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "tool-timeout-attribution.test.mjs": {
+          "tests": 12,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "travelling-predicates.test.mjs": {
+          "tests": 8,
+          "asserts": 27,
+          "skips": 1,
+          "todos": 0
+        },
+        "truncated-doubt-ledger-says-so.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "truncation-marks-the-cut.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "tty-style-degrades-before-it-decorates.test.mjs": {
+          "tests": 7,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "turnaround-quote-is-one-ruled-range.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "two-asks-in-flight-keep-their-own-clocks.test.mjs": {
+          "tests": 6,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "two-word-annotated-variant-is-refused.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "unannounced-delivery.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "unavailable-veto-depth.test.mjs": {
+          "tests": 14,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "undecided-reaches-the-client.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "undeclared-field-census.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "undeclared-key-census.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "unexecuted-asserts.test.mjs": {
+          "tests": 5,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "union-call-sites-carry-the-park.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 1,
+          "todos": 0
+        },
+        "unit-entries-load-env-local.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 1,
+          "todos": 0
+        },
+        "unit-file-drift.test.mjs": {
+          "tests": 9,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "unit-files.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "unit-inventory.test.mjs": {
+          "tests": 41,
+          "asserts": 180,
+          "skips": 1,
+          "todos": 0
+        },
+        "unit-note-transport.test.mjs": {
+          "tests": 6,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "unit-pair-classification.test.mjs": {
+          "tests": 5,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "unit-state-verdict.test.mjs": {
+          "tests": 25,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "unknown-count-is-not-a-counted-zero.test.mjs": {
+          "tests": 7,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
+        "unlicensed-buffers-is-gone.test.mjs": {
+          "tests": 7,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "update-refuses-on-a-packaged-install.test.mjs": {
+          "tests": 6,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "update-writes-only-inside-the-checkout.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "usage-ledger-standalone-queue.test.mjs": {
+          "tests": 13,
+          "asserts": 33,
+          "skips": 2,
+          "todos": 0
+        },
+        "use-check.test.mjs": {
+          "tests": 9,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "uspto-index-size.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "uspto-peak-disk.test.mjs": {
+          "tests": 8,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "uuid-advisory-is-pinned-out.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "v4-closure.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "v4-gates.test.mjs": {
+          "tests": 6,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "v4-run-lock.test.mjs": {
+          "tests": 6,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "validate-profiles-cli.test.mjs": {
+          "tests": 12,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "variant-category-brief.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "variant-floor.test.mjs": {
+          "tests": 24,
+          "asserts": 71,
+          "skips": 0,
+          "todos": 0
+        },
+        "variant-rung-cannot-thin-the-floor.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "vendor-as-architecture.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 3,
+          "todos": 0
+        },
+        "verify-knockout.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "verify.test.mjs": {
+          "tests": 81,
+          "asserts": 332,
+          "skips": 0,
+          "todos": 0
+        },
+        "veto-resume-ruled-none.test.mjs": {
+          "tests": 1,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "warm-retry.test.mjs": {
+          "tests": 22,
+          "asserts": 129,
+          "skips": 0,
+          "todos": 0
+        },
+        "wave-boundaries.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "whatif-queue.test.mjs": {
+          "tests": 13,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "withheld-fixture.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "withheld-states-its-scope.test.mjs": {
+          "tests": 8,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "worker-heartbeat.test.mjs": {
+          "tests": 11,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "write-guarantee-is-declared.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "write-return-names-the-form.test.mjs": {
+          "tests": 9,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "write-time-form.test.mjs": {
+          "tests": 18,
+          "asserts": 108,
+          "skips": 0,
+          "todos": 0
+        },
+        "write-up-form-census.test.mjs": {
+          "tests": 7,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "write-up-form.test.mjs": {
+          "tests": 9,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "write-up-render.test.mjs": {
+          "tests": 9,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "you-can-sign-out-of-the-mode-you-signed-in-to.test.mjs": {
+          "tests": 5,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        }
+      }
+    },
+    "mcp-server": {
+      "ext": "mjs",
+      "perFile": {
+        "account-audit-chain.test.mjs": {
+          "tests": 10,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "account-principal.test.mjs": {
+          "tests": 18,
+          "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "account-whatif-queued.test.mjs": {
+          "tests": 12,
+          "asserts": 58,
+          "skips": 0,
+          "todos": 0
+        },
+        "ack-event-account-gate.test.mjs": {
+          "tests": 7,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "api-key-door.test.mjs": {
+          "tests": 15,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "audit.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "auth-disabled-grants-guard.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "babysit-output-honesty.test.mjs": {
+          "tests": 4,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "brief.test.mjs": {
+          "tests": 15,
+          "asserts": 70,
+          "skips": 0,
+          "todos": 0
+        },
+        "cf-access.test.mjs": {
+          "tests": 18,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "client-surface-hardening.test.mjs": {
+          "tests": 11,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "client-view-wire.test.mjs": {
+          "tests": 8,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "connector-guidance.test.mjs": {
+          "tests": 11,
+          "asserts": 65,
+          "skips": 0,
+          "todos": 0
+        },
+        "connector-skills-are-one-copy.test.mjs": {
+          "tests": 5,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "delivery-runid-resolve.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "delivery-state.test.mjs": {
+          "tests": 11,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "describe-options.test.mjs": {
+          "tests": 22,
+          "asserts": 94,
+          "skips": 0,
+          "todos": 0
+        },
+        "diff.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "door-posture.test.mjs": {
+          "tests": 7,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "events.test.mjs": {
+          "tests": 7,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "evidence.test.mjs": {
+          "tests": 20,
+          "asserts": 61,
+          "skips": 1,
+          "todos": 0
+        },
+        "findings-backstop.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "grants.test.mjs": {
+          "tests": 11,
+          "asserts": 60,
+          "skips": 0,
+          "todos": 0
+        },
+        "http-handler.test.mjs": {
+          "tests": 14,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "identity-mode.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "lexsearch.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "list-profiles-archived.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "list-profiles.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "multi-audience-access-applications.test.mjs": {
+          "tests": 13,
+          "asserts": 36,
+          "skips": 3,
+          "todos": 0
+        },
+        "ops-token.test.mjs": {
+          "tests": 8,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "ops.test.mjs": {
+          "tests": 36,
+          "asserts": 150,
+          "skips": 0,
+          "todos": 0
+        },
+        "packs.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "plan-archived-project.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "plan.test.mjs": {
+          "tests": 26,
+          "asserts": 112,
+          "skips": 0,
+          "todos": 0
+        },
+        "portal-trigger-wire.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "ratelimit.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "read.test.mjs": {
+          "tests": 18,
+          "asserts": 73,
+          "skips": 0,
+          "todos": 0
+        },
+        "root-mcp-json-connects.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "roster-boot-check.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "scope.test.mjs": {
+          "tests": 24,
+          "asserts": 106,
+          "skips": 0,
+          "todos": 0
+        },
+        "screen-gate-timeline.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "scrub.test.mjs": {
+          "tests": 29,
+          "asserts": 83,
+          "skips": 0,
+          "todos": 0
+        },
+        "security.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "stop-run-names-who-stopped-it.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "token-door-boot.test.mjs": {
+          "tests": 7,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "whatif.test.mjs": {
+          "tests": 5,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        }
+      }
+    },
+    "portal-ui": {
+      "ext": "ts",
+      "perFile": {
+        "api.test.ts": {
+          "tests": 32,
+          "asserts": 118,
+          "skips": 0,
+          "todos": 0
+        },
+        "askAi.test.ts": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "compose.test.ts": {
+          "tests": 8,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "composeRead.test.ts": {
+          "tests": 22,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "composerProduct.test.ts": {
+          "tests": 21,
+          "asserts": 93,
+          "skips": 0,
+          "todos": 0
+        },
+        "copyLint.test.ts": {
+          "tests": 6,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "customPropertiesResolve.test.ts": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "effortModelParity.test.ts": {
+          "tests": 7,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "exportControls.test.ts": {
+          "tests": 10,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "failure.test.ts": {
+          "tests": 7,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "fieldEditing.test.ts": {
+          "tests": 9,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "grouping.test.ts": {
+          "tests": 23,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "guard.test.ts": {
+          "tests": 14,
+          "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "home.test.ts": {
+          "tests": 46,
+          "asserts": 141,
+          "skips": 0,
+          "todos": 0
+        },
+        "icons.test.ts": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "import-specifiers.test.ts": {
+          "tests": 1,
+          "asserts": 1,
+          "skips": 0,
+          "todos": 0
+        },
+        "inlineMd.test.ts": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "listView.test.ts": {
+          "tests": 11,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "lockup.test.ts": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "measure.test.ts": {
+          "tests": 25,
+          "asserts": 84,
+          "skips": 0,
+          "todos": 0
+        },
+        "nav.test.ts": {
+          "tests": 12,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "newClearanceStructure.test.ts": {
+          "tests": 3,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "niceClasses.test.ts": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-danger.test.ts": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "ownerNames.test.ts": {
+          "tests": 7,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "perMarkReport.test.ts": {
+          "tests": 18,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
+        "perRunRetire.test.ts": {
+          "tests": 9,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "productMatrix.test.ts": {
+          "tests": 22,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "profileFields.test.ts": {
+          "tests": 48,
+          "asserts": 141,
+          "skips": 0,
+          "todos": 0
+        },
+        "reads.test.ts": {
+          "tests": 18,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "registerCoverage.test.ts": {
+          "tests": 12,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "reportFrame.test.ts": {
+          "tests": 14,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "saveFailureText.test.ts": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "savedSearches.test.ts": {
+          "tests": 14,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "screenCopy.test.ts": {
+          "tests": 51,
+          "asserts": 163,
+          "skips": 0,
+          "todos": 0
+        },
+        "shell.test.ts": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "summaryBlocks.test.ts": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "terminology.test.ts": {
+          "tests": 4,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "tone.test.ts": {
+          "tests": 7,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "useYourAI.test.ts": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "widthVocabulary.test.ts": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        }
+      }
+    }
+  },
+  "rootScripts": {
+    "test:providers": {
+      "globs": [
+        "providers/_shared/test/*.test.mjs",
+        "providers/*/test/*.test.mjs"
+      ],
+      "perFile": {
+        "providers/_shared/test/absent-body.test.mjs": {
+          "tests": 12,
+          "asserts": 53,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/count-kernel.test.mjs": {
+          "tests": 8,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/enumerate-ceiling-parity.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/kernel-seams.test.mjs": {
+          "tests": 36,
+          "asserts": 124,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/lane-probe.test.mjs": {
+          "tests": 12,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/ledger-path.test.mjs": {
+          "tests": 17,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/neutral-result-shape.test.mjs": {
+          "tests": 14,
+          "asserts": 59,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/non-answer-body.test.mjs": {
+          "tests": 18,
+          "asserts": 91,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/owner-count-verification.test.mjs": {
+          "tests": 13,
+          "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/owner-enumerate-floor.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/provider-text.test.mjs": {
+          "tests": 6,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/script-form.test.mjs": {
+          "tests": 11,
+          "asserts": 66,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/shape-ceiling.test.mjs": {
+          "tests": 7,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/territory-codes.test.mjs": {
+          "tests": 9,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/euipo/test/an-unset-environment-refuses-rather-than-guessing.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/euipo/test/deferred-block.test.mjs": {
+          "tests": 6,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/euipo/test/kernel-seams.test.mjs": {
+          "tests": 15,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/euipo/test/query-builder.test.mjs": {
+          "tests": 48,
+          "asserts": 110,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/free-tier/test/composite.test.mjs": {
+          "tests": 37,
+          "asserts": 112,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/free-tier/test/unconfigured-member.test.mjs": {
+          "tests": 8,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/jx-subclass/test/13th-edition-governs.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/oauth-mcp-bridge/test/warm-server.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/perplexity/test/connotation-identity.test.mjs": {
+          "tests": 10,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/perplexity/test/source-is-text.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/backfile-window.test.mjs": {
+          "tests": 6,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/bench-guards.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/bench-sampler.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/core-kernel.test.mjs": {
+          "tests": 14,
+          "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/execute-plan.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/index-store.test.mjs": {
+          "tests": 25,
+          "asserts": 93,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/ingest.test.mjs": {
+          "tests": 11,
+          "asserts": 48,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/query-vocabulary.test.mjs": {
+          "tests": 8,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/record-ledger.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/row-shape.test.mjs": {
+          "tests": 7,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/sync.test.mjs": {
+          "tests": 32,
+          "asserts": 96,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/uspto-local/test/zip.test.mjs": {
+          "tests": 12,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        }
+      }
+    }
+  }
+}

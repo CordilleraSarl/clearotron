@@ -1,0 +1,155 @@
+{
+  "_README": [
+    "#850 E2 arm 2 — 'a declared element no validator token speaks about'. THE RATCHET BASELINE.",
+    "Per stage, carrying the ELEMENT NAMES: this file IS the audit object, not a bare count, so a plateau",
+    "is legible per stage and a reader can see WHICH elements no validator polices.",
+    "CI fails on any PER-STAGE INCREASE (driver/test/contract-audit.test.mjs) — a new unpoliced element in",
+    "one stage cannot hide behind a fix in another. A DECREASE is the point: regenerate this file when a",
+    "move lands. Wave 1's moves are EXPECTED to move these numbers; a wave that ends with them unmoved is",
+    "a finding for the handover, not a footnote.",
+    "Element names are the key, so RENAMING an element reads as +1 in its stage and fails. That is correct:",
+    "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
+    "Measured 139 of 287 declared elements."
+  ],
+  "total": 107,
+  "byStage": {
+    "matter-frame": [
+      "### Intake asks line shape — rendered by the driver from intake_asks[]",
+      "### Intake asks rows — {ask, owner} content",
+      "Applicant's own & affiliated marks — the self-exclusion set (mandatory)",
+      "Campaign shape (inferred) — the inference where intake stated none, and the decision to label the line `(inferred — not stated in the request)`",
+      "Campaign shape (stated) — the intake's campaign facts retyped from the `Stated campaign shape` line the dispatch already carries",
+      "Class scope & adjacency — classes scoped IN with a one-line reason each, classes deliberately scoped OUT",
+      "Return shape — hand the frame back through record_matter_frame, write NO file, return ONLY a 2-3 line summary",
+      "Scope reasoning — search-wide/cite-narrow, the in-scope-by-reach routes, and the reopen trigger behind each exclusion",
+      "search_channels — the domains where real use of THIS matter's goods would show"
+    ],
+    "prelim-variants": [
+      "### Scope ledger rows — {Layer, Item, Status: applied|dropped, Reason, Reopen trigger} across variant / field / source / jurisdiction",
+      "Archetype — primary (one of six) + modifiers + one-line reasoning",
+      "Cross-mark themes — shared elements, shared conceptual themes, shared industry-incumbent alerts (multi-mark requests)",
+      "Distinctiveness & registrability read — spectrum placement per market language, descriptive/generic/laudatory/geographic/deceptive/offensive flags, acquired-distinctiveness note",
+      "Famous-mark flags per element + famous_mark_calls_needed[]",
+      "Formative root: <root> — the shortest distinctive stem a family of marks would share, on its own line",
+      "Output paths + return shape — write the prose manifest and the structured model to the named absolute paths, return ONLY the path + a 2-3 line summary",
+      "Per-jurisdiction sub-queries",
+      "Per-script coverage — at least one rendering of the mark in each script the in-scope territories register marks in, as a transliteration variant carrying its romanization",
+      "Prose Elements table columns — Role | Saturation (low|borderline|high|very-high) | Famous-mark | Notes",
+      "Prose variant-table category token — translit-<script>, and for Chinese translit-zh-meaning vs translit-zh-phonetic",
+      "Risk theory — 2-4 sentences on where conflict concentrates for THIS mark",
+      "Scope statement — 2-4 sentences opening the deliverable narrative, with the class scope reasoned and advisory additions marked",
+      "Verify? ✅ column on every transliteration row of the prose Variants table",
+      "Watchlist union / client-exclusion / 24-owner cap applied by the model before emitting watchlist_owners[]",
+      "elements[] — {value, kind: distinctive|common|saturated-common}",
+      "incumbent_classes[] — the industry-incumbent alert's Nice classes",
+      "variants[].category — one of core|phonetic|visual|transliteration|numeric|composite|other",
+      "variants[].rationale — one line per variant",
+      "watchlist_owners[] — the NAMED register owners the register must cover"
+    ],
+    "blind-frame": [
+      "Return shape — hand the model back through record_blind_frame, write NO file, return ONLY a 2-3 line summary",
+      "fields[] — {goods, on_field boolean, rationale} by goods-overlap with the actual product",
+      "ranking_basis — goods-overlap | class-number",
+      "sources[] — {channel, rationale} by the product's real channel"
+    ],
+    "common-law": [
+      "BATCHING — split the keys into ceil(N/batch) batches of <=batch variants and concatenate the matrices",
+      "Grid program receipt — paste the SANDBOX PROGRAM block from the tool result verbatim into the audit trail",
+      "INSTRUCTED CHECKS — execute each as part of the sweep, or state honestly why it could not run",
+      "INSTRUCTED CHECKS — the ask text the requester wrote, quoted back in the findings file with its receipt",
+      "Summary section — Perplexity calls executed, mandatory platforms covered N/N, findings surfaced, open flags",
+      "`CROSS-CHECK REQUIRED: <what> — <why>` — the check that is needed and why",
+      "`CROSS-CHECK REQUIRED:` exact line shape — that prefix, an em-dash, the mark in CAPS, on its own line",
+      "final return — the absolute output path plus a 2-3 line summary"
+    ],
+    "common-law-half": [
+      "INSTRUCTED CHECKS — execute each as part of the sweep, or state honestly why it could not run (half a only)",
+      "INSTRUCTED CHECKS — the requester's ask text, quoted back with its receipt (half a only)",
+      "`CROSS-CHECK REQUIRED: <what> — <why>` — the check that is needed and why (seats a/b only)",
+      "`CROSS-CHECK REQUIRED:` exact line shape — prefix, em-dash, mark in CAPS, own line",
+      "do not hand-write the disposition table into the findings file",
+      "final return — the absolute output path plus a 2-3 line summary"
+    ],
+    "register-unit": [
+      "`CROSS-CHECK REQUIRED: <what> — <why>` — the check that is needed and why",
+      "`CROSS-CHECK REQUIRED:` exact line shape — prefix, em-dash, mark in CAPS, own line",
+      "escalation judgement — the CROWD BOUND: attempt each dangerous-category slice once class-scoped, gate on the RESULT, stop terminal on a crowd, and write a block only for the distinctive anchor",
+      "final return — the absolute output path plus queries-enumerated count, incomplete-block count, records carried forward",
+      "proposal `romanization` beside a single non-Latin term — plain-ASCII Latin form, space-separated syllables",
+      "proposal class scoping — pass nice_classes:[...] AND in_scope_classes:[...] on every proposal/call",
+      "proposal envelope — predicate enum {exact, default, wildcard, phonetic, owner}, term vs terms, rationale",
+      "reading the band back and judging it — keep proposing until the axis's dangerous named band is covered",
+      "recall carry-or-justify — for each prior-confirmed conflict, a reasoned drop row written over the fetched record (primary-sweep only)",
+      "supplemental proposals — WHICH queries the manifest/frame warrant beyond the dictated set",
+      "the dictated entry list — qid, predicate, terms, owner, nice_classes, regions, when-guard, expected_kind, covered_by"
+    ],
+    "placement-inquiry": [
+      "mark / owner / records / territories / classes on a SELECTED row",
+      "retract: <row_id> — withdrawing a seat row already on the form",
+      "return payload — the absolute output path plus a 2-3 line summary",
+      "select — one record URI of the register candidate being placed",
+      "the 7-point structured inquiry trace per enumerated record (what the applicant does, customer, channels, overlap, convergence, enforcement posture, registration status)",
+      "the identifier half of each `cleared:` / `material-gap:` line — the axis, the named slice and its count"
+    ],
+    "register-digest": [
+      "## Summary counts — total queries executed (search + detail-fetch), enumerated records across N axes, crowd-descriptor count, candidates past the gate, surfaced count, open-verification-flag count",
+      "Audit trail — per-unit search/detail-fetch counts, per-jurisdiction `_query` attribution",
+      "INSTRUCTED CHECKS — the answer to each requester ask the register owns",
+      "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)",
+      "return payload — the absolute output path plus a 2-3 line summary (counts + the path of the file written)",
+      "rolled-up coverage judgment — `sufficient: <true|false>`",
+      "source attribution — the register name tagged on each record, plus the EUIPO `environment` word",
+      "the compulsory dominant-element crowd row's `unit` cell — the dictated grammar `<axis> / dominant-element crowd (<N> members): <label>` and the bare integer N",
+      "the full clickable record URL, composed from providers/<name>.md 'Record base host' plus the record `uri`",
+      "the record ids read while answering each instructed check",
+      "the rolled-up one-line `reason` naming the material slice"
+    ],
+    "skeptic": [
+      "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic",
+      "the `risk: <category>` field inside that dictated ESCALATE line",
+      "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each",
+      "the verbatim ESCALATE string dictated for a `translit-too-generic` unit digest"
+    ],
+    "frame-diff": [
+      "Return shape — hand the diff back through record_frame_diff, write NO file, return ONLY a 2-3 line summary",
+      "directives[] — {layer: variant|field|source, item, observation, severity: dominant-element|material|minor}",
+      "dominant_element — bound by the driver from the blind model; the seat is not asked for it",
+      "dominant_element_gap — boolean",
+      "remedy — {terms, nice_classes, regions}"
+    ],
+    "synthesis": [
+      "coverage_judgment.sufficient + reason — the sufficiency-to-sign decision",
+      "narrative.md per-finding write-ups — the same conflict authored a second time in prose beside findings.json net/legal_position/practical_position"
+    ],
+    "case-law": [
+      "citations[].bearing — one line on what the authority grounds",
+      "the Coverage gaps statement — what was not searched",
+      "the `- ord: <N>` join line on every grounded profile, and citations[].ord",
+      "the grounded-profile document shape — `### Grounded profile — <mark> vs <mark/owner> (<jurisdiction>)` heading, **Question grounded:**, **On-point authorities:** bullets, **Tags:** line, **Coverage gaps:** line"
+    ],
+    "narrative-refutation": [
+      "coverage of the driver-fed \"DETERMINISTIC REGISTRY CHECK (B2)\" items — every listed item covered in the flags, with the offending narrative text quoted and the verdict raised to at least CONDITIONAL",
+      "the READER-OWNED NOUNS pass — quote the sentence, give the rewrite that keeps every fact",
+      "the `[kind: coverage-disposition|fact|rating|narrative]` choice",
+      "the `[kind: …]` token placement — \"anywhere on the line\", in exactly that form",
+      "the `[on: N, M]` flag ordinals — which findings each flag names",
+      "the demotion-receipt audit — the three receipts (registered-scope comparison with the specification quoted, in-lane dilution, use-meets-use consistency) plus the response-band reconciliation line",
+      "the flagged corrections — the narrative text quoted, the underlying-file text it contradicts, and the minimum-change fix (one of: correct / demote / remove / verify-flag)",
+      "the independent re-derivation of the top risk (headline sanity: self-conflict, compared-as-wholes, confusion-vs-business, risk shape, probative grading)"
+    ],
+    "report-overview": [
+      "actions.checks_we_ran[].source_link (the `([source](<url>))` URL in each bullet)",
+      "front_matter.handling_note (optional)",
+      "lint_contracts.numbers_and_reach (registration count stated at most once and only from the finding set; no WIPO/Madrid + 'worldwide' pairing)",
+      "lint_contracts.withdrawn_findings_excluded (a withdrawn finding 'DOES NOT EXIST for this report')",
+      "overall_caption.tier_word (the delivered overall tier repeated in prose)"
+    ],
+    "report-card": [
+      "case-law bearing woven into the card (does the matched precedent ground THIS card's enforcer / confusability read)",
+      "claim framing keyed on the record's `basis` (verified-from-record ⇒ fact; inferred-from-signal ⇒ 'on the available signals…')",
+      "lint_contracts.numbers_and_reach (owner registration COUNT at most once and only from this record; no WIPO/Madrid + 'worldwide' reach language)",
+      "the quoted fetched citation inside the card"
+    ],
+    "doubt-closure": []
+  }
+}

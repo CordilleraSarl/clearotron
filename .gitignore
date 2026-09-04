@@ -1,0 +1,39 @@
+# No trailing slash: `node_modules/` matches a DIRECTORY only, so a symlink named node_modules — which
+# is how a git worktree gets its dependencies without a second npm install — slips past it and can be
+# committed. `portal-ui/node_modules` reached CI that way and broke `npm ci` with ENOTDIR (it cannot
+# mkdir over a symlink), and `driver/node_modules` had been committed as an absolute path into one
+# developer's home directory since #69.
+node_modules
+.env
+*.log
+.DS_Store
+
+# portal-ui/dist is COMMITTED on purpose: a deploy pulls and restarts, it never builds, so the pull
+# has to bring the bundle with it. Ignoring dist/ here would make every deploy serve a stale UI with
+# no error at all. Do not add it. See portal-ui/vite.config.ts for the full reasoning.
+
+# The local US register (#547) and the bulk archives it is built from. A full build reads 41.5 GB
+# across two products — the 1884→ annual backfile and the dailies since 2025 — and takes hours, not
+# minutes; the archives are dropped as they are ingested, so what stays on disk is the index. It is
+# stale the day after it is written, and an incremental sync brings it current.
+# Committing one would also freeze a snapshot into the repo, which the owner ruled against: no
+# pre-synced index ever executes. Patterns cover the SQLite sidecars too — a committed -wal or -shm
+# without its database is worse than either, because SQLite will open it and find nothing.
+*.db
+*.db-wal
+*.db-shm
+# `zip` alone would ignore the test fixtures under providers/uspto-local/test/fixtures/, which ARE
+# committed on purpose — an archive written by an independent implementation is the only honest thing
+# to test our own reader against. So the cache is named by its directory instead.
+bulk/
+
+# Similar-group SOURCE DOCUMENTS. These sit in docs/ on the build box and must never enter history:
+# the CNIPA PDF alone is 126 MB, and removing a blob that size later is a history rewrite, not a revert.
+# providers/jx-subclass/BUILDING.md says where they live and what their hashes are.
+docs/W0*.pdf
+docs/layout*.json
+
+# Generated at pack time by scripts/write-build-info.mjs — the commit a tarball was packed from.
+# Never committed: in a checkout the commit is read from git, and a stale committed copy would name
+# the wrong code with total confidence (tracker issue 1929).
+build-info.json

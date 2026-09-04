@@ -1,0 +1,77 @@
+# ── TEMPLATE UNIT ────────────────────────────────────────────────────────────────────────────
+# The <your-…> / example.com values below are PLACEHOLDERS a new deployment must replace.
+# NEVER copy this file over an already-deployed unit: the live copy holds the real CF Access
+# team/AUD/domain values, and overwriting them with this template breaks auth while LOOKING
+# configured (a placeholder that looks configured is worse than unset — 2026-07-19 incident).
+# Deploy rule: diff repo unit vs live unit; sync only generic units. The two kinds are inventoried in
+# docs/architecture/05-config-governance.md (tier 2).
+# client-mcp.service — the CLIENT-facing MCP surface (spec 61 §E). A SECOND instance of the read-only HTTP
+# MCP face, distinct from the staff trademark-artifacts-http.service, so "a client can never reach internal
+# read-all" is a CONFIGURATION FACT (a separate process wired clientSurface:true), not a runtime branch.
+# Runs as a systemd *user* service; binds loopback only; sole ingress is the CLIENT tunnel →
+# the CLIENT CF Access app (clients-mcp.example.com). See scripts/client-access/CLIENT-ACCESS-SETUP.md.
+#
+# Loads ~/.env for TRADEMARK_MCP_TOKEN_SECRET (to verify the run-bound user tokens the client report carries),
+# CF_ACCESS_TEAM, and the staff CLEAROTRON_OIDC_AUDIENCE (used ONLY for the client!=staff AUD startup assertion). The
+# CLIENT AUD is set explicitly below and MUST differ from the staff AUD (the process refuses to start if equal).
+
+[Unit]
+Description=trademark-artifacts MCP — CLIENT read-only HTTP face (spec 61: run-token only, never internal)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=%h/.env
+Environment=PATH=%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+Environment=CLEAROTRON_CLIENT_OIDC_AUDIENCE=<your-client-cf-access-application-audience-tag>
+Environment=CLIENT_MCP_HTTP_HOST=127.0.0.1
+# :18811 — deliberately ABOVE the warm-MCP block (ghostfolio :18795, openbb :18796, courtlistener :18797)
+# to avoid a port collision. The CF Tunnel route for clients-mcp.example.com must point at this port.
+#
+# ── AND ON A BOX THAT ALSO RUNS A TEST OR DEV INSTANCE, THE SECOND INSTANCE MUST NOT TAKE THIS. ────
+# Measured 2026-08-18 (#1147): the deployment box had 18811 and 18812 held by production client faces
+# and no client face for the test instance at all. `http-server-client.mjs` DEFAULTS to 18811, so a
+# second instance started without an explicit port does not merely collide — on a day production is
+# down it SUCCEEDS, binds the port production is about to want, and a CLIENT surface ends up pointed at
+# the wrong instance. The collision is the benign outcome; the quiet swap is the one to design against.
+# docs/E2E.md states the rule generally ("a dev instance beside a live one must be given its own");
+# this is the one service where taking the default aims a client's AI at another instance's runs.
+#
+# NOTE ON PRECEDENCE, which cost a restart to find: on systemd the EnvironmentFile above WINS over an
+# Environment= line here, so if ~/.env already allocates CLIENT_MCP_HTTP_PORT that is the port and this
+# line decides nothing. Allocate it in one place and let the other read it.
+Environment=CLIENT_MCP_HTTP_PORT=18811
+Environment=CLIENT_MCP_ALLOWED_HOSTS=clients-mcp.example.com
+# Signed-in CLIENT access (kind "account"): a CF-verified client identity with no token, scoped to the
+# accounts its email is granted. OFF unless set to 1 — shipping the code opens nothing. Setting it WITHOUT
+# CLEAROTRON_ACCESS_FILE is a fatal start: there would be nothing to scope a client identity to, and
+# accountsForEmail answers "*" with no guest list. See docs/CLIENT-MCP.md before enabling for a demo
+# tenant — an account with no runCaps.dailyRuns can start paid searches all day.
+# Environment=CLIENT_MCP_ACCOUNT_ACCESS=1
+# Environment=CLEAROTRON_ACCESS_FILE=%h/portal-grants.json
+# NO WorkingDirectory=, deliberately -- see prelim-driver.service for the full reasoning. systemd does
+# not expand variables in WorkingDirectory=, it does expand ${VAR} in ExecStart= arguments, and nothing
+# here reads the working directory: this entry point resolves what it needs from its OWN file location.
+ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server-client.mjs
+Restart=on-failure
+RestartSec=10
+# Hardening: this process only reads run-dirs + serves HTTP on loopback (mirrors trademark-artifacts-http).
+NoNewPrivileges=true
+ProtectSystem=strict
+# #774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
+# by existence (providers/_shared/ledger-path.mjs, mcp-server/lib/audit.mjs): a box that already has
+# a ledger or an access log under the old path keeps appending to it and needs it writable, while a
+# fresh box writes to the new one. `-` on both so a missing directory does not fail the unit to
+# START — with ProtectSystem=strict, a ReadWritePaths naming a path that is not there is an error.
+#
+# ON A FRESH DEPLOYMENT, CREATE THE DIRECTORY BEFORE FIRST START: `mkdir -p %h/trademark/telemetry`.
+# systemd resolves these at unit start, so a `-` path that does not exist yet is simply skipped and
+# never becomes writable — and the append that then fails is best-effort by design, so the telemetry
+# is lost with nothing in the journal. An UPGRADED box needs no action: it resolves to the old path.
+ReadWritePaths=-%h/.openclaw/telemetry
+ReadWritePaths=-%h/trademark/telemetry
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

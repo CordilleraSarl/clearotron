@@ -1,0 +1,70 @@
+{
+  "generated_from": "similar-groups.db",
+  "dropped_column": "note_text_zh",
+  "citation_by_office": {
+    "CN": "printed page and note number",
+    "KR": "source document + source group",
+    "TW": "source document (per-class file) + source group"
+  },
+  "files": [
+    {
+      "file": "goods.jsonl",
+      "rows": 10123,
+      "bytes": 1098338,
+      "sha256": "f3ec916565e0250487ac19362697fb6c5347bd6b7f4c69f8a2e38bda40261389"
+    },
+    {
+      "file": "group-code.jsonl",
+      "rows": 44840,
+      "bytes": 2274364,
+      "sha256": "60cfc041a0c634223f995036d1ae384381330243ab4183920a9e33350895c579"
+    },
+    {
+      "file": "cross-reference.jsonl",
+      "rows": 5102,
+      "bytes": 918388,
+      "sha256": "c2f6e4216e31302221c68a317b7d8075696ea83ea39313ca9e3bdc5841e28108"
+    },
+    {
+      "file": "cn-goods.jsonl",
+      "rows": 11330,
+      "bytes": 1343831,
+      "sha256": "ca1b8e7cb1f1e9aede19096f98044204ba5d847c95d81d702f4662dc6a29bd8f"
+    },
+    {
+      "file": "class-span.jsonl",
+      "rows": 2478,
+      "bytes": 194879,
+      "sha256": "383082b91030f41273c1e88f7bff2e77813b032e2cc5d3e97ba9fba7197ac534"
+    },
+    {
+      "file": "coverage.jsonl",
+      "rows": 540,
+      "bytes": 162174,
+      "sha256": "3152b7fd4a5c174a4555f387f9cebfc7fe5f6ac1e078e5e2054cc369bd06dd47"
+    },
+    {
+      "file": "provenance.jsonl",
+      "rows": 7,
+      "bytes": 4687,
+      "sha256": "54bf50fa6c4ea56252dd8d21a91a1d1278be3d20676d6a6e90ee13259af19f85"
+    }
+  ],
+  "dropped_by_office": {
+    "CN": {
+      "rows": 1959,
+      "dropped_bytes": 153314,
+      "rows_citing_a_printed_page": 1959
+    },
+    "KR": {
+      "rows": 2129,
+      "dropped_bytes": 323480,
+      "rows_citing_a_printed_page": 0
+    },
+    "TW": {
+      "rows": 1014,
+      "dropped_bytes": 156666,
+      "rows_citing_a_printed_page": 0
+    }
+  }
+}

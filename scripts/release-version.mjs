@@ -1,0 +1,133 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// release-version.mjs — property 1: a merge cuts a version.
+//
+// WHAT CHANGESETS DOES NOT DO HERE, MEASURED RATHER THAN ASSUMED. The issue recommends Changesets
+// because it is workspace-aware and this repository has four workspaces. It is, and it does not cover
+// the case that matters: `changeset version` versions the WORKSPACE packages and leaves the ROOT
+// package alone, and the root package is `clearotron` — the one thing a user installs and the only
+// version they will ever quote back to us. Measured on 3.0.1: a note against `prelim-driver` moved
+// prelim-driver 0.1.0 -> 0.1.1 and left `clearotron` at 0.1.0, with a changelog written per workspace
+// and none at the root.
+//
+// So the four workspaces are a `fixed` group — one version number moves them together — and this script
+// carries that number to the root and assembles the one changelog a reader will actually open. Without
+// it the release cuts a version of four packages nobody installs, and the tag would name a version the
+// published artifact does not carry.
+//
+// It runs the plain-language gate LAST, over the assembled root changelog, and refuses there. That is
+// the compile-time enforcement of property 3: it holds regardless of who or what wrote the note,
+// because it reads the output rather than trusting the input.
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { findings, sentences } from "./changelog-plain-language.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const GROUP = ["driver", "mcp-server", "portal-ui", "providers/oauth-mcp-bridge"];
+const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
+
+/** The one version the fixed group now carries — and a refusal if they disagree. */
+export function groupVersion(root = ROOT) {
+  const seen = new Map();
+  for (const w of GROUP) seen.set(w, readJson(join(root, w, "package.json")).version);
+  const distinct = [...new Set(seen.values())];
+  if (distinct.length !== 1) {
+    throw new Error("release-version: the fixed group disagrees about its version — "
+      + [...seen].map(([w, v]) => `${w}=${v}`).join(", ")
+      + ". A `fixed` group that has come apart means the release would tag one number while the "
+      + "packages carry another.");
+  }
+  return distinct[0];
+}
+
+/**
+ * Assemble the root changelog from what changesets wrote per workspace.
+ *
+ * The per-workspace files are the record of which package changed; the root file is the record a
+ * READER opens, so it carries the sentences and not the package names. Duplicates are collapsed: a
+ * fixed group means one note commonly lands in several files unchanged.
+ */
+export function assembleRoot(version, root = ROOT) {
+  const bullets = [];
+  for (const w of GROUP) {
+    const p = join(root, w, "CHANGELOG.md");
+    if (!existsSync(p)) continue;
+    const text = readFileSync(p, "utf8");
+    // Only this version's section: from its heading to the next version heading, or to end of file.
+    //
+    // NOT a lookahead ending in `\\Z`. JavaScript has no `\\Z` — it is a literal "Z" — so a lookahead
+    // written `(?=^## |\\Z)` never matches the LAST section of a file, which is every section that
+    // matters here. It failed silently: no match, no bullets, and an empty changelog that the plain
+    // language gate then passed because empty text carries no jargon. Split on the headings instead.
+    const sections = text.split(/^## /m).slice(1);
+    const mine = sections.find((sec) => sec.split("\n", 1)[0].trim() === version);
+    if (!mine) continue;
+    for (const line of mine.split("\n")) {
+      const b = /^\s*-\s+(.*\S)\s*$/.exec(line);
+      if (b && !bullets.includes(b[1])) bullets.push(b[1]);
+    }
+  }
+  return { version, bullets };
+}
+
+/**
+ * Prepend this version's section to the root changelog, creating it if this is the first release.
+ *
+ * The ruling that blocked the first cut MOVED on 2026-08-31 (owner,: the landed
+ * decision is master): ADR-0004/0006 are amended and `CHANGELOG.md` is off `shared/withheld-paths.mjs`,
+ * so writing the file no longer reds publication-scrub. What still binds: the CUT rule deciding the
+ * file must land in the same change as the file's first appearance — the export's rule tables refuse a
+ * rule matching nothing, so it cannot be pre-added, and `driver/test/release-pipeline.test.mjs` reds an
+ * existing-but-undecided changelog so the first version PR cannot merge without it.
+ */
+export function writeRootChangelog({ version, bullets }, root = ROOT) {
+  const p = join(root, "CHANGELOG.md");
+  const head = "# Changelog\n\nWhat changed in each release of Clearotron, in plain English.\n";
+  const prior = existsSync(p) ? readFileSync(p, "utf8").replace(/^# Changelog\n\n[^\n]*\n/, "") : "";
+  const section = `\n## ${version}\n\n${bullets.map((b) => `- ${b}`).join("\n")}\n`;
+  writeFileSync(p, head + section + prior);
+  return p;
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  const run = (...a) => execFileSync(process.execPath,
+    [join(ROOT, "node_modules/@changesets/cli/bin.js"), ...a], { cwd: ROOT, stdio: "inherit" });
+
+  run("version", ...args);
+  const version = groupVersion();
+  const pkgPath = join(ROOT, "package.json");
+  const pkg = readJson(pkgPath);
+  const was = pkg.version;
+  pkg.version = version;
+  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+  console.log(`release-version: clearotron ${was} -> ${version} (carried from the fixed group)`);
+
+  const assembled = assembleRoot(version);
+  // AN EMPTY RELEASE RECORD IS A REFUSAL, NOT A PASS. This is what caught the bug above: the section
+  // came out with no bullets, and the plain-language gate passed it, because empty text contains no
+  // jargon. A release whose changelog says nothing is worse than no changelog — a reader opens it,
+  // learns nothing, and concludes the release did nothing.
+  if (!assembled.bullets.length) {
+    console.error(`release-version: version ${version} assembled ZERO changelog lines. Either no note `
+      + "described a user-visible change, or the per-workspace changelogs were not written where this "
+      + "expects them. Both are refusals: a release with an empty record does not go out.");
+    process.exitCode = 1;
+    return;
+  }
+  const p = writeRootChangelog(assembled);
+  const found = findings(readFileSync(p, "utf8"));
+  if (found.length) {
+    console.error(`release-version: the assembled changelog is not plain English. Rewrite the notes.\n`);
+    for (const s of sentences(found)) console.error("  " + s);
+    process.exitCode = 1;
+    return;
+  }
+  console.log(`release-version: ${p} is plain English`);
+}
+
+if (isEntrypoint(import.meta.url)) main();

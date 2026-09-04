@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "label": "Product screen with register counts",
+  "base": "knockout-search",
+  "notes": "A quick screen with live register hit-counts per name. The counts are part of the Knockout search now \u2014 the product carries them, so a saved search does not have to ask for one.",
+  "archived": false,
+  "createdBy": "seed@dev",
+  "createdAt": "2026-07-18T00:00:00.000Z"
+}

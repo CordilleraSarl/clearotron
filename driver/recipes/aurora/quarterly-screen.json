@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "label": "Quarterly product-name screen",
+  "base": "knockout-search",
+  "extras": {
+    "emailTable": true
+  },
+  "notes": "Marketing shortlist triage - paste the candidate names, results as a per-name table in the email.",
+  "archived": false,
+  "createdBy": "seed@dev",
+  "createdAt": "2026-07-18T00:00:00.000Z"
+}

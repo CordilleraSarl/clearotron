@@ -1,0 +1,96 @@
+{
+  "_what": "Return-path transports whose partial-answer behaviour is NOT yet pinned by a plant. A row here is an admission, not a permission: it names what the census cannot yet say about that transport, and the tracker issue that closes it.",
+  "_rule": "This list can only SHRINK. A transport that gains a fixture and passes must be removed in the same commit; a transport that is absent and fails reds the census by name. Adding a row is a change that has to be argued for in the PR body.",
+  "_issue": "tracker 1992",
+  "unpinned": [
+    {
+      "tool": "record_frame_diff",
+      "why": "no fixture yet; both declared fields are required, so the shape is safe by construction and the plant is a formality"
+    },
+    {
+      "tool": "record_report_card",
+      "why": "no fixture yet; both declared fields are required"
+    },
+    {
+      "tool": "record_doubt_closure",
+      "why": "no fixture yet; single required field, accumulating semantics claimed in the tool description and not yet planted"
+    },
+    {
+      "tool": "record_declination",
+      "why": "no fixture yet; single required field"
+    },
+    {
+      "tool": "record_coverage",
+      "why": "no fixture yet; single required field, accumulating semantics claimed and not yet planted"
+    },
+    {
+      "tool": "record_dispositions",
+      "why": "no fixture yet; accumulating semantics claimed in the tool description ('Everything already recorded is kept') and not yet planted"
+    },
+    {
+      "tool": "record_unit_note",
+      "why": "no fixture yet; every field optional, which is the exposed shape — this row is the highest-priority one to close"
+    },
+    {
+      "tool": "record_narrative_refutation",
+      "why": "no fixture yet; plan_audit is optional and the transport reads no prior state"
+    },
+    {
+      "tool": "record_matter_frame",
+      "why": "no fixture yet; scope_jurisdictions, excluded_jurisdictions and meaning_angles_none are optional and the transport reads no prior state"
+    },
+    {
+      "tool": "record_register_digest",
+      "why": "CLOSED by mergeDigestPatch, which states a join rule per key — but the plant that proves it belongs here rather than in that module's own test"
+    },
+    {
+      "tool": "record_synthesis",
+      "why": "CLOSED by mergeSynthesisPatch plus synthesis_patch_without_base — pinned by the-repair-order-and-the-tool-schema-agree.test.mjs, not re-planted here"
+    }
+  ],
+  "known_open": [
+    {
+      "tool": "record_report_overview",
+      "fields": [
+        "actions",
+        "methodology",
+        "handling_note"
+      ],
+      "why": "a caption-only call renders 149B, clears the 120-char floor, and ships a SECTION OF THE CLIENT'S ONE REPORT without the 'Checks we ran' bullets, the methodology or the handling note. Traced: report-overview.md is the head of report.md (assembleReportMd() in pipeline.mjs) which renders to the HTML (publish/index.mjs:648). The 'Only you can close these' register is NOT lost — it is code-built from findings.json under spec 64's 'code wins' ruling."
+    },
+    {
+      "tool": "record_prelim_variants",
+      "fields": [
+        "incumbent_classes",
+        "watchlist_owners",
+        "search_floor"
+      ],
+      "why": "a partial silently empties the register-axis search floor, narrowing the run's own definition of coverage"
+    },
+    {
+      "tool": "record_blind_frame",
+      "fields": [
+        "sources"
+      ],
+      "why": "found BY this census rather than by hand: a partial omitting `sources` is accepted and the cold threat model ships with no source channels, which is the half frame-diff compares the actual scope against"
+    }
+  ],
+  "required_not_enforced": [
+    {
+      "tool": "record_blind_frame",
+      "fields": [
+        "fields"
+      ],
+      "why": "the schema the seat is handed declares `fields` REQUIRED and acceptBlindFrame takes a call without it — the goods/on-field half of the cold threat model"
+    },
+    {
+      "tool": "record_prelim_variants",
+      "fields": [
+        "elements",
+        "scope_ledger"
+      ],
+      "why": "both declared REQUIRED and neither enforced. `scope_ledger` is the manifest's own audit trail of what was applied or dropped and why, so a call without it produces a manifest that cannot say what it decided"
+    }
+  ],
+  "_required_rule": "serve() NOW validates the declared `required` fields against inputSchema at the seam, before the handler (stdio-server.mjs:157, tracker issue 1993) — it used to hand the call straight through, which is why these rows exist. The seam checks PRESENCE of required fields and nothing else: types, enums and every shape constraint are still the acceptor's alone. Rows here are fields the ACCEPTOR does not enforce. The seam now refuses them first, so they are no longer reachable from a seat — but the acceptor gap is still real and still the thing this list records. It can only SHRINK."
+}

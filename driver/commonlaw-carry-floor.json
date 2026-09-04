@@ -1,0 +1,47 @@
+{
+  "_README": [
+    "#703 — THE RECONCILIATION RATCHET. The floor a run's common-law carry must not fall below.",
+    "",
+    "WHAT IT RECORDS: what the contract CURRENTLY ACHIEVES, not what anyone hopes it achieves. It is",
+    "seeded from a real delivered run, never from a fixture, because a floor invented at a desk ratchets",
+    "against nothing. driver/test/commonlaw-carry-ratchet.test.mjs compares and reports.",
+    "",
+    "RATES, NOT ABSOLUTES: runs differ in size, and a run that retrieves twice as much while reconciling",
+    "the same share has not regressed. Each rate carries the counts it came from so a reader can check the",
+    "arithmetic rather than trust a percentage.",
+    "",
+    "A TRIP ANNOTATES, NEVER SUPPRESSES: the deliverable ships first. Below-floor means the ROUND cannot",
+    "claim the contract held; it never means a client gets nothing.",
+    "",
+    "MOVING IT UP IS THE POINT. When the seat-compliance work lands (the judgment half of #703 — why the",
+    "seat writes rows for 13% of cells when the dictation says one per cell), re-seed from the round that",
+    "proves the improvement and record which run did it. A wave that ends with these numbers unmoved is a",
+    "finding for the handover, not a footnote. Lowering the floor requires the same: a named run and a",
+    "reason, in this file, where the next reader will see it.",
+    "",
+    "RATES ARE TRUNCATED DOWNWARD, never rounded to nearest. Seeded at 0.133562 the cells floor sat ABOVE",
+    "the 39/292 it was seeded from and tripped on its own measurement — the always-fires mode the ruling",
+    "refused, arriving through a rounding choice rather than a design one. The test asserts a floor can",
+    "never exceed the counts it claims to come from.",
+    "",
+    "PER-CLASS FLOORS are deliberately NOT here yet. If these rates prove noisy across scenario classes,",
+    "that is a later refinement on R2/R6 data — one global floor seeded from one round is honest about",
+    "what it knows; five invented per-class floors would not be."
+  ],
+  "seeded": {
+    "date": "2026-08-14",
+    "round": "R1",
+    "engine": "anthropic-agent",
+    "note": "First delivered R1 since 2026-08-09. Measured by the cell join recorded on #703 — 292 candidate-bearing cells, 39 carrying a negative row; 2116 retrieved candidates, 1609 with reason_source absent. by_joined_on {url 235, cell 272, none 1609} sums to 2116, so the accounting is complete over the full retrieved set."
+  },
+  "candidates": {
+    "min_rate": 0.239603,
+    "seeded_from": { "reconciled": 507, "retrieved": 2116 },
+    "what": "share of retrieved common-law candidates that reach a finding or a recorded ground"
+  },
+  "cells": {
+    "min_rate": 0.133561,
+    "seeded_from": { "rowed": 39, "candidate_bearing": 292 },
+    "what": "share of candidate-bearing cells carrying the negative row the dictation owes each of them"
+  }
+}

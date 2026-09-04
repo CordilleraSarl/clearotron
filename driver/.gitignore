@@ -1,0 +1,27 @@
+node_modules/
+
+# Prelim run directories — preventive: keep stray run dirs out of the nightly `git add -A`.
+# Run dirs look like norefXXXX-<slug>-<date>-<codename>, tmp<n>-<slug>, <date>-<codename>.
+# (The already-tracked ...-DOC52 dir is purged via a separate ops runbook; this does not untrack it.)
+noref*/
+tmp[0-9]*-*/
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-*/
+
+# ...except the serve fixtures, which are named LIKE run dirs on purpose — the reserved synthetic
+# noref0000NN form (no-client-identifiers.test.mjs) — and are tracked product fixtures, not run debris.
+# Without this line they are silently unstageable AND invisible to the guards that walk `git ls-files`.
+!test/fixtures/report-serve/noref*/
+
+# Report artifacts emitted inside those run dirs.
+noref*/report.html
+noref*/report.client.html
+noref*/findings.json
+noref*/*-audit.xlsx
+tmp[0-9]*-*/report.html
+tmp[0-9]*-*/report.client.html
+tmp[0-9]*-*/findings.json
+tmp[0-9]*-*/*-audit.xlsx
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-*/report.html
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-*/report.client.html
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-*/findings.json
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-*/*-audit.xlsx

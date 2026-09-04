@@ -1,0 +1,9 @@
+{
+  "name": "buffers",
+  "version": "0.1.1",
+  "description": "Clean-room replacement for the unlicensed buffers@0.1.1 (#854). Not published.",
+  "license": "AGPL-3.0-only",
+  "main": "./index.js",
+  "private": true,
+  "engines": { "node": ">=18" }
+}

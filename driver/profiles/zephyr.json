@@ -1,0 +1,61 @@
+{
+  "name": "Zephyr Beverages",
+  "demoData": true,
+  "matchDomains": [],
+  "industry": "functional beverages, supplements & sporting goods",
+  "marketplaceDensity": "dense",
+  "platforms": [
+    "amazon.com",
+    "walmart.com",
+    "target.com",
+    "gnc.com",
+    "iherb.com",
+    "vitaminshoppe.com",
+    "bodybuilding.com"
+  ],
+  "defaultClasses": [
+    5,
+    25,
+    28,
+    30,
+    32,
+    35
+  ],
+  "defaultJurisdictions": [
+    "US",
+    "EU",
+    "UK"
+  ],
+  "selfExclusionOwners": [
+    "Zephyr Beverages",
+    "Zephyr Beverages, Inc."
+  ],
+  "delivery": {
+    "email": "summary",
+    "privileged": false
+  },
+  "riskAppetite": "Pragmatic and launch-oriented: ships fast-moving beverage SKUs, supplement lines, and apparel collaborations, and wants clear go / no-go calls with a practical path around real blockers rather than exhaustive caveats. Surface the conflicts that could realistically stop or reshape a launch and the cleanest workaround for each; keep minor register noise brief. Willing to defend its core marks, so genuine adverse rights are worth flagging even when the commercial impact looks modest.",
+  "frameworkPath": "skills/prelim-search/risk-framework-zephyr.md",
+  "workedExamplesPath": "skills/prelim-search/worked-examples-zephyr.md",
+  "defaultProduct": "multi-country-focus-search",
+  "allowedRecipes": [
+    "knockout-search",
+    "global-preliminary-search",
+    "multi-country-focus-search",
+    "full-country-search",
+    "zephyr/standard-clearance"
+  ],
+  "runCaps": {
+    "dailyRuns": 2,
+    "maxQueued": 3
+  },
+  "jxPolicy": {
+    "laneDepth": {
+      "zh": "full",
+      "ja": "candidates",
+      "ko": "candidates"
+    },
+    "escalationPolicy": "Escalate a native-script hit to full record review when the owner also holds a Latin-script registration in the same class — a squatter and an incumbent read very differently on the same evidence.",
+    "providerStance": "default"
+  }
+}
