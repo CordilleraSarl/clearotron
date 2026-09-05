@@ -120,6 +120,22 @@ Markdown (consistent with the variant manifest and the register findings file). 
 
 ### Format
 
+**Section anchors — copy them verbatim.** Four sections in the template below carry an HTML comment
+directly under the heading:
+
+    <!-- clearotron:section=findings -->
+    <!-- clearotron:section=negative-results -->
+    <!-- clearotron:section=coverage-ledger -->
+    <!-- clearotron:section=audit-trail -->
+
+Emit each one exactly as written, on its own line, under its heading. They are how the validator finds
+these four sections, so a missing anchor makes it fall back to guessing your heading's wording — which
+is how three runs were rejected for sections they had written correctly. They are HTML comments, so
+they render as nothing: no reader ever sees them.
+
+**Word the headings however reads best.** The anchor is the contract; the heading text is yours. You do
+not need to match the template's wording, and you will not be failed for choosing different words.
+
 ```markdown
 # Common-law findings — Dawn: Legends of Thornmantle (2026-05-11)
 
@@ -131,6 +147,7 @@ Markdown (consistent with the variant manifest and the register findings file). 
 - Open verification flags: 2
 
 ## Findings — Mark: Dawn: Legends of Thornmantle
+<!-- clearotron:section=findings -->
 
 ### Consumer-confusion risks (gaming-industry overlap)
 
@@ -318,6 +335,7 @@ is two passages, and you name one and copy from it. It used to be easiest to get
 no inter-word spaces, because a stitch reads as continuous there — that is now a number, not a judgement.
 
 ### Negative results (per-platform per-variant — the full grid accounting)
+<!-- clearotron:section=negative-results -->
 
 **One row for EVERY (variant × platform) grid cell**, each carrying its receipt. The three row
 forms (and the gap form) — this is what the driver's receipt gate counts:
@@ -336,6 +354,7 @@ forms (and the gap form) — this is what the driver's receipt gate counts:
 | (... full term × platform matrix ...) | | |
 
 ### Coverage ledger (feeds synthesis coverage-honesty + skeptic audit)
+<!-- clearotron:section=coverage-ledger -->
 
 One row per planned coverage unit (each mandatory platform; the field-scoped general search; non-Latin / transliteration platform reach), with status + one-line reason. Same three statuses as the register side (see `prelim-register/SKILL.md` → *Coverage ledger*): `confirmed-clean` (ran to completion), `coverage-limited` (the search **ran and reached the platform** but could not be exhausted — thin data, non-Latin reach), `deferred` (planned but **not run, or the platform/tool could not be reached**). Per the keystone doctrine: a could-not-reach gap (a platform/tool that was unavailable) is `deferred`, never `coverage-limited` — the latter is a searched-but-unexhausted DATA limit. This is the structured form of the Open-verification-flags prose — a `coverage-limited` row is **not** a clean negative downstream.
 
@@ -354,6 +373,7 @@ One row per planned coverage unit (each mandatory platform; the field-scoped gen
 | Thornfall Games "Thornmantle" (itch.io) | Check register: any Thornfall trademark protection? |
 
 ### Audit trail
+<!-- clearotron:section=audit-trail -->
 
 | Call # | Type | Prompt summary | Results returned |
 |---|---|---|---|

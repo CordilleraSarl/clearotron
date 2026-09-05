@@ -51,12 +51,38 @@ const ACTION_REQUIRED = "action_required";
 const parked = (r) => r?.status === ACTION_REQUIRED || r?.conclusion === ACTION_REQUIRED;
 const nameOf = (r) => r?.name ?? "(unnamed)";
 
-/** What the sentence says about the policy, given whatever could be read about it. */
+/**
+ * The one command that clears this, so the finding can be acted on without a hunt.
+ *
+ * A GUARD THAT ONLY NAMES THE PROBLEM COSTS THE READER THE SAME HOUR EVERY TIME. This one fires on
+ * every version pull request — the bot parks under the narrowest policy this repository can set — so it
+ * is read often, and by whoever is on shift rather than by whoever built it. The run id is the only
+ * thing that is not already in the sentence.
+ */
+const howToClear = (repo, runs) => {
+  const ids = runs.filter((r) => r?.id != null).map((r) => r.id);
+  if (!repo || !ids.length) return "";
+  return " Approve it and the pull request merges itself:\n"
+    + ids.map((id) => `  gh api -X POST repos/${repo}/actions/runs/${id}/approve`).join("\n");
+};
+
+/**
+ * What the sentence says about the policy, given whatever could be read about it.
+ *
+ * IT REPORTS THE SETTING; IT NO LONGER SENDS ANYONE TO CHANGE IT. Three values were tried in one day —
+ * all external contributors, first-time contributors, first-time contributors new to GitHub — and
+ * `github-actions[bot]` parked under every one. The narrowest is what is set now, so there is nothing
+ * left to narrow, and version pull requests 13, 29 and 32 merging did not take the bot off the list
+ * either. The value is still worth printing, because a reader who has not met this needs to know which
+ * setting produced the park; what would waste their afternoon is being told to go and tune it.
+ */
 const policySentence = (policy) => policy
-  ? `The repository's fork-pull-request approval policy is currently \`${policy}\`, and it counts `
-    + "github-actions[bot] as a contributor who needs approving."
-  : "The repository's fork-pull-request approval policy could not be read from here, and it is the "
-    + "setting to look at: it counts github-actions[bot] as a contributor who needs approving.";
+  ? `The repository's fork-pull-request approval policy is \`${policy}\`, its narrowest value, and it `
+    + "still counts github-actions[bot] as a contributor who needs approving. Narrowing it further is "
+    + "not available and merging its pull requests does not take it off the list — both were tried."
+  : "The repository's fork-pull-request approval policy could not be read from here. It is what parks "
+    + "the run: it counts github-actions[bot] as a contributor who needs approving, and it is already "
+    + "at its narrowest value, so changing it is not the way out.";
 
 /**
  * What the two surfaces say about one commit. PURE.
@@ -69,14 +95,16 @@ const policySentence = (policy) => policy
  * answer "nothing started" to a question whose real answer is "somebody has to click approve" — true,
  * useless, and it sends the next reader to look for a broken trigger.
  */
-export function checksVerdict({ checkRuns = [], workflowRuns = [], policy = null } = {}) {
-  const blocked = [...workflowRuns, ...checkRuns].filter(parked).map(nameOf);
+export function checksVerdict({ checkRuns = [], workflowRuns = [], policy = null, repo = null } = {}) {
+  const parkedRuns = [...workflowRuns, ...checkRuns].filter(parked);
+  const blocked = parkedRuns.map(nameOf);
   if (blocked.length) {
     return {
       state: WAITING_FOR_A_PERSON,
       blocked,
       reason: `${blocked.join(", ")} is waiting for somebody to approve it. Auto-merge waits for a check `
-        + "that will never finish on its own, so the version cannot be cut. " + policySentence(policy),
+        + "that will never finish on its own, so the version cannot be cut. " + policySentence(policy)
+        + howToClear(repo, parkedRuns),
     };
   }
   if (!checkRuns.length) {
@@ -135,8 +163,9 @@ export function approvalPolicy(repo, api = gh) {
 export function surfacesFor(repo, sha, api = gh) {
   const checkRuns = (api([`repos/${repo}/commits/${sha}/check-runs`]).check_runs ?? [])
     .map((r) => ({ name: r.name, status: r.status, conclusion: r.conclusion }));
+  // The id travels so the refusal can print the command that clears it rather than only the diagnosis.
   const workflowRuns = (api([`repos/${repo}/actions/runs?head_sha=${sha}`]).workflow_runs ?? [])
-    .map((r) => ({ name: r.name, status: r.status, conclusion: r.conclusion }));
+    .map((r) => ({ name: r.name, status: r.status, conclusion: r.conclusion, id: r.id }));
   return { checkRuns, workflowRuns };
 }
 
@@ -158,7 +187,7 @@ async function main() {
   }
   console.log(`Waiting for the version pull request's checks to start on ${sha}.`);
   const seen = await waitForChecks({
-    read: () => ({ ...surfacesFor(repo, sha), policy: approvalPolicy(repo) }),
+    read: () => ({ ...surfacesFor(repo, sha), policy: approvalPolicy(repo), repo }),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
   });
   if (seen.state === RUNNING) {

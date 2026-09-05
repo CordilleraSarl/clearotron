@@ -46,14 +46,13 @@ on:
   # `pending` asks main a question instead — is there a version here with no tag — and answers it with
   # the same function the push path uses.
   #
-  # AND AS OF 2026-09-05 THIS CRON HAS NEVER FIRED ON THIS REPOSITORY. Not once, across several hours
-  # and many intervals, with the trigger confirmed present on `main` and the workflow `active`. Every
-  # release so far has gone out on the push path, because a person merged something. Two causes are
-  # consistent with that and neither is distinguishable from here: GitHub takes its time registering a
-  # newly added schedule, and `*/5` on a public repository is delayed or dropped under load.
+  # IT FIRES, AND IT IS NOT PUNCTUAL. First scheduled run on this repository: 33973623236, 2026-09-05
+  # 15:03:15Z, success — after several hours of nothing, with the trigger present on `main` the whole
+  # time. Then nothing again for the next hour, through twelve intervals it should have taken.
   #
-  # So do not rely on this as the recovery for a self-merged version until you have SEEN a `schedule`
-  # run publish one. Until then it is a mechanism we have written, not one we have.
+  # So treat this as a floor, not a clock. `*/5` on a public repository is what GitHub feels like giving
+  # you; a version sitting cut and unpublished may wait an hour for it. The step above is what makes the
+  # ordinary path work without a person, and this is the net underneath.
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
@@ -90,7 +89,7 @@ jobs:
       # both endpoints it reads. `checks: read` is `commits/{sha}/check-runs`; `actions: read` is
       # `actions/runs`, which is the only surface that carries `action_required`.
       checks: read
-      actions: read
+      actions: write    # dispatches CI on the version branch, so its checks need no approval
       #
       # THERE IS NO `administration: read` HERE AND THERE CANNOT BE. The guard reads the repository's
       # current fork-pull-request approval policy so it can NAME the setting rather than quote a
@@ -202,11 +201,55 @@ jobs:
             --subject "Release $VERSION" \
             --body "$NOTES"
 
+      # THIS TESTS THE VERSION TREE. IT DOES NOT UNBLOCK THE MERGE, AND THE COMMENT THAT SAID IT DID
+      # WAS WRONG. The pull request is authored by `github-actions[bot]`, and every fork-approval policy
+      # this repository has tried counts it as a contributor needing approval — all external
+      # contributors, then first-time contributors, then first-time contributors new to GitHub. It
+      # parked under all three, five times in one day. Being merged is not what takes an author off that
+      # list: version pull requests 13, 29 and 32 all merged and 32 parked anyway. The policy is already
+      # at its narrowest value, so there is no setting left to narrow.
+      #
+      # A dispatch is not a fork event and needs no approval, and that much is true — the run executes
+      # and turns both required checks green on the pull request's head commit. WHAT IS NOT TRUE is that
+      # this satisfies the pull request. MEASURED ON PULL REQUEST 32, 2026-09-05, both checks green at
+      # 16:37:29Z: `commits/{sha}/check-runs` carried them, the pull request's own rollup was EMPTY, and
+      # `mergeStateStatus` stayed BLOCKED. Approving the parked run by hand is what filled the rollup
+      # with those same two names. A dispatched run's checks are not credited to the pull request; only
+      # the `pull_request` run's are, and that is the run sitting parked.
+      #
+      # SO THE PROCESS OF RECORD IS ONE LANE APPROVAL PER CUT, AND THE GUARD NAMES IT. The step after
+      # this one prints the run id and the command; whoever is on shift runs it. That is a lane's act,
+      # not the owner's — his ruling was that no click of his stands between a merge and the registry,
+      # and none does. Routed 2026-09-05. Do not spend work removing it until there is a way to have the
+      # bot's own pull-request run start without a credential.
+      #
+      # AND IT IS ONE PER VERSION BRANCH, NOT ONE PER RELEASE. Every push to main re-runs `changeset
+      # version` and force-updates this branch, so the head moves and the new head parks again. Measured
+      # 2026-09-05: pull request 32's head was approved at 16:42Z, main moved at 16:43:03Z, and the
+      # re-cut head arrived parked with the earlier approval no longer applying to anything. A busy
+      # afternoon can therefore starve a release without anything going red — the cut needs a gap
+      # between merges long enough for the approved run to finish.
+      #
+      # This dispatch stays because it tests the version tree without waiting for any of that, which is
+      # worth a run on its own — but it is not the answer to the park, and rebuilding it as one is the
+      # mistake this comment exists to stop.
+      - name: Run CI on the version branch, which needs no approval to start
+        if: steps.changesets.outputs.pr-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run ci.yml --ref changeset-release/${{ github.ref_name }}
+
       # AND THE CHECKS IT WAITS FOR HAVE TO EXIST. Auto-merge waits for required checks; a check that
       # never starts is not a check that failed, and the pull request simply sits there. That happened
       # here on 2026-09-05 — the fork-approval policy counted `github-actions[bot]` as an external
       # contributor, the run was created in `action_required`, and the pull request carried zero check
       # runs. Nothing was red. This refuses instead, and says which of the two shapes it found.
+      #
+      # A RED HERE IS THE PIPELINE WORKING, NOT FAILING. The refusal names the parked run and the one
+      # command that clears it. `publish` skips on `needs` while this is red, which is correct: a version
+      # that has not merged has not been cut, and there is nothing to publish yet. Once somebody approves
+      # the run, the pull request merges itself and the push that lands it opens no new version pull
+      # request — so this step is skipped on that run, the job is green, and the publish goes ahead.
       - name: The checks it waits for actually started
         if: steps.changesets.outputs.pr-number != ''
         env:

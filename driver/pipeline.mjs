@@ -48,7 +48,7 @@ import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
-import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, buildReconcileFollowup, readOkRecordUris,
+import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
   unprovableRecordBases, applyDerivedBases,
   carryRecallFollowup, unendedSignature, recallReconciliationEvent, RECALL_RECONCILIATION_SCHEMA_VERSION } from "./recall-reconciliation.mjs";   // P2-A — the recall spine
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
@@ -98,7 +98,7 @@ import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spin
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";   // — the stamp the late lanes never met
-import { slimLine } from "./hit-list.mjs";   // — the list the run works from
+import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array (tracker issue 95)
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
 // Conversion 6: the two line-form parsers are no longer on the live path — the seat sends typed
 // rows and the driver applies THOSE. `parseClosureLines`/`parseAskClosureLines` are still exported and
@@ -171,7 +171,7 @@ import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs";
 import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
-import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource } from "./repairs.mjs";
+import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule } from "./repairs.mjs";
 import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
 import { caseLawSourceRows } from "./case-law-sources.mjs";  // one author for the shape the stage is handed
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
@@ -697,10 +697,31 @@ function deriveHitList(ctx, band) {
     // as a fallback so a provider that promotes the field is not silently ignored.
     const lines = (band?.enumerated ?? []).map((r) =>
       slimLine(r, r?.screen?.mark_transliteration ?? r?.mark_transliteration ?? null));
+    // ── CROWDS RIDE BESIDE THE LINES (Option A, ruled on tracker issue 95) ────────────────────────
+    //
+    // A crowd is a zone that could NOT be enumerated. Without it on the list, `band_lookup` answering
+    // from the list returns nothing for a crowded zone — and nothing is indistinguishable from
+    // "searched and clean". That is the silent-clean defect the whole programme exists to remove, so
+    // the crowds land BEFORE the downstream swap can drop the band read.
+    //
+    // Written ALWAYS, empty when the run had none: an absent key means a list minted before crowds
+    // rode, an empty array means this run had no crowd. Different facts, stated differently.
+    //
+    // ✕ WHAT THE SWAP STILL HAS TO CHECK BEFORE IT DROPS A BAND READ. `sample`, `term_counts` and
+    // `class_counts` are deliberately NOT on the list — the first two are 82% of crowd bytes, and the
+    // ruled field set excludes all three. Their consumers (crowd-context.mjs, coverage-ledger.mjs)
+    // read register-named-band.json, which keeps being written, so nothing breaks today. But a swap
+    // that repoints one of those readers at the list would silently lose the per-term and per-class
+    // truth — named-band.mjs's own note says dropping class_counts hides WHICH class leg stayed open.
+    // Census those three keys' readers before repointing anything, not after.
+    const crowds = (band?.crowds ?? []).map(crowdLine);
     const tmp = P.registerHitList + ".tmp";
-    writeFileSync(tmp, JSON.stringify({ schema_version: 1, lines }, null, 2) + "\n");
+    writeFileSync(tmp, JSON.stringify({ schema_version: 1, lines, crowds }, null, 2) + "\n");
     renameSync(tmp, P.registerHitList);
-    runLog(P.runDir, { event: "hit-list-minted", lines: lines.length,
+    runLog(P.runDir, { event: "hit-list-minted", lines: lines.length, crowds: crowds.length,
+      // a crowd whose count could not be taken is not a crowd that found nothing; the receipt says
+      // how many of each, so a reader diagnosing coverage does not have to open the list to find out.
+      crowds_uncounted: crowds.filter((c) => c.total_hits === null).length,
       with_reading: lines.filter((l) => l.read).length });
     return lines;
   } catch (e) {
@@ -8226,7 +8247,13 @@ async function pipelineInner(job, opts = {}) {
 
   // ── (t1cd): the digest-trigger FUNNEL ──────────────────────────────────────────────────────
   // The digest-trigger funnel (; flag deleted post-E2E 2026-07-22): the queue
-  // (digest-queue.mjs) is the ONLY path to a non-fresh re-digest — escalation/envelope/screen-gate keep
+  // (digest-queue.mjs) is the only path to a non-fresh re-digest EXCEPT for the sites declared in
+  // digest-queue.mjs's DIGEST_OWN_PASS_EXEMPTIONS, which today is `enforceRecallReconciliation` alone
+  // and carries the measured reason it cannot be queued (queueing it would orphan the mint the last
+  // flush's own pass makes). That list is censused by an arm, so this sentence cannot go stale
+  // silently again — it read "the ONLY path" while one mechanism had always fired its own pass, and an
+  // invariant with an undeclared violation teaches the next reader the wrong rule (tracker issue 116).
+  // Everything else: escalation/envelope/screen-gate keep
   // their unit-level work but MINT durable queue items instead of firing their own opus digest pass, and
   // the queue settles in ONE consolidated flush at the frame-reopen seam (pre-synthesis), plus at most
   // one bounded LATE flush for post-synthesis triggers (a screen-gate mint on a resume past synthesis).
@@ -13686,6 +13713,15 @@ async function pipelineInner(job, opts = {}) {
           askAnswers: lintAskAnswers,   // PR-9 — present ⇒ the intake-ask check judges the deterministic join, not fuzzy containment
           cardFolds: (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "card-folds.json"), "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
           extraPlatformNames: ctx.profile?.platforms ?? [],   // WS-B: profile marketplaces are run vocabulary
+          // tracker issue 134 — the SAME structure the masthead's coverage_line is stamped from
+          // (scope-facts.json, written by writeScopeFacts). Passing the sidecar rather than re-deriving
+          // is the point of the issue: the stamped line and the prose check now answer to one searched
+          // set, so they cannot state two different answers about what was searched. Absent sidecar ⇒
+          // null ⇒ the check emits nothing at all, rather than a pass it cannot justify.
+          searchedJurisdictions: (() => {
+            try { return JSON.parse(readFileSync(P.scopeFacts, "utf8")).searched_jurisdictions ?? null; }
+            catch { return null; }
+          })(),
           // compose guarantees the NAME(S) cell via the searched-name fallback, and code (not the model)
           // builds the per-name rating rows — so these reflect the DELIVERED state (regressions are caught
           // by the publish unit tests; the receipt still names every check).
@@ -14775,7 +14811,25 @@ async function pipelineInner(job, opts = {}) {
       // is precisely what `recoveryResumesAt` means. So a weather park writes `recoveryResumesAt` like
       // any other recovery park, still leaves `resetsAt` null, and the record says WHICH lane bought
       // the wait in `recoveryLane` instead of implying a provider clock that does not exist.
-      const recoveryResumesAt = new Date(Date.now() + backoffMin * 60000).toISOString();
+      // tracker issue 103 — A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
+      // A cap that classifies `rate_limited` already takes the postpone path and waits for its stated
+      // reset. One that does NOT lands here, where two things used to go wrong: the provider's own reset
+      // hint was dropped even though StageFailure carries it all the way to this site, and the ladder
+      // topped out at 60 minutes, so six probes covered ~3 hours and a daily cap outlived every one of
+      // them. Cap parks now ride their own ladder (15/30/60/120/240) and a STATED reset time beats it.
+      const capResetHint = (e instanceof StageFailure && e.resetsAt) || null;
+      const capPark = isCapPark(reason, capResetHint);
+      const capSchedule = capPark
+        ? capParkSchedule({ resetsAt: capResetHint, attempts: decision.sigAttempts ?? (attempt - 1) })
+        : null;
+      const recoveryResumesAt = capSchedule
+        ? capSchedule.resumesAt
+        : new Date(Date.now() + backoffMin * 60000).toISOString();
+      // What the wait was bought on: "provider" = its own clock said so, "ladder" = our guess. Same
+      // honesty rule the adapters apply to resetsAtBasis — a reader must be able to tell a stated fact
+      // from an inference, or the record quietly upgrades one into the other.
+      const recoveryWaitBasis = capSchedule ? capSchedule.basis : "ladder";
+      const recoveryWaitMin = capSchedule ? capSchedule.waitMin : backoffMin;
       const lane = decision.lane;
       const laneAttempt = (decision.laneAttempts ?? 0) + 1;
       const laneLabel = lane === "weather" ? "upstream weather" : "defect";
@@ -14785,7 +14839,7 @@ async function pipelineInner(job, opts = {}) {
         weather: { attempts: laneCounts.weather + (lane === "weather" ? 1 : 0), ceiling: weatherCeiling },
         defect: { attempts: laneCounts.defect + (lane === "defect" ? 1 : 0), ceiling: recoveryMax },
       };
-      note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${backoffMin}min; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
+      note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
       // no fromStage: the failed-stage label can be decorated ("synthesis(blocking)") and is not a
       // resume key — plain idempotent resume re-runs exactly the invalid/missing outputs.
       try { sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }); } catch { /* best-effort */ }
@@ -14816,7 +14870,12 @@ async function pipelineInner(job, opts = {}) {
         // this field and was never measured, which is a different fact from a row that says "no gap".
         recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString() }] });
       rollupStatus(run.studioRoot);
-      runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass });
+      runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
+        // tracker issue 103 — a cap park has to be legible in the record, or the next reader diagnosing
+        // "why did this wait 21 hours" cannot tell a provider's stated reset from our own ladder guess.
+        // Absent on a non-cap park rather than false: a row that says nothing is honest about not having
+        // looked, while `capPark: false` would read as "we checked and it was not one".
+        ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin, capResetHint: capResetHint ?? null } : {}) });
       logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
       recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
       // the return's `resetsAt` is the runner's due-clock contract (parkPostponed meta / postponedDueAt),

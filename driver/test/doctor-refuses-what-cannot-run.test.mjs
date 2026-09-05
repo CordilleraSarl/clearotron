@@ -30,12 +30,31 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 /** Run the real command and return its status and text together.
  *
  *  `HOME` is pinned to a scratch directory: this command reads `~/.env`, and an arm that inherited the
- *  developer's home would be measuring that person's box rather than the code. */
+ *  developer's home would be measuring that person's box rather than the code.
+ *
+ *  GIT STATE IS PINNED FOR THE SAME REASON, and this file was the only doctor arm that did not do it.
+ *  `deploymentCurrency` reports `N commit(s) behind origin/main` on any checkout behind its upstream and
+ *  that exits 1 — so these arms went red on a developer branch that had not merged main in that hour,
+ *  while main itself was green and the same commit passed in a detached worktree. Nothing about the code
+ *  under test had changed; the arm was measuring the box's git position, which is exactly the class the
+ *  HOME pin above exists to prevent. Two lanes have now paid for it.
+ *
+ *  `CLEAROTRON_DOCTOR_ASSUME_PINNED` is the mechanism the product already ships for this, added after the
+ *  same failure took main red twice in one day with eight arms each time (onboard.mjs's own note: "a CI
+ *  workspace is not a deployment"). The three other doctor arms — onboard-wizard, the packaged-install
+ *  upgrade and the portal-bundle check — all already set it. This file was the outlier, not the pioneer.
+ *
+ *  ✕ IT DOES NOT WEAKEN THE BEHIND-CHECK. That behaviour is armed where it belongs, against
+ *  `deploymentCurrency` directly in onboard-wizard.test.mjs, including the arm holding that an UNPINNED
+ *  checkout behind its upstream still reports behind. Pinning here says "currency is not the question
+ *  this file asks", which is true of every arm below: they are about what the VERDICT says when no
+ *  register is selected. It stays overridable through `env` so an arm wanting the unpinned reading can
+ *  still have it. */
 function doctor({ env = {}, repo = ROOT } = {}) {
   const home = mkdtempSync(join(tmpdir(), "doctor-home-"));
   try {
     const r = spawnSync(process.execPath, [join(repo, "bin", "clearotron.mjs"), "doctor"],
-      { cwd: repo, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, ...env } });
+      { cwd: repo, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...env } });
     // The spawn's own fate before its text means anything (2064): a child that never came back returns
     // empty output, and every assert below would then fire naming the SUBJECT instead of the child.
     if (r.error || r.signal) throw new Error(`the child did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);

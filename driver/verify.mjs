@@ -166,6 +166,64 @@ function needs(content, markers, label, names = []) {
   }
   return ok();
 }
+// ── THE STRUCTURAL SECTION CONTRACT (tracker issue 129) ────────────────────────────────────────────
+//
+// THE CLASS. Every gate below keys on prose the MODEL composes, so each is one phrasing drift away
+// from killing a run that produced the section perfectly. Measured across three runs and two engines:
+// pewter-lantern (codex) wrote "## Negative-results matrix" and was rejected twice, killing a client
+// run; umber-beacon (anthropic) wrote "## Negative results (per-cell detail)" — different spelling AND
+// different trailing words, same skill. PR 336 widened the regex to `[\s-]`, which fixed those two
+// instances and left the class exactly where it was: the gate still asks the model to guess a spelling.
+//
+// THE CONTRACT. The skill now dictates a machine-readable anchor beside each required heading —
+// `<!-- clearotron:section=negative-results -->` — an HTML comment, so it is invisible in every
+// rendered surface a client ever sees, and verbatim, so there is nothing for a synonym to drift into.
+// When the anchor is present the section requirement is satisfied outright and the prose is free.
+//
+// WHY THE PROSE REGEX STAYS AS A FALLBACK, AND IS NOT A HALFWAY MEASURE. No archived artifact carries
+// an anchor, and archived runs are REPLAYED — verify.mjs's own note two screens down is that replay
+// verdicts get quoted, and changing what an archived run replays to is a records mutation nobody
+// ordered. A hard anchor requirement would fail every run that has ever been delivered. So: anchor OR
+// prose, which is strictly more permissive than today. It cannot newly reject anything, which is the
+// property that makes it safe to land without a proof run.
+//
+// WHAT THIS DOES NOT DO. It does not make the gate stricter or catch a missing section it missed
+// before. It removes a way to fail a document that HAS the section — a false-negative class — and
+// nothing else. Once seats emit anchors reliably, the fallback can be measured and retired; that is a
+// later decision needing evidence, not this change.
+//
+// The label is unchanged on purpose: `correctionHint` (gateway.mjs:2181, :2188) branches on the label
+// TEXT, so renaming a token here silently downgrades the seat's corrective hint to a generic one.
+const SECTION_ANCHOR_RE = (name) =>
+  new RegExp(`<!--\\s*clearotron:section\\s*=\\s*${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*-->`, "i");
+
+/**
+ * A required section, satisfied by EITHER its dictated anchor or the legacy prose marker.
+ * `name` is the anchor token; `proseMarkers` are the regexes the gate used before. PURE.
+ */
+function needsSection(content, name, proseMarkers, label) {
+  const c = content ?? "";
+  if (SECTION_ANCHOR_RE(name).test(c)) return ok();
+  return needs(c, proseMarkers, label);
+}
+
+/**
+ * The multi-marker form, for a gate whose label covers several sections at once
+ * (`findings+ledger`). Emits a token BYTE-IDENTICAL to the `needs(..., label, names)` it replaces —
+ * `missing:findings+ledger(coverage-ledger)` — because correctionHint branches on both the label and
+ * the appended member, and a renamed token silently downgrades the seat's hint to a generic one.
+ * `anchor` is the dictated section token; `which` is the name that rides the emitted failure. PURE.
+ */
+function needsSectionsLabeled(content, specs, label) {
+  const c = content ?? "";
+  for (const spec of specs) {
+    if (SECTION_ANCHOR_RE(spec.anchor).test(c)) continue;
+    if (spec.re.test(c)) continue;
+    return fail(`missing:${label}${spec.which ? `(${spec.which})` : ""}`);
+  }
+  return ok();
+}
+
 function all(...checks) {
   for (const c of checks) if (!c.ok) return c;
   return ok();
@@ -284,8 +342,8 @@ function declaredUnavailableGate(p, content, evidence) {
 function commonLawMeaningSeat(p, c) {
   const structural = all(
     nonEmpty(c),
-    needs(c, [/^#{1,4}\s+[^\n]*\b(findings|meaning|connotation)\b/im], "findings-heading"),
-    needs(c, [/audit[\s-]trail/i], "audit-trail"),
+    needsSection(c, "findings", [/^#{1,4}\s+[^\n]*\b(findings|meaning|connotation)\b/im], "findings-heading"),
+    needsSection(c, "audit-trail", [/audit[\s-]trail/i], "audit-trail"),
   );
   if (!structural.ok) return structural;
   const gs = readGridSpecHalf(p, MEANING_SEAT);
@@ -503,10 +561,10 @@ function commonLawHalfEvidence(p, c) {
 function commonLawStructural(c) {
   return all(
     nonEmpty(c),
-    needs(c, [/^#{1,4}\s+[^\n]*\bfindings\b/im], "findings-heading"),
-    needs(c, [/negative[\s-]results/i], "negative-results"),
-    needs(c, [/coverage[\s-]ledger/i], "coverage-ledger"),
-    needs(c, [/audit[\s-]trail/i], "audit-trail"),
+    needsSection(c, "findings", [/^#{1,4}\s+[^\n]*\bfindings\b/im], "findings-heading"),
+    needsSection(c, "negative-results", [/negative[\s-]results/i], "negative-results"),
+    needsSection(c, "coverage-ledger", [/coverage[\s-]ledger/i], "coverage-ledger"),
+    needsSection(c, "audit-trail", [/audit[\s-]trail/i], "audit-trail"),
     needs(c, [/\|/], "platform matrix"),
     hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"),
   );
@@ -1889,7 +1947,10 @@ export const validators = {
     const stamp = coverageFormStamp(dirname(p));
     const structural = stamp.required
       ? all(nonEmpty(c), needs(c, [/^#{1,4}\s+[^\n]*\bfindings\b/im], "findings-heading"))
-      : all(nonEmpty(c), needs(c, [/^#{1,4}\s+[^\n]*\bfindings\b/im, /Coverage ledger/i], "findings+ledger", ["findings-heading", "coverage-ledger"]),
+      : all(nonEmpty(c), needsSectionsLabeled(c, [
+          { anchor: "findings", which: "findings-heading", re: /^#{1,4}\s+[^\n]*\bfindings\b/im },
+          { anchor: "coverage-ledger", which: "coverage-ledger", re: /Coverage ledger/i },
+        ], "findings+ledger"),
         hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"));
     if (!structural.ok) return structural;
     // ── THE COVERAGE FORM, AND THE FOUR STATES THAT ARE NOT THE SAME FACT ──────────────────────────

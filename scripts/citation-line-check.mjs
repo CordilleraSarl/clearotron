@@ -78,6 +78,7 @@ export const EXEMPT_TARGETS = [
   { target: /^planted\//, why: "THE NAMESPACE for a fixture path that must not exist. publication-scrub.test.mjs plants an undeclared path to prove the scrubber sees it, and cut-vendor-keys.test.mjs plants one to prove the record-key detector reports a location. Unlike the namespaced entries below, this one is deliberately shared: `planted/` names the class rather than one test's fixtures, so a new test planting a non-existent path uses it instead of inventing a second convention — and a bare invented name is what reports as a dangling citation to a file nobody meant to create" },
   { target: /^diffcase-[a-z]+\.mjs$/, why: "SYNTHETIC DIFF FIXTURE FILENAMES in pushed-content-guard.test.mjs (tracker issue 1941). That test feeds `addedLines` a hand-written unified diff, so `keep.mjs:4` is a line of DIFF DATA the guard must parse, not a citation to anything. Same class as the contract-audit planted names directly above: a test that must contain a file reference to a file that does not exist, on purpose. NAMESPACED `diffcase-` deliberately: a first cut exempted the bare names `keep|dropped|gone|zz` and SWALLOWED two of this file's own controls, which plant `gone.mjs:12` — an exemption wide enough to cover somebody else's known-bad turns their arm green while it proves nothing" },
   { target: /^driver\/engine\/mcp\/planted-server\.mjs$/, why: "a planted server module name in contract-audit.test.mjs" },
+  { target: /^srv\/app\//, why: "SYNTHETIC DEPLOYMENT STACK TRACES. The house rule for fixtures is to use a `/srv/…` path and never a real `/home/<name>/` one (deployment-hostnames.test.mjs polices the other half), so a hand-written trace like \"TypeError: x is not a function at /srv/app/driver/pipeline.mjs:2411:9\" is test DATA the parser under test must read — the line number is the datum, not a claim about our tree. It passed for as long as it did by luck: this resolver strips the prefix and lands on the real driver/pipeline.mjs, so the fixture went green while whatever line it happened to name was real code, and reported BLANK the first time an unrelated edit made that line a brace. NAMESPACED to `srv/app/` for the reason the diffcase- entry gives — nothing in this repo ships under srv/, and a wider prefix would swallow a genuine citation someone writes tomorrow" },
   { target: /^(?:driver\/)?driftcase-[a-z-]+\.mjs$/, why: "SYNTHETIC DRIFT FIXTURE FILENAMES in citation-drift-at-the-diff.test.mjs (tracker issue 1950). That test feeds the drift report a hand-built corpus in which `driftcase-target.mjs:40` is the DATUM being classified — the thing whose movement is measured — not a citation to anything. Same class as the planted names above, and NAMESPACED under `driver/` for the reason the `diffcase-` entry gives: an exemption wide enough to cover another test's known-bad turns their arm green while it proves nothing. The directory prefix is OPTIONAL because one arm cites the BARE BASENAME on purpose: that is the exact shape that made `resolveCited` short-circuit on an always-true `exists` and print a clean tick, so the arm cannot be written any other way. `driftcase-` carries the namespacing on its own — nothing else in this tree uses the prefix" },
   { target: /^common-law-findings\.md$/, why: "a RUN ARTIFACT, written into a run directory at execution time. It is cited by name in doubt-ledger and audit-from-spine tests because that is what the artifact is called; it is not and never will be a tracked file" },
   // ✕ REMOVED: `codex/dist/(helper|cli).js` — a captured CODEX stack trace in
@@ -501,6 +502,15 @@ export function symbolCitationMisses(cites, readLines) {
   const out = [];
   for (const c of cites ?? []) {
     if (c.state !== "exact" && c.state !== "unique") continue;
+    // PLANTED DATA IS EXEMPT HERE TOO — the table's own header says "EXEMPT WHATEVER IT RESOLVED TO",
+    // and the resolver consults it only under `unresolved` while these three walks did not consult it
+    // at all. A planted path that resolves EXACTLY (a synthetic "/srv/app/driver/pipeline.mjs" stack
+    // trace strips to the real driver/pipeline.mjs) was therefore judged as a claim about our tree. It
+    // passed for as long as whatever line it happened to name was real code, and reported the first
+    // time an unrelated edit made that line a brace — a finding of luck, which is what this guard's own
+    // note two screens up says it must never be. A planted citation's line number is the DATUM a test
+    // feeds its parser, never an assertion about this repository.
+    if (exemptTarget(c.cited)) continue;
     const body = readLines(c.path);
     if (!body) continue;
     if (!constructRange(body, c.symbol)) out.push(c);
@@ -654,6 +664,15 @@ export function symbolMisses(citations, readLines) {
   const out = [];
   for (const c of citations) {
     if (c.state !== "exact" && c.state !== "unique") continue;
+    // PLANTED DATA IS EXEMPT HERE TOO — the table's own header says "EXEMPT WHATEVER IT RESOLVED TO",
+    // and the resolver consults it only under `unresolved` while these three walks did not consult it
+    // at all. A planted path that resolves EXACTLY (a synthetic "/srv/app/driver/pipeline.mjs" stack
+    // trace strips to the real driver/pipeline.mjs) was therefore judged as a claim about our tree. It
+    // passed for as long as whatever line it happened to name was real code, and reported the first
+    // time an unrelated edit made that line a brace — a finding of luck, which is what this guard's own
+    // note two screens up says it must never be. A planted citation's line number is the DATUM a test
+    // feeds its parser, never an assertion about this repository.
+    if (exemptTarget(c.cited)) continue;
     const body = readLines(c.path);
     if (!body) continue;
     for (const sym of c.symbols ?? []) {
@@ -710,6 +729,15 @@ export function structuralMisses(citations, readLines, ships = sourceCrossesTheC
   const misses = [], unshipped = [];
   for (const c of citations) {
     if (c.state !== "exact" && c.state !== "unique") continue;
+    // PLANTED DATA IS EXEMPT HERE TOO — the table's own header says "EXEMPT WHATEVER IT RESOLVED TO",
+    // and the resolver consults it only under `unresolved` while these three walks did not consult it
+    // at all. A planted path that resolves EXACTLY (a synthetic "/srv/app/driver/pipeline.mjs" stack
+    // trace strips to the real driver/pipeline.mjs) was therefore judged as a claim about our tree. It
+    // passed for as long as whatever line it happened to name was real code, and reported the first
+    // time an unrelated edit made that line a brace — a finding of luck, which is what this guard's own
+    // note two screens up says it must never be. A planted citation's line number is the DATUM a test
+    // feeds its parser, never an assertion about this repository.
+    if (exemptTarget(c.cited)) continue;
     const body = readLines(c.path);
     if (!body) continue;
     const end = c.end ?? c.start;
