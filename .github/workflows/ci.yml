@@ -147,45 +147,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # ── THE SECRET SCAN COMES BEFORE `npm ci`, AND THE ORDER IS THE POINT ───────────────────────
-      #
-      # Run after the install, this scan's root contains node_modules: minutes of third-party code and
-      # somebody else's test fixtures, which is both slow and noisy. The obvious fix is to exclude that
-      # directory, and an exclusion is a hole that rots — it stays in the config long after the reason
-      # goes, and nobody re-reads it. Running first, node_modules cannot be in scope BY CONSTRUCTION.
-      # The bundle is scanned separately below, after it exists.
-      #
-      # A SECURITY RECORD, NOT A PROGRESS BAR. Pinned by version AND by digest: a scanner fetched by tag
-      # is a scanner somebody else can change, and this step's whole value is that its answer can be
-      # trusted. 8.30.1 rather than 8.18.4 because the older build read files in 10,000-byte chunks and
-      # truncated a match that straddled a boundary — a 40-character credential was missed ENTIRELY and
-      # the scan reported clean. That pin cannot move back quietly: an arm in the driver suite fails on
-      # 8.18.4 and passes on 8.30.1, and its name says so.
-      - name: Fetch the scanner, by version and by digest
-        env:
-          GITLEAKS_VERSION: '8.30.1'
-          GITLEAKS_SHA256: '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb'
-        run: |
-          set -euo pipefail
-          curl -sSfL -o gitleaks.tgz \
-            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
-          tar -xzf gitleaks.tgz gitleaks
-          ./gitleaks version
-
-      - name: No secret is in the tree
-        run: |
-          set -euo pipefail
-          # A SCAN OVER NOTHING EXITS 0, which is the shape where the checkout failed and the scan
-          # reported clean. The count is the check; the scan is what it enables.
-          COUNT=$(git ls-files | wc -l)
-          echo "the checkout carries $COUNT tracked file(s)"
-          if [ "$COUNT" -eq 0 ]; then
-            echo "::error::no tracked files, so nothing was scanned."
-            exit 1
-          fi
-          ./gitleaks dir . --config .gitleaks.toml --redact --no-banner
-
       - uses: actions/setup-node@v5
         with:
           node-version: '22.23.2'
@@ -197,15 +158,50 @@ jobs:
       # that in the voice of a layout result.
       - run: npm run build:ui
 
-      - name: No secret is in the built bundle
+      # ── TWO SCANS, AND THE SECOND ONE IS NOT A BELT-AND-BRACES REPEAT ───────────────────────────
+      #
+      # gitleaks honours .gitignore, and portal-ui/dist/ is ignored. Measured on this tree: a scan
+      # rooted at the checkout reads the same 67,282,944 bytes whether or not the bundle has been
+      # built, so it NEVER reaches it. One scan of the repository would look like it covered
+      # everything and would silently cover none of the shipped JavaScript — which is the only
+      # artefact here a reader actually loads. So the bundle is scanned by name, after it exists.
+      #
+      # node_modules is ignored too and enters neither scan, so where these steps sit relative to
+      # `npm ci` changes nothing. That was worth measuring rather than assuming: the ordering looks
+      # like it ought to matter.
+      #
+      # A SECURITY RECORD, NOT A PROGRESS BAR. Pinned by version AND by digest — a scanner fetched by
+      # tag is a scanner somebody else can change, and this step's whole value is that its answer can
+      # be trusted. 8.30.1 rather than 8.18.4 because the older build read files in 10,000-byte chunks
+      # and truncated a match that straddled a boundary: a 40-character credential was missed ENTIRELY
+      # and the scan reported clean. That pin cannot move back quietly — an arm in the driver suite
+      # fails on 8.18.4 and passes on 8.30.1, and its name says which.
+      - name: No secret is in the tree or in the built bundle
+        env:
+          GITLEAKS_VERSION: '8.30.1'
+          GITLEAKS_SHA256: '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb'
         run: |
           set -euo pipefail
-          COUNT=$(find portal-ui/dist -type f | wc -l)
-          echo "the built bundle carries $COUNT file(s)"
-          if [ "$COUNT" -eq 0 ]; then
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          ./gitleaks version
+
+          # A SCAN OVER NOTHING EXITS 0. That is the shape in which a failed checkout or an unbuilt
+          # bundle reports clean, so each count is the check and the scan is what it enables.
+          TRACKED=$(git ls-files | wc -l)
+          BUNDLE=$(find portal-ui/dist -type f | wc -l)
+          echo "scanning $TRACKED tracked file(s) and $BUNDLE built bundle file(s)"
+          if [ "$TRACKED" -eq 0 ]; then
+            echo "::error::no tracked files, so the tree was not scanned."
+            exit 1
+          fi
+          if [ "$BUNDLE" -eq 0 ]; then
             echo "::error::portal-ui/dist is empty, so the bundle was not scanned."
             exit 1
           fi
+          ./gitleaks dir . --config .gitleaks.toml --redact --no-banner
           ./gitleaks dir portal-ui/dist --config .gitleaks.toml --redact --no-banner
           rm -f gitleaks gitleaks.tgz
 
