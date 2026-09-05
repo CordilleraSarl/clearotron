@@ -33,7 +33,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { unitIsHealthy, showUnit, looksLikeBusFailure, systemdSaid, systemdFailure } from "../../bin/connect.mjs";
+import { unitIsHealthy, showUnit, looksLikeBusFailure, systemdSaid, systemdFailure,
+  secretForMint, withSecret } from "../../bin/connect.mjs";
+import { describeChange } from "../../shared/client-door.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CONNECT = join(REPO, "bin", "connect.mjs");
@@ -135,4 +137,64 @@ test("tracker issue 130 — the raise says what a half-finished connect already 
     { step: "health-check", unit: "clearotron-client-mcp.service" });
   assert.match(e.message, /HALF APPLIED/);
   assert.match(e.message, /clearotron doctor/, "the reader is not told what can tell them which half stands");
+});
+
+// ── The three further defects the same drive found, on the same verb ────────────────────────────────
+
+test("tracker issue 130 — the plan and the mint read ONE install, not two", () => {
+  // The defect: the plan asked the install's ENV FILE whether a signing secret existed and said yes;
+  // `mintToken` then read `process.env` and threw "TRADEMARK_MCP_TOKEN_SECRET unset" about a secret
+  // that IS set. On a hosted install that is the ordinary case — the installer writes the file and the
+  // operator's shell never exported anything — and the failure lands AFTER the units are placed.
+  const envFile = "CLEAROTRON_WORK_DIR=/var/lib/clearotron\nTRADEMARK_MCP_TOKEN_SECRET=from-the-file\n";
+  const io = { exists: () => true, read: () => envFile };
+  assert.equal(secretForMint({ shellEnv: {}, envPath: "/x/.env", ...io }), "from-the-file",
+    "the mint has nothing to sign with on a box where the installer wrote the secret and the shell did not");
+  assert.equal(secretForMint({ shellEnv: { TRADEMARK_MCP_TOKEN_SECRET: "from-the-shell" }, envPath: "/x/.env", ...io }), "",
+    "a shell that already carries the secret must be left alone — supplying a second value here is how "
+    + "a key gets signed with something the door does not verify against");
+  // Quoting is how an env file is allowed to be written, and a quoted secret signed nothing before.
+  for (const [line, want] of [['TRADEMARK_MCP_TOKEN_SECRET="quoted"', "quoted"],
+                              ["TRADEMARK_MCP_TOKEN_SECRET='single'", "single"],
+                              ["TRADEMARK_MCP_TOKEN_SECRET=  spaced  ", "spaced"]]) {
+    assert.equal(secretForMint({ shellEnv: {}, envPath: "/x/.env", exists: () => true, read: () => `${line}\n` }), want);
+  }
+  assert.equal(secretForMint({ shellEnv: {}, envPath: "/x/.env", exists: () => true, read: () => "TRADEMARK_MCP_TOKEN_SECRET=\n" }), "",
+    "an EMPTY row was read as a secret, which signs a key with nothing and reports success");
+  assert.equal(secretForMint({ shellEnv: {}, envPath: "/x/.env", exists: () => false, read: () => "" }), "",
+    "a file that is not there was read anyway");
+});
+
+test("tracker issue 130 — a secret supplied for one mint does not outlive it", () => {
+  // `connect` spawns systemctl. A secret left in the environment after the call that needed it reaches
+  // every child from then on, which is a worse defect than the one being repaired.
+  const env = { PATH: "/usr/bin" };
+  assert.equal(withSecret("s3cret", () => env.TRADEMARK_MCP_TOKEN_SECRET, { env }), "s3cret");
+  assert.equal(Object.hasOwn(env, "TRADEMARK_MCP_TOKEN_SECRET"), false, "the secret was left in the environment");
+
+  const kept = { TRADEMARK_MCP_TOKEN_SECRET: "original" };
+  withSecret("temporary", () => null, { env: kept });
+  assert.equal(kept.TRADEMARK_MCP_TOKEN_SECRET, "original", "a value that was already there was overwritten");
+
+  // ON A THROW TOO, which is the case that matters: minting is what throws.
+  assert.throws(() => withSecret("s3cret", () => { throw new Error("mint failed"); }, { env }), /mint failed/);
+  assert.equal(Object.hasOwn(env, "TRADEMARK_MCP_TOKEN_SECRET"), false,
+    "a failed mint left the signing secret in the environment of every process spawned afterwards");
+});
+
+test("tracker issue 130 — a loopback address is never called reachable from outside", () => {
+  // The paragraph above this branch says a wrong answer in this direction is the dangerous one: an
+  // operator told their door is loopback-only stops thinking about who else can reach it. The claim was
+  // made from the VARIABLE being non-empty, and a loopback value is a thing operators set.
+  const plan = { possible: true, blockers: [], settings: {}, route: "public-http", steps: [] };
+  const said = (publicAddress) => describeChange(plan, { applied: true, publicAddress }).join(" ");
+  for (const addr of ["http://127.0.0.1:18822", "http://localhost:18822", "http://[::1]:18822"]) {
+    const text = said(addr);
+    assert.equal(/IS reachable from outside this machine/.test(text), false,
+      `${addr} was announced as reachable from outside this machine`);
+    assert.match(text, /this machine talking to itself/,
+      `${addr} produced no honest sentence at all — silence would be safe, a wrong claim is not`);
+  }
+  assert.match(said("https://clients-mcp.example.com/mcp"), /IS reachable from outside this machine/,
+    "a genuinely public address stopped being announced, which is the opposite over-correction");
 });

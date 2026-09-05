@@ -301,6 +301,36 @@ export function showUnit(name, props, { run = execFileSync } = {}) {
   } catch (e) { return { fields: null, error: e }; }
 }
 
+/**
+ * Run `fn` with the signing secret in the environment when this shell did not carry one.
+ *
+ * PUT BACK AFTERWARDS, INCLUDING ON A THROW. A secret left in `process.env` outlives the one call that
+ * needed it and reaches every child this process spawns from then on — and `connect` spawns systemctl.
+ */
+/**
+ * The signing secret to mint with when this shell does not carry one — read from the install's env file.
+ *
+ * Returns "" when the shell already has one (nothing to supply) and "" when the file has none either.
+ * The value is never logged and never returned to a caller that prints; its one use is the environment
+ * of a single `mintToken` call.
+ */
+export function secretForMint({ shellEnv = process.env, envPath, read = readFileSync, exists = existsSync } = {}) {
+  if (String(shellEnv?.TRADEMARK_MCP_TOKEN_SECRET ?? "").trim()) return "";
+  if (!envPath || !exists(envPath)) return "";
+  const m = /^[ \t]*TRADEMARK_MCP_TOKEN_SECRET[ \t]*=[ \t]*(\S.*)$/m.exec(String(read(envPath, "utf8")));
+  if (!m) return "";
+  return m[1].trim().replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
+}
+
+export function withSecret(value, fn, { env = process.env } = {}) {
+  if (!value) return fn();
+  const had = Object.hasOwn(env, "TRADEMARK_MCP_TOKEN_SECRET");
+  const saved = env.TRADEMARK_MCP_TOKEN_SECRET;
+  env.TRADEMARK_MCP_TOKEN_SECRET = value;
+  try { return fn(); }
+  finally { if (had) env.TRADEMARK_MCP_TOKEN_SECRET = saved; else delete env.TRADEMARK_MCP_TOKEN_SECRET; }
+}
+
 /** A blocking pause, so the health check below asks about a door that has had time to fail. */
 const settle = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 
@@ -364,6 +394,20 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
   try { granted = accountsForEmail(identity, loadGrants()); } catch { granted = undefined; }
   // The env file the UNIT reads, not this shell — found by the drive: a shell-exported secret passed
   // every plan check while the door died at birth reading an env file that lacked it.
+  // ── THE PLAN CHECKED THE FILE AND THE MINT READ THE SHELL (tracker issue 130) ─────────────────────
+  //
+  // `unitEnvHasSecret` below asks the UNIT'S ENV FILE, which is the right question for the DOOR: a
+  // process reads its environment at start, so a secret that is only in this shell is one the door
+  // never sees. But the MINT happens in this process, and `mintToken` reads `process.env` — so on a
+  // hosted install, where the installer wrote the secret to the file and the operator's shell has
+  // never exported it, `connect` planned perfectly and then died with "TRADEMARK_MCP_TOKEN_SECRET
+  // unset" about a secret that IS set. Two authorities for one value, and the failure lands after the
+  // units are placed.
+  //
+  // So the mint takes the union: this shell if it has one, else the file the plan just read. The value
+  // is never printed and never leaves this process — it goes into the environment for the length of
+  // one mint and is put back.
+  const fileSecret = secretForMint({ shellEnv: process.env, envPath: ENV_PATH });
   const unitEnvHasSecret = existsSync(ENV_PATH)
     ? /^[ \t]*TRADEMARK_MCP_TOKEN_SECRET[ \t]*=[ \t]*\S/m.test(readFileSync(ENV_PATH, "utf8"))
     : false;
@@ -411,7 +455,7 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     },
     unitIsHealthy,
     // Minted in-process so the credential never crosses a shell, an argv or a pipe on its way back.
-    mint: (spec) => mintToken({ ...spec, ttlSec: 90 * 24 * 3600 }),
+    mint: (spec) => withSecret(fileSecret, () => mintToken({ ...spec, ttlSec: 90 * 24 * 3600 })),
   });
 
   // ── THE LEDGER LINE: the id is written down, the key never is ─────────────
@@ -427,7 +471,15 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     recordNote = "This key's id could not be read, so it was NOT recorded — `clearotron disconnect` cannot revoke it; it dies only at its own expiry.";
   } else {
     try {
+      // ── THE TRUE CAUSE, NOT WHATEVER THREW (tracker issue 130) ─────────────────────────────────
+      //
+      // With no grants file configured this reached `atomicWrite(undefined, …)` and the reader got a
+      // raw Node type error inside a client-facing sentence — a live key, outside `disconnect`'s
+      // reach, explained by a stack-trace fragment. The setting is the cause and it has a name.
       const grantsPath = envFrom(process.env, "CLEAROTRON_ACCESS_FILE");
+      if (!grantsPath) {
+        throw new Error("CLEAROTRON_ACCESS_FILE is not set, so this install has no file to record it in");
+      }
       const g = loadGrants();
       atomicWrite(grantsPath, JSON.stringify(
         recordConnectKey(g ?? { tenants: {} }, { jti: id.jti, sub: identity, client, exp: id.exp }),
