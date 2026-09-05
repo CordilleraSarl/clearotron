@@ -13,7 +13,7 @@
 // refuses nothing, and the second kind is the one that survives review.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,6 +22,7 @@ import {
   GROUPS, MAX_WORDS, INTERNAL_WORDS, EMPTY_PHRASES, sourceDirectories,
 } from "../../scripts/release-notes-lint.mjs";
 import { group, writeRootChangelog, GROUPS as CHANGELOG_GROUPS } from "../../scripts/release-version.mjs";
+import { refusals as completenessRefusals, MIN_NOTICE_ENTRIES } from "../../scripts/release-completeness-check.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -60,6 +61,12 @@ test("tracker 97 the lint refuses each thing the contract bans, and passes a not
   assert.deepEqual(offences("For operators: Runs are kept in /var/lib/clearotron/pool now."), ["/var/lib/clearotron/pool"]);
   // And ordinary prose with a slash in it is not a path. A guard that refused this would be deleted.
   assert.deepEqual(offences("Fixed: The demo accepts a knockout and/or a clearance without complaint."), []);
+  // A PATH THE USER DOCUMENTATION ALREADY SHOWS is the reader's by definition — that is the carve-out
+  // the contract's own "flags not documented for users" implies, applied to paths. Isolated from the
+  // home-directory rule, which would otherwise allow this one for a different reason.
+  assert.deepEqual(offences("For operators: Profiles are read from /etc/trademark/profiles as before."), []);
+  assert.deepEqual(offences("For operators: Profiles are read from /etc/trademark/nowhere as before."),
+    ["/etc/trademark/nowhere"]);
   assert.deepEqual(offences("New: See https://github.com/CordilleraSarl/clearotron for the source."), []);
 
   // A flag the user documentation never shows.
@@ -191,6 +198,35 @@ test("tracker 97 the source directories the lint refuses are read off the tree, 
     if (d.isDirectory() && !d.name.startsWith(".") && d.name !== "node_modules") {
       assert.ok(dirs.has(d.name), `\`${d.name}\` exists in the tree and the lint does not know about it`);
     }
+  }
+});
+
+test("tracker 97 the check that says the licence record ships can itself fail", () => {
+  // THE ARM THE NOTICES FILE NEVER HAD. `notices:check` regenerates and compares, so it used the
+  // generator as its own oracle and agreed with it while the file was missing sixty packages. This one
+  // drives the completeness check against the two shapes that reach a customer: the file absent from
+  // the package, and the file truncated to a fraction of the tree.
+  const dir = mkdtempSync(join(tmpdir(), "notices-"));
+  try {
+    mkdirSync(join(dir, "portal-ui", "dist", "assets"), { recursive: true });
+    writeFileSync(join(dir, "portal-ui", "dist", "index.html"), "<!doctype html>");
+    writeFileSync(join(dir, "portal-ui", "dist", "assets", "i.js"), "//");
+    for (const [child, entry] of [["global-preliminary-search", "report.md"], ["knockout-search", "knockout-findings.json"]]) {
+      mkdirSync(join(dir, "demo", child, "run"), { recursive: true });
+      writeFileSync(join(dir, "demo", child, "meta.json"), "{}");
+      writeFileSync(join(dir, "demo", child, "run", entry), "x");
+    }
+    const notices = (n) => writeFileSync(join(dir, "THIRD-PARTY-NOTICES.md"),
+      Array.from({ length: n }, (_, i) => `## package-${i}`).join("\n"));
+    const about = () => completenessRefusals(dir).filter((r) => /notices/.test(r));
+
+    assert.match(about().join("\n"), /are not in the package/, "an absent licence record was not refused");
+    notices(10);
+    assert.match(about().join("\n"), /list 10 package\(s\)/, "a truncated licence record was not refused");
+    notices(MIN_NOTICE_ENTRIES);
+    assert.deepEqual(about(), [], "a complete licence record was refused, so the check refuses everything");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
   }
 });
 
