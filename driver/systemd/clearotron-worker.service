@@ -61,13 +61,23 @@ ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
 # `-` prefix: a snapshot is a diagnostic surface, and failing to write one must never fail the service.
 ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs
 #
-# THIS LINE DOES NOT REACH A RUNNING BOX BY DEPLOYING (measured by role-e2e on testuser, 2026-09-05).
-# `clearotron update` pulls and rebuilds; it does not reinstall unit files, and neither does the hourly
-# timer. testuser's installed copy of this unit had NO ExecStartPost while the tracked one had it, so the
-# capture sat four hours stale on a box whose checkout was current. Any unit-file change in any bundle is
-# invisible until somebody installs it by hand — so on test and prod this refresh starts working when the
-# units are reinstalled, not when the code lands. Filed against the deploy path; recorded here because
-# the next person to wonder why the last-run row is stale will read this file first.
+# THIS LINE DOES NOT REACH A RUNNING BOX BY DEPLOYING (tracker issue 191; measured by role-e2e on
+# testuser, 2026-09-05). `clearotron update` pulls and rebuilds; it does not refresh unit files, and
+# neither does the hourly timer. testuser's installed copy of this unit had NO ExecStartPost while the
+# tracked one had it, so the capture sat four hours stale on a box whose checkout was current.
+#
+# AND THE VERB ALREADY EXISTS, which is what makes it a one-line defect rather than a missing feature.
+# `clearotron start --background` on a box that already carries the units IS the refresh: it re-renders
+# every member of SERVER_INSTALL_SET through renderUnit, daemon-reloads, and restarts every non-oneshot
+# unit. The deploy path simply never calls it — `grep -c background bin/update.mjs` is 0. Saying "invisible
+# until somebody installs it by hand" invites building unattended unit installation; the accurate sentence
+# is that the deploy path does not call the refresh this product already ships and tests.
+#
+# `render-units.mjs --check` can see the drift and nothing else can: doctor is onboard.mjs --check, and it
+# takes only parseEnvFile from that module, so the comparison has no caller outside render-units' own
+# main(). Until the deploy path calls the refresh, this ExecStartPost starts working on test and prod when
+# somebody runs it, not when the code lands. Recorded here because the next person wondering why the
+# last-run row is stale will read this file first.
 Restart=on-failure
 RestartSec=10
 
