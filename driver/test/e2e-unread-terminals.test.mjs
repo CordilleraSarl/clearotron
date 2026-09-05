@@ -45,7 +45,7 @@ function fixture() {
 test("#922 only rounds that are NOT SETTLED are listed — a SETTLED round is done", () => {
   // AMENDED 2026-08-14. This asserted "a READ round is done" and used `reportedState: "PASS"` as the
   // closed sentinel — neither is the rule. The harness closes a round on `reportedState === "settled"`
-  // (previousRoundNotice in e2e.mjs:2210) and "PASS" is not that word, so under the corrected rule
+  // (previousRoundNotice in e2e.mjs:2256) and "PASS" is not that word, so under the corrected rule
   // this fixture is still unclosed. Both halves of the old test were wrong in the same direction: they
   // let a round leave the list without being closed.
   const f = fixture();
@@ -282,7 +282,7 @@ test("#922 the five states still partition the population", () => {
 // 64 rounds = 21 never read + 9 READ-BUT-NOT-SETTLED + 34 settled. Unclosed is 30, not 21. A round
 // looked at and returned "unknown" got a `reportedAt` stamp and dropped off this list while remaining
 // exactly as unclosed — so READING a round was enough to stop it being counted, whatever the read
-// found. The harness already knew: previousRoundNotice in e2e.mjs:2210 closes a round on
+// found. The harness already knew: previousRoundNotice in e2e.mjs:2256 closes a round on
 // `reportedState === "settled"`, NEVER on `reportedAt != null`. This lister was the last reader
 // keying on the weaker field.
 
