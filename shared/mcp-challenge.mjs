@@ -74,9 +74,20 @@ export function blockedByAccessChallenge(where, status) {
     + "as a missing server. The address, the tunnel and the door are all fine. It is the Access "
     + "application in front of this hostname that has to answer an MCP route with the OAuth challenge "
     + "(401 and `www-authenticate: Bearer`) instead of redirecting a browser — an application property "
-    + "changed at your identity provider, not here, and not fixed by recreating the application. "
+    + "changed at your identity provider, not here, and NOT repaired by recreating the application "
+    + "(recreating it loses this setting and changes the audience, which is two symptoms from one "
+    + "cause). "
+    // ── NAME THE SWITCH (tracker issue 149) ──────────────────────────────────────────────────────
+    // The rule first and the vendor second, because the identity interface is configuration on
+    // purpose: issuer, audience, claim and header are all settings, and a Cloudflare-only remedy
+    // re-narrows an interface that was widened deliberately. But a rule with no switch behind it is
+    // what 149 was filed about — it tells a reader they have the wrong challenge and not which
+    // control to change, and a reader cannot find "the OAuth option" in a console by that name.
+    + "The setting is whichever one makes the application issue OAuth tokens itself rather than "
+    + "sign a browser in; on Cloudflare Access it is the application's Advanced settings → Managed "
+    + "OAuth, which is OFF on a newly created application. "
     + "INSTALL.md, under \"Putting a surface behind your identity provider\", carries the one-line check "
-    + "and what each answer means.";
+    + "and what each answer means, and the second setting that has to be right beside it.";
 }
 
 /** The trailing note for an answering route, when the challenge form is worth naming. Empty when not. */

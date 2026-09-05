@@ -13,10 +13,16 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { probeRegistration, describeRegistration, registrationEndpointFrom, registrationAccepted,
   registrationBody, VENDOR_REDIRECTS, CONTROL_REDIRECT } from "../../shared/connector-signin-probe.mjs";
 
 /** A `post` that answers by redirect URI, and records the order it was asked in. */
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+
 function stub(answers, seen = []) {
   return async (_endpoint, body) => {
     const uri = body.redirect_uris[0];
@@ -128,4 +134,29 @@ test("tracker issue 149 — the registration body carries no credential", () => 
   }
   assert.equal(Object.keys(body).some((k) => /^(client_secret|access_token|authorization)$/.test(k)), false,
     "the registration body grew a credential field, so this probe now needs one to run");
+});
+
+test("tracker issue 149 — the probe is opt-in, and the document that promises so names the flag", () => {
+  // `doctor` promises in INSTALL.md that it writes nothing, and that sentence is why a reader runs it on
+  // a production box without thinking about it. This probe creates OAuth clients, so it can only ever
+  // run when asked for by name — and the flag has to be discoverable, or an opt-in nobody can find is
+  // the same as a check that does not exist.
+  const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
+  const gate = src.indexOf("if (PROBE_CONNECTOR");
+  const use = src.indexOf("connector-signin-probe");
+  assert.ok(gate > 0, "the flag's branch is gone, so the probe is either unreachable or unconditional");
+  assert.ok(use > gate,
+    "the probe module is reached outside the flag's branch — a `doctor` run that nobody asked would "
+    + "create OAuth clients on the operator's account, against what INSTALL.md promises");
+  assert.equal(src.slice(0, gate).includes("connector-signin-probe"), false,
+    "the probe is imported at the top of the file, so importing doctor pulls it in unconditionally");
+
+  const usage = execFileSync(process.execPath, [join(REPO, "bin", "onboard.mjs"), "--help"], { encoding: "utf8" });
+  assert.match(usage, /--probe-connector/, "the flag is not in the command's own usage, so nobody can find it");
+  const install = readFileSync(join(REPO, "INSTALL.md"), "utf8");
+  assert.match(install, /--probe-connector/,
+    "the install document does not name the flag it needs, and this section is the only place a reader "
+    + "meets the setting it checks");
+  assert.match(install, /https:\/\/chatgpt\.com\/connector_platform_oauth_redirect/,
+    "the vendor redirect addresses are not in the document — a reader without a terminal has nothing to add");
 });
