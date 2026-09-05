@@ -1,0 +1,271 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# tracker issue 97 — a merged pull request becomes a release without anybody typing commands on a laptop.
+#
+# TWO ACTS, AND ONLY ONE OF THEM IS A PERSON'S. Every user-visible pull request leaves a note in
+# `.changeset/`. This workflow keeps a standing pull request that turns those notes into the next version
+# number and the plain-English changelog; merging it is the act of cutting a release, and it is the one
+# decision the owner makes per release. Everything after the merge — the tag, the GitHub release, the
+# publish to npm — happens here.
+#
+# HOW IT PUBLISHES, AND WHY THERE IS NO TOKEN. npm Trusted Publishing: the registry is configured to
+# trust this repository, this workflow file, and the `npm` environment, and npm exchanges the run's OIDC
+# token for a short-lived credential at publish time. Nothing long-lived exists to leak, and the package
+# carries provenance a reader can check back to the commit that produced it. `release-publish-guard.mjs`
+# runs before anything else and refuses if a credential, a registry to authenticate against, or a
+# publish without provenance ever appears here. The workflow FILENAME and the ENVIRONMENT NAME are part
+# of the registry's configuration — renaming either makes the registry refuse the publish.
+#
+# (This replaces the private repository's version, which could not publish at all: publishing was a human
+# act under the owner's 2026-08-26 ruling. Two rulings moved it — 2026-09-04, tag-triggered publish from
+# CI approved; 2026-09-05, Trusted Publishing configured for this repository.)
+#
+# WHAT FIRES THE PUBLISH. A tag pushed by a person, or a version this run just cut. It is deliberately
+# NOT "the tag the release step creates": a tag pushed with the built-in GITHUB_TOKEN starts no new
+# workflow run, so a pipeline that waited for one would cut versions forever and never publish. So the
+# publish job runs in the SAME run that cut the version.
+#
+# `workflow_dispatch` exists to rehearse all of this and CANNOT publish: the publish step is a dry run on
+# that event and the guard step below refuses a real publish on anything but a push.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # The same pin as ci.yml, and it has to be: the release job packs the artefact a user installs, so
+  # building it on a Node the suite was never run against ships something verified on one runtime and
+  # produced on another.
+  NODE_VERSION: '22.23.2'
+  # Trusted publishing needs npm 11.5.1 or newer, and Node 22 ships npm 10. Pinned rather than `@latest`
+  # so a release is reproducible; raise it deliberately.
+  NPM_VERSION: '12.0.2'
+  GITLEAKS_VERSION: '8.30.1'
+  GITLEAKS_SHA256: '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb'
+
+jobs:
+  version:
+    name: Open the version pull request, or record the version this push cut
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'CordilleraSarl/clearotron'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write         # the version commit
+      pull-requests: write    # the standing version pull request
+    outputs:
+      cut: ${{ steps.cut.outputs.cut }}
+      version: ${{ steps.cut.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0      # tags included: the cut decision below reads them
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm ci
+
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+
+      # `version:` is our wrapper, and it is not optional: `changeset version` moves the four WORKSPACE
+      # packages and leaves the root package — `clearotron`, the one thing a user installs — where it
+      # was. The wrapper carries the number to the root, assembles the one changelog a reader opens, and
+      # refuses if a line of it is not plain English.
+      #
+      # `publish:` is absent because changesets publishes workspace packages, and the artefact is the
+      # root package, which is not one of them. Publishing is the job below.
+      - name: Open or update the standing version pull request
+        uses: changesets/action@v1
+        with:
+          version: node scripts/release-version.mjs
+          title: 'Release: the next version, and everything in it'
+          commit: 'Cut a version'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # A VERSION WITH NO TAG HAS NOT BEEN RELEASED. That is the whole test, and it is a fact about the
+      # repository rather than a guess about which push this is: the version pull request merging is the
+      # only thing that moves the root version, and the publish job below is the only thing that tags it.
+      - name: Did this push cut a version
+        id: cut
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "cut=false" >> "$GITHUB_OUTPUT"
+            echo "v$VERSION is already released — nothing to publish."
+          else
+            echo "cut=true" >> "$GITHUB_OUTPUT"
+            echo "v$VERSION has no tag — this push cut it."
+          fi
+
+  publish:
+    name: Publish the release to npm
+    needs: [version]
+    if: >-
+      !failure() && !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && (startsWith(github.ref, 'refs/tags/v')
+          || github.event_name == 'workflow_dispatch'
+          || needs.version.outputs.cut == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # The registry's trusted publisher is registered against this environment name. Renaming it makes
+    # npm refuse the publish. It holds no secrets, and must not be given any.
+    environment: npm
+    permissions:
+      contents: write     # the tag and the GitHub release
+      id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Use an npm that can publish through OIDC
+        run: |
+          set -euo pipefail
+          npm install -g "npm@${NPM_VERSION}"
+          npm --version
+
+      - run: npm ci
+
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+
+      # THE REFUSALS, ALL IN ONE PLACE AND BEFORE ANYTHING IS BUILT.
+      #  · a real publish happens on a push and nowhere else; `workflow_dispatch` is a rehearsal.
+      #  · a tag and the manifest must name the same version. A tag is the one thing a person makes by
+      #    hand, and one that disagrees with the manifest ships an artefact nobody can trace back. It
+      #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
+      #    unrecorded, and guessing which they meant is how the wrong one wins.
+      #  · the channel is derived from the version, never defaulted. `npm publish` with no `--tag`
+      #    publishes to `latest`, so a beta with no tag becomes what every new user installs.
+      - name: What is being published, and whether this run may publish it
+        id: what
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "This is a rehearsal: the publish step will run with --dry-run."
+            echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            echo "dry_flag=" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::A release publishes on a push. This run is a ${{ github.event_name }}."
+            exit 1
+          fi
+          case "${{ github.ref }}" in
+            refs/tags/v*)
+              TAG_VERSION="${GITHUB_REF_NAME#v}"
+              if [ "$TAG_VERSION" != "$VERSION" ]; then
+                echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json $VERSION. One of them is wrong and this cannot tell which."
+                exit 1
+              fi
+              ;;
+          esac
+          DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
+          {
+            echo "version=$VERSION"
+            echo "dist_tag=$DIST_TAG"
+            echo "tarball=release-artefacts/clearotron-$VERSION.tgz"
+          } >> "$GITHUB_OUTPUT"
+          echo "Publishing clearotron@$VERSION to the \`$DIST_TAG\` channel."
+
+      # The bundle is built, not committed, so a pack that runs before this ships a portal with nothing
+      # to serve. The completeness check below is what proves it landed.
+      - run: npm run build:ui
+
+      # PACK ONCE, SCAN THOSE BYTES, PUBLISH THOSE BYTES. `--pack-destination` does not create the
+      # directory, and npm's failure for a missing one reads like a packing failure rather than a missing
+      # folder.
+      - name: Pack the exact bytes that will be published
+        run: |
+          set -euo pipefail
+          mkdir -p release-artefacts
+          npm pack --pack-destination ./release-artefacts
+          test -f "${{ steps.what.outputs.tarball }}"
+
+      - name: No secret leaves in the packed bytes
+        run: |
+          set -euo pipefail
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+          mkdir -p packed
+          tar -xzf "${{ steps.what.outputs.tarball }}" -C packed
+          COUNT=$(find packed -type f | wc -l)
+          echo "scanning $COUNT file(s) from the packed artefact"
+          # A SCAN OVER NOTHING EXITS 0. That is the shape where the extract failed and the scan reported
+          # clean, so the count is the check and the scan is what it enables.
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::nothing was extracted from the tarball, so nothing was scanned."
+            exit 1
+          fi
+          ./gitleaks dir packed --config .gitleaks.toml --redact --no-banner
+          rm -rf packed gitleaks gitleaks.tgz
+
+      - name: What a stranger installs is complete
+        run: node scripts/release-completeness-check.mjs --tarball "${{ steps.what.outputs.tarball }}"
+
+      # PROPERTY 2, PROVED RATHER THAN ASSERTED (tracker issue 97: "prove the beta-to-stable promotion moves no
+      # bytes; compare the artefacts, do not assert it from the configuration"). A promotion that rebuilt
+      # would produce a different digest here, and two runs can be compared by anyone reading them.
+      - name: Record the artefact digest, so a promotion can be shown to move no bytes
+        run: |
+          set -euo pipefail
+          sha256sum "${{ steps.what.outputs.tarball }}" | tee release-artefacts/SHA256SUMS
+          {
+            echo "### clearotron@${{ steps.what.outputs.version }} → \`${{ steps.what.outputs.dist_tag }}\`"
+            echo
+            echo '```'
+            cat release-artefacts/SHA256SUMS
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The tarball scanned above is the one published — not a second pack of the same tree.
+      - name: Publish to npm through Trusted Publishing
+        run: npm publish "${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
+
+      # The tag and the release come AFTER the publish: a tag naming a version that is not on the
+      # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
+      # leaves the tag unwritten rather than pointing at nothing.
+      - name: Tag it, and say what changed
+        if: steps.what.outputs.dry_flag == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.what.outputs.version }}
+          DIST_TAG: ${{ steps.what.outputs.dist_tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "The GitHub release v$VERSION already exists."
+            exit 0
+          fi
+          PRERELEASE=""
+          if [ "$DIST_TAG" != "latest" ]; then PRERELEASE="--prerelease"; fi
+          NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
+          if [ -n "$NOTES" ]; then
+            printf '%s\n' "$NOTES" > release-notes.md
+            gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --notes-file release-notes.md $PRERELEASE
+          else
+            gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes $PRERELEASE
+          fi

@@ -1,6 +1,5 @@
 {
   "name": "clearotron",
-  "private": true,
   "type": "module",
   "version": "0.1.0",
   "license": "AGPL-3.0-only",
@@ -22,7 +21,7 @@
   "scripts": {
     "postinstall": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');if(existsSync('scripts/install-hooks.mjs'))execFileSync(process.execPath,['scripts/install-hooks.mjs'],{stdio:'inherit'})\"",
     "prepack": "node scripts/write-build-info.mjs",
-    "prepublishOnly": "node -e \"const{existsSync}=require('node:fs');const{execFileSync}=require('node:child_process');if(existsSync('scripts/publication-scan.mjs'))execFileSync(process.execPath,['scripts/publication-scan.mjs'],{stdio:'inherit'})\"",
+    "prepublishOnly": "node scripts/release-completeness-check.mjs",
     "test": "npm test --workspaces --if-present",
     "test:full": "npm run test:full --workspaces --if-present",
     "test:driver": "npm run test:full -w driver",
