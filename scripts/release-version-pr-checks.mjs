@@ -9,14 +9,22 @@
 // only thing standing between a merge to `main` and a publish to the registry, and the question this
 // asks is the one nobody thinks to ask — not "did they pass" but "did they run at all".
 //
-// MEASURED, 2026-09-05, ON THIS REPOSITORY. The fork-pull-request approval policy was set to "all
-// external contributors" that morning. GitHub counts `github-actions[bot]` — the author of the version
-// pull request — as external, so the run for that pull request was created in `action_required` and
-// waited for a person who did not know they were being waited for. The pull request carried ZERO check
-// runs. Auto-merge had nothing to wait for and nothing to refuse on; the version sat unmerged, the
+// MEASURED, 2026-09-05, ON THIS REPOSITORY, TWICE. The fork-pull-request approval policy was set to
+// "all external contributors" that morning. GitHub counts `github-actions[bot]` — the author of the
+// version pull request — as external, so the run for that pull request was created in `action_required`
+// and waited for a person who did not know they were being waited for. The pull request carried ZERO
+// check runs. Auto-merge had nothing to wait for and nothing to refuse on; the version sat unmerged, the
 // release notes stayed pending, and the next push would have tried to publish a version already on the
-// registry. The policy is now `first_time_contributors` and the run was approved by hand, but a
-// mechanism that depends on a setting nobody re-reads is a mechanism with a silent off switch.
+// registry.
+//
+// The policy was narrowed to `first_time_contributors` and it happened AGAIN the same afternoon: being
+// merged is not what takes an author off that list, and the bot's pull requests are consumed by the
+// pipeline rather than merged by a person. It was narrowed again, to
+// `first_time_contributors_new_to_github`.
+//
+// SO THE FINDING PRINTS THE POLICY IT READS, NOT THE ONE THIS COMMENT REMEMBERS. Three values in one
+// day is what a setting looks like when it is being tuned, and a guard that names a stale one sends the
+// next reader to check something that has already changed.
 //
 // TWO SHAPES, BOTH REFUSED, AND COUNTING CHECK RUNS SEES ONLY ONE OF THEM. `action_required` lives on
 // the WORKFLOW RUN, not on the check runs — a run waiting for approval publishes no check runs at all.
@@ -43,6 +51,13 @@ const ACTION_REQUIRED = "action_required";
 const parked = (r) => r?.status === ACTION_REQUIRED || r?.conclusion === ACTION_REQUIRED;
 const nameOf = (r) => r?.name ?? "(unnamed)";
 
+/** What the sentence says about the policy, given whatever could be read about it. */
+const policySentence = (policy) => policy
+  ? `The repository's fork-pull-request approval policy is currently \`${policy}\`, and it counts `
+    + "github-actions[bot] as a contributor who needs approving."
+  : "The repository's fork-pull-request approval policy could not be read from here, and it is the "
+    + "setting to look at: it counts github-actions[bot] as a contributor who needs approving.";
+
 /**
  * What the two surfaces say about one commit. PURE.
  *
@@ -54,15 +69,14 @@ const nameOf = (r) => r?.name ?? "(unnamed)";
  * answer "nothing started" to a question whose real answer is "somebody has to click approve" — true,
  * useless, and it sends the next reader to look for a broken trigger.
  */
-export function checksVerdict({ checkRuns = [], workflowRuns = [] } = {}) {
+export function checksVerdict({ checkRuns = [], workflowRuns = [], policy = null } = {}) {
   const blocked = [...workflowRuns, ...checkRuns].filter(parked).map(nameOf);
   if (blocked.length) {
     return {
       state: WAITING_FOR_A_PERSON,
       blocked,
       reason: `${blocked.join(", ")} is waiting for somebody to approve it. Auto-merge waits for a check `
-        + "that will never finish on its own, so the version cannot be cut. Check the repository's "
-        + "fork-pull-request approval policy: it counts github-actions[bot] as an external contributor.",
+        + "that will never finish on its own, so the version cannot be cut. " + policySentence(policy),
     };
   }
   if (!checkRuns.length) {
@@ -102,6 +116,21 @@ export async function waitForChecks({ read, sleep, attempts = 32, everyMs = 1500
 
 const gh = (args) => JSON.parse(execFileSync("gh", ["api", ...args], { encoding: "utf8" }));
 
+/**
+ * The repository's current fork-pull-request approval policy, or null when it cannot be read.
+ *
+ * FAILS SOFT ON PURPOSE. This is read while explaining why a release has stopped; a guard that threw
+ * here would replace a useful finding with a stack trace about a permission. The endpoint needs
+ * `administration: read`, which the version job grants for this one sentence.
+ */
+export function approvalPolicy(repo, api = gh) {
+  try {
+    return api([`repos/${repo}/actions/permissions/fork-pr-contributor-approval`]).approval_policy ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /** The two surfaces, read for one commit. Field names are trimmed to what the verdict reads. */
 export function surfacesFor(repo, sha, api = gh) {
   const checkRuns = (api([`repos/${repo}/commits/${sha}/check-runs`]).check_runs ?? [])
@@ -129,7 +158,7 @@ async function main() {
   }
   console.log(`Waiting for the version pull request's checks to start on ${sha}.`);
   const seen = await waitForChecks({
-    read: () => surfacesFor(repo, sha),
+    read: () => ({ ...surfacesFor(repo, sha), policy: approvalPolicy(repo) }),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
   });
   if (seen.state === RUNNING) {

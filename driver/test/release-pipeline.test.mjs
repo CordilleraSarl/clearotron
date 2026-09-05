@@ -410,14 +410,24 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   // a parked run publishes none. A guard that only asked "is the check-run count above zero" would call
   // this "nothing started" — true, useless, and it sends the next reader hunting a broken trigger
   // instead of a policy setting. `action_required` is read FIRST, and off the surface that carries it.
-  const parkedAlone = checksVerdict({
+  const parkedAlone_input = {
     checkRuns: [],
     workflowRuns: [{ name: "CI", status: "action_required", conclusion: null }],
-  });
+  };
+  const parkedAlone = checksVerdict(parkedAlone_input);
   assert.equal(parkedAlone.state, WAITING_FOR_A_PERSON);
   assert.notEqual(parkedAlone.state, NOTHING_STARTED);
   assert.deepEqual(parkedAlone.blocked, ["CI"]);
   assert.match(parkedAlone.reason, /fork-pull-request approval policy/);
+
+  // THE POLICY IS READ, NOT REMEMBERED. It was changed three times on 2026-09-05 — all external
+  // contributors, then first-time contributors, then first-time contributors new to GitHub — and the bot
+  // parked under two of them. A guard naming a stale value sends the next reader to check a setting that
+  // has already moved, which is worse than naming none.
+  assert.match(checksVerdict({ ...parkedAlone_input, policy: "first_time_contributors_new_to_github" }).reason,
+    /currently `first_time_contributors_new_to_github`/);
+  // And when it cannot be read, it says so rather than quoting a value it does not have.
+  assert.match(parkedAlone.reason, /could not be read from here/);
 
   // And parked BESIDE green ones — the second run of a two-workflow repository — is still a refusal.
   // This is the member a count-based arm passes cleanly: the count is not zero.
@@ -493,7 +503,7 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   // is the only one that carries `action_required`. The step would fail loudly rather than pass
   // vacuously, but it would fail on every push, and only on main.
   const versionJob = workflow.slice(workflow.indexOf("  version:"), workflow.indexOf("  publish:"));
-  for (const scope of ["checks: read", "actions: read"]) {
+  for (const scope of ["checks: read", "actions: read", "administration: read"]) {
     assert.ok(versionJob.includes(scope),
       `the version job does not grant \`${scope}\`, so the step that reads whether its checks started `
       + "gets a 403 — and naming any permission sets every unnamed one to `none`");

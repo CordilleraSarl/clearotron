@@ -82,6 +82,12 @@ jobs:
       # `actions/runs`, which is the only surface that carries `action_required`.
       checks: read
       actions: read
+      # For one sentence, and it earns it: when the version pull request parks on an approval, the guard
+      # reads the repository's CURRENT fork-pull-request approval policy and names it. That setting was
+      # changed three times in one day; a guard quoting a remembered value sends the next reader to check
+      # something that has already moved. The read fails soft, so losing this scope costs the sentence
+      # and nothing else.
+      administration: read
     outputs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
