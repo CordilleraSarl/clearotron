@@ -68,7 +68,12 @@ export function assembleRoot(version, root = ROOT) {
     if (!mine) continue;
     for (const line of mine.split("\n")) {
       const b = /^\s*-\s+(.*\S)\s*$/.exec(line);
-      if (b && !bullets.includes(b[1])) bullets.push(b[1]);
+      // THE COMMIT SHA COMES OFF. Changesets' default generator prefixes every bullet with the commit
+      // that carried the note, so a squashed release writes the SAME seven characters at the head of
+      // every line — `- f7c1570:` seven times over, telling a reader nothing they can use. This is the
+      // file a customer opens to decide whether to upgrade; the provenance they can act on is the tag
+      // and the release page, both of which name that commit once.
+      if (b && !bullets.includes(b[1])) bullets.push(b[1].replace(/^[0-9a-f]{7,40}: /, ""));
     }
   }
   return { version, bullets };
@@ -86,8 +91,21 @@ export function assembleRoot(version, root = ROOT) {
  */
 export function writeRootChangelog({ version, bullets }, root = ROOT) {
   const p = join(root, "CHANGELOG.md");
-  const head = "# Changelog\n\nWhat changed in each release of Clearotron, in plain English.\n";
-  const prior = existsSync(p) ? readFileSync(p, "utf8").replace(/^# Changelog\n\n[^\n]*\n/, "") : "";
+  // THE HEAD SAYS HOW THE READER GOT THE BINARY, AND THAT IS NOT DECORATION. Every root document is
+  // read by somebody who has to be able to run what it shows them, and this one is written by a script
+  // rather than a person — so the notes it carries are plain English about `clearotron doctor` and
+  // `clearotron demo`, which is the right way to write them. Without the install line above, the first
+  // such note makes the generated file fail the tree's own root-document guard, and it fails on the
+  // VERSION PULL REQUEST alone: main has no CHANGELOG.md, so nothing in the branch that wrote the note
+  // can see it coming. Measured 2026-09-05, on the first version pull request the pipeline ever opened.
+  //
+  // It is also just true. A changelog exists to tell somebody what they get if they upgrade, and this
+  // says how.
+  const head = "# Changelog\n\nWhat changed in each release of Clearotron, in plain English.\n\n"
+    + "Install or upgrade with `npm install -g clearotron`.\n";
+  // Everything from the first version heading down — read that way rather than by stripping a known
+  // head, so editing the head above cannot leave the old one buried in the file for ever.
+  const prior = existsSync(p) ? (readFileSync(p, "utf8").match(/\n## [\s\S]*/)?.[0] ?? "") : "";
   const section = `\n## ${version}\n\n${bullets.map((b) => `- ${b}`).join("\n")}\n`;
   writeFileSync(p, head + section + prior);
   return p;
