@@ -23,6 +23,8 @@
 // report-derived cover text alone, because a gate that simply stops running is not a gate that passes.
 
 import { REGION_NAMES } from "./publish/regions.mjs";
+import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // tracker issue 134 — one spelling of a territory code
+import { searchedCovers } from "./frame-diff-model.mjs";                // tracker issue 134 — one copy of the EU-reach rule
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
@@ -694,6 +696,107 @@ export function competitorClaimChecks({ text, ownerScreen, recordsByUri, markVoc
     }
   }
   return failures.length ? failures : [check("competitor-claim-verification", "registry", surface, true, "")];
+}
+
+// ── COVERAGE CLAIMS IN PROSE vs WHAT THE RUN ACTUALLY SEARCHED (tracker issue 134) ──────────────────
+//
+// THE DEFECT. `coverage_line:` is code-stamped from scope-facts.json; the narrative is model-written
+// prose. Nothing bound them to one searched-territory set. On `amber-summit` the masthead read
+// `registers: JP, WO` while the narrative said "Register searches covered Japan and Korea" — one of
+// them was wrong and nothing detected it until a human compared the two surfaces by eye. They agree
+// on today's runs because a prompt fix stopped the input contradicting itself, which is evidence the
+// INPUT was fixed, not evidence the surfaces are bound.
+//
+// WHY A CHECK AND NOT ONE DERIVATION. The stamped line can derive from a structure; a narrative
+// cannot — it is prose a model writes. So the binding has to be a comparison, and this is it.
+//
+// WHY IT KEYS ON A COVERAGE VERB, WHEN issue 129 IS ABOUT NOT KEYING GATES ON PROSE. Reports name
+// territories constantly and legitimately — every adverse mark has one. "Territory named + not
+// searched" fires on a competitor's German registration in a Swiss-only run, every time, so the check
+// would be noise and get switched off. The discriminator is a positive coverage predicate in the same
+// sentence, plus no negation.
+//
+// The 129 hazard does not transfer, and the asymmetry is the reason. A REQUIRED-section gate keyed on
+// prose kills a delivered run when the model picks a synonym: the vocabulary gap is fatal. This is a
+// CONTRADICTION detector, so a vocabulary gap costs a missed detection and nothing else. Same
+// technique, opposite blast radius. It also routes as a lint flag into the repair round rather than
+// failing the run, because a withheld report is a product failure and a prose-keyed kill is precisely
+// the run-killer class 129 exists to remove.
+const COVERAGE_PREDICATE_RE = /\b(search(?:ed|es)?|screen(?:ed|s)?|cover(?:ed|s|age)?|clear(?:ed|s|ance)?|examin(?:ed|es)|check(?:ed|s)?|ran|run)\b/i;
+
+// A clause carrying any of these is NOT claiming coverage of the territory it names — it is disclaiming
+// it, deferring it, or recommending it. Erring toward NOT firing is correct here: a missed detection is
+// a quiet gap, a false fire spends a repair round on correct prose.
+const COVERAGE_NEGATION_RE = /\b(not|no|never|without|excluded?|excluding|outside|beyond|unsearched|un-?covered|absent|lack(?:s|ing)?|omitted?|cannot|can't|couldn't|didn't|wasn't|weren't|would|should|recommend(?:ed|s|ation)?|further|additional|next step|future|advise|suggest(?:ed|s)?|require(?:d|s)?|pending|out of scope|beyond the scope)\b/i;
+
+// REGION_NAMES is the canonical code→name map, but its names are not the only ones prose uses. The
+// evidence case is exactly this: the map says `KR: 'South Korea'` and the failing narrative said
+// "Korea". A check built on the map alone is green through the defect it was named for.
+const TERRITORY_NAME_TO_CODE = (() => {
+  const m = new Map();
+  for (const [code, name] of Object.entries(REGION_NAMES)) m.set(norm(name), code);
+  const alias = {
+    "korea": "KR", "republic of korea": "KR",
+    "america": "US", "usa": "US", "u.s.": "US", "u.s.a.": "US", "united states of america": "US",
+    "britain": "UK", "great britain": "UK", "england": "UK", "scotland": "UK", "wales": "UK",
+    "holland": "NL", "uae": "AE", "emirates": "AE",
+    "wipo": "WO", "madrid": "WO", "international register": "WO", "madrid system": "WO",
+    "euipo": "EU", "eutm": "EU", "european union": "EU",
+    "prc": "CN", "mainland china": "CN", "roc": "TW",
+  };
+  for (const [n, code] of Object.entries(alias)) m.set(norm(n), code);
+  return m;
+})();
+
+// Longest-first so "South Korea" and "United Kingdom" win over "Korea"/"Kingdom" fragments.
+const TERRITORY_NAMES_BY_LENGTH = [...TERRITORY_NAME_TO_CODE.keys()].sort((a, b) => b.length - a.length);
+
+// Plain sentence split for the coverage-claim scan. Deliberately NOT the `sentencesOf` further down,
+// which protects mark-name forms from being split: territory names are exactly what this scan wants to
+// see, so protecting name forms would hide them.
+function coverageSentences(text) {
+  return String(text ?? "")
+    .split(/(?<=[.!?;:])\s+|\n+/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Territory-coverage claims in a delivered surface, compared against what the run searched.
+ *
+ * Returns [] — NOT a pass — when there is no searched set to compare against. A run with no register
+ * layer has nothing to contradict, and a green check on a comparison that never happened is the
+ * absence-as-pass this codebase keeps paying for. The family being absent is the honest record.
+ *
+ * PURE.
+ */
+export function coverageClaimChecks({ text, searchedJurisdictions = null, surface = "report" } = {}) {
+  const searched = (searchedJurisdictions ?? []).map((j) => canonicalJurisdictionCode(j)).filter(Boolean);
+  if (!searched.length) return [];                       // nothing to compare — record nothing, claim nothing
+  const body = stripHtml(text);
+  if (!body.trim()) return [];
+  const searchedSet = new Set(searched);
+  const violations = [];
+  for (const sentence of coverageSentences(body)) {
+    if (!COVERAGE_PREDICATE_RE.test(sentence)) continue;
+    if (COVERAGE_NEGATION_RE.test(sentence)) continue;
+    const n = norm(sentence);
+    for (const name of TERRITORY_NAMES_BY_LENGTH) {
+      if (!new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(n)) continue;
+      const code = TERRITORY_NAME_TO_CODE.get(name);
+      if (searchedCovers(code, searchedSet)) continue;
+      // display the canonical territory name, not the normalised token the match ran on ("korea" → South Korea)
+      violations.push({ code, name: REGION_NAMES[code] ?? name, sentence: sentence.slice(0, 180) });
+      break;                                             // one flag per sentence; the repair reads the sentence
+    }
+  }
+  if (!violations.length) {
+    return [check("coverage-claim-vs-searched", "scope", surface, true,
+      `no coverage claim names a territory outside the searched set (${searched.join(", ")})`)];
+  }
+  return violations.map((v) => check("coverage-claim-vs-searched", "scope", surface, false,
+    `prose claims coverage of ${v.name} (${v.code}), which the run did not search — searched: ${searched.join(", ")}. `
+    + `The stamped coverage line and this sentence disagree about what was searched: "${v.sentence}"`));
 }
 
 /**
@@ -2058,7 +2161,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries }) {
+export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2134,6 +2237,13 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
       checks.push(...ownerScreenNegativeChecks({ text: clientSummaryMd, ownerScreen, markVocab, surface: "client-summary" }));
     }
   }
+  // tracker issue 134 — the delivered prose's coverage claims against what the run actually searched.
+  // Top-level, NOT inside the owner-screen guard above: a coverage claim has nothing to do with whether
+  // this run has an owner screen, and nesting it there would have silently switched the check off for
+  // every run without one. Both prose surfaces: the narrative is where the issue measured the
+  // disagreement, and the report is what the client is handed.
+  if (reportMd) checks.push(...coverageClaimChecks({ text: reportMd, searchedJurisdictions, surface: "report" }));
+  if (narrativeMd) checks.push(...coverageClaimChecks({ text: narrativeMd, searchedJurisdictions, surface: "narrative" }));
   if (reportMd) checks.push(...deadRecordLinkChecks({ text: reportMd, surface: "report" }));
   if (clientSummaryMd) checks.push(...deadRecordLinkChecks({ text: clientSummaryMd, surface: "client-summary", idSuffix: ":client" }));
   if (narrativeMd) checks.push(...deadRecordLinkChecks({ text: narrativeMd, surface: "narrative", idSuffix: ":narrative" }));
