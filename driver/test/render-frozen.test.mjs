@@ -1756,7 +1756,15 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Advanced again by the break below (tracker issue 1957). A comment REWRITE is not licence-only,
 // so this constant moves with the other one.
 // Advanced again by the sixth break below (tracker issue 2097): behaviour, so both constants move.
-const FROZEN_BEFORE_SPDX = "ade003e4a60deea2c8cd57a45e22d337c870c27f769794e6f8cee84866ce0d95";
+// AND THIS ONE ADVANCES WITH IT, for the same measured reason and not by convention. The two
+// constants are supposed to move together only when a break is NOT licence-only, and this one is not
+// licence-only in the strictest sense: the reference strip rewrote comments throughout. It changed no
+// executable line — that was checked, not assumed, and the check is recorded beside FROZEN above.
+//
+// What this constant guards is unchanged and still armed: the NEXT licence sweep that drags a
+// behavioural edit along with it moves these bytes and fails here rather than in the first assertion,
+// which could only ever say "something changed".
+const FROZEN_BEFORE_SPDX = "3c18aa3d5a679ff427605edf3ffbdcb8ff6cc15e851e599e73d77bfc0640fbeb";
 // FIFTH BREAK (2026-08-26, tracker issue 1903 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -1907,7 +1915,24 @@ const FROZEN_BEFORE_SPDX = "ade003e4a60deea2c8cd57a45e22d337c870c27f769794e6f8ce
 //      one namespace exists. Leaving this one read spelled the old way is the half-converted tree the
 //      rename exists to prevent.
 //   3. HASH UPDATED IN THE SAME COMMIT; not licence-only, so FROZEN_BEFORE_SPDX moves with it.
-const FROZEN = "1bc04cf103f0737368ee7333e0b3d34e3a727c9c304604ee3c3bb02cc8a8b064";
+// RE-PINNED FOR THE PUBLIC TREE, 2026-09-05, AND THE CHECKLIST ABOVE IS ANSWERED BY MEASUREMENT
+// RATHER THAN BY JUDGEMENT — because nobody changed the renderer. This arm was withheld from the
+// public repository as "structurally impossible": the export's reference strip rewrote comments, and
+// a file pinned at its exact bytes cannot survive a transform. The export is retired and this tree is
+// the source, so the freeze can hold again — but the bytes it must hold are these bytes, not the
+// private tree's.
+//
+// The two files were compared line by line before this number was written down. 102 changed hunks,
+// EVERY ONE of them a comment or the trailing comment on an otherwise identical line, and zero
+// executable difference: the set of code lines with trailing comments removed is identical on both
+// sides. So the public renderer is the frozen renderer, and the only thing that moved is prose the
+// strip took references out of.
+//
+// The header's three questions, answered: the change is not reachable from a republish because there
+// is no change — a republish renders the same bytes it always did; it could not live in report.css or
+// brand.mjs for the same reason; and this hash moves in the commit that restores the arm, which is
+// the commit that says why.
+const FROZEN = "dcb73b7aaf227a05b867d94314c6cc89d32d3872bc4fcbef3255a7532cd6c358";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
