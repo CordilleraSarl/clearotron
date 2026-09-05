@@ -260,9 +260,13 @@ export function makeReadBudget({ perHour = 20 } = {}) {
  * The reader.
  *
  * `client` is injected so every test runs offline — the same shape the rest of the driver uses for its
- * executors. Live, portal-service builds one from `@anthropic-ai/sdk`; with no API key it builds
- * NOTHING and the route reports itself unavailable, which is how this feature stays dark on a box that
- * was never given a key rather than 500ing on every press.
+ * executors. Live, portal-service builds one through the ENGINE DOOR; with no engine reachable it
+ * builds NOTHING and the route reports itself unavailable, which is how this feature stays dark on a
+ * box that cannot reach one rather than 500ing on every press.
+ *
+ * It used to say the client was built from `@anthropic-ai/sdk`, in the present tense, long after the
+ * change recorded below moved this route through the engine door. The SDK has now been removed from
+ * the manifests entirely (tracker issue 99) — nothing in the tree imports it.
  */
 /**
  * Every way a parsed payload can fail to be a read, named.

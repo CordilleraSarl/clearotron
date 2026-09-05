@@ -63,13 +63,44 @@ test("#766 the server briefs from the SAME file, and each audience gets its OWN 
   // OPS NOW GETS ITS OWN PACK (, owner ruling 7), which is this arm's own principle
   // rather than an exception to it: on a self-hosted install the customer IS ops, connects over this
   // connector, and was briefed with nothing while skills/clearotron-ops/SKILL.md shipped and SKILL_DIR
-  // mapped it. Asserted the same way as the other two — against the file on disk, so "briefed" and
+  // mapped it. Asserted the same way as the other two — against the files on disk, so "briefed" and
   // "briefed with the right file" stay one claim.
   const ops = instructionsFor({ kind: "ops" });
   assert.ok(ops, "ops is briefed with nothing while its pack ships");
-  assert.equal(ops, onDisk("clearotron-ops"), "the ops briefing is not the file in skills/");
   assert.notEqual(ops, client, "ops got the report-link pack — a surface it is not on");
   assert.notEqual(ops, account, "ops got the account pack — it holds engineering verbs, not a client's");
+
+  // ── AN OPS PACK IS MORE THAN ONE FILE (tracker issue 148) ──────────────────────────────────────
+  //
+  // Held to COMPOSITION rather than to equality with SKILL.md. This is the same claim it always was —
+  // the briefing is the files in skills/, and carries no text of its own — but the ops SKILL.md tells
+  // the assistant twice to read COURIER.md, and serving SKILL.md alone pointed both references at
+  // nothing. The assistant driving it reported "a suspicious reference to a nonexistent skill".
+  //
+  // DERIVED FROM THE DIRECTORY, NOT FROM THE SERVER'S OWN LIST. Reading `PACK_EXTRAS` here would make
+  // this arm agree with the code it checks, and a file added to skills/clearotron-ops/ that the server
+  // never serves — the exact shape of the defect 148 reported — would pass.
+  const opsDir = join(SKILLS, "clearotron-ops");
+  const opsFiles = readdirSync(opsDir).filter((f) => f.endsWith(".md")).sort();
+  assert.ok(opsFiles.length > 1,
+    "skills/clearotron-ops/ is down to one file, so this arm no longer checks composition at all — if "
+    + "COURIER.md was removed on purpose, the two references to it in SKILL.md went with it");
+  const opsTexts = opsFiles.map((f) => stripFrontmatter(readFileSync(join(opsDir, f), "utf8")).trim());
+
+  // SKILL.md leads — it is the briefing, and the extras are appended to it.
+  assert.ok(ops.startsWith(onDisk("clearotron-ops")),
+    "the ops briefing does not open with skills/clearotron-ops/SKILL.md");
+  for (const [i, text] of opsTexts.entries()) {
+    assert.ok(ops.includes(text),
+      `skills/clearotron-ops/${opsFiles[i]} ships but is not in the ops briefing — an assistant told to `
+      + `read it still has no way to`);
+  }
+  // …AND NOTHING ELSE. `startsWith` and `includes` both pass on a pack carrying invented text between
+  // the files, which is the second copy of doctrine this whole file exists to prevent. Length closes
+  // it, and unlike a full equality it does not pin the order the server appends them in.
+  assert.equal(ops.length, opsTexts.join("\n\n").length,
+    "the ops briefing is longer or shorter than the files it is composed from, so it carries text that "
+    + "is in no file in skills/clearotron-ops/ — a second copy of doctrine by another name");
 });
 
 test("#766 the frontmatter is STRIPPED before briefing — packaging must not reach a client's assistant", () => {
