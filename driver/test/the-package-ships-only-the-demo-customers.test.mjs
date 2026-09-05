@@ -33,7 +33,10 @@ const SHIPPED_ACCOUNTS = Object.freeze(["demo-brand-owner.json", "generic.json"]
 const FIXTURES_ONLY = Object.freeze(["aurora", "zephyr", "petcary"]);
 
 test("94/F13 the package's customer roster is the two accounts a reader is meant to see", { timeout: 120_000 }, () => {
-  const out = execFileSync("npm", ["pack", "--dry-run", "--json"], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+  // `npm_config_offline` because this resolves entirely on disk: npm otherwise reaches for a registry it
+  // does not need, and that reach can BLOCK rather than fail.
+  const out = execFileSync("npm", ["pack", "--dry-run", "--json"],
+    { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: { ...process.env, npm_config_offline: "true" } });
   const files = JSON.parse(out)[0].files.map((f) => f.path);
   // AN EMPTY FILE LIST WOULD SATISFY EVERY ASSERTION BELOW. npm printing nothing, or printing its
   // manifest to stderr where this cannot see it, is a could-not-look and not a clean roster.
@@ -72,7 +75,8 @@ test("94/F13 and the artifact itself carries none of them", { timeout: 300_000 }
   // alone is a claim about the intent of a list.
   const out = mkdtempSync(join(tmpdir(), "roster-pack-"));
   try {
-    execFileSync("npm", ["pack", "--pack-destination", out], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    execFileSync("npm", ["pack", "--pack-destination", out],
+      { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: { ...process.env, npm_config_offline: "true" } });
     const tarballs = readdirSync(out).filter((f) => f.endsWith(".tgz"));
     assert.equal(tarballs.length, 1, `expected exactly one tarball, got: ${tarballs.join(", ") || "none"}`);
     const entries = execFileSync("tar", ["-tzf", join(out, tarballs[0])], { encoding: "utf8" })

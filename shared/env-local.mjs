@@ -354,6 +354,27 @@ export function isCliEntry(argv1, repoRoot = REPO_ROOT) {
 }
 
 /**
+ * The `.env` this install is actually configured by: the one in force, or the old one while it is still
+ * where an install configured before the move left it.
+ *
+ * ONE ANSWER, FOR EVERY READER. The loader reads it, `doctor` reports it, `--check` says which source a
+ * value came from. Before this existed each of them composed its own path, and the move made them
+ * disagree: the loader read the old file and applied it while doctor, asking about the new one, told the
+ * operator they had no configuration at all. Two surfaces, one tree, opposite answers — the same defect
+ * this release fixes on the portal's health route.
+ *
+ * ✕ NOT A WRITE PATH. Whatever writes `.env` writes it where the ruling put it, which is `envLocalPath`
+ * with no fallback; a writer that followed the file backwards would keep an install in the directory npm
+ * replaces forever.
+ */
+export function activeEnvPath({ repoRoot = REPO_ROOT, home = homedir(), location = ENV_LOCAL_LOCATION } = {}) {
+  const inForce = envLocalPath({ repoRoot, home, location });
+  const legacy = envLocalPath({ repoRoot, home, location: LEGACY_ENV_LOCAL_LOCATION });
+  if (inForce === legacy) return inForce;
+  return existsSync(inForce) || !existsSync(legacy) ? inForce : legacy;
+}
+
+/**
  * Apply `<repo>/.env` to `env`, and report what happened.
  *
  * THE ENVIRONMENT ALWAYS WINS: a name already present in `env` is left alone, including when its value
@@ -375,13 +396,12 @@ export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = d
   // compose by hand — so an arm asserting that the reader follows the resolver would be true by
   // construction and would keep being true after a flip broke it. It is not a knob: no caller passes it,
   // and the note on ENV_LOCAL_LOCATION above says why it must not become one.
-  let path = envLocalPath({ repoRoot, home, location });
   // AN INSTALL CONFIGURED BEFORE THE MOVE KEEPS WORKING, and is told once where to put the file. The
   // old location is read, never written: copying it here would put a second copy of somebody's
   // credentials on disk without being asked, and leaving both in place is how two files disagree.
-  const legacy = envLocalPath({ repoRoot, home, location: LEGACY_ENV_LOCAL_LOCATION });
-  const fromLegacy = path !== legacy && !existsSync(path) && existsSync(legacy);
-  if (fromLegacy) path = legacy;
+  const inForce = envLocalPath({ repoRoot, home, location });
+  const path = activeEnvPath({ repoRoot, home, location });
+  const fromLegacy = path !== inForce;
   if (optedOut(env)) return { path, applied: [], skipped: [], reason: "opted-out" };
   if (serviceManaged(env)) {
     // Loud ONLY when there is a file to ignore. A service with no .env beside it is the normal case on

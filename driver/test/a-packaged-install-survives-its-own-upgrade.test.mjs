@@ -220,10 +220,13 @@ test("2177 every candidate location RESOLVES, including the ones nobody has chos
     "on a PACKAGED install the three candidates are three different files — which is the whole subject of 2177");
 });
 
-test("2177 the location in force is still today's, so this change moves nobody's configuration", () => {
-  assert.equal(ENV_LOCAL_LOCATION, "package-root",
-    "the location is the owner's ruling, not a dev call. If this arm fails because the constant moved, that is "
-    + "the flip landing — check the ruling is on the thread, and that doctor's door-divergence pair moved with it.");
+test("2177 the location in force is the one the owner ruled", () => {
+  // THE FLIP LANDED (tracker issue 140, 2026-09-05). This arm used to assert `package-root` and to say
+  // that a failure here means the flip is landing — it did, and the two things it told the next reader
+  // to check were done with it: the ruling is on the thread, and doctor's door-divergence pair follows
+  // the resolver rather than composing its own path.
+  assert.equal(ENV_LOCAL_LOCATION, "xdg-config",
+    "the location is the owner's ruling, not a dev call — moving it again is a ruling, not a refactor");
 });
 
 test("2177 the WRITER and the READER resolve to the same file under a candidate that is not in force", () => {
@@ -270,7 +273,11 @@ test("2205 doctor REPORTS the upgrade as the cause, at rc 1, on a real packaged 
   try {
     const r = doctor(root, home);
     assert.equal(r.code, 1, r.out);
-    assert.match(r.out, /no \.env at .*node_modules[/\\]clearotron[/\\]\.env/, r.out);
+    // The path named is the one configuration is written to NOW — under the operator's config directory,
+    // which no upgrade replaces. The shape this branch reports is unchanged: a packaged tree with every
+    // data directory standing and no .env anywhere is a wizard run whose output was destroyed.
+    assert.match(r.out, /no \.env at .*\.config[/\\]clearotron[/\\]\.env/, r.out);
+    assert.match(r.out, /it cannot happen again/, r.out);
     assert.match(r.out, /replaced the package tree and took the configuration with it/, r.out);
     assert.match(r.out, new RegExp(`Nothing in ${join(home, "trademark")} was touched`), r.out);
   } finally { rmSync(home, { recursive: true, force: true }); }

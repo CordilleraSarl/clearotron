@@ -210,7 +210,7 @@ Runtime configuration is by environment variable, and there are two ways to supp
 **A `.env` at `~/.config/clearotron/.env`**, which the CLI entry points read for themselves — `driver/pipeline.mjs`,
 `runner.mjs`, `enqueue.mjs`, `dev-portal.mjs`, `bin/start.mjs`, `bin/uspto-sync.mjs` and both MCP
 servers. Nothing to source and nothing to remember; each command prints one line on stderr naming what
-it read. `clearotron install` writes it there for you, creating the directory at mode 700.
+it read. `npx clearotron install` writes it there for you, creating the directory at mode 700.
 
 **It used to live inside the install directory, and that is why it moved.** On a packaged install that
 directory belongs to npm, so an ordinary `npm install -g clearotron` replaced the tree and deleted the

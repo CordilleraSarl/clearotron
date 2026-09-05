@@ -73,7 +73,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
 import { Writable } from "node:stream";
 
-import { envLocalPath, loadEnvLocal } from "../shared/env-local.mjs";
+import { envLocalPath, activeEnvPath, loadEnvLocal, LEGACY_ENV_LOCAL_LOCATION } from "../shared/env-local.mjs";
 import { bundleFreshness, newestMtimeUnder, distGateInTree, gitStanding } from "../shared/bundle-freshness.mjs";
 import {
   USPTO_ARCHIVE_GB, USPTO_INDEX_GB, USPTO_INGEST_GB_PER_HOUR, USPTO_DAILY_TOPUP_MB,
@@ -111,6 +111,12 @@ function readIfPresent(path) {
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
+// WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move (tracker
+// issue 159) still has its file at the old path, and the loader still reads it — so every READ here asks
+// the same resolver the loader asks, or this command reports "no configuration" over a file every other
+// command is applying. Writes stay on ENV_PATH: a writer that followed the file backwards would keep an
+// install in the directory npm replaces forever.
+const READ_ENV_PATH = () => activeEnvPath({ repoRoot: REPO });
 const NODE_FLOOR = 22;
 
 const argv = process.argv.slice(2);
@@ -935,7 +941,7 @@ export async function runCheck() {
   const diverged = (() => {
     try {
       return doorDivergence({
-        repoText: readFileSync(ENV_PATH, "utf8"),
+        repoText: readFileSync(READ_ENV_PATH(), "utf8"),
         homeText: readFileSync(join(homedir(), ".env"), "utf8"),
       });
     } catch { return []; }   // one file absent is the ordinary case and says nothing
@@ -967,7 +973,7 @@ export async function runCheck() {
   // Read the file up here rather than at the `.env` heading below: the engine section is the first that
   // needs `effective()`, and which ENGINE is configured decides which binary variable to check. Reading
   // is not applying — see readEnvFile's header.
-  const fileEnv = readEnvFile(ENV_PATH);
+  const fileEnv = readEnvFile(READ_ENV_PATH());
   // Environment wins over the file (the loader contract), so report the effective value and say which
   // source it came from — a value read from the wrong place is the whole class of bug here.
   // ── CHECK 1 — THE CHECKER READS EVERY SPELLING THE ENGINE ACCEPTS ─────────────────────────
@@ -1181,13 +1187,31 @@ export async function runCheck() {
   }
 
   say("\n  .env");
-  if (!existsSync(ENV_PATH)) {
+  // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS (tracker issue 159) ─────────────────
+  //
+  // `.env` now resolves to `~/.config/clearotron/.env`, and an install configured before that ruling has
+  // it at the old path, where the loader still reads it. Doctor reporting "no .env" over a file every
+  // command is reading would be the same defect this bundle fixes on the portal's health route: two
+  // surfaces, one tree, opposite answers.
+  const LEGACY_ENV_PATH = envLocalPath({ repoRoot: REPO, location: LEGACY_ENV_LOCAL_LOCATION });
+  if (!existsSync(ENV_PATH) && LEGACY_ENV_PATH !== ENV_PATH && existsSync(LEGACY_ENV_PATH)) {
+    // A WARNING, NOT A REFUSAL. This install works: the loader reads the old file and says so on every
+    // command. What it is, is one `npm install` away from losing its credentials — actionable in one
+    // move, so it is said loudly and rc stays 0, which is what rc 1 would cost every operator who
+    // configured an install before today.
+    warn(`your configuration is still at ${LEGACY_ENV_PATH}, which is read but no longer written`);
+    info(`npm owns that directory and replaces it on an upgrade, credentials included. Move the file to `
+      + `${ENV_PATH} — same contents — and nothing else changes.`);
+    const mode = statSync(LEGACY_ENV_PATH).mode & 0o777;
+    if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
+  } else if (!existsSync(ENV_PATH)) {
     const lost = configurationLostToUpgrade({ envPath: ENV_PATH, installDir: resolve(REPO) });
     if (lost) {
       problem(`no .env at ${ENV_PATH}, and this install's data directories are all present under ${lost.base}`);
       info("an `npm install` in this project replaced the package tree and took the configuration with it — "
         + "npm owns that directory and makes no promise about files written into it. Nothing in "
         + `${lost.base} was touched: the reports, workspaces and queues are all still there.`);
+      info(`it cannot happen again: configuration is written to ${ENV_PATH} now, which no upgrade replaces`);
       info(`re-run \`${invoke("install")}\` to write a new .env — it will ask the same questions, and the `
         + "answers that name those directories are the paths above");
     } else info(`none at ${ENV_PATH} — run: ${invoke("install")}`);
