@@ -250,3 +250,24 @@ jobs:
           set -euo pipefail
           TARBALL=$(npm pack --pack-destination ./packed | tail -1)
           node scripts/release-completeness-check.mjs --tarball "./packed/${TARBALL}"
+
+  guards:
+    name: The pattern guards
+    runs-on: ubuntu-latest
+    # PULL REQUESTS ONLY, because the question is what a CHANGE added and a push to main has no base to
+    # ask it against. Everything reaching main goes through a pull request, so nothing slips past by
+    # taking the other path.
+    if: github.event_name == 'pull_request'
+    steps:
+      # THE WHOLE HISTORY, and it is not caution. The default shallow fetch does not carry the base
+      # commit, so `git diff base...HEAD` fails to resolve it — and the way that fails is the shape this
+      # repository cares about: an unresolvable base is an error, but a guard wired to swallow it would
+      # report a clean diff over a change it never read.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # No `npm ci`. This guard reads git and nothing else, so it answers in seconds and gives a
+      # contributor the correction while they are still holding the change.
+      - name: No bare reference is added in a comment or in prose
+        run: node scripts/added-reference-check.mjs --base "${{ github.event.pull_request.base.sha }}"
