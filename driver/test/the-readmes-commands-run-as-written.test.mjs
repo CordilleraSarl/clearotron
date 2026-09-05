@@ -32,48 +32,31 @@
 // explicit that a reviewer who greps has checked the string and not the claim — the claim was checked by
 // running each command from a fresh clone, which no unit test can stand in for. This exists so the drift
 // does not come back silently between those runs.
+//
+// THE RULE ITSELF MOVED OUT on 2026-09-05, to `shared/root-doc-commands.mjs`. It used to live here, where
+// it could only ever be asked of the documents already in the checkout — and the release pipeline
+// GENERATES one. A CHANGELOG.md carrying a note about `clearotron doctor` reddened this file on the
+// version pull request, where a red blocks auto-merge and the release stops; main has no CHANGELOG.md, so
+// no branch could see it coming. The release path now asks the same function of the file it is about to
+// write. This arm is unchanged in what it asserts; it no longer owns the rule alone.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { commandSites, unreachableBareSites, sentenceFor, SHIM_PARAGRAPH } from "../../shared/root-doc-commands.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const BARE = /(?<!npx )\bclearotron (?=[a-z])/;
-const NPX = /npx clearotron [a-z]/g;
 
 /** Root-level markdown only: these are the documents a newcomer meets before anything else. */
 const rootDocs = () => readdirSync(ROOT).filter((f) => f.endsWith(".md"));
 
-/**
- * Sites, with each bare one carrying the PARAGRAPH it sits in.
- *
- * Paragraph, not line, and the difference is not cosmetic — it is a bug this file had when first written.
- * INSTALL.md's exception runs to several sentences: the one naming the shim is one line, and the one
- * saying the product's own advice follows suit is another. Judged line by line, the second sentence looks
- * like a stray bare command and the guard reds on correct prose. The unit the exception applies to is the
- * paragraph, so that is the unit tested.
- */
-/** The line a document tells the reader to put the binary on `PATH`; Infinity when it never does. */
-const GLOBAL_INSTALL = /npm install -g clearotron/;
-
 function sites() {
   const bare = [], npx = [];
   for (const f of rootDocs()) {
-    const lines = readFileSync(join(ROOT, f), "utf8").split("\n");
-    // Line-based, so a bare command BEFORE the install line is still caught: the reader executing the
-    // quickstart top to bottom has not run it yet at that point.
-    const installedAt = lines.findIndex((l) => GLOBAL_INSTALL.test(l));
-    const globalFrom = installedAt === -1 ? Infinity : installedAt + 1;
-    // Paragraph index per line: blank lines separate, so consecutive prose shares one number.
-    const para = [];
-    let n = 0;
-    for (const line of lines) { if (line.trim() === "") n++; para.push(n); }
-    const textOf = (k) => lines.filter((_, i) => para[i] === k).join(" ");
-    lines.forEach((line, i) => {
-      if (BARE.test(line)) bare.push({ file: f, line: i + 1, text: line.trim(), paragraph: textOf(para[i]), afterGlobalInstall: i + 1 > globalFrom });
-      npx.push(...(line.match(NPX) ?? []).map(() => ({ file: f, line: i + 1 })));
-    });
+    const seen = commandSites(f, readFileSync(join(ROOT, f), "utf8"));
+    bare.push(...seen.bare);
+    npx.push(...seen.npx);
   }
   return { bare, npx };
 }
@@ -89,13 +72,8 @@ test("every command form in a root document is the one that works for the reader
 
   // THE EXCEPTION, ASSERTED. A bare site is allowed only where the sentence is about the PATH shim that
   // `clearotron install` writes — the one place the short form is the correct thing to show.
-  for (const s of bare) {
-    if (s.afterGlobalInstall) continue;   // the document put the binary on `PATH` further up
-    assert.match(s.paragraph, /short form|on your `PATH`|stop typing/,
-      `${s.file}:${s.line} uses the bare \`clearotron\` form with nothing above it that put the binary on `
-      + "`PATH`. For a reader who cloned, that is command-not-found (exit 127, measured) — either write it "
-      + "as `npx clearotron`, or give the document an `npm install -g clearotron` line before this point.");
-  }
+  const unreachable = unreachableBareSites(rootDocs().map((f) => ({ file: f, text: readFileSync(join(ROOT, f), "utf8") })));
+  assert.deepEqual(unreachable.map(sentenceFor), [], unreachable.map(sentenceFor).join("\n"));
 });
 
 test("the shim sentences that keep the bare form are still there — the exception is not a dead letter", () => {
@@ -106,7 +84,7 @@ test("the shim sentences that keep the bare form are still there — the excepti
   assert.ok(bare.length > 0,
     "no bare `clearotron` remains anywhere in the root documents. That is not the goal: INSTALL.md's "
     + "paragraph about the PATH shim must show the short form, or it contradicts what it is explaining.");
-  assert.ok(bare.some((s) => s.file === "INSTALL.md" && /short form|on your `PATH`|stop typing/.test(s.paragraph)),
+  assert.ok(bare.some((s) => s.file === "INSTALL.md" && SHIM_PARAGRAPH.test(s.paragraph)),
     "INSTALL.md no longer shows the short form in its PATH-shim paragraph, so the exception this control "
     + "guards has become a dead letter — the paragraph exists to tell a reader they may stop typing `npx`.");
   // The SECOND exception gets the same control, for the same reason: if the README stopped showing the

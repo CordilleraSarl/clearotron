@@ -28,6 +28,8 @@ import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_P
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { assembleRoot, writeRootChangelog } from "../../scripts/release-version.mjs";
+import { unreachableBareSites, sentenceFor } from "../../shared/root-doc-commands.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const read = (rel) => readFileSync(join(ROOT, rel), "utf8");
@@ -252,8 +254,26 @@ test("tracker 97 a tarball that is not there is a could-not-look, never a pass",
 });
 
 test("tracker 97 the GitHub release says what the changelog says, and stays silent when there is nothing to say", () => {
-  const changelog = "# Changelog\n\nWhat changed.\n\n## 0.2.0\n\n- A clearance now names the registers it searched.\n\n## 0.1.0\n\n- The first release.\n";
+  // THE FIXTURE IS BUILT BY THE GENERATOR, not typed here. This used to be a hand-written string with a
+  // two-line head, and the pipeline's own head is four lines with an install sentence in it — so the arm
+  // would have gone on passing over a shape the release no longer writes. What a customer reads on the
+  // releases page is cut out of this file by this function; a fixture that cannot drift with the
+  // generator is a fixture that has stopped testing.
+  const dir = mkdtempSync(join(tmpdir(), "release-notes-"));
+  let changelog;
+  try {
+    writeRootChangelog({ version: "0.1.0", bullets: ["The first release."] }, dir);
+    const p = writeRootChangelog({ version: "0.2.0", bullets: ["A clearance now names the registers it searched."] }, dir);
+    changelog = readFileSync(p, "utf8");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+  assert.match(changelog, /npm install -g clearotron/, "the fixture is no longer what the pipeline writes");
   assert.equal(notesFor("0.2.0", changelog), "- A clearance now names the registers it searched.");
+  // THE HEAD IS NOT RELEASE NOTES. It sits above every version heading, and a reader of the releases page
+  // has already installed — telling them how again, inside the notes for one version, is noise.
+  assert.ok(!notesFor("0.2.0", changelog).includes("npm install -g"),
+    "the changelog's head is bleeding into the GitHub release body");
   // The LAST section of the file, which is the one a "to the next heading or end of file" lookahead
   // silently returns nothing for.
   assert.equal(notesFor("0.1.0", changelog), "- The first release.");
@@ -463,4 +483,70 @@ test("tracker 97 the workflow does not describe an approval gate it no longer ha
   // And it says what carries the removed protected-branches half instead of leaving the gap silent.
   assert.match(workflow, /explicit ref check in the step below is what carries that/,
     "the workflow no longer says what replaced the environment's protected-branches policy");
+});
+
+test("tracker 97 the changelog the pipeline writes is a root document its own reader can run", async () => {
+  // THE RELEASE STOPPED HERE, 2026-09-05. The first version pull request the pipeline ever opened went
+  // red on `the-readmes-commands-run-as-written`, over the note in the generated CHANGELOG.md reading
+  // "`clearotron doctor` now says how long the portal key has left" — exactly how a note should be
+  // written. (No line number: that file does not exist in this tree, which is the whole finding.)
+  // The generated file had not told the reader how the binary got on `PATH`, so the bare form was
+  // command-not-found for anyone who cloned. A red on the version pull request blocks auto-merge, and
+  // main has no CHANGELOG.md at all — no branch could have seen it coming.
+  //
+  // Asked of the SAME function the root documents are asked of, not a second copy of the rule here.
+  const dir = mkdtempSync(join(tmpdir(), "release-changelog-"));
+  try {
+    const notes = [
+      "`clearotron doctor` now says how long the portal key has left and refuses when it has lapsed.",
+      "Asking the demo for a search it has no example of now explains what happened.",
+    ];
+    const p1 = writeRootChangelog({ version: "0.1.1-beta.0", bullets: notes }, dir);
+    const first = readFileSync(p1, "utf8");
+    assert.deepEqual(unreachableBareSites([{ file: "CHANGELOG.md", text: first }]).map(sentenceFor), [],
+      "the generated changelog shows a command its own reader cannot run, and it fails on the version "
+      + "pull request where nothing else can see it");
+
+    // A SECOND RELEASE KEEPS ONE HEAD. The head used to be stripped by matching its exact text, so
+    // editing it would have left the old one buried above the new — and the install line would then sit
+    // BELOW a version section, protecting nothing above it.
+    const p2 = writeRootChangelog({ version: "0.1.2", bullets: ["`clearotron demo` runs a shorter example."] }, dir);
+    const second = readFileSync(p2, "utf8");
+    assert.equal((second.match(/^# Changelog$/gm) ?? []).length, 1, "the changelog grew a second title");
+    assert.equal((second.match(/npm install -g clearotron/g) ?? []).length, 1,
+      "the install line was duplicated or lost when the second version was prepended");
+    assert.ok(second.indexOf("npm install -g clearotron") < second.indexOf("## 0.1.2"),
+      "the install line no longer sits above every version section, so the notes below it are unreachable again");
+    assert.deepEqual(unreachableBareSites([{ file: "CHANGELOG.md", text: second }]).map(sentenceFor), []);
+    // And the older release is still in the file: prepending must not eat what it prepends to.
+    assert.match(second, /## 0\.1\.1-beta\.0/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("tracker 97 the release note a customer reads is the sentence, not the commit that carried it", () => {
+  // Changesets' default generator prefixes every bullet with the commit sha. A squashed release puts the
+  // SAME seven characters at the head of every line — `- f7c1570:` seven times in the first cut — in the
+  // one file a customer opens to decide whether to upgrade. The commit they can act on is named once, by
+  // the tag and the release page.
+  const dir = mkdtempSync(join(tmpdir(), "release-assemble-"));
+  try {
+    mkdirSync(join(dir, "driver"), { recursive: true });
+    writeFileSync(join(dir, "driver", "CHANGELOG.md"),
+      "# prelim-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: The demo offers the two example accounts it ships with.\n"
+      + "- 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b: A clearance now names the registers it searched.\n");
+    const { bullets } = assembleRoot("0.1.1-beta.0", dir);
+    assert.deepEqual(bullets, [
+      "The demo offers the two example accounts it ships with.",
+      "A clearance now names the registers it searched.",
+    ]);
+    // A sentence that merely CONTAINS a colon keeps every word of itself.
+    writeFileSync(join(dir, "driver", "CHANGELOG.md"),
+      "# prelim-driver\n\n## 0.2.0\n\n- Removing the demo is one directory again: nothing it writes lands outside it.\n");
+    assert.deepEqual(assembleRoot("0.2.0", dir).bullets,
+      ["Removing the demo is one directory again: nothing it writes lands outside it."]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
