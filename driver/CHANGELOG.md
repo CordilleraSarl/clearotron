@@ -1,5 +1,11 @@
 # prelim-driver
 
+## 0.1.3
+
+### Patch Changes
+
+- 345aba8: For operators: The engine's HTTP client moves to its current major version, which needs Node 22.19 or newer. Installs on an older Node 22 must upgrade Node first.
+
 ## 0.1.2
 
 ### Patch Changes
