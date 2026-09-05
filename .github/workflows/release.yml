@@ -99,6 +99,13 @@ jobs:
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
 
+      # BEFORE THE VERSION STEP, because after it the notes are gone. `changeset version` consumes them
+      # into the changelog; a note that should never have been written is then a line in a file a customer
+      # reads, and taking it out means rewriting a published release. The owner's contract is in
+      # `.changeset/README.md`; this is the half that cannot be forgotten.
+      - name: Every release note is written for the person who reads it
+        run: node scripts/release-notes-lint.mjs
+
       # `version:` is our wrapper, and it is not optional: `changeset version` moves the four WORKSPACE
       # packages and leaves the root package — `clearotron`, the one thing a user installs — where it
       # was. The wrapper carries the number to the root, assembles the one changelog a reader opens, and

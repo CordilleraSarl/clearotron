@@ -90,6 +90,7 @@
   "files": [
     "build-info.json",
     "ADDITIONAL-TERMS.md",
+    "THIRD-PARTY-NOTICES.md",
     "INSTALL.md",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
