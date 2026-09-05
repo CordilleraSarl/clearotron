@@ -1485,7 +1485,17 @@ export async function runCheck() {
       // signed in to yet is the first of those — it is the normal state of a new install, and every
       // other search is unaffected — so it is a `warn`, which says it out loud and leaves the exit code
       // alone. Nothing here can be misconfigured: there is no variable to get wrong.
-      if (r.configured && !r.remedy) ok(`${r.providerLabel} — ${r.enrolment === "oauth" ? "enrolled" : "part of this build, nothing to set up"}`);
+      //
+      // ── AND A PRESENT-BUT-BROKEN CREDENTIAL IS NEITHER (tracker issue 173) ─────────────────────
+      //
+      // It is a MISCONFIGURATION: the operator enrolled, the file is there, and it cannot work. That
+      // exits non-zero under this command's contract, and it must not be filed under the absence rule
+      // above — a zero-byte file used to read `✓ enrolled` at rc 0, and the report downstream then
+      // disclosed an outage that never happened. `unreadable` is a could-not-look and gets its own
+      // line: not enrolled, not broken, not silently either.
+      if (r.credential?.state === "unusable") problem(`${r.providerLabel} — ${r.remedy}`);
+      else if (r.credential?.state === "unreadable") warn(`${r.providerLabel} — ${r.remedy}`);
+      else if (r.configured && !r.remedy) ok(`${r.providerLabel} — ${r.enrolment === "oauth" ? "enrolled" : "part of this build, nothing to set up"}`);
       else if (r.configured || !r.known) info(`${r.providerLabel} — ${r.remedy}`);
       else warn(`${r.providerLabel} — ${r.remedy}`);
     }
