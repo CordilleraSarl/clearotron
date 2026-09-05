@@ -342,6 +342,33 @@ test("readEnvFile reports what the ENGINE'S loader would apply, not what a secon
   rmSync(home, { recursive: true, force: true });
 });
 
+test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
+  // THE HALF THAT WAS MISSED, and the reason it was missed is the point of this arm.
+  //
+  // The first cut of 179 pinned `home` in the arm and stopped there. It did not: `readEnvFile` asked the
+  // loader for a file by handing it `repoRoot: dirname(path)` and letting resolution find its way back —
+  // which it did only through the LEGACY fallback, and only while the reader had no
+  // `~/.config/clearotron/.env`. On a box with one, `readEnvFile(anything)` returned THAT file.
+  //
+  // Every existing arm for this is machine-dependent: they go red on a developer's box and green on a
+  // fresh one, so the suite said fine for as long as nobody testing had configured an install. This one
+  // MAKES the condition instead of waiting to meet it — a home that has a file, and a request for a
+  // different file — so it fails on any machine if the inference comes back.
+  const home = mkdtempSync(join(tmpdir(), "onboard-realhome-"));
+  const asked = mkdtempSync(join(tmpdir(), "onboard-asked-"));
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"), "FROM_THE_HOME_FILE=1\n");
+  writeFileSync(join(asked, ".env"), "FROM_THE_FILE_ASKED_FOR=1\n");
+
+  const seen = {};
+  loadEnvLocal({ env: seen, file: join(asked, ".env"), home, note: () => {} });
+  assert.deepEqual(Object.keys(seen), ["FROM_THE_FILE_ASKED_FOR"],
+    "the loader was told a file outright and read a different one — the resolution ran anyway");
+
+  rmSync(home, { recursive: true, force: true });
+  rmSync(asked, { recursive: true, force: true });
+});
+
 test("tracker issue 179 — an arm cannot reach the real home, and a failure names no value", () => {
   // TWO PLANTS, because the fix has two halves that fail in different ways.
   //

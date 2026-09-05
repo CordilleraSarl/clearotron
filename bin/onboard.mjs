@@ -695,7 +695,11 @@ export function engineOptions() {
 export function readEnvFile(path) {
   if (!existsSync(path)) return {};
   const env = {};
-  loadEnvLocal({ env, repoRoot: dirname(path), note: () => {} });
+  // NAMED, NOT INFERRED (tracker issue 179). This passed `repoRoot: dirname(path)` and relied on the
+  // loader's resolution happening to land back on the same directory. It did — through the LEGACY
+  // fallback, and only while the reader had no `~/.config/clearotron/.env` of their own. With one, this
+  // function returned THAT file's contents for any path it was given, including a temporary fixture.
+  loadEnvLocal({ env, file: path, note: () => {} });
   return env;
 }
 
