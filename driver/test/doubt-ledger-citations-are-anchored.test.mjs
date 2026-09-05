@@ -54,7 +54,7 @@ test("the corpus is still there — a matcher that stopped matching would pass e
 });
 
 test("no `why` string cites a LINE in code unless its entry is marked unverified", () => {
-  // The growth property, and the whole point. Without it the next edit adds a bare `verify.mjs:1113`
+  // The growth property, and the whole point. Without it the next edit adds a bare `verify.mjs:1171`
   // back and nothing says a word — which is exactly how 39 of 81 came to point at the wrong place.
   const offenders = [];
   for (const r of whyStrings()) {
