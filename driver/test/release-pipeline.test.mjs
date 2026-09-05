@@ -35,6 +35,19 @@ const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const read = (rel) => readFileSync(join(ROOT, rel), "utf8");
 const rootPkg = () => JSON.parse(read("package.json"));
 
+/**
+ * The release workflow's JOB names.
+ *
+ * SCOPED TO THE `jobs:` SECTION, and that is not fussiness: `on:` has two-space keys of its own, so a
+ * naive scan of the whole file returns `push` and `schedule` as jobs and every count derived from it is
+ * wrong by two. The colon comes off, because an arm asking `includes("pending")` of `["pending:"]` is an
+ * arm that answers no about a job that is right there.
+ */
+function releaseJobs(workflow) {
+  const jobs = workflow.slice(workflow.indexOf("\njobs:\n"));
+  return jobs.split("\n").filter((l) => /^  [a-z][a-z-]*:$/.test(l)).map((l) => l.trim().replace(/:$/, ""));
+}
+
 /** A tree that satisfies the completeness check, so each arm can break exactly one thing about it. */
 function completeTree() {
   const dir = mkdtempSync(join(tmpdir(), "release-complete-"));
@@ -183,8 +196,14 @@ test("tracker 97 the version pull request merges itself, because main will not t
   // And the guard that reads for credentials generally is still the one that runs first in both jobs.
   // Counted as INVOCATIONS, not mentions: the file names itself in a comment as well, and an arm that
   // counts the string goes red the day somebody explains the guard in prose.
-  assert.equal((workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length, 2,
-    "the credential guard no longer runs in both jobs of the release workflow");
+  // COUNTED PER JOB, not against a number. This was `=== 2`, and the day a third job was added the arm
+  // said "two, correct" about a workflow where one job now published unguarded. Every job that checks
+  // out this repository runs it, so the count is derived from the jobs rather than typed here.
+  const jobNames = releaseJobs(workflow);
+  assert.ok(jobNames.length >= 3, `only ${jobNames.length} job(s) found in the release workflow — the scan is not reading it`);
+  assert.equal((workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length, jobNames.length,
+    `the credential guard runs in ${(workflow.match(/run: node scripts\/release-publish-guard\.mjs/g) ?? []).length} `
+    + `of the release workflow's ${jobNames.length} jobs`);
 });
 
 test("tracker 97 the branch is checked explicitly, because these guards are the whole gate", () => {
@@ -586,4 +605,63 @@ test("tracker 97 the release note a customer reads is the sentence, not the comm
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+
+test("tracker 97 a version that merged itself still publishes, because that merge fires nothing", async () => {
+  // THE DEADLOCK THIS EXISTS FOR, measured 2026-09-05 on commit `65e634a6`. The version pull request
+  // merged itself and the version landed on main — and GitHub performed that merge with the built-in
+  // `GITHUB_TOKEN`, a push made with which starts NO workflow run. No CI, no release, no error. Five
+  // Dependabot runs arrived on the same commit within seconds as the control, so the suppression is on
+  // the token rather than on the repository, and nothing that waits for that push can ever fire.
+  //
+  // The workflow's own header states this rule for TAGS. The auto-merge rebuilt it one step earlier.
+  const workflow = read(WORKFLOW);
+
+  assert.match(workflow, /^\s*schedule:$/m, "the cron that notices a self-merged cut is gone, so a version "
+    + "that merges itself sits on main unpublished for ever");
+  assert.match(workflow, /cron: '\*\/5 \* \* \* \*'/, "the cron interval changed — deliberate or not, say so here");
+
+  // The reason has to travel WITH it, or the next reader deletes a cron that looks like polling for
+  // nothing. This asserts the explanation is present, not merely the trigger.
+  assert.match(workflow, /GITHUB_TOKEN`? — a push made with that token starts\s*\n?\s*#?\s*NO workflow run/,
+    "the cron no longer says why it exists, so the next reader will simplify it away");
+
+  const jobs = releaseJobs(workflow);
+  assert.deepEqual(jobs, ["version", "pending", "publish"],
+    "the release workflow's jobs are not the three this file is written about");
+
+  // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
+  // publishes on one path what it refuses on the other.
+  const pendingJob = workflow.slice(workflow.indexOf("  pending:"), workflow.indexOf("  publish:"));
+  assert.match(pendingJob, /node scripts\/release-cut-decision\.mjs/,
+    "the scheduled job decides whether to publish by some means other than the cut decision");
+  assert.match(pendingJob, /fetch-depth: 0/,
+    "the scheduled job checks out without tags, and a checkout with no tags reads every version as never released");
+  assert.match(pendingJob, /ref: main/, "the scheduled job does not pin its checkout to main");
+  // It must not be able to publish anything itself.
+  assert.match(pendingJob, /permissions:\s*\n\s*contents: read\s*\n/,
+    "the scheduled probe has more than read access; it decides, it does not publish");
+  assert.ok(!/id-token: write/.test(pendingJob), "the scheduled probe can mint a publish credential");
+
+  // AND THE PUBLISH JOB ACTS ON IT. Both deciders are needed and either may be skipped on any given run,
+  // which is exactly why the condition cannot rely on the default needs behaviour.
+  assert.match(workflow, /needs: \[version, pending\]/, "the publish job no longer waits on both deciders");
+  assert.match(workflow, /needs\.pending\.outputs\.cut == 'true'/,
+    "the publish job ignores the scheduled decider, so the cron notices and nothing happens");
+  assert.match(workflow, /!failure\(\) && !cancelled\(\)/,
+    "a skipped decider would now block the publish job rather than reading as `not this path`");
+
+  // The event gate has to let the cron through, or `pending` decides `true` and the gate refuses it.
+  assert.match(workflow, /github\.event_name \}\} " = "schedule"|= "schedule" \]/,
+    "the publish gate refuses a scheduled run, so the cron can notice a cut and never publish it");
+
+  // AND IT IS STILL NOT A REHEARSAL. A scheduled run publishes for real; only `workflow_dispatch` is dry.
+  const gate = workflow.slice(workflow.indexOf('id: what'), workflow.indexOf("- run: npm run build:ui"));
+  const dryLines = gate.split("\n").filter((l) => !/^\s*#/.test(l) && /dry_flag=--dry-run/.test(l));
+  assert.equal(dryLines.length, 1, "more than one path sets the dry-run flag, or none does");
+  const dispatchArm = gate.indexOf('"workflow_dispatch"');
+  const scheduleArm = gate.indexOf('"schedule"');
+  assert.ok(dispatchArm > -1 && scheduleArm > -1 && gate.indexOf("dry_flag=--dry-run") < scheduleArm,
+    "the dry-run flag is set on a path that includes the cron, which would make every scheduled release a rehearsal");
 });
