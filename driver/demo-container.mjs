@@ -23,8 +23,9 @@
 // stage apart. This module is the single answer. `cut/` cannot import it (that directory does not travel
 // and this one does), so the pack gate restates the disjunction and its own test pins the two together.
 
-import { existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { cpSync, existsSync, mkdtempSync, readdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve, sep } from "node:path";
 
 /** The entry file each lane's publisher reads as its source, in the order a child is probed for one. */
 export const ENTRY_FILES = Object.freeze(["report.md", "knockout-findings.json"]);
@@ -50,4 +51,30 @@ export function demoChildren(root) {
   try { entries = readdirSync(root, { withFileTypes: true }); } catch { return []; }
   return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort()
     .filter((n) => isFrozen(join(root, n)));
+}
+
+
+/**
+ * The directory a frozen demo should be PUBLISHED from — itself, or a copy when it is part of this tree.
+ *
+ * WHY A COPY AT ALL. Publishing writes a receipt into the run directory. That is deliberate and right
+ * for an archived run; `demo/` is a TRACKED directory, so replaying it rewrote a committed file and a
+ * reader who only READ the demo came back to a dirty checkout and an engine reporting
+ * `engineState: dirty` — the signal they use to decide whether they are running the shipped thing.
+ *
+ * WHY IT LIVES HERE. There are TWO publishers of the shipped demos, and fixing one left the other. The
+ * player replays a child on `--once`; the launcher SEEDS the pool from the whole container on every
+ * `--demo` start, which is the path a reader actually takes — and that one went on dirtying the tree
+ * after the player stopped. Measured by driving the demo under a wiped home and reading `git status`
+ * afterwards, which is the only place the difference shows.
+ *
+ * A demo somewhere else is somebody's own copy already and is returned unchanged.
+ */
+export function publishSource(dir, { repoRoot, tmp = tmpdir() } = {}) {
+  const root = resolve(repoRoot ?? "");
+  const here = resolve(dir);
+  if (!root || !(here === root || here.startsWith(root + sep))) return dir;
+  const copy = join(mkdtempSync(join(tmp, "clearotron-demo-")), "sample");
+  cpSync(here, copy, { recursive: true });
+  return copy;
 }

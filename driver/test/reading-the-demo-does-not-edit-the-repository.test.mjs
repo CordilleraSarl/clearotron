@@ -21,7 +21,7 @@ import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from "no
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { demoChildren } from "../demo-container.mjs";
+import { demoChildren, publishSource } from "../demo-container.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -65,4 +65,28 @@ test("157 reading the demo leaves the repository exactly as it found it", { time
   // anything, which is a clean tree for the wrong reason.
   assert.match(out, /published:/, `the demo did not publish, so a clean tree proves nothing:\n${out}`);
   assert.match(out, /report:/, "the demo published without naming a report");
+});
+
+
+test("157 both publishers of the shipped demos read the same rule", () => {
+  // FIXING THE PLAYER LEFT THE LAUNCHER, and the launcher is the path a reader takes: `clearotron demo`
+  // hands over to `start --demo`, which SEEDS the pool from the whole container on every start. The
+  // player's arm above passed the whole time that second publisher went on rewriting the tracked
+  // receipt — caught by driving the launcher under a wiped home and reading `git status` afterwards.
+  //
+  // So the rule has one home and this refuses a caller that grows its own copy of it.
+  const roots = ["bin/example.mjs", "bin/start.mjs"];
+  for (const rel of roots) {
+    const src = readFileSync(join(REPO, rel), "utf8");
+    assert.match(src, /publishSource\(/, `${rel} publishes a shipped demo without asking publishSource where to read it from`);
+  }
+
+  // And the rule itself: inside the tree is copied, outside it is left alone.
+  const outside = "/somewhere/else/demo";
+  assert.equal(publishSource(outside, { repoRoot: REPO }), outside,
+    "a demo that is not part of this tree was copied — that is somebody's own directory");
+  const copy = publishSource(join(REPO, "demo"), { repoRoot: REPO });
+  assert.notEqual(copy, join(REPO, "demo"), "a demo inside this tree was published from the tracked directory");
+  assert.ok(!copy.startsWith(REPO + "/"), `the copy is still inside the tree: ${copy}`);
+  rmSync(dirname(copy), { recursive: true, force: true });
 });

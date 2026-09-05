@@ -41,6 +41,11 @@ test("160 health reports a stale bundle as stale, and stops calling itself ok", 
   nonEmpty(files, "the portal's own source files");
   const victim = files[0];
   const was = statSync(victim);
+  // THE BASELINE IS THIS TREE'S OWN VERDICT, not "current". A developer who edited `portal-ui/src` and
+  // has not rebuilt has a genuinely stale bundle, and an arm demanding a fresh one would be red by the
+  // box rather than by the code. What this arm is about is that moving a source file forward CHANGES the
+  // answer to stale and that restoring it puts the answer back.
+  const baseline = bundleFreshnessCached(true, { ttl: 0 });
 
   try {
     // Newer than anything in the bundle: this is what a pull does to the sources it moved.
@@ -54,11 +59,10 @@ test("160 health reports a stale bundle as stale, and stops calling itself ok", 
     utimesSync(victim, was.atime, was.mtime);
   }
 
-  // And back to the truth once the timestamps are as they were — a check that cannot return to green is
-  // one an operator learns to ignore.
-  const after = bundleFreshnessCached(true, { ttl: 0 });
-  assert.notEqual(after, "stale", "the tree reads as stale after its timestamps were restored");
-  assert.equal(healthUi(after).ok, true);
+  // And back to what it was — a check that cannot return to its starting answer is one an operator
+  // learns to ignore.
+  assert.equal(bundleFreshnessCached(true, { ttl: 0 }), baseline,
+    "the verdict did not return to what it was before this arm moved a timestamp");
 });
 
 test("160 every verdict maps to something an operator can act on", () => {
@@ -143,6 +147,6 @@ test("160 the ROUTE says it, not just the predicate behind it", { timeout: 60_00
     bundleFreshnessCached(true, { ttl: 0 });
   }
   const back = await healthBody();
-  assert.equal(back.ok, true, "the route stayed not-ok after the tree was put back");
-  assert.equal(back.ui, "built");
+  assert.equal(back.ui, healthUi(bundleFreshnessCached(true, { ttl: 0 })).ui,
+    "the route did not return to this tree's own answer after the timestamp was put back");
 });

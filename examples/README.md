@@ -25,8 +25,11 @@ surfaces as a failing test rather than as a wrong report.
 `grants.example.json` is loaded by `mcp-server/test/grants.test.mjs` through the real loader
 (`loadGrants` in `shared/scope.mjs`) and asserted to grant what it looks like it grants — `../INSTALL.md`
 §8 tells an installer to copy this file, and a row that silently resolves to nothing means an empty
-world on their first sign-in. The accounts it names are the synthetic demo customers under
-`driver/profiles/`: `aurora`, `zephyr`, `petcary`.
+world on their first sign-in. **Read it as a shape, not as a starting roster.** Most of the accounts it
+names — `aurora`, `zephyr`, `petcary` — are fixtures the test suite reads and are not part of the
+published package; the one a fresh install actually has is `demo-brand-owner`. Replace the names with
+your own accounts and keep the shapes: a tenant with every account, a tenant with one, a tenant whose
+users see different subsets.
 
 `job.euipo.json` is what `bin/onboard.mjs` prints as the first real clearance to run. That command
 spends money and takes hours; [`../docs/INTAKE.md`](../docs/INTAKE.md) is the field-by-field reference,
@@ -36,8 +39,8 @@ including what each omission means.
 
 The candidate mark VENQORI does not exist, and the two input files name nobody real — every address in
 them is an `example.com` or `.example` placeholder. The evidence is the opposite, deliberately:
-`sample-run/run/_records/` holds real EUIPO records, and the report and `common-law-grid.json` carry the
-real owners, URLs and contact details the searches actually returned. That is the technique to copy — a
+`../demo/<product-id>/run/_records/` holds real EUIPO records, and the report and `common-law-grid.json`
+carry the real owners, URLs and contact details the searches actually returned. That is the technique to copy — a
 fictional mark searched against real public register data, so the conflicts are true and only the
 candidate is made up. Scrubbing them would falsify the evidence the sample exists to be checked against;
 One name here fires the client-identifier guard; it is carried in the vetted-identities record
@@ -45,10 +48,12 @@ with the reason it stays.
 
 ## Where to start
 
-`sample-run/run/report.md` — what a client receives. The front matter carries the overall label and
-the coverage line; the body opens with Actions, then the findings behind them. `run/audit.md` is the
-same run seen as evidence, finding by finding.
+[`../demo/global-preliminary-search/run/report.md`](../demo/global-preliminary-search/run/report.md) —
+what a client receives. The front matter carries the overall label and the coverage line; the body opens
+with Actions, then the findings behind them. `run/audit.md` beside it is the same run seen as evidence,
+finding by finding.
 
 `job.euipo.json` — the input side, short enough to read whole in one screen.
-`sample-run/PROVENANCE.md` says how the run was frozen, what was dropped, and how to regenerate the
-directory with `scripts/freeze-example-run.mjs`.
+
+Each demo carries its own `PROVENANCE.md` saying how that run was frozen, what was dropped, and how to
+regenerate the directory with `scripts/freeze-example-run.mjs`.

@@ -111,7 +111,7 @@ import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
-import { defaultDenylistPath, denylistPathFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";
+import { defaultDenylistPath, denylistPathFor, denylistFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";   // — one owner for the revocation list's path
 import { createServer } from "node:net";
 import { listenErrorMessage } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
@@ -429,7 +429,16 @@ export function childEnv({ ports, paths, user, staffDomains, portalSecret, token
       // while every other child inherited the operator's TRADEMARK_MCP_TOKEN_DENYLIST. An operator who
       // placed the list themselves therefore revoked at the staff door and not at the client door,
       // which is where account keys live, and `key issue` named the staff door's file to them.
-      TRADEMARK_MCP_TOKEN_DENYLIST: paths.denylist ?? denylistPathFor(env, homedir()),
+      // AND A DEMO'S REVOCATION LIST LIVES IN THE DEMO'S OWN BASE, for the same reason its sign-in
+      // credential does: "removing it later is one directory" is a promise the demo prints, and a
+      // stranger's run — driven under a wiped home — left this file behind at
+      // `~/.config/clearotron/token-denylist` after `rm -rf` of the base.
+      //
+      // ✕ DEMO ONLY, AND NOT VIA `installPaths`. The fall-through below is what a real install needs:
+      // the operator's own setting, or the shared default. Giving every install a list inside its base
+      // would MOVE a live one — entries in the old file stop being read, and a revoked key answers
+      // again. A demo has no revocations to lose, which is what makes it the safe exception.
+      TRADEMARK_MCP_TOKEN_DENYLIST: denylistFor({ paths, demo, env, home: homedir() }),
     },
     portal: {
       ...shared,
@@ -786,7 +795,9 @@ if (isMain) {
   // and created nothing, so one of the two doors stood outside a guard the other one had. Same helper
   // now, so a third door cannot be added outside it either.
   {
-    const denylist = paths.denylist ?? denylistPathFor(process.env, homedir());
+    // THE SAME ANSWER THE DOOR IS GIVEN. This used to compose its own, so a demo's door was told one
+    // file and this created another — and the one a stranger found on disk afterwards was this one.
+    const denylist = denylistFor({ paths, demo: DEMO, env: process.env, home: homedir() });
     try {
       const r = ensureDenylistFile(denylist, {
         exists: existsSync,
@@ -863,7 +874,11 @@ if (isMain) {
   } else try {
     const { seedPool } = await import("../driver/publish/seed-pool.mjs");
     const { republishRun } = await import("../driver/publish/report-registry.mjs");
-    const seed = await seedPool({ pool: paths.pool, examplesDir: join(REPO, "demo"), republish: republishRun });
+    // SEEDED FROM A COPY, for the reason the player publishes from one: republishing writes a receipt
+    // into the run directory it reads, and `demo/` is tracked. This is the path a reader actually takes
+    // — `clearotron demo` hands over to this — so fixing the player alone left the defect where it was.
+    const { publishSource } = await import("../driver/demo-container.mjs");
+    const seed = await seedPool({ pool: paths.pool, examplesDir: publishSource(join(REPO, "demo"), { repoRoot: REPO }), republish: republishRun });
     if (seed.seeded.length) {
       say(`  seeded         ${seed.seeded.length} example report(s) into ${paths.pool}`);
       // THE LABEL. is delivered: the report now carries the owner's own sample sentence on its
@@ -1316,7 +1331,15 @@ if (isMain) {
   // check has to sit on the other side of the thing that mints, and the only way to keep that true is
   // for it to be adjacent to the spawn where a reader can see why.
   const { credentialPathFor: credentialPathBeforeStart, newPassphrase } = await import("../driver/portal-local-auth.mjs");
-  const credentialExisted = existsSync(credentialPathBeforeStart());
+  // ASKED ABOUT THE FILE THE PORTAL WILL ACTUALLY USE, not the shared default. `credentialPathFor`
+  // reads `PORTAL_LOCAL_CREDENTIAL`, and a demo sets it to a file inside its own base — but this call
+  // was made against THIS process's environment, which never carries it. So on any box that already had
+  // `~/.cordillera/portal-local-credential.json` from an earlier install, a demo decided a passphrase
+  // already existed, minted nothing, and the portal then printed "minted on an earlier start and is NOT
+  // reprinted" over a credential file that was empty. The visitor got a sign-in screen they could not
+  // pass — which is the exact failure the demo's own credential path was introduced to prevent, left
+  // half-wired because the mint decision was reading a different file from the mint.
+  const credentialExisted = existsSync(credentialPathBeforeStart(envs.portal));
 
   // ── MINT HERE SO THE SUMMARY CAN PRINT IT ( — F10) ────────────────────────
   //

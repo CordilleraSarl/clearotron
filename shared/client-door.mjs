@@ -82,6 +82,26 @@ export const denylistPathFor = (env, home) =>
   String(env?.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim() || defaultDenylistPath(home);
 
 /**
+ * Where an INSTALL's revocation list lives — the door that reads it and the launcher that creates it.
+ *
+ * IT WAS COMPOSED IN THREE PLACES AND THAT IS THE WHOLE DEFECT. The client door was handed one path in
+ * its environment; the launcher created the file at another, computed a few hundred lines away; and
+ * `connect` had its own. Scoping the demo's copy in the child environment therefore changed nothing a
+ * stranger could see — the file still appeared at the shared default, because the thing that CREATES it
+ * never read that variable. Measured by driving the demo under a wiped home, twice: once believing the
+ * fix had landed, and once looking at where the file actually was.
+ *
+ * ✕ THE DEMO IS THE ONLY EXCEPTION. A real install falls through to the operator's own setting or the
+ * shared default; giving every install a list inside its base would MOVE a live one, entries in the old
+ * file would stop being read, and a revoked key would answer again. A demo has no revocations to lose,
+ * and "removing it later is one directory" is a promise it prints on the way out.
+ */
+export function denylistFor({ paths, demo = false, env = {}, home }) {
+  if (demo) return join(paths.base, "token-denylist");
+  return paths.denylist ?? denylistPathFor(env, home);
+}
+
+/**
  * Create the denylist if it is absent, so the door is born consulting a file that exists.
  *
  * Idempotent and never destructive: an existing list is left exactly as it is. Mode 600 because it
