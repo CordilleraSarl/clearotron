@@ -57,6 +57,7 @@ import { isLiveQueueMarker, isQueueSidecar, liveQueueState, LIVE_QUEUE_STATES, T
 // leave the real one to park tomorrow's re-run as a duplicate. usage-ledger.mjs is a pure leaf too
 // (node:fs + node:path + queue-markers.mjs), so it drags no driver machinery in either.
 import { matterLedgerPath } from "../driver/usage-ledger.mjs";
+import { probeWorker } from "../driver/queue-watch-probe.mjs";   // tracker issue 181 — the drain this deployment actually has
 // Teardown asks whether a process is actually producing a run before it rewrites the record that says so.
 import { claimLivenessForCodename, claimForbidsDestruction } from "../driver/claim-liveness.mjs";
 // The store admission sweep (, moved here from a bundled-store CI test when the bundled scenarios
@@ -1501,24 +1502,64 @@ function evalAssertion(a, runDir) {
 //
 // Three states, not two: "cannot tell" is reported as itself rather than as breakage, because
 // systemctl --user needs XDG_RUNTIME_DIR and a plain `sudo -u <user> node …` does not set it.
-function queueDrainState() {
-  const sc = (...a) => {
+// ── IT ASKS ABOUT THE WORKER FIRST, BECAUSE THE WORKER IS THE DRAIN (tracker issue 181) ────────────
+//
+// This function knew only about `prelim-driver.timer` and `prelim-driver.path` — the two RETIRED units.
+// On a deployment drained by `clearotron-worker.service` it therefore found neither, concluded nothing
+// would drain, and printed `NOTHING WILL DRAIN THIS QUEUE` followed by an `enable --now` for a second
+// drainer. Measured while that message was on screen: the queue went claimed=1 within 48 seconds and
+// the run settled and delivered. Both halves were wrong.
+//
+// THE INSTRUCTION WAS THE DANGEROUS HALF, not the false claim. Arming a second drainer beside a running
+// one is a known incident shape, and the guard that stops `clearotron update` running under a live
+// clearance assumes ONE drainer owns the queue. The reader most likely to follow the advice is the one
+// least able to judge it: somebody who ran the documented command and saw capitals.
+//
+// `probeWorker` is imported rather than re-implemented. It already answers this — enabled, not merely
+// present, for the reason its own header gives — and `live-surface-check` was already getting it right
+// from the same place while this printed the opposite. Two answers to one question is what produced the
+// contradiction; there is now one.
+//
+// `worker`, `sc` and `queueDir` are injected so an arm can drive every branch — including the two that
+// only occur on a box this suite is not running on. The defect shipped because the branch that fires on
+// a worker-drained deployment was reachable on exactly one kind of machine and nobody had one.
+function queueDrainState({
+  worker = probeWorker(),
+  sc = (...a) => {
     try { return execFileSync("systemctl", ["--user", ...a], { encoding: "utf8" }).trim(); }
     catch (e) { const o = `${e.stdout ?? ""}`.trim(); return o || null; }
-  };
+  },
+  queueDir = QUEUE_DIR,
+} = {}) {
+  // THE CURRENT POSTURE FIRST. A worker that is enabled drains continuously, so there is no arrival to
+  // trigger and no schedule to wait for — and nothing to arm.
+  if (worker.enabled === true) {
+    return { armed: true, how: `clearotron-worker.service is enabled and drains continuously (${worker.unit})` };
+  }
   const probe = sc("is-active", "prelim-driver.timer");
   if (probe === null) return { armed: null, how: "cannot query systemd --user from here (no XDG_RUNTIME_DIR?) — check prelim-driver.timer yourself" };
   const timer = probe === "active";
   const pathActive = sc("is-active", "prelim-driver.path") === "active";
   // The path unit only helps if one of its globs actually covers OUR queue dir.
-  const pathCovers = pathActive && Boolean(QUEUE_DIR) && (sc("show", "prelim-driver.path", "-p", "Paths") ?? "").includes(QUEUE_DIR);
+  const pathCovers = pathActive && Boolean(queueDir) && (sc("show", "prelim-driver.path", "-p", "Paths") ?? "").includes(queueDir);
 
   if (timer && pathCovers) return { armed: true, how: "timer + path watch" };
   if (timer) return { armed: true, how: pathActive ? "timer only — the path unit watches a different queue" : "the 90s timer" };
   if (pathCovers) return { armed: true, how: "path watch only — no timer fallback, so a missed event never retries" };
-  return { armed: false, how: pathActive
-    ? "prelim-driver.timer is not active and prelim-driver.path watches a different queue"
-    : "neither prelim-driver.timer nor prelim-driver.path is active" };
+
+  // A COULD-NOT-LOOK ABOUT THE WORKER IS NOT A FINDING THAT NOTHING DRAINS. If the worker probe failed,
+  // or the unit is present but its enablement could not be read, the honest answer is unknown — and
+  // unknown must never carry the instruction to start a drainer.
+  if (worker.enabled === null || worker.error) {
+    return { armed: null, how: `the retired timer and path units are not active, and ${worker.unit} could not be read (${worker.error ?? "unknown"}) — so whether anything drains this queue is unknown` };
+  }
+
+  // NAMED, so the claim is falsifiable. "Nothing will drain this queue" is the strongest sentence here
+  // and it used to name no queue at all, which left a reader nothing to check it against.
+  const where = queueDir ? ` for ${queueDir}` : " (this run resolved no queue directory, which is itself the thing to check)";
+  return { armed: false, how: `no drainer is active${where} — clearotron-worker.service is not enabled, `
+    + `and neither retired unit (prelim-driver.timer, prelim-driver.path) is active${
+      pathActive ? "; the path unit is running but watches a different queue" : ""}` };
 }
 
 // ── commands ─────────────────────────────────────────────────────────────────────────────────────────
@@ -1867,10 +1908,15 @@ async function cmdRun(id) {
   console.log(`\n${queuedIds.length} job(s) queued across ${doors.length} door(s)${
     queuedIds.some((x) => !x) ? ` — ${queuedIds.filter((x) => !x).length} did not report an id` : ""
   }. The QUEUE is the source of truth for what is in flight; watch it, not this list.`);
+  // THE COMMAND IS PRINTED ONLY WHEN NO DRAINER HOLDS THIS QUEUE (tracker issue 181), and the unit it
+  // names is the one this deployment actually uses. It used to be printed on the strength of two RETIRED
+  // units being inactive, which on a worker-drained box meant telling the operator to start a second
+  // drainer beside a running one. Suggesting a second drainer is the failure here, not the absence of a
+  // first — so an UNKNOWN drain state now prints no command at all.
   console.log(`\nqueued. ${
     drained.armed === true ? `The runner drains on its own — ${drained.how}.`
-    : drained.armed === null ? `Drain state UNKNOWN — ${drained.how}.`
-    : `NOTHING WILL DRAIN THIS QUEUE — ${drained.how}.\nArm it with:  systemctl --user enable --now prelim-driver.timer`}`);
+    : drained.armed === null ? `Drain state UNKNOWN — ${drained.how}.\nDo NOT arm a drainer on this: find out what is running first, because starting a second one beside a live drainer is its own incident.`
+    : `NOTHING WILL DRAIN THIS QUEUE — ${drained.how}.\nArm it with:  systemctl --user enable --now clearotron-worker.service`}`);
   console.log(`Watch it with:  node scripts/e2e.mjs status\n`);
 }
 
