@@ -797,7 +797,14 @@ test("screen-gate: one mode filter, one helper, BOTH gate checks — the ION pro
   // WITH a control that fails if it is reading the wrong text.
   const SRC = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
   const from = SRC.indexOf("const checkScreenGate = ()");
-  const to = SRC.indexOf("// spec-66: AFTER any settlement/late flush", from);
+  // ANCHORED ON THE PROSE, NOT THE SPEC NUMBER. The end marker used to read "// spec-66: AFTER any
+  // settlement/late flush"; the cut strips a spec reference out of a comment and left "//: AFTER any
+  // settlement…", so indexOf returned -1. That is not an error — a negative `to` makes the slice run
+  // backwards and return nothing, and every assertion below would then be reading an empty string. The
+  // isolation control caught it, which is what it is for; the refusals now name which marker went.
+  const to = SRC.indexOf("AFTER any settlement/late flush lands a digest", from);
+  assert.notEqual(from, -1, "pipeline.mjs no longer declares checkScreenGate — the block has no start");
+  assert.notEqual(to, -1, "the settlement/late-flush marker that bounds the screen-gate block is gone");
   assert.ok(from > 0 && to > from && to - from < 8000,
     `the screen-gate block was not isolated (${to - from} chars) — every arm here would pass or fail on the wrong text`);
   const block = SRC.slice(from, to);
@@ -2787,8 +2794,12 @@ test("#979 a legitimate unsplit path is NOT a failure: a pre-split resume still 
 // quietly demoting it back to a recorded row, not a particular run.
 test("#979 selector/record disagreement FAULTS, and the record is written BEFORE the throw", async () => {
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
-  const start = src.indexOf("#753 — RECORD THE CHOICE");
-  assert.ok(start > 0, "the #753 record block must be findable — if this fails the assertions below are vacuous");
+  // ANCHORED ON THE PROSE, NOT THE ISSUE NUMBER. The heading carried a bare issue reference and the cut
+  // strips those out of comments, so the old anchor stopped existing. This arm's vacuity control caught
+  // it — an uncontrolled slice on a missing anchor is not an error, it is a window from the end of the
+  // file that the assertions below would have read as the record block.
+  const start = src.indexOf("RECORD THE CHOICE, HERE, where both paths converge");
+  assert.notEqual(start, -1, "the record block's heading is gone from pipeline.mjs — if this fails the assertions below are vacuous");
   const end = src.indexOf("const gather =", start);
   assert.ok(end > start, "…and delimitable");
   const block = src.slice(start, end);
