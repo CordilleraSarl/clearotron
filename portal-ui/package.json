@@ -2,7 +2,7 @@
   "name": "portal-ui",
   "private": true,
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1-beta.0",
   "license": "AGPL-3.0-only",
   "description": "The unified trademark portal UI. One address, one login: who you are decides what you see. Built as a static bundle, served by driver/portal-service.mjs — the browser never reaches profile-service or recipe-service.",
   "engines": {

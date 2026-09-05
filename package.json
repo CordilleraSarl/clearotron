@@ -1,9 +1,9 @@
 {
   "name": "clearotron",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1-beta.0",
   "license": "AGPL-3.0-only",
-  "description": "Clearotron \u2014 trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
+  "description": "Clearotron — trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
   "engines": {
     "node": ">=22"
   },
