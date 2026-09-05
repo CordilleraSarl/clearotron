@@ -33,3 +33,4 @@ that should have changed. Not "tests pass" — the command whose output proves i
 - [ ] Touched `portal-ui/src`? Ran `npm run build:ui` and committed `portal-ui/dist` (CI requires byte equality) and `npm run typecheck -w portal-ui` passes.
 - [ ] Added an environment variable? Added its row to `docs/architecture/05-config-governance.md`.
 - [ ] An empty result, a missing file, or a match that found nothing is reported as an absence, not as a pass.
+- [ ] Release note added under `.changeset/`, written for a lawyer, passes `node scripts/release-notes-lint.mjs`.

@@ -2,4 +2,4 @@
 "prelim-driver": patch
 ---
 
-The third-party licence notices now list every package the product bundles.
+Fixed: The package now includes its third-party licence notices, and they list every package it bundles.

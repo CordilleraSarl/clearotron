@@ -2,4 +2,4 @@
 "prelim-driver": patch
 ---
 
-The connection steps shown for Cowork and Perplexity now match what those apps actually ask for.
+Fixed: The connection steps shown for Cowork and Perplexity now match what those apps actually ask for.

@@ -28,6 +28,8 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const GROUP = ["driver", "mcp-server", "portal-ui", "providers/oauth-mcp-bridge"];
+/** The page's order, user-facing first, from the owner's contract. */
+export const GROUPS = ["New", "Fixed", "For operators"];
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 
 /** The one version the fixed group now carries — and a refusal if they disagree. */
@@ -76,7 +78,29 @@ export function assembleRoot(version, root = ROOT) {
       if (b && !bullets.includes(b[1])) bullets.push(b[1].replace(/^[0-9a-f]{7,40}: /, ""));
     }
   }
-  return { version, bullets };
+  return { version, ...group(bullets) };
+}
+
+/**
+ * The bullets, sorted into the three groups the page shows, with the group marker taken off.
+ *
+ * WHY A MARKER AT ALL. The owner's contract says the page groups notes New / Fixed / For operators, with
+ * the user-facing ones first. That has to come from the note — the person writing it is the only one who
+ * knows which it is — so a note opens with its group and this reads it off. `.changeset/README.md` says
+ * so beside the contract, and `release-notes-lint.mjs` refuses a note without one.
+ *
+ * A BULLET WITH NO GROUP IS A REFUSAL, not a default. Dropping it into "Fixed" would put a new feature
+ * under the wrong heading and nobody would ever see that it had happened.
+ */
+export function group(bullets) {
+  const groups = Object.fromEntries(GROUPS.map((g) => [g, []]));
+  const ungrouped = [];
+  for (const b of bullets) {
+    const m = /^(New|Fixed|For operators):\s+(.*)$/s.exec(b);
+    if (!m) { ungrouped.push(b); continue; }
+    groups[m[1]].push(m[2].trim());
+  }
+  return { groups, ungrouped };
 }
 
 /**
@@ -89,7 +113,7 @@ export function assembleRoot(version, root = ROOT) {
  * rule matching nothing, so it cannot be pre-added, and `driver/test/release-pipeline.test.mjs` reds an
  * existing-but-undecided changelog so the first version PR cannot merge without it.
  */
-export function writeRootChangelog({ version, bullets }, root = ROOT) {
+export function writeRootChangelog({ version, groups }, root = ROOT) {
   const p = join(root, "CHANGELOG.md");
   // THE HEAD SAYS HOW THE READER GOT THE BINARY, AND THAT IS NOT DECORATION. Every root document is
   // read by somebody who has to be able to run what it shows them, and this one is written by a script
@@ -106,7 +130,13 @@ export function writeRootChangelog({ version, bullets }, root = ROOT) {
   // Everything from the first version heading down — read that way rather than by stripping a known
   // head, so editing the head above cannot leave the old one buried in the file for ever.
   const prior = existsSync(p) ? (readFileSync(p, "utf8").match(/\n## [\s\S]*/)?.[0] ?? "") : "";
-  const section = `\n## ${version}\n\n${bullets.map((b) => `- ${b}`).join("\n")}\n`;
+  // Empty groups are dropped rather than printed empty: a heading with nothing under it tells a reader
+  // that something is missing, which is a worse lie than not mentioning the group at all.
+  const body = GROUPS
+    .filter((g) => groups[g]?.length)
+    .map((g) => `### ${g}\n\n${groups[g].map((b) => `- ${b}`).join("\n")}\n`)
+    .join("\n");
+  const section = `\n## ${version}\n\n${body}`;
   writeFileSync(p, head + section + prior);
   return p;
 }
@@ -126,11 +156,20 @@ function main() {
   console.log(`release-version: clearotron ${was} -> ${version} (carried from the fixed group)`);
 
   const assembled = assembleRoot(version);
+  // A note that named no group would land under the wrong heading, silently. It refuses instead.
+  if (assembled.ungrouped.length) {
+    console.error("release-version: these release notes name no group, so the page cannot order them. "
+      + `Each opens with one of ${GROUPS.map((g) => `\`${g}:\``).join(", ")} — see .changeset/README.md.\n`);
+    for (const b of assembled.ungrouped) console.error("  " + b.slice(0, 100));
+    process.exitCode = 1;
+    return;
+  }
   // AN EMPTY RELEASE RECORD IS A REFUSAL, NOT A PASS. This is what caught the bug above: the section
   // came out with no bullets, and the plain-language gate passed it, because empty text contains no
   // jargon. A release whose changelog says nothing is worse than no changelog — a reader opens it,
   // learns nothing, and concludes the release did nothing.
-  if (!assembled.bullets.length) {
+  const total = GROUPS.reduce((n, g) => n + assembled.groups[g].length, 0);
+  if (!total) {
     console.error(`release-version: version ${version} assembled ZERO changelog lines. Either no note `
       + "described a user-visible change, or the per-workspace changelogs were not written where this "
       + "expects them. Both are refusals: a release with an empty record does not go out.");
