@@ -6,7 +6,7 @@
   "license": "AGPL-3.0-only",
   "description": "Deterministic driver for the trademark clearance workflow: orchestration in code (fan-out, fan-in barrier, gating, retries); the model does judgment leaves only, through a reasoning CLI spawned per stage.",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.19.0"
   },
   "scripts": {
     "test": "node ../scripts/test-run.mjs node ../scripts/test-fast.mjs test/*.test.mjs",

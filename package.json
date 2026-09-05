@@ -13,7 +13,7 @@
   },
   "description": "Clearotron — trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.19.0"
   },
   "workspaces": [
     "driver",
