@@ -673,6 +673,21 @@ export type McpAccess = {
 export type ConnectOffer = {
   readonly id: string
   readonly name: string
+  /**
+   * Where the reader MEETS this assistant, when one product is reachable two ways — "app, web, and
+   * Cowork" against "app, on this computer". It exists so one app can appear once per route without two
+   * rows implying two products (tracker issue 147; owner: "its just ONE APP"). Absent on a row only
+   * reachable one way, and absent means absent rather than empty.
+   */
+  readonly sub?: string
+  /**
+   * WHEN SOMEBODY ACTUALLY OPENED THIS VENDOR'S DIALOG, and who. Present only on a row that was driven;
+   * a row nobody drove sends neither, so the page shows a dated stamp on one and nothing on the other.
+   * A stamp defaulted onto an undriven row would be this product's own defect class — asserting vendor
+   * behaviour from no observation — wearing the costume of evidence.
+   */
+  readonly verifiedOn?: string
+  readonly by?: string
   /** False ⇒ NOT A BUTTON. `reason` and `fix` are then both present, because an absence with no reason reads as breakage. */
   readonly served: boolean
   readonly route: string | null
@@ -1816,6 +1831,12 @@ export const api = {
           : null
         return [{
           id, name,
+          // SPREAD, so absent stays absent. `sub: undefined` would be a present key meaning "this row
+          // has no sub-label", which is a different claim from "this row never had one" — and the
+          // difference is exactly what decides whether the page prints a verification stamp.
+          ...(asString(r['sub']) ? { sub: asString(r['sub']) as string } : {}),
+          ...(asString(r['verifiedOn']) ? { verifiedOn: asString(r['verifiedOn']) as string } : {}),
+          ...(asString(r['by']) ? { by: asString(r['by']) as string } : {}),
           // Only strings survive, same rule as `accountNames` above: a malformed entry is dropped rather
           // than rendered, because a step that reads "[object Object]" is worse than one fewer step.
           steps: asArray(r['steps']).filter((x): x is string => typeof x === 'string' && x !== ''),

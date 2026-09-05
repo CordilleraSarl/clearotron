@@ -2064,80 +2064,127 @@ input.filter {
   font-size: 16px;
 }
 
-/* WHAT YOU CAN DO — first on the page and looking like it. The owner asked for clear bullets with
-   weight ("bold/accent … make it look nice"); this is the one block a reader deciding whether to set
-   this up at all actually needs, so it carries the accent rule and the strong ink. */
-.ai-can {
-  max-width: var(--screen-measure);
-  margin: 20px 0 0;
-  padding: 4px 0 4px 18px;
-  border-left: 3px solid var(--accent);
-}
-
-.ai-can h2 { margin: 0 0 8px; }
-
-.ai-can ul {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--text-strong);
-  line-height: 1.75;
-}
-
-.ai-can li { margin-bottom: 3px; }
-
-.ai-can-foot { margin: 12px 0 0; color: var(--text-muted); }
-
-.ai-doors {
-  max-width: var(--screen-measure);
-  margin: 22px 0 0;
-  color: var(--text-muted);
-  line-height: 1.65;
-}
-
-.ai-doors strong { color: var(--text-strong); }
 
 .ai-connect-head { margin-top: 28px; }
 
-/* The buttons take the frame and wrap, rather than stacking down a reading column. One height, because
-   they are one kind of thing — the owner reported "stacked, inconsistent heights". */
-.ai-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-start;
-}
+/* ── ONE QUESTION, WHEN THE DEPLOYMENT LEAVES IT OPEN (tracker issue 147) ─────────────────────────── */
+.ai-where { margin: 0 0 14px; max-width: var(--screen-measure); }
 
-.ai-row { display: flex; flex-direction: column; gap: 8px; }
+.ai-where-q { margin: 0 0 8px; font-size: 15px; color: var(--text-strong); }
 
-.ai-btn { min-height: 38px; }
+.ai-seg { display: inline-flex; border: 1px solid var(--border-hairline); border-radius: 7px; overflow: hidden; }
 
-/* The open one is marked, so a reader with several expanded can see which is which. */
-.ai-btn-on {
-  border-color: var(--accent);
-  color: var(--text-strong);
-}
-
-.ai-open {
-  max-width: var(--screen-measure);
+.ai-seg-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 7px 14px;
+  font: inherit;
   color: var(--text-muted);
+  cursor: pointer;
 }
 
-.ai-steps {
+.ai-seg-btn + .ai-seg-btn { border-left: 1px solid var(--border-hairline); }
+
+.ai-seg-btn[data-on] { background: var(--surface-sunken); color: var(--text-strong); }
+
+.ai-where-sub { margin: 10px 0 14px; color: var(--text-muted); max-width: var(--screen-measure); }
+
+.ai-none { margin: 0; max-width: var(--screen-measure); color: var(--text-muted); line-height: 1.65; }
+
+.ai-none strong { color: var(--text-strong); }
+
+/* ── THE DESTINATION LIST ─────────────────────────────────────────────────────────────────────────── */
+.ai-dests {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: var(--screen-measure);
+}
+
+/* ONE HEIGHT AND ONE WIDTH, ALWAYS. The owner reported the old row set as "stacked, inconsistent
+   heights"; more importantly a row that resizes when it is pressed moves its neighbours, which is the
+   reflow this rebuild exists to end. */
+.ai-dest {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 46px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ai-dest[data-selected] { border-color: var(--accent); }
+
+/* THE PRESSED CONTROL IS THE CONFIRMATION. Solid accent, not a muted caption underneath — the previous
+   feedback was grey text below the button and the owner could not see it happen. */
+.ai-dest[data-copied] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.ai-dest[data-copied] .ai-dest-sub { color: inherit; opacity: 0.85; }
+
+.ai-dest-name { display: flex; flex-direction: column; gap: 2px; color: var(--text-strong); }
+
+.ai-dest[data-copied] .ai-dest-name { color: inherit; }
+
+.ai-dest-sub { font-size: 12.5px; color: var(--text-faint); }
+
+/* THE SLOT BOTH LABELS SHARE. Laid out with a grid so the cell is as wide as the WIDER of the two, in
+   every row, whether or not it has been pressed — swapping the text then costs zero layout. */
+.ai-dest-say { display: grid; font-size: 13px; }
+
+.ai-dest-idle, .ai-dest-done { grid-area: 1 / 1; white-space: nowrap; }
+
+.ai-dest-idle { color: var(--text-faint); }
+
+.ai-dest-done { color: inherit; font-weight: 600; visibility: hidden; }
+
+.ai-dest[data-copied] .ai-dest-idle { visibility: hidden; }
+
+.ai-dest[data-copied] .ai-dest-done { visibility: visible; }
+
+/* ── THE RESERVED SLOT ────────────────────────────────────────────────────────────────────────────── */
+/* A MINIMUM HEIGHT WHETHER OR NOT ANYTHING IS IN IT. This is what makes "nothing above the panel moves"
+   a property of the layout rather than a hope about content sizes. */
+.ai-slot {
+  margin: 16px 0 0;
+  min-height: 240px;
+  max-width: var(--screen-measure);
+}
+
+.ai-slot-empty { margin: 0; color: var(--text-faint); }
+
+.ai-panel {
+  padding: 14px 16px;
+  border: 1px solid var(--border-hairline);
+  border-radius: 8px;
+  background: var(--surface-sunken);
+}
+
+.ai-panel-head { margin: 0 0 8px; font-size: 15px; color: var(--text-strong); }
+
+.ai-panel-landed { margin: 0 0 10px; font-size: 13px; color: var(--text-muted); }
+
+.ai-panel-steps {
   margin: 0;
   padding-left: 20px;
   line-height: 1.7;
   color: var(--text-body);
 }
 
-.ai-said { margin: 0 0 6px; }
+.ai-panel-stamp { margin: 10px 0 0; font-size: 12.5px; color: var(--text-faint); }
 
-.ai-advanced { margin: 8px 0 0; }
-
-.ai-advanced > summary {
-  cursor: pointer;
-  color: var(--text-faint);
-  font-size: 12.5px;
-}
+.ai-said { margin: 0 0 6px; color: var(--text-muted); }
 
 .ai-pre {
   margin: 0;
@@ -2147,12 +2194,6 @@ input.filter {
   border-radius: 6px;
   font-size: 13px;
 }
-
-.ai-absent { margin: 18px 0 0; max-width: var(--screen-measure); }
-
-.ai-absent-row { padding: 10px 0; color: var(--text-muted); }
-
-.ai-absent-row strong { color: var(--text-strong); }
 
 /* The help a person needs, on the page. The link to the document keeps an honest label beside it. */
 .ai-help { margin: 30px 0 0; max-width: var(--screen-measure); }
