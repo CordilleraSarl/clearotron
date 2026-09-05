@@ -35,6 +35,21 @@ Then check it:
 
     node scripts/release-notes-lint.mjs
 
+## When a change needs no note
+
+**A dependency update gets a note only when the reader can see the difference.** Refreshing a library
+inside the range this project already declares changes nothing a lawyer using Clearotron could describe,
+so it ships with no note and does not appear on the releases page. Write one when the upgrade actually
+reaches them — a version that fixes something they hit, drops a platform they run on, or changes what a
+screen or a command does.
+
+The same test decides every other case, and it is the one rule above: a note says what is different for
+that reader. If you cannot finish that sentence, there is nothing to say and the note is the wrong place
+to say it.
+
+A release with no notes at all is a different matter — the cut refuses it, because a release nobody can
+read the point of should not go out.
+
 ---
 
 # Release notes contract — owner ruling 2026-09-05 ("SUPER CLEAR AND SIMPLE", enshrined in the repo, not in memory)

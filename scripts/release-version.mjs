@@ -155,6 +155,20 @@ function main() {
   writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
   console.log(`release-version: clearotron ${was} -> ${version} (carried from the fixed group)`);
 
+  // AND THE LOCKFILE, WHICH NOTHING ELSE IN THIS CUT TOUCHES. `changeset version` rewrites the
+  // workspace manifests and the block above rewrites the root's; `package-lock.json` records the same
+  // five version numbers and neither writes it. Measured on main at 1e69d606: every manifest said
+  // 0.1.1 and the lock still said 0.1.1-beta.0, one release behind, which is where it had been since
+  // the first cut. It survives because npm only refuses a lock that disagrees about DEPENDENCIES — a
+  // version field is not that, so `npm ci` installs, CI passes, and the drift rides into main.
+  //
+  // npm owns the lock's format, so npm writes it. `--package-lock-only` needs no node_modules and
+  // resolves nothing that is already satisfied, so it moves the version fields and no dependency:
+  // a release cut is the last place that should quietly bump a package.
+  execFileSync("npm", ["install", "--package-lock-only", "--no-audit", "--no-fund"],
+    { cwd: ROOT, stdio: "inherit" });
+  console.log("release-version: package-lock.json carries the same version as the manifests");
+
   const assembled = assembleRoot(version);
   // A note that named no group would land under the wrong heading, silently. It refuses instead.
   if (assembled.ungrouped.length) {

@@ -110,7 +110,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## @modelcontextprotocol/sdk@1.29.0
+## @modelcontextprotocol/sdk@1.30.0
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/modelcontextprotocol/typescript-sdk
@@ -2740,7 +2740,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ```
 
-## jose@6.2.3
+## jose@6.2.12
 
 - **Licence declared:** `MIT`
 - **Repository:** panva/jose
