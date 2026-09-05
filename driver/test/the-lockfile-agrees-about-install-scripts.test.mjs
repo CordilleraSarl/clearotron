@@ -105,3 +105,69 @@ test("#2007 the comparison can actually SEE a declared install script — CONTRO
     "a workspace that declares no install script read as declaring one — the reader is matching "
     + "something other than the three script names");
 });
+
+// The version each local package.json declares. Read the same way as the install scripts above, from
+// the committed files only, because the drift below is invisible to any install.
+const declaredVersion = (manifest) => readJSON(manifest).version;
+
+test("tracker issue 97 the lockfile agrees with every local package.json about what version it is", () => {
+  // MEASURED ON main AT 1e69d606, THE COMMIT 0.1.1 SHIPPED FROM. Five entries disagreed: every
+  // manifest said `0.1.1` and the lock still said `0.1.1-beta.0`, including the lock's own top-level
+  // `version`. The cause is mechanical and repeats on every release — `changeset version` rewrites the
+  // manifests, `release-version.mjs` carries the number to the root manifest, and neither touches the
+  // lock — so the lock has been one release behind since the first cut and would have stayed there.
+  //
+  // HOW FAR IT REACHES, MEASURED RATHER THAN REASONED ABOUT. npm refuses a lock that disagrees about
+  // DEPENDENCIES; a version field is not that. Driven on the test box against this exact mismatch:
+  // `npm ci --dry-run` exits 0, and the hourly auto-deploy's real `npm ci` on the first tip carrying it
+  // went MOVED -> npm ci -> BUILD ok -> RESTART ok -> health 200. So installing from source is not
+  // affected, and neither is the published tarball, which reads its version from the manifest.
+  //
+  // WHAT IS WRONG IS THE RECORD, AND THAT IS ENOUGH. Anything that reads the lock to answer "what is
+  // this tree" is told the last pre-release. Fixing it by hand rewrites the lock on the next install,
+  // and a dirty tree is a refusal condition here — sync-skills, render-skills and the e2e preflight all
+  // key on it. This is a correctness fix, not an urgent one, and the guard exists so that the next cut
+  // cannot quietly reopen it.
+  const lock = readJSON(join(ROOT, "package-lock.json"));
+  const drift = [];
+
+  for (const { key, manifest } of localPackages()) {
+    const entry = lock.packages?.[key];
+    assert.ok(entry, `package-lock.json has no entry for ${key || "the root package"}, so this guard `
+      + "cannot say whether they agree — regenerate the lock");
+    if (declaredVersion(manifest) !== entry.version) {
+      drift.push(`${key || "."}: package.json says ${declaredVersion(manifest)}, the lock says `
+        + `${entry.version ?? "nothing"}`);
+    }
+  }
+
+  // The lock names the root's version twice and they are written by different code paths, so the one
+  // outside `packages` drifts on its own.
+  const rootVersion = declaredVersion(join(ROOT, "package.json"));
+  if (lock.version !== rootVersion) {
+    drift.push(`the lock's own top-level version says ${lock.version ?? "nothing"}, not ${rootVersion}`);
+  }
+
+  assert.deepEqual(drift, [],
+    "package.json and package-lock.json disagree about the version. The release cut writes the "
+    + "manifests and not the lock, so this appears on the version pull request and rides into main "
+    + "unnoticed. Fix it by running `npm install --package-lock-only` at the ROOT and committing "
+    + "package-lock.json; `scripts/release-version.mjs` now does that as part of the cut, so a fresh "
+    + "one of these means that step stopped running.\n  " + drift.join("\n  "));
+});
+
+test("tracker issue 97 the version comparison can actually SEE a disagreement — CONTROL", () => {
+  // The arm above passes when both sides read as `undefined`, which is what a broken reader looks
+  // like. Both readers are driven against a version this repository really carries.
+  const rootVersion = declaredVersion(join(ROOT, "package.json"));
+  assert.match(String(rootVersion), /^\d+\.\d+\.\d+/,
+    "the root manifest's version no longer reads as a version, so the arm above is comparing nothing");
+  const lock = readJSON(join(ROOT, "package-lock.json"));
+  assert.match(String(lock.packages?.[""]?.version), /^\d+\.\d+\.\d+/,
+    "the lock's root entry no longer carries a version, so the arm above compares undefined to "
+    + "undefined and passes on any drift");
+
+  // And the negative direction: a value the tree does not carry must not read as agreement.
+  assert.notEqual(rootVersion, "0.0.0-this-version-is-not-in-the-tree",
+    "the version reader is returning whatever it is asked about rather than reading the file");
+});
