@@ -420,12 +420,33 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   assert.deepEqual(parkedAlone.blocked, ["CI"]);
   assert.match(parkedAlone.reason, /fork-pull-request approval policy/);
 
+  // AND THE REFUSAL CAN BE ACTED ON WITHOUT A HUNT. This fires on every version pull request, and is
+  // read by whoever is on shift rather than by whoever built it. The run id is the only thing not
+  // already in the sentence, so the sentence carries it and the command that clears it.
+  const actionable = checksVerdict({
+    checkRuns: [],
+    workflowRuns: [{ name: "CI", status: "action_required", conclusion: null, id: 33978066181 }],
+    repo: "CordilleraSarl/clearotron",
+  });
+  assert.match(actionable.reason,
+    /gh api -X POST repos\/CordilleraSarl\/clearotron\/actions\/runs\/33978066181\/approve/,
+    "the refusal names the park but not the one command that clears it");
+
+  // And with nothing to name it says nothing rather than printing half a command.
+  assert.ok(!/gh api/.test(parkedAlone.reason),
+    "a command was composed from a run with no id, which would print a broken instruction");
+
   // THE POLICY IS READ, NOT REMEMBERED. It was changed three times on 2026-09-05 — all external
   // contributors, then first-time contributors, then first-time contributors new to GitHub — and the bot
   // parked under two of them. A guard naming a stale value sends the next reader to check a setting that
   // has already moved, which is worse than naming none.
   assert.match(checksVerdict({ ...parkedAlone_input, policy: "first_time_contributors_new_to_github" }).reason,
-    /currently `first_time_contributors_new_to_github`/);
+    /policy is `first_time_contributors_new_to_github`/);
+  // And it no longer sends the reader off to tune that setting: it is already at its narrowest value and
+  // the bot parked under every one of the three tried. Naming the setting is useful; naming it as the
+  // fix is the afternoon this arm exists to save.
+  assert.match(checksVerdict({ ...parkedAlone_input, policy: "first_time_contributors_new_to_github" }).reason,
+    /Narrowing it further is not available/);
   // And when it cannot be read, it says so rather than quoting a value it does not have.
   assert.match(parkedAlone.reason, /could not be read from here/);
 
