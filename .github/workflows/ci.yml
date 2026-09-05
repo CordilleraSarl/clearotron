@@ -136,6 +136,17 @@ jobs:
       # count recorded in this repository, so it works here at whatever size this tree happens to be.
       - run: node scripts/citation-line-check.mjs
 
+      # THE CENSUS IS THE GATE, NOT THE EXIT CODE. It pins per-file test AND assertion counts, and it
+      # exists for the five ways a suite gets smaller while still reporting success: a file deleted, a
+      # file renamed out of the collection glob, a file hollowed out, a file skipped, a file gated
+      # behind an env var nobody sets. A suite that lost 75 tests still exits 0 — that is measured, not
+      # hypothetical, and it is the reason this line is here rather than trusted to the suite.
+      #
+      # `--check` and not a bare run: the script took one flag for a long time and an unrecognised
+      # argument fell through to the dry run, which prints a diff and exits 0 always. Lane gates read
+      # `--check` and believed it, so a line reported as a census gate measured nothing.
+      - run: node scripts/mint-suite-census.mjs --check
+
       # A RELEASE NOTE IS CHECKED WHERE IT IS WRITTEN. The release workflow checks them too, but that is
       # the wrong moment to find out: by then the note is on `main`, the author has moved on, and the
       # correction is a second pull request. Here it is one edit away from the person holding it.

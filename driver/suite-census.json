@@ -39,6 +39,12 @@
           "skips": 3,
           "todos": 0
         },
+        "a-bare-reference-added-in-a-diff-is-refused.test.mjs": {
+          "tests": 11,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-bare-territory-per-provider.test.mjs": {
           "tests": 4,
           "asserts": 7,
@@ -59,13 +65,7 @@
         },
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
-          "asserts": 37,
-          "skips": 0,
-          "todos": 0
-        },
-        "a-capped-list-shows-the-filings-that-matter.test.mjs": {
-          "tests": 7,
-          "asserts": 20,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -73,12 +73,6 @@
           "tests": 2,
           "asserts": 2,
           "skips": 1,
-          "todos": 0
-        },
-        "a-capture-records-the-call-not-one-field.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
-          "skips": 2,
           "todos": 0
         },
         "a-case-law-gap-names-the-right-reason.test.mjs": {
@@ -93,9 +87,21 @@
           "skips": 0,
           "todos": 0
         },
+        "a-credential-file-is-written-one-way.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-is-not-a-wired-lane.test.mjs": {
           "tests": 10,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-crowded-zone-is-on-the-list-it-could-not-fill.test.mjs": {
+          "tests": 10,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -153,12 +159,6 @@
           "skips": 0,
           "todos": 0
         },
-        "a-document-carries-the-controls-the-shell-offers.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
-          "skips": 0,
-          "todos": 0
-        },
         "a-door-does-not-build-its-url-from-the-callers-host.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -168,12 +168,6 @@
         "a-doubt-cannot-answer-itself.test.mjs": {
           "tests": 17,
           "asserts": 40,
-          "skips": 0,
-          "todos": 0
-        },
-        "a-euipo-receipt-names-the-corpus-that-answered.test.mjs": {
-          "tests": 6,
-          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -213,9 +207,9 @@
           "skips": 0,
           "todos": 0
         },
-        "a-guard-that-refuses-on-a-pattern-prints-the-match.test.mjs": {
-          "tests": 3,
-          "asserts": 10,
+        "a-half-applied-connect-says-so.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -255,6 +249,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-memo-has-a-door-onto-it.test.mjs": {
+          "tests": 21,
+          "asserts": 66,
+          "skips": 0,
+          "todos": 0
+        },
         "a-memo-over-a-delivered-report-leaves-it-alone.test.mjs": {
           "tests": 9,
           "asserts": 45,
@@ -270,6 +270,12 @@
         "a-packaged-install-resolves-every-workspace-dependency.test.mjs": {
           "tests": 2,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-packaged-install-survives-its-own-upgrade.test.mjs": {
+          "tests": 18,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
@@ -306,6 +312,12 @@
         "a-project-cannot-break-the-tree-it-joins.test.mjs": {
           "tests": 13,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-provider-cap-is-not-a-stage-failing.test.mjs": {
+          "tests": 10,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -357,6 +369,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-release-note-is-written-for-its-reader.test.mjs": {
+          "tests": 9,
+          "asserts": 63,
+          "skips": 0,
+          "todos": 0
+        },
         "a-removed-control-does-not-delete-the-setting-behind-it.test.mjs": {
           "tests": 6,
           "asserts": 19,
@@ -399,9 +417,15 @@
           "skips": 0,
           "todos": 0
         },
-        "a-schedule-event-has-no-range-to-name.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
+        "a-secret-file-is-compared-not-printed.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-section-gate-cannot-be-failed-by-its-wording.test.mjs": {
+          "tests": 10,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -414,6 +438,12 @@
         "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
           "tests": 10,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-signal-reaches-what-the-shim-started.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -477,6 +507,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-what-if-keeps-the-runs-rating-authority.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-write-free-stage-hands-paths-over-to-read.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -487,18 +523,6 @@
           "tests": 15,
           "asserts": 71,
           "skips": 0,
-          "todos": 0
-        },
-        "absent-path-citations.test.mjs": {
-          "tests": 2,
-          "asserts": 3,
-          "skips": 1,
-          "todos": 0
-        },
-        "access-model-stated-once.test.mjs": {
-          "tests": 3,
-          "asserts": 6,
-          "skips": 1,
           "todos": 0
         },
         "acknowledge-is-per-viewer.test.mjs": {
@@ -585,12 +609,6 @@
           "skips": 1,
           "todos": 0
         },
-        "an-operator-facing-name-is-the-one-they-set.test.mjs": {
-          "tests": 7,
-          "asserts": 20,
-          "skips": 0,
-          "todos": 0
-        },
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
@@ -627,12 +645,6 @@
           "skips": 0,
           "todos": 0
         },
-        "ask-answer-label.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
-          "skips": 0,
-          "todos": 0
-        },
         "ask-ledger.test.mjs": {
           "tests": 21,
           "asserts": 100,
@@ -660,12 +672,6 @@
         "audit-workbook-commonlaw-unlogged.test.mjs": {
           "tests": 8,
           "asserts": 29,
-          "skips": 0,
-          "todos": 0
-        },
-        "audit-workbook.test.mjs": {
-          "tests": 20,
-          "asserts": 74,
           "skips": 0,
           "todos": 0
         },
@@ -759,12 +765,6 @@
           "skips": 2,
           "todos": 0
         },
-        "borderline-placement-is-adjudicated-or-named.test.mjs": {
-          "tests": 10,
-          "asserts": 44,
-          "skips": 0,
-          "todos": 0
-        },
         "both-doors-start-on-both-paths.test.mjs": {
           "tests": 18,
           "asserts": 45,
@@ -795,6 +795,12 @@
           "skips": 4,
           "todos": 0
         },
+        "bundle-rebuild-and-ports.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "cannot-repair-is-a-fact.test.mjs": {
           "tests": 9,
           "asserts": 27,
@@ -816,6 +822,12 @@
         "carry-through-sees-outside-the-reference.test.mjs": {
           "tests": 6,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "case-law-credential-state.test.mjs": {
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -879,22 +891,10 @@
           "skips": 0,
           "todos": 0
         },
-        "ci-duplicate-skip.test.mjs": {
-          "tests": 5,
-          "asserts": 13,
-          "skips": 0,
-          "todos": 0
-        },
         "citation-drift-at-the-diff.test.mjs": {
           "tests": 9,
           "asserts": 39,
           "skips": 0,
-          "todos": 0
-        },
-        "citation-line-check.test.mjs": {
-          "tests": 46,
-          "asserts": 112,
-          "skips": 1,
           "todos": 0
         },
         "claim-fixtures.test.mjs": {
@@ -927,12 +927,6 @@
           "skips": 0,
           "todos": 0
         },
-        "client-surface-vocabulary.test.mjs": {
-          "tests": 15,
-          "asserts": 59,
-          "skips": 0,
-          "todos": 0
-        },
         "close-verify.test.mjs": {
           "tests": 9,
           "asserts": 18,
@@ -957,12 +951,6 @@
           "skips": 0,
           "todos": 0
         },
-        "commit-message-guard.test.mjs": {
-          "tests": 37,
-          "asserts": 130,
-          "skips": 0,
-          "todos": 0
-        },
         "common-law-receipts.test.mjs": {
           "tests": 36,
           "asserts": 129,
@@ -981,12 +969,6 @@
           "skips": 0,
           "todos": 0
         },
-        "commonlaw-candidate-cardinality.test.mjs": {
-          "tests": 5,
-          "asserts": 13,
-          "skips": 0,
-          "todos": 0
-        },
         "commonlaw-carry-degenerate-is-linted.test.mjs": {
           "tests": 7,
           "asserts": 24,
@@ -999,12 +981,6 @@
           "skips": 0,
           "todos": 0
         },
-        "commonlaw-carry.test.mjs": {
-          "tests": 25,
-          "asserts": 90,
-          "skips": 0,
-          "todos": 0
-        },
         "commonlaw-closure-deterministic.test.mjs": {
           "tests": 8,
           "asserts": 45,
@@ -1013,7 +989,7 @@
         },
         "commonlaw-reconciliation-callsite.test.mjs": {
           "tests": 3,
-          "asserts": 9,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -1041,12 +1017,6 @@
           "skips": 0,
           "todos": 0
         },
-        "connect-help-publishes-nothing-private.test.mjs": {
-          "tests": 4,
-          "asserts": 8,
-          "skips": 0,
-          "todos": 0
-        },
         "connect-key-mints-for-the-caller.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -1065,39 +1035,21 @@
           "skips": 0,
           "todos": 0
         },
+        "connector-annotations-and-pack.test.mjs": {
+          "tests": 7,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "connotation-errored.test.mjs": {
           "tests": 9,
           "asserts": 20,
           "skips": 0,
           "todos": 0
         },
-        "connotation-obligations.test.mjs": {
-          "tests": 13,
-          "asserts": 48,
-          "skips": 0,
-          "todos": 0
-        },
         "connotation-quote-unbound.test.mjs": {
           "tests": 12,
           "asserts": 41,
-          "skips": 0,
-          "todos": 0
-        },
-        "connotation-reason-vocabulary.test.mjs": {
-          "tests": 5,
-          "asserts": 21,
-          "skips": 0,
-          "todos": 0
-        },
-        "connotation-receipt-identity.test.mjs": {
-          "tests": 14,
-          "asserts": 48,
-          "skips": 0,
-          "todos": 0
-        },
-        "connotation-search.test.mjs": {
-          "tests": 23,
-          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
@@ -1269,105 +1221,9 @@
           "skips": 0,
           "todos": 0
         },
-        "cut-dangling-declared.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
-          "skips": 2,
-          "todos": 0
-        },
-        "cut-dangling-refs.test.mjs": {
-          "tests": 7,
-          "asserts": 14,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-graft-proof.test.mjs": {
-          "tests": 6,
-          "asserts": 23,
-          "skips": 1,
-          "todos": 0
-        },
-        "cut-harness.test.mjs": {
-          "tests": 27,
-          "asserts": 79,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-preflight.test.mjs": {
-          "tests": 9,
-          "asserts": 35,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-private-names.test.mjs": {
-          "tests": 7,
-          "asserts": 16,
-          "skips": 1,
-          "todos": 0
-        },
-        "cut-publish.test.mjs": {
-          "tests": 10,
-          "asserts": 31,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-reconcile.test.mjs": {
-          "tests": 13,
-          "asserts": 38,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-run-export.test.mjs": {
-          "tests": 9,
-          "asserts": 19,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-ships.test.mjs": {
-          "tests": 10,
-          "asserts": 47,
-          "skips": 5,
-          "todos": 0
-        },
-        "cut-strip-refs.test.mjs": {
-          "tests": 15,
-          "asserts": 49,
-          "skips": 0,
-          "todos": 0
-        },
-        "cut-vendor-keys.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
-          "skips": 2,
-          "todos": 0
-        },
-        "cut-write.test.mjs": {
-          "tests": 10,
-          "asserts": 31,
-          "skips": 0,
-          "todos": 0
-        },
-        "data-plane-defaults.test.mjs": {
-          "tests": 7,
-          "asserts": 23,
-          "skips": 0,
-          "todos": 0
-        },
         "dead-end-passage-is-named-not-blamed.test.mjs": {
           "tests": 8,
           "asserts": 24,
-          "skips": 0,
-          "todos": 0
-        },
-        "dead-names.test.mjs": {
-          "tests": 6,
-          "asserts": 11,
-          "skips": 3,
-          "todos": 0
-        },
-        "declaration-sources-are-split-not-filtered.test.mjs": {
-          "tests": 6,
-          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -1428,24 +1284,6 @@
         "dependency-repair.test.mjs": {
           "tests": 11,
           "asserts": 49,
-          "skips": 0,
-          "todos": 0
-        },
-        "deploy-drift-check.test.mjs": {
-          "tests": 14,
-          "asserts": 50,
-          "skips": 0,
-          "todos": 0
-        },
-        "deploy-refuses-over-a-live-run.test.mjs": {
-          "tests": 13,
-          "asserts": 39,
-          "skips": 0,
-          "todos": 0
-        },
-        "deploy-validate-says-what-happened.test.mjs": {
-          "tests": 12,
-          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1593,28 +1431,10 @@
           "skips": 1,
           "todos": 0
         },
-        "disposition-union.test.mjs": {
-          "tests": 20,
-          "asserts": 75,
-          "skips": 0,
-          "todos": 0
-        },
         "disposition-verdict-ledger.test.mjs": {
           "tests": 21,
           "asserts": 104,
           "skips": 0,
-          "todos": 0
-        },
-        "doc-constants.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
-          "skips": 0,
-          "todos": 0
-        },
-        "doc-subject-stated-once.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
-          "skips": 3,
           "todos": 0
         },
         "doctor-names-who-is-in-the-store.test.mjs": {
@@ -1743,12 +1563,6 @@
           "skips": 0,
           "todos": 0
         },
-        "e2e-product-comparison.test.mjs": {
-          "tests": 26,
-          "asserts": 83,
-          "skips": 0,
-          "todos": 0
-        },
         "e2e-rounds.test.mjs": {
           "tests": 23,
           "asserts": 116,
@@ -1800,12 +1614,6 @@
         "email-audit-link.test.mjs": {
           "tests": 13,
           "asserts": 36,
-          "skips": 0,
-          "todos": 0
-        },
-        "email-compose.test.mjs": {
-          "tests": 16,
-          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
@@ -1887,12 +1695,6 @@
           "skips": 0,
           "todos": 0
         },
-        "engine.openai.test.mjs": {
-          "tests": 37,
-          "asserts": 132,
-          "skips": 0,
-          "todos": 0
-        },
         "enqueue-cli.test.mjs": {
           "tests": 6,
           "asserts": 46,
@@ -1929,51 +1731,9 @@
           "skips": 0,
           "todos": 0
         },
-        "entrypoint-guard-survives-a-symlink.test.mjs": {
-          "tests": 7,
-          "asserts": 25,
-          "skips": 1,
-          "todos": 0
-        },
-        "env-classification-is-reproducible.test.mjs": {
-          "tests": 13,
-          "asserts": 33,
-          "skips": 0,
-          "todos": 0
-        },
-        "env-governance.test.mjs": {
-          "tests": 52,
-          "asserts": 129,
-          "skips": 32,
-          "todos": 0
-        },
         "env-idiom.test.mjs": {
           "tests": 7,
           "asserts": 23,
-          "skips": 0,
-          "todos": 0
-        },
-        "env-local-precedes-capture.test.mjs": {
-          "tests": 6,
-          "asserts": 14,
-          "skips": 2,
-          "todos": 0
-        },
-        "env-local.test.mjs": {
-          "tests": 14,
-          "asserts": 47,
-          "skips": 3,
-          "todos": 0
-        },
-        "envelope-settle.test.mjs": {
-          "tests": 15,
-          "asserts": 49,
-          "skips": 0,
-          "todos": 0
-        },
-        "envelope.test.mjs": {
-          "tests": 20,
-          "asserts": 63,
           "skips": 0,
           "todos": 0
         },
@@ -1989,6 +1749,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-credential-names-where-to-get-it.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 1,
+          "todos": 0
+        },
         "every-dispatch-carries-the-charter.test.mjs": {
           "tests": 7,
           "asserts": 16,
@@ -2001,9 +1767,9 @@
           "skips": 0,
           "todos": 0
         },
-        "every-obligation-loop-has-a-bound.test.mjs": {
-          "tests": 15,
-          "asserts": 50,
+        "every-own-pass-digest-is-declared.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -2011,12 +1777,6 @@
           "tests": 2,
           "asserts": 5,
           "skips": 0,
-          "todos": 0
-        },
-        "every-skip-is-declared.test.mjs": {
-          "tests": 3,
-          "asserts": 5,
-          "skips": 2,
           "todos": 0
         },
         "every-tool-declares-what-it-does.test.mjs": {
@@ -2127,12 +1887,6 @@
           "skips": 0,
           "todos": 0
         },
-        "findings-read-rejection.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
-          "skips": 0,
-          "todos": 0
-        },
         "findings-v5.test.mjs": {
           "tests": 12,
           "asserts": 50,
@@ -2153,7 +1907,7 @@
         },
         "floor-duty.test.mjs": {
           "tests": 31,
-          "asserts": 92,
+          "asserts": 94,
           "skips": 0,
           "todos": 0
         },
@@ -2184,12 +1938,6 @@
         "frame-diff-dominant-bind.test.mjs": {
           "tests": 6,
           "asserts": 25,
-          "skips": 0,
-          "todos": 0
-        },
-        "frame-diff-model.test.mjs": {
-          "tests": 32,
-          "asserts": 105,
           "skips": 0,
           "todos": 0
         },
@@ -2241,12 +1989,6 @@
           "skips": 0,
           "todos": 0
         },
-        "gathered-evidence-declares-its-filter.test.mjs": {
-          "tests": 8,
-          "asserts": 17,
-          "skips": 0,
-          "todos": 0
-        },
         "grant-command.test.mjs": {
           "tests": 14,
           "asserts": 46,
@@ -2256,12 +1998,6 @@
         "grounds-grammar.test.mjs": {
           "tests": 6,
           "asserts": 15,
-          "skips": 0,
-          "todos": 0
-        },
-        "head-arrived-gated.test.mjs": {
-          "tests": 12,
-          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -2277,15 +2013,15 @@
           "skips": 0,
           "todos": 0
         },
-        "hints-state-the-requirement.test.mjs": {
-          "tests": 5,
-          "asserts": 12,
+        "health-tells-the-truth-about-the-bundle.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
-        "history-corpus-completeness.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
+        "hints-state-the-requirement.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2451,12 +2187,6 @@
           "skips": 0,
           "todos": 0
         },
-        "knockout-units.test.mjs": {
-          "tests": 49,
-          "asserts": 273,
-          "skips": 0,
-          "todos": 0
-        },
         "known-conflicts.test.mjs": {
           "tests": 17,
           "asserts": 87,
@@ -2505,12 +2235,6 @@
           "skips": 0,
           "todos": 0
         },
-        "local-imports.test.mjs": {
-          "tests": 5,
-          "asserts": 8,
-          "skips": 0,
-          "todos": 0
-        },
         "lost-declines-without-a-retrieved-corpus.test.mjs": {
           "tests": 3,
           "asserts": 8,
@@ -2520,12 +2244,6 @@
         "machine-receipts.test.mjs": {
           "tests": 8,
           "asserts": 18,
-          "skips": 0,
-          "todos": 0
-        },
-        "main-gate-gaps.test.mjs": {
-          "tests": 20,
-          "asserts": 53,
           "skips": 0,
           "todos": 0
         },
@@ -2556,12 +2274,6 @@
         "merge-asks-the-recovery-question.test.mjs": {
           "tests": 7,
           "asserts": 16,
-          "skips": 0,
-          "todos": 0
-        },
-        "merge-preflight.test.mjs": {
-          "tests": 81,
-          "asserts": 250,
           "skips": 0,
           "todos": 0
         },
@@ -2601,12 +2313,6 @@
           "skips": 0,
           "todos": 0
         },
-        "named-band-record-shape.test.mjs": {
-          "tests": 11,
-          "asserts": 24,
-          "skips": 0,
-          "todos": 0
-        },
         "named-band.test.mjs": {
           "tests": 19,
           "asserts": 67,
@@ -2616,42 +2322,6 @@
         "narrative-refutation-record.test.mjs": {
           "tests": 15,
           "asserts": 56,
-          "skips": 0,
-          "todos": 0
-        },
-        "nightly-notice.test.mjs": {
-          "tests": 24,
-          "asserts": 81,
-          "skips": 1,
-          "todos": 0
-        },
-        "no-alias-sits-beside-its-real-name.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
-          "skips": 1,
-          "todos": 0
-        },
-        "no-caveat-repair.test.mjs": {
-          "tests": 10,
-          "asserts": 29,
-          "skips": 0,
-          "todos": 0
-        },
-        "no-client-delivery-defect-claims.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
-          "skips": 0,
-          "todos": 0
-        },
-        "no-client-identifiers.test.mjs": {
-          "tests": 29,
-          "asserts": 104,
-          "skips": 9,
-          "todos": 0
-        },
-        "no-client-surface-follows-the-os.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -2673,21 +2343,9 @@
           "skips": 2,
           "todos": 0
         },
-        "no-private-repository-name-outside-its-declarations.test.mjs": {
-          "tests": 3,
-          "asserts": 4,
-          "skips": 2,
-          "todos": 0
-        },
         "no-vendor-provenance-in-the-public-cut.test.mjs": {
           "tests": 4,
           "asserts": 11,
-          "skips": 0,
-          "todos": 0
-        },
-        "no-vendor-terms-or-verdicts.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -2698,8 +2356,8 @@
           "todos": 0
         },
         "onboard-wizard.test.mjs": {
-          "tests": 59,
-          "asserts": 217,
+          "tests": 62,
+          "asserts": 222,
           "skips": 2,
           "todos": 0
         },
@@ -2730,12 +2388,6 @@
         "one-country-report-is-byte-identical.test.mjs": {
           "tests": 3,
           "asserts": 6,
-          "skips": 0,
-          "todos": 0
-        },
-        "one-job-owns-the-node-modules-cache.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -2799,12 +2451,6 @@
           "skips": 0,
           "todos": 0
         },
-        "owner-screen.test.mjs": {
-          "tests": 11,
-          "asserts": 53,
-          "skips": 0,
-          "todos": 0
-        },
         "park-clock-names-its-kind.test.mjs": {
           "tests": 5,
           "asserts": 14,
@@ -2820,12 +2466,6 @@
         "park-tells-the-truth.test.mjs": {
           "tests": 8,
           "asserts": 20,
-          "skips": 0,
-          "todos": 0
-        },
-        "park-unrulable-row.test.mjs": {
-          "tests": 16,
-          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -2873,7 +2513,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 93,
-          "asserts": 783,
+          "asserts": 785,
           "skips": 0,
           "todos": 0
         },
@@ -2895,18 +2535,6 @@
           "skips": 0,
           "todos": 0
         },
-        "placement-carry.test.mjs": {
-          "tests": 17,
-          "asserts": 75,
-          "skips": 0,
-          "todos": 0
-        },
-        "placement-diff.test.mjs": {
-          "tests": 12,
-          "asserts": 45,
-          "skips": 0,
-          "todos": 0
-        },
         "placement-form.test.mjs": {
           "tests": 13,
           "asserts": 48,
@@ -2922,6 +2550,12 @@
         "plan-qid-is-an-identity.test.mjs": {
           "tests": 10,
           "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "planted-data-is-not-a-claim-about-the-tree.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -2991,12 +2625,6 @@
           "skips": 0,
           "todos": 0
         },
-        "portal-report.test.mjs": {
-          "tests": 64,
-          "asserts": 203,
-          "skips": 0,
-          "todos": 0
-        },
         "portal-run-control.test.mjs": {
           "tests": 16,
           "asserts": 48,
@@ -3036,12 +2664,6 @@
         "precondition-refusal.test.mjs": {
           "tests": 9,
           "asserts": 24,
-          "skips": 0,
-          "todos": 0
-        },
-        "predelivery-lint.test.mjs": {
-          "tests": 98,
-          "asserts": 362,
           "skips": 0,
           "todos": 0
         },
@@ -3099,9 +2721,9 @@
           "skips": 0,
           "todos": 0
         },
-        "production-pool-guard.test.mjs": {
-          "tests": 14,
-          "asserts": 33,
+        "production-dependencies.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -3183,32 +2805,8 @@
           "skips": 0,
           "todos": 0
         },
-        "public-repo-furniture.test.mjs": {
-          "tests": 7,
-          "asserts": 21,
-          "skips": 0,
-          "todos": 0
-        },
-        "publication-scrub.test.mjs": {
-          "tests": 14,
-          "asserts": 51,
-          "skips": 7,
-          "todos": 0
-        },
         "publish-input-coverage.test.mjs": {
           "tests": 6,
-          "asserts": 34,
-          "skips": 0,
-          "todos": 0
-        },
-        "publish-stamp.test.mjs": {
-          "tests": 3,
-          "asserts": 18,
-          "skips": 0,
-          "todos": 0
-        },
-        "published-documents-have-routes.test.mjs": {
-          "tests": 7,
           "asserts": 34,
           "skips": 0,
           "todos": 0
@@ -3222,18 +2820,6 @@
         "purge-runs.test.mjs": {
           "tests": 19,
           "asserts": 47,
-          "skips": 0,
-          "todos": 0
-        },
-        "push-guards-are-armed.test.mjs": {
-          "tests": 4,
-          "asserts": 21,
-          "skips": 0,
-          "todos": 0
-        },
-        "pushed-content-guard.test.mjs": {
-          "tests": 9,
-          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -3273,9 +2859,9 @@
           "skips": 0,
           "todos": 0
         },
-        "readme-example-screenshot.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
+        "reading-the-demo-does-not-edit-the-repository.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -3300,12 +2886,6 @@
         "recall-cap-is-split-by-probe-kind.test.mjs": {
           "tests": 1,
           "asserts": 7,
-          "skips": 0,
-          "todos": 0
-        },
-        "recall-reconciliation.test.mjs": {
-          "tests": 19,
-          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
@@ -3342,18 +2922,6 @@
         "record-carry-scope.test.mjs": {
           "tests": 5,
           "asserts": 14,
-          "skips": 0,
-          "todos": 0
-        },
-        "record-carry.test.mjs": {
-          "tests": 28,
-          "asserts": 121,
-          "skips": 0,
-          "todos": 0
-        },
-        "record-discard.test.mjs": {
-          "tests": 23,
-          "asserts": 82,
           "skips": 0,
           "todos": 0
         },
@@ -3411,12 +2979,6 @@
           "skips": 0,
           "todos": 0
         },
-        "reference-score-territories.test.mjs": {
-          "tests": 67,
-          "asserts": 279,
-          "skips": 0,
-          "todos": 0
-        },
         "reference-score.test.mjs": {
           "tests": 63,
           "asserts": 213,
@@ -3438,12 +3000,6 @@
         "refused-slice-is-not-a-counted-zero.test.mjs": {
           "tests": 10,
           "asserts": 42,
-          "skips": 0,
-          "todos": 0
-        },
-        "regen-baselines.test.mjs": {
-          "tests": 6,
-          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -3525,18 +3081,6 @@
           "skips": 0,
           "todos": 0
         },
-        "register-plan.test.mjs": {
-          "tests": 82,
-          "asserts": 391,
-          "skips": 0,
-          "todos": 0
-        },
-        "register-positions.test.mjs": {
-          "tests": 10,
-          "asserts": 53,
-          "skips": 0,
-          "todos": 0
-        },
         "register-provider-required.test.mjs": {
           "tests": 10,
           "asserts": 27,
@@ -3546,12 +3090,6 @@
         "register-record-log-run-scoped.test.mjs": {
           "tests": 9,
           "asserts": 21,
-          "skips": 0,
-          "todos": 0
-        },
-        "register-records.test.mjs": {
-          "tests": 17,
-          "asserts": 93,
           "skips": 0,
           "todos": 0
         },
@@ -3597,27 +3135,15 @@
           "skips": 0,
           "todos": 0
         },
-        "registry-fidelity.test.mjs": {
-          "tests": 48,
-          "asserts": 196,
-          "skips": 0,
-          "todos": 0
-        },
         "release-pipeline.test.mjs": {
-          "tests": 12,
-          "asserts": 38,
+          "tests": 22,
+          "asserts": 156,
           "skips": 0,
           "todos": 0
         },
-        "remedy-accounting.test.mjs": {
-          "tests": 13,
-          "asserts": 65,
-          "skips": 0,
-          "todos": 0
-        },
-        "render-check-fixture-pool.test.mjs": {
-          "tests": 2,
-          "asserts": 4,
+        "removing-the-demo-is-one-directory.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -3630,12 +3156,6 @@
         "render-frozen.test.mjs": {
           "tests": 6,
           "asserts": 18,
-          "skips": 0,
-          "todos": 0
-        },
-        "render-knockout.test.mjs": {
-          "tests": 51,
-          "asserts": 256,
           "skips": 0,
           "todos": 0
         },
@@ -3687,27 +3207,9 @@
           "skips": 0,
           "todos": 0
         },
-        "report-card-frame.test.mjs": {
-          "tests": 11,
-          "asserts": 35,
-          "skips": 0,
-          "todos": 0
-        },
-        "report-card-projection.pipeline.test.mjs": {
-          "tests": 5,
-          "asserts": 14,
-          "skips": 0,
-          "todos": 0
-        },
         "report-card-record.test.mjs": {
           "tests": 17,
           "asserts": 65,
-          "skips": 0,
-          "todos": 0
-        },
-        "report-card-source-bullet.test.mjs": {
-          "tests": 7,
-          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -3720,18 +3222,6 @@
         "report-data.test.mjs": {
           "tests": 5,
           "asserts": 55,
-          "skips": 0,
-          "todos": 0
-        },
-        "report-external-links.test.mjs": {
-          "tests": 6,
-          "asserts": 16,
-          "skips": 0,
-          "todos": 0
-        },
-        "report-feedback-is-switched-off.test.mjs": {
-          "tests": 11,
-          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -3783,16 +3273,16 @@
           "skips": 1,
           "todos": 0
         },
+        "retired-env-spellings.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "retired-envelope-is-not-an-absent-value.test.mjs": {
           "tests": 8,
           "asserts": 24,
           "skips": 0,
-          "todos": 0
-        },
-        "retired-platform-leaves-no-trace.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
-          "skips": 3,
           "todos": 0
         },
         "retired-settings-are-really-retired.test.mjs": {
@@ -4011,12 +3501,6 @@
           "skips": 0,
           "todos": 0
         },
-        "sample-run-render.test.mjs": {
-          "tests": 6,
-          "asserts": 20,
-          "skips": 0,
-          "todos": 0
-        },
         "satprobe-codeside.pipeline.test.mjs": {
           "tests": 5,
           "asserts": 28,
@@ -4095,12 +3579,6 @@
           "skips": 0,
           "todos": 0
         },
-        "screen-gate.test.mjs": {
-          "tests": 32,
-          "asserts": 67,
-          "skips": 0,
-          "todos": 0
-        },
         "screen-verdict-reaches-the-floor-row.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -4149,12 +3627,6 @@
           "skips": 0,
           "todos": 0
         },
-        "seed-pool.test.mjs": {
-          "tests": 8,
-          "asserts": 36,
-          "skips": 0,
-          "todos": 0
-        },
         "seed-write-failure-recorded.test.mjs": {
           "tests": 5,
           "asserts": 10,
@@ -4191,12 +3663,6 @@
           "skips": 2,
           "todos": 0
         },
-        "signa-mock-lane-is-unreachable-from-a-run.test.mjs": {
-          "tests": 4,
-          "asserts": 12,
-          "skips": 3,
-          "todos": 0
-        },
         "similar-group-lookup-answers-by-name.test.mjs": {
           "tests": 10,
           "asserts": 29,
@@ -4225,12 +3691,6 @@
           "tests": 23,
           "asserts": 57,
           "skips": 1,
-          "todos": 0
-        },
-        "skill-contract-enumerations.test.mjs": {
-          "tests": 47,
-          "asserts": 172,
-          "skips": 0,
           "todos": 0
         },
         "skills-overlay.test.mjs": {
@@ -4301,7 +3761,7 @@
         },
         "start-command.test.mjs": {
           "tests": 27,
-          "asserts": 114,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },
@@ -4365,21 +3825,9 @@
           "skips": 0,
           "todos": 0
         },
-        "suite-census.test.mjs": {
-          "tests": 17,
-          "asserts": 81,
-          "skips": 4,
-          "todos": 0
-        },
-        "suite-failure-names-the-test.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
-          "skips": 0,
-          "todos": 0
-        },
         "suite-ledger-is-not-the-box-ledger.test.mjs": {
           "tests": 7,
-          "asserts": 17,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -4404,12 +3852,6 @@
         "symbol-citation-survives-a-move.test.mjs": {
           "tests": 8,
           "asserts": 18,
-          "skips": 0,
-          "todos": 0
-        },
-        "synthesis-record.test.mjs": {
-          "tests": 39,
-          "asserts": 102,
           "skips": 0,
           "todos": 0
         },
@@ -4485,12 +3927,6 @@
           "skips": 0,
           "todos": 0
         },
-        "test-tiers.test.mjs": {
-          "tests": 10,
-          "asserts": 41,
-          "skips": 0,
-          "todos": 0
-        },
         "the-attempt-record-carries-tool-time.test.mjs": {
           "tests": 13,
           "asserts": 47,
@@ -4524,12 +3960,6 @@
         "the-bundled-roster-is-read-not-remembered.test.mjs": {
           "tests": 8,
           "asserts": 11,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-card-shows-the-raters-read.test.mjs": {
-          "tests": 10,
-          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -4569,21 +3999,9 @@
           "skips": 0,
           "todos": 0
         },
-        "the-cut-record-does-not-ship-and-its-readers-degrade-stricter.test.mjs": {
-          "tests": 5,
-          "asserts": 17,
-          "skips": 0,
-          "todos": 0
-        },
         "the-demo-account-shows-a-configured-customer.test.mjs": {
           "tests": 4,
           "asserts": 25,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-demo-container-and-the-packed-gate.test.mjs": {
-          "tests": 7,
-          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -4596,6 +4014,12 @@
         "the-doubt-carries-its-placement-tier.test.mjs": {
           "tests": 17,
           "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-drain-check-names-this-deployments-drainer.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -4623,6 +4047,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-env-file-lives-where-an-upgrade-cannot-reach.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-family-tag-is-writable-and-sweeps-contains.test.mjs": {
           "tests": 4,
           "asserts": 8,
@@ -4638,12 +4068,6 @@
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-freezer-rewrites-what-cannot-be-committed.test.mjs": {
-          "tests": 7,
-          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -4665,6 +4089,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-identifier-sweep-fires-on-its-sentinels.test.mjs": {
+          "tests": 5,
+          "asserts": 11,
+          "skips": 1,
+          "todos": 0
+        },
         "the-install-can-keep-itself-current.test.mjs": {
           "tests": 8,
           "asserts": 35,
@@ -4677,15 +4107,9 @@
           "skips": 0,
           "todos": 0
         },
-        "the-knockout-wears-the-reports-card.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
-          "skips": 0,
-          "todos": 0
-        },
         "the-lockfile-agrees-about-install-scripts.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
+          "tests": 4,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -4707,6 +4131,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-package-ships-only-the-demo-customers.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-passphrase-is-in-the-block-not-the-log.test.mjs": {
           "tests": 6,
           "asserts": 17,
@@ -4719,16 +4149,22 @@
           "skips": 0,
           "todos": 0
         },
+        "the-portal-bundle-is-the-one-its-sources-would-build.test.mjs": {
+          "tests": 11,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "the-process-table-reads-a-box-with-no-proc.test.mjs": {
           "tests": 7,
           "asserts": 24,
           "skips": 0,
           "todos": 0
         },
-        "the-providers-suite-is-censused.test.mjs": {
-          "tests": 6,
+        "the-prose-cannot-claim-coverage-the-run-never-searched.test.mjs": {
+          "tests": 9,
           "asserts": 16,
-          "skips": 1,
+          "skips": 0,
           "todos": 0
         },
         "the-published-door-must-answer-not-merely-exist.test.mjs": {
@@ -4791,9 +4227,9 @@
           "skips": 0,
           "todos": 0
         },
-        "the-scope-section-states-the-run-it-heads.test.mjs": {
-          "tests": 10,
-          "asserts": 38,
+        "the-runner-refuses-a-path-that-is-not-there.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -4812,12 +4248,6 @@
         "the-settings-surface-reads-the-customer-store.test.mjs": {
           "tests": 9,
           "asserts": 37,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-shipped-readme-links-resolve-in-the-tarball.test.mjs": {
-          "tests": 2,
-          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -4845,16 +4275,16 @@
           "skips": 0,
           "todos": 0
         },
+        "the-trigger-key-has-a-deadline-somebody-is-counting.test.mjs": {
+          "tests": 5,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "the-two-env-files-are-named-where-they-appear.test.mjs": {
           "tests": 5,
           "asserts": 12,
           "skips": 0,
-          "todos": 0
-        },
-        "the-unrelated-products-name-does-not-ship.test.mjs": {
-          "tests": 6,
-          "asserts": 10,
-          "skips": 1,
           "todos": 0
         },
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
@@ -4959,12 +4389,6 @@
           "skips": 0,
           "todos": 0
         },
-        "undecided-reaches-the-client.test.mjs": {
-          "tests": 6,
-          "asserts": 16,
-          "skips": 0,
-          "todos": 0
-        },
         "undeclared-field-census.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -5005,12 +4429,6 @@
           "tests": 8,
           "asserts": 20,
           "skips": 0,
-          "todos": 0
-        },
-        "unit-inventory.test.mjs": {
-          "tests": 41,
-          "asserts": 180,
-          "skips": 1,
           "todos": 0
         },
         "unit-note-transport.test.mjs": {
@@ -5127,21 +4545,9 @@
           "skips": 0,
           "todos": 0
         },
-        "vendor-as-architecture.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
-          "skips": 3,
-          "todos": 0
-        },
         "verify-knockout.test.mjs": {
           "tests": 1,
           "asserts": 5,
-          "skips": 0,
-          "todos": 0
-        },
-        "verify.test.mjs": {
-          "tests": 81,
-          "asserts": 332,
           "skips": 0,
           "todos": 0
         },
@@ -5166,12 +4572,6 @@
         "whatif-queue.test.mjs": {
           "tests": 13,
           "asserts": 36,
-          "skips": 0,
-          "todos": 0
-        },
-        "withheld-fixture.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -5202,12 +4602,6 @@
         "write-time-form.test.mjs": {
           "tests": 18,
           "asserts": 108,
-          "skips": 0,
-          "todos": 0
-        },
-        "write-up-form-census.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -5314,7 +4708,7 @@
         },
         "connector-skills-are-one-copy.test.mjs": {
           "tests": 5,
-          "asserts": 27,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -5352,12 +4746,6 @@
           "tests": 7,
           "asserts": 26,
           "skips": 0,
-          "todos": 0
-        },
-        "evidence.test.mjs": {
-          "tests": 20,
-          "asserts": 61,
-          "skips": 1,
           "todos": 0
         },
         "findings-backstop.test.mjs": {
@@ -5516,8 +4904,8 @@
       "ext": "ts",
       "perFile": {
         "api.test.ts": {
-          "tests": 32,
-          "asserts": 118,
+          "tests": 34,
+          "asserts": 124,
           "skips": 0,
           "todos": 0
         },
@@ -5894,6 +5282,12 @@
         "providers/jx-subclass/test/13th-edition-governs.test.mjs": {
           "tests": 5,
           "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/oauth-mcp-bridge/test/the-bootstrap-recipe-binds-a-resource.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
