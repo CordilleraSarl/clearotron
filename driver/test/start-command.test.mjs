@@ -20,6 +20,7 @@ import { fileURLToPath } from "node:url";
 
 import { childEnv, installPaths, mergeEnvFile, resolvePorts, staffDomainFor } from "../../bin/start.mjs";
 import { listenErrorMessage } from "../../shared/listen.mjs";
+import { snapshot, unchanged } from "./secret-file-compare.mjs";   // — the repo's .env is compared, never rendered
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -425,7 +426,7 @@ test("2071: refused on a held port, `start` has written NOTHING — no env file,
   // the assert below is "UNCHANGED", which holds on a dev box that legitimately carries one and on the
   // bare CI worktree alike. An absence assert here would false-red the former.
   const repoEnv = join(REPO, ".env");
-  const envBefore = existsSync(repoEnv) ? readFileSync(repoEnv, "utf8") : null;
+  const envBefore = snapshot(repoEnv);
   try {
     const child = spawnSync(process.execPath, [join(REPO, "bin", "start.mjs"), "--base", base], {
       encoding: "utf8", timeout: 60000,
@@ -440,8 +441,14 @@ test("2071: refused on a held port, `start` has written NOTHING — no env file,
     // writes is the REPO'S — ENV_PATH is join(REPO, ".env"), not the home's — and the first cut of
     // this arm asserted the home path and stayed GREEN through a planted pre-probe write. The plant
     // caught it; the corrected assert is UNCHANGED-not-absent so a dev box's own .env cannot red it.
-    const envAfter = existsSync(repoEnv) ? readFileSync(repoEnv, "utf8") : null;
-    assert.equal(envAfter, envBefore, "the repo's .env — where start actually writes — changed before the probe refused");
+    // COMPARED, NOT RENDERED. `assert.equal` over the two contents prints BOTH in the failure, and the
+    // only way this can fail on a runner is the defect itself: start wrote the file first, and what it
+    // writes there is a freshly minted token. That put a credential in the log of a public repository
+    // at exactly the moment the arm did its job. The verdict says changed-or-not, the byte count, the
+    // digest and the key NAMES; the values never leave the comparison.
+    const env = unchanged(envBefore, snapshot(repoEnv));
+    assert.ok(env.same, "the repo's .env — where start actually writes — changed before the probe "
+      + `refused: ${env.why}`);
     assert.ok(!existsSync(join(home, ".env")), "and nothing invented a home .env either");
     assert.ok(!existsSync(base), "no data plane was created before the probe");
     // And the refusal must NOT carry the after-writes re-run line — nothing was written, and saying
