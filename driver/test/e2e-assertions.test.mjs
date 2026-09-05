@@ -711,7 +711,11 @@ test("the deleted-assertion rationale in scripts/e2e.mjs does not carry a claim 
   const src = readFileSync(new URL("../../scripts/e2e.mjs", import.meta.url), "utf8");
   assert.doesNotMatch(src, /run\.jsonl carries no `attempt` field/,
     "run.jsonl HAS carried per-dispatch `attempt` rows since #172 — the note must not say otherwise");
-  assert.match(src, /SINCE #172[\s\S]{0,400}?not to take that as an invitation|SINCE #172[\s\S]{0,400}?Do not take that as an invitation/,
+  // ANCHORED ON THE PROSE. This used to look for the literal "SINCE #172", and the note now opens
+  // "SINCE (AD-4)" — the cut rewrites a bare issue reference in a comment into a token. Matching either
+  // spelling would pin the arm to the rewrite table rather than to the sentence, so it matches the claim
+  // itself, which is what the arm is actually about.
+  assert.match(src, /run\.jsonl DOES carry per-dispatch[\s\S]{0,400}?(?:not to take|Do not take) that as an invitation/,
     "…and it must say so, while keeping the deletion's real reason standing");
   assert.match(src, /A retry is not pass or fail/,
     "the judgment argument is the load-bearing half of the note and must survive the correction");
