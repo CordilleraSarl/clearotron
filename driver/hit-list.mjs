@@ -25,6 +25,8 @@
 // The line drops `_query`/`_queries`/`screen` — 61% of a band row's bytes — and keeps the qid alone,
 // because the completeness witness needs the join and nothing dismisses a record on its provenance.
 
+import { countOrNull } from "./named-band.mjs";   // tracker issue 95 — one copy of "a count I could not take is null, not zero"
+
 /**
  * THE FATES. A line ends with exactly one, and the set is closed so completeness is verifiable by
  * counting rather than by reading prose.
@@ -173,6 +175,62 @@ export function slimLine(rec, reading = null) {
   if (rec?.registration_date) line.reg = rec.registration_date;
   if (rec?.expiry_date) line.exp = rec.expiry_date;
   if (reading) line.read = reading;
+  return line;
+}
+
+// ── CROWDS RIDE THE LIST AS A SIBLING ARRAY (Option A, ruled on tracker issue 95, 2026-08-31) ──────
+//
+// WHY THEY HAVE TO RIDE AT ALL. The locked body's acceptance 4 is that no stage reads the fat band or
+// an unpicked record. `band_lookup` answers from the list — but a lookup into a zone that was CROWDED
+// and therefore never enumerated would return nothing, and nothing is indistinguishable from "searched
+// and clean". That is the silent-clean defect this whole programme exists to remove, so the crowds have
+// to be on the list BEFORE the downstream swap. Crowds-then-swap is the required order, not the
+// convenient one.
+//
+// WHY A SIBLING ARRAY AND NOT A LINE. A crowd is not a record and has no fate: it is a statement that a
+// zone could not be enumerated. Giving it a fate code would make `assertFates` count two populations
+// under one denominator, which this file's own rule forbids — a claim that does not say which
+// population it counted is not a measurement.
+//
+// THE FIELD SET IS THE RULED ONE, and it is deliberately the BAND'S OWN KEY NAMES rather than the
+// abbreviations a record line uses. A reader that already parses band crowds needs no translation, and
+// `q` on a record line means the qid — reusing it for the query text would make one key mean two things
+// across sibling arrays in one document.
+//
+// WHAT STAYS OUT: `sample` and `term_counts`, which are 82% of crowd bytes. Their live consumers
+// (crowd-context.mjs, coverage-ledger.mjs) read the band, and the band keeps being written — this is
+// additive, not a migration. Measured sizing on the archived round: +18,273 B against a 553,324 B
+// list, +3.3%, still an order of magnitude under the fat band.
+//
+// ✕ ADDITIVE ONLY. No existing key moves and none changes type, so a reader already landed against the
+// list keeps passing. `schema_version` stays 1 for the same reason: a new optional key does not break a
+// v1 reader, and bumping it would. The `crowds` array is written ALWAYS, empty when the run had none —
+// so an ABSENT key means "a list minted before crowds rode" and an EMPTY array means "this run had no
+// crowd". An absence and a zero are different facts and this document states which it holds.
+//
+// ✕ `class_counts` IS NOT HERE, and that is the ruled field set rather than an oversight — see the note
+// on deriveHitList's writer for what the swap has to check before it can drop the band read.
+export function crowdLine(crowd) {
+  const line = {
+    query: crowd?.query ?? null,
+    // countOrNull, NOT a local Number.isFinite test. `Number(null)` is 0 and 0 is finite, so a bare
+    // check turns "the executor could not take this count" into "it measured zero" — the exact
+    // distinction close-verify.mjs reads Number.isFinite FIRST to preserve. Caught by driving this
+    // function rather than by reading it. One copy of the rule, and it is the band's.
+    total_hits: countOrNull(crowd?.total_hits),
+    fetched: Number(crowd?.fetched) || 0,
+    reason: typeof crowd?.reason === "string" ? crowd.reason : "",
+  };
+  // Each of these rides only where the band carries it, exactly as the band's own projection does: an
+  // absent key says the executor never stamped one, which is not the same claim as a false or a zero.
+  if (typeof crowd?.qid === "string" && crowd.qid) line.qid = crowd.qid;
+  if (Array.isArray(crowd?.covered_by) && crowd.covered_by.length) line.covered_by = [...crowd.covered_by];
+  // `error` is why a 0 here is not a measurement: execute-plan.mjs writes an errored slice as
+  // {total_hits:0, fetched:0, error:true}, and without this stamp a provider error reads as a
+  // sanctioned crowd that genuinely found nothing.
+  if (crowd?.error === true) line.error = true;
+  // `deferred` is the planned-but-not-run state; same rule — carried only when stamped.
+  if (crowd?.deferred === true) line.deferred = true;
   return line;
 }
 
