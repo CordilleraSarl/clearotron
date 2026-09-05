@@ -81,8 +81,13 @@ test("2175-F10 a FIRST start prints the address and the passphrase adjacent, in 
   assert.match(block, /Sign in as/, "and the identity it belongs to");
   assert.match(block, /Lost it\? \$\{reset\}/,
     "the recovery command belongs in this block, not in a paragraph the reader has already skimmed");
-  assert.match(START, /const reset = `\$\{invocationPrefix\(\)\}clearotron passphrase --reset`/,
-    "and `reset` must actually be that command, composed with the prefix the reader can type");
+  // `reset` IS THAT COMMAND, and it now names the credential when the credential is not where the verb
+  // looks by default — the demo keeps its own inside its base, and the bare form run as printed exited 1
+  // saying no credential exists. The composition moved into `passphraseResetCommand`, which is driven
+  // directly in a-credential-file-is-written-one-way.test.mjs; what this pins is that the launcher asks
+  // it rather than spelling the command a second time.
+  assert.match(START, /const reset = passphraseResetCommand\(\{/,
+    "and `reset` must be composed by the one function that knows when the credential needs naming");
   // Visually distinct from the [portal-service]-prefixed wall it sits under.
   assert.match(block, /┌|└|│/, "the block must be framed, not another prefixed line in the same register");
 });

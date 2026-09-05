@@ -74,6 +74,7 @@ import { delimiter } from "node:path";
 import { Writable } from "node:stream";
 
 import { envLocalPath, activeEnvPath, loadEnvLocal, LEGACY_ENV_LOCAL_LOCATION } from "../shared/env-local.mjs";
+import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials
 import { bundleFreshness, newestMtimeUnder, distGateInTree, gitStanding } from "../shared/bundle-freshness.mjs";
 import {
   USPTO_ARCHIVE_GB, USPTO_INDEX_GB, USPTO_INGEST_GB_PER_HOUR, USPTO_DAILY_TOPUP_MB,
@@ -2953,7 +2954,6 @@ try {
   // this line lands on the temporary file below, so it reads as a permissions problem writing `.env`
   // rather than a missing folder. Mode 700: the file inside is 600 and holds credentials, so a
   // world-readable directory around it advertises that it is there.
-  mkdirSync(dirname(ENV_PATH), { recursive: true, mode: 0o700 });
   if (existsSync(ENV_PATH)) {
     copyFileSync(ENV_PATH, `${ENV_PATH}.bak`);
     chmodSync(`${ENV_PATH}.bak`, 0o600);
@@ -2963,15 +2963,7 @@ try {
   // Atomic: a half-written .env is a file the loader reads and the engine believes. Write beside the
   // target (same filesystem, so rename is atomic), fix the mode BEFORE it is visible under its real
   // name, then rename over.
-  const tmp = `${ENV_PATH}.tmp-${process.pid}`;
-  try {
-    writeFileSync(tmp, body, { mode: 0o600 });
-    chmodSync(tmp, 0o600);
-    renameSync(tmp, ENV_PATH);
-  } catch (e) {
-    try { if (existsSync(tmp)) unlinkSync(tmp); } catch { /* nothing to clean */ }
-    throw e;
-  }
+  writeSecretFile(ENV_PATH, body);
   ok(`${ENV_PATH} (mode 600)`);
 
   for (const k of ["CLEAROTRON_REPORTS_DIR", "CLEAROTRON_WORK_DIR", "CLEAROTRON_QUEUE_DIR", "CLEAROTRON_OUTBOX_DIR", "CLEAROTRON_RUN_LOCK_DIR"]) mkdirSync(candidate[k], { recursive: true });

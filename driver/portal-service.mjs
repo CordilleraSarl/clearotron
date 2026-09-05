@@ -79,7 +79,7 @@ import { makePrincipal, assertPrincipal, PortalDeny } from "./portal-access.mjs"
 // makePrincipal and assertPrincipal exactly as a Cloudflare-verified address does.
 import { readLocalCredential, establishCredential, checkPassphrase, mintSession, verifySession,
   makeAttemptLimiter, credentialPathFor,
-  localCredentialHandoff, firstRunCredentialLines } from "./portal-local-auth.mjs";   
+  localCredentialHandoff, firstRunCredentialLines, passphraseResetCommand } from "./portal-local-auth.mjs";   
 import { appendFlag, feedbackDir, MAX_WHY, VERDICTS } from "./feedback-store.mjs";
 import { loadRecipes, PRODUCT_POLICIES, policyFor, countJobMarks, kebabCollisions,
   gateResolvedPolicy, productAvailability, UNAVAILABLE_NOTE, coverageDisclosure, reportIdentityFor } from "./search-policy.mjs";
@@ -4266,7 +4266,10 @@ const PORT = PORT_CHOICE.port;
       // record on disk is a scrypt digest, so this line is the only copy that will ever exist.
       // — decided BEFORE the mint, so an undeliverable credential is never
       // created. localCredentialHandoff carries the reasoning.
-      const resetCommand = `${invocationPrefix()}clearotron passphrase --reset`;
+      // NAMES THE CREDENTIAL WHEN IT IS NOT WHERE THE VERB LOOKS BY DEFAULT — the demo keeps its own
+      // inside its base, and this line used to send a reader to a command that exits 1 saying no
+      // credential exists while theirs sits there being read.
+      const resetCommand = passphraseResetCommand({ prefix: invocationPrefix(), credentialPath });
       const handoff = localCredentialHandoff({ isTTY: !!process.stderr.isTTY, resetCommand });
       if (handoff.refusal) {
         log(`FATAL: ${handoff.refusal}`);

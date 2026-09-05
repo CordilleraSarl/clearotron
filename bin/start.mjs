@@ -73,7 +73,8 @@
 // The ops key is deliberately NOT persisted. It is minted fresh, in memory, at every start, so no
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
-import { envLocalPath } from "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
+import { envLocalPath } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
+import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic write for every file holding credentials, and it creates the directory
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
@@ -747,15 +748,13 @@ if (isMain) {
     try { existing = readFileSync(ENV_PATH, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${ENV_PATH} exists but could not be read (${e.code}).`); }
     const merged = mergeEnvFile(existing, generated);
     if (merged.added.length) {
-      // The house atomic-secret write: beside the target on the same filesystem, mode fixed BEFORE the
-      // file is visible under its real name, then renamed over.
-      const tmp = `${ENV_PATH}.tmp-${process.pid}`;
+      // ONE WRITER FOR EVERY FILE THAT HOLDS CREDENTIALS, and it creates the directory. This site had its
+      // own copy of the write and did not learn what the wizard's copy learned when `.env` moved under
+      // `~/.config/clearotron/` — so a fresh install could not start, with an error naming a temporary
+      // file that made it read as a permissions problem rather than a missing folder.
       try {
-        writeFileSync(tmp, merged.text, { mode: 0o600 });
-        chmodSync(tmp, 0o600);
-        renameSync(tmp, ENV_PATH);
+        writeSecretFile(ENV_PATH, merged.text);
       } catch (e) {
-        try { if (existsSync(tmp)) unlinkSync(tmp); } catch { /* nothing to clean */ }
         fatal(`could not write ${ENV_PATH} (${String(e?.message ?? e)}).`);
       }
       // NAMES only. This file is where the credentials are.
@@ -1083,9 +1082,7 @@ if (isMain) {
     // fault rather than an expired key card.
     const merged = homeEnvUpdate(homeText, union);
     if (merged.added.length || merged.refreshed.length) {
-      const tmp = `${HOME_ENV}.tmp-${process.pid}`;
-      writeFileSync(tmp, merged.text, { mode: 0o600 });
-      renameSync(tmp, HOME_ENV);
+      writeSecretFile(HOME_ENV, merged.text);
       const parts = [];
       if (merged.added.length) parts.push(`${merged.added.length} value(s) added`);
       if (merged.refreshed.length) parts.push(`${merged.refreshed.join(", ")} re-minted`);
@@ -1330,7 +1327,7 @@ if (isMain) {
   // Captured HERE, immediately before the spawn, rather than beside the sentence that reads it: the
   // check has to sit on the other side of the thing that mints, and the only way to keep that true is
   // for it to be adjacent to the spawn where a reader can see why.
-  const { credentialPathFor: credentialPathBeforeStart, newPassphrase } = await import("../driver/portal-local-auth.mjs");
+  const { credentialPathFor: credentialPathBeforeStart, newPassphrase, passphraseResetCommand } = await import("../driver/portal-local-auth.mjs");
   // ASKED ABOUT THE FILE THE PORTAL WILL ACTUALLY USE, not the shared default. `credentialPathFor`
   // reads `PORTAL_LOCAL_CREDENTIAL`, and a demo sets it to a file inside its own base — but this call
   // was made against THIS process's environment, which never carries it. So on any box that already had
@@ -1453,7 +1450,10 @@ if (isMain) {
   // The frame is not decoration. Every other line of that startup wall is a [portal-service]-prefixed
   // log line about paths, rosters and token expiry — all recoverable — and this one value is not
   // recoverable at all while looking identical to them. The box is what stops it being skimmed past.
-  const reset = `${invocationPrefix()}clearotron passphrase --reset`;
+  // NAMES THE CREDENTIAL WHEN IT IS NOT THE DEFAULT ONE. A demo keeps its own inside its base, and this
+  // line is what a reader copies when they lose the passphrase — run as printed, the bare form resolved
+  // the shared default and exited 1 saying no credential exists.
+  const reset = passphraseResetCommand({ prefix: invocationPrefix(), credentialPath: envs.portal.PORTAL_LOCAL_CREDENTIAL ?? null });
   if (mintedPassphrase) {
     const rule = "─".repeat(66);
     say(`  ┌${rule}┐`);
