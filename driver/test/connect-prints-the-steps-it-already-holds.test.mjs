@@ -24,7 +24,9 @@ const PUBLISHED = { stdioRoutes: {}, publicAddress: "https://x.example/mcp", ope
 
 test("2176-F35 the offer a served client gets actually carries steps to print", () => {
   // If this is ever empty the fix below prints nothing and passes in silence, so the data comes first.
-  const offer = whatItNeeds(clientById("cowork"), PUBLISHED);
+  // `cowork` merged into `claude` (tracker issue 147, owner: it is one app). Same population member —
+  // an http client reaching the web door — so this arm keeps its subject under the surviving id.
+  const offer = whatItNeeds(clientById("claude"), PUBLISHED);
   assert.equal(offer.served, true, "expected a served offer on a published install");
   const steps = nonEmpty(offer.steps, "the served offer's steps");
   assert.ok(steps.length >= 2, `a destination needs more than one step, got ${JSON.stringify(steps)}`);

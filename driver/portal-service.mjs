@@ -93,6 +93,7 @@ import { isDemo, demoPostureLine } from "./demo-posture.mjs";
 import { triggerCapGap, triggerCapWarning } from "./trigger-cap.mjs";   // F51 — one answer, three surfaces
 import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView, accessView, observedView, authView } from "./portal-config-view.mjs";
+import { livePosture } from "./flag-snapshot.mjs";   // — for the capture-vs-box comparison only, never for a value
 import { familiesView, groupRuns, ungroupRuns } from "./portal-families.mjs";
 import { validateJob } from "./enqueue-schema.mjs";
 import { orderedQueueFiles, reorderQueue } from "./queue-order.mjs";   // the SAME sort drainQueue admits by
@@ -2655,16 +2656,27 @@ export function makePortalService({
         // believed.
         if (parts[2] === "config" && method === "GET") {
           // THE AUTH ROW IS READ LIVE, HERE, and not from the snapshot (, ruled 2026-08-21).
-          // Everything else on this page comes from the snapshot because this process has no engine
-          // environment. The portal's OWN door is the opposite case: this process reads
-          // PORTAL_AUTH_MODE and acts on it a few hundred lines below, so it is the authoritative
-          // source, and publishing it through a file another process writes would report a guess that
-          // can go stale. Fed from process.env at the seam rather than inside authView, so the one
-          // process entitled to answer is visibly the one reading.
+          // Everything else on this page is RENDERED from the snapshot. The reason recorded here used
+          // to be "because this process has no engine environment", and that has not been true since
+          // the owner's 2026-08-26 one-configuration-per-server-box ruling gave every unit the same
+          // `EnvironmentFile=%h/.env`. The rule stands on a better reason: the snapshot records what
+          // the ENGINE last ran under, and that is the fact this page reports. The portal's OWN door is
+          // the opposite case: this process reads PORTAL_AUTH_MODE and acts on it a few hundred lines
+          // below, so it is the authoritative source. Fed from process.env at the seam rather than
+          // inside authView, so the one process entitled to answer is visibly the one reading.
+          //
+          // AND THE ENVIRONMENT IS READ ONCE MORE, FOR ONE PURPOSE (tracker issue 170): to say whether
+          // the capture still DESCRIBES this box, never to supply a value. A deployment being
+          // configured runs nothing, so its capture cannot age into a warning while its contents drift
+          // — the disagreement is the signal the age never was. Degraded rather than fatal: a page that
+          // refused to render because it could not derive the live posture would be a worse answer than
+          // one that reports the capture and says it could not check it.
+          let live = null;
+          try { live = await livePosture(); } catch { live = null; }
           return {
             status: 200,
             json: {
-              ...flagView(poolRoot),
+              ...flagView(poolRoot, { live }),
               auth: authView({
                 mode: process.env.PORTAL_AUTH_MODE,
                 oidcIssuer: process.env.PORTAL_OIDC_ISSUER,

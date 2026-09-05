@@ -79,53 +79,86 @@ test('THE PAGE DERIVES NOTHING — it holds no client table and no offered/withh
   }
 })
 
-test('A BUTTON THAT CANNOT WORK IS NOT A BUTTON — it is a sentence, with a reason and a remedy', () => {
-  // "It reads as unavailable with one plain sentence on why and what would change it, and it does not
-  // expand into instructions for a thing that will not work." A disabled button invites a press that
-  // teaches nothing; an absence with no reason reads as breakage.
-  const unserved = SCREEN.slice(SCREEN.indexOf('if (!offer.served)'), SCREEN.indexOf('One press, and it degrades'))
-  assert.ok(unserved.includes('offer.reason'), 'an unavailable assistant does not say why')
-  assert.ok(unserved.includes('offer.fix'), 'an unavailable assistant does not say what would change it')
-  assert.ok(!unserved.includes('<button'), 'an assistant that cannot work is still rendered as a button')
-})
-
-test('NOTHING IS EXPANDED ON ARRIVAL — the expansion opens only when a press cannot finish', () => {
-  // "A reader who lands on the page sees four buttons and a list, never a wall of accordions."
-  assert.match(SCREEN, /useState\(false\)/, 'the expansion has no closed initial state')
-  assert.ok(!/useState\(true\)/.test(SCREEN), 'something on this page starts open')
-  // And what opens is the remainder, not the recipe from the beginning.
-  assert.ok(!/Settings → Connectors/.test(SCREEN), 'a per-assistant setup recipe crept back onto the page')
-})
-
-// ── item 3 — THE CLOSING PRESS SPENDS NOTHING ───────────────────────────────
-//
-// The toggle is fixed in the screen and nothing pinned it. Worth pinning for a reason the fix's own
-// comment does not record: `press()` is also where an ADDRESS row MINTS, so before the fix a second
-// press did not merely fail to collapse — it minted again on a press the reader made to put the panel
-// AWAY. Re-minting itself is fine (owner ruling, 2026-09-03: a person may hold more than one key), which
-// is exactly why this arm is about the CLOSING press and not about minting in general.
-//
-// Read off the close BRANCH by brace-matching, not by position. A first version of this looked for the
-// next `return` after the close and compared it to the mint — green on a close that falls straight
-// through, because `press()` has an earlier `return` inside its command branch that sits before the mint.
-test('2143: the closing press collapses the row and returns before anything is minted', () => {
-  const src = code(SCREEN)
-  const press = src.slice(src.indexOf('const press = async ()'), src.indexOf('return (', src.indexOf('const press = async ()')))
-  assert.ok(press.length > 100, 'press() was not found — this arm would assert nothing')
-  assert.ok(press.includes('connectKey'), 'press() no longer mints — re-point this arm at wherever it does')
-
-  const openAt = press.indexOf('if (open)')
-  assert.ok(openAt > -1, 'press() never checks whether the row is already open, so it cannot close')
-  const brace = press.indexOf('{', openAt)
-  let depth = 0, end = brace
-  for (let i = brace; i < press.length; i++) {
-    if (press[i] === '{') depth++
-    else if (press[i] === '}') { depth--; if (depth === 0) { end = i; break } }
+test('AN UNSERVED ROW DOES NOT RENDER FOR A CLIENT AT ALL — not a button, not a sentence', () => {
+  // THIS ARM USED TO REQUIRE THE SENTENCE. It asserted that an unavailable assistant rendered as prose
+  // with a reason and a remedy, which was right until the owner ruled otherwise on tracker issue 147:
+  // an unserved row does not render for a client at all.
+  //
+  // The measurement behind that ruling is why it matters. On a HEALTHY hosted install the three stdio
+  // rows resolve `served: false` carrying "this copy of the software is incomplete… whoever installed it
+  // will need to install it again". Those strings are the OPERATOR's case — correct for somebody whose
+  // disk route is genuinely missing — reused for a reader who simply has no shell. So the sentence this
+  // arm used to require was itself the defect: a lawyer opened the page and read that their software
+  // needed reinstalling.
+  //
+  // The wording stays correct where it is true, and a client never reaches it because a client never
+  // sees the row.
+  const c = code(SCREEN)
+  assert.match(c, /\.filter\(\(o\)\s*=>\s*o\.served\)/,
+    'the page no longer filters to served offers, so an unserved row can reach the reader');
+  // Filtered BEFORE anything reasons about routes or selection, so no later branch can render one by
+  // accident. Both derivations must sit downstream of the filter.
+  const servedAt = c.indexOf('.filter((o) => o.served)')
+  for (const later of ['const routes', 'const here']) {
+    assert.ok(c.indexOf(later) > servedAt,
+      `${later} is derived before unserved rows are removed — it can still see them`)
   }
-  const closeBranch = press.slice(brace, end + 1)
-  assert.ok(closeBranch.includes('setOpen(false)'), 'the close branch was not found — this arm asserts nothing')
-  assert.match(closeBranch, /\breturn\b/,
-    'the closing press falls through to the mint — putting the panel away spends a key')
+  assert.ok(!/offer\.reason|offer\.fix/.test(c),
+    'the operator-shaped reason/fix wording is being rendered again on a surface a client reads')
+})
+
+test('THE ONE HONEST UNAVAILABLE SURVIVES — a deployment that serves nothing says so, and names who can fix it', () => {
+  // The ruling removed the PER-ROW absence, not the deployment-level one. An absence that names nobody
+  // reads as breakage, so this sentence is kept and it is about the installation rather than the reader.
+  // WHITESPACE-NORMALISED, because JSX wraps prose across source lines and a reader sees one sentence.
+  // Matching the raw file would pin the line breaks rather than the copy, and would fail the next time
+  // somebody reflowed a paragraph without changing a word of it.
+  const prose = SCREEN.replace(/\s+/g, ' ')
+  assert.match(prose, /Not available on this installation yet/)
+  assert.match(prose, /Whoever installed it can put it online/,
+    'the unavailable state does not say who can change it')
+  assert.match(code(SCREEN), /!served\.length/, 'the deployment-level absence is not gated on serving nothing')
+})
+
+test('NOTHING IS EXPANDED ON ARRIVAL — and the mechanism is single-select, not an accordion', () => {
+  // "A reader who lands on the page sees the list, never a wall of accordions." The rebuild changed HOW
+  // that is guaranteed: there is no per-row open state at all now, so nothing can start open. The old
+  // spelling of this arm looked for `useState(false)`, which pinned the accordion it was written against.
+  const c = code(SCREEN)
+  assert.ok(!/useState\(true\)/.test(c), 'something on this page starts open')
+  assert.ok(!/aria-expanded/.test(c),
+    'a per-row expansion is back — single-select plus a reserved slot is the mechanism, and accordions '
+    + 'were removed rather than tuned because any per-row expansion moves every row beneath it')
+  // Nothing is picked until a press: the slot renders its empty line, not a panel.
+  assert.match(c, /useState<string \| null>\(null\)/, 'the selection does not start empty')
+  // And what opens is the panel for ONE destination, in a slot that reserves its own height.
+  assert.match(SCREEN, /ai-slot/, 'the reserved slot is gone, so a selection can move the page')
+})
+
+test('THE PANEL CANNOT PUSH THE PAGE — the slot reserves height whether or not anything is in it', () => {
+  // The owner met this as "new links open and move shit around". A restyle was explicitly rejected: the
+  // reserved slot is the mechanism, and it lives in CSS, so asserting the markup alone would pass over a
+  // stylesheet that stopped reserving anything.
+  const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
+  const slot = css.slice(css.indexOf('.ai-slot {'), css.indexOf('}', css.indexOf('.ai-slot {')))
+  // A POSITIVE height. `\d+px` matches `0px`, so the first spelling of this passed a slot that reserved
+  // nothing — found by planting min-height:0 and watching both this arm and the browser battery stay
+  // green. The number is what makes "reserved" mean anything.
+  const px = Number(slot.match(/min-height:\s*(\d+)px/)?.[1] ?? 0)
+  assert.ok(px >= 120,
+    `the slot reserves ${px}px, which is not enough to hold a panel — selecting a destination then grows `
+    + 'the page under the reader, which is the reflow this redesign removes')
+})
+
+test('THE COPIED LABEL COSTS ZERO LAYOUT — both labels occupy one reserved cell, in every row', () => {
+  // Swapping "Paste it into Claude" for "✓ Copied" at natural width would resize the pressed row and
+  // shift its neighbours — the same reflow, arriving through the fix for it.
+  const css = readFileSync(new URL('../src/base.css', import.meta.url), 'utf8')
+  const say = css.slice(css.indexOf('.ai-dest-say {'), css.indexOf('.ai-slot {'))
+  assert.match(say, /display:\s*grid/, 'the two labels no longer share one grid cell')
+  assert.match(say, /grid-area:\s*1 \/ 1/, 'the labels are not stacked in the same cell')
+  assert.match(say, /visibility:\s*hidden/,
+    'a label is being removed from the layout rather than hidden, which resizes the cell')
 })
 
 test('#1938 every allowance sentence is still off the page', () => {
@@ -177,11 +210,38 @@ test('THE KEY NEVER REACHES STATE, A PROP OR THE DOM — except the one degraded
   const withKey = [...press.matchAll(/set([A-Z]\w*)\(([^)]*)\)/g)]
     .filter((m) => /\bkey\b/.test(m[2] ?? '')).map((m) => m[1])
   assert.ok(setters.length > 0, 'no state is set during a press — the extractor is wrong')
-  assert.deepEqual(withKey, ['Revealed'],
-    'a credential reaches state somewhere other than the clipboard-refused reveal')
+
+  // TWO SETTERS MAY SEE IT NOW, AND THE SECOND ONE IS A DELIBERATE, BOUNDED EXCEPTION.
+  //
+  // `Revealed` is the clipboard-refused path and is unchanged. `Landed` is the panel line proving the
+  // press worked — "On your clipboard now" — and the brief specifies it MASKED (`v1.••••`). That is
+  // three characters of the credential in the DOM, which is more than zero, so it is pinned rather than
+  // waved through: the value must pass through `mask()`, and `mask()` must be lossy.
+  assert.deepEqual([...withKey].sort(), ['Landed', 'Revealed'],
+    'a credential reaches state somewhere other than the masked panel line and the refused-clipboard reveal')
+  const landed = press.match(/setLanded\(([^;]*)\)/)?.[1] ?? ''
+  if (/\bkey\b/.test(landed)) {
+    assert.match(landed, /mask\(/,
+      'the panel line is handed a raw credential — it must go through mask(), which is what keeps the '
+      + 'proof-of-copy from being the secret itself')
+  }
 
   // And the reveal says it is a one-time thing, because it is: nothing stores it.
   assert.match(SCREEN, /will not be shown again/, 'the degraded reveal does not say it is one-time')
+})
+
+test('mask() is LOSSY — the proof-of-copy cannot be read back as the credential', () => {
+  // The arm above allows a masked credential into the DOM. That allowance is only safe if the mask
+  // actually destroys the value, so this drives it rather than reading it: a long secret must come back
+  // shorter than it went in, and must not contain its own tail.
+  const m = SCREEN.match(/const mask = \(key: string\): string => \(([^\n]*)\)/)
+  assert.ok(m, 'mask() is gone or has changed shape — the allowance above is now unguarded')
+  const mask = new Function('key', `return (${m![1]})`) as (k: string) => string
+  const secret = 'v1.abcdefghijklmnopqrstuvwxyz0123456789'
+  const out = mask(secret)
+  assert.ok(out.length < secret.length, `mask() did not shorten the credential: ${out}`)
+  assert.ok(!out.includes(secret.slice(6)), `mask() leaked the tail of the credential: ${out}`)
+  assert.ok(out.includes('••••'), `mask() does not visibly mask: ${out}`)
 })
 
 test('the copy helper reports a REFUSAL, so a blocked clipboard is not read as success', () => {

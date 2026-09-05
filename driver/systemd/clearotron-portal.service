@@ -37,6 +37,24 @@ Environment=CLEAROTRON_NO_ENV_FILE=1
 # NO WorkingDirectory=, deliberately — systemd does not expand variables there, only in ExecStart
 # arguments, and nothing here reads the working directory: the code finds itself from its own file URL.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/portal-service.mjs
+# ── THIS UNIT DELIBERATELY DOES NOT WRITE THE CONFIGURATION CAPTURE ──────────────────────────────────
+#
+# It did, for about an hour, and that was a defect worth recording rather than quietly deleting.
+#
+# Under the design where the page RENDERED the capture, having the portal refresh it at start was the fix
+# — it made the page current after a restart. The owner's 2026-09-05 ruling inverted that: the page now
+# answers LIVE, and the capture's only remaining job is to be an INDEPENDENT WITNESS of what the engine
+# last ran under, so the page can say when the two disagree.
+#
+# A witness the portal writes is not independent of the portal. The portal would capture its own
+# environment at its own start and then, at request time, compare its own environment against it — two
+# readings of one value, which agree by construction and always will. The row would render green on every
+# box forever while measuring nothing, and the label the page gives it ("what the last run recorded")
+# would be false as well.
+#
+# So the worker unit writes it and this one does not. `clearotron-worker.service` carries the
+# ExecStartPost, and a run refreshes it after every drain — both of those are the engine, which is whose
+# posture the row claims to report.
 Restart=on-failure
 RestartSec=10
 
