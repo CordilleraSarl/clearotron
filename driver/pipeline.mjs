@@ -13688,6 +13688,15 @@ async function pipelineInner(job, opts = {}) {
           askAnswers: lintAskAnswers,   // PR-9 — present ⇒ the intake-ask check judges the deterministic join, not fuzzy containment
           cardFolds: (() => { try { return JSON.parse(readFileSync(driverDir(run.runDir, "card-folds.json"), "utf8")).folds; } catch { return null; } })(),   // PR-9 — fold observability (flag-only)
           extraPlatformNames: ctx.profile?.platforms ?? [],   // WS-B: profile marketplaces are run vocabulary
+          // tracker issue 134 — the SAME structure the masthead's coverage_line is stamped from
+          // (scope-facts.json, written by writeScopeFacts). Passing the sidecar rather than re-deriving
+          // is the point of the issue: the stamped line and the prose check now answer to one searched
+          // set, so they cannot state two different answers about what was searched. Absent sidecar ⇒
+          // null ⇒ the check emits nothing at all, rather than a pass it cannot justify.
+          searchedJurisdictions: (() => {
+            try { return JSON.parse(readFileSync(P.scopeFacts, "utf8")).searched_jurisdictions ?? null; }
+            catch { return null; }
+          })(),
           // compose guarantees the NAME(S) cell via the searched-name fallback, and code (not the model)
           // builds the per-name rating rows — so these reflect the DELIVERED state (regressions are caught
           // by the publish unit tests; the receipt still names every check).
