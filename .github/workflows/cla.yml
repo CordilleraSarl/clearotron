@@ -24,11 +24,10 @@
 #
 # ── THE SIGNATURE BRANCH IS A PREREQUISITE, AND THE ACTION DOES NOT CREATE IT ────────────────────────
 #
-# `cla-signatures` below must already exist. Reading its own source at the pinned SHA: it stores
-# signatures through the repository contents API, which writes to a branch and never makes one, and no
-# file in the action creates a ref. Its recovery path for a missing signatures file is also unreachable
-# here — it tests `error.status === "404"` against a status octokit reports as a NUMBER, so a first run
-# with nothing to read raises "Could not retrieve repository contents" instead.
+# `cla-signatures` below must already exist. Read across all fifteen of the action's source files at the
+# pinned SHA: it stores signatures through the repository contents API, which takes a branch and never
+# makes one, and nothing in it creates a ref. Its recovery path for a missing signatures file writes
+# through that same API, so it cannot supply a missing branch either.
 #
 # So a repository without the branch does not fall back to reporting nothing. It fails the workflow on
 # every pull request from the day this lands, which is worse than having no check at all.
