@@ -11,6 +11,10 @@
 // The server enforces the account; the brand-owner switcher only narrows what is already permitted.
 
 import { useCallback, useEffect, useState } from 'react'
+// React 19's @types/react removed the GLOBAL `JSX` namespace — it lives under `React.JSX` now. Importing
+// the type is better than reaching for the namespace either way: it says where the type comes from, and
+// it does not depend on a global that a future types major can move again.
+import type { ReactElement } from 'react'
 import type { Me, Role } from '../contract/api.ts'
 import { api, staffLabel, onSessionEnded } from '../contract/api.ts'
 import { navGroupsFor, avatarMenuFor, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
@@ -221,7 +225,7 @@ function SessionEnded() {
   )
 }
 
-export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: ShellContext) => JSX.Element }) {
+export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: ShellContext) => ReactElement }) {
   const [path, go, visit] = usePath()
   const [theme, toggleTheme] = useTheme()
   const [collapsed, setCollapsed] = useState(false)
