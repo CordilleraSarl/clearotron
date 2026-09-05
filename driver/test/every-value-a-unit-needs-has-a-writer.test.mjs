@@ -134,8 +134,8 @@ const SUPPLIED_ELSEWHERE = Object.freeze({
   // filled in. It does not by itself stop the engine door coming up on a hosted box, because that door
   // needs the proxy's four values above and they are genuinely the operator's — but it is a value this
   // product can compute and asks a reader for, which is the arithmetic 122's remedy shape says not to
-  // hand over. Raised rather than fixed here: writing it belongs with the install, not with the check
-  // that found it, and this arm's job was to find it.
+  // hand over. Raised rather than repaired here — tracker issue 192 — because writing it belongs with the
+  // install and not with the check that found it, and finding it was this arm's whole job.
   TRADEMARK_MCP_ALLOWED_HOSTS: "the operator's, today — and DERIVABLE, exactly like the client door's, which the installer composes; the asymmetry is a finding this census made, not a settled design",
 
   // ── LOCAL SIGN-IN, WHICH THE WIZARD ASKS FOR ────────────────────────────────────────────────────
