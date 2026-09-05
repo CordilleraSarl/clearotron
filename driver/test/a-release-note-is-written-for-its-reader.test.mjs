@@ -194,10 +194,13 @@ test("tracker 97 the source directories the lint refuses are read off the tree, 
   }
   assert.ok(!dirs.has("node_modules"), "node_modules is in the set; a note would be refused for saying it");
   // Derived, so a directory that exists is covered whether or not anybody remembered it.
-  for (const d of readdirSync(ROOT, { withFileTypes: true })) {
-    if (d.isDirectory() && !d.name.startsWith(".") && d.name !== "node_modules") {
-      assert.ok(dirs.has(d.name), `\`${d.name}\` exists in the tree and the lint does not know about it`);
-    }
+  const onDisk = nonEmpty(
+    readdirSync(ROOT, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && !d.name.startsWith(".") && d.name !== "node_modules")
+      .map((d) => d.name),
+    "the repository's own top-level directories, read from disk");
+  for (const name of onDisk) {
+    assert.ok(dirs.has(name), `\`${name}\` exists in the tree and the lint does not know about it`);
   }
 });
 

@@ -7,6 +7,15 @@ releases page and in `CHANGELOG.md` to decide whether to upgrade.
 refuses a note that breaks the mechanical parts of it, on the pull request that adds the note — where the
 person who wrote it is still holding it — and again before a release is cut.
 
+## What `pre/` holds
+
+While the repository is in pre-release mode, `changeset version` MOVES the notes it has already cut into
+`.changeset/pre/`. They stay there because the eventual stable release lists every change since the last
+stable one, not just the ones added after the final beta — so those files are the record it aggregates,
+not leftovers. Do not delete them; the stable changelog would come out empty and the cut would refuse.
+
+They are still notes and the lint still reads them.
+
 ## How to add one
 
     npx changeset

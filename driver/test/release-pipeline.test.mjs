@@ -28,7 +28,7 @@ import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_P
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
-import { assembleRoot, writeRootChangelog } from "../../scripts/release-version.mjs";
+import { assembleRoot, writeRootChangelog, group } from "../../scripts/release-version.mjs";
 import { unreachableBareSites, sentenceFor } from "../../shared/root-doc-commands.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -56,6 +56,10 @@ function completeTree() {
     writeFileSync(join(dir, "demo", child, "meta.json"), "{}");
     writeFileSync(join(dir, "demo", child, "run", entry), "x");
   }
+  // The licence record is part of a complete package now — see the notices arms. Written at the floor so
+  // an arm about something else does not fail for this reason.
+  writeFileSync(join(dir, "THIRD-PARTY-NOTICES.md"),
+    Array.from({ length: 200 }, (_, i) => `## package-${i}`).join("\n"));
   mkdirSync(join(dir, "portal-ui", "dist", "assets"), { recursive: true });
   writeFileSync(join(dir, "portal-ui", "dist", "index.html"), "<!doctype html>");
   writeFileSync(join(dir, "portal-ui", "dist", "assets", "index-abc123.js"), "//");
@@ -307,21 +311,24 @@ test("tracker 97 the GitHub release says what the changelog says, and stays sile
   const dir = mkdtempSync(join(tmpdir(), "release-notes-"));
   let changelog;
   try {
-    writeRootChangelog({ version: "0.1.0", bullets: ["The first release."] }, dir);
-    const p = writeRootChangelog({ version: "0.2.0", bullets: ["A clearance now names the registers it searched."] }, dir);
+    writeRootChangelog({ version: "0.1.0", ...group(["New: The first release."]) }, dir);
+    const p = writeRootChangelog({ version: "0.2.0", ...group(["Fixed: A clearance now names the registers it searched."]) }, dir);
     changelog = readFileSync(p, "utf8");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
   assert.match(changelog, /npm install -g clearotron/, "the fixture is no longer what the pipeline writes");
-  assert.equal(notesFor("0.2.0", changelog), "- A clearance now names the registers it searched.");
+  // THE RELEASE BODY CARRIES THE GROUPING, because it is the same text as the changelog section — the
+  // owner's ruling is that both are generated from the notes and grouped New / Fixed / For operators.
+  assert.equal(notesFor("0.2.0", changelog),
+    "### Fixed\n\n- A clearance now names the registers it searched.");
   // THE HEAD IS NOT RELEASE NOTES. It sits above every version heading, and a reader of the releases page
   // has already installed — telling them how again, inside the notes for one version, is noise.
   assert.ok(!notesFor("0.2.0", changelog).includes("npm install -g"),
     "the changelog's head is bleeding into the GitHub release body");
   // The LAST section of the file, which is the one a "to the next heading or end of file" lookahead
   // silently returns nothing for.
-  assert.equal(notesFor("0.1.0", changelog), "- The first release.");
+  assert.equal(notesFor("0.1.0", changelog), "### New\n\n- The first release.");
   assert.equal(notesFor("9.9.9", changelog), "", "a version with no section must return empty, not the whole file");
 });
 
@@ -557,7 +564,7 @@ test("tracker 97 the changelog the pipeline writes is a root document its own re
       "`clearotron doctor` now says how long the portal key has left and refuses when it has lapsed.",
       "Asking the demo for a search it has no example of now explains what happened.",
     ];
-    const p1 = writeRootChangelog({ version: "0.1.1-beta.0", bullets: notes }, dir);
+    const p1 = writeRootChangelog({ version: "0.1.1-beta.0", ...group(notes.map((n) => `Fixed: ${n}`)) }, dir);
     const first = readFileSync(p1, "utf8");
     assert.deepEqual(unreachableBareSites([{ file: "CHANGELOG.md", text: first }]).map(sentenceFor), [],
       "the generated changelog shows a command its own reader cannot run, and it fails on the version "
@@ -566,7 +573,7 @@ test("tracker 97 the changelog the pipeline writes is a root document its own re
     // A SECOND RELEASE KEEPS ONE HEAD. The head used to be stripped by matching its exact text, so
     // editing it would have left the old one buried above the new — and the install line would then sit
     // BELOW a version section, protecting nothing above it.
-    const p2 = writeRootChangelog({ version: "0.1.2", bullets: ["`clearotron demo` runs a shorter example."] }, dir);
+    const p2 = writeRootChangelog({ version: "0.1.2", ...group(["Fixed: `clearotron demo` runs a shorter example."]) }, dir);
     const second = readFileSync(p2, "utf8");
     assert.equal((second.match(/^# Changelog$/gm) ?? []).length, 1, "the changelog grew a second title");
     assert.equal((second.match(/npm install -g clearotron/g) ?? []).length, 1,
@@ -590,17 +597,17 @@ test("tracker 97 the release note a customer reads is the sentence, not the comm
   try {
     mkdirSync(join(dir, "driver"), { recursive: true });
     writeFileSync(join(dir, "driver", "CHANGELOG.md"),
-      "# prelim-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: The demo offers the two example accounts it ships with.\n"
-      + "- 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b: A clearance now names the registers it searched.\n");
-    const { bullets } = assembleRoot("0.1.1-beta.0", dir);
-    assert.deepEqual(bullets, [
+      "# prelim-driver\n\n## 0.1.1-beta.0\n\n- f7c1570: Fixed: The demo offers the two example accounts it ships with.\n"
+      + "- 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b: Fixed: A clearance now names the registers it searched.\n");
+    const { groups } = assembleRoot("0.1.1-beta.0", dir);
+    assert.deepEqual(groups.Fixed, [
       "The demo offers the two example accounts it ships with.",
       "A clearance now names the registers it searched.",
     ]);
     // A sentence that merely CONTAINS a colon keeps every word of itself.
     writeFileSync(join(dir, "driver", "CHANGELOG.md"),
-      "# prelim-driver\n\n## 0.2.0\n\n- Removing the demo is one directory again: nothing it writes lands outside it.\n");
-    assert.deepEqual(assembleRoot("0.2.0", dir).bullets,
+      "# prelim-driver\n\n## 0.2.0\n\n- Fixed: Removing the demo is one directory again: nothing it writes lands outside it.\n");
+    assert.deepEqual(assembleRoot("0.2.0", dir).groups.Fixed,
       ["Removing the demo is one directory again: nothing it writes lands outside it."]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
