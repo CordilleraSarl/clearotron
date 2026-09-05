@@ -217,10 +217,22 @@ jobs:
       # with those same two names. A dispatched run's checks are not credited to the pull request; only
       # the `pull_request` run's are, and that is the run sitting parked.
       #
-      # SO SOMEBODY APPROVES THE PARKED RUN, EVERY TIME, and the step after this one is what says so and
-      # names the run. This dispatch stays because it tests the version tree without waiting for that,
-      # which is worth a run on its own — but it is not the answer to the park, and rebuilding it as one
-      # is the mistake this comment exists to stop.
+      # SO THE PROCESS OF RECORD IS ONE LANE APPROVAL PER CUT, AND THE GUARD NAMES IT. The step after
+      # this one prints the run id and the command; whoever is on shift runs it. That is a lane's act,
+      # not the owner's — his ruling was that no click of his stands between a merge and the registry,
+      # and none does. Routed 2026-09-05. Do not spend work removing it until there is a way to have the
+      # bot's own pull-request run start without a credential.
+      #
+      # AND IT IS ONE PER VERSION BRANCH, NOT ONE PER RELEASE. Every push to main re-runs `changeset
+      # version` and force-updates this branch, so the head moves and the new head parks again. Measured
+      # 2026-09-05: pull request 32's head was approved at 16:42Z, main moved at 16:43:03Z, and the
+      # re-cut head arrived parked with the earlier approval no longer applying to anything. A busy
+      # afternoon can therefore starve a release without anything going red — the cut needs a gap
+      # between merges long enough for the approved run to finish.
+      #
+      # This dispatch stays because it tests the version tree without waiting for any of that, which is
+      # worth a run on its own — but it is not the answer to the park, and rebuilding it as one is the
+      # mistake this comment exists to stop.
       - name: Run CI on the version branch, which needs no approval to start
         if: steps.changesets.outputs.pr-number != ''
         env:
