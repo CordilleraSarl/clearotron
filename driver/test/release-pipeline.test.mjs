@@ -665,3 +665,41 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   assert.ok(dispatchArm > -1 && scheduleArm > -1 && gate.indexOf("dry_flag=--dry-run") < scheduleArm,
     "the dry-run flag is set on a path that includes the cron, which would make every scheduled release a rehearsal");
 });
+
+test("tracker 97 the action and the CLI agree about what a pre-release has already consumed", () => {
+  // MEASURED 2026-09-05. `changesets/action@v1` decides which notes a pre-release has consumed by reading
+  // `preState.changesets`. `@changesets/cli@3.0.1` does not write that key — its `enterPre` writes
+  // `{mode, tag}` and nothing else, and its `migratePreState` deletes the key and MOVES consumed notes
+  // into `.changeset/pre/`. So on the first push after a pre-release cut, `@v1` saw seven notes it
+  // believed were pending and its reader treated the leftover directory as an old-format changeset,
+  // opening a `changes.md` that has never existed there. The version job died on that ENOENT and took
+  // the publish with it. `@v2` filters on `!id.startsWith("pre/")` instead.
+  const workflow = read(WORKFLOW);
+  // COMMENTS DROPPED FIRST, and this file has now made the same mistake four times in a day: the
+  // workflow explains each rename in prose beside the code, so an arm reading the whole file passes on
+  // its own explanation and reports a change that is not there.
+  const executable = workflow.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+
+  // PINNED TO A COMMIT. `v1` and `v2` are BRANCHES on that repository — there is no tag `v1` at all — so
+  // a floating ref is whatever was last pushed to it, on the step that opens a pull request with a token.
+  const pin = /uses: changesets\/action@([0-9a-f]{40})\b/.exec(executable);
+  assert.ok(pin, "the changesets action is not pinned to a commit; `@v1`/`@v2` are branches, not tags");
+  assert.ok(!/uses: changesets\/action@v\d/.test(executable), "a floating action ref came back");
+
+  // THE INPUT AND OUTPUT NAMES MOVED WITH THE VERSION, and v2 shims the old input spellings — so a
+  // workflow can be on v2, read correctly, and still say `version:`, which teaches the next reader that
+  // the version did not matter. The output has no shim: `pullRequestNumber` is simply empty on v2, and
+  // an empty number makes both steps that depend on it skip in silence.
+  assert.ok(!/pullRequestNumber/.test(executable),
+    "the workflow still reads `pullRequestNumber`, which is empty on v2 — both steps that gate on it "
+    + "would skip silently, and the version pull request would never merge itself");
+  const uses = (name) => assert.match(executable, new RegExp(`\\b${name}:`), `the v2 input \`${name}\` is not used`);
+  for (const input of ["version-script", "pr-title", "commit-message"]) uses(input);
+  assert.equal((executable.match(/steps\.changesets\.outputs\.pr-number/g) ?? []).length, 4,
+    "the renamed output is not read at every site that gated on the old one");
+
+  // One variable at a time: v2's new default pushes through the GitHub API. Keeping the CLI is the same
+  // behaviour v1 had, and it is stated rather than left to a default that changed under us.
+  assert.match(executable, /push-with-git-cli: true/,
+    "the push method is left to v2's new default, which is a second change riding on this one");
+});
