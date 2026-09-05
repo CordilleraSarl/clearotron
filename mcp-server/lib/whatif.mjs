@@ -78,8 +78,43 @@ function completeness(stage) {
 }
 
 /** whatIfPlan — pure dry-run. run = resolved Run ({runId, slug, codename, agent, runDir, P, status, location}). */
-export function whatIfPlan({ run, stage, axis = null, instructions = null, model = null }) {
+export function whatIfPlan({ run, stage, axis = null, instructions = null, model = null, kind = "stage" }) {
   if (!run) throw new Error("whatIfPlan: run is required");
+  // ── PLANNING A MEMO (tracker issue 132) ────────────────────────────────────────────────────────
+  //
+  // Without this branch the memo capability is COMPOSED AND UNREACHABLE. whatif-memo.mjs composes one,
+  // whatIfRefusal already admits `kind: "memo"` on a finished run, and decodeOp already validates a memo
+  // op — but nothing could mint the token, because the stage check two lines down refuses first and a
+  // memo re-runs no stage. Every piece existed and no door opened onto them.
+  //
+  // A MEMO PLAN IS NOT A STAGE PLAN and shares none of its fields on purpose. There is no model tier to
+  // resolve (nothing is re-run), no downstream to leave un-recomputed (nothing is recomputed), and no
+  // prior telemetry to quote (this stage never ran). Carrying those keys with null values would tell a
+  // reader the questions had been asked and answered "none", which is not what happened.
+  if (kind === "memo") {
+    const refusal = whatIfRefusal({ location: run.location, state: run.state, kind: "memo" });
+    if (refusal) return { runnable: false, reason: `Run ${run.runId}: ${refusal}.` };
+    const assumption = String(instructions ?? "").trim();
+    if (!assumption)
+      return { runnable: false, reason: "A memo needs the assumption to apply — pass the reader's own words as `instructions`." };
+    return {
+      runnable: true,
+      kind: "memo",
+      runId: run.runId,
+      assumption,
+      change: `re-read the archived evidence under: "${assumption}"`,
+      // Stated rather than implied. The whole safety case for offering this on a DELIVERED report is
+      // that it spends nothing and moves nothing, so a plan that did not say so would be asking for a
+      // yes to a question the reader could not price.
+      externalCalls: "Model tokens only — no searching, no register calls, nothing billed externally.",
+      affectsFinalReport: false,
+      parentUntouched: "The report and its archive are not modified. The memo is a separate document that names them.",
+      honestyNote: "A memo reasons over evidence already gathered. It cannot confirm the assumption itself, "
+        + "and it states what would be needed to.",
+      confirmationToken: encodeToken({ runId: run.runId, kind: "memo", instructions: assumption }),
+      next: "To execute, call what_if_run with this confirmationToken.",
+    };
+  }
   if (!STAGES[stage]) throw new Error(`whatIfPlan: unknown stage "${stage}" (valid: ${STAGE_ORDER.join(", ")})`);
   if (stage === "register-unit") {
     if (!axis || !REGISTER_AXES.includes(axis)) throw new Error(`whatIfPlan: register-unit requires a valid axis (one of: ${REGISTER_AXES.join(", ")})`);
