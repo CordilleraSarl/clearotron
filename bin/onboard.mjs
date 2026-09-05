@@ -159,6 +159,36 @@ const problem = (s) => { problems.push(s); say(`  ${style.err("✗")} ${style.er
 // wrong while something that stops the product stands above it.
 const blockers = [];
 const blocking = (s) => { blockers.push(s); say(`  ${style.warn("!")} ${s}`); };
+// ── A FOURTH STATE, AND THE COMPOSITE EXIT CONTRACT IT COMPLETES ────────────────────────────────────
+//
+// `inertSetting` is for configuration the operator SET that the build does not read: a retired
+// spelling left behind by an upgrade (tracker issue 168), and anything else of that shape. It needed
+// its own state because neither existing one is honest about it.
+//
+//   `warn`     prints `!` and keeps rc 0 — but rc 0 is the exact reading that let thirteen ignored
+//              settings sit on the production box through an upgrade, with doctor saying nothing was
+//              wrong. The whole point of the issue is that rc must move.
+//   `problem`  moves rc — but prints `✗` and is counted as a MISconfiguration. Nothing is misconfigured
+//              here: the box is running correctly, on defaults, while the operator believes otherwise.
+//              Calling that broken sends them looking for a fault that does not exist.
+//
+// So: prints `!` like the warning it is, counts toward rc like the problem it is.
+//
+// ── THE CONTRACT, STATED ONCE BECAUSE TWO ISSUES IN ONE BUNDLE BOTH CHANGE IT ───────────────────────
+//
+// rc 1 means: SOMETHING THE OPERATOR SET IS NOT DOING WHAT THEY THINK IT IS DOING.
+//   · `problem`      — set wrongly. A credential present but unusable is this (tracker issue 173): the
+//                      file exists, doctor called it enrolled, and the report then disclosed an outage
+//                      that never happened.
+//   · `inertSetting` — set, and not read at all (tracker issue 168).
+// rc 0 means: nothing set is being ignored or misapplied. An ABSENCE stays rc 0 — a fresh machine is
+// not a broken one, and `blocking` exists so an absence that stops the product is still said out loud.
+//
+// Written here rather than at either call site: 168 and 173 landed in one bundle, and two separate
+// answers to "when does doctor exit non-zero" is how the next reader gets a contradiction instead of a
+// contract.
+const inert = [];
+const inertSetting = (s) => { inert.push(s); say(`  ${style.warn("!")} ${s}`); };
 // EXPLANATORY PROSE, WRAPPED AT THE INDENT IT IS PRINTED AT ( — F17). Owner:
 // "the formatting is still quite bad — line after line". The specific bug is the wrap: paragraphs were
 // hand-broken at a fixed width and handed to the terminal, so on anything narrower than the author's
@@ -1835,6 +1865,45 @@ export async function runCheck() {
         home: homedir() })
     : null;
 
+  // ── SETTINGS THIS BUILD DOES NOT READ ( tracker issue 168) ────────────────────────────────────────
+  //
+  // THE SURFACE AN OPERATOR CHECKS AFTER AN UPGRADE, and until now the surface that told them
+  // everything was fine. Upgrading the production install across the `PRELIM_*` rename left thirteen
+  // configured settings with no reader in the new build; doctor exited 0 and mentioned none of them.
+  //
+  // EVERY ENVIRONMENT THE DEPLOYMENT ACTUALLY READS, not this shell's alone — the F34 lesson one step
+  // on. A hosted box's values live in the file the units load, so checking `process.env` here would
+  // pass a box whose units carry thirteen dead lines. Each source is named in its own row: "it is in
+  // your env file" and "it is in the units' environment" are different fixes.
+  //
+  // A source that could not be read is NOT reported as clean. `unitEnvironment` already distinguishes
+  // that, and an unreadable unit environment is said out loud rather than counted as zero dead names —
+  // an absence of evidence is not evidence of absence, and this whole check exists because something
+  // invisible was being read as fine.
+  {
+    const { retiredSpellingsIn, retiredSpellingLine } = await import(join(REPO, "shared", "env-aliases.mjs"));
+    const sources = [
+      { label: "your environment file", env: fileEnv, known: true },
+      { label: "this shell's environment", env: process.env, known: true },
+    ];
+    if (hosted) sources.push({ label: "the units' environment", env: unitEnv?.env, known: unitEnv?.known === true });
+
+    const seen = new Set();
+    let anyUnknown = false;
+    for (const src of sources) {
+      if (!src.known || !src.env) { if (src.label === "the units' environment") anyUnknown = true; continue; }
+      for (const row of retiredSpellingsIn(src.env)) {
+        // One row per NAME, not per source: a name set in both the file and the units is one thing to
+        // fix, and two rows would read as two faults.
+        if (seen.has(row.name)) continue;
+        seen.add(row.name);
+        inertSetting(`${retiredSpellingLine(row)} (found in ${src.label})`);
+      }
+    }
+    if (anyUnknown) warn(couldNotDetermine("retired setting names", unitEnv));
+    if (!seen.size && !anyUnknown) ok("no retired setting names — every configured name is one this build reads");
+  }
+
   // LINGERING, WHICH NOTHING ELSE CHECKS ( — F9). `--background` installs USER units,
   // and a user manager without lingering is torn down at logout: the units stop with the session and
   // NOTHING is written anywhere — no unit failure, no journal line, no port. The box reads healthy right
@@ -2135,8 +2204,14 @@ export async function runCheck() {
     for (const b of blockers) say(`    · ${b}`);
     say("");
   }
-  if (problems.length) {
-    say(`  ${problems.length} problem(s). Nothing was written — this command only reads.\n`);
+  if (problems.length || inert.length) {
+    const parts = [];
+    if (problems.length) parts.push(`${problems.length} problem(s)`);
+    // NAMED SEPARATELY, NOT FOLDED INTO THE PROBLEM COUNT. An ignored setting and a broken one need
+    // different actions from the reader — edit a file versus fix a credential — and a single number
+    // covering both sends them to the wrong one.
+    if (inert.length) parts.push(`${inert.length} setting(s) being ignored`);
+    say(`  ${parts.join(" and ")}. Nothing was written — this command only reads.\n`);
     return 1;
   }
   // The exit status stays 0: an unfinished install is not a broken one, and `--check` separates an
