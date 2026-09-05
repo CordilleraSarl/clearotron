@@ -48,7 +48,7 @@ import { REGISTER_PROVIDER } from "./driver.config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
 import { deriveOwnerScreen, ownerScreenNegative } from "./owner-screen.mjs";   // P2-B — the owner×element screen's own receipt
-import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, buildReconcileFollowup, readOkRecordUris,
+import { reconcileRecall, parseFindingsEndings, parseCrowdRulings, readOkRecordUris,
   unprovableRecordBases, applyDerivedBases,
   carryRecallFollowup, unendedSignature, recallReconciliationEvent, RECALL_RECONCILIATION_SCHEMA_VERSION } from "./recall-reconciliation.mjs";   // P2-A — the recall spine
 import { buildCrowdContext, CROWD_CONTEXT_AXIS } from "./crowd-context.mjs";
@@ -8225,7 +8225,13 @@ async function pipelineInner(job, opts = {}) {
 
   // ── (t1cd): the digest-trigger FUNNEL ──────────────────────────────────────────────────────
   // The digest-trigger funnel (; flag deleted post-E2E 2026-07-22): the queue
-  // (digest-queue.mjs) is the ONLY path to a non-fresh re-digest — escalation/envelope/screen-gate keep
+  // (digest-queue.mjs) is the only path to a non-fresh re-digest EXCEPT for the sites declared in
+  // digest-queue.mjs's DIGEST_OWN_PASS_EXEMPTIONS, which today is `enforceRecallReconciliation` alone
+  // and carries the measured reason it cannot be queued (queueing it would orphan the mint the last
+  // flush's own pass makes). That list is censused by an arm, so this sentence cannot go stale
+  // silently again — it read "the ONLY path" while one mechanism had always fired its own pass, and an
+  // invariant with an undeclared violation teaches the next reader the wrong rule (tracker issue 116).
+  // Everything else: escalation/envelope/screen-gate keep
   // their unit-level work but MINT durable queue items instead of firing their own opus digest pass, and
   // the queue settles in ONE consolidated flush at the frame-reopen seam (pre-synthesis), plus at most
   // one bounded LATE flush for post-synthesis triggers (a screen-gate mint on a resume past synthesis).
