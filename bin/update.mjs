@@ -58,6 +58,7 @@ import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — a pull cannot update an untracked bundle
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -312,6 +313,14 @@ export async function update(argv = process.argv.slice(2)) {
     console.error("  in a half-updated state and should not be run until that command succeeds.\n");
     return installed;
   }
+
+  // ── THE BUNDLE THE PULL COULD NOT UPDATE (tracker issue 160) ─────────────────────────────────────
+  //
+  // `portal-ui/dist` is untracked on the public tree, so `git pull` above can never bring it forward.
+  // A pull that changed `portal-ui/src` therefore leaves the built bundle behind, and every surface
+  // still read healthy. Rebuilding here — after `npm ci`, so the build has its dependencies — is what
+  // makes "the documented upgrade" actually finish.
+  rebuildIfStale({ repo: REPO, run: (cmd, args) => runInCheckout(cmd, args), say });
 
   // ── AND END WITH THE OVERLAY REPORT ──────────────────────────────────────────────────────────────
   //

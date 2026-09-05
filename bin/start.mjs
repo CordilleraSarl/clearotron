@@ -104,7 +104,7 @@ async function runTables() {
   const { PROVIDERS } = await import("./onboard.mjs");
   return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE };
 }
-import { spawn, execFileSync } from "node:child_process";
+import { spawn, spawnSync, execFileSync } from "node:child_process";
 import { storeInRepo, storeOutsideRepoMessage } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
@@ -127,6 +127,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { productIdentity } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names one spelling has set nothing that wins
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
+import { rebuildIfStale } from "../shared/bundle-rebuild.mjs";   // tracker issue 160 — never serve a bundle older than its sources
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
@@ -705,6 +706,18 @@ if (isMain) {
     catch (e) { fatal(e.message); }
     Object.assign(ports, moved);
   }
+
+  // ── A BUNDLE OLDER THAN ITS SOURCES IS REBUILT, NOT SERVED (tracker issue 160) ───────────────────
+  //
+  // Only reachable on a source checkout: `portal-ui/dist` is untracked there, so a `git pull` that
+  // changed `portal-ui/src` leaves the bundle behind and every surface still reads healthy. A packaged
+  // install ships the bundle with the sources and never enters the `stale` branch at all.
+  //
+  // Before anything is served, so the screen a reader gets is the one their tree describes.
+  rebuildIfStale({
+    repo: REPO, say,
+    run: (cmd, args) => spawnSync(cmd, args, { cwd: REPO, stdio: "inherit", shell: process.platform === "win32" }).status ?? 1,
+  });
 
   // Nobody is asked for this. A local install has one user, this machine already knows their name, and
   // the address never leaves the machine — `--user` is there for a reader who wants their real one, and
