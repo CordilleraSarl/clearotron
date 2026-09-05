@@ -48,6 +48,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { startupCensus, everyStartupValue, entrypointOf, valuesRefusedOver } from "../systemd/install-census.mjs";
+import { clientDoorPort, clientDoorAddress } from "../../shared/client-door.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const RENDER = join(REPO, "driver", "systemd", "render-units.mjs");
@@ -232,4 +233,54 @@ test("tracker issue 122 — the census reads refusals and not the prose above th
     ["MADE_UP_NAME"]);
   assert.deepEqual(valuesRefusedOver('const MADE_UP_NAME = 1;\nlog("FATAL: MADE_UP_NAME — refusing to start.");\n'), [],
     "a module constant was reported as an environment value the install must write");
+});
+
+test("tracker issue 191 — no shipped unit pins a value a box can legitimately differ on", () => {
+  // ── THE OTHER HALF OF THIS FILE'S QUESTION ───────────────────────────────────────────────────────
+  //
+  // Every arm above asks whether a value the units need has a WRITER. This one asks the opposite and it
+  // is the same defect wearing the other face: a value written into `~/.env` by the install, and then
+  // OVERRIDDEN by a literal baked into a unit. `Environment=` is applied after `EnvironmentFile=`, so a
+  // pinned line does not default anything — it silently wins over whatever the operator set, every time
+  // the units are reinstalled.
+  //
+  // One of the four units did this, with the host, the port and the allow-list. It took a running door
+  // down on a box with two installs: the reinstall pointed the second install's door at the first's
+  // port, and carried an allow-list pinned to a port the door was not bound to.
+  //
+  // A LITERAL, NOT A NAME. `PATH` is a list of paths and stays; `CLEAROTRON_NO_ENV_FILE=1` is a
+  // statement about how this process is launched, not a value a deployment differs on. What is refused
+  // is an address or a port written into a unit, which is what a second install collides with.
+  const ADDRESSY = /(\b\d{1,3}(?:\.\d{1,3}){3}\b|\blocalhost\b|:\d{2,5}\b)/;
+  const offenders = [];
+  for (const row of startupCensus()) {
+    const text = readFileSync(join(REPO, "driver", "systemd", row.unit), "utf8");
+    for (const line of text.split("\n")) {
+      if (!line.startsWith("Environment=")) continue;
+      const [name, ...rest] = line.slice("Environment=".length).split("=");
+      const value = rest.join("=");
+      if (name === "PATH") continue;
+      if (ADDRESSY.test(value)) offenders.push(`${row.unit}: ${line.trim()}`);
+    }
+  }
+  assert.deepEqual(offenders, [],
+    "a shipped unit pins an address or a port. Whatever it pins, the operator's own value in the env "
+    + "file loses to it on every reinstall, and nothing says so — which is how a door came up bound to "
+    + `one port with an allow-list naming another:\n${offenders.join("\n")}`);
+});
+
+test("tracker issue 191 — the values it stopped pinning are still written, and still defaulted", () => {
+  // Deleting a pin is only safe if something else answers. Both halves are checked because they cover
+  // different boxes: the install writes these, AND the code defaults to the same values the unit used
+  // to carry — so a box that was never configured behaves exactly as before.
+  const written = whatTheInstallWrites();
+  for (const name of ["CLIENT_MCP_HTTP_HOST", "CLIENT_MCP_HTTP_PORT", "CLIENT_MCP_ALLOWED_HOSTS"]) {
+    assert.ok(written.has(name),
+      `${name} is no longer written by the documented install, so removing it from the unit left a box `
+      + "with nothing to supply it");
+  }
+  assert.equal(clientDoorPort({}), 18811,
+    "the code default moved away from the value the unit used to pin, so an unconfigured box changed behaviour");
+  assert.equal(clientDoorAddress({}), "http://127.0.0.1:18811",
+    "the host default moved away from the value the unit used to pin");
 });
