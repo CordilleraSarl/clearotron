@@ -428,9 +428,11 @@ marketplaces, default classes/jurisdictions, own-brand names to exclude, deliver
 a bespoke risk framework. A job resolves to a profile by the **forwarder's email domain**; if nothing
 matches, the neutral Generic default applies.
 
-- **Bundled with the repo** (`driver/profiles/`): `generic.json` (the Generic default) plus three demo
-  customers — `aurora.json`, `zephyr.json`, `petcary.json` — so you can run and read the machinery
-  immediately. `driver/profiles/README.md` documents every field.
+- **Bundled with the package** (`driver/profiles/`): `generic.json` (the Generic default) and
+  `demo-brand-owner.json`, the account the demo runs as, so you can run and read the machinery
+  immediately. `driver/profiles/README.md` documents every field. (A clone carries three more —
+  `aurora`, `zephyr`, `petcary` — which are fixtures the test suite reads, not accounts to run
+  clearances for. They are excluded from the published package for exactly that reason.)
 - **Your real customers live outside the repo.** Point `CLEAROTRON_CUSTOMERS_DIR` at your own private
   config store and the engine loads *those* accounts instead. **Same engine, different config path** —
   the code carries no customer identities.
