@@ -13,7 +13,6 @@
     "test:full": "node ../scripts/test-run.mjs node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.112.5",
     "exceljs": "^4.4.0",
     "undici": "^6.24.1"
   }
