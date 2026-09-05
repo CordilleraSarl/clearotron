@@ -114,6 +114,12 @@ jobs:
       #
       # WITHOUT THIS THE PIPELINE DEADLOCKS RATHER THAN STOPPING: the bump never lands, the notes stay
       # pending, and the next merge tries to publish a version that is already on the registry.
+      #
+      # It runs on EVERY push that leaves a standing version pull request, not only the first, and there
+      # is no `continue-on-error` because enabling auto-merge on a pull request that already has it is
+      # idempotent — measured twice against the live pull request on 2026-09-05, exit 0 both times. If
+      # that ever stops being true, this step fails the version job and the release stops, which is the
+      # direction to fail in.
       - name: Let it merge itself once its checks pass
         if: steps.changesets.outputs.pullRequestNumber != ''
         env:
@@ -246,12 +252,19 @@ jobs:
               ;;
           esac
           DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
+          # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and in pre mode they come apart. `0.1.1-beta.0`
+          # goes to the `latest` CHANNEL by the owner's ruling, and it is still a pre-release. This was
+          # `[ "$DIST_TAG" != "latest" ]` further down, which marks a beta as the stable release on the
+          # page a reader opens to find out — so the flag is asked of the VERSION, by the function that
+          # exists for it.
+          PRERELEASE=$(node scripts/release-dist-tag.mjs "$VERSION" --prerelease)
           {
             echo "version=$VERSION"
             echo "dist_tag=$DIST_TAG"
+            echo "prerelease=$PRERELEASE"
             echo "tarball=release-artefacts/clearotron-$VERSION.tgz"
           } >> "$GITHUB_OUTPUT"
-          echo "Publishing clearotron@$VERSION to the \`$DIST_TAG\` channel."
+          echo "Publishing clearotron@$VERSION to the \`$DIST_TAG\` channel (prerelease: $PRERELEASE)."
 
       # The bundle is built, not committed, so a pack that runs before this ships a portal with nothing
       # to serve. The completeness check below is what proves it landed.
@@ -321,15 +334,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.what.outputs.version }}
-          DIST_TAG: ${{ steps.what.outputs.dist_tag }}
+          PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
         run: |
           set -euo pipefail
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
+          # Read from the VERSION above, never from the channel — see the step that computed it.
           PRERELEASE=""
-          if [ "$DIST_TAG" != "latest" ]; then PRERELEASE="--prerelease"; fi
+          if [ "$PRERELEASE_FLAG" = "true" ]; then PRERELEASE="--prerelease"; fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md

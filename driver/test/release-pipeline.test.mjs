@@ -125,9 +125,35 @@ test("tracker 97 during the pre-release phase `latest` is the pre-release, and t
   // THE GITHUB RELEASE'S FLAG COMES FROM THE VERSION, never from the channel. In pre mode the channel is
   // `latest` for a version that is very much a pre-release, and deriving the flag from the channel would
   // mark it stable on the releases page.
-  assert.equal(isPrerelease("0.1.1-beta.0"), true);
+  //
+  // THE WORKFLOW DID EXACTLY THAT. `PRERELEASE=""; if [ "$DIST_TAG" != "latest" ]` — with the inversion
+  // in place, `DIST_TAG` is `latest` for `0.1.1-beta.0`, so the flag was never passed and the first beta
+  // would have gone up as the stable release. The function existed, was exported, was asserted here, and
+  // the pipeline never called it: a check present at one stage and absent at the next.
+  const workflow = read(WORKFLOW);
+  assert.match(workflow, /release-dist-tag\.mjs "\$VERSION" --prerelease/,
+    "the pipeline does not ask the VERSION whether it is a pre-release");
+  // COMMENTS DROPPED FIRST. The workflow explains the old form in prose right beside the new one, and an
+  // arm that reads the whole file refuses the explanation — the same way an earlier arm here matched
+  // `/PAT/i` against `--pack-destination`. A guard that fires on ordinary English is a guard people delete.
+  const executable = workflow.split("\n").filter((l) => !/^\s*#/.test(l)).join("\n");
+  assert.ok(!/DIST_TAG" != "latest"/.test(executable),
+    "the GitHub release's prerelease flag is derived from the CHANNEL again, so a beta on `latest` goes "
+    + "up as the stable release");
+  assert.match(workflow, /PRERELEASE_FLAG" = "true"/, "the flag the step computed is not the one it reads");
+
+  // The member that broke: channel and flag disagreeing, which only happens in pre mode.
   assert.equal(distTag("0.1.1-beta.0", { preMode: true }), STABLE);
+  assert.equal(isPrerelease("0.1.1-beta.0"), true);
+  assert.notEqual(isPrerelease("0.1.1-beta.0"), distTag("0.1.1-beta.0", { preMode: true }) !== STABLE);
   assert.equal(isPrerelease("0.1.1"), false);
+
+  // AND A VERSION IT CANNOT READ REFUSES rather than answering `false`, which is the unsafe answer: it
+  // marks the release stable — the state a reader trusts most — off a string nobody could parse.
+  for (const bad of ["v0.1.1", "", "0.1", "latest", null]) {
+    assert.throws(() => isPrerelease(bad), /not a version this can read/,
+      `isPrerelease(${JSON.stringify(bad)}) called it stable instead of refusing`);
+  }
 
   // `pre exit` LEAVES THE FILE BEHIND with mode "exit". Reading the file's existence as the answer would
   // keep publishing stable versions as though they were pre-releases, for ever.

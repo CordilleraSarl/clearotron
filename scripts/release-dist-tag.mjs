@@ -90,21 +90,42 @@ export function preModeFrom(preJsonText) {
  *
  * READ FROM THE VERSION, never from the channel. In pre mode the channel is `latest` for a version that
  * is very much a pre-release, so deriving this from `distTag` would mark the GitHub release as stable.
+ *
+ * A VERSION IT CANNOT READ REFUSES, exactly as `distTag` does, and for the same reason: `false` is the
+ * unsafe answer. It marks the release stable, which is the state a reader trusts most, off a string
+ * nobody could parse.
  */
 export function isPrerelease(version) {
   const m = SEMVER.exec(String(version ?? "").trim());
-  return !!m && !!m[4];
+  if (!m) {
+    throw new Error(`release-dist-tag: "${version}" is not a version this can read, so whether it is a `
+      + "pre-release cannot be answered. Refusing rather than calling it stable.");
+  }
+  return !!m[4];
 }
 
 function main() {
-  const version = process.argv[2];
+  const args = process.argv.slice(2);
+  // `--prerelease` answers the OTHER question about the same version, and it is a separate flag because
+  // the two answers come apart in pre mode and the release is what shows it: `0.1.1-beta.0` publishes to
+  // the `latest` CHANNEL by the owner's ruling, and is still a pre-release. Deriving the GitHub release's
+  // flag from the channel — `[ "$DIST_TAG" != "latest" ]`, which is what the workflow did — marks a beta
+  // as the stable release on the releases page, which is the one place a reader looks to find out.
+  const wantsFlag = args.includes("--prerelease");
+  const version = args.find((a) => !a.startsWith("--"));
   if (!version) {
-    console.error("usage: node scripts/release-dist-tag.mjs <version>");
+    console.error("usage: node scripts/release-dist-tag.mjs <version> [--prerelease]");
     process.exitCode = 2;
     return;
   }
   const preJson = join(dirname(fileURLToPath(import.meta.url)), "..", ".changeset", "pre.json");
   try {
+    if (wantsFlag) {
+      // From the VERSION, and pre mode is not consulted at all: a version either carries a pre-release
+      // identifier or it does not, and no channel decision changes that.
+      process.stdout.write(String(isPrerelease(version)) + "\n");
+      return;
+    }
     const preMode = preModeFrom(existsSync(preJson) ? readFileSync(preJson, "utf8") : null);
     process.stdout.write(distTag(version, { preMode }) + "\n");
   } catch (e) {
