@@ -4,6 +4,21 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.1.4
+
+### Fixed
+
+- A report now says a case-law source could not be confirmed, rather than saying this installation does not have it.
+- Connecting an assistant now says what went wrong when it stops part-way, and what it had already changed.
+- Checking a settings file now reports on the file you named, not the one this machine happens to use.
+- The portal now runs on the current React, TypeScript and Vite, and its download is smaller because build comments no longer ship to the browser.
+- The case-law sign-in instructions now produce a credential that survives its first renewal, and verify that it does.
+
+### For operators
+
+- The live-surface check no longer calls a healthy installation broken over a service file the product never shipped.
+- The end-to-end harness now recognises the worker draining queues here, instead of offering to start a second one.
+
 ## 0.1.3
 
 ### For operators

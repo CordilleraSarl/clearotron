@@ -1,5 +1,11 @@
 # portal-ui
 
+## 0.1.4
+
+### Patch Changes
+
+- a637d3e: Fixed: The portal now runs on the current React, TypeScript and Vite, and its download is smaller because build comments no longer ship to the browser.
+
 ## 0.1.3
 
 ## 0.1.2
