@@ -3,6 +3,14 @@
   "type": "module",
   "version": "0.1.1-beta.0",
   "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CordilleraSarl/clearotron.git"
+  },
+  "homepage": "https://github.com/CordilleraSarl/clearotron#readme",
+  "bugs": {
+    "url": "https://github.com/CordilleraSarl/clearotron/issues"
+  },
   "description": "Clearotron — trademark-clearance engine: deterministic orchestration driver + MCP interrogation server. Provider-agnostic, model-agnostic, runs headless (no gateway).",
   "engines": {
     "node": ">=22"
