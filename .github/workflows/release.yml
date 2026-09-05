@@ -34,6 +34,19 @@ on:
   push:
     branches: [main]
     tags: ['v*']
+  # WHY A CRON IS HERE, AND WHY DELETING IT STOPS EVERY RELEASE. The version pull request merges itself,
+  # and GitHub performs that merge with the built-in `GITHUB_TOKEN` — a push made with that token starts
+  # NO workflow run. So the merge that cuts the version fires nothing at all: no CI, no release, no
+  # error. Measured here 2026-09-05 on commit `65e634a6`, with five Dependabot runs arriving on the same
+  # commit within seconds as the control — the suppression is on the token, not on the repository.
+  #
+  # This is the same rule the tag paragraph below names, one step earlier, and there is no way round it
+  # that this design permits: the alternative is an app or personal credential in the repository, which
+  # is the one thing the publishing design forbids. So nothing waits for that push. Every five minutes,
+  # `pending` asks main a question instead — is there a version here with no tag — and answers it with
+  # the same function the push path uses.
+  schedule:
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -149,15 +162,58 @@ jobs:
         id: cut
         run: node scripts/release-cut-decision.mjs
 
+  # THE JOB THAT NOTICES. It asks main one question — does the version on this commit have a tag — and
+  # it is the same function the push path calls, from the same commit, so there are not two answers to
+  # one question. Nothing here is new logic; the trigger is the only new thing.
+  #
+  # IT IS IDEMPOTENT AND IT IS QUIET. A run finding nothing to cut exits 0 having said so; a run finding
+  # the tag already present says that and exits 0. Only an unpublished cut turns `cut` true, and the
+  # `publish` job below is what acts on it — this job has read-only permissions and cannot publish
+  # anything itself.
+  #
+  # NO `npm ci`. Both scripts it runs import nothing but Node builtins and one file from `shared/`, and
+  # this job wakes up every five minutes: an install here would be the whole cost of the mechanism.
+  pending:
+    name: Is a cut sitting on main unpublished
+    if: github.event_name == 'schedule' && github.repository == 'CordilleraSarl/clearotron'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      cut: ${{ steps.cut.outputs.cut }}
+      version: ${{ steps.cut.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+
+      - name: Did a merge leave a version on main with no tag
+        id: cut
+        run: node scripts/release-cut-decision.mjs
+
   publish:
     name: Publish the release to npm
-    needs: [version]
+    # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
+    # on the cron, so on any given run one of them did not happen — which is why the condition opens with
+    # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
+    # "not this path" instead of blocking the job.
+    needs: [version, pending]
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
       && (startsWith(github.ref, 'refs/tags/v')
           || github.event_name == 'workflow_dispatch'
-          || needs.version.outputs.cut == 'true')
+          || needs.version.outputs.cut == 'true'
+          || needs.pending.outputs.cut == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is
@@ -222,7 +278,10 @@ jobs:
             # be a rehearsal of nothing.
             echo "This is a rehearsal: the publish step will run with --dry-run."
             echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "push" ]; then
+          elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            # `schedule` is a real publish, not a rehearsal: it is the path a self-merged version takes,
+            # and it reaches here only when `pending` found a version on main with no tag. A scheduled
+            # run's ref IS the default branch, so the branch check below holds it to the same rule.
             echo "dry_flag=" >> "$GITHUB_OUTPUT"
             # ── THE BRANCH, EXPLICITLY, BECAUSE THESE GUARDS ARE NOW THE WHOLE GATE ────────────────────
             #
@@ -239,7 +298,7 @@ jobs:
                 ;;
             esac
           else
-            echo "::error::A release publishes on a push. This run is a ${{ github.event_name }}."
+            echo "::error::A release publishes on a push, or on the cron that notices a self-merged cut. This run is a ${{ github.event_name }}."
             exit 1
           fi
           case "${{ github.ref }}" in
