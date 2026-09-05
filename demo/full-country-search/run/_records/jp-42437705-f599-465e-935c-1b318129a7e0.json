@@ -1,0 +1,340 @@
+{
+  "uri": "/mark/jp/42437705-f599-465e-935c-1b318129a7e0",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "42437705-f599-465e-935c-1b318129a7e0",
+  "applicationNumber": "2000-066547",
+  "registrationNumber": null,
+  "applicationDate": "2000-06-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＰＯＷＥＲＱＯＲ",
+  "markTransliteration": "KYUUOOAARU PAWAAKAA PAWAAKOORU",
+  "markTranslation": "POWERQOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "直流電源装置に対する直流変換器",
+      "translation_language": "en",
+      "translation": "DC converter for DC power supply"
+    }
+  ],
+  "owner": "SYNQOR INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KURAUCHI MOTOHIRO",
+  "priorities": [
+    {
+      "priorityDate": "20000615"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "SYNQOR INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "シンカー・インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DC converter for DC power supply",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "直流電源装置に対する直流変換器"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "07E01",
+          "natGoodsServicesDescription": "Processed glass not for buildings"
+        },
+        {
+          "natClassNumber": "09A01",
+          "natGoodsServicesDescription": "Electric arc welding machines, Electric welding apparatus"
+        },
+        {
+          "natClassNumber": "09A06",
+          "natGoodsServicesDescription": "Ozonizers, Electrolyzers"
+        },
+        {
+          "natClassNumber": "09A45",
+          "natGoodsServicesDescription": "Egg candlers"
+        },
+        {
+          "natClassNumber": "09D01",
+          "natGoodsServicesDescription": "Cash registers, Coin counting and sorting machines, Operation recording machines, Photocopying machines, Manually operated calculators, Drawing or drafting machines, Time stamping machines, Time recording apparatus, Electric calculators, Punch card machines, Voting machines, Billing machines, Apparatus to check mail stamping"
+        },
+        {
+          "natClassNumber": "09E21",
+          "natGoodsServicesDescription": "Vending machines"
+        },
+        {
+          "natClassNumber": "09E22",
+          "natGoodsServicesDescription": "Gasoline station equipment"
+        },
+        {
+          "natClassNumber": "09E26",
+          "natGoodsServicesDescription": "Coin-operated gates for parking lots"
+        },
+        {
+          "natClassNumber": "09E29",
+          "natGoodsServicesDescription": "Power floor cleaners"
+        },
+        {
+          "natClassNumber": "09G01",
+          "natGoodsServicesDescription": "Life saving apparatus and equipment"
+        },
+        {
+          "natClassNumber": "09G02",
+          "natGoodsServicesDescription": "Fire extinguishers, Fire hydrants, Fire hose nozzles, Sprinkler systems for fire protection"
+        },
+        {
+          "natClassNumber": "09G04",
+          "natGoodsServicesDescription": "Fire alarms, Gas leakage warning apparatus, Anti-theft warning apparatus"
+        },
+        {
+          "natClassNumber": "09G05",
+          "natGoodsServicesDescription": "Protective helmets"
+        },
+        {
+          "natClassNumber": "09G06",
+          "natGoodsServicesDescription": "Railway signal equipment"
+        },
+        {
+          "natClassNumber": "09G07",
+          "natGoodsServicesDescription": "Vehicle breakdown warning triangles, Luminous or mechanical road signs"
+        },
+        {
+          "natClassNumber": "09G49"
+        },
+        {
+          "natClassNumber": "09G51",
+          "natGoodsServicesDescription": "Diving apparatus"
+        },
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Amusement park or play ground apparatus"
+        },
+        {
+          "natClassNumber": "09G55",
+          "natGoodsServicesDescription": "Electric automatic door openers"
+        },
+        {
+          "natClassNumber": "09G64",
+          "natGoodsServicesDescription": "Vehicle driver training simulators"
+        },
+        {
+          "natClassNumber": "09G65",
+          "natGoodsServicesDescription": "Sports training simulators"
+        },
+        {
+          "natClassNumber": "10A01",
+          "natGoodsServicesDescription": "Physical or chemical apparatus and instruments"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic, cinematographic or optical apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11A06",
+          "natGoodsServicesDescription": "Electric flat irons, Electrically heated hair curlers, Electric buzzers"
+        },
+        {
+          "natClassNumber": "11A07"
+        },
+        {
+          "natClassNumber": "11A08"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "11D01",
+          "natGoodsServicesDescription": "Magnetic cores, Resistance wires, Electrodes"
+        },
+        {
+          "natClassNumber": "12A01",
+          "natGoodsServicesDescription": "Fire boats"
+        },
+        {
+          "natClassNumber": "12A03",
+          "natGoodsServicesDescription": "Rockets"
+        },
+        {
+          "natClassNumber": "12A05",
+          "natGoodsServicesDescription": "Fire engines, Cigar lighters for automobiles"
+        },
+        {
+          "natClassNumber": "17A04",
+          "natGoodsServicesDescription": "Gloves for protection against accidents"
+        },
+        {
+          "natClassNumber": "17A05",
+          "natGoodsServicesDescription": "Dust masks, Gas masks, Welding masks"
+        },
+        {
+          "natClassNumber": "17A06",
+          "natGoodsServicesDescription": "Fireproof clothing"
+        },
+        {
+          "natClassNumber": "17A08"
+        },
+        {
+          "natClassNumber": "17A09"
+        },
+        {
+          "natClassNumber": "17A10"
+        },
+        {
+          "natClassNumber": "19B33"
+        },
+        {
+          "natClassNumber": "19B55"
+        },
+        {
+          "natClassNumber": "23B01",
+          "natGoodsServicesDescription": "Eyeglasses"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Video game apparatus for personal use"
+        },
+        {
+          "natClassNumber": "24B02",
+          "natGoodsServicesDescription": "Slot machines"
+        },
+        {
+          "natClassNumber": "24C01",
+          "natGoodsServicesDescription": "Weight belt, Wetsuits, Inflatable swimming floats, Air tanks, Flutter boards, Regulators"
+        },
+        {
+          "natClassNumber": "24C03"
+        },
+        {
+          "natClassNumber": "24C04"
+        },
+        {
+          "natClassNumber": "24E01",
+          "natGoodsServicesDescription": "Records, metronomes"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "25B01",
+          "natGoodsServicesDescription": "Calculating scales, slide-rules"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes"
+        }
+      ]
+    },
+    "id": "42437705-f599-465e-935c-1b318129a7e0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20000615"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KURAUCHI MOTOHIRO",
+        "representativeNativeName": "倉内　基弘"
+      },
+      {
+        "representativeName": "KAZAMA HIROSHI",
+        "representativeNativeName": "風間　弘志"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000615",
+        "applicationNumber": "2000-066547"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20240213112926",
+    "wordMarkSpecification": {
+      "markTranslation": "POWERQOR",
+      "markTransliteration": "KYUUOOAARU PAWAAKAA PAWAAKOORU",
+      "markVerbalElementText": "ＰＯＷＥＲＱＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/42437705-f599-465e-935c-1b318129a7e0",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.710Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

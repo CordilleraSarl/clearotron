@@ -1,0 +1,24 @@
+{
+  "ts": "2026-09-02T17:25:22.322Z",
+  "verdict": "CONDITIONAL",
+  "reasons": [
+    "Search the US, EU, UK, Japanese, Korean and Chinese registers directly for any Xylem Inc. mark resembling VENQORI.",
+    "Limit the class 9 and 42 wording to water-quality monitoring so it does not read across payment, security and business software.",
+    "Ask EU counsel whether the earlier QORI word marks could be raised against VENQORI read as one word.",
+    "floor_duty_undischarged:4 of 430 floor row(s) — every floor is a LIVE in-class identical or near-identical record and the duty is uncapped: each is placed at any tier, or named by its record id with a one-line ground. These came back neither: VENTURI (/mark/ae/2c9d1f9d-ec10-49f7-adbd-4997707ccd65); VENTURI (/mark/kw/16cf0b84-7ba8-4d49-8aba-dcb8a835b7ab); QORM (/mark/om/bc4a4abd-2853-45f5-ab8f-655508938c13); VENTURI (/mark/qa/941b9f10-2dff-4ed0-9902-05cc4839f5a8). The report ships with these named rather than being withheld."
+  ],
+  "kinds": {
+    "legalActions": true
+  },
+  "tier": "Moderate",
+  "badge": "l3",
+  "gaugeIndex": 2,
+  "maxComposite": 0,
+  "band": {
+    "label": "Moderate",
+    "rankFromTop": 3,
+    "scale": 4
+  },
+  "statement": "Moderate — conditional on: No search of Xylem Inc.'s holdings could be completed on the register used this run (and 3 more).",
+  "stance": "conditional"
+}

@@ -1,0 +1,225 @@
+{
+  "uri": "/mark/wo/d5fe085c-c8b7-428f-9533-d75acd00424e",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "d5fe085c-c8b7-428f-9533-d75acd00424e",
+  "applicationNumber": null,
+  "registrationNumber": "1833770",
+  "applicationDate": null,
+  "registrationDate": "2024-08-26",
+  "expiryDate": "2034-08-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-01-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Probes for assessing soil nutrient content and soil health; probes for assessing soil and turf conditions; probes for analyzing the fertility and nutrient reading of soil samples; probes to determine and measure soil health and properties, quality and fertility at different depths; depth sensors; probes for environmental monitoring, soil irrigation and soil nutrient management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Soil analysis; soil and soil samples analysis services using probes for measuring soil temperature and conditions; conducting of technical feasibility studies and technical consulting and advice relating to the use of probes for measuring soil temperature and conditions in the field of environmental science; technical environmental consultancy in the field of environmental science.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Sondes pour l'évaluation de la santé de sols et de contenus nutritifs de sols; sondes pour l'évaluation de conditions de gazons et de sols; sondes pour l'analyse de la fertilité et de la lecture de nutriments d'échantillons de sols; sondes pour déterminer et mesurer la qualité et la fertilité, la santé et les propriétés de sols à différentes profondeurs; capteurs de profondeur; sondes pour la surveillance de l'environnement, l'irrigation de sols et la gestion de nutriments de sols.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Analyses des sols; services d'analyse de sols et d'échantillons de sols à l'aide de sondes pour le mesurage de la température et de l'état de sols; réalisation d'études de faisabilité technique et services de conseillers et prestation de conseils techniques en lien avec l'utilisation de sondes pour le mesurage de la température et de l'état de sols dans le domaine des sciences de l'environnement; services de conseillers techniques en matière d'environnement dans le domaine des sciences de l'environnement.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Sondas para la evaluación del contenido de nutrientes del suelo y la salud del suelo; sondas para evaluar el suelo y las condiciones de césped; sondas para analizar la fertilidad y la lectura de muestras de suelos; sondas para determinar y medir la salud y las propiedades de suelos, la calidad y la fertilidad en diferentes longitudes; sensores de profundidad; sondas para la monitorzación del medio ambiente, el riego de suelos y la gestión de nutrientes del suelo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Análisis de suelos; servicios de análisis de suelos y muestras de suelos mediante sondas para medir la temperatura y el estado del suelo; realización de estudios de viabilidad técnica y consultoría y asesoramiento técnicos relacionados con el uso de sondas para medir la temperatura y las condiciones del suelo en el ámbito de las ciencias medioambientales; consultoría técnica medioambiental en el ámbito de las ciencias medioambientales.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Biogénie Canada Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "CA",
+      "priorityCountryName": "Canada",
+      "priorityDate": "20240226",
+      "priorityNumber": "2312216"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20240226",
+          "basicApplicationNumber": "2312216"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "CA"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "FR",
+      "GB",
+      "US"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4535, boulevard Wilfrid-Hamel, Bureau 250 Québec G1P 2J7",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantName": "Biogénie Canada Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20240226",
+            "basicApplicationNumber": "2312216"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "CA"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "FR",
+      "GB",
+      "US"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Probes for assessing soil nutrient content and soil health; probes for assessing soil and turf conditions; probes for analyzing the fertility and nutrient reading of soil samples; probes to determine and measure soil health and properties, quality and fertility at different depths; depth sensors; probes for environmental monitoring, soil irrigation and soil nutrient management."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Soil analysis; soil and soil samples analysis services using probes for measuring soil temperature and conditions; conducting of technical feasibility studies and technical consulting and advice relating to the use of probes for measuring soil temperature and conditions in the field of environmental science; technical environmental consultancy in the field of environmental science."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Sondes pour l'évaluation de la santé de sols et de contenus nutritifs de sols; sondes pour l'évaluation de conditions de gazons et de sols; sondes pour l'analyse de la fertilité et de la lecture de nutriments d'échantillons de sols; sondes pour déterminer et mesurer la qualité et la fertilité, la santé et les propriétés de sols à différentes profondeurs; capteurs de profondeur; sondes pour la surveillance de l'environnement, l'irrigation de sols et la gestion de nutriments de sols."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Analyses des sols; services d'analyse de sols et d'échantillons de sols à l'aide de sondes pour le mesurage de la température et de l'état de sols; réalisation d'études de faisabilité technique et services de conseillers et prestation de conseils techniques en lien avec l'utilisation de sondes pour le mesurage de la température et de l'état de sols dans le domaine des sciences de l'environnement; services de conseillers techniques en matière d'environnement dans le domaine des sciences de l'environnement."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Sondas para la evaluación del contenido de nutrientes del suelo y la salud del suelo; sondas para evaluar el suelo y las condiciones de césped; sondas para analizar la fertilidad y la lectura de muestras de suelos; sondas para determinar y medir la salud y las propiedades de suelos, la calidad y la fertilidad en diferentes longitudes; sensores de profundidad; sondas para la monitorzación del medio ambiente, el riego de suelos y la gestión de nutrientes del suelo."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Análisis de suelos; servicios de análisis de suelos y muestras de suelos mediante sondas para medir la temperatura y el estado del suelo; realización de estudios de viabilidad técnica y consultoría y asesoramiento técnicos relacionados con el uso de sondas para medir la temperatura y las condiciones del suelo en el ámbito de las ciencias medioambientales; consultoría técnica medioambiental en el ámbito de las ciencias medioambientales."
+        }
+      ]
+    },
+    "id": "d5fe085c-c8b7-428f-9533-d75acd00424e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "CA",
+        "priorityCountryName": "Canada",
+        "priorityDate": "20240226",
+        "priorityNumber": "2312216"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "01"
+      }
+    ],
+    "recordLastUpdated": "20260705",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340826",
+      "lastPublicationDate": "20250116",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240826",
+        "registrationNumber": "1833770"
+      }
+    },
+    "version": "20260705020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/wo/d5fe085c-c8b7-428f-9533-d75acd00424e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.181Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

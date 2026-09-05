@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/jp/25d24ec1-8041-4be8-bda1-5e46251e0670",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "25d24ec1-8041-4be8-bda1-5e46251e0670",
+  "applicationNumber": "2007-115130",
+  "registrationNumber": "5123775",
+  "applicationDate": "2007-11-13",
+  "registrationDate": "2008-03-28",
+  "expiryDate": "2018-03-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2008-04-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＣＬＥＡＲ　ＥＳＳＥＮＴＩＡＬＳ",
+  "markTransliteration": "KURIAESSENSHARUZU",
+  "markTranslation": "CLEAR ESSENTIALS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯科及び歯列矯正の分野における教育・訓練",
+      "translation_language": "en",
+      "translation": "Education and training in the field of dentistry and orthodontics"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20070515"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training in the field of dentistry and orthodontics",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯科及び歯列矯正の分野における教育・訓練"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        }
+      ]
+    },
+    "id": "25d24ec1-8041-4be8-bda1-5e46251e0670",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20070515"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20071113",
+        "applicationNumber": "2007-115130"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20180328",
+      "lastPublicationDate": "20080430",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20080328",
+        "registrationNumber": "5123775"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "CLEAR ESSENTIALS",
+      "markTransliteration": "KURIAESSENSHARUZU",
+      "markVerbalElementText": "ＣＬＥＡＲ　ＥＳＳＥＮＴＩＡＬＳ"
+    }
+  },
+  "_uri": "/mark/jp/25d24ec1-8041-4be8-bda1-5e46251e0670",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

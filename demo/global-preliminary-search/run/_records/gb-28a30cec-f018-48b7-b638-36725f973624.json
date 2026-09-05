@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/gb/28a30cec-f018-48b7-b638-36725f973624",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "28a30cec-f018-48b7-b638-36725f973624",
+  "applicationNumber": "3891370",
+  "registrationNumber": "3891370",
+  "applicationDate": "2023-03-21",
+  "registrationDate": "2023-06-16",
+  "expiryDate": "2033-03-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    29,
+    30,
+    32,
+    33,
+    39,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        29
+      ],
+      "language": "en",
+      "description": "Meat, fish, poultry and game; meat extracts; preserved, frozen, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs; milk, cheese, butter, yogurt and other milk products; oils and fats for food.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "en",
+      "description": "Coffee, tea, cocoa and substitutes therefor; rice, pasta and noodles; tapioca and sago; flour and preparations made from cereals; bread, pastries and confectionery; chocolate; ice cream, sorbets and other edible ices; sugar, honey, treacle; yeast, baking-powder; salt, seasonings, spices, preserved herbs; vinegar, sauces and other condiments; ice (frozen water).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": "en",
+      "description": "Beers; non-alcoholic beverages; mineral and aerated waters; fruit beverages and fruit juices; syrups and other preparations for making non-alcoholic beverages.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": "en",
+      "description": "Alcoholic beverages, except beers; alcoholic preparations for making beverages; wine; spirits.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Food and drink delivery services; delivery of food by restaurants.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; entertainment; sporting and cultural activities; organisation of festivals.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Restaurant services; services for the provision of food and drink; bar services; catering services; mobile catering services; outside catering services; take-away food and drink services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vori Greek Kitchen Ltd",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Reddie & Grose LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "120 Holland Park Avenue, London W11 4UA",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Vori Greek Kitchen Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "29",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Meat, fish, poultry and game; meat extracts; preserved, frozen, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs; milk, cheese, butter, yogurt and other milk products; oils and fats for food."
+        },
+        {
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Coffee, tea, cocoa and substitutes therefor; rice, pasta and noodles; tapioca and sago; flour and preparations made from cereals; bread, pastries and confectionery; chocolate; ice cream, sorbets and other edible ices; sugar, honey, treacle; yeast, baking-powder; salt, seasonings, spices, preserved herbs; vinegar, sauces and other condiments; ice (frozen water)."
+        },
+        {
+          "intClassNumber": "32",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Beers; non-alcoholic beverages; mineral and aerated waters; fruit beverages and fruit juices; syrups and other preparations for making non-alcoholic beverages."
+        },
+        {
+          "intClassNumber": "33",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Alcoholic beverages, except beers; alcoholic preparations for making beverages; wine; spirits."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Food and drink delivery services; delivery of food by restaurants."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; entertainment; sporting and cultural activities; organisation of festivals."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Restaurant services; services for the provision of food and drink; bar services; catering services; mobile catering services; outside catering services; take-away food and drink services."
+        }
+      ]
+    },
+    "id": "28a30cec-f018-48b7-b638-36725f973624",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2023/014"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The White Chapel Building, 10 Whitechapel High Street, London E1 8QS",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Reddie & Grose LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230321",
+        "applicationNumber": "3891370"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330321",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230616",
+        "registrationNumber": "3891370"
+      }
+    },
+    "version": "20250627222435",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VORI"
+    }
+  },
+  "_uri": "/mark/gb/28a30cec-f018-48b7-b638-36725f973624",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:11.871Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/mx/63455df7-866d-45fc-bba6-d594de203f64",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "63455df7-866d-45fc-bba6-d594de203f64",
+  "applicationNumber": "3500654",
+  "registrationNumber": "3012713",
+  "applicationDate": "2025-11-11",
+  "registrationDate": "2026-03-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "BORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Cantantes (servicios de -);",
+      "translation_language": "en",
+      "translation": "SINGERS (SERVICES OF -);"
+    }
+  ],
+  "owner": "CARLOS ENRIQUE OLAYO LOPEZ",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "CARLOS ENRIQUE OLAYO LOPEZ",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "28 NUM. EXT. LT 11 NUM. INT. MZ 102, RG 227, BENITO JUAREZ, QUINTANA ROO 77516",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "CARLOS ENRIQUE OLAYO LOPEZ"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SINGERS (SERVICES OF -);",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Cantantes (servicios de -);"
+        }
+      ]
+    },
+    "id": "63455df7-866d-45fc-bba6-d594de203f64",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0416R1",
+        "publicationYear": "2026"
+      }
+    ],
+    "recordLastUpdated": "20260422",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "28 NUM. EXT. LT 11 NUM. INT. MZ 102, RG 227, BENITO JUAREZ, QUINTANA ROO 77516, MEXICO"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "28 NUM. EXT. MZ 102 NUM. INT. LT 11, RG 227, BENITO JUAREZ, QUINTANA ROO 77516, MEXICO",
+        "representativeName": "CARLOS ENRIQUE OLAYO LOPEZ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251111",
+        "applicationNumber": "3500654"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260325",
+        "registrationNumber": "3012713"
+      }
+    },
+    "version": "20260422020100",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "BORI"
+    }
+  },
+  "_uri": "/mark/mx/63455df7-866d-45fc-bba6-d594de203f64",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

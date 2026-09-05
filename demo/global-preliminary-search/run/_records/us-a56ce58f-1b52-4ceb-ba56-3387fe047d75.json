@@ -1,0 +1,280 @@
+{
+  "uri": "/mark/us/a56ce58f-1b52-4ceb-ba56-3387fe047d75",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a56ce58f-1b52-4ceb-ba56-3387fe047d75",
+  "applicationNumber": "88900551",
+  "registrationNumber": "6338309",
+  "applicationDate": "2020-05-05",
+  "registrationDate": "2021-05-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2021-02-16"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LEAVE NO RIM NETLESS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Amateur youth sports services, namely, organizing and providing youth sports activities; Charitable services, namely, providing sporting goods to underprivileged children; Education services, namely, one-on-one mentoring in the fields of physical activity and healthcare; Educational and entertainment services, namely, providing motivational and educational speakers in the field of self- and personal improvement; Operation of sports camps; Organizing sporting events, namely, basketball competitions; Organizing, arranging and conducting basketball competition events, the proceeds of which are donated to charity; Physical education; Physical education services; Providing educational mentoring services and programs in the field of physical activity and healthcare; Providing facilities for basketball and fitness training; Providing sports facilities; Providing various facilities for an array of sporting events, sports and athletic competitions and awards programmes; Sports camp services; Sports refereeing and officiating; Sports training services; Sports training services in the field of basketball and fitness; Physical fitness assessment services for sports training purposes",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "netz 4 Life",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780, USAM",
+        "applicantAddressCity": "Tustin",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "92780",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "13681 Newport Ave., Ste.8-163",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "netz 4 Life"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Amateur youth sports services, namely, organizing and providing youth sports activities; Charitable services, namely, providing sporting goods to underprivileged children; Education services, namely, one-on-one mentoring in the fields of physical activity and healthcare; Educational and entertainment services, namely, providing motivational and educational speakers in the field of self- and personal improvement; Operation of sports camps; Organizing sporting events, namely, basketball competitions; Organizing, arranging and conducting basketball competition events, the proceeds of which are donated to charity; Physical education; Physical education services; Providing educational mentoring services and programs in the field of physical activity and healthcare; Providing facilities for basketball and fitness training; Providing sports facilities; Providing various facilities for an array of sporting events, sports and athletic competitions and awards programmes; Sports camp services; Sports refereeing and officiating; Sports training services; Sports training services in the field of basketball and fitness; Physical fitness assessment services for sports training purposes"
+        }
+      ]
+    },
+    "id": "a56ce58f-1b52-4ceb-ba56-3387fe047d75",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260504",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20210504",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210216",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20210216",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20210127",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20210108",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20210108",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20210108",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20210108",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20210108",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200828",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200828",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200828",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200730",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20200516",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20200508",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780, USAM",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "netz 4 Life",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste.8-163"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780, USAM",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "netz 4 Life",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste.8-163"
+      },
+      {
+        "address": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780, USAM",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "netz 4 Life",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste.8-163"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "13681 Newport Ave., Ste.8-163, Tustin, CA, 92780, USAM",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "netz 4 Life",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste.8-163"
+      }
+    ],
+    "recordLastUpdated": "20260506",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "TUSTIN, CA 92780, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "TUSTIN, CA 92780",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "NETZ 4 LIFE NETZ 4 LIFE, 13681 NEWPORT AVE., STE.8-163"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "TUSTIN, CA 92780, UNITED STATES",
+        "representativeAddressLines": [
+          "TUSTIN, CA 92780",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200505",
+        "applicationNumber": "88900551"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20050121"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20050831"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20210504",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20210216"
+      ],
+      "registration": {
+        "registrationDate": "20210504",
+        "registrationNumber": "6338309"
+      }
+    },
+    "version": "20260506064003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LEAVE NO RIM NETLESS"
+    }
+  },
+  "_uri": "/mark/us/a56ce58f-1b52-4ceb-ba56-3387fe047d75",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

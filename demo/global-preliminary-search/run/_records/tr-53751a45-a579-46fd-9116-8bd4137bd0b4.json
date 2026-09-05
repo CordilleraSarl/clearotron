@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/tr/53751a45-a579-46fd-9116-8bd4137bd0b4",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "53751a45-a579-46fd-9116-8bd4137bd0b4",
+  "applicationNumber": "2016/83174",
+  "registrationNumber": "2016 83174",
+  "applicationDate": "2016-10-19",
+  "registrationDate": null,
+  "expiryDate": "2026-10-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-05-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "grosvenor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37,
+        42
+      ],
+      "language": "tr",
+      "description": "İnşaat hizmetleri, inşaat araç - gereçlerinin ve iş makinelerinin kiralanması hizmetleri. Temizlik hizmetleri; dezenfeksiyon hizmetleri; haşere ilaçlama hizmetleri; temizlik araçları ve makinelerinin kiralanması hizmetleri. Kara araçları servis istasyonu hizmetleri (bakım, tamir ve akaryakıt dolumu). Deniz araçlarının bakımı ve tamiri hizmetleri; gemi inşaatı hizmetleri. Hava taşıtlarının bakım ve tamiri hizmetleri. Mobilyalara ilişkin döşeme, tamir, restorasyon hizmetleri. Isıtma, havalandırma ve su tesisatının kurulması (tesis edilmesi), bakımı ve tamiri hizmetleri. Giysilerin temizliği, bakımı ve tamiri hizmetleri. Sınai makinelerin ve cihazların, büro makinelerinin ve cihazlarının, haberleşme cihazlarının, elektrikli ve elektronik cihazların tesisi, bakımı ve tamiri hizmetleri. Asansör tamiri ve bakımı hizmetleri. Saat tamiri hizmetleri. Madencilik, maden çıkarma hizmetleri. Ayakkabı, çanta, kemer tamiri hizmetleri. Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri, mühendislik ve mimari tasarım hizmetleri, kalite ve standart belgelendirme amaçlı mal/hizmetlerin test edilmesi. Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri. Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım hizmetleri. Sanat eserleri orijinallik onay hizmetleri.",
+      "translation_language": "en",
+      "translation": "Construction services, construction vehicles - Renting of supplies and business machines. Cleaning services; disinfection services; pest spraying services; rental of cleaning tools and machines. Black car service station services (maintenance, repair and fuel refilling). Maintenance and repair of marine vehicles; shipbuilding services. Repair and maintenance services of aircraft. Upholstery on the furniture, repair, and restoration services. Heating, ventilation and plumbing to be installed (the establishment), maintenance and repair services. Cleaning of clothing, maintenance and repair services. Industrial machinery and devices, office machines and devices, communication devices, Installation of electrical and electronic equipment, maintenance and repair services. Elevator Repair and maintenance services. Clock repair services. Mining, mining services. Shoes, bags, belt repair services. Scientific and industrial examination, research services; engineering services, engineering and architectural design services, quality and certification standards for goods / services to be tested. Computer services: computer programming, computer virus protection, computer system design, the design of others in the name of the website, maintenance and updating of software design, leasing and updating, internet search engines provide hosting, in the field of computer hardware consulting, rental of computer hardware services. Is included in this class engineering, architecture, computer services are not covered by any kind of design services; graphic art design services. Artwork authenticity certification services."
+    }
+  ],
+  "owner": "SELİM ŞAHİN",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "YUSUF ERSOY",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Eclipse Residence Maslak Mahallesi Akasya Sokak No : 5 A Blok Kat : 25 Daire : 245 Sarıyer İstanbul",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "SELİM ŞAHİN"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Construction services, construction vehicles - Renting of supplies and business machines. Cleaning services; disinfection services; pest spraying services; rental of cleaning tools and machines. Black car service station services (maintenance, repair and fuel refilling). Maintenance and repair of marine vehicles; shipbuilding services. Repair and maintenance services of aircraft. Upholstery on the furniture, repair, and restoration services. Heating, ventilation and plumbing to be installed (the establishment), maintenance and repair services. Cleaning of clothing, maintenance and repair services. Industrial machinery and devices, office machines and devices, communication devices, Installation of electrical and electronic equipment, maintenance and repair services. Elevator Repair and maintenance services. Clock repair services. Mining, mining services. Shoes, bags, belt repair services. Scientific and industrial examination, research services; engineering services, engineering and architectural design services, quality and certification standards for goods / services to be tested. Computer services: computer programming, computer virus protection, computer system design, the design of others in the name of the website, maintenance and updating of software design, leasing and updating, internet search engines provide hosting, in the field of computer hardware consulting, rental of computer hardware services. Is included in this class engineering, architecture, computer services are not covered by any kind of design services; graphic art design services. Artwork authenticity certification services.",
+          "intClassNumber": "37,42",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "İnşaat hizmetleri, inşaat araç - gereçlerinin ve iş makinelerinin kiralanması hizmetleri. Temizlik hizmetleri; dezenfeksiyon hizmetleri; haşere ilaçlama hizmetleri; temizlik araçları ve makinelerinin kiralanması hizmetleri. Kara araçları servis istasyonu hizmetleri (bakım, tamir ve akaryakıt dolumu). Deniz araçlarının bakımı ve tamiri hizmetleri; gemi inşaatı hizmetleri. Hava taşıtlarının bakım ve tamiri hizmetleri. Mobilyalara ilişkin döşeme, tamir, restorasyon hizmetleri. Isıtma, havalandırma ve su tesisatının kurulması (tesis edilmesi), bakımı ve tamiri hizmetleri. Giysilerin temizliği, bakımı ve tamiri hizmetleri. Sınai makinelerin ve cihazların, büro makinelerinin ve cihazlarının, haberleşme cihazlarının, elektrikli ve elektronik cihazların tesisi, bakımı ve tamiri hizmetleri. Asansör tamiri ve bakımı hizmetleri. Saat tamiri hizmetleri. Madencilik, maden çıkarma hizmetleri. Ayakkabı, çanta, kemer tamiri hizmetleri. Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri, mühendislik ve mimari tasarım hizmetleri, kalite ve standart belgelendirme amaçlı mal/hizmetlerin test edilmesi. Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri. Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım hizmetleri. Sanat eserleri orijinallik onay hizmetleri."
+        }
+      ]
+    },
+    "id": "53751a45-a579-46fd-9116-8bd4137bd0b4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "447"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "ECLİPSE BUSİNESS, AKASYA SOK. D BLOK NO:5 MASLAK/İSTANBUL",
+        "representativeName": "YUSUF ERSOY"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161019",
+        "applicationNumber": "2016/83174"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261019",
+      "lastPublicationDate": "20170531",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2016 83174"
+      }
+    },
+    "version": "20250708174214",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "grosvenor"
+    }
+  },
+  "_uri": "/mark/tr/53751a45-a579-46fd-9116-8bd4137bd0b4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

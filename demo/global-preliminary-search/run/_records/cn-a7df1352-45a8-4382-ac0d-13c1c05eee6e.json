@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/cn/a7df1352-45a8-4382-ac0d-13c1c05eee6e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "a7df1352-45a8-4382-ac0d-13c1c05eee6e",
+  "applicationNumber": "49072587",
+  "registrationNumber": "49072587",
+  "applicationDate": "2020-08-19",
+  "registrationDate": "2022-12-28",
+  "expiryDate": "2032-12-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-09-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电视摄像机;电影胶片剪辑设备;视听教学仪器;网络通信设备;照相机用三脚架",
+      "translation_language": "en",
+      "translation": "TV cameras; film editing equipment; audio-visual teaching equipment; network communication equipment; tripods for cameras"
+    }
+  ],
+  "owner": "Jiangxi Suori Television Digital Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江西省南昌市青山湖区北京东路438号恒茂梦时代广场7号写字楼906室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Jiangxi Suori Television Digital Technology Co., Ltd.",
+        "applicantNativeName": "江西索日影视数码科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "TV cameras; film editing equipment; audio-visual teaching equipment; network communication equipment; tripods for cameras",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电视摄像机;电影胶片剪辑设备;视听教学仪器;网络通信设备;照相机用三脚架"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "a7df1352-45a8-4382-ac0d-13c1c05eee6e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "16.03.01",
+      "16.03.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1809"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "江西诺信瑞德企业管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200819",
+        "applicationNumber": "49072587"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321227",
+      "lastPublicationDate": "20220927",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221228",
+        "registrationNumber": "49072587"
+      }
+    },
+    "version": "20251004055658",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SORI"
+    }
+  },
+  "_uri": "/mark/cn/a7df1352-45a8-4382-ac0d-13c1c05eee6e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.876Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/9dc13a7c-42c1-4331-99bb-4aa637b559aa",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9dc13a7c-42c1-4331-99bb-4aa637b559aa",
+  "applicationNumber": "8786452",
+  "registrationNumber": "8786452",
+  "applicationDate": "2010-10-28",
+  "registrationDate": "2011-11-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2011-08-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-11-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QORIVVA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "半导体;集成电路;微控制器;微处理机;多核微控制器;微控制器可程控软件;微处理器可程控软件;多核数据处理设备;数字信号数据处理设备",
+      "translation_language": "en",
+      "translation": "Semiconductors; integrated circuits; microcontrollers; microprocessors; multi-core microcontrollers; microcontroller programmable software; microprocessor programmable software; multi-core data processing equipment; digital signal data processing equipment"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors; integrated circuits; microcontrollers; microprocessors; multi-core microcontrollers; microcontroller programmable software; microprocessor programmable software; multi-core data processing equipment; digital signal data processing equipment",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体;集成电路;微控制器;微处理机;多核微控制器;微控制器可程控软件;微处理器可程控软件;多核数据处理设备;数字信号数据处理设备"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "9dc13a7c-42c1-4331-99bb-4aa637b559aa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1275"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京捷鼎知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20101028",
+        "applicationNumber": "8786452"
+      },
+      "cancellationDate": "20231127",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20110813",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20111114",
+        "registrationNumber": "8786452"
+      }
+    },
+    "version": "20251002015223",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIVVA"
+    }
+  },
+  "_uri": "/mark/cn/9dc13a7c-42c1-4331-99bb-4aa637b559aa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/59c63159-3e99-48be-9983-c4aeaf64e1e6",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "59c63159-3e99-48be-9983-c4aeaf64e1e6",
+  "applicationNumber": "80999267",
+  "registrationNumber": "80999267",
+  "applicationDate": "2024-09-19",
+  "registrationDate": "2025-04-14",
+  "expiryDate": "2035-04-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-01-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LOCKIN VENORIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "磁性身份识别卡;电及电子视频监控设备;电门铃;电锁;电子防盗报警器;电子防盗装置;电子监控装置;电子锁;电子钥匙卡;防盗报警器;计量仪表;可下载的计算机程序;可下载的计算机应用软件;可下载的手机应用软件;联锁门用电子门禁装置;录像机;门窥视孔(广扩镜);门窥视孔;摄像机;生物识别锁;生物特征识别卡;生物指纹门锁;数字门锁;水表;已编码钥匙卡;指纹门锁",
+      "translation_language": "en",
+      "translation": "Magnetic identification cards; electrical and electronic video surveillance equipment; electric doorbells; electric locks; electronic anti-theft alarms; electronic anti-theft devices; electronic monitoring devices; electronic locks; electronic key cards; anti-theft alarms; metering instruments; downloadable computer programs; downloadable computer application software; downloadable mobile phone application software; electronic access control devices for interlocking doors; video recorders; door peepholes (wide-expanded mirrors); door peepholes; cameras; biometric locks; biometric feature identification cards; biometric fingerprint door locks; digital door locks; water meters; coded key cards; fingerprint door locks"
+    }
+  ],
+  "owner": "Luke Technology (Beijing) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区北清路81号二区1号楼11层1101室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Luke Technology (Beijing) Co., Ltd.",
+        "applicantNativeName": "鹿客科技(北京)股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Magnetic identification cards; electrical and electronic video surveillance equipment; electric doorbells; electric locks; electronic anti-theft alarms; electronic anti-theft devices; electronic monitoring devices; electronic locks; electronic key cards; anti-theft alarms; metering instruments; downloadable computer programs; downloadable computer application software; downloadable mobile phone application software; electronic access control devices for interlocking doors; video recorders; door peepholes (wide-expanded mirrors); door peepholes; cameras; biometric locks; biometric feature identification cards; biometric fingerprint door locks; digital door locks; water meters; coded key cards; fingerprint door locks",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "磁性身份识别卡;电及电子视频监控设备;电门铃;电锁;电子防盗报警器;电子防盗装置;电子监控装置;电子锁;电子钥匙卡;防盗报警器;计量仪表;可下载的计算机程序;可下载的计算机应用软件;可下载的手机应用软件;联锁门用电子门禁装置;录像机;门窥视孔(广扩镜);门窥视孔;摄像机;生物识别锁;生物特征识别卡;生物指纹门锁;数字门锁;水表;已编码钥匙卡;指纹门锁"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Warning equipments, bells"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        }
+      ]
+    },
+    "id": "59c63159-3e99-48be-9983-c4aeaf64e1e6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1919"
+      }
+    ],
+    "recordLastUpdated": "20260310",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京华进京联知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240919",
+        "applicationNumber": "80999267"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350413",
+      "lastPublicationDate": "20250113",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250414",
+        "registrationNumber": "80999267"
+      }
+    },
+    "version": "20260310020341",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LOCKIN VENORIS"
+    }
+  },
+  "_uri": "/mark/cn/59c63159-3e99-48be-9983-c4aeaf64e1e6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

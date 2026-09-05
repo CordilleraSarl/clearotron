@@ -2268,7 +2268,7 @@ export const validators = {
   // NOR IS THE HEAD REFUSED, which was the tempting symmetric move. `carriesOwnFrame` is a live branch:
   // archived cards, replays and a drifted seat all take the legacy path and legitimately carry a head, so
   // a validator that rejected `##` would fail every replayed card. HEAD COVERAGE DID NOT MOVE INTO A
-  // HOLE — report-card-frame.test.mjs composes a head for every card in examples/sample-run and asserts
+  // HOLE — report-card-frame.test.mjs composes a head for every card in demo and asserts
   // byte-equality against report.md's own `## ` lines, seven specimens including the common-law one that
   // breaks the naive uppercase rule. That is stronger coverage than the regex this deletes.
   // §8 — TWO SHAPES, AND EXACTLY ONE OF THEM. A card is a full card (`### Full detail`, written by

@@ -13,7 +13,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | Script | What it does |
 |---|---|
 | `test-run.mjs` | Gives a test run its own `TMPDIR` and deletes it at exit. **Load-bearing** — every workspace's `npm test` shells out to it, so `scripts/` can never be dropped wholesale. |
-| `render-check.mjs` | Renders a published report **inside the portal's iframe** in a real browser — the height bridge, the scrollbar loop, the sticky topbar. Needs a published run: point it at a pool with `--pool`, or pass `--fixture-pool` to replay `examples/sample-run/` into a throwaway one. **Runs nowhere yet** — but its three interior assertions now MEASURE, deterministically: real time plus an explicit readiness signal, and `--plant-overflow` proves it still catches a broken report. What is left is a membership decision, not a defect.. |
+| `render-check.mjs` | Renders a published report **inside the portal's iframe** in a real browser — the height bridge, the scrollbar loop, the sticky topbar. Needs a published run: point it at a pool with `--pool`, or pass `--fixture-pool` to replay `demo/` into a throwaway one. **Runs nowhere yet** — but its three interior assertions now MEASURE, deterministically: real time plus an explicit readiness signal, and `--plant-overflow` proves it still catches a broken report. What is left is a membership decision, not a defect.. |
 | `home-render-check.mjs` | Draws the portal Home in a real browser, every state, both themes. Run by CI. |
 | `composer-render-check.mjs` | Lays out the New Clearance composer and checks the levers reach the wire. Run by CI. |
 | `clearances-render-check.mjs` | Checks the `/portal/clearances` columns hold together. Run by CI. |
@@ -90,7 +90,7 @@ almost nothing. The step is backed out and the script is declared, with the meas
 quietly dropped.
 
 **Which check runs where is now checked, not just written here.**
-[`../driver/test/browser-check-membership.test.mjs`](../driver/test/browser-check-membership.test.mjs)
+the browser-check membership arm in the driver suite
 reads `.github/workflows/ci.yml` and requires every `scripts/*-check.mjs` to be either invoked by a job
 or declared, with a reason, as one that cannot run in CI.
 

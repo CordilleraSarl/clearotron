@@ -1,0 +1,237 @@
+{
+  "uri": "/mark/wo/656f2bae-09a8-4c61-b072-baf465322697",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "656f2bae-09a8-4c61-b072-baf465322697",
+  "applicationNumber": null,
+  "registrationNumber": "815953",
+  "applicationDate": null,
+  "registrationDate": "2003-11-07",
+  "expiryDate": "2033-11-07",
+  "renewalDate": "2023-11-07",
+  "lastPublicationDate": "2023-10-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DESFIRE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electrotechnical, electromechanical and electromagnetic modules, parts and components thereof, including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques, électromécaniques et électromagnétiques, leurs pièces et composants, notamment circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments semi-conducteurs; logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos, electromecánicos y electromagnéticos, sus partes y componentes, incluidos circuitos integrados (CI), chips, diodos, transistores, semiconductores y elementos semiconductores; software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20021218",
+          "basicApplicationNumber": "1024030"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20021218",
+          "basicRegistrationNumber": "726997"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AL",
+      "AT",
+      "AU",
+      "CH",
+      "CN",
+      "DE",
+      "EG",
+      "ES",
+      "FI",
+      "FR",
+      "GB",
+      "IR",
+      "IT",
+      "JP",
+      "KR",
+      "MW",
+      "SE",
+      "SG",
+      "TR",
+      "US",
+      "VN",
+      "RU",
+      "OA",
+      "UA",
+      "BA",
+      "RS",
+      "ME"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20021218",
+            "basicApplicationNumber": "1024030"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20021218",
+            "basicRegistrationNumber": "726997"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AL",
+      "AT",
+      "AU",
+      "CH",
+      "CN",
+      "DE",
+      "EG",
+      "ES",
+      "FI",
+      "FR",
+      "GB",
+      "IR",
+      "IT",
+      "JP",
+      "KR",
+      "MW",
+      "SE",
+      "SG",
+      "TR",
+      "US",
+      "VN",
+      "RU",
+      "OA",
+      "UA",
+      "BA",
+      "RS",
+      "ME"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electrotechnical, electromechanical and electromagnetic modules, parts and components thereof, including integrated circuits (ICs), chips, diodes, transistors, semiconductors and semiconductor elements; software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques, électromécaniques et électromagnétiques, leurs pièces et composants, notamment circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments semi-conducteurs; logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos, electromecánicos y electromagnéticos, sus partes y componentes, incluidos circuitos integrados (CI), chips, diodos, transistores, semiconductores y elementos semiconductores; software."
+        }
+      ]
+    },
+    "id": "656f2bae-09a8-4c61-b072-baf465322697",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331107",
+      "lastPublicationDate": "20231019",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20031107",
+        "registrationNumber": "815953"
+      },
+      "renewalDate": "20231107",
+      "renewalPublishedDate": "20231019"
+    },
+    "version": "20250620161303",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DESFIRE"
+    }
+  },
+  "_uri": "/mark/wo/656f2bae-09a8-4c61-b072-baf465322697",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.459Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

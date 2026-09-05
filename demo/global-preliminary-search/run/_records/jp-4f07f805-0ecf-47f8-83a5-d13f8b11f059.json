@@ -1,0 +1,301 @@
+{
+  "uri": "/mark/jp/4f07f805-0ecf-47f8-83a5-d13f8b11f059",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "4f07f805-0ecf-47f8-83a5-d13f8b11f059",
+  "applicationNumber": "S55-096000",
+  "registrationNumber": "1691721",
+  "applicationDate": "1980-11-26",
+  "registrationDate": "1984-06-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "1983-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＮＯＲＩ",
+  "markTransliteration": "NORI",
+  "markTranslation": "NORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    26,
+    27,
+    28,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        26,
+        27,
+        28,
+        31
+      ],
+      "language": null,
+      "description": "台所用品、その他本類に属する商品、ただし脱臭器及びその類似商品を除く",
+      "translation_language": "en",
+      "translation": "Kitchen utensils, other goods belonging to this category except for deodorizers and similar items"
+    }
+  ],
+  "owner": "K.K. NORITAKE CO. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19801126"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NAGOYA",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. NORITAKE CO. LTD.",
+        "applicantNativeAddress": "名古屋市西区則武新町３丁目１番３６号",
+        "applicantNativeName": "株式会社ノリタケカンパニ－リミテド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Kitchen utensils, other goods belonging to this category except for deodorizers and similar items",
+          "intClassNumber": "03,04,05,06,08,09,10,11,14,16,17,18,19,20,21,22,24,26,27,28,31",
+          "intGoodsServicesDescription": "台所用品、その他本類に属する商品、ただし脱臭器及びその類似商品を除く"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "19A01"
+        },
+        {
+          "natClassNumber": "19A02"
+        },
+        {
+          "natClassNumber": "19A03"
+        },
+        {
+          "natClassNumber": "19A04"
+        },
+        {
+          "natClassNumber": "19A05"
+        },
+        {
+          "natClassNumber": "19A06"
+        },
+        {
+          "natClassNumber": "19A07"
+        },
+        {
+          "natClassNumber": "19B03"
+        },
+        {
+          "natClassNumber": "19B04"
+        },
+        {
+          "natClassNumber": "19B21"
+        },
+        {
+          "natClassNumber": "19B22"
+        },
+        {
+          "natClassNumber": "19B23"
+        },
+        {
+          "natClassNumber": "19B24"
+        },
+        {
+          "natClassNumber": "19B25"
+        },
+        {
+          "natClassNumber": "19B26"
+        },
+        {
+          "natClassNumber": "19B27"
+        },
+        {
+          "natClassNumber": "19B28"
+        },
+        {
+          "natClassNumber": "19B29"
+        },
+        {
+          "natClassNumber": "19B30"
+        },
+        {
+          "natClassNumber": "19B32"
+        },
+        {
+          "natClassNumber": "19B33"
+        },
+        {
+          "natClassNumber": "19B34"
+        },
+        {
+          "natClassNumber": "19B35"
+        },
+        {
+          "natClassNumber": "19B36"
+        },
+        {
+          "natClassNumber": "19B37"
+        },
+        {
+          "natClassNumber": "19B38"
+        },
+        {
+          "natClassNumber": "19B39"
+        },
+        {
+          "natClassNumber": "19B40"
+        },
+        {
+          "natClassNumber": "19B41"
+        },
+        {
+          "natClassNumber": "19B42"
+        },
+        {
+          "natClassNumber": "19B43"
+        },
+        {
+          "natClassNumber": "19B44"
+        },
+        {
+          "natClassNumber": "19B45"
+        },
+        {
+          "natClassNumber": "19B46"
+        },
+        {
+          "natClassNumber": "19B47"
+        },
+        {
+          "natClassNumber": "19B48"
+        },
+        {
+          "natClassNumber": "19B49"
+        },
+        {
+          "natClassNumber": "19B50"
+        },
+        {
+          "natClassNumber": "19B51"
+        },
+        {
+          "natClassNumber": "19B52"
+        },
+        {
+          "natClassNumber": "19B53"
+        },
+        {
+          "natClassNumber": "19B54"
+        },
+        {
+          "natClassNumber": "19B55"
+        },
+        {
+          "natClassNumber": "19B56"
+        },
+        {
+          "natClassNumber": "19B57"
+        },
+        {
+          "natClassNumber": "19B99"
+        }
+      ]
+    },
+    "id": "4f07f805-0ecf-47f8-83a5-d13f8b11f059",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19801126"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19801126",
+        "applicationNumber": "S55-096000"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "19831020",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19840621",
+        "registrationNumber": "1691721"
+      }
+    },
+    "version": "20230427105032",
+    "wordMarkSpecification": {
+      "markTranslation": "NORI",
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "ＮＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/4f07f805-0ecf-47f8-83a5-d13f8b11f059",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

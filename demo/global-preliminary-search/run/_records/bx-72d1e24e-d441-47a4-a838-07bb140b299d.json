@@ -1,0 +1,144 @@
+{
+  "uri": "/mark/bx/72d1e24e-d441-47a4-a838-07bb140b299d",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "72d1e24e-d441-47a4-a838-07bb140b299d",
+  "applicationNumber": "1312855",
+  "registrationNumber": "978062",
+  "applicationDate": "2015-06-23",
+  "registrationDate": "2015-09-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-09-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "JACHTHAVEN KORTENHOEF",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    39,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        39
+      ],
+      "language": "nl",
+      "description": "Verhuur van boten, scooters en overiege voertuigen voor transportdoeleinden.",
+      "translation_language": "en",
+      "translation": "Rental of boats, scooters and other vehicles for transport purposes."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Recreatieve evenementen (Het organiseren van -).",
+      "translation_language": "en",
+      "translation": "Recreational events (Organizing -)."
+    }
+  ],
+  "owner": "Jachthaven Kortenhoef B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Moleneind 2 A, 1241 NE Kortenhoef",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Jachthaven Kortenhoef B.V."
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "cmMarkImageEUclassification": [
+      "18.03.25"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Rental of boats, scooters and other vehicles for transport purposes.",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Verhuur van boten, scooters en overiege voertuigen voor transportdoeleinden."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recreational events (Organizing -).",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Recreatieve evenementen (Het organiseren van -)."
+        }
+      ]
+    },
+    "id": "72d1e24e-d441-47a4-a838-07bb140b299d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "- Grijs en div. Blauw kleuren",
+        "markImageColourClaimedTextLanguageCode": "nl"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.15.24",
+      "18.03.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0916"
+      }
+    ],
+    "recordLastUpdated": "20260106",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150623",
+        "applicationNumber": "1312855"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20150916",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20150916",
+        "registrationNumber": "978062"
+      }
+    },
+    "version": "20260106020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JACHTHAVEN KORTENHOEF"
+    }
+  },
+  "_uri": "/mark/bx/72d1e24e-d441-47a4-a838-07bb140b299d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.776Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

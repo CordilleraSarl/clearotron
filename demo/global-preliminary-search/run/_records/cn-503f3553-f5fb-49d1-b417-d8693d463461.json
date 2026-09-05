@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/503f3553-f5fb-49d1-b417-d8693d463461",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "503f3553-f5fb-49d1-b417-d8693d463461",
+  "applicationNumber": "89448417",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-30",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "傲日",
+  "markTransliteration": "AO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "3D扫描仪;3D眼镜;打印机和复印机用未填充的鼓粉盒;打印机和复印机用未填充的墨盒;复印机(照相、静电、热);复印设备;手持式3D扫描仪;移动电源(可充电电池);用于创造、控制、参与3D虚拟环境的计算机软件;智能眼镜",
+      "translation_language": "en",
+      "translation": "3D scanners; 3D glasses; unfilled toner cartridges for printers and copiers; unfilled ink cartridges for printers and copiers; copiers (photographic, electrostatic, thermal); copying equipment; handheld 3D scanners; power banks (rechargeable batteries); computer software for creating, controlling, and participating in 3D virtual environments; smart glasses"
+    }
+  ],
+  "owner": "Shenzhen Aori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙华区龙华街道富康社区油松路106号天汇大厦8层823室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Aori Technology Co., Ltd.",
+        "applicantNativeName": "深圳傲日科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "3D scanners; 3D glasses; unfilled toner cartridges for printers and copiers; unfilled ink cartridges for printers and copiers; copiers (photographic, electrostatic, thermal); copying equipment; handheld 3D scanners; power banks (rechargeable batteries); computer software for creating, controlling, and participating in 3D virtual environments; smart glasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "3D扫描仪;3D眼镜;打印机和复印机用未填充的鼓粉盒;打印机和复印机用未填充的墨盒;复印机(照相、静电、热);复印设备;手持式3D扫描仪;移动电源(可充电电池);用于创造、控制、参与3D虚拟环境的计算机软件;智能眼镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "503f3553-f5fb-49d1-b417-d8693d463461",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1990"
+      }
+    ],
+    "recordLastUpdated": "20260726",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市简单国际知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251230",
+        "applicationNumber": "89448417"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260706",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260726020310",
+    "wordMarkSpecification": {
+      "markTransliteration": "AO RI",
+      "markVerbalElementText": "傲日"
+    }
+  },
+  "_uri": "/mark/cn/503f3553-f5fb-49d1-b417-d8693d463461",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

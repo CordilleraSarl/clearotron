@@ -3,7 +3,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // clearotron demo — show a real clearance report to somebody who has nothing, IN THE REAL PORTAL.
 //
-//   npx clearotron demo                    replay examples/sample-run into ~/trademark-demo and open the portal
+//   npx clearotron demo                    replay demo into ~/trademark-demo and open the portal
 //   npx clearotron demo --run-dir <dir>    replay a frozen example from somewhere else
 //   npx clearotron demo --base <dir>       put the whole demo somewhere else (remove it with one rm -rf)
 //   npx clearotron demo --port 9000        serve on another port
@@ -43,6 +43,7 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
+import { isFrozen, demoChildren } from "../driver/demo-container.mjs";   // — one definition of what a frozen demo is, for the player AND the gate
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -59,16 +60,50 @@ if (has("--help") || has("-h")) {
 
 const die = (...lines) => { console.error(`\n${lines.join("\n")}\n`); process.exit(1); };
 
-// ── 1. the frozen example ─────────────────────────────────────────────────────────────────────────────
-const sampleDir = resolve(flag("--run-dir") ?? join(REPO, "examples", "sample-run"));
-if (!existsSync(join(sampleDir, "meta.json")) || !existsSync(join(sampleDir, "run", "report.md"))) {
+// ── 1. the frozen demo ────────────────────────────────────────────────────────────────────────────────
+//
+// — `demo/` IS A CONTAINER, ONE CHILD PER PRODUCT TYPE.
+//
+// It holds one frozen run per product the engine sells, named by the product's own id, so a reader can
+// see what each one actually produces rather than being told. Today that is one child; the other three
+// arrive as their runs do, and nothing here changes when they land.
+//
+// ONE LAYOUT FOR BOTH READERS, WHICH IS WHY IT IS A CONTAINER AND NOT A RUN. `driver/publish/seed-pool.mjs`
+// already walked a container — every child holding a meta.json and a run/ — and `bin/start.mjs` seeds the
+// portal's archive from it. A bare run directory here would have left that call finding nothing and the
+// installed portal serving an empty archive, silently. Same directory, both readers, no second mechanism.
+const DEMO_ROOT = join(REPO, "demo");
+// The rule lives in `driver/demo-container.mjs` — ONE definition, because it used to be three and they
+// disagreed. That file records what a knockout demo carries instead of a report.md, and why this line
+// once let `demo/knockout-search` ship and stay unopenable..
+
+// --run-dir takes a directory outright. --product names a child. Neither given: the first child, and the
+// name is PRINTED below rather than assumed, because "the demo" is about to mean one of several.
+const wanted = flag("--product");
+const children = demoChildren(DEMO_ROOT);
+const sampleDir = resolve(
+  flag("--run-dir")
+  ?? (wanted ? join(DEMO_ROOT, wanted) : (children[0] ? join(DEMO_ROOT, children[0]) : DEMO_ROOT)),
+);
+if (!isFrozen(sampleDir)) {
+  // AN ABSENCE IS A FINDING, AND IT NAMES WHAT IT LOOKED AT. This exits 1 and always has; tracker issue
+  // 2193 reported it exiting 0, which did not reproduce at v0.1.0 or at main's tip. An arm pins it.
   die(
-    `example: no frozen example at ${sampleDir}`,
+    `demo: no frozen demo at ${sampleDir}`,
     "",
-    "A frozen example is a directory holding meta.json and run/report.md, produced by",
-    "  node scripts/freeze-example-run.mjs --run-dir <a finished run> --out <dir>",
+    wanted && !children.includes(wanted)
+      ? `There is no demo for product "${wanted}".`
+      : "A frozen demo is a directory holding meta.json and its lane's entry file — run/report.md for a\nclearance, run/knockout-findings.json for a knockout — produced by",
+    wanted && !children.includes(wanted)
+      ? ""
+      : "  node scripts/freeze-example-run.mjs --run-dir <a finished run> --out <dir>",
     "",
-    "Point the demo at one with:  npm run example -- --run-dir <dir>",
+    children.length
+      ? `Products with a demo in this tree: ${children.join(", ")}`
+      : `${DEMO_ROOT} holds no product demo at all — this tree shipped without one.`,
+    "",
+    `Choose one with:  ${invoke("demo")} --product <product-id>`,
+    `Or point at any frozen run:  ${invoke("demo")} --run-dir <dir>`,
   );
 }
 const meta = JSON.parse(readFileSync(join(sampleDir, "meta.json"), "utf8"));
@@ -158,11 +193,40 @@ console.log("  re-rendered from its artifacts. It is an example, not advice.\n")
 // spine (`driver/publish/audit-from-spine.mjs`, `counts.findings`), which counts every finding the run
 // recorded, including ones the report correctly drops. Two populations, one label, and the label was
 // the one the reader was about to check. So the label says which.
-console.log(`  published: ${published.runId}  (${published.counts?.findings ?? "?"} finding(s) recorded in the`);
-console.log(`             run's audit spine; the report shows the ones it retains)`);
+// EACH LANE'S PUBLISHER REPORTS ITS OWN NUMBER, AND THEY ARE NOT THE SAME NUMBER.
+//
+// The clearance branch returns `counts.findings` — every finding in the run's audit spine. The knockout
+// branch returns no `counts` at all; it returns `receipts`, whose `findings` counts the findings whose
+// citations the publisher traced to the run's own held evidence. That is a subset by definition, so it
+// is printed in its own words rather than mapped onto the clearance sentence. They happen to agree on
+// the demo in this tree, which is one member of a class and proves nothing about the metric.
+//
+// The third branch is the point: a lane whose publisher reports no count says so. This line printed a
+// bare "?" to the knockout — a could-not-look wearing the costume of a number.
+const spine =
+  Number.isFinite(published.counts?.findings)
+    ? `${published.counts.findings} finding(s) recorded in the run's audit spine; the report shows
+             the ones it retains`
+    : Number.isFinite(published.receipts?.findings)
+      ? `${published.receipts.findings} finding(s) with citations traced to this run's own held
+             evidence, on ${published.receipts.citing}/${published.receipts.marks} mark(s)`
+      : `this lane's publisher reported no finding count — the report itself is the record`;
+console.log(`  published: ${published.runId}  (${spine})`);
 
 if (has("--once")) {
-  console.log(`\n  report: ${join(poolRoot, meta.runId, "report.html")}\n`);
+  console.log(`\n  report: ${join(poolRoot, meta.runId, "report.html")}`);
+  //, criterion 5 — SAY WHAT WAS CREATED, ON EVERY PATH THAT CREATES SOMETHING.
+  //
+  // The portal path below prints this and `--once` did not, so the one invocation a reader is most
+  // likely to try first — publish and exit, no browser — left a directory in their home with nothing
+  // naming it. Found by driving it under a sandboxed HOME rather than by reading: the early exit sits
+  // eighteen lines above the line that says it.
+  //
+  // NAMES WHAT WAS ACTUALLY CREATED, not a constant. With `--pool` the base is never made, so printing
+  // the base there would tell a reader to remove a directory that does not exist and leave the one that
+  // does — worse than silence, because it reads as an answer.
+  const created = flag("--pool") ? poolRoot : demoBase;
+  console.log(`  Removing it later is one directory:  rm -rf ${created}\n`);
   process.exit(0);
 }
 

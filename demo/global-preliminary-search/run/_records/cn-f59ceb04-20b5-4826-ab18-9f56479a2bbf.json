@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/f59ceb04-20b5-4826-ab18-9f56479a2bbf",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f59ceb04-20b5-4826-ab18-9f56479a2bbf",
+  "applicationNumber": "7923335",
+  "registrationNumber": "7923335",
+  "applicationDate": "2009-12-17",
+  "registrationDate": "2011-09-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2011-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-11-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "交通信号灯(信号装置);报警器",
+      "translation_language": "en",
+      "translation": "Traffic lights (signaling devices); alarms"
+    }
+  ],
+  "owner": "Dalian Haolong Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "辽宁省大连市沙河口区中长东四街34号2单元24层2号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Dalian Haolong Trading Co., Ltd.",
+        "applicantNativeName": "大连葆龙贸易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Traffic lights (signaling devices); alarms",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "交通信号灯(信号装置);报警器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Signalling apparatus and instruments",
+        "Warning equipments, bells"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        }
+      ]
+    },
+    "id": "f59ceb04-20b5-4826-ab18-9f56479a2bbf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1266"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京博导聚佳知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20091217",
+        "applicationNumber": "7923335"
+      },
+      "cancellationDate": "20231127",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20110606",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20110907",
+        "registrationNumber": "7923335"
+      }
+    },
+    "version": "20251002003402",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/cn/f59ceb04-20b5-4826-ab18-9f56479a2bbf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/pe/28339c41-251d-49ab-be8f-24027dd4de17",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "28339c41-251d-49ab-be8f-24027dd4de17",
+  "applicationNumber": "872781-2020",
+  "registrationNumber": "S00127598",
+  "applicationDate": "2020-11-20",
+  "registrationDate": "2021-01-21",
+  "expiryDate": "2031-01-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIPSA TRAINING & TECHNICAL SOLUTIONS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "educación; formación; servicios de entretenimiento.",
+      "translation_language": "en",
+      "translation": "education; training; entertainment services."
+    }
+  ],
+  "owner": "QORILAZO PORROA S. A. C.",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": "PORROA LAIME FRANCISCO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - SAN ISIDRO",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "QORILAZO PORROA S. A. C."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "educación; formación; servicios de entretenimiento."
+        }
+      ]
+    },
+    "id": "28339c41-251d-49ab-be8f-24027dd4de17",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.11",
+      "27.05.17",
+      "27.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "representatives": [
+      {
+        "representativeAddress": "LIMA - LIMA - SAN ISIDRO",
+        "representativeAddressCountryCode": "PE",
+        "representativeAddressCountryName": "Peru",
+        "representativeName": "PORROA LAIME FRANCISCO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201120",
+        "applicationNumber": "872781-2020"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310121",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210121",
+        "registrationNumber": "S00127598"
+      }
+    },
+    "version": "20260812020607",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIPSA TRAINING & TECHNICAL SOLUTIONS"
+    }
+  },
+  "_uri": "/mark/pe/28339c41-251d-49ab-be8f-24027dd4de17",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

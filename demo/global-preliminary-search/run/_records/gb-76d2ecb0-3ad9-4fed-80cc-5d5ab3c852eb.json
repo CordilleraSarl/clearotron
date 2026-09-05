@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/76d2ecb0-3ad9-4fed-80cc-5d5ab3c852eb",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "76d2ecb0-3ad9-4fed-80cc-5d5ab3c852eb",
+  "applicationNumber": "UK00906463781",
+  "registrationNumber": "UK00906463781",
+  "applicationDate": "2007-11-26",
+  "registrationDate": "2008-09-18",
+  "expiryDate": "2027-11-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial services; asset and fund management; capital investment; real estate management services; leasing of real estate, residential, retail, commercial and industrial buildings and offices; stocks and bonds coverage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Architectural services; architectural services relating to the development of land; design and planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to residential properties; space planning; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Marks & Clerk LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street, London, W1K 3JP",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial services; asset and fund management; capital investment; real estate management services; leasing of real estate, residential, retail, commercial and industrial buildings and offices; stocks and bonds coverage."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Architectural services; architectural services relating to the development of land; design and planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to residential properties; space planning; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services."
+        }
+      ]
+    },
+    "id": "76d2ecb0-3ad9-4fed-80cc-5d5ab3c852eb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "15 Fetter Lane, London EC4A 1BW",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Marks & Clerk LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20071126",
+        "applicationNumber": "UK00906463781"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271126",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080918",
+        "registrationNumber": "UK00906463781"
+      }
+    },
+    "version": "20250627210419",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/gb/76d2ecb0-3ad9-4fed-80cc-5d5ab3c852eb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -115,7 +115,19 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         }
         let t;
         try { t = verifyToken(tok); }
-        catch (e) { log(`auth reject 401: ${e.message}`); return send(res, 401, { error: `invalid access key: ${e.message}` }); }
+        catch (e) {
+          // AN OPERATOR FAULT IS NOT A BAD KEY, and it must not read like one ( —
+          // bb8's F14). `isRevoked` now refuses rather than assuming a token was never revoked when the
+          // denylist cannot be read; that is a configuration fault on THIS box, and logged in the same
+          // words as a stranger presenting a bad key it would sit unnoticed in auth noise — which is how
+          // the original defect survived, silently, on every default install.
+          if (e.code === "REVOCATION_UNCHECKABLE") {
+            log(`DOOR FAULT — refusing every key: ${e.message} Create it, or point TRADEMARK_MCP_TOKEN_DENYLIST at the list this install actually uses; \`clearotron doctor\` reports the state.`);
+            return send(res, 401, { error: `this install cannot check whether keys have been revoked, so it is refusing all of them: ${e.message}` });
+          }
+          log(`auth reject 401: ${e.message}`);
+          return send(res, 401, { error: `invalid access key: ${e.message}` });
+        }
         user = { email: t.sub || t.runId || t.jti || "unnamed-key" };
       }
       if (!limiter.take(user.email)) return send(res, 429, { error: "rate limit exceeded — retry shortly" });

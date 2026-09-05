@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/wo/e0008bbc-472e-4408-8770-c589da8e9be1",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "e0008bbc-472e-4408-8770-c589da8e9be1",
+  "applicationNumber": null,
+  "registrationNumber": "1177715",
+  "applicationDate": null,
+  "registrationDate": "2013-08-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-10-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-02-22",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "MANTIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Integrated circuits; chips [integrated circuits], controller chips; microcontrollers; semiconductors; transceivers for CAN (Controller Area Network) networks; software for use in the aforementioned products; all of the aforementioned products to be used in automotive products, industrial, medical or aerospace equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Circuits intégrés; puces [circuits intégrés], puces de contrôleurs; microcontrôleurs; semi-conducteurs; émetteurs-récepteurs pour réseaux CAN (réseaux de multiplexage CAN); logiciels destinés à être utilisés avec les produits précités; tous les produits précités destinés à être utilisés dans des produits automobiles, équipements industriels, médicaux ou aérospatiaux.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Circuitos integrados; chips [circuitos integrados], chips controladores; microcontroladores; semiconductores; transceptores para redes de zona del controlador (CAN); software para los productos antes mencionados; todos los productos antes mencionados son para ser utilizados en productos de automóviles, equipos aeroespaciales, industriales o médicos.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20130222",
+      "priorityNumber": "1263591"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20130222",
+          "basicApplicationNumber": "1263591"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20130610",
+          "basicRegistrationNumber": "934293"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "US",
+      "RU",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20130222",
+            "basicApplicationNumber": "1263591"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20130610",
+            "basicRegistrationNumber": "934293"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "US",
+      "RU",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Integrated circuits; chips [integrated circuits], controller chips; microcontrollers; semiconductors; transceivers for CAN (Controller Area Network) networks; software for use in the aforementioned products; all of the aforementioned products to be used in automotive products, industrial, medical or aerospace equipment."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Circuits intégrés; puces [circuits intégrés], puces de contrôleurs; microcontrôleurs; semi-conducteurs; émetteurs-récepteurs pour réseaux CAN (réseaux de multiplexage CAN); logiciels destinés à être utilisés avec les produits précités; tous les produits précités destinés à être utilisés dans des produits automobiles, équipements industriels, médicaux ou aérospatiaux."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Circuitos integrados; chips [circuitos integrados], chips controladores; microcontroladores; semiconductores; transceptores para redes de zona del controlador (CAN); software para los productos antes mencionados; todos los productos antes mencionados son para ser utilizados en productos de automóviles, equipos aeroespaciales, industriales o médicos."
+        }
+      ]
+    },
+    "id": "e0008bbc-472e-4408-8770-c589da8e9be1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20130222",
+        "priorityNumber": "1263591"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "39"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Nachtwachtlaan 20 NL-1058 EA AMSTERDAM",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": false,
+      "cancellationDate": "20240222",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20131017",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20130802",
+        "registrationNumber": "1177715"
+      }
+    },
+    "version": "20250620173931",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MANTIS"
+    }
+  },
+  "_uri": "/mark/wo/e0008bbc-472e-4408-8770-c589da8e9be1",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.459Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

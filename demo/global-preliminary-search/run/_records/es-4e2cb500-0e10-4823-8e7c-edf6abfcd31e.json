@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/es/4e2cb500-0e10-4823-8e7c-edf6abfcd31e",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "4e2cb500-0e10-4823-8e7c-edf6abfcd31e",
+  "applicationNumber": "3644301 M8",
+  "registrationNumber": "3644301 M8",
+  "applicationDate": "2016-12-22",
+  "registrationDate": "2017-05-12",
+  "expiryDate": "2026-12-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-01-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOCAN JOVEN ORQUESTA DE CANARIAS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES."
+    }
+  ],
+  "owner": "INSTITUTO CANARIO DE DESARROLLO CULTURAL S.A.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "INSTITUTO CANARIO DE DESARROLLO CULTURAL S.A."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "25.05.01",
+      "26.01.01",
+      "26.01.04",
+      "26.02.07",
+      "26.04.02",
+      "26.04.10",
+      "26.04.12",
+      "26.11.03",
+      "26.11.12"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "4e2cb500-0e10-4823-8e7c-edf6abfcd31e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "BLANCO Y NEGRO."
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.11.22",
+      "27.05.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "4834"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161222",
+        "applicationNumber": "3644301 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261221",
+      "lastPublicationDate": "20170111",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170512",
+        "registrationNumber": "3644301 M8"
+      }
+    },
+    "version": "20260427164134",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOCAN JOVEN ORQUESTA DE CANARIAS"
+    }
+  },
+  "_uri": "/mark/es/4e2cb500-0e10-4823-8e7c-edf6abfcd31e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

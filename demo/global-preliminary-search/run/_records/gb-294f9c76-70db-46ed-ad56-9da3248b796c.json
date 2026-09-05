@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/gb/294f9c76-70db-46ed-ad56-9da3248b796c",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "294f9c76-70db-46ed-ad56-9da3248b796c",
+  "applicationNumber": "UK00907215701",
+  "registrationNumber": "UK00907215701",
+  "applicationDate": "2008-09-05",
+  "registrationDate": "2009-05-06",
+  "expiryDate": "2028-09-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, integrated circuits, microprocessors, customized microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Stobbs",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20080609",
+      "priorityNumber": "77/494,217"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, integrated circuits, microprocessors, customized microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits."
+        }
+      ]
+    },
+    "id": "294f9c76-70db-46ed-ad56-9da3248b796c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20080609",
+        "priorityNumber": "77/494,217"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Building 1000, Cambridge Research Park, Cambridge CB25 9PD",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Stobbs"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080905",
+        "applicationNumber": "UK00907215701"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280905",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20090506",
+        "registrationNumber": "UK00907215701"
+      }
+    },
+    "version": "20250627203351",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ"
+    }
+  },
+  "_uri": "/mark/gb/294f9c76-70db-46ed-ad56-9da3248b796c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/fr/2489e503-50a3-462e-ab4b-f45625f5c419",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "2489e503-50a3-462e-ab4b-f45625f5c419",
+  "applicationNumber": "14 4133698",
+  "registrationNumber": "14 4133698",
+  "applicationDate": "2014-11-14",
+  "registrationDate": null,
+  "expiryDate": "2034-11-14",
+  "renewalDate": "2024-04-18",
+  "lastPublicationDate": "2015-04-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORICHACRA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Services de publicité relatifs à des sujets de protection durable dans les domaines de la santé, des affaires sociales et de l'environnement ",
+      "translation_language": "en",
+      "translation": "Advertising services relating to sustainable protection topics in the fields of health, social affairs and the environment"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": ": Services de parrainage financier en vue de réaliser des projets de protection durable dans les domaines de la santé, des affaires sociales et de l'environnement ",
+      "translation_language": "en",
+      "translation": "Financial sponsorship services to carry out sustainable protection projects in the fields of health, social affairs and the environment"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Services d'information et de conseil en matière de développement durable dans les domaines de la santé, des affaires sociales et de l'environnement.",
+      "translation_language": "en",
+      "translation": "Information and advisory services on sustainable development in the fields of health, social affairs and the environment."
+    }
+  ],
+  "owner": "McDonald's International Property Company, Ltd. Société organisée selon les lois de l'état du Delaware",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "FIDUCIAL LEGAL BY LAMY, Karine Disdier-Mikus",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "110 N. Carpenter Street, Chicago, Illinois 60607",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "McDonald's International Property Company, Ltd. Société organisée selon les lois de l'état du Delaware"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising services relating to sustainable protection topics in the fields of health, social affairs and the environment",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services de publicité relatifs à des sujets de protection durable dans les domaines de la santé, des affaires sociales et de l'environnement "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Financial sponsorship services to carry out sustainable protection projects in the fields of health, social affairs and the environment",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services de parrainage financier en vue de réaliser des projets de protection durable dans les domaines de la santé, des affaires sociales et de l'environnement "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Information and advisory services on sustainable development in the fields of health, social affairs and the environment.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Services d'information et de conseil en matière de développement durable dans les domaines de la santé, des affaires sociales et de l'environnement."
+        }
+      ]
+    },
+    "id": "2489e503-50a3-462e-ab4b-f45625f5c419",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00148",
+        "publicationVolume": "18"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "FIDUCIAL LEGAL BY LAMY, Karine Disdier-Mikus"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141114",
+        "applicationNumber": "14 4133698"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341114",
+      "lastPublicationDate": "20150430",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "14 4133698"
+      },
+      "renewalDate": "20240418",
+      "renewalPublishedDate": "20240621"
+    },
+    "version": "20250426155837",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORICHACRA"
+    }
+  },
+  "_uri": "/mark/fr/2489e503-50a3-462e-ab4b-f45625f5c419",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

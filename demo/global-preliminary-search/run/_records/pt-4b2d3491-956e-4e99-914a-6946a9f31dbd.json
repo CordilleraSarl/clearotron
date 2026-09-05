@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/pt/4b2d3491-956e-4e99-914a-6946a9f31dbd",
+  "provider": "clarivate",
+  "office": "pt",
+  "guid": "4b2d3491-956e-4e99-914a-6946a9f31dbd",
+  "applicationNumber": "676738 MNA",
+  "registrationNumber": "676738 MNA",
+  "applicationDate": "2021-11-26",
+  "registrationDate": "2022-02-25",
+  "expiryDate": "2031-11-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-12-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RN REVENORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    11,
+    20,
+    35,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        11
+      ],
+      "language": "pt",
+      "description": "Iluminação decorativa; conjuntos de iluminação decorativa",
+      "translation_language": "en",
+      "translation": "DECORATIVE LIGHTING; DECORATIVE LIGHTING SETS"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "pt",
+      "description": "Móveis [objetos de decoração]",
+      "translation_language": "en",
+      "translation": "FURNITURE [DECORATION OBJECTS]"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Decoração de vitrines; decoração de montras",
+      "translation_language": "en",
+      "translation": "DISPLAY DECORATION; WINDOW DECORATION"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pt",
+      "description": "Decoração de edifícios",
+      "translation_language": "en",
+      "translation": "BUILDING DECORATION"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Consultoria em matéria de decoração de interiores; design de decoração de interiores; design de decoração de interiores para lojas; serviços de design para decoração de interiores de edifícios; serviços de design de objetos de decoração para interiores de edifícios; serviços de design relacionados com a decoração de interiores de casas; design de produtos; design de novos produtos; conceção de móveis",
+      "translation_language": "en",
+      "translation": "INTERIOR DECORATION CONSULTING; INTERIOR DECORATION DESIGN; INTERIOR DECORATION DESIGN FOR STORES; DESIGN SERVICES FOR BUILDING INTERIOR DECORATION; DECORATIVE OBJECT DESIGN SERVICES FOR BUILDING INTERIOR; DESIGN SERVICES RELATED TO HOME INTERIOR DECORATION; PRODUCT DESIGN; DESIGN OF NEW PRODUCTS; FURNITURE DESIGN"
+    }
+  ],
+  "owner": "Helga Alexandra Mousinho Medina Lobato",
+  "ownerNative": null,
+  "ownerCountry": "PT",
+  "representative": "Dina Ornelas",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "- Portugal",
+        "applicantAddressCountryCode": "PT",
+        "applicantAddressCountryName": "Portugal",
+        "applicantName": "Helga Alexandra Mousinho Medina Lobato"
+      }
+    ],
+    "applicationLanguageCode": "po",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DECORATIVE LIGHTING; DECORATIVE LIGHTING SETS",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Iluminação decorativa; conjuntos de iluminação decorativa"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "FURNITURE [DECORATION OBJECTS]",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Móveis [objetos de decoração]"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DISPLAY DECORATION; WINDOW DECORATION",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Decoração de vitrines; decoração de montras"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "BUILDING DECORATION",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Decoração de edifícios"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "INTERIOR DECORATION CONSULTING; INTERIOR DECORATION DESIGN; INTERIOR DECORATION DESIGN FOR STORES; DESIGN SERVICES FOR BUILDING INTERIOR DECORATION; DECORATIVE OBJECT DESIGN SERVICES FOR BUILDING INTERIOR; DESIGN SERVICES RELATED TO HOME INTERIOR DECORATION; PRODUCT DESIGN; DESIGN OF NEW PRODUCTS; FURNITURE DESIGN",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Consultoria em matéria de decoração de interiores; design de decoração de interiores; design de decoração de interiores para lojas; serviços de design para decoração de interiores de edifícios; serviços de design de objetos de decoração para interiores de edifícios; serviços de design relacionados com a decoração de interiores de casas; design de produtos; design de novos produtos; conceção de móveis"
+        }
+      ]
+    },
+    "id": "4b2d3491-956e-4e99-914a-6946a9f31dbd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.19",
+      "27.05.23",
+      "27.05.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "241/2021"
+      }
+    ],
+    "recordLastUpdated": "20260614",
+    "registrationOfficeCode": "PT",
+    "registrationOfficeName": "Portugal",
+    "representatives": [
+      {
+        "representativeAddress": "Praceta Pedro Escuro Nº 5 - 1º Esquerdo 2000-183 Santarém - Portugal",
+        "representativeAddressCountryCode": "PT",
+        "representativeAddressCountryName": "Portugal",
+        "representativeName": "Dina Ornelas"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211126",
+        "applicationNumber": "676738 MNA"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311126",
+      "lastPublicationDate": "20211214",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220225",
+        "registrationNumber": "676738 MNA"
+      }
+    },
+    "version": "20260614020023",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RN REVENORA"
+    }
+  },
+  "_uri": "/mark/pt/4b2d3491-956e-4e99-914a-6946a9f31dbd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

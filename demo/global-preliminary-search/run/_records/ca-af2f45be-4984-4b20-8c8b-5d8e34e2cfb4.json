@@ -1,0 +1,292 @@
+{
+  "uri": "/mark/ca/af2f45be-4984-4b20-8c8b-5d8e34e2cfb4",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "af2f45be-4984-4b20-8c8b-5d8e34e2cfb4",
+  "applicationNumber": "1833325",
+  "registrationNumber": "TMA1021699",
+  "applicationDate": "2017-04-19",
+  "registrationDate": "2019-05-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2018-11-28"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GET 'ER DONE CRB AUTOMOTIVE NORTH WEST RIVER, LABRADOR CANADA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": [
+    "The right to the exclusive use of the words North West River, Labrador Canada is disclaimed apart from the trademark."
+  ],
+  "niceClasses": [
+    21,
+    25,
+    35,
+    37,
+    39,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        21,
+        25,
+        35,
+        37,
+        39,
+        40,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Mugs \n(2) Athletic apparel; baseball caps; casual shirts; hats; long sleeve shirts; shirts",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21,
+        25,
+        35,
+        37,
+        39,
+        40,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Distribution of automotive parts \n(2) Automotive oil change services; cleaning of vehicles; gasoline refuelling service for motor vehicles; maintenance and repair of vehicles; motor vehicle detailing; motor vehicle greasing; tire rotating and balancing services; vehicle lubrication \n(3) Tire maintenance and repair; Automotive flushes; Recharging of air conditioning systems; Maintenance, repair and replacement of tires, brakes, vehicle motors, vehicle radiators, vehicle coolant, vehicle transmission systems, power steering, vehicle heating systems; Vehicle rear spring assembly and replacement; Vehicle steering and suspension system repair and replacement; Power steering maintenance; Maintenance and repair of emergency vehicles; Management and repair of general fleets of vehicles; Front differential repair and replacement \n(4) Vehicle towing services \n(5) Motor vehicle finishing \n(6) Automotive inspection services \n(7) Computer engine diagnostics services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CRB REBUILD AND RECREATION LTD.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "ERIN BEST",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 Sunday Hill Road P.O. Box 509, North West River, NEWFOUNDLAND AND LABRADOR, A0P1M0",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "10 Sunday Hill Road P.O. Box 509",
+          "North West River",
+          "NEWFOUNDLAND AND LABRADOR"
+        ],
+        "applicantAddressPostalCode": "A0P1M0",
+        "applicantName": "CRB REBUILD AND RECREATION LTD."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as March 30, 2017 on wares marked (1) (2)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since March 30, 2017 on services (1) (2) (3) (4) (5) (6) (7)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "21,25,35,37,39,40,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Mugs \n(2) Athletic apparel; baseball caps; casual shirts; hats; long sleeve shirts; shirts"
+        },
+        {
+          "intClassNumber": "21,25,35,37,39,40,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Distribution of automotive parts \n(2) Automotive oil change services; cleaning of vehicles; gasoline refuelling service for motor vehicles; maintenance and repair of vehicles; motor vehicle detailing; motor vehicle greasing; tire rotating and balancing services; vehicle lubrication \n(3) Tire maintenance and repair; Automotive flushes; Recharging of air conditioning systems; Maintenance, repair and replacement of tires, brakes, vehicle motors, vehicle radiators, vehicle coolant, vehicle transmission systems, power steering, vehicle heating systems; Vehicle rear spring assembly and replacement; Vehicle steering and suspension system repair and replacement; Power steering maintenance; Maintenance and repair of emergency vehicles; Management and repair of general fleets of vehicles; Front differential repair and replacement \n(4) Vehicle towing services \n(5) Motor vehicle finishing \n(6) Automotive inspection services \n(7) Computer engine diagnostics services"
+        }
+      ]
+    },
+    "id": "af2f45be-4984-4b20-8c8b-5d8e34e2cfb4",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markDisclaimers": [
+      "The right to the exclusive use of the words North West River, Labrador Canada is disclaimed apart from the trademark."
+    ],
+    "markEvents": [
+      {
+        "date": "20190515",
+        "descriptionText": "Registered",
+        "responseDate": "20340515"
+      },
+      {
+        "date": "20190315",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20190915"
+      },
+      {
+        "date": "20190315",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20181128",
+        "descriptionText": "Advertised",
+        "information": "Vol.65 Issue 3344"
+      },
+      {
+        "date": "20181108",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20180918",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20181016"
+      },
+      {
+        "date": "20180308",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20180908"
+      },
+      {
+        "date": "20180308",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20170421",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20170420",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20170419",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "Two crossed flaming pistons (resembling antlers) above the phrase 'GET 'ER DONE' above the phrase 'CRB AUTOMOTIVE' above the phrase 'North West River, Labrador Canada'.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "18.01.21",
+      "01.15.05",
+      "13.01.05",
+      "26.11.02",
+      "26.11.08",
+      "26.11.10",
+      "27.05.01",
+      "27.05.11"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "10 Sunday Hill Road P.O. Box 509, North West River, NEWFOUNDLAND AND LABRADOR, A0P1M0",
+        "addressLines": [
+          "10 Sunday Hill Road P.O. Box 509",
+          "North West River",
+          "NEWFOUNDLAND AND LABRADOR",
+          "A0P1M0"
+        ],
+        "countryName": "Canada",
+        "name": "CRB REBUILD AND RECREATION LTD.",
+        "postalCode": "A0P1M0"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3344",
+        "publicationVolume": "65"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "ERIN BEST",
+          "(STEWART MCKELVEY)",
+          "SUITE 1100, CABOT PLACE",
+          "100 NEW GOWER STREET",
+          "P.O. BOX 5038",
+          "NEWFOUNDLAND AND LABRADOR A1C5V3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "ERIN BEST",
+        "representativeReferenceNumber": "SM47295-2"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20190315"
+      ],
+      "application": {
+        "applicationDate": "20170419",
+        "applicationNumber": "1833325"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20170330",
+          "firstUsedText": "Used in CANADA since at least as early as March 30, 2017 on wares marked (1) (2)"
+        },
+        {
+          "firstUsedDate": "20170330",
+          "firstUsedText": "Used in CANADA since March 30, 2017 on services (1) (2) (3) (4) (5) (6) (7)"
+        }
+      ],
+      "formalisationDate": "20170421",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20340515",
+      "publicationDate": [
+        "20181128"
+      ],
+      "registration": {
+        "registrationDate": "20190515",
+        "registrationNumber": "TMA1021699"
+      }
+    },
+    "subjectHeadings": [
+      "GET 'ER DONE CRB AUTOMOTIVE NORTH WEST RIVER, LABRADOR CANADA",
+      "GET HER"
+    ],
+    "version": "20250625110510",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "GET ER DONE CRB AUTOMOTIVE NORTH WEST RIVER LABRADOR CANADA, GET HER DONE CRB AUTOMOTIVE NORTH WEST RIVER LABRADOR CANADA",
+      "markVerbalElementText": "GET 'ER DONE CRB AUTOMOTIVE NORTH WEST RIVER, LABRADOR CANADA",
+      "markVerbalElementTextFormal": "GET 'ER DONE CRB AUTOMOTIVE LOGO"
+    }
+  },
+  "_uri": "/mark/ca/af2f45be-4984-4b20-8c8b-5d8e34e2cfb4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/tw/5bc9c20b-e870-4137-8636-96ca4fa1d8f8",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "5bc9c20b-e870-4137-8636-96ca4fa1d8f8",
+  "applicationNumber": "112004879",
+  "registrationNumber": "02326791",
+  "applicationDate": "2023-01-30",
+  "registrationDate": "2023-10-01",
+  "expiryDate": "2033-09-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "zh",
+      "description": "第042類:電腦程式設計；電腦軟體設計；電腦軟體更新；電腦軟體維護；電腦軟體租賃；電腦軟體諮詢；電腦程式複製；網站規劃建置；為他人建置及維護網站；電腦網站代管；網路網頁設計；為他人製作或維護網頁；電子資料儲存服務；網站設計諮詢；軟體即服務（ＳａａＳ）；為他人創建和設計資訊網站索引（資訊技術服務）；為軟體發行業者提供軟體開發服務；平台即服務（ＰａａＳ）；電腦平台的開發；資料處理的電腦程式設計服務。",
+      "translation_language": "en",
+      "translation": "Class 042: Computer programming; computer software design; computer software updates; computer software maintenance; computer software leasing; computer software consulting; computer program copying; website planning and construction; building and maintaining websites for others; computer website hosting; Internet web design; producing or maintaining web pages for others; electronic data storage services; website design consulting; software as a service (SaaS); creating and designing information website indexes for others (information technology services); providing software development for software publishers Services; platform as a service (PaaS); development of computer platforms; computer programming services for data processing."
+    }
+  ],
+  "owner": "XiaKu Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantName": "XiaKu Technology Co., Ltd.",
+        "applicantNativeAddress": "臺北市松山區南京東路4段50號11樓",
+        "applicantNativeName": "夏酷科技股份有限公司"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 042: Computer programming; computer software design; computer software updates; computer software maintenance; computer software leasing; computer software consulting; computer program copying; website planning and construction; building and maintaining websites for others; computer website hosting; Internet web design; producing or maintaining web pages for others; electronic data storage services; website design consulting; software as a service (SaaS); creating and designing information website indexes for others (information technology services); providing software development for software publishers Services; platform as a service (PaaS); development of computer platforms; computer programming services for data processing.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第042類:電腦程式設計；電腦軟體設計；電腦軟體更新；電腦軟體維護；電腦軟體租賃；電腦軟體諮詢；電腦程式複製；網站規劃建置；為他人建置及維護網站；電腦網站代管；網路網頁設計；為他人製作或維護網頁；電子資料儲存服務；網站設計諮詢；軟體即服務（ＳａａＳ）；為他人創建和設計資訊網站索引（資訊技術服務）；為軟體發行業者提供軟體開發服務；平台即服務（ＰａａＳ）；電腦平台的開發；資料處理的電腦程式設計服務。"
+        }
+      ]
+    },
+    "id": "5bc9c20b-e870-4137-8636-96ca4fa1d8f8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "柯明憲 莊詔任"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230130",
+        "applicationNumber": "112004879"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330930",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20231001",
+        "registrationNumber": "02326791"
+      }
+    },
+    "version": "20260401142406",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/tw/5bc9c20b-e870-4137-8636-96ca4fa1d8f8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

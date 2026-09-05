@@ -1,0 +1,322 @@
+{
+  "uri": "/mark/us/adb54c8a-c9bc-4ca7-8074-67323c66c117",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "adb54c8a-c9bc-4ca7-8074-67323c66c117",
+  "applicationNumber": "88699261",
+  "registrationNumber": "6336070",
+  "applicationDate": "2019-11-20",
+  "registrationDate": "2021-04-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2020-07-28"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of online, nondownloadable software for use in the field of enterprise risk management that enables users to record, quantify, analyze, review, manage and report enterprise-wide risks",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Udbhata Technologies Private Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "Daniel S. Kirshner",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "91 Springboard, LVS Arcade Plot No 71, Madhapur,Hyderabad, 500081, INDI",
+        "applicantAddressCity": "Madhapur,Hyderabad",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantAddressPostalCode": "500081",
+        "applicantAddressStreet": "91 Springboard, LVS Arcade Plot No 71",
+        "applicantJurisdictionOfIncorporation": "INDIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Udbhata Technologies Private Ltd.",
+        "applicantSecondaryAddressUnit": "Jubilee Enclave, Hitech City"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of online, nondownloadable software for use in the field of enterprise risk management that enables users to record, quantify, analyze, review, manage and report enterprise-wide risks"
+        }
+      ]
+    },
+    "id": "adb54c8a-c9bc-4ca7-8074-67323c66c117",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260427",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20210427",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210325",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20210324",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20210320",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20210320",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20210302",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20210302",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20210129",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20210129",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20210129",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20200922",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20200728",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20200708",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20200618",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200617",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20200617",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200617",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200609",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20200225",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20200225",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200225",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200225",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20191126",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20191123",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "91 Springboard, LVS Arcade Plot No 71, Madhapur,Hyderabad, 500081, INDI",
+        "city": "Madhapur,Hyderabad",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "CORPORATION",
+        "name": "Udbhata Technologies Private Ltd.",
+        "postalCode": "500081",
+        "secondaryAddressUnit": "Jubilee Enclave, Hitech City",
+        "street": "91 Springboard, LVS Arcade Plot No 71"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "91 Springboard, LVS Arcade Plot No 71, Madhapur,Hyderabad, 500081, INDI",
+        "city": "Madhapur,Hyderabad",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "CORPORATION",
+        "name": "Udbhata Technologies Private Ltd.",
+        "postalCode": "500081",
+        "secondaryAddressUnit": "Jubilee Enclave, Hitech City",
+        "street": "91 Springboard, LVS Arcade Plot No 71"
+      },
+      {
+        "address": "91 Springboard, LVS Arcade Plot No 71, Madhapur,Hyderabad, 500081, INDI",
+        "city": "Madhapur,Hyderabad",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "CORPORATION",
+        "name": "Udbhata Technologies Private Ltd.",
+        "postalCode": "500081",
+        "secondaryAddressUnit": "Jubilee Enclave, Hitech City",
+        "street": "91 Springboard, LVS Arcade Plot No 71"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "91 Springboard, LVS Arcade Plot No 71, Madhapur,Hyderabad, 500081, INDI",
+        "city": "Madhapur,Hyderabad",
+        "countryCode": "IN",
+        "countryName": "India",
+        "jurisdictionOfIncorporation": "INDIA",
+        "legalEntity": "CORPORATION",
+        "name": "Udbhata Technologies Private Ltd.",
+        "postalCode": "500081",
+        "secondaryAddressUnit": "Jubilee Enclave, Hitech City",
+        "street": "91 Springboard, LVS Arcade Plot No 71"
+      }
+    ],
+    "recordLastUpdated": "20260430",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "EAST BRUNSWICK, NJ 08816, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "EAST BRUNSWICK, NJ 08816",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Daniel S. Kirshner DANIEL S. KIRSHNER, ATTORNEY AT LAW, LLC, 4 Auer Court, Suite EF"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "EAST BRUNSWICK, NJ 08816, UNITED STATES",
+        "representativeAddressLines": [
+          "EAST BRUNSWICK, NJ 08816",
+          "UNITED STATES"
+        ],
+        "representativeName": "Daniel S. Kirshner"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191120",
+        "applicationNumber": "88699261"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20210302"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20210302"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20210427",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20200728"
+      ],
+      "registration": {
+        "registrationDate": "20210427",
+        "registrationNumber": "6336070"
+      }
+    },
+    "version": "20260430074253",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"qoris\" has no meaning in a foreign language.",
+      "markVerbalElementText": "QORIS"
+    }
+  },
+  "_uri": "/mark/us/adb54c8a-c9bc-4ca7-8074-67323c66c117",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

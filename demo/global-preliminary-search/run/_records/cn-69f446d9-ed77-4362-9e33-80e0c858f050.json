@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/cn/69f446d9-ed77-4362-9e33-80e0c858f050",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "69f446d9-ed77-4362-9e33-80e0c858f050",
+  "applicationNumber": "51621751",
+  "registrationNumber": "51621751",
+  "applicationDate": "2020-11-26",
+  "registrationDate": "2021-08-21",
+  "expiryDate": "2031-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "克文克理",
+  "markTransliteration": "KE WEN KE LI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "教学仪器,电子防盗装置,便携式媒体播放器,眼镜,电子出版物(可下载),可下载的手机应用软件,移动电源(可充电电池),无线电设备,放映设备,已录制的或可下载的计算机软件平台",
+      "translation_language": "en",
+      "translation": "Teaching equipment, electronic anti-theft device, portable media player, glasses, electronic publication (downloadable), downloadable mobile phone application software, mobile power supply (rechargeable battery), radio equipment, projection equipment, recorded or downloadable Computer software platform"
+    }
+  ],
+  "owner": "Mingde New Thinking Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市昌平区中关村科技园区昌平园超前路37号院16号楼4层B区402室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Mingde New Thinking Technology Co., Ltd.",
+        "applicantNativeName": "明德新思路科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Teaching equipment, electronic anti-theft device, portable media player, glasses, electronic publication (downloadable), downloadable mobile phone application software, mobile power supply (rechargeable battery), radio equipment, projection equipment, recorded or downloadable Computer software platform",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "教学仪器,电子防盗装置,便携式媒体播放器,眼镜,电子出版物(可下载),可下载的手机应用软件,移动电源(可充电电池),无线电设备,放映设备,已录制的或可下载的计算机软件平台"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Warning equipments, bells",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "69f446d9-ed77-4362-9e33-80e0c858f050",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1744"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "济南泉润企业管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201126",
+        "applicationNumber": "51621751"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310820",
+      "lastPublicationDate": "20210520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210821",
+        "registrationNumber": "51621751"
+      }
+    },
+    "version": "20251004084106",
+    "wordMarkSpecification": {
+      "markTransliteration": "KE WEN KE LI",
+      "markVerbalElementText": "克文克理"
+    }
+  },
+  "_uri": "/mark/cn/69f446d9-ed77-4362-9e33-80e0c858f050",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

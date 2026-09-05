@@ -1,0 +1,184 @@
+{
+  "uri": "/mark/jp/8f8c8d85-c375-41ff-bf34-26cf93afba56",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "8f8c8d85-c375-41ff-bf34-26cf93afba56",
+  "applicationNumber": "H03-030584",
+  "registrationNumber": "2529985",
+  "applicationDate": "1991-03-27",
+  "registrationDate": "1993-04-28",
+  "expiryDate": "2003-04-28",
+  "renewalDate": null,
+  "lastPublicationDate": "1992-07-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "いおり",
+  "markTransliteration": "IORI",
+  "markTranslation": "IORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    16,
+    17,
+    18,
+    20,
+    21,
+    22,
+    24,
+    25,
+    26,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        9,
+        10,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        24,
+        25,
+        26,
+        28
+      ],
+      "language": null,
+      "description": "被服、布製身回品、寝具類",
+      "translation_language": "en",
+      "translation": "Being dressed, cloth back, bedding"
+    }
+  ],
+  "owner": "KATAKURA INDUSTRY K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19910327"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHUO TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KATAKURA INDUSTRY K.K.",
+        "applicantNativeAddress": "東京都中央区京橋３丁目１番２号",
+        "applicantNativeName": "片倉工業株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Being dressed, cloth back, bedding",
+          "intClassNumber": "05,09,10,16,17,18,20,21,22,24,25,26,28",
+          "intGoodsServicesDescription": "被服、布製身回品、寝具類"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "17A01"
+        },
+        {
+          "natClassNumber": "17A02"
+        },
+        {
+          "natClassNumber": "17A03"
+        },
+        {
+          "natClassNumber": "17A04"
+        },
+        {
+          "natClassNumber": "17A05"
+        },
+        {
+          "natClassNumber": "17A06"
+        },
+        {
+          "natClassNumber": "17A07"
+        },
+        {
+          "natClassNumber": "17A08"
+        },
+        {
+          "natClassNumber": "17A09"
+        },
+        {
+          "natClassNumber": "17A10"
+        },
+        {
+          "natClassNumber": "17B01"
+        },
+        {
+          "natClassNumber": "17C01"
+        }
+      ]
+    },
+    "id": "8f8c8d85-c375-41ff-bf34-26cf93afba56",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19910327"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910327",
+        "applicationNumber": "H03-030584"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20030428",
+      "lastPublicationDate": "19920731",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19930428",
+        "registrationNumber": "2529985"
+      }
+    },
+    "version": "20230427112837",
+    "wordMarkSpecification": {
+      "markTranslation": "IORI",
+      "markTransliteration": "IORI",
+      "markVerbalElementText": "いおり"
+    }
+  },
+  "_uri": "/mark/jp/8f8c8d85-c375-41ff-bf34-26cf93afba56",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

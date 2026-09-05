@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/es/2879c4e5-6506-4b13-90c5-8b6f35d77bfa",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "2879c4e5-6506-4b13-90c5-8b6f35d77bfa",
+  "applicationNumber": "4360868 MX",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-03",
+  "registrationDate": null,
+  "expiryDate": "2036-02-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENKOREX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "es",
+      "description": "Prendas de vestir, calzado, articulos de sombrereria",
+      "translation_language": "en",
+      "translation": "ITEMS OF CLOTHING, FOOTWEAR, HAT ITEMS"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES"
+    }
+  ],
+  "owner": "Abenia Ingalaturre, Juan Pablo",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lachwswehrallee 5A, LÜBECK",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Abenia Ingalaturre, Juan Pablo"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ITEMS OF CLOTHING, FOOTWEAR, HAT ITEMS",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prendas de vestir, calzado, articulos de sombrereria"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales"
+        }
+      ]
+    },
+    "id": "2879c4e5-6506-4b13-90c5-8b6f35d77bfa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "7129"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260203",
+        "applicationNumber": "4360868 MX"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360202",
+      "lastPublicationDate": "20260413",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260427172242",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKOREX"
+    }
+  },
+  "_uri": "/mark/es/2879c4e5-6506-4b13-90c5-8b6f35d77bfa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.776Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

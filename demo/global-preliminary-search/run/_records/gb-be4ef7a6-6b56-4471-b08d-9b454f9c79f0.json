@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/gb/be4ef7a6-6b56-4471-b08d-9b454f9c79f0",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "be4ef7a6-6b56-4471-b08d-9b454f9c79f0",
+  "applicationNumber": "4124220",
+  "registrationNumber": "4124220",
+  "applicationDate": "2024-11-13",
+  "registrationDate": "2025-03-14",
+  "expiryDate": "2034-11-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "The Grosvenor Cafe",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment and educational services; nightclub services; discotheque services; dance club services; organisation and hosting of musical events; provision of live entertainment and recorded entertainment; music and entertainment services; provision of music and entertainment facilities; live performances; organising, conducting and providing facilities for concerts, parties, shows, events, spectacles, competitions, conferences, seminars, exhibitions and symposiums; party, conference and function planning; private members club services; organisation and hosting of competitions, quizzes and games; rental of entertainment halls; information, advisory and consultancy services relating to all of the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Hotel, motel, serviced apartment, restaurant, bar, wine bar, cocktail bar, public house, café, bistro, brasserie, coffee bar and cafeteria services; provision of food and drink; temporary accommodation, banqueting and catering services; preparation of food, meals and beverages for consumption on or off the premises; restaurant reservation services; booking of restaurant seats, including online from the internet; organisation and provision of facilities for conferences, weddings, meetings and events; private members club services; accommodation services for functions; hiring of rooms for social functions; providing banqueting and social function facilities for special occasions; information, advisory and consultancy services relating to all of the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Scotsman Group plc",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Hamilton Drive, GLASGOW G12 8DR",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Scotsman Group plc"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment and educational services; nightclub services; discotheque services; dance club services; organisation and hosting of musical events; provision of live entertainment and recorded entertainment; music and entertainment services; provision of music and entertainment facilities; live performances; organising, conducting and providing facilities for concerts, parties, shows, events, spectacles, competitions, conferences, seminars, exhibitions and symposiums; party, conference and function planning; private members club services; organisation and hosting of competitions, quizzes and games; rental of entertainment halls; information, advisory and consultancy services relating to all of the aforesaid services."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Hotel, motel, serviced apartment, restaurant, bar, wine bar, cocktail bar, public house, café, bistro, brasserie, coffee bar and cafeteria services; provision of food and drink; temporary accommodation, banqueting and catering services; preparation of food, meals and beverages for consumption on or off the premises; restaurant reservation services; booking of restaurant seats, including online from the internet; organisation and provision of facilities for conferences, weddings, meetings and events; private members club services; accommodation services for functions; hiring of rooms for social functions; providing banqueting and social function facilities for special occasions; information, advisory and consultancy services relating to all of the aforesaid services."
+        }
+      ]
+    },
+    "id": "be4ef7a6-6b56-4471-b08d-9b454f9c79f0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2024/048"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241113",
+        "applicationNumber": "4124220"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341113",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250314",
+        "registrationNumber": "4124220"
+      }
+    },
+    "version": "20250627223606",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "The Grosvenor Cafe"
+    }
+  },
+  "_uri": "/mark/gb/be4ef7a6-6b56-4471-b08d-9b454f9c79f0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/kr/3b86f805-823e-4740-ba67-3c6b0ffe1ec3",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "3b86f805-823e-4740-ba67-3c6b0ffe1ec3",
+  "applicationNumber": "45-2012-0005495",
+  "registrationNumber": "4500472890000",
+  "applicationDate": "2012-10-25",
+  "registrationDate": "2013-12-09",
+  "expiryDate": "2033-12-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "노리",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기록된 컴퓨터프로그램,내려받기 가능한 컴퓨터프로그램,이동전화기용 컴퓨터 응용소프트웨어,컴퓨터 소프트웨어",
+      "translation_language": "en",
+      "translation": "Recorded computer programs, downloadable computer programs, computer application software for mobile phones, computer software"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "개인교수업,교육시험업,교육연구업,교육적 목적의 전시회조직업,교육적 행사의 준비 및 진행업,교육정보제공업,인터넷교육강좌업,인터넷교육지도업,인터넷을 이용한 교육시험업,인터넷통신학원경영업",
+      "translation_language": "en",
+      "translation": "Private teaching, educational testing, educational research, educational organization, exhibition preparation, and preparation for educational events, educational information provision, Internet education lecture, internet education guidance, internet education and test, internet communication School Business"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "멀티미디어응용 프로그래밍업,웹사이트개발업,웹사이트관리업,웹사이트디자인업,웹사이트유지관리업,웹사이트호스트업,컴퓨터소프트웨어개발업,컴퓨터소프트웨어업데이팅업,컴퓨터소프트웨어유지관리업",
+      "translation_language": "en",
+      "translation": "Multimedia application programming, website development, website management, website design, website maintenance, website hosting, computer software development, computer software updating, computer software maintenance"
+    }
+  ],
+  "owner": "KnowRe Korea Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인 수 (SU Intellectual Property)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KnowRe Korea Inc.",
+        "applicantNativeName": "주식회사 노리코리아"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded computer programs, downloadable computer programs, computer application software for mobile phones, computer software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기록된 컴퓨터프로그램,내려받기 가능한 컴퓨터프로그램,이동전화기용 컴퓨터 응용소프트웨어,컴퓨터 소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Private teaching, educational testing, educational research, educational organization, exhibition preparation, and preparation for educational events, educational information provision, Internet education lecture, internet education guidance, internet education and test, internet communication School Business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "개인교수업,교육시험업,교육연구업,교육적 목적의 전시회조직업,교육적 행사의 준비 및 진행업,교육정보제공업,인터넷교육강좌업,인터넷교육지도업,인터넷을 이용한 교육시험업,인터넷통신학원경영업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Multimedia application programming, website development, website management, website design, website maintenance, website hosting, computer software development, computer software updating, computer software maintenance",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "멀티미디어응용 프로그래밍업,웹사이트개발업,웹사이트관리업,웹사이트디자인업,웹사이트유지관리업,웹사이트호스트업,컴퓨터소프트웨어개발업,컴퓨터소프트웨어업데이팅업,컴퓨터소프트웨어유지관리업"
+        }
+      ]
+    },
+    "id": "3b86f805-823e-4740-ba67-3c6b0ffe1ec3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Yeoksam-dong, K&Y Bldg.) Fl., , Gangnam-daero -gil, Gangnam-gu, Seoul Republic of Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인 수 (SU Intellectual Property)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20121025",
+        "applicationNumber": "45-2012-0005495"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331209",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20131209",
+        "registrationNumber": "4500472890000"
+      }
+    },
+    "version": "20250625172229",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "노리"
+    }
+  },
+  "_uri": "/mark/kr/3b86f805-823e-4740-ba67-3c6b0ffe1ec3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

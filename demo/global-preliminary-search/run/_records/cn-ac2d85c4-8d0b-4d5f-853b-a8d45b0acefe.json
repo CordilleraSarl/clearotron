@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/ac2d85c4-8d0b-4d5f-853b-a8d45b0acefe",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "ac2d85c4-8d0b-4d5f-853b-a8d45b0acefe",
+  "applicationNumber": "88731150",
+  "registrationNumber": null,
+  "applicationDate": "2025-11-21",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QOAI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和组织培训班;补习学校辅导;辅导(培训);教育;培训;书法服务;提供在线教育课程;通过全球计算机网络出版网站编辑内容;在线图书馆服务,即通过在线计算机网络提供以报纸、杂志、照片和图片为特色的电子图书馆服务;组织教育或娱乐竞赛",
+      "translation_language": "en",
+      "translation": ". Arranging and organizing training courses; tutoring at supplementary schools; tutoring (training); education; training; calligraphy services; providing online educational courses; editing content through global computer network publishing websites; online library services, i.e., providing electronic library services featuring newspapers, magazines, photos, and pictures through online computer networks; organizing educational or entertainment competitions."
+    }
+  ],
+  "owner": "Sichuan Qingda Zhixue Enterprise Management Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "四川省中国(四川)自由贸易试验区成都高新区交子大道500号1幢9层937号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Sichuan Qingda Zhixue Enterprise Management Co., Ltd.",
+        "applicantNativeName": "四川清大智学企业管理有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Arranging and organizing training courses; tutoring at supplementary schools; tutoring (training); education; training; calligraphy services; providing online educational courses; editing content through global computer network publishing websites; online library services, i.e., providing electronic library services featuring newspapers, magazines, photos, and pictures through online computer networks; organizing educational or entertainment competitions.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和组织培训班;补习学校辅导;辅导(培训);教育;培训;书法服务;提供在线教育课程;通过全球计算机网络出版网站编辑内容;在线图书馆服务,即通过在线计算机网络提供以报纸、杂志、照片和图片为特色的电子图书馆服务;组织教育或娱乐竞赛"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Library service",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "ac2d85c4-8d0b-4d5f-853b-a8d45b0acefe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260213",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "德州盛达知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251121",
+        "applicationNumber": "88731150"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260213020526",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOAI"
+    }
+  },
+  "_uri": "/mark/cn/ac2d85c4-8d0b-4d5f-853b-a8d45b0acefe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:38.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

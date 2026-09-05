@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/co/64153c0c-179e-4229-97d9-304e5b7b50b0",
+  "provider": "clarivate",
+  "office": "co",
+  "guid": "64153c0c-179e-4229-97d9-304e5b7b50b0",
+  "applicationNumber": "SD20170021907",
+  "registrationNumber": "577306",
+  "applicationDate": "2017-03-27",
+  "registrationDate": "2017-09-20",
+  "expiryDate": "2027-09-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "aparatos e instrumentos ópticos, en especial lentes, cadenitas de lentes, cordones de lentes, estuches para lentes, monturas de lentes, lentes correctoras, lentes de contacto, estuches para lentes de contacto, lentillas, lentillas de contacto y lentillas ópticas, gafas sport.",
+      "translation_language": "en",
+      "translation": "optical instruments and instruments, especially lenses, lens chains, lens cords, lens cases, lens frames, corrective lenses, contact lenses, contact lens cases, contact lenses, contact lenses and optical lenses, sport glasses ."
+    }
+  ],
+  "owner": "T. R. A. DISTRIBUCIONES S. A. S, CALLE A N° LC",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": "BLANCA MERY VELASQUEZ GALLO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "218 MEDELLIN ANTIOQUIA",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "T. R. A. DISTRIBUCIONES S. A. S, CALLE A N° LC"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "optical instruments and instruments, especially lenses, lens chains, lens cords, lens cases, lens frames, corrective lenses, contact lenses, contact lens cases, contact lenses, contact lenses and optical lenses, sport glasses .",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "aparatos e instrumentos ópticos, en especial lentes, cadenitas de lentes, cordones de lentes, estuches para lentes, monturas de lentes, lentes correctoras, lentes de contacto, estuches para lentes de contacto, lentillas, lentillas de contacto y lentillas ópticas, gafas sport."
+        }
+      ]
+    },
+    "id": "64153c0c-179e-4229-97d9-304e5b7b50b0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251021",
+    "registrationOfficeCode": "CO",
+    "registrationOfficeName": "Colombia",
+    "representatives": [
+      {
+        "representativeAddress": "CRA 81B No. 7A - 40 URB. VILLAVERDE 1 CASA 13 MEDELLIN ANTIOQUIA",
+        "representativeAddressCountryCode": "CO",
+        "representativeAddressCountryName": "Colombia",
+        "representativeName": "BLANCA MERY VELASQUEZ GALLO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170327",
+        "applicationNumber": "SD20170021907"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270920",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170920",
+        "registrationNumber": "577306"
+      }
+    },
+    "version": "20251021021259",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/co/64153c0c-179e-4229-97d9-304e5b7b50b0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

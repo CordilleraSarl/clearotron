@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/kr/55ff20dc-5652-439b-8f2a-56ac632a012b",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "55ff20dc-5652-439b-8f2a-56ac632a012b",
+  "applicationNumber": "40-2020-0054976",
+  "registrationNumber": "4017217250000",
+  "applicationDate": "2020-04-02",
+  "registrationDate": "2021-04-30",
+  "expiryDate": "2031-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-05-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "도리",
+  "markTransliteration": "duty",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "교육용 로봇,보안감시용 로봇,실험실용 로봇,인공지능이 탑재된 휴머노이드 로봇,텔레프레전스 로봇",
+      "translation_language": "en",
+      "translation": "Educational robots, security surveillance robots, laboratory robots, humanoid robots equipped with artificial intelligence, telepresence robots"
+    }
+  ],
+  "owner": "ROBOCARE CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김영철 (KIM, Young Chol)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 성남시 수정구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "ROBOCARE CO., LTD.",
+        "applicantNativeName": "(주)로보케어"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Educational robots, security surveillance robots, laboratory robots, humanoid robots equipped with artificial intelligence, telepresence robots",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교육용 로봇,보안감시용 로봇,실험실용 로봇,인공지능이 탑재된 휴머노이드 로봇,텔레프레전스 로봇"
+        }
+      ]
+    },
+    "id": "55ff20dc-5652-439b-8f2a-56ac632a012b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "KOREA COAL CENTER TH FL,Susong-dong,Chongro-ku,Seoul,Korea(KIM,CHOI & LIM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김영철 (KIM, Young Chol)"
+      },
+      {
+        "representativeAddress": "Korea Coal Center, th Floor, , Susong-dong, Chongro-gu, Seoul, Republic of KOREA (KIM, CHOI & LIM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김 순 영"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200402",
+        "applicationNumber": "40-2020-0054976"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310430",
+      "lastPublicationDate": "20210507",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210430",
+        "registrationNumber": "4017217250000"
+      }
+    },
+    "version": "20250625204351",
+    "wordMarkSpecification": {
+      "markTransliteration": "duty",
+      "markVerbalElementText": "도리"
+    }
+  },
+  "_uri": "/mark/kr/55ff20dc-5652-439b-8f2a-56ac632a012b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

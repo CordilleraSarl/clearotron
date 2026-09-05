@@ -1,0 +1,228 @@
+{
+  "uri": "/mark/us/ae4da1b7-2a18-4eed-946c-27c687dbe277",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ae4da1b7-2a18-4eed-946c-27c687dbe277",
+  "applicationNumber": "88374091",
+  "registrationNumber": null,
+  "applicationDate": "2019-04-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2019-12-24",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer software for the collecting, editing, organizing, modifying, book marking, transmission, storage, analysis, sampling and sharing of data and information for medical research, medical diagnosis and scientific and research use; computer software for the analyses of biological samples; computer software for remote handling, namely, data management and operating diagnostic apparatus, of a diagnostic platform; software for remote operation and management of an apparatus in the nature of diagnostic apparatus used in the field of medical research and medical diagnosis",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "INT. CL. 10 Diagnostic apparatus for medical use, namely, a diagnostics platform for detection and quantification of nucleic acid and genomics in a wide variety of patient sample types; medical diagnostic instruments for the analysis of bodily fluids, and biological samples, namely, cartridges as parts of medical diagnostic apparatus, and computer hardware and computer software for use therewith",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Web based portal to access laboratory reports",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "BioCeryx, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Rochelle D. Alpert",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "333 Ravenswood Avenue, Menlo Park, CA, 94025",
+        "applicantAddressCity": "Menlo Park",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "94025",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "333 Ravenswood Avenue",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "BioCeryx, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer software for the collecting, editing, organizing, modifying, book marking, transmission, storage, analysis, sampling and sharing of data and information for medical research, medical diagnosis and scientific and research use; computer software for the analyses of biological samples; computer software for remote handling, namely, data management and operating diagnostic apparatus, of a diagnostic platform; software for remote operation and management of an apparatus in the nature of diagnostic apparatus used in the field of medical research and medical diagnosis"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "INT. CL. 10 Diagnostic apparatus for medical use, namely, a diagnostics platform for detection and quantification of nucleic acid and genomics in a wide variety of patient sample types; medical diagnostic instruments for the analysis of bodily fluids, and biological samples, namely, cartridges as parts of medical diagnostic apparatus, and computer hardware and computer software for use therewith"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Web based portal to access laboratory reports"
+        }
+      ]
+    },
+    "id": "ae4da1b7-2a18-4eed-946c-27c687dbe277",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20200108",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20200108",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20190621",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190621",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190621",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190617",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190423",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190409",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "333 Ravenswood Avenue, Menlo Park, CA, 94025",
+        "city": "Menlo Park",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "BioCeryx, Inc.",
+        "postalCode": "94025",
+        "stateName": "CALIFORNIA",
+        "street": "333 Ravenswood Avenue"
+      },
+      {
+        "address": "333 Ravenswood Avenue, Menlo Park, CA, 94025",
+        "city": "Menlo Park",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "BioCeryx, Inc.",
+        "postalCode": "94025",
+        "stateName": "CALIFORNIA",
+        "street": "333 Ravenswood Avenue"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "MORGAN LEWIS, SAN FRANCISCO, CA 94105, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "MORGAN LEWIS",
+          "SAN FRANCISCO, CA 94105",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ROCHELLE D. ALPERT MORGAN, LEWIS & BOCKIUS LLP, ONE MARKET, SPEAR ST TOWER, 5TH FLOOR"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "MORGAN LEWIS, SAN FRANCISCO, CA 94105, UNITED STATES",
+        "representativeAddressLines": [
+          "MORGAN LEWIS",
+          "SAN FRANCISCO, CA 94105",
+          "UNITED STATES"
+        ],
+        "representativeName": "Rochelle D. Alpert"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20191224",
+      "active": false,
+      "application": {
+        "applicationDate": "20190405",
+        "applicationNumber": "88374091"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20200108",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260113072150",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/ae4da1b7-2a18-4eed-946c-27c687dbe277",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

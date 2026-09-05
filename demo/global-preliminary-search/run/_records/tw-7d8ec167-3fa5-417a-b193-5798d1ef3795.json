@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/tw/7d8ec167-3fa5-417a-b193-5798d1ef3795",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "7d8ec167-3fa5-417a-b193-5798d1ef3795",
+  "applicationNumber": "069017102",
+  "registrationNumber": "00148545",
+  "applicationDate": "1980-07-24",
+  "registrationDate": "1981-02-01",
+  "expiryDate": "1998-07-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "zh",
+      "description": "第080類:計算器、計算機。",
+      "translation_language": "en",
+      "translation": "Class 080: Calculators, computers."
+    }
+  ],
+  "owner": "gu li jing ji zhi zuo suo zhu shi kuo she gu li ji zhi zuo suo gu fen you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "gu li jing ji zhi zuo suo zhu shi kuo she gu li ji zhi zuo suo gu fen you xian gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 080: Calculators, computers.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第080類:計算器、計算機。"
+        }
+      ]
+    },
+    "id": "7d8ec167-3fa5-417a-b193-5798d1ef3795",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19800724",
+        "applicationNumber": "069017102"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19980731",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19810201",
+        "registrationNumber": "00148545"
+      }
+    },
+    "version": "20260331171155",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/tw/7d8ec167-3fa5-417a-b193-5798d1ef3795",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "uri": "/mark/us/653bd43f-2298-47ad-a801-017f74714596",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "653bd43f-2298-47ad-a801-017f74714596",
+  "applicationNumber": "77383346",
+  "registrationNumber": "3709442",
+  "applicationDate": "2008-01-29",
+  "registrationDate": "2009-11-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2008-06-10"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2016-06-17",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Hardware and software for signal, video and sensor data enhancement deploying interferometry computational algorithms; embedded software or firmware for interferometric enhancement",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ViaLogy LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Andrew M. Abrams",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2400 Lincoln Avenue, Altadena, CA, 91001",
+        "applicantAddressCity": "Altadena",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "91001",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "2400 Lincoln Avenue",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "ViaLogy LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Hardware and software for signal, video and sensor data enhancement deploying interferometry computational algorithms; embedded software or firmware for interferometric enhancement"
+        }
+      ]
+    },
+    "id": "653bd43f-2298-47ad-a801-017f74714596",
+    "internationalMarkKeys": [
+      {
+        "applicationDate": "20080729",
+        "internationalRegistrationNumber": "0983015",
+        "markCurrentStatus": "DEATH OF INTERNATIONAL REGISTRATION",
+        "markCurrentStatusDate": "20180729",
+        "markEvents": [
+          {
+            "date": "20190301",
+            "descriptionText": "INTERNATIONAL REGISTRATION CANCELLED BY IB"
+          },
+          {
+            "date": "20100401",
+            "descriptionText": "CEASING OF EFFECT REVIEWED - NO ACTION REQUIRED BY OFFICE"
+          },
+          {
+            "date": "20100210",
+            "descriptionText": "PARTIAL CEASING OF EFFECT TO BE PROCESSED"
+          },
+          {
+            "date": "20081205",
+            "descriptionText": "APPLICATION FOR IR REGISTERED BY IB"
+          },
+          {
+            "date": "20080729",
+            "descriptionText": "IR CERTIFIED AND SENT TO IB"
+          },
+          {
+            "date": "20080729",
+            "descriptionText": "AUTOMATICALLY CERTIFIED"
+          },
+          {
+            "date": "20080729",
+            "descriptionText": "NEW APPLICATION FOR IR RECEIVED"
+          }
+        ],
+        "registrationDate": "20080729",
+        "renewalDate": "20180729",
+        "usptoReferenceNumber": "A0013318"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20160617",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20091110",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20091007",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20091006",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20090922",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20090922",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20090922",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20090902",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20090902",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20090902",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20090902",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20090227",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20090227",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20090227",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20080902",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20080610",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20080521",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20080508",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20080508",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20080508",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20080507",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20080201",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2400 Lincoln Avenue, Altadena, CA, 91001",
+        "city": "Altadena",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ViaLogy LLC",
+        "postalCode": "91001",
+        "stateName": "CALIFORNIA",
+        "street": "2400 Lincoln Avenue"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2400 Lincoln Avenue, Altadena, CA, 91001",
+        "city": "Altadena",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ViaLogy LLC",
+        "postalCode": "91001",
+        "stateName": "CALIFORNIA",
+        "street": "2400 Lincoln Avenue"
+      },
+      {
+        "address": "2400 Lincoln Avenue, Altadena, CA, 91001",
+        "city": "Altadena",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ViaLogy LLC",
+        "postalCode": "91001",
+        "stateName": "CALIFORNIA",
+        "street": "2400 Lincoln Avenue"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2400 Lincoln Avenue, Altadena, CA, 91001",
+        "city": "Altadena",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ViaLogy LLC",
+        "postalCode": "91001",
+        "stateName": "CALIFORNIA",
+        "street": "2400 Lincoln Avenue"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "MINNEAPOLIS, MN 55440-1022, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "MINNEAPOLIS, MN 55440-1022",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ANDREW M. ABRAMS FISH & RICHARDSON P.C., PO BOX 1022"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "MINNEAPOLIS, MN 55440-1022, UNITED STATES",
+        "representativeAddressLines": [
+          "MINNEAPOLIS, MN 55440-1022",
+          "UNITED STATES"
+        ],
+        "representativeName": "Andrew M. Abrams"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080129",
+        "applicationNumber": "77383346"
+      },
+      "cancellationDate": "20160617",
+      "cancellationPublicationDate": "20160726",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20040806"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20040806"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20160617",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20080610"
+      ],
+      "registration": {
+        "registrationDate": "20091110",
+        "registrationNumber": "3709442"
+      }
+    },
+    "version": "20260109054803",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/us/653bd43f-2298-47ad-a801-017f74714596",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

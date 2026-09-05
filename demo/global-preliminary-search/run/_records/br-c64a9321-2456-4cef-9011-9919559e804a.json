@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/br/c64a9321-2456-4cef-9011-9919559e804a",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "c64a9321-2456-4cef-9011-9919559e804a",
+  "applicationNumber": "815411723",
+  "registrationNumber": "815411723",
+  "applicationDate": "1990-02-20",
+  "registrationDate": "2018-04-03",
+  "expiryDate": "2028-04-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        42
+      ],
+      "language": "pt",
+      "description": "Doces, pós para fabricação de doces, açúcar e adoçantes em geral. Doces e pós para fabricação de doces em geral.",
+      "translation_language": "en",
+      "translation": "Sweets, powders for the manufacture of sweets, sugar and sweeteners in general. Sweets and powders for the manufacture of sweets in general."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "TINOCO SOARES S/C LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sweets, powders for the manufacture of sweets, sugar and sweeteners in general. Sweets and powders for the manufacture of sweets in general.",
+          "intClassNumber": "05,29,30,31,32,33,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Doces, pós para fabricação de doces, açúcar e adoçantes em geral. Doces e pós para fabricação de doces em geral."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "33.10"
+        }
+      ]
+    },
+    "id": "c64a9321-2456-4cef-9011-9919559e804a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.07.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TINOCO SOARES S/C LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19900220",
+        "applicationNumber": "815411723"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280403",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180403",
+        "registrationNumber": "815411723"
+      }
+    },
+    "version": "20250630192905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/c64a9321-2456-4cef-9011-9919559e804a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

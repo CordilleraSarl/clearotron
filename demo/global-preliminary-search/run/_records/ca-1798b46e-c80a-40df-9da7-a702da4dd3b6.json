@@ -1,0 +1,310 @@
+{
+  "uri": "/mark/ca/1798b46e-c80a-40df-9da7-a702da4dd3b6",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "1798b46e-c80a-40df-9da7-a702da4dd3b6",
+  "applicationNumber": "1286782",
+  "registrationNumber": "TMA715444",
+  "applicationDate": "2006-01-20",
+  "registrationDate": "2008-05-29",
+  "expiryDate": null,
+  "renewalDate": "2023-05-29",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2007-12-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOPI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "(1) Business advisory services, consultancy and information in the nature of quality improvement services, namely, assessment program for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement; Medical consultancy regarding patient care for the purpose of quality improvement services, namely, assessment program for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AMERICAN SOCIETY OF CLINICAL ONCOLOGY, INC.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States",
+      "priorityDate": "20050720",
+      "priorityNumber": "78/674180",
+      "priorityText": "Priority Filing Date: July 20, 2005, Country or Office: UNITED STATES OF AMERICA, Application No. 78/674180 in association with the same kind on services (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "435 North Michigan Avenue, Chicago, Illinois 60611",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "435 North Michigan Avenue",
+          "Chicago, Illinois 60611"
+        ],
+        "applicantName": "AMERICAN SOCIETY OF CLINICAL ONCOLOGY, INC."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: July 20, 2005, Country or Office: UNITED STATES OF AMERICA, Application No. 78/674180 in association with the same kind on services (1)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Used in UNITED STATES OF AMERICA on services (1)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for UNITED STATES OF AMERICA on August 14, 2007, under No. 3279430 on services (1)",
+        "typeDescription": "Foreign Registration"
+      },
+      {
+        "text": "Declaration of Use filed May 08, 2008 on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "AMENDMENT TO REGISTRATION / MODIFICATION A L'ENREGISTREMENT:",
+      "TYPE OF AMENDMENT / GENRE DE MODIFICATION: Paragraph 41(1)(a) - Owner Information / Alinéa 41(1)(a) - information sur le propriétaire",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 02 oct/Oct 2014",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 02 oct/Oct 2014",
+      "COMMENTS / COMMENTAIRES: Voir Preuve au dossier/See evidence on File No. 521370"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Business advisory services, consultancy and information in the nature of quality improvement services, namely, assessment program for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement; Medical consultancy regarding patient care for the purpose of quality improvement services, namely, assessment program for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement."
+        }
+      ]
+    },
+    "id": "1798b46e-c80a-40df-9da7-a702da4dd3b6",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250116",
+        "descriptionText": "281"
+      },
+      {
+        "date": "20240510",
+        "descriptionText": "280",
+        "responseDate": "20241110"
+      },
+      {
+        "date": "20230621",
+        "descriptionText": "280",
+        "responseDate": "20231221"
+      },
+      {
+        "date": "20230529",
+        "descriptionText": "Renewed",
+        "information": "DP:2023/01/18 RD:2023/01/18 RR:(8390) GOWLING WLG (CANADA) LLP",
+        "responseDate": "20330529"
+      },
+      {
+        "date": "20230123",
+        "descriptionText": "Requirement To Furnish Statement Under Subsection 44.1(1) Sent",
+        "responseDate": "20230723"
+      },
+      {
+        "date": "20160225",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20141015",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 32 To: 8390 / Voir Preuve au dossier/See evidence on File No. 521370"
+      },
+      {
+        "date": "20141002",
+        "descriptionText": "Amendment to Registration",
+        "information": "Section 41(1)(a) - Owner Information / Voir Preuve au dossier/See evidence on File No. 521370"
+      },
+      {
+        "date": "20141002",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 8390 To: 32 / Voir Preuve au dossier/See evidence on File No. 521370"
+      },
+      {
+        "date": "20080529",
+        "descriptionText": "Registered",
+        "responseDate": "20230529"
+      },
+      {
+        "date": "20080314",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20090120"
+      },
+      {
+        "date": "20080314",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20071226",
+        "descriptionText": "Advertised",
+        "information": "Vol.54 Issue 2774"
+      },
+      {
+        "date": "20071203",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20070410",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2007/03/29",
+        "responseDate": "20071007"
+      },
+      {
+        "date": "20061002",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2006/09/21",
+        "responseDate": "20070407"
+      },
+      {
+        "date": "20060607",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20061007"
+      },
+      {
+        "date": "20060607",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20060120",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20060120",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20060120",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "435 North Michigan Avenue, Chicago, Illinois 60611",
+        "addressLines": [
+          "435 North Michigan Avenue",
+          "Chicago, Illinois 60611"
+        ],
+        "countryName": "United States",
+        "name": "AMERICAN SOCIETY OF CLINICAL ONCOLOGY, INC."
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States",
+        "priorityDate": "20050720",
+        "priorityNumber": "78/674180",
+        "priorityText": "Priority Filing Date: July 20, 2005, Country or Office: UNITED STATES OF AMERICA, Application No. 78/674180 in association with the same kind on services (1)"
+      }
+    ],
+    "priorityDate": "20050720",
+    "publications": [
+      {
+        "publicationIssue": "2774",
+        "publicationVolume": "54"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 2600, 160 ELGIN STREET",
+          "OTTAWA",
+          "ONTARIO K1P1C3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "06679513CA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20080314"
+      ],
+      "application": {
+        "applicationDate": "20060120",
+        "applicationNumber": "1286782"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "extension": {
+        "approvalDate": [
+          "20070410"
+        ],
+        "dueDate": "20071007"
+      },
+      "formalisationDate": "20060120",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20330529",
+      "publicationDate": [
+        "20071226"
+      ],
+      "registration": {
+        "registrationDate": "20080529",
+        "registrationNumber": "TMA715444"
+      },
+      "renewalDate": "20230529"
+    },
+    "subjectHeadings": [
+      "QOPI"
+    ],
+    "version": "20250624150844",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOPI",
+      "markVerbalElementTextFormal": "QOPI"
+    }
+  },
+  "_uri": "/mark/ca/1798b46e-c80a-40df-9da7-a702da4dd3b6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:04.037Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

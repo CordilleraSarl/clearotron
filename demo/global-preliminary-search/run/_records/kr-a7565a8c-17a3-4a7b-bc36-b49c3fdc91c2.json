@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/kr/a7565a8c-17a3-4a7b-bc36-b49c3fdc91c2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a7565a8c-17a3-4a7b-bc36-b49c3fdc91c2",
+  "applicationNumber": "40-1989-0004059",
+  "registrationNumber": null,
+  "applicationDate": "1989-02-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LORI",
+  "markTransliteration": "LORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    14,
+    16,
+    17,
+    21,
+    24,
+    25,
+    26,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        14,
+        16,
+        17,
+        21,
+        24,
+        25,
+        26,
+        31
+      ],
+      "language": "ko",
+      "description": "단추, 바지, 브라우스, 스웨터, 스커어트, 와이셔어츠, 유니포옴, 조끼, 치마, 카아디간",
+      "translation_language": "en",
+      "translation": "Buttons, pants, blouse, sweater, skirt, dress shirt, uniform, vest, skirt, cardigan"
+    }
+  ],
+  "owner": "OH IN KYU",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 성북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "OH IN KYU",
+        "applicantNativeName": "오인규"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Buttons, pants, blouse, sweater, skirt, dress shirt, uniform, vest, skirt, cardigan",
+          "intClassNumber": "06,09,10,14,16,17,21,24,25,26,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "단추, 바지, 브라우스, 스웨터, 스커어트, 와이셔어츠, 유니포옴, 조끼, 치마, 카아디간"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "045"
+        }
+      ]
+    },
+    "id": "a7565a8c-17a3-4a7b-bc36-b49c3fdc91c2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260430",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19890222",
+        "applicationNumber": "40-1989-0004059"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260430020254",
+    "wordMarkSpecification": {
+      "markTransliteration": "LORI",
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/kr/a7565a8c-17a3-4a7b-bc36-b49c3fdc91c2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

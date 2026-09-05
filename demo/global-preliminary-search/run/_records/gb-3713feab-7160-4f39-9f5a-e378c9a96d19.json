@@ -1,0 +1,159 @@
+{
+  "uri": "/mark/gb/3713feab-7160-4f39-9f5a-e378c9a96d19",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3713feab-7160-4f39-9f5a-e378c9a96d19",
+  "applicationNumber": "UK00911813813",
+  "registrationNumber": "UK00911813813",
+  "applicationDate": "2013-05-14",
+  "registrationDate": "2013-11-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RAVEN QUEEN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Clothing, footwear, headgear; masquerade costumes \\.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Games and playthings; gymnastic and sporting articles not included in other classes; decorations for Christmas trees; Christmas crackers; toy masks, theatrical masks; paper party hats; piñatas; scale model vehicles; kaleidoscopes; novelties; video game apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Providing of training; Entertainment; Sporting and cultural activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Mattel, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Hogan Lovells (Alicante) S.L. & Cia.",
+  "priorities": [
+    {
+      "priorityCountryCode": "LC",
+      "priorityCountryName": "Saint Lucia",
+      "priorityDate": "20121116",
+      "priorityNumber": "TM/T/2013/363"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "333 Continental Boulevard, El Segundo 90245-5012, California",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Mattel, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Clothing, footwear, headgear; masquerade costumes \\."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Games and playthings; gymnastic and sporting articles not included in other classes; decorations for Christmas trees; Christmas crackers; toy masks, theatrical masks; paper party hats; piñatas; scale model vehicles; kaleidoscopes; novelties; video game apparatus."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Providing of training; Entertainment; Sporting and cultural activities."
+        }
+      ]
+    },
+    "id": "3713feab-7160-4f39-9f5a-e378c9a96d19",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "LC",
+        "priorityCountryName": "Saint Lucia",
+        "priorityDate": "20121116",
+        "priorityNumber": "TM/T/2013/363"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Avenida Federico Soto 13, Alicante 03003",
+        "representativeAddressCountryCode": "ES",
+        "representativeAddressCountryName": "Spain",
+        "representativeName": "Hogan Lovells (Alicante) S.L. & Cia."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130514",
+        "applicationNumber": "UK00911813813"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20131108",
+        "registrationNumber": "UK00911813813"
+      }
+    },
+    "version": "20250627211154",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN QUEEN"
+    }
+  },
+  "_uri": "/mark/gb/3713feab-7160-4f39-9f5a-e378c9a96d19",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

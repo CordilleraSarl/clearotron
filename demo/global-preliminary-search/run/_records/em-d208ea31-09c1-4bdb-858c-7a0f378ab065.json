@@ -1,0 +1,753 @@
+{
+  "uri": "/mark/em/d208ea31-09c1-4bdb-858c-7a0f378ab065",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "d208ea31-09c1-4bdb-858c-7a0f378ab065",
+  "applicationNumber": "19251304",
+  "registrationNumber": "19251304",
+  "applicationDate": "2025-09-24",
+  "registrationDate": "2026-01-11",
+  "expiryDate": "2035-09-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-10-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software pro pocítacové hry; Pocítacový aplikacní software zamerený na hry a hazardní hry; Interaktivní multimediální software ke hraní her.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "cs",
+      "description": "Hry; Deskové hry; Spolecenské hry; Spolecenské hry.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software til spil; Computerapplikationssoftware med spil; Interaktiv multimediesoftware til spil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "da",
+      "description": "Spil; brætspil; selskabsspil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Spelsoftware; Computer applicatiesoftware voor spellen en kansspelen; Interactieve multimediasoftware voor het spelen van spelletjes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "nl",
+      "description": "Spellen; Bordspellen; Gezelschapsspellen; Gezelschapsspellen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer gaming software; Computer application software featuring games and gaming; Interactive multimedia software for playing games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Games; Board games; Party games; Parlor games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Arvutitarkvara hasartmängude mängimiseks; Mängudega seotud arvutirakendustarkvara; Interaktiivne multimeediatarkvara mängude mängimiseks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "et",
+      "description": "Mängud; Mängualusel mängitavad lauamängud; Seltskonnamängud; Seltskonnamängud.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Peliohjelmistot; Tietokonesovellusohjelmistot, joihin sisältyy pelejä ja pelaamista; Vuorovaikutteiset multimediaohjelmistot pelien pelaamista varten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fi",
+      "description": "Pelit; Lautapelit; Seurapelit; Seurapelit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels de jeux d'ordinateur; Logiciels d'application proposant des jeux; Logiciels multimédias interactifs destinés à jouer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Jeux; Jeux de société; Jeux de salon [jeux de société]; Jeux de salon [jeux de société].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Computerspielsoftware; Computeranwendungssoftware mit Spielen; Interaktive Multimedia-Spielsoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "de",
+      "description": "Spiele; Brettspiele; Gesellschaftsspiele; Gesellschaftsspiele.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver za igrice; Softver za racunalne aplikacije s igrama i kockanjem; Interaktivni multimedijski softver za igranje igara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hr",
+      "description": "Igre; Drustvene igre; Igre za zabavu; Igre za zabavu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Játékszoftverek; Játékokat és szerencsejátékokat kínáló számítógépes alkalmazásszoftverek; Interaktív multimédia szoftverek játékokhoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hu",
+      "description": "Játékok; Táblajátékok; Társasjátékok; Társasjátékok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software per giochi; Software applicativo per giochi e giochi d'azzardo; Software multimediale interattivo per videogiochi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "it",
+      "description": "Giochi; Giochi da tavolo; Giochi di società; Giochi di società.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Zaidimu programine iranga; Kompiuteriu taikomoji programine iranga, skirta zaidimams ir losimams; Interaktyvioji multimedijos programine iranga zaidimams zaisti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lt",
+      "description": "Zaidimai; Stalo zaidimai su zaidimu lentomis; Kambariniai zaidimai; Kambariniai zaidimai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Datorspelu programmatura; Datora lietojumprogrammatura, kas ietver speles un azartspeles; Interaktiva multimediju programmatura spelu spelesanai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lv",
+      "description": "Speles; Viesibu galda speles; Viesibu speles; Viesibu speles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer tal-loghbiet; Softwer ghal applikazzjoni tal-kompjuter li jinkludi loghob u servizzi tal-loghob; Programmi interattivi tas-softwer tal-multimedja biex tilghab il-loghob.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "mt",
+      "description": "Gugarelli; Loghob tal-bord; Loghob tad-dar; Loghob tad-dar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie gier; Oprogramowanie do aplikacji komputerowych do gier; Interaktywne oprogramowanie multimedialne do rozgrywania gier.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pl",
+      "description": "Gry; Gry planszowe; Gry towarzyskie; Gry towarzyskie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software de jogos; Software de aplicações informáticas para jogos e jogos de azar; Software multimédia interativo para jogos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pt",
+      "description": "Jogos; Jogos de tabuleiro; Jogos de sociedade; Jogos de sociedade.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software pentru jocuri; Software pentru aplicatii de calculator cu jocuri si jocuri de noroc; Software interactiv multimedia pentru a juca jocuri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ro",
+      "description": "Jocuri; Jocuri de masa; Jocuri de societate; Jocuri de societate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Programy na hry (softvér); Pocítacový aplikacný softvér zahrnajúci hry a hazardné hry; Interaktívny multimediálny softvér pre hranie hier.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sk",
+      "description": "Hry; Stolové hry; Spolocenské hry; Spolocenské hry.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema za igrice; Racunalniska aplikacijska programska oprema ki vsebuje igre in igranje iger; Interaktivna vecpredstavnostna programska oprema za igranje iger.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sl",
+      "description": "Igrace; Igre na deski; Druzabne igre; Druzabne igre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software de juegos con apuestas; Software de aplicaciones informáticas con juegos y juegos de azar; Software multimedia interactivo para juegos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "Juegos; Juegos de mesa; Juegos de sociedad; Juegos de sociedad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Spelprogramvara; Datorapplikationsprogramvara med spel; Interaktiv multimediaprogramvara för spel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sw",
+      "description": "Spel; Brädspel; Sällskapsspel; Sällskapsspel.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KYW ApS",
+  "ownerNative": null,
+  "ownerCountry": "DK",
+  "representative": "LØJE IP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Gershøjvej 108A, Gershøj,Kirke Hyllinge, 4070",
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "KYW ApS"
+      }
+    ],
+    "applicationLanguageCode": "da",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software pro pocítacové hry; Pocítacový aplikacní software zamerený na hry a hazardní hry; Interaktivní multimediální software ke hraní her."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hry; Deskové hry; Spolecenské hry; Spolecenské hry."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software til spil; Computerapplikationssoftware med spil; Interaktiv multimediesoftware til spil."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Spil; brætspil; selskabsspil."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Spelsoftware; Computer applicatiesoftware voor spellen en kansspelen; Interactieve multimediasoftware voor het spelen van spelletjes."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Spellen; Bordspellen; Gezelschapsspellen; Gezelschapsspellen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer gaming software; Computer application software featuring games and gaming; Interactive multimedia software for playing games."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Games; Board games; Party games; Parlor games."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutitarkvara hasartmängude mängimiseks; Mängudega seotud arvutirakendustarkvara; Interaktiivne multimeediatarkvara mängude mängimiseks."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Mängud; Mängualusel mängitavad lauamängud; Seltskonnamängud; Seltskonnamängud."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Peliohjelmistot; Tietokonesovellusohjelmistot, joihin sisältyy pelejä ja pelaamista; Vuorovaikutteiset multimediaohjelmistot pelien pelaamista varten."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Pelit; Lautapelit; Seurapelit; Seurapelit."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels de jeux d'ordinateur; Logiciels d'application proposant des jeux; Logiciels multimédias interactifs destinés à jouer."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux; Jeux de société; Jeux de salon [jeux de société]; Jeux de salon [jeux de société]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computerspielsoftware; Computeranwendungssoftware mit Spielen; Interaktive Multimedia-Spielsoftware."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Spiele; Brettspiele; Gesellschaftsspiele; Gesellschaftsspiele."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver za igrice; Softver za racunalne aplikacije s igrama i kockanjem; Interaktivni multimedijski softver za igranje igara."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Igre; Drustvene igre; Igre za zabavu; Igre za zabavu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Játékszoftverek; Játékokat és szerencsejátékokat kínáló számítógépes alkalmazásszoftverek; Interaktív multimédia szoftverek játékokhoz."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Játékok; Táblajátékok; Társasjátékok; Társasjátékok."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software per giochi; Software applicativo per giochi e giochi d'azzardo; Software multimediale interattivo per videogiochi."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Giochi; Giochi da tavolo; Giochi di società; Giochi di società."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Zaidimu programine iranga; Kompiuteriu taikomoji programine iranga, skirta zaidimams ir losimams; Interaktyvioji multimedijos programine iranga zaidimams zaisti."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Zaidimai; Stalo zaidimai su zaidimu lentomis; Kambariniai zaidimai; Kambariniai zaidimai."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datorspelu programmatura; Datora lietojumprogrammatura, kas ietver speles un azartspeles; Interaktiva multimediju programmatura spelu spelesanai."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Speles; Viesibu galda speles; Viesibu speles; Viesibu speles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer tal-loghbiet; Softwer ghal applikazzjoni tal-kompjuter li jinkludi loghob u servizzi tal-loghob; Programmi interattivi tas-softwer tal-multimedja biex tilghab il-loghob."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Gugarelli; Loghob tal-bord; Loghob tad-dar; Loghob tad-dar."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie gier; Oprogramowanie do aplikacji komputerowych do gier; Interaktywne oprogramowanie multimedialne do rozgrywania gier."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Gry; Gry planszowe; Gry towarzyskie; Gry towarzyskie."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software de jogos; Software de aplicações informáticas para jogos e jogos de azar; Software multimédia interativo para jogos."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Jogos; Jogos de tabuleiro; Jogos de sociedade; Jogos de sociedade."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software pentru jocuri; Software pentru aplicatii de calculator cu jocuri si jocuri de noroc; Software interactiv multimedia pentru a juca jocuri."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Jocuri; Jocuri de masa; Jocuri de societate; Jocuri de societate."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Programy na hry (softvér); Pocítacový aplikacný softvér zahrnajúci hry a hazardné hry; Interaktívny multimediálny softvér pre hranie hier."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hry; Stolové hry; Spolocenské hry; Spolocenské hry."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema za igrice; Racunalniska aplikacijska programska oprema ki vsebuje igre in igranje iger; Interaktivna vecpredstavnostna programska oprema za igranje iger."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Igrace; Igre na deski; Druzabne igre; Druzabne igre."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software de juegos con apuestas; Software de aplicaciones informáticas con juegos y juegos de azar; Software multimedia interactivo para juegos."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Juegos; Juegos de mesa; Juegos de sociedad; Juegos de sociedad."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Spelprogramvara; Datorapplikationsprogramvara med spel; Interaktiv multimediaprogramvara för spel."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Spel; Brädspel; Sällskapsspel; Sällskapsspel."
+        }
+      ]
+    },
+    "id": "d208ea31-09c1-4bdb-858c-7a0f378ab065",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "185"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Øster Alle 42, 6. Floor,Copenhagen Ø, 2100",
+        "representativeAddressCountryCode": "DK",
+        "representativeAddressCountryName": "Denmark",
+        "representativeName": "LØJE IP"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250924",
+        "applicationNumber": "19251304"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350924",
+      "lastPublicationDate": "20251002",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260111",
+        "registrationNumber": "19251304"
+      }
+    },
+    "version": "20260512020508",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORK"
+    }
+  },
+  "_uri": "/mark/em/d208ea31-09c1-4bdb-858c-7a0f378ab065",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:15.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

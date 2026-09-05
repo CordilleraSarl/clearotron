@@ -86,7 +86,7 @@ export function publishableManifest(repoManifest) {
   return out;
 }
 
-function main() {
+async function main() {
   const argv = process.argv.slice(2);
   const outIdx = argv.indexOf("--out");
   const outDir = outIdx >= 0 ? argv[outIdx + 1] : join(ROOT, "dist");
@@ -106,6 +106,89 @@ function main() {
     const before = JSON.parse(readFileSync(manifestPath, "utf8"));
     const stripped = STRIP_KEYS.filter((k) => k in before);
     writeFileSync(manifestPath, `${JSON.stringify(publishableManifest(before), null, 2)}\n`);
+
+    // ── THE ARTIFACT IS RECONCILED AND SCANNED BEFORE IT IS SEALED ────────
+    //
+    // HERE, AND NOT IN A LIFECYCLE HOOK. package.json carries a `prepublishOnly` that runs
+    // publication-scan.mjs, and it does not fire for the way this artifact is actually published.
+    // Measured 2026-09-04 with a throwaway package: `npm publish .` ran the hook, `npm publish
+    // <tarball>` did not. The owner publishes a tarball path, so the only placement that cannot be
+    // walked past is inside the step that produces it — a dirty artifact must be unconstructible,
+    // not merely unpublishable-if-someone-uses-the-right-command.
+    //
+    // AND THE TABLE IS REQUIRED. cut/ is withheld from the public tree, so a checkout without it
+    // cannot answer this question — which is a COULD-NOT-LOOK, never a pass. Exit 2, the house
+    // meaning, and it names what is missing.
+    let gate;
+    try {
+      ({ reconcileAndScan: gate } = await import("../cut/packed-artifact.mjs"));
+    } catch (e) {
+      console.error("  REFUSING (exit 2, could-not-look): cut/packed-artifact.mjs did not load —"
+        + ` ${String(e?.message ?? e)}.\n`
+        + "  That module carries the only rule that says which files may leave this repository, and a\n"
+        + "  pack that cannot ask it produces an artifact nobody has checked. An exported tree does not\n"
+        + "  carry cut/ and is therefore not a tree a publishable tarball is packed from.");
+      process.exit(2);
+    }
+    const pkgRoot = join(work, "package");
+    const report = gate(pkgRoot);
+    const { portalBundleIn, demoIn, filesUnder } = await import("../cut/packed-artifact.mjs");
+    const staged = filesUnder(pkgRoot);
+    const portal = portalBundleIn(staged);
+    const demo = demoIn(staged);
+
+    console.log(`  reconciled against cut/ships.mjs: ${report.packed} packed, `
+      + `${report.withheld.length} withheld and removed, ${report.remaining} shipped`);
+    for (const w of report.withheld) console.log(`    - ${w}`);
+
+    const refusals = [];
+    if (report.privateNames.length) {
+      refusals.push(`PRIVATE REPOSITORY NAMES survived the reconcile in ${report.privateNames.length} file(s):\n`
+        + report.privateNames.map((h) => `      ${JSON.stringify(h)}`).join("\n"));
+    }
+    if (report.recordKeys.length) {
+      refusals.push(`RECORD KEYS (client matter identifiers) in ${report.recordKeys.length} file(s):\n`
+        + report.recordKeys.map((h) => `      ${JSON.stringify(h)}`).join("\n"));
+    }
+    // A tarball without a built portal installs, starts, and 503s at /portal — and the 503 prints a
+    // remedy that cannot work in a published package. Refuse it here rather than ship it.
+    // The stranger's first command. package.json's `files` is a different rule from cut/ships.mjs, and
+    // this bundle's own rename proved it: `demo/` left `examples/` and the tarball silently carried no
+    // demo at all while every git-side check stayed green.
+    if (!demo.ok) {
+      refusals.push(`NO COMPLETE PRODUCT DEMO in the tarball (demo/: ${demo.files} file(s), `
+        + `product dir(s): ${demo.products.join(", ") || "none"}).\n`
+        + "      `clearotron demo` is the first thing a new install runs and it would die naming a path\n"
+        + "      that is not there. A child needs meta.json AND its lane's entry file:\n"
+        + "      run/report.md for a clearance, run/knockout-findings.json for a knockout.\n"
+        + "      Check package.json's `files` carries \"demo/\".");
+    }
+    if (!portal.ok) {
+      refusals.push(`NO BUILT PORTAL in the tarball (portal-ui/dist: ${portal.files} file(s)).\n`
+        + "      /portal would 503 after a global install, and its printed remedy\n"
+        + "      `npm run build -w portal-ui` cannot run in a published package — it has no workspaces.\n"
+        + "      Run `npm run build:ui` and pack again.");
+    }
+    // The release condition, asked for explicitly. See demoIn: every pull request packs a tarball
+    // through verify-publishable, and those must not red because a product's demo has not been frozen
+    // yet. The artefact that goes to the registry is packed with this flag.
+    if (argv.includes("--all-products") && demo.missing.length) {
+      refusals.push(`NOT ALL FOUR PRODUCTS HAVE A DEMO — missing: ${demo.missing.join(", ")}.\n`
+        + "      Owner ruling 2026-09-04: four products, four demo examples. A published tarball\n"
+        + "      showing one product tells a new reader the other three do not exist.");
+    }
+    if (refusals.length) {
+      console.error(`  REFUSING to seal this tarball:\n    ${refusals.join("\n    ")}`);
+      process.exit(1);
+    }
+    console.log(`  scans over the PACKED tree: 0 private repository names, 0 record keys`);
+    console.log(`  built portal: ${portal.files} file(s) under portal-ui/dist, index.html + assets present`);
+    console.log(`  demo: ${demo.files} file(s), complete product demo(s): ${demo.complete.join(", ") || "none"}`);
+    if (demo.missing.length) {
+      console.log(`  demo: NO DEMO YET for ${demo.missing.join(", ")}`
+        + " — this tarball is not publishable under the 2026-09-04 ruling (four products, four demos).");
+      console.log("        Pass --all-products to make that a refusal rather than a line to read.");
+    }
 
     const finalPath = join(outDir, tgz);
     execFileSync("tar", ["-czf", finalPath, "-C", work, "package"]);
@@ -133,4 +216,4 @@ function main() {
 // / — the raw comparison is false under any symlinked invocation, and a packaging script that
 // silently exits 0 having packed nothing is the worst possible member of that class: the caller reads
 // the 0 as "the tarball is ready".
-if (isEntrypoint(import.meta.url)) main();
+if (isEntrypoint(import.meta.url)) await main();

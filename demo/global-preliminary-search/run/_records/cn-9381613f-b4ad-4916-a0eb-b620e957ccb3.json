@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/9381613f-b4ad-4916-a0eb-b620e957ccb3",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9381613f-b4ad-4916-a0eb-b620e957ccb3",
+  "applicationNumber": "46108767",
+  "registrationNumber": null,
+  "applicationDate": "2020-05-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "博文科睿",
+  "markTransliteration": "WR BO WEN KE RUI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "教育,培训,教育信息,辅导（培训）,组织教育或娱乐竞赛,安排和组织学术讨论会,安排和组织会议,安排和组织培训班,提供不可下载的在线电子出版物,文稿撰写",
+      "translation_language": "en",
+      "translation": "Education, training, educational information, tutoring (training), organizing educational or entertainment competitions, scheduling and organizing academic seminars, scheduling and organizing meetings, scheduling and organizing training courses, providing non-downloadable online electronic publications, writing"
+    }
+  ],
+  "owner": "Beijing Bowen Core Education Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市北京经济技术开发区博兴九路2号院4号楼8层905A",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Bowen Core Education Technology Co., Ltd.",
+        "applicantNativeName": "北京博文科睿教育科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, training, educational information, tutoring (training), organizing educational or entertainment competitions, scheduling and organizing academic seminars, scheduling and organizing meetings, scheduling and organizing training courses, providing non-downloadable online electronic publications, writing",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "教育,培训,教育信息,辅导（培训）,组织教育或娱乐竞赛,安排和组织学术讨论会,安排和组织会议,安排和组织培训班,提供不可下载的在线电子出版物,文稿撰写"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "9381613f-b4ad-4916-a0eb-b620e957ccb3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.01.01",
+      "20.07.02",
+      "20.01.01",
+      "20.07.01",
+      "26.01.12",
+      "01.01.10",
+      "01.01.05",
+      "20.01.03"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京梦知网科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200508",
+        "applicationNumber": "46108767"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004022911",
+    "wordMarkSpecification": {
+      "markTransliteration": "WR BO WEN KE RUI",
+      "markVerbalElementText": "博文科睿"
+    }
+  },
+  "_uri": "/mark/cn/9381613f-b4ad-4916-a0eb-b620e957ccb3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:34.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

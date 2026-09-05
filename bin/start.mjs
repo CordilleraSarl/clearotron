@@ -107,11 +107,11 @@ import { storeInRepo, storeOutsideRepoMessage } from "../shared/store-in-repo.mj
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
-import { SERVER_INSTALL_SET } from "../shared/server-units.mjs";   // — one authority, two callers
+import { SERVER_INSTALL_SET, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
 // — the door --background now INSTALLS, and the one authority for the settings
 // it refuses to start without. (Until 2026-09-03 this import read "the one unit --background may
 // tolerate and never manage"; settled point 2 superseded that.)
-import { CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";
+import { defaultDenylistPath, denylistPathFor, ensureDenylistFile, CLIENT_DOOR_UNIT, enablePlan, clientDoorPort } from "../shared/client-door.mjs";
 import { createServer } from "node:net";
 import { listenErrorMessage } from "../shared/listen.mjs";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
@@ -168,6 +168,31 @@ export function resolvePorts(env = {}) {
   // default and shared/client-door.mjs states it; the literal is not repeated, it is imported.
   return { portal: one("PORTAL_SERVICE_PORT", 18802), mcp: one("TRADEMARK_MCP_HTTP_PORT", 18790),
     client: one("CLIENT_MCP_HTTP_PORT", clientDoorPort({})) };
+}
+
+/**
+ * Where the grants file is, for a command that is NOT the supervisor.
+ *
+ * — bb8's F13. `start` injects CLEAROTRON_ACCESS_FILE into the environment of
+ * the services it supervises (see the child env below) and never persists it, so the door finds the
+ * roster and every sibling CLI in the operator's own shell does not. `clearotron grant` then refused
+ * with "Set CLEAROTRON_ACCESS_FILE" — a variable nothing writes — and enrolling a client had no working
+ * path at all.
+ *
+ * Resolved HERE, beside installPaths, because the shape is installPaths' business: a default computed
+ * in grant.mjs would be a second opinion about the same path, and the two would drift the first time
+ * anyone moved the base.
+ *
+ * The order is: the variable if an operator set one; then the base implied by CLEAROTRON_REPORTS_DIR,
+ * which is what setup records when `--base` moved the install; then the documented default.
+ */
+export function defaultGrantsPath({ env = process.env, demo = false } = {}) {
+  const explicit = String(env.CLEAROTRON_ACCESS_FILE ?? "").trim();
+  if (explicit) return explicit;
+  const pool = String(env.CLEAROTRON_REPORTS_DIR ?? "").trim();
+  // The pool sits at <base>/pool, so its parent is the base — the same relationship installPaths states.
+  if (pool) return installPaths(dirname(pool)).grants;
+  return installPaths(join(homedir(), demo ? "trademark-demo" : "trademark")).grants;
 }
 
 /** Everything this install keeps on disk, under one base directory. */
@@ -228,6 +253,16 @@ export function staffDomainFor(email) {
 // caller owns it; the re-export keeps this name working for everything that already reads it.
 const BACKGROUND_UNITS = SERVER_INSTALL_SET;
 export { BACKGROUND_UNITS };
+
+/** A unit's declared systemd Type, lowercased — one reader, so the restart decision and the health
+ *  check below cannot drift. An unreadable unit file reads as `simple`, the stricter judgement: a
+ *  long-running service is restarted and health-checked, and being wrong that way costs a restart
+ *  rather than a missed fault. */
+const unitTypeOf = (u) => {
+  try {
+    return (readFileSync(join(REPO, "driver", "systemd", u), "utf8").match(/^Type=(\w+)/m)?.[1] ?? "simple").toLowerCase();
+  } catch { return "simple"; }
+};
 // ── UNITS THIS FLAG ONCE INSTALLED AND NOW RETIRES ─────────────────────────────
 //
 // A box that ran `--background` before the retirement HAS these three installed and enabled. They must
@@ -273,7 +308,7 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   "profile-service.service": "the portal constructs the profile service IN-PROCESS (driver/portal-service.mjs); the standalone unit is the separate-editor deployment shape and running both double-serves the store",
 });
 
-export function childEnv({ ports, paths, user, staffDomains, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null }) {
+export function childEnv({ ports, paths, user, staffDomains, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, env = process.env }) {
   // ONE AUTHOR FOR THIS EXPRESSION. The hosted install path composes the same
   // origin, and the near-miss is specific: this is an ORIGIN, the portal's client appends `/mcp`
   // itself, and a second author writing the endpoint form produces a doubled path — a 404 at submit
@@ -367,7 +402,12 @@ export function childEnv({ ports, paths, user, staffDomains, portalSecret, token
       // Born knowing where revocations land. A door started without this loads no denylist, and a jti
       // written by `disconnect` afterwards goes into a file the running door never reads — every check
       // looks done while the key stays live.
-      TRADEMARK_MCP_TOKEN_DENYLIST: paths.denylist ?? join(homedir(), ".config", "clearotron", "token-denylist"),
+      // ONE FILE FOR BOTH DOORS. This composed the DEFAULT unconditionally —
+      // `paths.denylist` is not a key `installPaths` returns, so the left side was always undefined —
+      // while every other child inherited the operator's TRADEMARK_MCP_TOKEN_DENYLIST. An operator who
+      // placed the list themselves therefore revoked at the staff door and not at the client door,
+      // which is where account keys live, and `key issue` named the staff door's file to them.
+      TRADEMARK_MCP_TOKEN_DENYLIST: paths.denylist ?? denylistPathFor(env, homedir()),
     },
     portal: {
       ...shared,
@@ -629,7 +669,13 @@ if (isMain) {
     s.once("listening", () => s.close(() => resolve(null)));
     s.listen(port, HOST);
   });
-  for (const [what, port, portVar] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"]]) {
+  // ALL THREE DOORS, NOT TWO ( — bb8's F11). The client door's port is resolved
+  // beside the other two, three lines up, and was left out of the loop written for exactly this
+  // principle. So a held client port was discovered AFTER the portal and the engine door had bound: the
+  // run fatalled mid-flight, tore down what it had started, and then did not exit — measured at rc=124
+  // on a 120-second and a 300-second timeout. Refusing here costs nothing and leaves nothing to tear
+  // down, which is what the paragraph above says this check is for.
+  for (const [what, port, portVar] of [["portal", ports.portal, "PORTAL_SERVICE_PORT"], ["engine door", ports.mcp, "TRADEMARK_MCP_HTTP_PORT"], ["client door", ports.client, "CLIENT_MCP_HTTP_PORT"]]) {
     // A --background REFRESH runs over its own healthy units, which hold these ports on purpose;
     // systemd's restart is the handover. Probing would refuse the flag exactly once it has worked.
     // The narrow carve above already proved every installed unit is ours.
@@ -705,6 +751,39 @@ if (isMain) {
     catch (e) { fatal(`could not create the grants file at ${paths.grants} (${String(e?.message ?? e)}).`); }
     say(`  created        ${paths.grants} (an empty roster — one staff address, no clients yet)`);
   }
+  // THE REVOCATION LIST, CREATED — not merely named (, bb8's F14).
+  //
+  // The door is started with TRADEMARK_MCP_TOKEN_DENYLIST pointing here, and since this branch
+  // `isRevoked` fails CLOSED on an unreadable file — it refuses the token rather than assuming it was
+  // never revoked. It used to fail OPEN, and that is what the defect below was made of. Creating the
+  // file is what keeps the closed contract from turning into an outage on an ordinary install: `key issue` tells an operator to revoke by writing a jti into it, `disconnect` writes
+  // one, every check looks done — and the revoked key keeps answering 200. Measured on a default
+  // install: revoke, then a full handshake, with nothing logged.
+  //
+  // `connect` has armed AND created this since 2082, with a comment saying exactly why. `start` named it
+  // and created nothing, so one of the two doors stood outside a guard the other one had. Same helper
+  // now, so a third door cannot be added outside it either.
+  {
+    const denylist = paths.denylist ?? denylistPathFor(process.env, homedir());
+    try {
+      const r = ensureDenylistFile(denylist, {
+        exists: existsSync,
+        dirname: (x) => dirname(x),
+        mkdir: (d) => mkdirSync(d, { recursive: true }),
+        write: (f, text) => writeFileSync(f, text, { mode: 0o600 }),
+        read: (f) => readFileSync(f, "utf8"),
+      });
+      if (r.created) say(`  created        ${denylist} (the revocation list — a key revoked before it existed was not revoked at all)`);
+    } catch (e) {
+      // FATAL, and this is the one place that judgement belongs. A door that cannot consult its
+      // revocation list is a door that cannot be revoked from, and starting it anyway is the failure
+      // this whole finding is about — the run must not continue "successfully" into that state.
+      fatal(`could not use the revocation list at ${denylist} (${String(e?.message ?? e)}).\n`
+        + "  The client door reads this file on every key check and treats an unreadable one as \"not revoked\",\n"
+        + "  so starting without it would make every revocation silently ineffective.");
+    }
+  }
+
   if (!existsSync(join(paths.configStore, ".git"))) {
     // recipe-service saves a search by committing it. Without a repository the save fails at the git
     // call with a message about the git call, which says nothing about saved searches.
@@ -762,7 +841,7 @@ if (isMain) {
   } else try {
     const { seedPool } = await import("../driver/publish/seed-pool.mjs");
     const { republishRun } = await import("../driver/publish/report-registry.mjs");
-    const seed = await seedPool({ pool: paths.pool, examplesDir: join(REPO, "examples"), republish: republishRun });
+    const seed = await seedPool({ pool: paths.pool, examplesDir: join(REPO, "demo"), republish: republishRun });
     if (seed.seeded.length) {
       say(`  seeded         ${seed.seeded.length} example report(s) into ${paths.pool}`);
       // THE LABEL. is delivered: the report now carries the owner's own sample sentence on its
@@ -901,7 +980,7 @@ if (isMain) {
     // refuses every request. `issuesKey: false` — this flag mints no account key.
     const doorPlan = enablePlan({
       env: { ...process.env, ...union }, address: null, identity: null, issuesKey: false,
-      checkoutDir: REPO, denylistPath: join(homedir(), ".config", "clearotron", "token-denylist"),
+      checkoutDir: REPO, denylistPath: defaultDenylistPath(homedir()),
       unitEnvHasSecret: Boolean(String(union.TRADEMARK_MCP_TOKEN_SECRET ?? "").trim()),
     });
     if (!doorPlan.possible) {
@@ -1014,28 +1093,74 @@ if (isMain) {
     }
     for (const u of BACKGROUND_UNITS) execFileSync("systemctl", ["--user", "enable", "--now", u], { stdio: "ignore" });
     // enable --now on an ALREADY-ACTIVE unit is a no-op, so a refresh would leave the old process
-    // running the old files. Restart the long-running services when this run replaced their files;
-    // the oneshot and its triggers pick the new copies up on their next activation by themselves.
-    if (backgroundRefresh) for (const u of ["clearotron-portal.service", "clearotron-mcp-face.service"]) {
+    // running the old files. EVERY long-running unit in the set is restarted, not a hardcoded pair
+    // (, Hera's review): the pair here matched the pair the health check used three
+    // lines down, and carried the same stale justification about "the oneshot and its triggers". There
+    // is no oneshot in the set. So a refresh restarted the portal and the engine door onto new code and
+    // left the worker and the client door on the old — while the check below now reports all four up,
+    // which made a more confident report over an unchanged restart. Measured on the test box:
+    // `enable --now` left MainPID unchanged.
+    if (backgroundRefresh) for (const u of unitsToRestartOnRefresh(BACKGROUND_UNITS, unitTypeOf)) {
       try { execFileSync("systemctl", ["--user", "restart", u], { stdio: "ignore" }); } catch { /* health check below reports it */ }
     }
 
-    // STARTED IS NOT RUNNING (the connect lesson): settle, then read each long-running service's own
-    // state. The oneshot worker and its timer/path are judged by being enabled — a oneshot that has
-    // exited is healthy by design.
+    // STARTED IS NOT RUNNING (the connect lesson): settle, then read each service's own state.
+    //
+    // EVERY UNIT THIS FLAG INSTALLS, DERIVED FROM THE SET ( — bb8's F15). This checked
+    // a hardcoded PAIR while `enable --now` had just started FOUR. So a client door crash-looping against
+    // a held port got no ✗, was never named in the banner, and `start --background` printed its success
+    // block and exited 0 over a product that was two-thirds up. The worker was unchecked for the same
+    // reason.
+    //
+    // The comment here used to justify the gap: "the oneshot worker and its timer/path are judged by
+    // being enabled". That is stale — clearotron-worker.service is `runner.mjs --watch`, Type=simple,
+    // Restart=on-failure, and there is no timer or path unit in the install set at all. It described the
+    // retired prelim-* units. A stale justification is worse than none: it reads as a decision.
+    //
+    // Judged by the unit's OWN declared Type rather than by a list kept here, so a oneshot added to the
+    // set later is judged correctly instead of being reported as broken for exiting.
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 3000);
-    let sick = 0;
-    for (const u of ["clearotron-portal.service", "clearotron-mcp-face.service"]) {
+    const sickUnits = [];
+    for (const u of BACKGROUND_UNITS) {
+      const type = unitTypeOf(u);
       let f = {};
       try {
-        const out = execFileSync("systemctl", ["--user", "show", u, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts"], { encoding: "utf8" });
+        const out = execFileSync("systemctl", ["--user", "show", u, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts", "-p", "UnitFileState"], { encoding: "utf8" });
         f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
       } catch { /* unreadable state is reported below as not-running */ }
-      if (f.ActiveState === "active" && f.SubState === "running" && f.NRestarts === "0") say(`  ✓ ${u} is up`);
-      else { sick++; err(`  ✗ ${u} is NOT running (${f.ActiveState ?? "unreadable"}/${f.SubState ?? "?"}, restarts ${f.NRestarts ?? "?"}) — read its own words: journalctl --user -u ${u} -n 30`); }
+      const verdict = unitHealthVerdict({ type, activeState: f.ActiveState ?? null, subState: f.SubState ?? null,
+        unitFileState: f.UnitFileState ?? null, nRestarts: f.NRestarts ?? 0 });
+      if (type === "oneshot") {
+        if (verdict.ok) say(`  ✓ ${u} is enabled (oneshot — exiting is how it succeeds)`);
+        else { sickUnits.push(u); err(`  ✗ ${u} is NOT enabled (${f.UnitFileState ?? "unreadable"}) — journalctl --user -u ${u} -n 30`); }
+        continue;
+      }
+      // NRestarts IS A LIFETIME COUNTER, AND IT DOES NOT DECIDE THIS. It counts
+      // every restart since the unit was loaded, so a unit that crash-looped, recovered, and has served
+      // ever since carries a non-zero count while reading `active/running` — and requiring "0" made
+      // `start --background` print "✗ … is NOT running (active/running, restarts 15)" and exit 1 on a
+      // healthy box. The condition predates this file's F15 change; that change extended it from two
+      // units to four and so doubled what it could block. The real crash loop is already caught by the
+      // state pair: a looping unit reads `activating/auto-restart`, never `active/running`.
+      //
+      // AND THE COUNT IS NOT PRINTED HERE, which is a correction to what this file did first. It cannot
+      // be non-zero on this path: either the units were just installed and start at zero, or this is a
+      // refresh — `backgroundRefresh`, above — which restarts all four before this loop reads them, and
+      // an explicit `systemctl restart` sets the counter to 0 — measured on systemd 255.4-1ubuntu8.17,
+      // and the version is part of the claim because that reset is not documented contract. An earlier
+      // note here said only `reset-failed` cleared it, unmeasured, and that was wrong. A unit that
+      // begins looping BETWEEN
+      // the restart and this read shows `activating/auto-restart` and takes the ✗ branch below.
+      //
+      // So the history line was unreachable prose. It belongs where somebody asks about a box they did
+      // not just restart, which is `doctor` — see `bin/onboard.mjs`.
+      if (verdict.ok) say(`  ✓ ${u} is up`);
+      else { sickUnits.push(u); err(`  ✗ ${u} is NOT running (${f.ActiveState ?? "unreadable"}/${f.SubState ?? "?"}, restarts ${f.NRestarts ?? "?"}) — read its own words: journalctl --user -u ${u} -n 30`); }
     }
-    if (sick) {
-      err("\n  The units are installed but not healthy — nothing is hidden by this flag: the journal");
+    if (sickUnits.length) {
+      // NAMED IN THE FAILURE, not merely counted: the operator's next command is about one unit.
+      err(`\n  ${sickUnits.length} of ${BACKGROUND_UNITS.length} unit(s) did not come up: ${sickUnits.join(", ")}`);
+      err("  The units are installed but not healthy — nothing is hidden by this flag: the journal");
       err("  lines above are the same errors the foreground run would have printed.");
       process.exit(1);
     }

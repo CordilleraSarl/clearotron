@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/de/61e1f688-3f23-4264-854e-b26c840a921a",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "61e1f688-3f23-4264-854e-b26c840a921a",
+  "applicationNumber": "302017235987.7",
+  "registrationNumber": "302017235987",
+  "applicationDate": "2017-11-22",
+  "registrationDate": "2018-04-10",
+  "expiryDate": "2027-11-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-05-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Computer-Software [gespeichert]; Software; Software für Mobilgeräte; Software für Mobiltelefone",
+      "translation_language": "en",
+      "translation": "Computer software [saved]; Software; Software for mobile devices; Software for mobile phones"
+    }
+  ],
+  "owner": "Fischer, Knoblauch & Co. Medienproduktionsgesellschaft mbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "80801 München",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Fischer, Knoblauch & Co. Medienproduktionsgesellschaft mbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software [saved]; Software; Software for mobile devices; Software for mobile phones",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computer-Software [gespeichert]; Software; Software für Mobilgeräte; Software für Mobiltelefone"
+        }
+      ]
+    },
+    "id": "61e1f688-3f23-4264-854e-b26c840a921a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "19"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Fischer, Knoblauch & Co. Medienproduktionsgesellschaft mbH, Ainmillerstr. 11, 80801 München"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171122",
+        "applicationNumber": "302017235987.7"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271130",
+      "lastPublicationDate": "20180511",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180410",
+        "registrationNumber": "302017235987"
+      }
+    },
+    "version": "20250627162444",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/de/61e1f688-3f23-4264-854e-b26c840a921a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

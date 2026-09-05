@@ -928,7 +928,7 @@ export function validateAskAnswer(a, idx) {
 //
 // TWO SURFACES PROJECT ask_answers[] AND THEY DISAGREED. pipeline.mjs's buildAskAnswersSection prints the
 // code-owned `- You asked: <ask> → ` label and stripped that same label off the answer if the register
-// carried one ( D1 — archived registers do; examples/sample-run/run/findings.json carries the doubled
+// carried one ( D1 — archived registers do; demo/multi-country-focus-search/run/findings.json carries the doubled
 // form on disk today). publish/report-data.mjs projects the SAME register into report-data.json through
 // its client-scrub choke point, which does not touch the label. So one answer shipped two ways:
 //

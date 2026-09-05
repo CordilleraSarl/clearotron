@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/xs/4449018a-fc7a-4656-890a-46ed860f99b2",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "4449018a-fc7a-4656-890a-46ed860f99b2",
+  "applicationNumber": null,
+  "registrationNumber": "662717",
+  "applicationDate": null,
+  "registrationDate": "2015-12-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LAFAYETTE VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Medical clinic specializing in providing vein care.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SOUTHERN VASCULAR ASSOCIATES LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "127 QUEENSBERRY DRIVE, LAFAYETTE, LA, 70508",
+        "applicantAddressCity": "LAFAYETTE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "70508",
+        "applicantAddressStateName": "LOUISIANA",
+        "applicantAddressStreet": "127 QUEENSBERRY DRIVE",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "SOUTHERN VASCULAR ASSOCIATES LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical clinic specializing in providing vein care."
+        }
+      ]
+    },
+    "id": "4449018a-fc7a-4656-890a-46ed860f99b2",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "127 QUEENSBERRY DRIVE, LAFAYETTE, LA, 70508",
+        "city": "LAFAYETTE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "SOUTHERN VASCULAR ASSOCIATES LLC",
+        "postalCode": "70508",
+        "stateName": "LOUISIANA",
+        "street": "127 QUEENSBERRY DRIVE"
+      }
+    ],
+    "recordLastUpdated": "20250712",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20151202"
+        }
+      ],
+      "firstUsedAnywhereDate": "20151202",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20151202",
+        "registrationNumber": "662717"
+      }
+    },
+    "usStateOfficeCode": "LA",
+    "usStateOfficeName": "LOUISIANA",
+    "version": "20250712111057",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LAFAYETTE VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/4449018a-fc7a-4656-890a-46ed860f99b2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

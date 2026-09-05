@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/jp/8d579b81-862f-41be-b95f-2004cf0c0bfb",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "8d579b81-862f-41be-b95f-2004cf0c0bfb",
+  "applicationNumber": "2000-066543",
+  "registrationNumber": null,
+  "applicationDate": "2000-06-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＳＹＮＱＯＲ",
+  "markTransliteration": "SHINKAA SHINKOORU",
+  "markTranslation": "SYNQOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "ＤＣ／ＤＣ電源変換器",
+      "translation_language": "en",
+      "translation": "DC / DC Power Supply Converter"
+    }
+  ],
+  "owner": "SYNQOR INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KURAUCHI MOTOHIRO",
+  "priorities": [
+    {
+      "priorityDate": "20000615"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "SYNQOR INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "シンカー・インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DC / DC Power Supply Converter",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "ＤＣ／ＤＣ電源変換器"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        }
+      ]
+    },
+    "id": "8d579b81-862f-41be-b95f-2004cf0c0bfb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20000615"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KURAUCHI MOTOHIRO",
+        "representativeNativeName": "倉内　基弘"
+      },
+      {
+        "representativeName": "KAZAMA HIROSHI",
+        "representativeNativeName": "風間　弘志"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000615",
+        "applicationNumber": "2000-066543"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20240213112926",
+    "wordMarkSpecification": {
+      "markTranslation": "SYNQOR",
+      "markTransliteration": "SHINKAA SHINKOORU",
+      "markVerbalElementText": "ＳＹＮＱＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/8d579b81-862f-41be-b95f-2004cf0c0bfb",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.710Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

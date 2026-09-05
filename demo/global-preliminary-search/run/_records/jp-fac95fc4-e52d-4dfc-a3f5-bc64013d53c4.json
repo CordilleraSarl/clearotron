@@ -1,0 +1,302 @@
+{
+  "uri": "/mark/jp/fac95fc4-e52d-4dfc-a3f5-bc64013d53c4",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "fac95fc4-e52d-4dfc-a3f5-bc64013d53c4",
+  "applicationNumber": "S63-011936",
+  "registrationNumber": "2430236",
+  "applicationDate": "1988-02-08",
+  "registrationDate": "1992-06-30",
+  "expiryDate": "2012-06-30",
+  "renewalDate": null,
+  "lastPublicationDate": "1991-04-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＴＵＲＩ",
+  "markTransliteration": "BENCHURI BENTSURI",
+  "markTranslation": "VENTURI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    26,
+    27,
+    28,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        26,
+        27,
+        28,
+        31
+      ],
+      "language": null,
+      "description": "携帯用コンロ、その他本類に属する商品",
+      "translation_language": "en",
+      "translation": "Portable stove, other items belonging to this category"
+    }
+  ],
+  "owner": "CREDIT SUISSE",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19880208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NEW YORK NEW YORK",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "CREDIT SUISSE",
+        "applicantNativeAddress": "アメリカ合衆国　ニユ―ヨ―ク州　ニユ―ヨ―ク市　ウオ―ル　ストリ―ト　１００",
+        "applicantNativeName": "クレデイ　スイス"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Portable stove, other items belonging to this category",
+          "intClassNumber": "03,04,05,06,08,09,10,11,14,16,17,18,19,20,21,22,24,26,27,28,31",
+          "intGoodsServicesDescription": "携帯用コンロ、その他本類に属する商品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "19A01"
+        },
+        {
+          "natClassNumber": "19A02"
+        },
+        {
+          "natClassNumber": "19A03"
+        },
+        {
+          "natClassNumber": "19A04"
+        },
+        {
+          "natClassNumber": "19A05"
+        },
+        {
+          "natClassNumber": "19A06"
+        },
+        {
+          "natClassNumber": "19A07"
+        },
+        {
+          "natClassNumber": "19B03"
+        },
+        {
+          "natClassNumber": "19B04"
+        },
+        {
+          "natClassNumber": "19B21"
+        },
+        {
+          "natClassNumber": "19B22"
+        },
+        {
+          "natClassNumber": "19B23"
+        },
+        {
+          "natClassNumber": "19B24"
+        },
+        {
+          "natClassNumber": "19B25"
+        },
+        {
+          "natClassNumber": "19B26"
+        },
+        {
+          "natClassNumber": "19B27"
+        },
+        {
+          "natClassNumber": "19B28"
+        },
+        {
+          "natClassNumber": "19B29"
+        },
+        {
+          "natClassNumber": "19B30"
+        },
+        {
+          "natClassNumber": "19B32"
+        },
+        {
+          "natClassNumber": "19B33"
+        },
+        {
+          "natClassNumber": "19B34"
+        },
+        {
+          "natClassNumber": "19B35"
+        },
+        {
+          "natClassNumber": "19B36"
+        },
+        {
+          "natClassNumber": "19B37"
+        },
+        {
+          "natClassNumber": "19B38"
+        },
+        {
+          "natClassNumber": "19B39"
+        },
+        {
+          "natClassNumber": "19B40"
+        },
+        {
+          "natClassNumber": "19B41"
+        },
+        {
+          "natClassNumber": "19B42"
+        },
+        {
+          "natClassNumber": "19B43"
+        },
+        {
+          "natClassNumber": "19B44"
+        },
+        {
+          "natClassNumber": "19B45"
+        },
+        {
+          "natClassNumber": "19B46"
+        },
+        {
+          "natClassNumber": "19B47"
+        },
+        {
+          "natClassNumber": "19B48"
+        },
+        {
+          "natClassNumber": "19B49"
+        },
+        {
+          "natClassNumber": "19B50"
+        },
+        {
+          "natClassNumber": "19B51"
+        },
+        {
+          "natClassNumber": "19B52"
+        },
+        {
+          "natClassNumber": "19B53"
+        },
+        {
+          "natClassNumber": "19B54"
+        },
+        {
+          "natClassNumber": "19B55"
+        },
+        {
+          "natClassNumber": "19B56"
+        },
+        {
+          "natClassNumber": "19B57"
+        },
+        {
+          "natClassNumber": "19B99"
+        }
+      ]
+    },
+    "id": "fac95fc4-e52d-4dfc-a3f5-bc64013d53c4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19880208"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19880208",
+        "applicationNumber": "S63-011936"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20120630",
+      "lastPublicationDate": "19910405",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19920630",
+        "registrationNumber": "2430236"
+      }
+    },
+    "version": "20240320162414",
+    "wordMarkSpecification": {
+      "markTranslation": "VENTURI",
+      "markTransliteration": "BENCHURI BENTSURI",
+      "markVerbalElementText": "ＶＥＮＴＵＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/fac95fc4-e52d-4dfc-a3f5-bc64013d53c4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.176Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

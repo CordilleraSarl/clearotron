@@ -1,0 +1,290 @@
+{
+  "uri": "/mark/us/06160d0f-c6d1-496f-8ecc-8c10637d5c0b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "06160d0f-c6d1-496f-8ecc-8c10637d5c0b",
+  "applicationNumber": "98797161",
+  "registrationNumber": "8287447",
+  "applicationDate": "2024-10-11",
+  "registrationDate": "2026-06-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-05-13"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENORIS",
+  "markTransliteration": null,
+  "markTranslation": "OF THE FUTURE",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Biometric fingerprint door locks; Biometric identity cards; Biometric locks; Burglar alarms; Computer software applications, downloadable, for video surveillance; Digital door locks; Downloadable computer programs for use as electronic key card; Electric and electronic video surveillance installations; Electric door bells; Electric locks; Electrical and electronic burglar alarms; Electronic access control systems for interlocking doors; Electronic key cards; Electronic locks; Encoded key cards; Identity cards, magnetic; Magnifying peepholes for doors",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LOCKIN INTERNATIONAL PTE. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "applicantAddressCity": "Singapore",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantAddressPostalCode": "608526",
+        "applicantAddressStreet": "#11-31 Vision Exchange",
+        "applicantJurisdictionOfIncorporation": "SINGAPORE",
+        "applicantName": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "applicantSecondaryAddressUnit": "2 Venture Drive"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Biometric fingerprint door locks; Biometric identity cards; Biometric locks; Burglar alarms; Computer software applications, downloadable, for video surveillance; Digital door locks; Downloadable computer programs for use as electronic key card; Electric and electronic video surveillance installations; Electric door bells; Electric locks; Electrical and electronic burglar alarms; Electronic access control systems for interlocking doors; Electronic key cards; Electronic locks; Encoded key cards; Identity cards, magnetic; Magnifying peepholes for doors"
+        }
+      ]
+    },
+    "id": "06160d0f-c6d1-496f-8ecc-8c10637d5c0b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260602",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260602",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20260514",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20260514",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20260512",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20260106",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20260106",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20260104",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20260104",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20260104",
+        "descriptionText": "TEAS CHANGE OF DOMESTIC REPRESENTATIVES ADDRESS"
+      },
+      {
+        "date": "20260104",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20250513",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250513",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250507",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250415",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250415",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250414",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20241011",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      },
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      }
+    ],
+    "recordLastUpdated": "20260605",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Houston, TX 77036, United States",
+        "representativeCorrespondentAddressLines": [
+          "Houston, TX 77036",
+          "United States"
+        ],
+        "representativeCorrespondentName": "RAN HE, 10190 Harwin Dr. Ste B"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "RAN HE",
+        "representativeAddress": "Houston, TX 77036, United States",
+        "representativeAddressLines": [
+          "Houston, TX 77036",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241011",
+        "applicationNumber": "98797161"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20251219"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20251219"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20260602",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20250513"
+      ],
+      "registration": {
+        "registrationDate": "20260602",
+        "registrationNumber": "8287447"
+      }
+    },
+    "version": "20260605184156",
+    "wordMarkSpecification": {
+      "markTranslation": "OF THE FUTURE",
+      "markTranslationDescription": "The English translation of \"Venoris\" in the mark is \"Of the future\".",
+      "markVerbalElementText": "VENORIS"
+    }
+  },
+  "_uri": "/mark/us/06160d0f-c6d1-496f-8ecc-8c10637d5c0b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

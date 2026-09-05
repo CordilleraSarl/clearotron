@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/cn/e483c829-ce99-485b-a332-d39ba120847b",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e483c829-ce99-485b-a332-d39ba120847b",
+  "applicationNumber": "89448423",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-30",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "傲日",
+  "markTransliteration": "AO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "工业品外观设计;化学研究服务;恢复计算机数据;计算机技术咨询;计算机软件设计;建筑制图;科学研究;平面美术设计;网站设计咨询;艺术品鉴定",
+      "translation_language": "en",
+      "translation": ". Industrial product design; chemical research services; computer data recovery; computer technology consulting; computer software design; architectural drafting; scientific research; graphic design; website design consulting; art appraisal."
+    }
+  ],
+  "owner": "Shenzhen Aori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙华区龙华街道富康社区油松路106号天汇大厦8层823室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Aori Technology Co., Ltd.",
+        "applicantNativeName": "深圳傲日科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Industrial product design; chemical research services; computer data recovery; computer technology consulting; computer software design; architectural drafting; scientific research; graphic design; website design consulting; art appraisal.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "工业品外观设计;化学研究服务;恢复计算机数据;计算机技术咨询;计算机软件设计;建筑制图;科学研究;平面美术设计;网站设计咨询;艺术品鉴定"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Chemical research service",
+        "Registered design service",
+        "Design and information service for architecture",
+        "Computer programming, and concerned services",
+        "Authenticating service for works of art",
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4224",
+          "subNatGoodsServicesDescription": "Authenticating service for works of art"
+        },
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "e483c829-ce99-485b-a332-d39ba120847b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1980"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市简单国际知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251230",
+        "applicationNumber": "89448423"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260420",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260501020329",
+    "wordMarkSpecification": {
+      "markTransliteration": "AO RI",
+      "markVerbalElementText": "傲日"
+    }
+  },
+  "_uri": "/mark/cn/e483c829-ce99-485b-a332-d39ba120847b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.843Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

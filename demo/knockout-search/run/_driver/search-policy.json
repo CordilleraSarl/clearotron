@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "level": "knockout-search",
+  "pipeline": "knockout",
+  "stageLabel": "Knockout search",
+  "components": {
+    "registerProbe": true,
+    "jxLanes": false,
+    "commonLawGrid": false
+  },
+  "recipe": null,
+  "extras": null,
+  "origins": {
+    "level": "job.product"
+  },
+  "caseLaw": false,
+  "recipeScope": null,
+  "deliveryRoute": null,
+  "enqueuedVia": "cli/enqueue",
+  "enqueuedBy": null,
+  "parentRunId": null,
+  "frozenAt": "2026-09-02T21:43:15.538Z"
+}

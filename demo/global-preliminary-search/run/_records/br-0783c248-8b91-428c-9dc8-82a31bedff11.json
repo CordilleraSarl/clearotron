@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/br/0783c248-8b91-428c-9dc8-82a31bedff11",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "0783c248-8b91-428c-9dc8-82a31bedff11",
+  "applicationNumber": "817411259",
+  "registrationNumber": "817411259",
+  "applicationDate": "1993-08-02",
+  "registrationDate": "2018-03-20",
+  "expiryDate": "2028-03-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        42
+      ],
+      "language": "pt",
+      "description": "Café. Ervas para infusão. Café. Ervas para infusão.",
+      "translation_language": "en",
+      "translation": "Coffee. Herbs for Infusion. Coffee. Herbs for infusion."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "TINOCO SOARES & FILHO S/C LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Coffee. Herbs for Infusion. Coffee. Herbs for infusion.",
+          "intClassNumber": "05,29,30,31,32,33,35,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Café. Ervas para infusão. Café. Ervas para infusão."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "30.10"
+        },
+        {
+          "natClassNumber": "30.20"
+        }
+      ]
+    },
+    "id": "0783c248-8b91-428c-9dc8-82a31bedff11",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TINOCO SOARES & FILHO S/C LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19930802",
+        "applicationNumber": "817411259"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280320",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180320",
+        "registrationNumber": "817411259"
+      }
+    },
+    "version": "20250630195706",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/0783c248-8b91-428c-9dc8-82a31bedff11",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

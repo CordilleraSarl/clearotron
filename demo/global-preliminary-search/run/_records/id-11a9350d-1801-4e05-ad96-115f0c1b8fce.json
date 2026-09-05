@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/id/11a9350d-1801-4e05-ad96-115f0c1b8fce",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "11a9350d-1801-4e05-ad96-115f0c1b8fce",
+  "applicationNumber": "JID2025015252",
+  "registrationNumber": "IDM001375039",
+  "applicationDate": "2025-02-19",
+  "registrationDate": "2025-08-28",
+  "expiryDate": "2035-02-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        38
+      ],
+      "language": "id",
+      "description": "Layanan penyiaran dan transmisi video melalui internet, menampilkan film, film, penyediaan akses telekomunikasi ke film dan program televisi yang disediakan melalui layanan video - on - demand, penyiaran film dan program televisi melalui layanan video - on - demand, penyiaran film gambar bergerak melalui internet, penyiaran fitur film dan televisi, penyiaran fitur film dan televisi melalui internet, penyiaran fitur film dan televisi melalui jaringan komunikasi seluler, penyiaran program televisi, film layar lebar, dan konten audiovisual dan multimedia lainnya melalui protokol internet dan jaringan komunikasi, penyiaran video, penyiaran rekaman video yang menampilkan musik dan hiburan, program televisi, kartun, film, berita, olahraga, permainan, acara budaya, dan program terkait segala jenis hiburan, melalui jaringan komputer global, komputer, dan jaringan komunikasi lainnya; siaran program televisi bayar per tayang, siaran televisi berlangganan, transmisi film, transmisi video, film, lukisan, gambar, teks, foto, game, konten buatan pengguna, konten audio, dan informasi melalui internet, transmisi, penyiaran dan penerimaan audio, gambar diam dan bergerak, teks dan data melalui jaringan komputer, transmisi, penyiaran dan penerimaan audio, video, gambar diam dan bergerak, teks dan data secara real time;.",
+      "translation_language": "en",
+      "translation": "Broadcasting and video transmission services via the internet, showing films, movies, providing telecommunications access to films and television programs provided via video-on-demand services, broadcasting films and television programs via video-on-demand services, broadcasting motion picture films via the internet, broadcasting film and television features, broadcasting film and television features via the internet, broadcasting film and television features via mobile communications networks, broadcasting television programs, feature films, and other audiovisual and multimedia content via internet protocols and communications networks, video broadcasting, broadcasting video recordings featuring music and entertainment, television programs, cartoons, films, news, sports, games, cultural events, and programs related to all types of entertainment, via global computer networks, computers, and other communications networks; broadcasting pay-per-view television programs, subscription television broadcasting, transmission of films, transmission of video, films, paintings, drawings, text, photographs, games, user-generated content, audio content, and information via the internet, transmission, broadcasting and receiving audio, still and moving images, text and data via computer networks, transmission, broadcasting and receiving audio, video, still and moving images, text and data in real time;."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "id",
+      "description": "Distribusi film bioskop, distribusi gambar bergerak, film (hiburan), film distribusi, jasa hiburan dalam bentuk serial televisi yang sedang berlangsung, jasa produksi film, jasa - jasa produksi film layar lebar, menyediakan film, acara televisi, musik, konten hiburan multimedia, dan informasi melalui situs web, menyediakan musik, film, gambar, animasi dan informasi hiburan, pemutaran film, pemutaran film di bioskop terbuka, penyediaan gambar bergerak yang menggunakan jaringan komunikasi, perekaman, produksi dan distribusi film, rekaman video dan audio, program radio dan televisi, produksi dan distribusi rekaman suara, film dan video, produksi film, produksi film di studio, produksi film gambar bergerak, produksi film, dan program audiovisual dan televisi, produksi film, film video, program radio dan televisi, produksi televisi, radio dan film, teater, musik, televisi, radio dan layanan hiburan film.",
+      "translation_language": "en",
+      "translation": "Distribution of cinema films, distribution of moving images, films (entertainment), distribution films, entertainment services in the form of ongoing television series, film production services, wide screen film production services, providing films, television programs, music, multimedia entertainment content and information through websites, providing music, films, images, animation and entertainment information, film screenings, film screenings in open cinemas, provision of moving images using communication networks, recording, production and distribution of films, video and audio recordings, radio and television programs, production and distribution of sound recordings, films and videos, film production, film production in studios, production of moving image films, film production, and audiovisual and television programs, film production, video films, radio and television programs, television, radio and film production, theater, music, television, radio and film entertainment services."
+    }
+  ],
+  "owner": "Indonesia Demi Nusantara",
+  "ownerNative": null,
+  "ownerCountry": "ID",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Menara Global, Jl. Jenderal Gatot Subroto Kav. 27 RT 03, RW 03, Kelurahan Kuningan, Kec. Kuningan Timur, 12950, Kota Administrasi Jakarta Selatan, DKI Jakarta; ID",
+        "applicantAddressCountryCode": "ID",
+        "applicantAddressCountryName": "Indonesia",
+        "applicantName": "Indonesia Demi Nusantara"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Broadcasting and video transmission services via the internet, showing films, movies, providing telecommunications access to films and television programs provided via video-on-demand services, broadcasting films and television programs via video-on-demand services, broadcasting motion picture films via the internet, broadcasting film and television features, broadcasting film and television features via the internet, broadcasting film and television features via mobile communications networks, broadcasting television programs, feature films, and other audiovisual and multimedia content via internet protocols and communications networks, video broadcasting, broadcasting video recordings featuring music and entertainment, television programs, cartoons, films, news, sports, games, cultural events, and programs related to all types of entertainment, via global computer networks, computers, and other communications networks; broadcasting pay-per-view television programs, subscription television broadcasting, transmission of films, transmission of video, films, paintings, drawings, text, photographs, games, user-generated content, audio content, and information via the internet, transmission, broadcasting and receiving audio, still and moving images, text and data via computer networks, transmission, broadcasting and receiving audio, video, still and moving images, text and data in real time;.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Layanan penyiaran dan transmisi video melalui internet, menampilkan film, film, penyediaan akses telekomunikasi ke film dan program televisi yang disediakan melalui layanan video - on - demand, penyiaran film dan program televisi melalui layanan video - on - demand, penyiaran film gambar bergerak melalui internet, penyiaran fitur film dan televisi, penyiaran fitur film dan televisi melalui internet, penyiaran fitur film dan televisi melalui jaringan komunikasi seluler, penyiaran program televisi, film layar lebar, dan konten audiovisual dan multimedia lainnya melalui protokol internet dan jaringan komunikasi, penyiaran video, penyiaran rekaman video yang menampilkan musik dan hiburan, program televisi, kartun, film, berita, olahraga, permainan, acara budaya, dan program terkait segala jenis hiburan, melalui jaringan komputer global, komputer, dan jaringan komunikasi lainnya; siaran program televisi bayar per tayang, siaran televisi berlangganan, transmisi film, transmisi video, film, lukisan, gambar, teks, foto, game, konten buatan pengguna, konten audio, dan informasi melalui internet, transmisi, penyiaran dan penerimaan audio, gambar diam dan bergerak, teks dan data melalui jaringan komputer, transmisi, penyiaran dan penerimaan audio, video, gambar diam dan bergerak, teks dan data secara real time;."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Distribution of cinema films, distribution of moving images, films (entertainment), distribution films, entertainment services in the form of ongoing television series, film production services, wide screen film production services, providing films, television programs, music, multimedia entertainment content and information through websites, providing music, films, images, animation and entertainment information, film screenings, film screenings in open cinemas, provision of moving images using communication networks, recording, production and distribution of films, video and audio recordings, radio and television programs, production and distribution of sound recordings, films and videos, film production, film production in studios, production of moving image films, film production, and audiovisual and television programs, film production, video films, radio and television programs, television, radio and film production, theater, music, television, radio and film entertainment services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Distribusi film bioskop, distribusi gambar bergerak, film (hiburan), film distribusi, jasa hiburan dalam bentuk serial televisi yang sedang berlangsung, jasa produksi film, jasa - jasa produksi film layar lebar, menyediakan film, acara televisi, musik, konten hiburan multimedia, dan informasi melalui situs web, menyediakan musik, film, gambar, animasi dan informasi hiburan, pemutaran film, pemutaran film di bioskop terbuka, penyediaan gambar bergerak yang menggunakan jaringan komunikasi, perekaman, produksi dan distribusi film, rekaman video dan audio, program radio dan televisi, produksi dan distribusi rekaman suara, film dan video, produksi film, produksi film di studio, produksi film gambar bergerak, produksi film, dan program audiovisual dan televisi, produksi film, film video, program radio dan televisi, produksi televisi, radio dan film, teater, musik, televisi, radio dan layanan hiburan film."
+        }
+      ]
+    },
+    "id": "11a9350d-1801-4e05-ad96-115f0c1b8fce",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251223",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250219",
+        "applicationNumber": "JID2025015252"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350219",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250828",
+        "registrationNumber": "IDM001375039"
+      }
+    },
+    "version": "20251223010925",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIN"
+    }
+  },
+  "_uri": "/mark/id/11a9350d-1801-4e05-ad96-115f0c1b8fce",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

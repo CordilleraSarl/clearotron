@@ -340,7 +340,7 @@ test("PR-9 buildAskAnswersSection: frozen-intake order leads; unjoined register 
 // ("nothing found", "nothing found in BX registers"), so neither could ever have caught the doubling —
 // the defect only appears when the answer arrives carrying the label, which is what the model actually
 // emitted under the old dictation. The strings below are the DELIVERED ones from
-// examples/sample-run/run/findings.json (ask_answers[0] and [1]), not invented shapes.
+// demo/multi-country-focus-search/run/findings.json (ask_answers[0] and [1]), not invented shapes.
 test("#762 buildAskAnswersSection: an answer that arrives carrying the label prints it ONCE, not twice", () => {
   const askAnswers = [
     { ask: "EU register only.", answer: `You asked: "EU register only." → Satisfied. Every record in the band is an EUTM or an International registration designating the EU.` },
@@ -419,7 +419,7 @@ test("PR-9 assembleReportMd: folds fire at assembly — caption clipped, card re
 // eight hits, all of them static fixture data carrying the OLD truncated shape. Fixture rows are inputs
 // other lanes own, so these arms assert only over rows this code MINTS.)
 //
-// The two directives below are the delivered specimens from examples/sample-run.
+// The two directives below are the delivered specimens from demo.
 const DELIVERED_DIRECTIVES = [
   "field:consumer and prosumer water testing (pool, spa, aquarium, home tap-water kits)",
   "field:agri-tech, irrigation, aquaculture and hydrology monitoring software",

@@ -1,0 +1,235 @@
+{
+  "uri": "/mark/gb/b2a58f86-ea23-407d-b7ea-be67a9749b10",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "b2a58f86-ea23-407d-b7ea-be67a9749b10",
+  "applicationNumber": "4004057",
+  "registrationNumber": "4004057",
+  "applicationDate": "2024-01-19",
+  "registrationDate": "2024-05-17",
+  "expiryDate": "2034-01-19",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    14,
+    16,
+    20,
+    21,
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6
+      ],
+      "language": "en",
+      "description": "Bronzes [works of art];Works of art of non-precious metal;Works of art of common metal;Figurines of bronze being works of art;Figurines of common metal being works of art;Metal works of art [bronze];Statues and works of art of common metals;Metal works of art [common metal];Sculpted works of art made from common metal;3D wall art made of common metal;Sculpted works of art made from bronze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable virtual works of art;Graphic art software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "en",
+      "description": "Works of art of precious metal;Metal works of art [precious metal];3D wall art made of precious metal.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Art prints;Art etchings;Graphic art reproductions;Graphic art prints; Art pictures;Lithographic works of art; Works of art of paper;Fine art prints;Photographic or art mounts; Printed art reproductions;Works of art made of paper; 3D wall art made of paper; Works of art and figurines of paper and cardboard, and architects' models;3D wall art made of card;Art mounts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Works of art of cork;Works of art of plastic;Works of art of bamboo;Works of art of hay;Works of art of straw;Works of art of nutshell;Works of art made of wax;Works of art made of wood;Works of art made of plaster;Works of art made of amber;Works of art made of amberoid;3D wall art made of wood;Art (Works of -) of wood, wax, plaster or plastic;Glass for use in framing art;Works of art of wood, wax, plaster or plastic.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Art objects of glass;Works of art made of porcelain;Works of art made of glass;Works of art made of earthenware;3D wall art of made of ceramic;Works of art made of crystal;Works of art, of porcelain, terra-cotta or glass;3D wall art of made of porcelain;3D wall art of made of earthenware;3D wall art made of terra-cotta;3D wall art of made of glass;Works of art of porcelain, ceramic, earthenware or glass.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Retail services for works of art provided by art galleries;Retail services in relation to works of art;Organization of art exhibitions for commercial or advertising purposes; Arranging and conducting of art exhibitions for commercial or advertising purposes;Retail services in relation to downloadable virtual works of art.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Art exhibitions;Gallery services (Art -);Instruction in the field of the visual arts;Art gallery services;Art exhibition services;Mural art painting services;Cultural, educational or entertainment services provided by art galleries.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Art work design;Graphic art design;Graphic art services;Commercial art design;Industrial art design;Works of art (Authenticating -);Industrial and graphic art design;Authentication of fine art objects;Authentication in the field of works of art;Design (Graphic arts -);Graphic arts design;Graphic arts designing;Designing (Graphic arts -);Design of artwork;Design of audio-visual creative works.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Korie Cull",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6 Withern Road, NOTTINGHAM NG8 6FJ",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Korie Cull"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Bronzes [works of art];Works of art of non-precious metal;Works of art of common metal;Figurines of bronze being works of art;Figurines of common metal being works of art;Metal works of art [bronze];Statues and works of art of common metals;Metal works of art [common metal];Sculpted works of art made from common metal;3D wall art made of common metal;Sculpted works of art made from bronze."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable virtual works of art;Graphic art software."
+        },
+        {
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Works of art of precious metal;Metal works of art [precious metal];3D wall art made of precious metal."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Art prints;Art etchings;Graphic art reproductions;Graphic art prints; Art pictures;Lithographic works of art; Works of art of paper;Fine art prints;Photographic or art mounts; Printed art reproductions;Works of art made of paper; 3D wall art made of paper; Works of art and figurines of paper and cardboard, and architects' models;3D wall art made of card;Art mounts."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Works of art of cork;Works of art of plastic;Works of art of bamboo;Works of art of hay;Works of art of straw;Works of art of nutshell;Works of art made of wax;Works of art made of wood;Works of art made of plaster;Works of art made of amber;Works of art made of amberoid;3D wall art made of wood;Art (Works of -) of wood, wax, plaster or plastic;Glass for use in framing art;Works of art of wood, wax, plaster or plastic."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Art objects of glass;Works of art made of porcelain;Works of art made of glass;Works of art made of earthenware;3D wall art of made of ceramic;Works of art made of crystal;Works of art, of porcelain, terra-cotta or glass;3D wall art of made of porcelain;3D wall art of made of earthenware;3D wall art made of terra-cotta;3D wall art of made of glass;Works of art of porcelain, ceramic, earthenware or glass."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Retail services for works of art provided by art galleries;Retail services in relation to works of art;Organization of art exhibitions for commercial or advertising purposes; Arranging and conducting of art exhibitions for commercial or advertising purposes;Retail services in relation to downloadable virtual works of art."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Art exhibitions;Gallery services (Art -);Instruction in the field of the visual arts;Art gallery services;Art exhibition services;Mural art painting services;Cultural, educational or entertainment services provided by art galleries."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Art work design;Graphic art design;Graphic art services;Commercial art design;Industrial art design;Works of art (Authenticating -);Industrial and graphic art design;Authentication of fine art objects;Authentication in the field of works of art;Design (Graphic arts -);Graphic arts design;Graphic arts designing;Designing (Graphic arts -);Design of artwork;Design of audio-visual creative works."
+        }
+      ]
+    },
+    "id": "b2a58f86-ea23-407d-b7ea-be67a9749b10",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2024/005"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240119",
+        "applicationNumber": "4004057"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340119",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240517",
+        "registrationNumber": "4004057"
+      }
+    },
+    "version": "20250627223204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/gb/b2a58f86-ea23-407d-b7ea-be67a9749b10",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

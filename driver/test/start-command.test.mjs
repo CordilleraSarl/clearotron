@@ -218,7 +218,12 @@ test("#859 the launcher SEEDS THE POOL, and does it through the same publisher t
   assert.match(src, /seedPool\(\{[^}]*pool:\s*paths\.pool/,
     "seedPool must be handed paths.pool — the install's own pool, resolved by installPaths, and never a "
     + "path this file spells a second time");
-  assert.match(src, /examplesDir:\s*join\(REPO, "examples"\)/, "the samples must come from the repo's examples/ tree");
+  // — the container moved to demo/ on the owner's one-term ruling, and the
+  // launcher has to follow it. This arm is why that move could not be silent: the seeder walks a
+  // CONTAINER of product demos, and a launcher left pointing at examples/ — which no longer holds a
+  // frozen run — would seed nothing and serve an empty archive without a word.
+  assert.match(src, /examplesDir:\s*join\(REPO, "demo"\)/,
+    "the samples must come from the repo's demo/ container, one child per product type");
   assert.match(src, /republish:\s*republishRun/,
     "the seeder must publish through report-registry's republishRun — the SAME function `npm run example` "
     + "uses, which handles the knockout template as well as the clearance one. A second publish path "

@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/cn/cff32ebd-2a5a-43d5-b421-165423f5d12e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "cff32ebd-2a5a-43d5-b421-165423f5d12e",
+  "applicationNumber": "58410201",
+  "registrationNumber": null,
+  "applicationDate": "2021-08-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "服装设计,广告宣传材料的平面设计,鞋设计服务,包装设计服务,玩具设计,平面美术设计,首饰设计,工业设计,多媒体产品的设计和开发,艺术品设计",
+      "translation_language": "en",
+      "translation": "Clothing design, graphic design of advertising materials, shoe design services, packaging design services, toy design, graphic art design, jewelry design, industrial design, multimedia product design and development, artwork design"
+    }
+  ],
+  "owner": "Beijing Duorui Cultural and Creative Studio",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区中关村东路66号2号楼19层2206",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Duorui Cultural and Creative Studio",
+        "applicantNativeName": "北京多瑞文化创意工作室"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing design, graphic design of advertising materials, shoe design services, packaging design services, toy design, graphic art design, jewelry design, industrial design, multimedia product design and development, artwork design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "服装设计,广告宣传材料的平面设计,鞋设计服务,包装设计服务,玩具设计,平面美术设计,首饰设计,工业设计,多媒体产品的设计和开发,艺术品设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Registered design service",
+        "Dress designing service",
+        "Computer programming, and concerned services",
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "cff32ebd-2a5a-43d5-b421-165423f5d12e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北方财税(北京)商务服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210811",
+        "applicationNumber": "58410201"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004151401",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/cn/cff32ebd-2a5a-43d5-b421-165423f5d12e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

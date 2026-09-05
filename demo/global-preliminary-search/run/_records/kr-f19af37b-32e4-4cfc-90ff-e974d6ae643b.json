@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/f19af37b-32e4-4cfc-90ff-e974d6ae643b",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "f19af37b-32e4-4cfc-90ff-e974d6ae643b",
+  "applicationNumber": "40-2015-0010927",
+  "registrationNumber": null,
+  "applicationDate": "2015-02-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Qoi",
+  "markTransliteration": "QOI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "gps기능을 내장 또는 이용한 보수계(步數計), 노트북용 케이스, 모바일 전기통신기기용 케이스, 블루투스 통신기기, 비의료용 온도계, 비의료용 온도계 겸용 습도계, 비의료용 측정기, 스마트폰고리, 스마트폰용 목걸이줄, 스마트폰용 파우치, 스마트폰용 거치대, 스마트폰용 보호케이스, 스마트폰용 전자도킹스테이션, 식물용 계측기, 전기음향영상기기 보호용 케이스, 초음파 해충퇴치기, 컴퓨터용 손목 지지대, 태블릿 pc용 거치대, 태블릿 pc용 보호케이스, 핸드폰케이스",
+      "translation_language": "en",
+      "translation": "Pedometer with built-in or using GPS function, case for laptop, case for mobile telecommunication device, Bluetooth communication device, non-medical thermometer, hygrometer that doubles as a non-medical thermometer, non-medical measuring instrument, smartphone ring, necklace strap for smartphone, pouch for smartphone, holder for smartphone, protective case for smartphone, electronic docking station for smartphone, measuring instrument for plants, protective case for electroacoustic imaging device, Ultrasonic pest exterminator, wrist support for computer, stand for tablet pc, protective case for tablet pc, cell phone case"
+    }
+  ],
+  "owner": "KIM SEONG JOO",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박정학 (Junghak Park)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 성남시 중원구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM SEONG JOO",
+        "applicantNativeName": "김성주"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pedometer with built-in or using GPS function, case for laptop, case for mobile telecommunication device, Bluetooth communication device, non-medical thermometer, hygrometer that doubles as a non-medical thermometer, non-medical measuring instrument, smartphone ring, necklace strap for smartphone, pouch for smartphone, holder for smartphone, protective case for smartphone, electronic docking station for smartphone, measuring instrument for plants, protective case for electroacoustic imaging device, Ultrasonic pest exterminator, wrist support for computer, stand for tablet pc, protective case for tablet pc, cell phone case",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "gps기능을 내장 또는 이용한 보수계(步數計), 노트북용 케이스, 모바일 전기통신기기용 케이스, 블루투스 통신기기, 비의료용 온도계, 비의료용 온도계 겸용 습도계, 비의료용 측정기, 스마트폰고리, 스마트폰용 목걸이줄, 스마트폰용 파우치, 스마트폰용 거치대, 스마트폰용 보호케이스, 스마트폰용 전자도킹스테이션, 식물용 계측기, 전기음향영상기기 보호용 케이스, 초음파 해충퇴치기, 컴퓨터용 손목 지지대, 태블릿 pc용 거치대, 태블릿 pc용 보호케이스, 핸드폰케이스"
+        }
+      ]
+    },
+    "id": "f19af37b-32e4-4cfc-90ff-e974d6ae643b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.03.23",
+      "26.04.12",
+      "26.04.24",
+      "26.04.26"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 노원구 동일로길 ** 동 호(상계동, 상계주공*단지아파트)(넥스트원국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박정학 (Junghak Park)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150211",
+        "applicationNumber": "40-2015-0010927"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260625021117",
+    "wordMarkSpecification": {
+      "markTransliteration": "QOI",
+      "markVerbalElementText": "Qoi"
+    }
+  },
+  "_uri": "/mark/kr/f19af37b-32e4-4cfc-90ff-e974d6ae643b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:01.420Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

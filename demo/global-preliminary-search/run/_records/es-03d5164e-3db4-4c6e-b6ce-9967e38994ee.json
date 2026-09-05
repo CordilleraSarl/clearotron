@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/es/03d5164e-3db4-4c6e-b6ce-9967e38994ee",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "03d5164e-3db4-4c6e-b6ce-9967e38994ee",
+  "applicationNumber": "4272008 M7",
+  "registrationNumber": "4272008 M7",
+  "applicationDate": "2024-06-17",
+  "registrationDate": "2025-03-21",
+  "expiryDate": "2034-06-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-09-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FY sosfy trevenque",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño conexos; servicios de analisis industrial, investigacion industrial y diseño industrial; control de calidad y servicios de autenticacion; diseño y desarrollo de hardware y software",
+      "translation_language": "en",
+      "translation": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RELATED RESEARCH AND DESIGN SERVICES; INDUSTRIAL ANALYSIS, INDUSTRIAL RESEARCH AND INDUSTRIAL DESIGN SERVICES; QUALITY CONTROL AND AUTHENTICATION SERVICES; DESIGN AND DEVELOPMENT OF HARDWARE AND SOFTWARE"
+    }
+  ],
+  "owner": "Trevenque Sistemas de Información S.L.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Trevenque Sistemas de Información S.L."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "26.04.01",
+      "26.04.22",
+      "29.02.00",
+      "37.02.06",
+      "37.02.25",
+      "37.05.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RELATED RESEARCH AND DESIGN SERVICES; INDUSTRIAL ANALYSIS, INDUSTRIAL RESEARCH AND INDUSTRIAL DESIGN SERVICES; QUALITY CONTROL AND AUTHENTICATION SERVICES; DESIGN AND DEVELOPMENT OF HARDWARE AND SOFTWARE",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño conexos; servicios de analisis industrial, investigacion industrial y diseño industrial; control de calidad y servicios de autenticacion; diseño y desarrollo de hardware y software"
+        }
+      ]
+    },
+    "id": "03d5164e-3db4-4c6e-b6ce-9967e38994ee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "PANTONE CF0505"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "La denominación de la marca es Sosfy Trevenque. En el lado izquierdo de mi distintivo hay un elemento gráfico de fantasía sin lectura."
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.05",
+      "27.05.09",
+      "27.05.10",
+      "29.01.01",
+      "29.01.06",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6734"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240617",
+        "applicationNumber": "4272008 M7"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340616",
+      "lastPublicationDate": "20240904",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250321",
+        "registrationNumber": "4272008 M7"
+      }
+    },
+    "version": "20260427171320",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FY sosfy trevenque"
+    }
+  },
+  "_uri": "/mark/es/03d5164e-3db4-4c6e-b6ce-9967e38994ee",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

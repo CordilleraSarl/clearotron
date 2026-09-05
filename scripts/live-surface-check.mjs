@@ -541,7 +541,7 @@ const heads = [...new Set(running.map((c) => c.head))];
 //
 // SCOPED TO THE UNITS THIS DEPLOY OWNS. Until now the comparison ran over every unit in CHECKED_UNITS,
 // which is "every unit this repo has heard of on any box" — on production that includes `client-access`
-// (a script from a different product's checkout) and the Clawdi bridges, whose WorkingDirectories are in
+// (a script from a different product's checkout) and that product's MCP bridges, whose WorkingDirectories are in
 // another clone. The deploy skill forbids a trademark deploy from restarting `client-access`, so the arm
 // demanded commit agreement from services this deploy must not move, and reddened on every prod deploy
 // for units behaving correctly. The discriminator is the CLONE, which `serviceClones()` has read all

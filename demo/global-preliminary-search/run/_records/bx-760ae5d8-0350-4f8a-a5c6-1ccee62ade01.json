@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/bx/760ae5d8-0350-4f8a-a5c6-1ccee62ade01",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "760ae5d8-0350-4f8a-a5c6-1ccee62ade01",
+  "applicationNumber": "1376386",
+  "registrationNumber": "1035180",
+  "applicationDate": "2018-06-07",
+  "registrationDate": "2018-09-05",
+  "expiryDate": "2028-06-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-09-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Nori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Muziekopnamen; Muziekvideo-opnamen; Downloadbare muziekbestanden; Downloadbare digitale muziek; Bandopnamen met muziek; Vooropgenomen muziekcd's; Chips met muziekopnamen; Voorbespeelde audiobandjes met muziek; Voorbespeelde videobanden met muziek; Vooropgenomen videobanden zonder muziek; Optische schijven met muziek; Digitale muziek, downloadbaar vanaf internet; Muziek Cd's [compact disc]; Voorbespeelde dvd's met muziek; Vooropgenomen video's met muziek; Downloadbare video- opnamen die muziek bevatten; Muziekopnamen in de vorm van schijven; Digitale muziek (downloadbaar) geleverd vanaf het Internet; Digitale muziek (downloadbaar) geleverd vanaf Internetwebsites voor MP3; Digitale muziek (downloadbaar) geleverd vanaf internetwebsites voor mp3's",
+      "translation_language": "en",
+      "translation": "Musical recordings; music video recordings; downloadable music files; downloadable digital music; tape recordings featuring music; pre-recorded music CDs; chips with music recordings; pre-recorded audio tapes featuring music; pre-recorded video tapes featuring music; pre-recorded video tapes without music; optical discs featuring music; digital music downloadable from the Internet; Music CDs [compact disc]; pre-recorded DVDs featuring music; Pre-recorded videos with music; downloadable video recordings containing music; music recordings in the form of discs; digital music (downloadable) provided from the Internet; digital music (downloadable) provided from Internet websites for MP3; Digital music (downloadable) provided from Internet websites for MP3s"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "nl",
+      "description": "Kleding; Kledingstukken",
+      "translation_language": "en",
+      "translation": "Clothing; Garments"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Muziekuitgave en muziekopname; Uitgeven van muziek; Uitgeven van muziekwerken; Uitgeven van muziekteksten; Diensten van muziekuitgevers; Muziektranscriptie voor derden; Muziekfestivals; Muziekconcerten; Muziekcompetities; Muziekuitvoeringen; Muziekvoorstellingen; Live muziek; Live muziekshows; Live muziekoptredens; Live muziekconcerten; Componeren van muziek; Muziek- en zangvoorstellingen; Uitvoeren van muziek; Muziekshows (Productie van -); Muziekconcerten via televisie; Uitvoeren van muziekconcerten",
+      "translation_language": "en",
+      "translation": "Music publishing and recording; publishing music; publishing of musical works; publishing of music lyrics; music publisher services; music transcription for others; music festivals; music concerts; music competitions; musical performances; musical performances; Live music; live music shows; live music performances; live music concerts; composing music; music and song performances; music performance; Music shows (Production of -); music concerts via television; Performing music concerts"
+    }
+  ],
+  "owner": "Flexable BV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Edvard Munchweg 7, 1328 MA Almere",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Flexable BV"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Musical recordings; music video recordings; downloadable music files; downloadable digital music; tape recordings featuring music; pre-recorded music CDs; chips with music recordings; pre-recorded audio tapes featuring music; pre-recorded video tapes featuring music; pre-recorded video tapes without music; optical discs featuring music; digital music downloadable from the Internet; Music CDs [compact disc]; pre-recorded DVDs featuring music; Pre-recorded videos with music; downloadable video recordings containing music; music recordings in the form of discs; digital music (downloadable) provided from the Internet; digital music (downloadable) provided from Internet websites for MP3; Digital music (downloadable) provided from Internet websites for MP3s",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Muziekopnamen; Muziekvideo-opnamen; Downloadbare muziekbestanden; Downloadbare digitale muziek; Bandopnamen met muziek; Vooropgenomen muziekcd's; Chips met muziekopnamen; Voorbespeelde audiobandjes met muziek; Voorbespeelde videobanden met muziek; Vooropgenomen videobanden zonder muziek; Optische schijven met muziek; Digitale muziek, downloadbaar vanaf internet; Muziek Cd's [compact disc]; Voorbespeelde dvd's met muziek; Vooropgenomen video's met muziek; Downloadbare video- opnamen die muziek bevatten; Muziekopnamen in de vorm van schijven; Digitale muziek (downloadbaar) geleverd vanaf het Internet; Digitale muziek (downloadbaar) geleverd vanaf Internetwebsites voor MP3; Digitale muziek (downloadbaar) geleverd vanaf internetwebsites voor mp3's"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing; Garments",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kleding; Kledingstukken"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Music publishing and recording; publishing music; publishing of musical works; publishing of music lyrics; music publisher services; music transcription for others; music festivals; music concerts; music competitions; musical performances; musical performances; Live music; live music shows; live music performances; live music concerts; composing music; music and song performances; music performance; Music shows (Production of -); music concerts via television; Performing music concerts",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Muziekuitgave en muziekopname; Uitgeven van muziek; Uitgeven van muziekwerken; Uitgeven van muziekteksten; Diensten van muziekuitgevers; Muziektranscriptie voor derden; Muziekfestivals; Muziekconcerten; Muziekcompetities; Muziekuitvoeringen; Muziekvoorstellingen; Live muziek; Live muziekshows; Live muziekoptredens; Live muziekconcerten; Componeren van muziek; Muziek- en zangvoorstellingen; Uitvoeren van muziek; Muziekshows (Productie van -); Muziekconcerten via televisie; Uitvoeren van muziekconcerten"
+        }
+      ]
+    },
+    "id": "760ae5d8-0350-4f8a-a5c6-1ccee62ade01",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0905"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180607",
+        "applicationNumber": "1376386"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280607",
+      "lastPublicationDate": "20180905",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180905",
+        "registrationNumber": "1035180"
+      }
+    },
+    "version": "20250623182540",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Nori"
+    }
+  },
+  "_uri": "/mark/bx/760ae5d8-0350-4f8a-a5c6-1ccee62ade01",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

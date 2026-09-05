@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/jp/96263b8c-3d9d-44da-9e15-971fb8621b5d",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "96263b8c-3d9d-44da-9e15-971fb8621b5d",
+  "applicationNumber": "2011-066077",
+  "registrationNumber": "5521260",
+  "applicationDate": "2011-09-14",
+  "registrationDate": "2012-09-14",
+  "expiryDate": "2032-09-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-10-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＳＡＦＥＡＳＳＵＲＥ",
+  "markTransliteration": "SEEFUASHUA",
+  "markTranslation": "SAFEASSURE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "電源管理用集積回路・マイクロコントローラ・システムベースチップその他の集積回路及び半導体・コンピュータソフトウェアその他の電子応用機械器具，圧力センサー・触覚センサー・静電容量センサー・加速度センサー・近接センサー・磁気センサー・高周波信号を利用した測定機械器具用センサー・ジャイロセンサー・コンピュータインターフェースに用いるセンサー・加速度計・慣性センサその他の測定機械器具，半導体・集積回路・電源管理用集積回路・マイクロコントローラ・システムベースチップ・圧力センサー・触覚センサー・静電容量センサー・加速度センサー・近接センサー・磁気センサー・高周波信号を利用した測定機械器具用センサー・ジャイロセンサー・コンピュータインターフェースに用いるセンサー・加速度計・慣性センサ・コンピュータソフトウェアのマニュアル・ユーザーガイド・説明書・仕様書を内容とする電子出版物及びその他の電子出版物",
+      "translation_language": "en",
+      "translation": "Power management integrated circuit · Microcontroller · System base chip Other integrated circuits and semiconductors · Computer software Other electronic applied equipment, pressure sensor · tactile sensor · capacitance sensor · acceleration sensor · proximity sensor · magnetic sensor · high frequency signal Measurement with Measurement Machine Tool Gyro Sensor · Sensor Used for Computer Interface · Accelerometer · Inertial Sensor Other Measurement Mechanical Equipment · Semiconductor · Integrated Circuit · Integrated Circuit for Power Management · Microcontroller · System Base Chip · Pressure Sensor · Tactile sensor · Capacitance sensor · Acceleration sensor · Proximity sensor · Magnetic sensor · Measurement using high frequency signal · Sensor for gyro sensor · Computer interface · Acceleration Inertial sensor computer software manual user guide, instruction manual specification electronic publications and contents and other electronic publications"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20110914"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Power management integrated circuit · Microcontroller · System base chip Other integrated circuits and semiconductors · Computer software Other electronic applied equipment, pressure sensor · tactile sensor · capacitance sensor · acceleration sensor · proximity sensor · magnetic sensor · high frequency signal Measurement with Measurement Machine Tool Gyro Sensor · Sensor Used for Computer Interface · Accelerometer · Inertial Sensor Other Measurement Mechanical Equipment · Semiconductor · Integrated Circuit · Integrated Circuit for Power Management · Microcontroller · System Base Chip · Pressure Sensor · Tactile sensor · Capacitance sensor · Acceleration sensor · Proximity sensor · Magnetic sensor · Measurement using high frequency signal · Sensor for gyro sensor · Computer interface · Acceleration Inertial sensor computer software manual user guide, instruction manual specification electronic publications and contents and other electronic publications",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "電源管理用集積回路・マイクロコントローラ・システムベースチップその他の集積回路及び半導体・コンピュータソフトウェアその他の電子応用機械器具，圧力センサー・触覚センサー・静電容量センサー・加速度センサー・近接センサー・磁気センサー・高周波信号を利用した測定機械器具用センサー・ジャイロセンサー・コンピュータインターフェースに用いるセンサー・加速度計・慣性センサその他の測定機械器具，半導体・集積回路・電源管理用集積回路・マイクロコントローラ・システムベースチップ・圧力センサー・触覚センサー・静電容量センサー・加速度センサー・近接センサー・磁気センサー・高周波信号を利用した測定機械器具用センサー・ジャイロセンサー・コンピュータインターフェースに用いるセンサー・加速度計・慣性センサ・コンピュータソフトウェアのマニュアル・ユーザーガイド・説明書・仕様書を内容とする電子出版物及びその他の電子出版物"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "24E02"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Exposed cinematographic films, Exposed slide films, Slide film mounts, Downloadable image files, Recorded video discs and video tapes"
+        }
+      ]
+    },
+    "id": "96263b8c-3d9d-44da-9e15-971fb8621b5d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20110914"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110914",
+        "applicationNumber": "2011-066077"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320914",
+      "lastPublicationDate": "20121016",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120914",
+        "registrationNumber": "5521260"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "SAFEASSURE",
+      "markTransliteration": "SEEFUASHUA",
+      "markVerbalElementText": "ＳＡＦＥＡＳＳＵＲＥ"
+    }
+  },
+  "_uri": "/mark/jp/96263b8c-3d9d-44da-9e15-971fb8621b5d",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

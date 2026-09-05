@@ -1,0 +1,1035 @@
+{
+  "uri": "/mark/em/46b1bb44-c512-4fe7-b90a-5ac63624dc73",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "46b1bb44-c512-4fe7-b90a-5ac63624dc73",
+  "applicationNumber": "11598695",
+  "registrationNumber": "11598695",
+  "applicationDate": "2013-02-22",
+  "registrationDate": "2013-07-22",
+  "expiryDate": "2033-02-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2013-04-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Magnetické nosice zvukových záznamu, Jako jsou kazety audio a video; CD, CD-ROMy, DVD; Pocítacový software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "cs",
+      "description": "Tiskárenské výrobky; Instruktázní a ucební materiál, s výjimkou prístroju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Vyucování, vcetne dálkového studia, prostrednictvím telefonu a internetu; Organizování kurzu a semináru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Computerbånd på spoler, Såsom lyd- og videobånd; Cd'er, cd-rommer og dvd'er; Computer software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "da",
+      "description": "Tryksager; Instruktions- og undervisningsmateriale (dog ikke apparater).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Uddannelsesvirksomhed, inklusive brevkurser, undervisning via telefon og via internet; Arrangering af kurser og seminarer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Magnetische gegevensdragers, waaronder audio- en videocassettes; CD, CD-ROM en DVD; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Drukwerken; leermiddelen en onderwijsmateriaal (uitgezonderd toestellen).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Onderwijs, waaronder schriftelijk onderwijs, onderwijs per telefoon of via internet; organisatie van cursussen en seminaries.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Magnetic recording carriers, Including audio and video cassettes; CDs, CD-ROMs, DVDs; Computer software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; Instructional and teaching material except for the apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Teaching, including correspondence courses, telephone courses and courses via the Internet; Organisation of courses and seminars.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Magnetandmekandjad, Nt audio- ja videokassetid; CD-d, CD-ROM-id, DVD-d; Arvutitarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "et",
+      "description": "Trükised; Juhend- ja õppematerjalid, välja arvatud aparaatide jaoks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Õpetamine, sh õpetamine kaugõppe teel, telefonide ja interneti kaudu; Kursuste ja seminaride korraldamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Magneettiset tallennevälineet, Kuten ääni- ja videokasetit; CD-levyt, CD-ROM-levyt, DVD-levyt; Tietokoneohjelmistot.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fi",
+      "description": "Painotuotteet; Neuvonta- ja opetustarvikkeet (paitsi laitteet).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Opetus, mukaan lukien opetus kirjekurssien, puhelimen ja Internetin välityksellä; Kurssien ja seminaarien tarjoaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Supports d'enregistrement magnétiques, tels que cassettes audio et vidéo; CD, CD-ROM et DVD; logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Produits de l'imprimerie; matériel d'instruction et d'enseignement (à l'exception des appareils).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Enseignement, y compris enseignement par correspondance, par téléphone et par internet; organisation de cours et de séminaires.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Magnetaufzeichnungträger, Wie Audio- und Videokassetten; CDs, CD-ROMs, DVDs; Computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Druckereierzeugnisse; Lehr- und Unterrichtsmaterialien (ausgenommen Apparate).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Unterricht, einschließlich Fernunterricht, Unterricht über das Telefon und über das Internet; Organisation von Kursen und Seminaren.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Mágneses adathordozók, Úgymint audio- és videokazetták; CD-k, CD-ROM-ok, DVD-k; Számítógépes szoftverek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "hu",
+      "description": "Nyomdaipari termékek; Oktató- és tananyagok (a készülékek kivételével).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Oktatás, beleértve a levelezo, telefonos és internetes oktatást; Tanfolyamok és szemináriumok szervezése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Supporti di registrazione magnetica, Quali cassette audio e video; Compact disc, CD-ROM, DVD; Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "it",
+      "description": "Stampati; Materiale per insegnamento ed istruzione (esclusi apparecchi).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Insegnamento, anche per corrispondenza, tramite telefono e via internet; Organizzazione di corsi e seminari.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Magnetines duomenu laikmenos, Tokios kaip garso kasetes ir vaizdajuostes; Kompaktiniai diskai, kompaktiniu disku pastoviosios atmintines (CD-ROM), skaitmeniniai vaizdo diskai (DVD); Kompiuteriu programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lt",
+      "description": "Spaudiniai; Mokymo ir mokomoji medziaga, isskyrus aparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Mokymas, iskaitant nuotolini mokyma, mokyma telefonu ir internetu; Paskaitu ir seminaru organizavimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Magnetiska ierakstu vide, Piemeram, audio un video kasetes; Kompaktdiski, kompaktdisku lasisanas iekartas, digitalie videodiski; Datoru programmatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "lv",
+      "description": "Iespiedprodukcija; Instrukciju un macibu materiali, iznemot aparatiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Macibas, tostarp macibas pa pastu, pa talruni un interneta; Kursu un seminaru rikosana.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Taghmir manjetiku ghar-registrazzjoni, Perezempju kasetts tal-awdjo u tal-vidjow; CDs, CD-ROMs, DVDs; Softwer tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "mt",
+      "description": "Materjal stampat; Materjal ta' istruzzjoni u ta' taghlim ghajr apparat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Taghlim, anke taghlim bil-posta, bit-telefown u bl-Internet; Organizzazzjoni ta' korsijiet u seminars.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Nosniki zapisu magnetyczne, Takie jak kasety magnetofonowe i wideo; Plyty kompaktowe, dyski CD-ROM, plyty DVD; Oprogramowanie komputerowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pl",
+      "description": "Druki; Materialy instruktazowe i dydaktyczne z wyjatkiem urzadzen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Nauczanie, w tym nauczanie korespondencyjne, za posrednictwem telefonu i przez internet; Organizacja kursów i seminariów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Suportes de registos magnéticos, Tais como cassetes de áudio e de vídeo; CD, CD-ROM, DVD; Programas de computador.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pt",
+      "description": "Produtos de impressão; Material de instrução e de ensino (com excepção dos aparelhos).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Ensino, incluindo ensino por correspondência, por telefone e através da Internet; Organização de cursos e seminários.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Medii de inregistrare magnetica, Ca de exemplu casete audio si video; CD-URI, CD-ROM-uri si DVD-uri; Software de calculator.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ro",
+      "description": "Produse de imprimerie; Materiale pentru instruire si predare (cu exceptia aparatelor).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Instruire, inclusiv instruire prin corespondenta, prin telefon si prin Internet; Organizare de cursuri si seminarii.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Magnetické nosice nahrávok, Menovite audiokazety a videokazety; CD disky, CD-ROM disky, DVD disky; Pocítacové programy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sk",
+      "description": "Tlacoviny; Instruktázne a ucebné potreby s výnimkou prístrojov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Vzdelávanie vrátane dialkového stúdia, vzdelávania cez telefón a cez internet; Organizovanie kurzov a seminárov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Magnetni nosilci zapisov, Kot so avdio in video kasete; Zgoscenke, CD-ROM-i, DVD-ji; Racunalniski software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sl",
+      "description": "Tiskovine (izdelki tiskarn); Material za poucevanje in instruiranje, razen naprav.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Pouk, vkljucno z dopisnim izobrazevanjem, pouk s pomocjo telefona in interneta; Organizacija tecajev in seminarjev.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Soportes de grabación magnéticos, Tales como casetes de audio y vídeo; CD, CD-ROM, DVD; Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Productos de imprenta; Material de enseñanza e instrucción (excepto aparatos).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Enseñanza, incluyendo enseñanza por correspondencia, por teléfono y por Internet; Impartición de cursillos y seminarios.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Magnetiska inspelningsbärare, Såsom ljud- och videokassetter; CD-, CD-romskivor, DVD-skivor; Mjukvaror.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sw",
+      "description": "Trycksaker; Undervisnings- och instruktionsmaterial (ej apparater).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Undervisning, däri inbegripet korrespondensundervisning, undervisning via telefon och via Internet; Tillhandahållande av kurser och seminarier.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CERAN",
+  "ownerNative": null,
+  "ownerCountry": "BE",
+  "representative": "GEVERS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Avenue des Petits Sapins 27,SPA, 4900",
+        "applicantAddressCountryCode": "BE",
+        "applicantAddressCountryName": "Belgium",
+        "applicantName": "CERAN"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Magnetické nosice zvukových záznamu, Jako jsou kazety audio a video; CD, CD-ROMy, DVD; Pocítacový software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Tiskárenské výrobky; Instruktázní a ucební materiál, s výjimkou prístroju."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vyucování, vcetne dálkového studia, prostrednictvím telefonu a internetu; Organizování kurzu a semináru."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Computerbånd på spoler, Såsom lyd- og videobånd; Cd'er, cd-rommer og dvd'er; Computer software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Tryksager; Instruktions- og undervisningsmateriale (dog ikke apparater)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Uddannelsesvirksomhed, inklusive brevkurser, undervisning via telefon og via internet; Arrangering af kurser og seminarer."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Magnetische gegevensdragers, waaronder audio- en videocassettes; CD, CD-ROM en DVD; software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Drukwerken; leermiddelen en onderwijsmateriaal (uitgezonderd toestellen)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Onderwijs, waaronder schriftelijk onderwijs, onderwijs per telefoon of via internet; organisatie van cursussen en seminaries."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Magnetic recording carriers, Including audio and video cassettes; CDs, CD-ROMs, DVDs; Computer software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; Instructional and teaching material except for the apparatus."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Teaching, including correspondence courses, telephone courses and courses via the Internet; Organisation of courses and seminars."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Magnetandmekandjad, Nt audio- ja videokassetid; CD-d, CD-ROM-id, DVD-d; Arvutitarkvara."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Trükised; Juhend- ja õppematerjalid, välja arvatud aparaatide jaoks."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Õpetamine, sh õpetamine kaugõppe teel, telefonide ja interneti kaudu; Kursuste ja seminaride korraldamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Magneettiset tallennevälineet, Kuten ääni- ja videokasetit; CD-levyt, CD-ROM-levyt, DVD-levyt; Tietokoneohjelmistot."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Painotuotteet; Neuvonta- ja opetustarvikkeet (paitsi laitteet)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Opetus, mukaan lukien opetus kirjekurssien, puhelimen ja Internetin välityksellä; Kurssien ja seminaarien tarjoaminen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Supports d'enregistrement magnétiques, tels que cassettes audio et vidéo; CD, CD-ROM et DVD; logiciels."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits de l'imprimerie; matériel d'instruction et d'enseignement (à l'exception des appareils)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Enseignement, y compris enseignement par correspondance, par téléphone et par internet; organisation de cours et de séminaires."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Magnetaufzeichnungträger, Wie Audio- und Videokassetten; CDs, CD-ROMs, DVDs; Computersoftware."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Druckereierzeugnisse; Lehr- und Unterrichtsmaterialien (ausgenommen Apparate)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Unterricht, einschließlich Fernunterricht, Unterricht über das Telefon und über das Internet; Organisation von Kursen und Seminaren."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Mágneses adathordozók, Úgymint audio- és videokazetták; CD-k, CD-ROM-ok, DVD-k; Számítógépes szoftverek."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Nyomdaipari termékek; Oktató- és tananyagok (a készülékek kivételével)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Oktatás, beleértve a levelezo, telefonos és internetes oktatást; Tanfolyamok és szemináriumok szervezése."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Supporti di registrazione magnetica, Quali cassette audio e video; Compact disc, CD-ROM, DVD; Software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Stampati; Materiale per insegnamento ed istruzione (esclusi apparecchi)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Insegnamento, anche per corrispondenza, tramite telefono e via internet; Organizzazione di corsi e seminari."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Magnetines duomenu laikmenos, Tokios kaip garso kasetes ir vaizdajuostes; Kompaktiniai diskai, kompaktiniu disku pastoviosios atmintines (CD-ROM), skaitmeniniai vaizdo diskai (DVD); Kompiuteriu programine iranga."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Spaudiniai; Mokymo ir mokomoji medziaga, isskyrus aparatus."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokymas, iskaitant nuotolini mokyma, mokyma telefonu ir internetu; Paskaitu ir seminaru organizavimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Magnetiska ierakstu vide, Piemeram, audio un video kasetes; Kompaktdiski, kompaktdisku lasisanas iekartas, digitalie videodiski; Datoru programmatura."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Iespiedprodukcija; Instrukciju un macibu materiali, iznemot aparatiem."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Macibas, tostarp macibas pa pastu, pa talruni un interneta; Kursu un seminaru rikosana."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Taghmir manjetiku ghar-registrazzjoni, Perezempju kasetts tal-awdjo u tal-vidjow; CDs, CD-ROMs, DVDs; Softwer tal-kompjuter."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Materjal stampat; Materjal ta' istruzzjoni u ta' taghlim ghajr apparat."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Taghlim, anke taghlim bil-posta, bit-telefown u bl-Internet; Organizzazzjoni ta' korsijiet u seminars."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Nosniki zapisu magnetyczne, Takie jak kasety magnetofonowe i wideo; Plyty kompaktowe, dyski CD-ROM, plyty DVD; Oprogramowanie komputerowe."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Druki; Materialy instruktazowe i dydaktyczne z wyjatkiem urzadzen."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Nauczanie, w tym nauczanie korespondencyjne, za posrednictwem telefonu i przez internet; Organizacja kursów i seminariów."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Suportes de registos magnéticos, Tais como cassetes de áudio e de vídeo; CD, CD-ROM, DVD; Programas de computador."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Produtos de impressão; Material de instrução e de ensino (com excepção dos aparelhos)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Ensino, incluindo ensino por correspondência, por telefone e através da Internet; Organização de cursos e seminários."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Medii de inregistrare magnetica, Ca de exemplu casete audio si video; CD-URI, CD-ROM-uri si DVD-uri; Software de calculator."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Produse de imprimerie; Materiale pentru instruire si predare (cu exceptia aparatelor)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instruire, inclusiv instruire prin corespondenta, prin telefon si prin Internet; Organizare de cursuri si seminarii."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Magnetické nosice nahrávok, Menovite audiokazety a videokazety; CD disky, CD-ROM disky, DVD disky; Pocítacové programy."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Tlacoviny; Instruktázne a ucebné potreby s výnimkou prístrojov."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vzdelávanie vrátane dialkového stúdia, vzdelávania cez telefón a cez internet; Organizovanie kurzov a seminárov."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Magnetni nosilci zapisov, Kot so avdio in video kasete; Zgoscenke, CD-ROM-i, DVD-ji; Racunalniski software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Tiskovine (izdelki tiskarn); Material za poucevanje in instruiranje, razen naprav."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Pouk, vkljucno z dopisnim izobrazevanjem, pouk s pomocjo telefona in interneta; Organizacija tecajev in seminarjev."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Soportes de grabación magnéticos, Tales como casetes de audio y vídeo; CD, CD-ROM, DVD; Software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Productos de imprenta; Material de enseñanza e instrucción (excepto aparatos)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Enseñanza, incluyendo enseñanza por correspondencia, por teléfono y por Internet; Impartición de cursillos y seminarios."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Magnetiska inspelningsbärare, Såsom ljud- och videokassetter; CD-, CD-romskivor, DVD-skivor; Mjukvaror."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Trycksaker; Undervisnings- och instruktionsmaterial (ej apparater)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Undervisning, däri inbegripet korrespondensundervisning, undervisning via telefon och via Internet; Tillhandahållande av kurser och seminarier."
+        }
+      ]
+    },
+    "id": "46b1bb44-c512-4fe7-b90a-5ac63624dc73",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00402",
+        "publicationVolume": "69"
+      }
+    ],
+    "recordLastUpdated": "20260721",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "De Kleetlaan 7A (4e verdieping) Pegasus Park,Diegem, 1831",
+        "representativeAddressCountryCode": "BE",
+        "representativeAddressCountryName": "Belgium",
+        "representativeName": "GEVERS"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130222",
+        "applicationNumber": "11598695"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330222",
+      "lastPublicationDate": "20130412",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130722",
+        "registrationNumber": "11598695"
+      }
+    },
+    "version": "20260721020031",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/em/46b1bb44-c512-4fe7-b90a-5ac63624dc73",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/c3c6f65a-d640-4bce-8936-b73e7cf84eaa",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c3c6f65a-d640-4bce-8936-b73e7cf84eaa",
+  "applicationNumber": "35453251",
+  "registrationNumber": "35453251",
+  "applicationDate": "2018-12-20",
+  "registrationDate": "2019-08-21",
+  "expiryDate": "2029-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "柒琴",
+  "markTransliteration": "SEVEN QIN qi qin",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "学校(教育);教学;教育考核;宗教教育;安排和组织培训班;茶道训练(茶艺训练);组织表演(演出);安排和组织音乐会;除广告片外的影片制作;摄影;歌曲创作",
+      "translation_language": "en",
+      "translation": "Schools (education); teaching; educational assessment; religious education; arranging and organizing training courses; tea ceremony training (tea ceremony); organizing performances (performances); arranging and organizing concerts; film production other than commercials; photography; creation"
+    }
+  ],
+  "owner": "Guilin Xintian Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广西壮族自治区桂林市秀峰区(青禾美邦D1栋5-2号)",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guilin Xintian Trading Co., Ltd.",
+        "applicantNativeName": "桂林市心田贸易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Schools (education); teaching; educational assessment; religious education; arranging and organizing training courses; tea ceremony training (tea ceremony); organizing performances (performances); arranging and organizing concerts; film production other than commercials; photography; creation",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "学校(教育);教学;教育考核;宗教教育;安排和组织培训班;茶道训练(茶艺训练);组织表演(演出);安排和组织音乐会;除广告片外的影片制作;摄影;歌曲创作"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "c3c6f65a-d640-4bce-8936-b73e7cf84eaa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1648"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "桂林市华杰专利商标事务所有限责任公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181220",
+        "applicationNumber": "35453251"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290820",
+      "lastPublicationDate": "20190520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190821",
+        "registrationNumber": "35453251"
+      }
+    },
+    "version": "20251003095424",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QIN qi qin",
+      "markVerbalElementText": "柒琴"
+    }
+  },
+  "_uri": "/mark/cn/c3c6f65a-d640-4bce-8936-b73e7cf84eaa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

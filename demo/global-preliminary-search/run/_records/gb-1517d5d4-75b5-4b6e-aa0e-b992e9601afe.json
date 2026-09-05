@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/gb/1517d5d4-75b5-4b6e-aa0e-b992e9601afe",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "1517d5d4-75b5-4b6e-aa0e-b992e9601afe",
+  "applicationNumber": "3489391",
+  "registrationNumber": null,
+  "applicationDate": "2020-05-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "Restoratively driven orthodontic treatment",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Academy education services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Science and technology services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Dentistry.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Patrik Zachrisson",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "19 Post Street, Godmanchester, HUNTINGDON pe29 2ba, Cambridgeshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Patrik Zachrisson"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Academy education services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Science and technology services."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Dentistry."
+        }
+      ]
+    },
+    "id": "1517d5d4-75b5-4b6e-aa0e-b992e9601afe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20200513",
+        "applicationNumber": "3489391"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "REFUSED"
+    },
+    "version": "20250627200724",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Restoratively driven orthodontic treatment"
+    }
+  },
+  "_uri": "/mark/gb/1517d5d4-75b5-4b6e-aa0e-b992e9601afe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

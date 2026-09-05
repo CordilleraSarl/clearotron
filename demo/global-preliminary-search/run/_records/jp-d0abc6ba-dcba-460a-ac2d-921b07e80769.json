@@ -1,0 +1,175 @@
+{
+  "uri": "/mark/jp/d0abc6ba-dcba-460a-ac2d-921b07e80769",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "d0abc6ba-dcba-460a-ac2d-921b07e80769",
+  "applicationNumber": "H03-032705",
+  "registrationNumber": null,
+  "applicationDate": "1991-04-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＴＵＲＩ",
+  "markTransliteration": "BENTYURI",
+  "markTranslation": "VENTURI",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    11,
+    12,
+    13,
+    17,
+    19,
+    20,
+    22,
+    27
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        11,
+        12,
+        13,
+        17,
+        19,
+        20,
+        22,
+        27
+      ],
+      "language": null,
+      "description": "輸送機械器具、その部品及び附属品。",
+      "translation_language": "en",
+      "translation": "Transport machine equipment, parts and accessories thereof."
+    }
+  ],
+  "owner": "MVS MANUFACTURE DE VOITURES DE SPORT",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "NAKAJIMA NOBUHIKO",
+  "priorities": [
+    {
+      "priorityDate": "19901001"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "MVS MANUFACTURE DE VOITURES DE SPORT",
+        "applicantNativeAddress": "フランス国ショレー４９３００、ズォーヌ・アンデュストリエル・デュ・コルミエ（番地なし）",
+        "applicantNativeName": "エームヴェエス、マニュファクテュール、ドゥ、ヴォワテュール、ドゥ、スポール"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Transport machine equipment, parts and accessories thereof.",
+          "intClassNumber": "06,09,11,12,13,17,19,20,22,27",
+          "intGoodsServicesDescription": "輸送機械器具、その部品及び附属品。"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "12A01"
+        },
+        {
+          "natClassNumber": "12A02"
+        },
+        {
+          "natClassNumber": "12A03"
+        },
+        {
+          "natClassNumber": "12A04"
+        },
+        {
+          "natClassNumber": "12A05"
+        },
+        {
+          "natClassNumber": "12A06"
+        },
+        {
+          "natClassNumber": "12A71"
+        },
+        {
+          "natClassNumber": "12A72"
+        },
+        {
+          "natClassNumber": "12A73"
+        },
+        {
+          "natClassNumber": "12A74"
+        },
+        {
+          "natClassNumber": "12A75"
+        }
+      ]
+    },
+    "id": "d0abc6ba-dcba-460a-ac2d-921b07e80769",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19901001"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAKAJIMA NOBUHIKO",
+        "representativeNativeName": "中島　宣彦"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910401",
+        "applicationNumber": "H03-032705"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427113636",
+    "wordMarkSpecification": {
+      "markTranslation": "VENTURI",
+      "markTransliteration": "BENTYURI",
+      "markVerbalElementText": "ＶＥＮＴＵＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/d0abc6ba-dcba-460a-ac2d-921b07e80769",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

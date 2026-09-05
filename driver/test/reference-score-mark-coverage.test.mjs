@@ -192,7 +192,7 @@ test("the clearance lane's buckets are untouched by any of this", () => {
     { mark: "E2E LOST PROBE", classes: [32] },
   ];
   const findings = [{ subject: null, mark: "TIKI", owner: "Tiki Corporation" }];
-  const retrieved = [{ mark: "TIKI TWIST", record_id: "/mark/us/USAFI1DD680D901A311F1974020677C5FC470" }];
+  const retrieved = [{ mark: "TIKI TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
   const coverage = referenceCoverage({ coversMarks: [TIKI], subjects: null });
   const b = scoreRecall({ reference, findings, retrieved, scopeClasses: ["32"], coverage });
   assert.deepEqual(b.found.map((r) => r.mark), ["TIKI"]);

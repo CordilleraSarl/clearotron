@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/cl/2d0867ac-1a08-40e5-ae24-9254b01238a5",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "2d0867ac-1a08-40e5-ae24-9254b01238a5",
+  "applicationNumber": "329342",
+  "registrationNumber": "473214",
+  "applicationDate": "1995-12-20",
+  "registrationDate": "1996-11-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GEOVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Concedida) Investigaciones geologicas, tecnicas y quimicas, estudios de proyectos y asistencia profesional de ingenieros.",
+      "translation_language": "en",
+      "translation": "(Granted) Geological, technical and chemical investigations, project studies and professional assistance from engineers."
+    }
+  ],
+  "owner": "VEIGA MARTINEZ JOSE FLOREAL",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "ATRIUM LIMITADA/ENRIQUETA G. GONZALEZ F.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "VEIGA MARTINEZ JOSE FLOREAL"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Geological, technical and chemical investigations, project studies and professional assistance from engineers.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Investigaciones geologicas, tecnicas y quimicas, estudios de proyectos y asistencia profesional de ingenieros."
+        }
+      ]
+    },
+    "id": "2d0867ac-1a08-40e5-ae24-9254b01238a5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "ATRIUM LIMITADA/ENRIQUETA G. GONZALEZ F."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19951220",
+        "applicationNumber": "329342"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "19961129",
+        "registrationNumber": "473214"
+      }
+    },
+    "version": "20260615174326",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GEOVENOR"
+    }
+  },
+  "_uri": "/mark/cl/2d0867ac-1a08-40e5-ae24-9254b01238a5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

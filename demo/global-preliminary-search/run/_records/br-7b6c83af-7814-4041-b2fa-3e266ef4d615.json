@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/br/7b6c83af-7814-4041-b2fa-3e266ef4d615",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "7b6c83af-7814-4041-b2fa-3e266ef4d615",
+  "applicationNumber": "939756250",
+  "registrationNumber": null,
+  "applicationDate": "2025-06-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Qora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento, implementação e manutenção de softwares baseados em inteligência artificial e outras tecnologias; prestação de serviços de tecnologia da informação; desenvolvimento de algoritmos e modelos preditivos; consultoria em inovação tecnológica; hospedagem de sistemas e soluções na nuvem (cloud computing); fornecimento de software como serviço (SaaS); automação de processos com uso de IA; análise de dados e desenvolvimento de APIs.",
+      "translation_language": "en",
+      "translation": "Development, implementation, and maintenance of software based on artificial intelligence and other technologies; provision of information technology services; development of algorithms and predictive models; consulting on technological innovation; hosting of systems and solutions in the cloud (cloud computing); provision of software as a service (SaaS); process automation using AI; data analysis and API development."
+    }
+  ],
+  "owner": "IGOR LIMA ARAUJO LACERDA",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "IGOR LIMA ARAUJO LACERDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Development, implementation, and maintenance of software based on artificial intelligence and other technologies; provision of information technology services; development of algorithms and predictive models; consulting on technological innovation; hosting of systems and solutions in the cloud (cloud computing); provision of software as a service (SaaS); process automation using AI; data analysis and API development.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento, implementação e manutenção de softwares baseados em inteligência artificial e outras tecnologias; prestação de serviços de tecnologia da informação; desenvolvimento de algoritmos e modelos preditivos; consultoria em inovação tecnológica; hospedagem de sistemas e soluções na nuvem (cloud computing); fornecimento de software como serviço (SaaS); automação de processos com uso de IA; análise de dados e desenvolvimento de APIs."
+        }
+      ]
+    },
+    "id": "7b6c83af-7814-4041-b2fa-3e266ef4d615",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.18",
+      "26.11.01",
+      "26.11.02",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260802",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250627",
+        "applicationNumber": "939756250"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260802020034",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qora"
+    }
+  },
+  "_uri": "/mark/br/7b6c83af-7814-4041-b2fa-3e266ef4d615",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.683Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/cn/4070c2dc-25ec-46a1-ac9f-fcd216e33348",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "4070c2dc-25ec-46a1-ac9f-fcd216e33348",
+  "applicationNumber": "34456046",
+  "registrationNumber": "34456046",
+  "applicationDate": "2018-11-05",
+  "registrationDate": "2019-09-14",
+  "expiryDate": "2029-09-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-06-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "柒目眼镜",
+  "markTransliteration": "NO.SEVEN qi mu yan jing",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "眼镜;眼镜片;眼镜架;隐形眼镜;太阳镜;儿童眼镜;眼镜和太阳镜用盒;矫正眼镜;眼镜框和太阳镜框;老花镜",
+      "translation_language": "en",
+      "translation": "glasses; glasses; glasses frames; contact lenses; sunglasses; children&#39;s glasses; glasses and sunglasses boxes; corrective glasses; glasses frames and sunglasses frames; reading glasses"
+    }
+  ],
+  "owner": "Beijing Polar View Interactive Electronics Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市朝阳区利泽中一路1号院1号楼2层202B号东469",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Polar View Interactive Electronics Co., Ltd.",
+        "applicantNativeName": "北京极视互动科贸有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "glasses; glasses; glasses frames; contact lenses; sunglasses; children&#39;s glasses; glasses and sunglasses boxes; corrective glasses; glasses frames and sunglasses frames; reading glasses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "眼镜;眼镜片;眼镜架;隐形眼镜;太阳镜;儿童眼镜;眼镜和太阳镜用盒;矫正眼镜;眼镜框和太阳镜框;老花镜"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "4070c2dc-25ec-46a1-ac9f-fcd216e33348",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1651"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "昌平商标受理窗口"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181105",
+        "applicationNumber": "34456046"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290913",
+      "lastPublicationDate": "20190613",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190914",
+        "registrationNumber": "34456046"
+      }
+    },
+    "version": "20251003092156",
+    "wordMarkSpecification": {
+      "markTransliteration": "NO.SEVEN qi mu yan jing",
+      "markVerbalElementText": "柒目眼镜"
+    }
+  },
+  "_uri": "/mark/cn/4070c2dc-25ec-46a1-ac9f-fcd216e33348",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

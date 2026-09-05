@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/21471daa-2d81-4a3d-b506-fc84b7b6e68e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "21471daa-2d81-4a3d-b506-fc84b7b6e68e",
+  "applicationNumber": "2009-051922",
+  "registrationNumber": "5305977",
+  "applicationDate": "2009-07-09",
+  "registrationDate": "2010-03-05",
+  "expiryDate": "2030-03-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＶＯＲＴＩＱＡ",
+  "markTransliteration": "BOOTIKA BORUTIKA",
+  "markTranslation": "VORTIQA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータネットワーキング用コンピュータソフトウェア，コンピュータネットワーク切替用コンピュータソフトウェア，コンピュータ統合ネットワーク用コンピュータソフトウェア，統合ネットワーキング・セキュリティ・コラボレーション用コンピュータソフトウェア，インターネットセキュリティ用コンピュータソフトウェア，ネットワーク管理用コンピュータソフトウェア，通信トラフィックの管理用コンピュータソフトウェア，ネットワークへのアクセスの管理用コンピュータソフトウェア，ロードバランシング用コンピュータソフトウェア，フェイルオーバー防止用コンピュータソフトウェア，パケット状態検査用コンピュータソフトウェア，アプリケーションの処理状態検査用のコンピュータソフトウェア，ディープパケット検査用コンピュータソフトウェア，ＶＰＮ（仮想プライベートネットワーク）用オペレーティングソフトウェア，企業内情報セキュリティ用コンピュータソフトウェア，侵入検出・防止用コンピュータソフトウェア，ファイアウォール用コンピュータソフトウェア，コンテンツフィルタリング用コンピュータソフトウェア，アンチウイルス・アンチスパム用コンピュータソフトウェア，無線通信管理用コンピュータソフトウェア，データプレーン用コンピュータソフトウェア，コントロールプレーン用コンピュータソフトウェア，コマンドライン管理用コンピュータソフトウェア，ボイスオーバーアイピー用コンピュータソフトウェア，ビデオオーバーアイピー用コンピュータソフトウェア，統合型脅威管理機器・ゲートウェイ・統合アクセス装置・ルーター・切替装置・コントローラー・ベースステーション・ハブ・セキュリティ装置に用いるネットワーキング用又はセキュリティ用コンピュータソフトウェア，リモートユーザーが遠隔操作・リモート通信を行うために使用するコンピュータ・ソフトウェアにセキュリティ機能を実装させるためのコンピュータソフトウェア，その他のコンピュータソフトウェア，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software for computer networking, computer software for computer network switching, computer software for computer integrated network, computer software for integrated networking security collaboration, computer software for Internet security, computer software for network management, computer software for management of communication traffic, Computer software for managing access to the network, computer software for load balancing, computer software for preventing failover, computer software for packet status inspection, computer software for checking the processing state of the application, deep packet Computer software for inspection, computer software for VPN (virtual private network), computer software for intra-enterprise information security, computer software for intrusion detection / prevention, computer software for firewall, computer software for content filtering, computer software for anti-virus / anti-spam , Computer software for wireless communication management, computer software for data plane, computer software for control plane, computer software for command line management, computer software for voice over ip, computer software for video over ip, integrated threat management equipment · gateway · integration Ac · Install security functions in computer software for networking or security used for devices, routers, switching devices, controllers, base stations, hubs and security devices, and computers / software used by remote users for remote operation / remote communication Computer software, other computer software, electronic applied appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20090617"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for computer networking, computer software for computer network switching, computer software for computer integrated network, computer software for integrated networking security collaboration, computer software for Internet security, computer software for network management, computer software for management of communication traffic, Computer software for managing access to the network, computer software for load balancing, computer software for preventing failover, computer software for packet status inspection, computer software for checking the processing state of the application, deep packet Computer software for inspection, computer software for VPN (virtual private network), computer software for intra-enterprise information security, computer software for intrusion detection / prevention, computer software for firewall, computer software for content filtering, computer software for anti-virus / anti-spam , Computer software for wireless communication management, computer software for data plane, computer software for control plane, computer software for command line management, computer software for voice over ip, computer software for video over ip, integrated threat management equipment · gateway · integration Ac · Install security functions in computer software for networking or security used for devices, routers, switching devices, controllers, base stations, hubs and security devices, and computers / software used by remote users for remote operation / remote communication Computer software, other computer software, electronic applied appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータネットワーキング用コンピュータソフトウェア，コンピュータネットワーク切替用コンピュータソフトウェア，コンピュータ統合ネットワーク用コンピュータソフトウェア，統合ネットワーキング・セキュリティ・コラボレーション用コンピュータソフトウェア，インターネットセキュリティ用コンピュータソフトウェア，ネットワーク管理用コンピュータソフトウェア，通信トラフィックの管理用コンピュータソフトウェア，ネットワークへのアクセスの管理用コンピュータソフトウェア，ロードバランシング用コンピュータソフトウェア，フェイルオーバー防止用コンピュータソフトウェア，パケット状態検査用コンピュータソフトウェア，アプリケーションの処理状態検査用のコンピュータソフトウェア，ディープパケット検査用コンピュータソフトウェア，ＶＰＮ（仮想プライベートネットワーク）用オペレーティングソフトウェア，企業内情報セキュリティ用コンピュータソフトウェア，侵入検出・防止用コンピュータソフトウェア，ファイアウォール用コンピュータソフトウェア，コンテンツフィルタリング用コンピュータソフトウェア，アンチウイルス・アンチスパム用コンピュータソフトウェア，無線通信管理用コンピュータソフトウェア，データプレーン用コンピュータソフトウェア，コントロールプレーン用コンピュータソフトウェア，コマンドライン管理用コンピュータソフトウェア，ボイスオーバーアイピー用コンピュータソフトウェア，ビデオオーバーアイピー用コンピュータソフトウェア，統合型脅威管理機器・ゲートウェイ・統合アクセス装置・ルーター・切替装置・コントローラー・ベースステーション・ハブ・セキュリティ装置に用いるネットワーキング用又はセキュリティ用コンピュータソフトウェア，リモートユーザーが遠隔操作・リモート通信を行うために使用するコンピュータ・ソフトウェアにセキュリティ機能を実装させるためのコンピュータソフトウェア，その他のコンピュータソフトウェア，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "21471daa-2d81-4a3d-b506-fc84b7b6e68e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20090617"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "MORI CHIKAKO",
+        "representativeNativeName": "森　智香子"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090709",
+        "applicationNumber": "2009-051922"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300305",
+      "lastPublicationDate": "20100406",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20100305",
+        "registrationNumber": "5305977"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "VORTIQA",
+      "markTransliteration": "BOOTIKA BORUTIKA",
+      "markVerbalElementText": "ＶＯＲＴＩＱＡ"
+    }
+  },
+  "_uri": "/mark/jp/21471daa-2d81-4a3d-b506-fc84b7b6e68e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

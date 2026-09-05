@@ -1,0 +1,1399 @@
+{
+  "uri": "/mark/em/ef7b3fe4-7ffd-4ea2-abfb-85970053a932",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "ef7b3fe4-7ffd-4ea2-abfb-85970053a932",
+  "applicationNumber": "18042338",
+  "registrationNumber": "18042338",
+  "applicationDate": "2019-03-28",
+  "registrationDate": "2020-10-27",
+  "expiryDate": "2029-03-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-08-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software a aplikace; Netistené publikace; Nahrávky; Pocítacový software a aplikace týkající se obchodu, prumyslu, stavebnictví, dulní tezby, personálu, lidských zdroju, informacních technologií, obchodních rizik, financních rizik, lidských práv, trestných cinu a podvodu; Pricemz vsechno výse uvedené je urceno pro pouzití v oblasti rízení rizik a zabezpecení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Poskytování obchodních informací, zpravodajských informací, databází, pruzkumu, analýz, konzultací, poradenství a pomoci v oboru personálu, lidských zdroju, obchodních rizik; Sestavování a zajistování databází pro pouzití podniky; Poskytování informací, zpravodajských informací, pruzkumu, analýz, konzultací, poradenství a pomoci týkající se výse uvedeného; Pricemz vsechno výse uvedené se týká rízení rizik a zabezpecení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Poskytování obchodních informací, zpravodajských informací, databází, pruzkumu, analýz, konzultací, poradenství a pomoci v oboru informacních technologií; Pocítacové sluzby; Servisní sluzby vztahující se k softwaru; Vývoj a tvorba softwaru; SaaS (software jako sluzba); Paas (platforma jako sluzba); Sluzby v oblasti informacních technologií; Sluzby vývoje databází; Údrzba a modernizace softwaru; Vcetne vseho výse uvedeného v oboru obchodu, financí, personálu, lidských zdroju, informacních technologií, obchodních rizik, financních rizik, trestných cinu, podvodu a zabezpecení; Sluzby týkající se zabezpecení pocítacu a informacních technologií; Vytvárení softwaru; Poradenské sluzby v oblasti vývoje produktu a zlepsování kvality softwaru; Poskytování informací, zpravodajských informací, pruzkumu, analýz, konzultací, poradenství a pomoci ve vztahu k výse uvedenému; Pricemz vsechno výse uvedené se týká rízení rizik a zabezpecení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "cs",
+      "description": "Poskytování obchodních informací, zpravodajských informací, databází, pruzkumu, analýz, konzultací, poradenství a pomoci v oboru lidských práv, trestných cinu, podvodu a zabezpecení; Poradenství v oblasti zabezpecení fyzické ochrany; Detekce a prevence v oblasti trestných cinu a podvodu; Vysetrování; Právní sluzby; Regulace; Poskytování informací, zpravodajských informací, pruzkumu, analýz, konzultací, poradenství a pomoci ve vztahu k výse uvedenému; Pricemz vsechno výse uvedené je urceno pro pouzití týkající se rízení rizik a zabezpecení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software og apps; Ikke-trykte publikationer; Optagelser; Computersoftware og apps i forbindelse med erhverv, industri, byggevirksomhed, minedrift, personale, HR, informationsteknologi, forretningsrisici, finansielle risici, menneskerettigheder, kriminalitet, bedrageri og bedrageri; Alle førnævnte til anvendelse i forbindelse med risikostyring og sikkerhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Information vedrørende forretningsvirksomhed, efterforskning, databaser, undersøgelser, analyser, rådgivning, råd og bistand inden for personale, menneskelige ressourcer og forretningsrisici; Kompilering og levering af databaser til virksomheder; Information, efterforskning, undersøgelser, analyser, rådgivning, råd og bistand vedrørende alt det ovennævnte; Alle førnævnte i forbindelse med risikostyring og sikkerhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Information vedrørende forretningsvirksomhed, efterforskning, databaser, undersøgelser, analyser, rådgivning, råd og bistand vedrørende informationsteknologi; Databehandlingsvirksomhed; Softwarevirksomhed; Udvikling og oprettelse af software; SaaS; PaaS (platform som en tjenesteydelse); IT tjenesteydelser; Tjenesteydelser vedrørende udvikling af databaser; Vedligeholdelse og opgradering af software; Inklusive alt det ovennævnte inden for erhverv, finans, personale, HR, informationsteknologi, forretningsrisici, finansielle risici, kriminalitet, bedrageri og sikkerhed; Computersikkerhed og sikkerhed inden for informationsteknologi; Udarbejdelse af software; Rådgivningsvirksomhed inden for produktudvikling og kvalitetsforbedring af software; Information, efterforskning, undersøgelser, analyser, rådgivning, råd og bistand vedrørende ovennævnte; Alle førnævnte i forbindelse med risikostyring og sikkerhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "da",
+      "description": "Information vedrørende forretningsvirksomhed, efterforskning, databaser, undersøgelser, analyser, rådgivning, råd og bistand inden for menneskerettigheder, kriminalitet, bedrageri og sikkerhed; Konsulentbistand vedrørende fysisk sikkerhed; Påvisning og forebyggelse af kriminalitet og svindel; Undersøgelsesvirksomhed; Juridisk bistand; Tjenesteydelser i forbindelse med lovgivning; Information, efterforskning, undersøgelser, analyser, rådgivning, råd og bistand vedrørende ovennævnte; Alle førnævnte til anvendelse i forbindelse med risikostyring og sikkerhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "software en apps; Niet-gedrukte publicaties; Opnamen; Software en applicaties met betrekking tot zaken, industrie, bouw, mijnbouw, personeel, personeelszaken, informatietechnologie, zakelijke risico's, financiële risico's, mensenrechten, misdaad, fraude; Al het voornoemde voor gebruik bij risicobeheer en beveiliging.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Het verschaffen van informatie over zaken, inlichtingen, databases, onderzoek, analyses, raadgeving, advies en ondersteuning op het gebied van personeel, personeelszaken, zakelijke risico's; Samenstelling en levering van databases voor gebruik door bedrijven; Verschaffing van informatie, inlichtingen, onderzoek, analyses, raadgeving, advies en ondersteuning met betrekking tot het voornoemde; Al het voornoemde in verband met risicobeheer en beveiliging.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Het verschaffen van informatie over zaken, inlichtingen, databases, onderzoek, analyses, raadgeving, advies en ondersteuning op het gebied van informatietechnologie; Automatisering; Diensten met betrekking tot software; Ontwerpen en ontwikkelen van software; SaaS; PaaS; IT-diensten; Databaseontwikkelingsdiensten; Onderhoud en upgrading van software; Waaronder al het voornoemde op het gebied van zaken, financiën, personeel, personeelszaken, informatietechnologie, zakelijke risico's, financiële risico's, misdaad, fraude en beveiliging; Computer- en IT-beveiligingsdiensten; Het creëren van software; Advisering op het gebied van productontwikkeling en kwaliteitsverbetering met betrekking tot software; Verschaffing van informatie, inlichtingen, onderzoek, analyses, raadgeving, advies en ondersteuning met betrekking tot het voornoemde; Al het voornoemde in verband met risicobeheer en beveiliging.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "nl",
+      "description": "Het verschaffen van informatie over zaken, inlichtingen, databases, onderzoek, analyses, raadgeving, advies en ondersteuning op het gebied van mensenrechten, misdaad, fraude en beveiliging; Advisering op het gebied van fysieke beveiliging; Opsporing en voorkoming van misdaad en fraude; Onderzoeksdiensten; Juridische diensten; Diensten inzake regelgeving; Verschaffing van informatie, inlichtingen, onderzoek, analyses, raadgeving, advies en ondersteuning met betrekking tot het voornoemde; Al het voornoemde voor gebruik in verband met risicobeheer en beveiliging.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software and apps; non-printed publications; recordings; computer software and apps relating to business, industry, construction, mining, personnel, human resources, information technology, business risk, financial risk, human rights, crime, fraud and fraud; all the aforesaid being for use in risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance, in the fields of personnel, human resources, business risk; compilation and provision of databases for use by businesses; providing information, intelligence, research, analysis, consulting, advice and assistance relating to the aforesaid; all the aforesaid relating to risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of information technology; computing services; software services; software development and creation services; SaaS; PaaS; IT services; database design services; software maintenance and upgrading; including all of the aforesaid in the fields of business, finance, personnel, human resources, information technology, business risk, financial risk, crime, fraud, and security; computer and information technology security services; software creation; advisory services in the field of product development and quality improvement of software; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid relating to risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of human rights, crime, fraud, and security; security consultancy; crime and fraud detection and prevention services; investigation services; legal services; regulatory services; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid being for use in relation to risk management and security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Tarkvara ja rakendused; Elektroonses formaadis olevad väljaanded; Salvestused; Äri, tööstuse, ehitamise, kaevandamise, personali, tööjõu, infotehnoloogia, äririski, finantsriski, inimõiguste, kuritegevuse, pettustega seotud arvutitarkvara ja rakendused; Kõik eelnimetatu kasutuseks riskijuhtimise ja turvalisuse valdkonnas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Äriteabe, luureandmete, andmebaaside, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abistamise pakkumine personali, tööjõu ja äririski valdkonnas; Äriandmebaaside koostamine ja pakkumine; Eelmainituga seotud teabe, luureandmete, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abistamise pakkumine; Kõik eelnimetatu seoses riskijuhtimise ja turvalisusega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Äriteabe, luureandmete, andmebaaside, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine infotehnoloogia valdkonnas; Arvutusteenused; Tarkvarateenused; Tarkvara arendus- ja loometeenused; Teenustarkvara; PaaS; IT-teenused; Andmebaasiarendus; Tarkvara korrashoid ja uuendamine; Sh kõik eelmainitu äri, finantsvaldkonna, personali, tööjõu, infotehnoloogia, äri- ja finantsriski, inimõiguste, kuritegevuse, pettuse ja turvalisuse valdkonnas; Arvuti- ja infotehnoloogia turvateenused; Tarkvara loomine; Tarkvara toote- ja kvaliteediarenduse nõustamine; Eelmainituga seotud teabe, luureandmete, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine; Kõik eelnimetatu seoses riskijuhtimise ja turvalisusega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "et",
+      "description": "Äriteabe, luureandmete, andmebaaside, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine inimõiguste, kuritegevuse, pettuse ja turvalisuse valdkonnas; Füüsilise julgestuse alane nõustamine; Kuritegevuse ja pettuse tuvastamise ja ennetamise teenused; Juurdlusteenused; Juriidilised teenused; Reguleerimisteenused; Eelmainituga seotud teabe, luureandmete, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine; Kõik eelnimetatu kasutuseks seoses riskijuhtimise ja turvalisusega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot ja sovellukset; Ei-painetut julkaisut; Tallenteet; Tietokoneohjelmistot ja -sovellukset, jotka liittyvät seuraaviin: liiketoiminta, teollisuus, rakentaminen, kaivostoiminta, henkilöstö, henkilöstöresurssit, tietotekniikka, liiketoimintariskit, taloudelliset riskit, ihmisoikeudet, rikollisuus, petokset; Kaikkia edellä mainittuja käytetään riskienhallinnan ja turvallisuuden alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Yritystoimintatietojen, tiedustelun, tietokantojen, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen, kaikki henkilöstön, henkilöstöresurssien, liiketoimintariskien alalla; Yritysten käyttämien tietokantojen kokoaminen ja tarjoaminen; Edellä mainittuihin liittyvän tiedotuksen, tiedustelun, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen; Kaikki edellä mainitut liittyvät riskienhallintaan ja turvallisuuteen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Yritystoimintaan liittyvien tietojen, tiedustelun, tietokantojen, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustaminen tarjoaminen tietotekniikan alalla; Tietojenkäsittelypalvelut; Ohjelmistopalvelut; Ohjelmistojen kehittämis- ja luontipalvelut; SaaS; Sovellusalusta palveluna (PaaS); IT-palvelut; Tietokantojen kehittämispalvelut; Ohjelmistojen ylläpito ja päivitys; Mukaan lukien kaikki edellä mainitut seuraavilla aloilla: liiketoiminta, rahoitus, henkilöstö, henkilöstöresurssit, tietotekniikka, liiketoimintariskit, taloudelliset riskit, rikollisuus, petokset ja turvallisuus; Tietokoneisiin ja tietotekniikkaan liittyvät turvallisuuspalvelut; Tietokoneohjelmistojen luominen; Neuvontapalvelut tietokoneohjelmistojen tuotekehittelyn ja laadun parantamisen alalla; Edellä mainittuihin liittyvän tiedotuksen, tiedustelun, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen; Kaikki edellä mainitut liittyvät riskienhallintaan ja turvallisuuteen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fi",
+      "description": "Yritystietojen, tiedustelun, tietokantojen, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen ihmisoikeuksien, rikollisuuden, petosten ja turvallisuuden alalla; Fyysiseen turvallisuuteen liittyvä turvallisuuskonsultointi; Rikosten ja petosten havaitsemis- ja ehkäisemispalvelut; Tutkintapalvelut; Oikeudelliset palvelut; Säädöksiin liittyvät palvelut; Edellä mainittuihin liittyvän tiedotuksen, tiedustelun, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen; Kaikkia edellä mainittuja käytetään riskienhallinnan ja turvallisuuden alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels et apps; Publications non imprimées; Enregistrements; Logiciels et applications informatiques relatifs aux affaires, à l'industrie, à la construction, à l'exploitation minière, au personnel, aux ressources humaines, aux technologies de l'information, aux risques commerciaux, aux risques financiers, aux droits de l'homme, à la criminalité, aux fraudes; Tous les produits précités étant destinés à la gestion des risques et à la sécurité.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Fourniture d'informations, renseignements, bases de données, recherches, analyses, assistance et conseils commerciaux, dans les domaines du personnel, des ressources humaines, des risques commerciaux; Compilation et fourniture de bases de données utilisées par des entreprises; Fourniture d'informations, renseignements, recherches, analyses, consultation, assistance et conseils relatifs aux domaines précités; Tous les services précités étant destinés à la gestion des risques et à la sécurité.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Fourniture d'informations, renseignements, bases de données, recherches, analyses, consultation, assistance et conseils commerciaux dans les domaines des technologies de l'information; Services informatiques; Services de logiciels; Services de développement et création de logiciels; SaaS; PaaS; Services des technologies de l'information; Services de développement de bases de données; Maintenance et mise à niveau de logiciels; Y compris tous les services précités se rapportant aux domaines des affaires, de la finance, du personnel, des ressources humaines, des technologies de l'information, des risques commerciaux, des risques financiers, de la criminalité, des fraudes et de la sécurité; Services de sécurité pour ordinateurs et technologies de l'information; Création de logiciels; Services de conseil dans le domaine du développement de produits et de l'amélioration de la qualité de logiciels; Fourniture d'informations, renseignements, recherches, analyses, consultation, assistance et conseils liés aux domaines précités; Tous les services précités étant destinés à la gestion des risques et à la sécurité.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": "Fourniture d'informations, renseignements,bases de données, recherches, analyses, consultation, assistance et conseils commerciaux dans les domaines des droits de l'homme, de la criminalité, des fraudes et de la sécurité; Services de conseillers en matière de sécurité physique; Services de détection et prévention en matière de criminalité et de fraudes; Services d'enquêtes; Services juridiques; Services de gestion; Fourniture d'informations, renseignements, recherches, analyses, consultation, assistance et conseils liés aux domaines précités; Tous les services précités étant destinés à la gestion des risques et à la sécurité.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software und Anwendungen; Nicht gedruckte Veröffentlichungen; Aufzeichnungen; Computersoftware und Apps in Bezug auf Geschäftsangelegenheiten, Industrie, Bauwesen, Bergbau, Personalwesen, Humanressourcen, Informationstechnologie, Geschäftsrisiken, Finanzrisiken, Menschenrechte, Kriminalität, Betrug und Täuschung; Alles vorstehend Genannte zur Verwendung im Bereich Risikomanagement und Sicherheit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Bereitstellung von Informationen in Geschäftsangelegenheiten, Erkenntnissen, Datenbanken, Recherchen, Analysen, Beratung und Unterstützung in den Bereichen Personalwesen, Humanressourcen, Geschäftsrisiken; Zusammenstellung und Bereitstellung von Datenbanken zur Verwendung durch Unternehmen; Bereitstellung von Informationen, Erkenntnissen, Recherchen, Analysen, Beratung und Unterstützung in Bezug auf vorstehend Genanntes; Alles vorstehend Genannte in Bezug auf Risikomanagement und Sicherheit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Bereitstellung von Informationen in Geschäftsangelegenheiten, Erkenntnissen, Datenbanken, Recherchen, Analysen, Beratung und Unterstützung in den Bereichen Informationstechnologie; Rechendienstleistung; Softwaredienstleistungen; Erstellung und Entwicklung von Software; SaaS; PaaS; IT-Dienstleistungen; Datenbankentwicklungsdienstleistungen; Wartung und Aufrüstung von Software; Einschließlich alles vorstehend Genannte in den Bereichen Geschäftsangelegenheiten, Finanzen, Personalwesen, Humanressourcen, Informationstechnologie, Geschäftsrisiken, Finanzrisiken, Kriminalität, Betrug und Sicherheit; Dienstleistungen in Bezug auf Computer- und IT-Sicherheit; Softwareerstellung; Beratung auf dem Gebiet der Produktentwicklung und der Qualitätsverbesserung von Software; Bereitstellung von Informationen, Erkenntnissen, Recherchen, Analysen, Beratung und Unterstützung in Bezug auf das vorstehend Genannte; Alles vorstehend Genannte in Bezug auf Risikomanagement und Sicherheit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "de",
+      "description": "Bereitstellung von Informationen in Geschäftsangelegenheiten, Erkenntnissen, Datenbanken, Recherchen, Analysen, Beratung und Unterstützung in den Bereichen Menschenrechte, Kriminalität, Betrug und Sicherheit; Beratung auf dem Gebiet der physischen Sicherheit; Aufdeckung und Verhinderung von Straftaten und Betrug; Ermittlungsdienste; Juristische Dienstleistungen; Regulierende Dienstleistungen; Bereitstellung von Informationen, Erkenntnissen, Recherchen, Analysen, Beratung und Unterstützung in Bezug auf das vorstehend Genannte; Alles vorstehend Genannte zur Verwendung in Bezug auf Risikomanagement und Sicherheit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver i aplikacije; Izdanja, osim tiskanih; Snimke; Racunalni softver i aplikacije u vezi s poslovanjem, industrijom, izgradnjom, rudarenjem, osobljem, ljudskim resursima, informacijskom tehnologijom, poslovnim rizicima, financijskim rizicima, ljudskim pravima, kriminalitetom i prijevarama; Sve prethodno navedeno sluzi za upravljanje rizicima i sigurnost.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Pruzanje poslovnih informacija, obavjestavanja, baza podataka, istrazivanja, analize, konzultacija, savjeta i podrske, u podrucju osoblja, ljudskih resursa, poslovnih rizika; Prikupljanje i pruzanje baza podataka za uporabu od strane poduzeca; Pruzanje informacija, obavjestavanja, istrazivanja, analize, konzultacija, savjeta i pomoci u vezi s navedenim; Sve prethodno navedeno u vezi je s upravljanjem rizikom i sa sigurnoscu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Pruzanje poslovnih informacija, obavjestavanja, baza podataka, istrazivanja, analize, konzultacija, savjeta i pomoci u podrucju informacijske tehnologije; Racunalne usluge; Softverske usluge; Usluge razvoja i izrade softvera; Softver kao usluga (SaaS); PaaS (Platforma kao usluga); Usluge informacijske tehnologije; Usluge razvoja baza podataka; Odrzavanje i nadogradnja softvera; Ukljucujuci sve prethodno navedeno u podrucjima poslovanja, financija, osoblja, ljudskih resursa, informacijske tehnologije, poslovnih rizika, financijskih rizika, zlocina, prijevare, i sigurnosti; Sigurnosne usluge u vezi s racunalima i informacijskom tehnologijom; Kreiranje softvera; Savjetodavne usluge na podrucju razvoja i poboljsanja kakvoce softverskih proizvoda; Pruzanje informacija, obavjestavanja, istrazivanja, analize, konzultacija, savjetovanja i pomoci u vezi s navedenim; Sve prethodno navedeno u vezi je s upravljanjem rizikom i sa sigurnoscu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hr",
+      "description": "Pruzanje poslovnih informacija, obavjestavanja, baza podataka, istrazivanja, analize, konzultacija, savjeta i podrske u podrucju ljudskih prava, zlocina, prijevare, i sigurnosti; Konzultacijske usluge na podrucju fizicke sigurnosti; Usluge otkrivanja i sprecavanja zlocina i prijevara; Usluge istrazivanja; Pravne usluge; Regulacijske usluge; Pruzanje informacija, obavjestavanja, istrazivanja, analize, konzultacija, savjetovanja i pomoci u vezi s navedenim; Sve prethodno navedeno namijenjeno je za uporabu u vezi s upravljanjem rizikom i sa sigurnoscu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Szoftverek és alkalmazások; Nem kinyomtatott kiadványok; Felvételek; Számítógépes szoftverek és alkalmazások üzleti, ipari, építési, bányászati, személyi, emberi eroforrások, információs technológia, üzleti kockázat, pénzügyi kockázat, emberi jogok, buncselekmények, csalás és csalás vonatkozásában; A fentiek mindegyike a kockázatkezelés és biztonság terén történo használatra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Üzleti információk, intelligencia, adatbázisok, kutatás, elemzés, tanácsadás, konzultáció és asszisztencia a személyzet, az emberi eroforrások, az üzleti kockázat területén; Adatbázisok fejlesztése és karbantartása vállalkozások számára; Információ, intelligencia, kutatás, elemzés, konzultáció, tanácsadás és asszisztencia a fentiekkel kapcsolatban; A fentiek mindegyike a kockázatkezeléssel és biztonsággal kapcsolatban.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Üzleti információk, intelligencia, adatbázisok, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás az információs technológia területein; Számítógépes szolgáltatások; Szoftverszolgáltatások; Szoftverfejlesztési és -készítési szolgáltatások; Szoftver mint szolgáltatás (SaaS); PaaS; Információtechnológiai [IT] szolgáltatások; Adatbankfejleszto szolgáltatások; Szoftver karbantartása és frissítése; A fentiek mindegyikét beleértve az üzlet, a pénzügyek, a személyzet, az emberi eroforrások, az információs technológia, az üzleti kockázat, a pénzügyi kockázat, a bunözés, a csalások és biztonság terén; Számítógépes és informatikai adatbiztonsági szolgáltatások biztosítása; Szoftveralkotás; Tanácsadási szolgáltatások szoftverek fejlesztésének és minoségjavításának területén; Információ, intelligencia, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás a fentiek vonatkozásában; A fentiek mindegyike a kockázatkezeléssel és biztonsággal kapcsolatban.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hu",
+      "description": "Üzleti információk, hírszerzés, adatbázisok, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás az emberi jogok, a bunözés, a csalás és a biztonság területén; Fizikai biztonsági tanácsadás; Buncselekmények és csalások felderítésével és megelozésével kapcsolatos szolgáltatások; Nyomozói szolgáltatások; Jogi szolgáltatások; Szabályozási szolgáltatások; Információ, intelligencia, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás a fentiek vonatkozásában; A fentiek mindegyike a kockázatkezeléssel és biztonsággal kapcsolatos használatra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software e app; Pubblicazioni non stampate; Registrazioni; Software informatici e applicazioni relativi ad affari, industria, costruzione, estrazioni minerarie, personale, risorse umane, tecnologia dell'informazione, rischio aziendale, rischio finanziario, diritti umani, crimine e frode; Tutti i suddetti da utilizzare nella gestione del rischio e nella sicurezza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Fornitura d'informazioni commerciali, intelligence, banche dati, ricerca, analisi, consulenza e assistenza, nei settori di personale, risorse umane, rischi aziendali; Compilazione e fornitura di banche dati per uso da parte di aziende; Fornitura d'informazioni, intelligence, ricerca, analisi, consulenza e assistenza in materia di quanto suddetto; Tutti i suddetti in relazione alla gestione del rischio e alla sicurezza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Fornitura d'informazioni commerciali, intelligence, banche dati, ricerca, analisi, consulenza e assistenza in materia di informatica; Servizi in materia d'informatica; Servizi in materia di software; Sviluppo e creazione di software; SaaS; PaaS; Servizi informatici; Servizi di progettazione di banche dati; Manutenzione e aggiornamento di software; Compresi quelli nei settori di affari, finanza, personale, risorse umane, informatica, rischi aziendali, rischi finanziari, crimine, frode e sicurezza; Servizi di sicurezza informatici e per computer; Creazione di software; Consulenza in materia di sviluppo di prodotti e miglioramento della qualità di software; Fornitura d'informazioni, intelligence, ricerca, analisi, consulenza e assistenza in relazione a quanto suddetto; Tutti i suddetti in relazione alla gestione del rischio e alla sicurezza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "it",
+      "description": "Fornitura d'informazioni commerciali, intelligence, banche dati, ricerca, analisi, consulenza e assistenza nei settori di diritti umani, crimine, frode e sicurezza; Servizi di consulenza in materia di sicurezza fisica; Individuazione e prevenzione di frodi e reati; Servizi di investigazione; Servizi giuridici; Servizi di gestione; Fornitura d'informazioni, intelligence, ricerca, analisi, consulenza e assistenza in relazione a quanto suddetto; Tutti i suddetti da utilizzare in relazione alla gestione del rischio e alla sicurezza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Programine iranga ir programos; Nespausdintiniai leidiniai; Irasai; Kompiuteriu programine iranga ir programos, susijusios su verslu, pramone, statyba, kasyba, personalu, zmogiskaisiais istekliais, informacinemis technologijomis, verslo rizika, finansine rizika, zmogaus teisemis, nusikalstamumu, sukciavimu ir sukciavimu; Viskas, kas pamineta, yra skirta naudoti valdant rizika ir saugumo srityje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Verslo informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos personalo, personalo vadybos ir verslo rizikos srityse teikimas; Duomenu baziu (programines irangos), skirtu naudoti imonems, sudarymas ir teikimas; Informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos, susijusios su visomis, teikimas; Visos minetos prekes yra susijusios su rizikos valdymu ir saugumu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Verslo informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos informaciniu technologiju paslaugu srityje teikimas; Kompiuterines paslaugos; Programines irangos paslaugos; Programines irangos pletros ir kurimo paslaugos; Programine iranga kaip paslauga (SaaS); Platforma kaip paslauga (PaaS); Informaciniu technologiju paslaugos; Duomenu bazes tobulinimo paslaugos; Kompiuteriu programines irangos prieziura ir atnaujinimas; Iskaitant visas verslo, finansu, personalo, personalo vadybos, informaciniu technologiju paslaugu, verslo rizikos, finansines rizikos, nusikaltimu, sukciavimo ir apsaugos srityse; Kompiuteriu ir informaciniu technologiju apsaugos paslaugos; Programines irangos kurimas; Programines irangos tobulinimo ir kokybes gerinimo konsultacijos; Informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos, susijusios, su visais, teikimas; Visos minetos prekes yra susijusios su rizikos valdymu ir saugumu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lt",
+      "description": "Verslo informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos zmogaus teisiu, nusikaltimu, sukciavimo ir apsaugos srityse teikimas; Fizines apsaugos konsultacijos; Nusikaltimu ir sukciavimo nustatymo ir prevencijos paslaugos; Tyrimu paslaugos; Juridines paslaugos; Valdymo paslaugos; Informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos, susijusios, su visais, teikimas; Visos minetos prekes yra skirtos naudoti su rizikos valdymu ir saugumu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmaturas un lietojumprogrammas; Neiespiestas publikacijas; Ieraksti; Datoru programmatura un lietojumprogrammas saistiba ar uznemejdarbibu, rupniecibu, buvniecibu, ieguvi, personalu, cilvekresursiem, informacijas tehnologijam, biznesa risku, finansu risku, cilvektiesibam, noziedzibu, krapsanu un krapsanu; Viss ieprieksminetais ir paredzets izmantosanai riska parvaldiba un drosiba.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Uznemejdarbibas informacijas, intelekta, datubazu, petijumu, analizes, konsultaciju un palidzibas nodrosinasana saistiba ar personalu, cilvekresursiem, uznemejdarbibas riskiem; Datubazu apkoposana un nodrosinasana izmantosanai uznemejdarbiba; Nodrosinasana ar informaciju, intelektu, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar ieprieks mineto; Viss ieprieksminetais attiecas uz riska parvaldibu un drosibu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Nodrosinasana ar uznemejdarbibas informaciju, intelektu, datubazem, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar informacijas tehnologijam; Datoru pakalpojumi; Programmaturas pakalpojumi; Programmaturu attistiba un radisanas pakalpojumi; Programmatura ka pakalpojums; Platforma ka pakalpojums (PaaS); Informacijas tehnologiju pakalpojumi; Datu bazu izstrades pakalpojumi; Programmaturas uzturesana un atjauninasana; Ieklaujot visu ieprieks mineto saistiba ar uznemejdarbibu, finansem, personalu, cilvekresursiem, informacijas tehnologijam, uznemejdarbibas risku, finansu risku, noziedzibu, krapsanu un drosibu; Datoru un informacijas tehnologiju drosibas pakalpojumi; Programmaturas izveide; Konsultativie pakalpojumi programmaturas produktu izstrades un kvalitates uzlabosanas joma; Nodrosinasana ar informaciju, intelektu, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar ieprieks mineto; Viss ieprieksminetais attiecas uz riska parvaldibu un drosibu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lv",
+      "description": "Nodrosinasana ar uznemejdarbibas informaciju, intelektu, datubazem, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar cilvektiesibam, noziedzibu un drosibu; Konsultesana fiziskas drosibas jautajumos; Noziedzibas un krapsanas noteiksanas un noversanas pakalpojumi; Izmeklesana; Juridiskie pakalpojumi; Regulesanas pakalpojumi; Nodrosinasana ar informaciju, intelektu, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar ieprieks mineto; Viss ieprieksminetais ir paredzets izmantosanai saistiba ar riska parvaldibu un drosibu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer u apps; Pubblikazzjonijiet mhux stampati; Registrazzjonijiet; Software tal-kompjuter u applikazzjonijiet relatati man-negozju, l-industrija, il-kostruzzjoni, it-thaffir tal-minjieri, ir-rizorsi umani tal-persunal, it-teknologija tal-informazzjoni, ir-riskju tan-negozju, id-drittijiet tal-bniedem, il-kriminalità, il-frodi u l-frodi; Dak kollu msemmi qabel huwa ghall-uzu fl-immaniggjar tar-riskju u s-sigurtà.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' informazzjoni dwar in-negozju, intelligence, bazijiet tad-data, ricerka, analizi, konsulenza, pariri u assistenza, fl-oqsma tal-persunal, ir-rizorsi umani, ir-riskju tan-negozju; Kumpilazzjoni u provvista ta' bazijiet tad-data ghall-uzu min-negozji; Il-provvista ta' informazzjoni, intelligence, ricerka, analizi, konsulenza, pariri u assistenza relatati ma' dak imsemmi; Dak kollu msemmi qabel relatat mal-immaniggjar tar-riskju u s-sigurtà.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' informazzjoni dwar in-negozju, intelligence, bazijiet tad-data, ricerka, analizi, konsulenza, pariri u assistenza fil-qasam tat-teknologija tal-informatika; Servizzi ta' kompjuters; Servizzi ta' softwer; Servizzi ta' zvilupp u holqien ta' softwer; SaaS; PaaS; Servizzi tal-IT; Servizzi ta' zvilupp ta' dejtabejzis; Manutenzjoni u aggornament ta' softwer; Inkluz dak kollu msemmi fl-oqsma tan-negozju, il-finanzi, il-persunal, ir-rizorsi umani, it-teknologija tal-informatika, ir-riskju tan-negozju, ir-riskju finanzjarju, il-kriminalità, il-frodi, u s-sigurtà; Servizzi ta' sigurtà tal-kompjuter u tat-teknologija tal-informatika; Holqien ta' softwer; Servizzi ta' ghoti ta' pariri fil-qasam tal-izvilupp tal-prodotti u tat-titjib tal-kwalità tas-softwer; Il-provvista ta' informazzjoni, intelligence, ricerka, analizi, konsulenza, pariri u assistenza relatati ma' dak imsemmi; Dak kollu msemmi qabel relatat mal-immaniggjar tar-riskju u s-sigurtà.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "mt",
+      "description": "Il-provvista ta' informazzjoni dwar in-negozju, intelligence, bazijiet tad-data, ricerka, analizi, konsulenza, pariri u assistenza fl-oqsma tad-drittijiet tal-bniedem, il-kriminalità, il-frodi u s-sigurtà; Konsulenza ta' sigurtà fizika; Servizzi ta' detezzjoni u prevenzjoni ta' frodi u kriminalità; Servizzi ta' investigazzjoni; Servizzi legali; Servizzi ta' regolatorji; Il-provvista ta' informazzjoni, intelligence, ricerka, analizi, konsulenza, pariri u assistenza relatati ma' dak imsemmi; Dak kollu msemmi qabel huwa ghall-uzu relatat mal-immaniggjar tar-riskju u s-sigurtà.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie komputerowe i aplikacje; Publikacje niedrukowane; Nagrania; Oprogramowanie komputerowe i aplikacje zwiazane z dzialalnoscia gospodarcza, przemyslem, budownictwem, górnictwem, personelem, zasobami ludzkimi, technologia informacyjna, ryzykiem biznesowym, ryzykiem finansowym, prawami czlowieka, przestepczoscia, oszustwami i naduzyciami finansowymi; Wszystko to jest przeznaczone do wykorzystania w zarzadzaniu ryzykiem i bezpieczenstwie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Udzielanie informacji w zakresie dzialalnosci gospodarczej, danych wywiadowczych, baz danych, badan, analiz, konsultacji, porad i pomocy w zakresie personelu, zasobów ludzkich, ryzyka biznesowego; Kompilowanie i udostepnianie baz danych do wykorzystania przez dzialalnosci gospodarcze; Udzielanie informacji, danych wywiadowczych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Wszystkie wyzej wymienione kwestie zwiazane z zarzadzaniem ryzykiem i bezpieczenstwem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Udzielanie informacji w zakresie dzialalnosci gospodarczej, danych wywiadowczych, baz danych, badan, analiz, konsultacji, porad i pomocy w zakresie technologii informacyjnej; Uslugi komputerowe; Uslugi w zakresie oprogramowania; Rozwój oprogramowania komputerowego i uslugi w zakresie tworzenia; SaaS; PaaS [platforma jako usluga]; Uslugi w zakresie technologii informacyjnych; Uslugi rozwojowe bazy danych; Konserwacja i aktualizacja oprogramowania komputerowego; W tym wszystkie wyzej wymienione w dziedzinie dzialalnosci gospodarczej, finansów, personelu, zasobów ludzkich, technologii informacyjnej, ryzyka biznesowego, ryzyka finansowego, przestepczosci, oszustwa i bezpieczenstwa; Uslugi bezpieczenstwa w zakresie komputerów i technologii informacyjnych; Tworzenie oprogramowania komputerowego; Uslugi doradcze w dziedzinie opracowywania produktów i podnoszenia jakosci oprogramowania; Udzielanie informacji, danych wywiadowczych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Wszystkie wyzej wymienione kwestie zwiazane z zarzadzaniem ryzykiem i bezpieczenstwem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pl",
+      "description": "Udzielanie informacji w zakresie dzialalnosci gospodarczej, danych wywiadowczych, baz danych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Doradztwo w zakresie bezpieczenstwa fizycznego; Uslugi wykrywania przestepstw i oszustw oraz zapobiegania im; Uslugi dochodzeniowe; Uslugi prawne; Uslugi w zakresie zarzadzania; Udzielanie informacji, danych wywiadowczych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Wszystko to jest przeznaczone do wykorzystania w zwiazku z zarzadzaniem ryzykiem i bezpieczenstwem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Programas de computador (software) e aplicações; Publicações não impressas; Registos (gravações); Software e aplicações informáticas relacionados com negócios, indústria, construção, exploração mineira, pessoal, recursos humanos, tecnologias da informação, riscos empresariais, riscos financeiros, direitos humanos, crime e fraude; Sendo todos os produtos atrás referidos destinados a serem utilizados em gestão de riscos e segurança.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Fornecimento de informações, informações confidenciais, bases de dados, investigação, análise, consultadoria, aconselhamento e assistência empresariais, nos domínios do pessoal, recursos humanos e risco empresarial; Compilação e fornecimento de bases de dados para uso por empresas; Fornecimento de informações, informações confidenciais, investigação, análise, consultadoria, aconselhamento e assistência relacionados com os serviços atrás referidos; Todos os serviços atrás referidos relacionados com gestão de riscos e segurança.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Fornecimento de informações, informações confidenciais, bases de dados, investigação, análise, consultadoria, aconselhamento e assistência empresariais no domínio das tecnologias da informação; Serviços informáticos; Serviços de software; Serviços de desenvolvimento e criação de software; SaaS; PaaS; Serviços de TI (tecnologias de informação); Serviços de desenvolvimento de bases de dados; Manutenção e atualização de software; Incluindo todos os serviços atrás referidos nos domínios dos negócios, finanças, pessoal, recursos humanos, tecnologias da informação, risco empresarial, risco financeiro, crime, fraude e segurança; Serviços de segurança informática e de tecnologias da informação; Criação de software; Serviços de assessoria no domínio do desenvolvimento de produtos e da melhoria da qualidade de software; Fornecimento de informações, informações confidenciais, investigação, análise, consultadoria, aconselhamento e assistência relacionados com os serviços atrás referidos; Todos os serviços atrás referidos relacionados com gestão de riscos e segurança.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pt",
+      "description": "Fornecimento de informações, informações confidenciais, bases de dados, investigação, análise, consultadoria, aconselhamento e assistência empresariais nos domínios dos direitos humanos, crime, fraude e segurança; Consultadoria em matéria de segurança física; Serviços de deteção e prevenção de crimes e fraudes; Serviços de investigação; Serviços jurídicos; Serviços regulamentares; Fornecimento de informações, informações confidenciais, investigação, análise, consultadoria, aconselhamento e assistência relacionados com os serviços atrás referidos; Sendo todos os serviços atrás referidos destinados a serem prestados nos domínios de gestão de riscos e segurança.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software si aplicatii; Publicatii netiparite; Inregistrari; Software si aplicatii de calculator referitoare la afaceri, industrie, constructii, minerit, personal, resurse umane, tehnologia informatiei, riscul în afaceri, risc financiar, drepturile omului, crima, frauda si frauda; Toate cele susmentionate fiind destinate utilizarii la gestionarea si securitatea riscurilor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în domeniile personalului, resurselor umane, riscului în afaceri; Compilarea si furnizarea de baze de date destinate utilizarii de catre firme; Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta referitoare la cele susmentionate; Toate cele susmentionate referitoare la gestionarea riscurilor si securitate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în domeniile tehnologiei informatiei; Servicii ale unui institut de calcul; Servicii de software; Servicii de dezvoltare si creare de software; SaaS; PaaS; Servicii IT; Servicii de proiectare de baze de date; Întretinere si actualizare de software; Inclusiv toate cele susmentionate în domeniile afacerilor, finantelor, personalului, resurselor umane, tehnologiei informatiei, riscului în afaceri, riscului financiar, crimei, fraudei si securitatii; Servicii de securitate a calculatoarelor si a tehnologiei informatiei; Creare de software; Servicii de consultanta în domeniul dezvoltarii de produse si al îmbunatatirii calitatii produselor software; Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în legatura cu cele susmentionate; Toate cele susmentionate referitoare la gestionarea riscurilor si securitate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ro",
+      "description": "Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în domeniile drepturilor omului, crimei, fraudei si securitatii; Consultanta în materie de securitate fizica; Servicii de detectare si prevenire a crimelor si fraudelor; Servicii de investigatii; Servicii juridice; Servicii de reglementare; Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în legatura cu cele susmentionate; Toate cele susmentionate fiind destinate utilizarii în legatura cu gestionarea si riscurilor si securitate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér a aplikácie; Netlacené publikácie; Nahrávky; Pocítacový softvér a aplikácie v oblasti obchodu a podnikania, priemyslu, výstavby, banskej tazby, personálu, ludských zdrojov, informacných technológií, obchodných rizík, financných rizík, ludských práv, zlocinu a podvodov; Vsetky vyssie uvedené výrobky sú urcené na pouzitie v oblasti riadenia rizík a bezpecnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Poskytovanie obchodných informácií, poznatkov, databáz, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti personálu, ludských zdrojov, obchodných rizík; Zostavovanie a poskytovanie databáz na pouzitie firmami; Poskytovanie informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti vyssie uvedených sluzieb; Vsetky vyssie uvedené sluzby súvisia s riadením rizík a bezpecnostou.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Poskytovanie obchodných informácií, poznatkov, výskumu, analýz,konzultácií, poradenstva a pomoci v oblasti informacných technológií; Pocítacové sluzby; Softvérové sluzby; Sluzby vývoja a tvorby softvéru; Softvér ako sluzba; PaaS; Informacné technológie; Databázové vývojové sluzby; Údrzba a aktualizácia softvéru; Vrátane vsetkých vyssie uvedených sluzieb v oblasti obchodu a podnikania, financií, personálu, ludských zdrojov, informacných technológií, obchodných rizík, financných rizík, zlocinu, podvodov a bezpecnosti; Bezpecnostné sluzby v oblasti pocítacových a informacných technológií; Tvorba softvéru; Poradenské sluzby v oblasti vývoja produktov a zlepsovania kvality softvéru; Poskytovanie informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti vyssie uvedených sluzieb; Vsetky vyssie uvedené sluzby súvisia s riadením rizík a bezpecnostou.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sk",
+      "description": "Poskytovanie obchodných informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti ludských práv, zlocinu, podvodov a bezpecnosti; Poradenstvo v oblasti fyzickej bezpecnosti; Sluzby v oblasti odhalovania a zabranovania zlocinom a podvodom; Vysetrovacie sluzby; Právne sluzby; Manazerské sluzby; Poskytovanie informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti vyssie uvedených sluzieb; Vsetky vyssie uvedené sluzby súvisia s riadením rizík a bezpecnostou.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema in aplikacije; Elektronske publikacije; Posnetki; Racunalniska programska oprema in aplikacije v zvezi z poslovnimi zadevami, industrijo, gradbenistvom, rudarstvom, osebjem, cloveskimi viri, informacijsko tehnologijo, poslovnim tveganjem, financnim tveganjem, clovekovimi pravicami, kaznivimi dejanji, goljufijami in varnostjo; Vse navedeno se uporablja pri upravljanju tveganja in varnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Nudenje poslovnih informacij, obvescevalnih podatkov, podatkovnih baz, raziskav, analiz, svetovanja, nasvetov in pomoci na podrocju osebja, cloveskih virov, poslovnega tveganja; Sestavljanje in nudenje podatkovnih baz za podjetja; Nudenje informacij, obvescevalnih podatkov, raziskav, analiz, svetovanja, nasvetov in pomoci v zvezi z navedenim; Vse navedeno v zvezi z upravljanjem tveganja in varnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Nudenje poslovnih informacij, obvescevalnih podatkov, podatkovnih baz, raziskav, analiz, svetovanja, nasvetov in pomoci na podrocju informacijske tehnologije; Racunalniske storitve; Storitve v zvezi s programsko opremo; Storitve razvoja in izdelave programske opreme; SaaS; PaaS; Storitve informacijske tehnologije; Razvojne storitve podatkovnih baz; Vzdrzevanje in nadgradnja programske opreme; Vkljucno z navedenim na podrocju poslovnih zadev, financ, osebja, cloveskih virov, informacijske tehnologije, poslovnega tveganja, financnega tveganja, kaznivih dejanj, goljufij in varnosti; Varnostne storitve v zvezi z informacijsko tehnologijo; Ustvarjanje programske opreme; Svetovalne storitve na podrocju razvoja proizvodov in izboljsanja kakovosti programske opreme; Nudenje informacij, obvescevalnih podatkov, raziskav, analiz, svetovanja, nasvetov in pomoci v zvezi z navedenim; Vse navedeno v zvezi z upravljanjem tveganja in varnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sl",
+      "description": "Nudenje poslovnih informacij, obvescevalnih podatkov, podatkovnih baz, raziskav, analiz, svetovanja, nasvetov in pomoci na podrocju clovekovih pravic, kaznivih dejanj, goljufij in varnosti; Svetovanje na podrocju fizicne varnosti; Storitve odkrivanja in preprecevanja kaznivih dejanj in goljufij; Preiskovalne storitve; Pravne storitve; Vodstvene storitve; Nudenje informacij, obvescevalnih podatkov, raziskav, analiz, svetovanja, nasvetov in pomoci v zvezi z navedenim; Vse navedeno za uporabo v zvezi z upravljanjem tveganja in varnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software y aplicaciones; Publicaciones no impresas; Grabaciones; Software y aplicaciones relacionados con los negocios, la industria, la construcción, la minería, el personal, los recursos humanos, la tecnología de la información, los riesgos empresariales, los riesgos financieros, los derechos humanos, los delitos y el fraude; Todo lo mencionado es para su uso en la gestión de riesgos y la seguridad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Prestación de servicios de información, inteligencia, bases de datos, investigación, análisis, consultoría, asesoramiento y asistencia para negocios, en los ámbitos del personal, recursos humanos, riesgos empresariales; Compilación y provisión de bases de datos para su uso por parte de negocios; Servicios de información, inteligencia, investigación, análisis, consultoría, asesoramiento y asistencia en relación con los mencionados; Todo lo mencinoado en relación con la gestión de riesgos y la seguridad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Prestación de servicios de información, inteligencia, bases de datos, investigación, análisis, consultoría, asesoramiento y asistencia para negocios en los ámbitos de la tecnología de la información; Servicios informáticos; Servicios de software; Servicios de desarrollo y creación de software; SaaS; PaaS; Servicios de tecnologías de la información; Servicios de desarrollo de bases de datos; Mantenimiento y actualización de software; Incluyendo todos los mencionados en los ámbitos de los negocios, finanzas, personal, recursos humanos, tecnología de la información, riesgos empresariales, riesgos financieros, delitos, fraude y seguridad; Servicios de seguridad de tecnología de la información y de tecnología informática; Creación de software; Servicios de asesoramiento en materia de desarrollo de productos y mejora de la calidad de software; Servicios de información, inteligencia, investigación, análisis, consultoría, asesoramiento y asistencia en relación con los mencionados; Todo lo mencinoado en relación con la gestión de riesgos y la seguridad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "es",
+      "description": "Prestación de servicios de información, inteligencia, bases de datos, investigación, análisis, consultoría, asesoramiento y asistencia para negocios en los ámbitos de los derechos humanos, delitos, fraude y seguridad; Consultoría sobre seguridad física; Servicios de detección y prevención de fraudes y delitos; Servicios de investigación; Servicios jurídicos; Servicios de gestión; Servicios de información, inteligencia, investigación, análisis, consultoría, asesoramiento y asistencia en relación con los mencionados; Todo lo mencionado es para su uso en relación con la gestión de riesgos y la seguridad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvara och appar; Publikationer, ej tryckta; Inspelningar; Datorprogramvara och appar med avseende på näringsliv, industri, byggverksamhet, gruvbrytning, personal, mänskliga resurser, informationsteknik, affärsrisker, finansiella risker, mänskliga rättigheter, brott och bedrägeri; Det ovannämnda är för användning i riskhantering och säkerhet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Upplåtande av affärsinformation, underrättelsetjänster, databaser, forskning, analys, konsulttjänster, rådgivning och assistans, inom personalområdet, mänskliga resurser, affärsrisker; Sammanställning och upplåtande av databaser för användning av företag; Tillhandahållande av information, underrättelsetjänster, forskning, analys, konsulttjänster, rådgivning och assistans avseende det tidigare nämnda; Det ovannämnda avseende riskhantering och säkerhet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Tillhandahållande av affärsinformation, underrättelsetjänster, databaser, forskning, analys, konsulttjänster, rådgivning och assistans inom it (informationsteknik); Datortjänster; Programvarutjänster; Utveckling av programvara och utformningstjänster; Programvara som en tjänst; PaaS; IT-tjänster; Tjänster för utveckling av databaser; Underhåll och uppgradering av programvara; Inklusive all det tidigare nämnda inom affärsområdet, finansiering, personal, mänskliga resurser, informationsteknik, affärsrisker, finansiella risker, brott, bedrägerier och säkerhet; Dator- och it-säkerhetstjänster; Skapande av mjukvaror; Rådgivning inom området för produktutveckling och kvalitetsförbättring av programvara; Tillhandahållande av information, underrättelsetjänster, forskning, analys, konsulttjänster, rådgivning och assistans avseende det tidigare nämnda; Det ovannämnda avseende riskhantering och säkerhet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sw",
+      "description": "Tillhandahållande av affärsinformation, underrättelsetjänster, databaser, forskning, analys, konsultation, rådgivning och assistans inom mänskliga rättigheter, brott, bedrägerier, och säkerhet; Konsultationer avseende fysisk säkerhet; Tjänster för att upptäcka och förebygga brott och bedrägerier; Utredning; Juridiska tjänster; Regleringsverksamhet; Tillhandahållande av information, underrättelsetjänster, forskning, analys, konsulttjänster, rådgivning och assistans avseende det tidigare nämnda; Det ovannämnda är för användning avseende riskhantering och säkerhet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Quori Pte. Ltd",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "BECK GREENER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68 Circular Road, #02-01,Singapore, 049422",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "Quori Pte. Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software a aplikace; Netistené publikace; Nahrávky; Pocítacový software a aplikace týkající se obchodu, prumyslu, stavebnictví, dulní tezby, personálu, lidských zdroju, informacních technologií, obchodních rizik, financních rizik, lidských práv, trestných cinu a podvodu; Pricemz vsechno výse uvedené je urceno pro pouzití v oblasti rízení rizik a zabezpecení."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování obchodních informací, zpravodajských informací, databází, pruzkumu, analýz, konzultací, poradenství a pomoci v oboru personálu, lidských zdroju, obchodních rizik; Sestavování a zajistování databází pro pouzití podniky; Poskytování informací, zpravodajských informací, pruzkumu, analýz, konzultací, poradenství a pomoci týkající se výse uvedeného; Pricemz vsechno výse uvedené se týká rízení rizik a zabezpecení."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování obchodních informací, zpravodajských informací, databází, pruzkumu, analýz, konzultací, poradenství a pomoci v oboru informacních technologií; Pocítacové sluzby; Servisní sluzby vztahující se k softwaru; Vývoj a tvorba softwaru; SaaS (software jako sluzba); Paas (platforma jako sluzba); Sluzby v oblasti informacních technologií; Sluzby vývoje databází; Údrzba a modernizace softwaru; Vcetne vseho výse uvedeného v oboru obchodu, financí, personálu, lidských zdroju, informacních technologií, obchodních rizik, financních rizik, trestných cinu, podvodu a zabezpecení; Sluzby týkající se zabezpecení pocítacu a informacních technologií; Vytvárení softwaru; Poradenské sluzby v oblasti vývoje produktu a zlepsování kvality softwaru; Poskytování informací, zpravodajských informací, pruzkumu, analýz, konzultací, poradenství a pomoci ve vztahu k výse uvedenému; Pricemz vsechno výse uvedené se týká rízení rizik a zabezpecení."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování obchodních informací, zpravodajských informací, databází, pruzkumu, analýz, konzultací, poradenství a pomoci v oboru lidských práv, trestných cinu, podvodu a zabezpecení; Poradenství v oblasti zabezpecení fyzické ochrany; Detekce a prevence v oblasti trestných cinu a podvodu; Vysetrování; Právní sluzby; Regulace; Poskytování informací, zpravodajských informací, pruzkumu, analýz, konzultací, poradenství a pomoci ve vztahu k výse uvedenému; Pricemz vsechno výse uvedené je urceno pro pouzití týkající se rízení rizik a zabezpecení."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software og apps; Ikke-trykte publikationer; Optagelser; Computersoftware og apps i forbindelse med erhverv, industri, byggevirksomhed, minedrift, personale, HR, informationsteknologi, forretningsrisici, finansielle risici, menneskerettigheder, kriminalitet, bedrageri og bedrageri; Alle førnævnte til anvendelse i forbindelse med risikostyring og sikkerhed."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Information vedrørende forretningsvirksomhed, efterforskning, databaser, undersøgelser, analyser, rådgivning, råd og bistand inden for personale, menneskelige ressourcer og forretningsrisici; Kompilering og levering af databaser til virksomheder; Information, efterforskning, undersøgelser, analyser, rådgivning, råd og bistand vedrørende alt det ovennævnte; Alle førnævnte i forbindelse med risikostyring og sikkerhed."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Information vedrørende forretningsvirksomhed, efterforskning, databaser, undersøgelser, analyser, rådgivning, råd og bistand vedrørende informationsteknologi; Databehandlingsvirksomhed; Softwarevirksomhed; Udvikling og oprettelse af software; SaaS; PaaS (platform som en tjenesteydelse); IT tjenesteydelser; Tjenesteydelser vedrørende udvikling af databaser; Vedligeholdelse og opgradering af software; Inklusive alt det ovennævnte inden for erhverv, finans, personale, HR, informationsteknologi, forretningsrisici, finansielle risici, kriminalitet, bedrageri og sikkerhed; Computersikkerhed og sikkerhed inden for informationsteknologi; Udarbejdelse af software; Rådgivningsvirksomhed inden for produktudvikling og kvalitetsforbedring af software; Information, efterforskning, undersøgelser, analyser, rådgivning, råd og bistand vedrørende ovennævnte; Alle førnævnte i forbindelse med risikostyring og sikkerhed."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Information vedrørende forretningsvirksomhed, efterforskning, databaser, undersøgelser, analyser, rådgivning, råd og bistand inden for menneskerettigheder, kriminalitet, bedrageri og sikkerhed; Konsulentbistand vedrørende fysisk sikkerhed; Påvisning og forebyggelse af kriminalitet og svindel; Undersøgelsesvirksomhed; Juridisk bistand; Tjenesteydelser i forbindelse med lovgivning; Information, efterforskning, undersøgelser, analyser, rådgivning, råd og bistand vedrørende ovennævnte; Alle førnævnte til anvendelse i forbindelse med risikostyring og sikkerhed."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "software en apps; Niet-gedrukte publicaties; Opnamen; Software en applicaties met betrekking tot zaken, industrie, bouw, mijnbouw, personeel, personeelszaken, informatietechnologie, zakelijke risico's, financiële risico's, mensenrechten, misdaad, fraude; Al het voornoemde voor gebruik bij risicobeheer en beveiliging."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het verschaffen van informatie over zaken, inlichtingen, databases, onderzoek, analyses, raadgeving, advies en ondersteuning op het gebied van personeel, personeelszaken, zakelijke risico's; Samenstelling en levering van databases voor gebruik door bedrijven; Verschaffing van informatie, inlichtingen, onderzoek, analyses, raadgeving, advies en ondersteuning met betrekking tot het voornoemde; Al het voornoemde in verband met risicobeheer en beveiliging."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het verschaffen van informatie over zaken, inlichtingen, databases, onderzoek, analyses, raadgeving, advies en ondersteuning op het gebied van informatietechnologie; Automatisering; Diensten met betrekking tot software; Ontwerpen en ontwikkelen van software; SaaS; PaaS; IT-diensten; Databaseontwikkelingsdiensten; Onderhoud en upgrading van software; Waaronder al het voornoemde op het gebied van zaken, financiën, personeel, personeelszaken, informatietechnologie, zakelijke risico's, financiële risico's, misdaad, fraude en beveiliging; Computer- en IT-beveiligingsdiensten; Het creëren van software; Advisering op het gebied van productontwikkeling en kwaliteitsverbetering met betrekking tot software; Verschaffing van informatie, inlichtingen, onderzoek, analyses, raadgeving, advies en ondersteuning met betrekking tot het voornoemde; Al het voornoemde in verband met risicobeheer en beveiliging."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het verschaffen van informatie over zaken, inlichtingen, databases, onderzoek, analyses, raadgeving, advies en ondersteuning op het gebied van mensenrechten, misdaad, fraude en beveiliging; Advisering op het gebied van fysieke beveiliging; Opsporing en voorkoming van misdaad en fraude; Onderzoeksdiensten; Juridische diensten; Diensten inzake regelgeving; Verschaffing van informatie, inlichtingen, onderzoek, analyses, raadgeving, advies en ondersteuning met betrekking tot het voornoemde; Al het voornoemde voor gebruik in verband met risicobeheer en beveiliging."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software and apps; non-printed publications; recordings; computer software and apps relating to business, industry, construction, mining, personnel, human resources, information technology, business risk, financial risk, human rights, crime, fraud and fraud; all the aforesaid being for use in risk management and security."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance, in the fields of personnel, human resources, business risk; compilation and provision of databases for use by businesses; providing information, intelligence, research, analysis, consulting, advice and assistance relating to the aforesaid; all the aforesaid relating to risk management and security."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of information technology; computing services; software services; software development and creation services; SaaS; PaaS; IT services; database design services; software maintenance and upgrading; including all of the aforesaid in the fields of business, finance, personnel, human resources, information technology, business risk, financial risk, crime, fraud, and security; computer and information technology security services; software creation; advisory services in the field of product development and quality improvement of software; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid relating to risk management and security."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing business information, intelligence, databases, research, analysis, consulting, advice and assistance in the fields of human rights, crime, fraud, and security; security consultancy; crime and fraud detection and prevention services; investigation services; legal services; regulatory services; providing information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; all the aforesaid being for use in relation to risk management and security."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara ja rakendused; Elektroonses formaadis olevad väljaanded; Salvestused; Äri, tööstuse, ehitamise, kaevandamise, personali, tööjõu, infotehnoloogia, äririski, finantsriski, inimõiguste, kuritegevuse, pettustega seotud arvutitarkvara ja rakendused; Kõik eelnimetatu kasutuseks riskijuhtimise ja turvalisuse valdkonnas."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Äriteabe, luureandmete, andmebaaside, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abistamise pakkumine personali, tööjõu ja äririski valdkonnas; Äriandmebaaside koostamine ja pakkumine; Eelmainituga seotud teabe, luureandmete, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abistamise pakkumine; Kõik eelnimetatu seoses riskijuhtimise ja turvalisusega."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Äriteabe, luureandmete, andmebaaside, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine infotehnoloogia valdkonnas; Arvutusteenused; Tarkvarateenused; Tarkvara arendus- ja loometeenused; Teenustarkvara; PaaS; IT-teenused; Andmebaasiarendus; Tarkvara korrashoid ja uuendamine; Sh kõik eelmainitu äri, finantsvaldkonna, personali, tööjõu, infotehnoloogia, äri- ja finantsriski, inimõiguste, kuritegevuse, pettuse ja turvalisuse valdkonnas; Arvuti- ja infotehnoloogia turvateenused; Tarkvara loomine; Tarkvara toote- ja kvaliteediarenduse nõustamine; Eelmainituga seotud teabe, luureandmete, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine; Kõik eelnimetatu seoses riskijuhtimise ja turvalisusega."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Äriteabe, luureandmete, andmebaaside, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine inimõiguste, kuritegevuse, pettuse ja turvalisuse valdkonnas; Füüsilise julgestuse alane nõustamine; Kuritegevuse ja pettuse tuvastamise ja ennetamise teenused; Juurdlusteenused; Juriidilised teenused; Reguleerimisteenused; Eelmainituga seotud teabe, luureandmete, teadusuuringute, analüüsi, konsulteerimise, nõustamise ja abi pakkumine; Kõik eelnimetatu kasutuseks seoses riskijuhtimise ja turvalisusega."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot ja sovellukset; Ei-painetut julkaisut; Tallenteet; Tietokoneohjelmistot ja -sovellukset, jotka liittyvät seuraaviin: liiketoiminta, teollisuus, rakentaminen, kaivostoiminta, henkilöstö, henkilöstöresurssit, tietotekniikka, liiketoimintariskit, taloudelliset riskit, ihmisoikeudet, rikollisuus, petokset; Kaikkia edellä mainittuja käytetään riskienhallinnan ja turvallisuuden alalla."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Yritystoimintatietojen, tiedustelun, tietokantojen, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen, kaikki henkilöstön, henkilöstöresurssien, liiketoimintariskien alalla; Yritysten käyttämien tietokantojen kokoaminen ja tarjoaminen; Edellä mainittuihin liittyvän tiedotuksen, tiedustelun, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen; Kaikki edellä mainitut liittyvät riskienhallintaan ja turvallisuuteen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Yritystoimintaan liittyvien tietojen, tiedustelun, tietokantojen, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustaminen tarjoaminen tietotekniikan alalla; Tietojenkäsittelypalvelut; Ohjelmistopalvelut; Ohjelmistojen kehittämis- ja luontipalvelut; SaaS; Sovellusalusta palveluna (PaaS); IT-palvelut; Tietokantojen kehittämispalvelut; Ohjelmistojen ylläpito ja päivitys; Mukaan lukien kaikki edellä mainitut seuraavilla aloilla: liiketoiminta, rahoitus, henkilöstö, henkilöstöresurssit, tietotekniikka, liiketoimintariskit, taloudelliset riskit, rikollisuus, petokset ja turvallisuus; Tietokoneisiin ja tietotekniikkaan liittyvät turvallisuuspalvelut; Tietokoneohjelmistojen luominen; Neuvontapalvelut tietokoneohjelmistojen tuotekehittelyn ja laadun parantamisen alalla; Edellä mainittuihin liittyvän tiedotuksen, tiedustelun, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen; Kaikki edellä mainitut liittyvät riskienhallintaan ja turvallisuuteen."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Yritystietojen, tiedustelun, tietokantojen, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen ihmisoikeuksien, rikollisuuden, petosten ja turvallisuuden alalla; Fyysiseen turvallisuuteen liittyvä turvallisuuskonsultointi; Rikosten ja petosten havaitsemis- ja ehkäisemispalvelut; Tutkintapalvelut; Oikeudelliset palvelut; Säädöksiin liittyvät palvelut; Edellä mainittuihin liittyvän tiedotuksen, tiedustelun, tutkimuksen, analyysien, konsultoinnin, neuvonnan ja avustamisen tarjoaminen; Kaikkia edellä mainittuja käytetään riskienhallinnan ja turvallisuuden alalla."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels et apps; Publications non imprimées; Enregistrements; Logiciels et applications informatiques relatifs aux affaires, à l'industrie, à la construction, à l'exploitation minière, au personnel, aux ressources humaines, aux technologies de l'information, aux risques commerciaux, aux risques financiers, aux droits de l'homme, à la criminalité, aux fraudes; Tous les produits précités étant destinés à la gestion des risques et à la sécurité."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fourniture d'informations, renseignements, bases de données, recherches, analyses, assistance et conseils commerciaux, dans les domaines du personnel, des ressources humaines, des risques commerciaux; Compilation et fourniture de bases de données utilisées par des entreprises; Fourniture d'informations, renseignements, recherches, analyses, consultation, assistance et conseils relatifs aux domaines précités; Tous les services précités étant destinés à la gestion des risques et à la sécurité."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fourniture d'informations, renseignements, bases de données, recherches, analyses, consultation, assistance et conseils commerciaux dans les domaines des technologies de l'information; Services informatiques; Services de logiciels; Services de développement et création de logiciels; SaaS; PaaS; Services des technologies de l'information; Services de développement de bases de données; Maintenance et mise à niveau de logiciels; Y compris tous les services précités se rapportant aux domaines des affaires, de la finance, du personnel, des ressources humaines, des technologies de l'information, des risques commerciaux, des risques financiers, de la criminalité, des fraudes et de la sécurité; Services de sécurité pour ordinateurs et technologies de l'information; Création de logiciels; Services de conseil dans le domaine du développement de produits et de l'amélioration de la qualité de logiciels; Fourniture d'informations, renseignements, recherches, analyses, consultation, assistance et conseils liés aux domaines précités; Tous les services précités étant destinés à la gestion des risques et à la sécurité."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fourniture d'informations, renseignements,bases de données, recherches, analyses, consultation, assistance et conseils commerciaux dans les domaines des droits de l'homme, de la criminalité, des fraudes et de la sécurité; Services de conseillers en matière de sécurité physique; Services de détection et prévention en matière de criminalité et de fraudes; Services d'enquêtes; Services juridiques; Services de gestion; Fourniture d'informations, renseignements, recherches, analyses, consultation, assistance et conseils liés aux domaines précités; Tous les services précités étant destinés à la gestion des risques et à la sécurité."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software und Anwendungen; Nicht gedruckte Veröffentlichungen; Aufzeichnungen; Computersoftware und Apps in Bezug auf Geschäftsangelegenheiten, Industrie, Bauwesen, Bergbau, Personalwesen, Humanressourcen, Informationstechnologie, Geschäftsrisiken, Finanzrisiken, Menschenrechte, Kriminalität, Betrug und Täuschung; Alles vorstehend Genannte zur Verwendung im Bereich Risikomanagement und Sicherheit."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bereitstellung von Informationen in Geschäftsangelegenheiten, Erkenntnissen, Datenbanken, Recherchen, Analysen, Beratung und Unterstützung in den Bereichen Personalwesen, Humanressourcen, Geschäftsrisiken; Zusammenstellung und Bereitstellung von Datenbanken zur Verwendung durch Unternehmen; Bereitstellung von Informationen, Erkenntnissen, Recherchen, Analysen, Beratung und Unterstützung in Bezug auf vorstehend Genanntes; Alles vorstehend Genannte in Bezug auf Risikomanagement und Sicherheit."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bereitstellung von Informationen in Geschäftsangelegenheiten, Erkenntnissen, Datenbanken, Recherchen, Analysen, Beratung und Unterstützung in den Bereichen Informationstechnologie; Rechendienstleistung; Softwaredienstleistungen; Erstellung und Entwicklung von Software; SaaS; PaaS; IT-Dienstleistungen; Datenbankentwicklungsdienstleistungen; Wartung und Aufrüstung von Software; Einschließlich alles vorstehend Genannte in den Bereichen Geschäftsangelegenheiten, Finanzen, Personalwesen, Humanressourcen, Informationstechnologie, Geschäftsrisiken, Finanzrisiken, Kriminalität, Betrug und Sicherheit; Dienstleistungen in Bezug auf Computer- und IT-Sicherheit; Softwareerstellung; Beratung auf dem Gebiet der Produktentwicklung und der Qualitätsverbesserung von Software; Bereitstellung von Informationen, Erkenntnissen, Recherchen, Analysen, Beratung und Unterstützung in Bezug auf das vorstehend Genannte; Alles vorstehend Genannte in Bezug auf Risikomanagement und Sicherheit."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bereitstellung von Informationen in Geschäftsangelegenheiten, Erkenntnissen, Datenbanken, Recherchen, Analysen, Beratung und Unterstützung in den Bereichen Menschenrechte, Kriminalität, Betrug und Sicherheit; Beratung auf dem Gebiet der physischen Sicherheit; Aufdeckung und Verhinderung von Straftaten und Betrug; Ermittlungsdienste; Juristische Dienstleistungen; Regulierende Dienstleistungen; Bereitstellung von Informationen, Erkenntnissen, Recherchen, Analysen, Beratung und Unterstützung in Bezug auf das vorstehend Genannte; Alles vorstehend Genannte zur Verwendung in Bezug auf Risikomanagement und Sicherheit."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver i aplikacije; Izdanja, osim tiskanih; Snimke; Racunalni softver i aplikacije u vezi s poslovanjem, industrijom, izgradnjom, rudarenjem, osobljem, ljudskim resursima, informacijskom tehnologijom, poslovnim rizicima, financijskim rizicima, ljudskim pravima, kriminalitetom i prijevarama; Sve prethodno navedeno sluzi za upravljanje rizicima i sigurnost."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje poslovnih informacija, obavjestavanja, baza podataka, istrazivanja, analize, konzultacija, savjeta i podrske, u podrucju osoblja, ljudskih resursa, poslovnih rizika; Prikupljanje i pruzanje baza podataka za uporabu od strane poduzeca; Pruzanje informacija, obavjestavanja, istrazivanja, analize, konzultacija, savjeta i pomoci u vezi s navedenim; Sve prethodno navedeno u vezi je s upravljanjem rizikom i sa sigurnoscu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje poslovnih informacija, obavjestavanja, baza podataka, istrazivanja, analize, konzultacija, savjeta i pomoci u podrucju informacijske tehnologije; Racunalne usluge; Softverske usluge; Usluge razvoja i izrade softvera; Softver kao usluga (SaaS); PaaS (Platforma kao usluga); Usluge informacijske tehnologije; Usluge razvoja baza podataka; Odrzavanje i nadogradnja softvera; Ukljucujuci sve prethodno navedeno u podrucjima poslovanja, financija, osoblja, ljudskih resursa, informacijske tehnologije, poslovnih rizika, financijskih rizika, zlocina, prijevare, i sigurnosti; Sigurnosne usluge u vezi s racunalima i informacijskom tehnologijom; Kreiranje softvera; Savjetodavne usluge na podrucju razvoja i poboljsanja kakvoce softverskih proizvoda; Pruzanje informacija, obavjestavanja, istrazivanja, analize, konzultacija, savjetovanja i pomoci u vezi s navedenim; Sve prethodno navedeno u vezi je s upravljanjem rizikom i sa sigurnoscu."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pruzanje poslovnih informacija, obavjestavanja, baza podataka, istrazivanja, analize, konzultacija, savjeta i podrske u podrucju ljudskih prava, zlocina, prijevare, i sigurnosti; Konzultacijske usluge na podrucju fizicke sigurnosti; Usluge otkrivanja i sprecavanja zlocina i prijevara; Usluge istrazivanja; Pravne usluge; Regulacijske usluge; Pruzanje informacija, obavjestavanja, istrazivanja, analize, konzultacija, savjetovanja i pomoci u vezi s navedenim; Sve prethodno navedeno namijenjeno je za uporabu u vezi s upravljanjem rizikom i sa sigurnoscu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek és alkalmazások; Nem kinyomtatott kiadványok; Felvételek; Számítógépes szoftverek és alkalmazások üzleti, ipari, építési, bányászati, személyi, emberi eroforrások, információs technológia, üzleti kockázat, pénzügyi kockázat, emberi jogok, buncselekmények, csalás és csalás vonatkozásában; A fentiek mindegyike a kockázatkezelés és biztonság terén történo használatra."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti információk, intelligencia, adatbázisok, kutatás, elemzés, tanácsadás, konzultáció és asszisztencia a személyzet, az emberi eroforrások, az üzleti kockázat területén; Adatbázisok fejlesztése és karbantartása vállalkozások számára; Információ, intelligencia, kutatás, elemzés, konzultáció, tanácsadás és asszisztencia a fentiekkel kapcsolatban; A fentiek mindegyike a kockázatkezeléssel és biztonsággal kapcsolatban."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti információk, intelligencia, adatbázisok, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás az információs technológia területein; Számítógépes szolgáltatások; Szoftverszolgáltatások; Szoftverfejlesztési és -készítési szolgáltatások; Szoftver mint szolgáltatás (SaaS); PaaS; Információtechnológiai [IT] szolgáltatások; Adatbankfejleszto szolgáltatások; Szoftver karbantartása és frissítése; A fentiek mindegyikét beleértve az üzlet, a pénzügyek, a személyzet, az emberi eroforrások, az információs technológia, az üzleti kockázat, a pénzügyi kockázat, a bunözés, a csalások és biztonság terén; Számítógépes és informatikai adatbiztonsági szolgáltatások biztosítása; Szoftveralkotás; Tanácsadási szolgáltatások szoftverek fejlesztésének és minoségjavításának területén; Információ, intelligencia, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás a fentiek vonatkozásában; A fentiek mindegyike a kockázatkezeléssel és biztonsággal kapcsolatban."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Üzleti információk, hírszerzés, adatbázisok, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás az emberi jogok, a bunözés, a csalás és a biztonság területén; Fizikai biztonsági tanácsadás; Buncselekmények és csalások felderítésével és megelozésével kapcsolatos szolgáltatások; Nyomozói szolgáltatások; Jogi szolgáltatások; Szabályozási szolgáltatások; Információ, intelligencia, kutatás, elemzés, konzultáció, tanácsadás és segítségnyújtás a fentiek vonatkozásában; A fentiek mindegyike a kockázatkezeléssel és biztonsággal kapcsolatos használatra."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software e app; Pubblicazioni non stampate; Registrazioni; Software informatici e applicazioni relativi ad affari, industria, costruzione, estrazioni minerarie, personale, risorse umane, tecnologia dell'informazione, rischio aziendale, rischio finanziario, diritti umani, crimine e frode; Tutti i suddetti da utilizzare nella gestione del rischio e nella sicurezza."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fornitura d'informazioni commerciali, intelligence, banche dati, ricerca, analisi, consulenza e assistenza, nei settori di personale, risorse umane, rischi aziendali; Compilazione e fornitura di banche dati per uso da parte di aziende; Fornitura d'informazioni, intelligence, ricerca, analisi, consulenza e assistenza in materia di quanto suddetto; Tutti i suddetti in relazione alla gestione del rischio e alla sicurezza."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fornitura d'informazioni commerciali, intelligence, banche dati, ricerca, analisi, consulenza e assistenza in materia di informatica; Servizi in materia d'informatica; Servizi in materia di software; Sviluppo e creazione di software; SaaS; PaaS; Servizi informatici; Servizi di progettazione di banche dati; Manutenzione e aggiornamento di software; Compresi quelli nei settori di affari, finanza, personale, risorse umane, informatica, rischi aziendali, rischi finanziari, crimine, frode e sicurezza; Servizi di sicurezza informatici e per computer; Creazione di software; Consulenza in materia di sviluppo di prodotti e miglioramento della qualità di software; Fornitura d'informazioni, intelligence, ricerca, analisi, consulenza e assistenza in relazione a quanto suddetto; Tutti i suddetti in relazione alla gestione del rischio e alla sicurezza."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fornitura d'informazioni commerciali, intelligence, banche dati, ricerca, analisi, consulenza e assistenza nei settori di diritti umani, crimine, frode e sicurezza; Servizi di consulenza in materia di sicurezza fisica; Individuazione e prevenzione di frodi e reati; Servizi di investigazione; Servizi giuridici; Servizi di gestione; Fornitura d'informazioni, intelligence, ricerca, analisi, consulenza e assistenza in relazione a quanto suddetto; Tutti i suddetti da utilizzare in relazione alla gestione del rischio e alla sicurezza."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga ir programos; Nespausdintiniai leidiniai; Irasai; Kompiuteriu programine iranga ir programos, susijusios su verslu, pramone, statyba, kasyba, personalu, zmogiskaisiais istekliais, informacinemis technologijomis, verslo rizika, finansine rizika, zmogaus teisemis, nusikalstamumu, sukciavimu ir sukciavimu; Viskas, kas pamineta, yra skirta naudoti valdant rizika ir saugumo srityje."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos personalo, personalo vadybos ir verslo rizikos srityse teikimas; Duomenu baziu (programines irangos), skirtu naudoti imonems, sudarymas ir teikimas; Informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos, susijusios su visomis, teikimas; Visos minetos prekes yra susijusios su rizikos valdymu ir saugumu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos informaciniu technologiju paslaugu srityje teikimas; Kompiuterines paslaugos; Programines irangos paslaugos; Programines irangos pletros ir kurimo paslaugos; Programine iranga kaip paslauga (SaaS); Platforma kaip paslauga (PaaS); Informaciniu technologiju paslaugos; Duomenu bazes tobulinimo paslaugos; Kompiuteriu programines irangos prieziura ir atnaujinimas; Iskaitant visas verslo, finansu, personalo, personalo vadybos, informaciniu technologiju paslaugu, verslo rizikos, finansines rizikos, nusikaltimu, sukciavimo ir apsaugos srityse; Kompiuteriu ir informaciniu technologiju apsaugos paslaugos; Programines irangos kurimas; Programines irangos tobulinimo ir kokybes gerinimo konsultacijos; Informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos, susijusios, su visais, teikimas; Visos minetos prekes yra susijusios su rizikos valdymu ir saugumu."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Verslo informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos zmogaus teisiu, nusikaltimu, sukciavimo ir apsaugos srityse teikimas; Fizines apsaugos konsultacijos; Nusikaltimu ir sukciavimo nustatymo ir prevencijos paslaugos; Tyrimu paslaugos; Juridines paslaugos; Valdymo paslaugos; Informacijos, analitikos, duomenu baziu (programines irangos), moksliniu tyrimu paslaugu, analizes, konsultaciju, patarimu ir pagalbos, susijusios, su visais, teikimas; Visos minetos prekes yra skirtos naudoti su rizikos valdymu ir saugumu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmaturas un lietojumprogrammas; Neiespiestas publikacijas; Ieraksti; Datoru programmatura un lietojumprogrammas saistiba ar uznemejdarbibu, rupniecibu, buvniecibu, ieguvi, personalu, cilvekresursiem, informacijas tehnologijam, biznesa risku, finansu risku, cilvektiesibam, noziedzibu, krapsanu un krapsanu; Viss ieprieksminetais ir paredzets izmantosanai riska parvaldiba un drosiba."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Uznemejdarbibas informacijas, intelekta, datubazu, petijumu, analizes, konsultaciju un palidzibas nodrosinasana saistiba ar personalu, cilvekresursiem, uznemejdarbibas riskiem; Datubazu apkoposana un nodrosinasana izmantosanai uznemejdarbiba; Nodrosinasana ar informaciju, intelektu, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar ieprieks mineto; Viss ieprieksminetais attiecas uz riska parvaldibu un drosibu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Nodrosinasana ar uznemejdarbibas informaciju, intelektu, datubazem, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar informacijas tehnologijam; Datoru pakalpojumi; Programmaturas pakalpojumi; Programmaturu attistiba un radisanas pakalpojumi; Programmatura ka pakalpojums; Platforma ka pakalpojums (PaaS); Informacijas tehnologiju pakalpojumi; Datu bazu izstrades pakalpojumi; Programmaturas uzturesana un atjauninasana; Ieklaujot visu ieprieks mineto saistiba ar uznemejdarbibu, finansem, personalu, cilvekresursiem, informacijas tehnologijam, uznemejdarbibas risku, finansu risku, noziedzibu, krapsanu un drosibu; Datoru un informacijas tehnologiju drosibas pakalpojumi; Programmaturas izveide; Konsultativie pakalpojumi programmaturas produktu izstrades un kvalitates uzlabosanas joma; Nodrosinasana ar informaciju, intelektu, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar ieprieks mineto; Viss ieprieksminetais attiecas uz riska parvaldibu un drosibu."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Nodrosinasana ar uznemejdarbibas informaciju, intelektu, datubazem, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar cilvektiesibam, noziedzibu un drosibu; Konsultesana fiziskas drosibas jautajumos; Noziedzibas un krapsanas noteiksanas un noversanas pakalpojumi; Izmeklesana; Juridiskie pakalpojumi; Regulesanas pakalpojumi; Nodrosinasana ar informaciju, intelektu, petijumiem, analizi, konsultacijam, padomu sniegsanu un palidzibu saistiba ar ieprieks mineto; Viss ieprieksminetais ir paredzets izmantosanai saistiba ar riska parvaldibu un drosibu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer u apps; Pubblikazzjonijiet mhux stampati; Registrazzjonijiet; Software tal-kompjuter u applikazzjonijiet relatati man-negozju, l-industrija, il-kostruzzjoni, it-thaffir tal-minjieri, ir-rizorsi umani tal-persunal, it-teknologija tal-informazzjoni, ir-riskju tan-negozju, id-drittijiet tal-bniedem, il-kriminalità, il-frodi u l-frodi; Dak kollu msemmi qabel huwa ghall-uzu fl-immaniggjar tar-riskju u s-sigurtà."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' informazzjoni dwar in-negozju, intelligence, bazijiet tad-data, ricerka, analizi, konsulenza, pariri u assistenza, fl-oqsma tal-persunal, ir-rizorsi umani, ir-riskju tan-negozju; Kumpilazzjoni u provvista ta' bazijiet tad-data ghall-uzu min-negozji; Il-provvista ta' informazzjoni, intelligence, ricerka, analizi, konsulenza, pariri u assistenza relatati ma' dak imsemmi; Dak kollu msemmi qabel relatat mal-immaniggjar tar-riskju u s-sigurtà."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' informazzjoni dwar in-negozju, intelligence, bazijiet tad-data, ricerka, analizi, konsulenza, pariri u assistenza fil-qasam tat-teknologija tal-informatika; Servizzi ta' kompjuters; Servizzi ta' softwer; Servizzi ta' zvilupp u holqien ta' softwer; SaaS; PaaS; Servizzi tal-IT; Servizzi ta' zvilupp ta' dejtabejzis; Manutenzjoni u aggornament ta' softwer; Inkluz dak kollu msemmi fl-oqsma tan-negozju, il-finanzi, il-persunal, ir-rizorsi umani, it-teknologija tal-informatika, ir-riskju tan-negozju, ir-riskju finanzjarju, il-kriminalità, il-frodi, u s-sigurtà; Servizzi ta' sigurtà tal-kompjuter u tat-teknologija tal-informatika; Holqien ta' softwer; Servizzi ta' ghoti ta' pariri fil-qasam tal-izvilupp tal-prodotti u tat-titjib tal-kwalità tas-softwer; Il-provvista ta' informazzjoni, intelligence, ricerka, analizi, konsulenza, pariri u assistenza relatati ma' dak imsemmi; Dak kollu msemmi qabel relatat mal-immaniggjar tar-riskju u s-sigurtà."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Il-provvista ta' informazzjoni dwar in-negozju, intelligence, bazijiet tad-data, ricerka, analizi, konsulenza, pariri u assistenza fl-oqsma tad-drittijiet tal-bniedem, il-kriminalità, il-frodi u s-sigurtà; Konsulenza ta' sigurtà fizika; Servizzi ta' detezzjoni u prevenzjoni ta' frodi u kriminalità; Servizzi ta' investigazzjoni; Servizzi legali; Servizzi ta' regolatorji; Il-provvista ta' informazzjoni, intelligence, ricerka, analizi, konsulenza, pariri u assistenza relatati ma' dak imsemmi; Dak kollu msemmi qabel huwa ghall-uzu relatat mal-immaniggjar tar-riskju u s-sigurtà."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie komputerowe i aplikacje; Publikacje niedrukowane; Nagrania; Oprogramowanie komputerowe i aplikacje zwiazane z dzialalnoscia gospodarcza, przemyslem, budownictwem, górnictwem, personelem, zasobami ludzkimi, technologia informacyjna, ryzykiem biznesowym, ryzykiem finansowym, prawami czlowieka, przestepczoscia, oszustwami i naduzyciami finansowymi; Wszystko to jest przeznaczone do wykorzystania w zarzadzaniu ryzykiem i bezpieczenstwie."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Udzielanie informacji w zakresie dzialalnosci gospodarczej, danych wywiadowczych, baz danych, badan, analiz, konsultacji, porad i pomocy w zakresie personelu, zasobów ludzkich, ryzyka biznesowego; Kompilowanie i udostepnianie baz danych do wykorzystania przez dzialalnosci gospodarcze; Udzielanie informacji, danych wywiadowczych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Wszystkie wyzej wymienione kwestie zwiazane z zarzadzaniem ryzykiem i bezpieczenstwem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Udzielanie informacji w zakresie dzialalnosci gospodarczej, danych wywiadowczych, baz danych, badan, analiz, konsultacji, porad i pomocy w zakresie technologii informacyjnej; Uslugi komputerowe; Uslugi w zakresie oprogramowania; Rozwój oprogramowania komputerowego i uslugi w zakresie tworzenia; SaaS; PaaS [platforma jako usluga]; Uslugi w zakresie technologii informacyjnych; Uslugi rozwojowe bazy danych; Konserwacja i aktualizacja oprogramowania komputerowego; W tym wszystkie wyzej wymienione w dziedzinie dzialalnosci gospodarczej, finansów, personelu, zasobów ludzkich, technologii informacyjnej, ryzyka biznesowego, ryzyka finansowego, przestepczosci, oszustwa i bezpieczenstwa; Uslugi bezpieczenstwa w zakresie komputerów i technologii informacyjnych; Tworzenie oprogramowania komputerowego; Uslugi doradcze w dziedzinie opracowywania produktów i podnoszenia jakosci oprogramowania; Udzielanie informacji, danych wywiadowczych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Wszystkie wyzej wymienione kwestie zwiazane z zarzadzaniem ryzykiem i bezpieczenstwem."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Udzielanie informacji w zakresie dzialalnosci gospodarczej, danych wywiadowczych, baz danych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Doradztwo w zakresie bezpieczenstwa fizycznego; Uslugi wykrywania przestepstw i oszustw oraz zapobiegania im; Uslugi dochodzeniowe; Uslugi prawne; Uslugi w zakresie zarzadzania; Udzielanie informacji, danych wywiadowczych, badan, analiz, konsultacji, porad i pomocy w zakresie wyzej wymienionych; Wszystko to jest przeznaczone do wykorzystania w zwiazku z zarzadzaniem ryzykiem i bezpieczenstwem."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Programas de computador (software) e aplicações; Publicações não impressas; Registos (gravações); Software e aplicações informáticas relacionados com negócios, indústria, construção, exploração mineira, pessoal, recursos humanos, tecnologias da informação, riscos empresariais, riscos financeiros, direitos humanos, crime e fraude; Sendo todos os produtos atrás referidos destinados a serem utilizados em gestão de riscos e segurança."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de informações, informações confidenciais, bases de dados, investigação, análise, consultadoria, aconselhamento e assistência empresariais, nos domínios do pessoal, recursos humanos e risco empresarial; Compilação e fornecimento de bases de dados para uso por empresas; Fornecimento de informações, informações confidenciais, investigação, análise, consultadoria, aconselhamento e assistência relacionados com os serviços atrás referidos; Todos os serviços atrás referidos relacionados com gestão de riscos e segurança."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de informações, informações confidenciais, bases de dados, investigação, análise, consultadoria, aconselhamento e assistência empresariais no domínio das tecnologias da informação; Serviços informáticos; Serviços de software; Serviços de desenvolvimento e criação de software; SaaS; PaaS; Serviços de TI (tecnologias de informação); Serviços de desenvolvimento de bases de dados; Manutenção e atualização de software; Incluindo todos os serviços atrás referidos nos domínios dos negócios, finanças, pessoal, recursos humanos, tecnologias da informação, risco empresarial, risco financeiro, crime, fraude e segurança; Serviços de segurança informática e de tecnologias da informação; Criação de software; Serviços de assessoria no domínio do desenvolvimento de produtos e da melhoria da qualidade de software; Fornecimento de informações, informações confidenciais, investigação, análise, consultadoria, aconselhamento e assistência relacionados com os serviços atrás referidos; Todos os serviços atrás referidos relacionados com gestão de riscos e segurança."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fornecimento de informações, informações confidenciais, bases de dados, investigação, análise, consultadoria, aconselhamento e assistência empresariais nos domínios dos direitos humanos, crime, fraude e segurança; Consultadoria em matéria de segurança física; Serviços de deteção e prevenção de crimes e fraudes; Serviços de investigação; Serviços jurídicos; Serviços regulamentares; Fornecimento de informações, informações confidenciais, investigação, análise, consultadoria, aconselhamento e assistência relacionados com os serviços atrás referidos; Sendo todos os serviços atrás referidos destinados a serem prestados nos domínios de gestão de riscos e segurança."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software si aplicatii; Publicatii netiparite; Inregistrari; Software si aplicatii de calculator referitoare la afaceri, industrie, constructii, minerit, personal, resurse umane, tehnologia informatiei, riscul în afaceri, risc financiar, drepturile omului, crima, frauda si frauda; Toate cele susmentionate fiind destinate utilizarii la gestionarea si securitatea riscurilor."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în domeniile personalului, resurselor umane, riscului în afaceri; Compilarea si furnizarea de baze de date destinate utilizarii de catre firme; Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta referitoare la cele susmentionate; Toate cele susmentionate referitoare la gestionarea riscurilor si securitate."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în domeniile tehnologiei informatiei; Servicii ale unui institut de calcul; Servicii de software; Servicii de dezvoltare si creare de software; SaaS; PaaS; Servicii IT; Servicii de proiectare de baze de date; Întretinere si actualizare de software; Inclusiv toate cele susmentionate în domeniile afacerilor, finantelor, personalului, resurselor umane, tehnologiei informatiei, riscului în afaceri, riscului financiar, crimei, fraudei si securitatii; Servicii de securitate a calculatoarelor si a tehnologiei informatiei; Creare de software; Servicii de consultanta în domeniul dezvoltarii de produse si al îmbunatatirii calitatii produselor software; Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în legatura cu cele susmentionate; Toate cele susmentionate referitoare la gestionarea riscurilor si securitate."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în domeniile drepturilor omului, crimei, fraudei si securitatii; Consultanta în materie de securitate fizica; Servicii de detectare si prevenire a crimelor si fraudelor; Servicii de investigatii; Servicii juridice; Servicii de reglementare; Furnizarea de informatii în afaceri, informatii importante, baze de date, cercetare, analiza, consultanta, consiliere si asistenta în legatura cu cele susmentionate; Toate cele susmentionate fiind destinate utilizarii în legatura cu gestionarea si riscurilor si securitate."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér a aplikácie; Netlacené publikácie; Nahrávky; Pocítacový softvér a aplikácie v oblasti obchodu a podnikania, priemyslu, výstavby, banskej tazby, personálu, ludských zdrojov, informacných technológií, obchodných rizík, financných rizík, ludských práv, zlocinu a podvodov; Vsetky vyssie uvedené výrobky sú urcené na pouzitie v oblasti riadenia rizík a bezpecnosti."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie obchodných informácií, poznatkov, databáz, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti personálu, ludských zdrojov, obchodných rizík; Zostavovanie a poskytovanie databáz na pouzitie firmami; Poskytovanie informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti vyssie uvedených sluzieb; Vsetky vyssie uvedené sluzby súvisia s riadením rizík a bezpecnostou."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie obchodných informácií, poznatkov, výskumu, analýz,konzultácií, poradenstva a pomoci v oblasti informacných technológií; Pocítacové sluzby; Softvérové sluzby; Sluzby vývoja a tvorby softvéru; Softvér ako sluzba; PaaS; Informacné technológie; Databázové vývojové sluzby; Údrzba a aktualizácia softvéru; Vrátane vsetkých vyssie uvedených sluzieb v oblasti obchodu a podnikania, financií, personálu, ludských zdrojov, informacných technológií, obchodných rizík, financných rizík, zlocinu, podvodov a bezpecnosti; Bezpecnostné sluzby v oblasti pocítacových a informacných technológií; Tvorba softvéru; Poradenské sluzby v oblasti vývoja produktov a zlepsovania kvality softvéru; Poskytovanie informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti vyssie uvedených sluzieb; Vsetky vyssie uvedené sluzby súvisia s riadením rizík a bezpecnostou."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poskytovanie obchodných informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti ludských práv, zlocinu, podvodov a bezpecnosti; Poradenstvo v oblasti fyzickej bezpecnosti; Sluzby v oblasti odhalovania a zabranovania zlocinom a podvodom; Vysetrovacie sluzby; Právne sluzby; Manazerské sluzby; Poskytovanie informácií, poznatkov, výskumu, analýz, konzultácií, poradenstva a pomoci v oblasti vyssie uvedených sluzieb; Vsetky vyssie uvedené sluzby súvisia s riadením rizík a bezpecnostou."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema in aplikacije; Elektronske publikacije; Posnetki; Racunalniska programska oprema in aplikacije v zvezi z poslovnimi zadevami, industrijo, gradbenistvom, rudarstvom, osebjem, cloveskimi viri, informacijsko tehnologijo, poslovnim tveganjem, financnim tveganjem, clovekovimi pravicami, kaznivimi dejanji, goljufijami in varnostjo; Vse navedeno se uporablja pri upravljanju tveganja in varnosti."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje poslovnih informacij, obvescevalnih podatkov, podatkovnih baz, raziskav, analiz, svetovanja, nasvetov in pomoci na podrocju osebja, cloveskih virov, poslovnega tveganja; Sestavljanje in nudenje podatkovnih baz za podjetja; Nudenje informacij, obvescevalnih podatkov, raziskav, analiz, svetovanja, nasvetov in pomoci v zvezi z navedenim; Vse navedeno v zvezi z upravljanjem tveganja in varnosti."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje poslovnih informacij, obvescevalnih podatkov, podatkovnih baz, raziskav, analiz, svetovanja, nasvetov in pomoci na podrocju informacijske tehnologije; Racunalniske storitve; Storitve v zvezi s programsko opremo; Storitve razvoja in izdelave programske opreme; SaaS; PaaS; Storitve informacijske tehnologije; Razvojne storitve podatkovnih baz; Vzdrzevanje in nadgradnja programske opreme; Vkljucno z navedenim na podrocju poslovnih zadev, financ, osebja, cloveskih virov, informacijske tehnologije, poslovnega tveganja, financnega tveganja, kaznivih dejanj, goljufij in varnosti; Varnostne storitve v zvezi z informacijsko tehnologijo; Ustvarjanje programske opreme; Svetovalne storitve na podrocju razvoja proizvodov in izboljsanja kakovosti programske opreme; Nudenje informacij, obvescevalnih podatkov, raziskav, analiz, svetovanja, nasvetov in pomoci v zvezi z navedenim; Vse navedeno v zvezi z upravljanjem tveganja in varnosti."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nudenje poslovnih informacij, obvescevalnih podatkov, podatkovnih baz, raziskav, analiz, svetovanja, nasvetov in pomoci na podrocju clovekovih pravic, kaznivih dejanj, goljufij in varnosti; Svetovanje na podrocju fizicne varnosti; Storitve odkrivanja in preprecevanja kaznivih dejanj in goljufij; Preiskovalne storitve; Pravne storitve; Vodstvene storitve; Nudenje informacij, obvescevalnih podatkov, raziskav, analiz, svetovanja, nasvetov in pomoci v zvezi z navedenim; Vse navedeno za uporabo v zvezi z upravljanjem tveganja in varnosti."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software y aplicaciones; Publicaciones no impresas; Grabaciones; Software y aplicaciones relacionados con los negocios, la industria, la construcción, la minería, el personal, los recursos humanos, la tecnología de la información, los riesgos empresariales, los riesgos financieros, los derechos humanos, los delitos y el fraude; Todo lo mencionado es para su uso en la gestión de riesgos y la seguridad."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prestación de servicios de información, inteligencia, bases de datos, investigación, análisis, consultoría, asesoramiento y asistencia para negocios, en los ámbitos del personal, recursos humanos, riesgos empresariales; Compilación y provisión de bases de datos para su uso por parte de negocios; Servicios de información, inteligencia, investigación, análisis, consultoría, asesoramiento y asistencia en relación con los mencionados; Todo lo mencinoado en relación con la gestión de riesgos y la seguridad."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prestación de servicios de información, inteligencia, bases de datos, investigación, análisis, consultoría, asesoramiento y asistencia para negocios en los ámbitos de la tecnología de la información; Servicios informáticos; Servicios de software; Servicios de desarrollo y creación de software; SaaS; PaaS; Servicios de tecnologías de la información; Servicios de desarrollo de bases de datos; Mantenimiento y actualización de software; Incluyendo todos los mencionados en los ámbitos de los negocios, finanzas, personal, recursos humanos, tecnología de la información, riesgos empresariales, riesgos financieros, delitos, fraude y seguridad; Servicios de seguridad de tecnología de la información y de tecnología informática; Creación de software; Servicios de asesoramiento en materia de desarrollo de productos y mejora de la calidad de software; Servicios de información, inteligencia, investigación, análisis, consultoría, asesoramiento y asistencia en relación con los mencionados; Todo lo mencinoado en relación con la gestión de riesgos y la seguridad."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prestación de servicios de información, inteligencia, bases de datos, investigación, análisis, consultoría, asesoramiento y asistencia para negocios en los ámbitos de los derechos humanos, delitos, fraude y seguridad; Consultoría sobre seguridad física; Servicios de detección y prevención de fraudes y delitos; Servicios de investigación; Servicios jurídicos; Servicios de gestión; Servicios de información, inteligencia, investigación, análisis, consultoría, asesoramiento y asistencia en relación con los mencionados; Todo lo mencionado es para su uso en relación con la gestión de riesgos y la seguridad."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvara och appar; Publikationer, ej tryckta; Inspelningar; Datorprogramvara och appar med avseende på näringsliv, industri, byggverksamhet, gruvbrytning, personal, mänskliga resurser, informationsteknik, affärsrisker, finansiella risker, mänskliga rättigheter, brott och bedrägeri; Det ovannämnda är för användning i riskhantering och säkerhet."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Upplåtande av affärsinformation, underrättelsetjänster, databaser, forskning, analys, konsulttjänster, rådgivning och assistans, inom personalområdet, mänskliga resurser, affärsrisker; Sammanställning och upplåtande av databaser för användning av företag; Tillhandahållande av information, underrättelsetjänster, forskning, analys, konsulttjänster, rådgivning och assistans avseende det tidigare nämnda; Det ovannämnda avseende riskhantering och säkerhet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tillhandahållande av affärsinformation, underrättelsetjänster, databaser, forskning, analys, konsulttjänster, rådgivning och assistans inom it (informationsteknik); Datortjänster; Programvarutjänster; Utveckling av programvara och utformningstjänster; Programvara som en tjänst; PaaS; IT-tjänster; Tjänster för utveckling av databaser; Underhåll och uppgradering av programvara; Inklusive all det tidigare nämnda inom affärsområdet, finansiering, personal, mänskliga resurser, informationsteknik, affärsrisker, finansiella risker, brott, bedrägerier och säkerhet; Dator- och it-säkerhetstjänster; Skapande av mjukvaror; Rådgivning inom området för produktutveckling och kvalitetsförbättring av programvara; Tillhandahållande av information, underrättelsetjänster, forskning, analys, konsulttjänster, rådgivning och assistans avseende det tidigare nämnda; Det ovannämnda avseende riskhantering och säkerhet."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Tillhandahållande av affärsinformation, underrättelsetjänster, databaser, forskning, analys, konsultation, rådgivning och assistans inom mänskliga rättigheter, brott, bedrägerier, och säkerhet; Konsultationer avseende fysisk säkerhet; Tjänster för att upptäcka och förebygga brott och bedrägerier; Utredning; Juridiska tjänster; Regleringsverksamhet; Tillhandahållande av information, underrättelsetjänster, forskning, analys, konsulttjänster, rådgivning och assistans avseende det tidigare nämnda; Det ovannämnda är för användning avseende riskhantering och säkerhet."
+        }
+      ]
+    },
+    "id": "ef7b3fe4-7ffd-4ea2-abfb-85970053a932",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "152"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Soho Offices Savoy Gardens, Savoy Gardens, Rue D'Argens,Gzira, GZR 1362",
+        "representativeAddressCountryCode": "MT",
+        "representativeAddressCountryName": "Malta",
+        "representativeName": "BECK GREENER"
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190328",
+        "applicationNumber": "18042338"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290328",
+      "lastPublicationDate": "20190813",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20201027",
+        "registrationNumber": "18042338"
+      }
+    },
+    "version": "20260511204742",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/em/ef7b3fe4-7ffd-4ea2-abfb-85970053a932",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.705Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

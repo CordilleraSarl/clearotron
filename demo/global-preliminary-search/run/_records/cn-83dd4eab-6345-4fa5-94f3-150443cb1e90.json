@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/83dd4eab-6345-4fa5-94f3-150443cb1e90",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "83dd4eab-6345-4fa5-94f3-150443cb1e90",
+  "applicationNumber": "3280894",
+  "registrationNumber": "3280894",
+  "applicationDate": "2002-08-21",
+  "registrationDate": "2003-10-14",
+  "expiryDate": "2033-10-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-07-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "测距设备;距离记录仪器;测距仪;计数器;数量显示器;计时器(时间记录装置);测量仪器(勘测仪器);测量器械和仪器;游标卡尺;千分尺",
+      "translation_language": "en",
+      "translation": "Distance measuring equipment; distance recording instruments; distance meters; counters; quantity displays; timers (time recording devices); measuring instruments (surveying instruments); measuring instruments and instruments; vernier calipers; micrometers"
+    }
+  ],
+  "owner": "KORI SEIKI MFG.CO.,LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "日本国198-0105东京都西多摩郡奥多摩町小丹波37 37 KOTABA,OKUTAMA-MACHI, NISHITAMA-GUN, TOKYO, 198-0105, JAPAN",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KORI SEIKI MFG.CO.,LTD.",
+        "applicantNativeName": "株式会社古里精机制作所;KORI SEIKI MFG.CO.,LTD."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Distance measuring equipment; distance recording instruments; distance meters; counters; quantity displays; timers (time recording devices); measuring instruments (surveying instruments); measuring instruments and instruments; vernier calipers; micrometers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "测距设备;距离记录仪器;测距仪;计数器;数量显示器;计时器(时间记录装置);测量仪器(勘测仪器);测量器械和仪器;游标卡尺;千分尺"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Measures",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0905",
+          "subNatGoodsServicesDescription": "Measures"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "83dd4eab-6345-4fa5-94f3-150443cb1e90",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "887"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "大连市商标事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20020821",
+        "applicationNumber": "3280894"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331013",
+      "lastPublicationDate": "20030714",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20031014",
+        "registrationNumber": "3280894"
+      },
+      "renewalPublishedDate": "20230820"
+    },
+    "version": "20251001161111",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/cn/83dd4eab-6345-4fa5-94f3-150443cb1e90",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

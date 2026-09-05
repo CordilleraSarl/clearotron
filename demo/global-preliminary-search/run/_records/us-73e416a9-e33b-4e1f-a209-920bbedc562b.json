@@ -1,0 +1,309 @@
+{
+  "uri": "/mark/us/73e416a9-e33b-4e1f-a209-920bbedc562b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "73e416a9-e33b-4e1f-a209-920bbedc562b",
+  "applicationNumber": "90510435",
+  "registrationNumber": "6611913",
+  "applicationDate": "2021-02-04",
+  "registrationDate": "2022-01-11",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2021-10-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ACTIVE NORCAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"NORCAL\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment and information services, namely, providing a website featuring local current event news, outdoor and recreational activity information, and sports, fitness, and entertainment information; Providing information in the field of entertainment via the Internet",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ACTIVE NORCAL LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Raj Abhyanker",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1491 E Placita Meseta Dorada, Oro Valley, AZ, 85755",
+        "applicantAddressCity": "Oro Valley",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "85755",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "1491 E Placita Meseta Dorada",
+        "applicantJurisdictionOfIncorporation": "ARIZONA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "ACTIVE NORCAL LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment and information services, namely, providing a website featuring local current event news, outdoor and recreational activity information, and sports, fitness, and entertainment information; Providing information in the field of entertainment via the Internet"
+        }
+      ]
+    },
+    "id": "73e416a9-e33b-4e1f-a209-920bbedc562b",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"NORCAL\""
+    ],
+    "markEvents": [
+      {
+        "date": "20230130",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20230130",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20230130",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20230130",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20220111",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20211026",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20211026",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20211006",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20211006",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20211006",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20211006",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20211006",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20210920",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210918",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20210917",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20210917",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20210901",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20210901",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20210901",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20210827",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20210508",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20210208",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1491 E Placita Meseta Dorada, Oro Valley, AZ, 85755",
+        "city": "Oro Valley",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ARIZONA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ACTIVE NORCAL LLC",
+        "postalCode": "85755",
+        "stateName": "ARIZONA",
+        "street": "1491 E Placita Meseta Dorada"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1491 E Placita Meseta Dorada, Oro Valley, AZ, 85755",
+        "city": "Oro Valley",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ARIZONA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ACTIVE NORCAL LLC",
+        "postalCode": "85755",
+        "stateName": "ARIZONA",
+        "street": "1491 E Placita Meseta Dorada"
+      },
+      {
+        "address": "1491 E Placita Meseta Dorada, Oro Valley, AZ, 85755",
+        "city": "Oro Valley",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ARIZONA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ACTIVE NORCAL LLC",
+        "postalCode": "85755",
+        "stateName": "ARIZONA",
+        "street": "1491 E Placita Meseta Dorada"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1491 E Placita Meseta Dorada, Oro Valley, AZ, 85755",
+        "city": "Oro Valley",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "ARIZONA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ACTIVE NORCAL LLC",
+        "postalCode": "85755",
+        "stateName": "ARIZONA",
+        "street": "1491 E Placita Meseta Dorada"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "TEMPE, AZ 85282, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "TEMPE, AZ 85282",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Raj Abhyanker LEGALFORCE RAPC WORLDWIDE, P.C., 446 E SOUTHERN AVE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "TEMPE, AZ 85282, UNITED STATES",
+        "representativeAddressLines": [
+          "TEMPE, AZ 85282",
+          "UNITED STATES"
+        ],
+        "representativeName": "Raj Abhyanker"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210204",
+        "applicationNumber": "90510435"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20160301"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20160301"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20220111",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20211026"
+      ],
+      "registration": {
+        "registrationDate": "20220111",
+        "registrationNumber": "6611913"
+      }
+    },
+    "version": "20260113075257",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ACTIVE NORCAL"
+    }
+  },
+  "_uri": "/mark/us/73e416a9-e33b-4e1f-a209-920bbedc562b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

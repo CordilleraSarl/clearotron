@@ -1,0 +1,205 @@
+{
+  "uri": "/mark/tw/6b138a78-2de1-4ebc-8f7a-3b96801be547",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "6b138a78-2de1-4ebc-8f7a-3b96801be547",
+  "applicationNumber": "077054432",
+  "registrationNumber": "00491696",
+  "applicationDate": "1988-11-26",
+  "registrationDate": "1992-02-25",
+  "expiryDate": "2022-02-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七日",
+  "markTransliteration": "qi ri",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "zh",
+      "description": "第048類:面紙、衛生紙、紙巾、化粧紙、濕紙巾、餐巾紙。",
+      "translation_language": "en",
+      "translation": "Class 048: Facial tissue, toilet paper, paper towels, toilet paper, wet wipes, napkins."
+    }
+  ],
+  "owner": "SEIKO TISSUE PAPER INDUSTRIAL CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "HK",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "HK",
+        "applicantAddressCountryName": "Hong Kong",
+        "applicantName": "SEIKO TISSUE PAPER INDUSTRIAL CO., LTD.",
+        "applicantNativeAddress": "香港",
+        "applicantNativeName": "香港．精工衛生紙業有限公司 SEIKO TISSUE PAPER INDUSTRIAL CO., LTD."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 048: Facial tissue, toilet paper, paper towels, toilet paper, wet wipes, napkins.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第048類:面紙、衛生紙、紙巾、化粧紙、濕紙巾、餐巾紙。"
+        }
+      ]
+    },
+    "id": "6b138a78-2de1-4ebc-8f7a-3b96801be547",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "惲軼群  陳文郎"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19881126",
+        "applicationNumber": "077054432"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20220224",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19920225",
+        "registrationNumber": "00491696"
+      }
+    },
+    "version": "20260401095056",
+    "wordMarkSpecification": {
+      "markTransliteration": "qi ri",
+      "markVerbalElementText": "七日"
+    }
+  },
+  "_uri": "/mark/tw/6b138a78-2de1-4ebc-8f7a-3b96801be547",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

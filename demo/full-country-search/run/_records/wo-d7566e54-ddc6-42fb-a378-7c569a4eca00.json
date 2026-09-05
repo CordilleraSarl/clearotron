@@ -1,0 +1,232 @@
+{
+  "uri": "/mark/wo/d7566e54-ddc6-42fb-a378-7c569a4eca00",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "d7566e54-ddc6-42fb-a378-7c569a4eca00",
+  "applicationNumber": null,
+  "registrationNumber": "1903137",
+  "applicationDate": null,
+  "registrationDate": "2026-01-20",
+  "expiryDate": "2036-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-02-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer gaming software; computer application software featuring games and gaming; interactive multimedia software for playing games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Games; board games; party games; parlor games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels de jeux d'ordinateurs; logiciels d'applications informatiques comportant des jeux et jeux de gaming; ludiciels multimédias interactifs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Jeux; jeux de plateau; jeux pour fêtes; jeux de société.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software de juegos informáticos; software de aplicaciones informáticas que incluye juegos y gaming; software multimedia interactivo para jugar a juegos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "Juegos; juegos de tablero; juegos para fiestas; juegos de salón.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KYW ApS",
+  "ownerNative": null,
+  "ownerCountry": "DK",
+  "representative": "LØJE IP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20250924",
+          "basicApplicationNumber": "019251304"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20260111",
+          "basicRegistrationNumber": "019251304"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CH",
+      "JP",
+      "KR",
+      "NO"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Gershøjvej 108A, Gershøj DK-4070 Kirke Hyllinge",
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "KYW ApS"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20250924",
+            "basicApplicationNumber": "019251304"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20260111",
+            "basicRegistrationNumber": "019251304"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CH",
+      "JP",
+      "KR",
+      "NO"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer gaming software; computer application software featuring games and gaming; interactive multimedia software for playing games."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Games; board games; party games; parlor games."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels de jeux d'ordinateurs; logiciels d'applications informatiques comportant des jeux et jeux de gaming; ludiciels multimédias interactifs."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux; jeux de plateau; jeux pour fêtes; jeux de société."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software de juegos informáticos; software de aplicaciones informáticas que incluye juegos y gaming; software multimedia interactivo para jugar a juegos."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Juegos; juegos de tablero; juegos para fiestas; juegos de salón."
+        }
+      ]
+    },
+    "id": "d7566e54-ddc6-42fb-a378-7c569a4eca00",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "06"
+      }
+    ],
+    "recordLastUpdated": "20260825",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Øster Alle 42, 6. Floor DK-2100 Copenhagen Ø",
+        "representativeAddressCountryCode": "DK",
+        "representativeAddressCountryName": "Denmark",
+        "representativeName": "LØJE IP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360120",
+      "lastPublicationDate": "20260219",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260120",
+        "registrationNumber": "1903137"
+      }
+    },
+    "version": "20260825020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORK"
+    }
+  },
+  "_uri": "/mark/wo/d7566e54-ddc6-42fb-a378-7c569a4eca00",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.707Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

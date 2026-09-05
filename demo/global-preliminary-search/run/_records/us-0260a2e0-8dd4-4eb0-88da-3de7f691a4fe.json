@@ -1,0 +1,194 @@
+{
+  "uri": "/mark/us/0260a2e0-8dd4-4eb0-88da-3de7f691a4fe",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0260a2e0-8dd4-4eb0-88da-3de7f691a4fe",
+  "applicationNumber": "99885628",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Q-ORD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Management consulting and advisory services in the areas of corporate growth strategy, innovation and growth processes, organizational transformation, and talent management and development strategies",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Business education and training services, namely, developing customized leadership and executive development programs, providing executive coaching services, and providing business education programs to employees and executives",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CERNANT INC.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Blake E Vande Garde",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "11825 S Fellows St, Olathe, KS, 66061, USAM",
+        "applicantAddressCity": "Olathe",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "66061",
+        "applicantAddressStateName": "KANSAS",
+        "applicantAddressStreet": "11825 S Fellows St",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "CERNANT INC.",
+        "applicantSecondaryAddressUnit": "Unit 1124"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Management consulting and advisory services in the areas of corporate growth strategy, innovation and growth processes, organizational transformation, and talent management and development strategies"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Business education and training services, namely, developing customized leadership and executive development programs, providing executive coaching services, and providing business education programs to employees and executives"
+        }
+      ]
+    },
+    "id": "0260a2e0-8dd4-4eb0-88da-3de7f691a4fe",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260615",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260615",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "11825 S Fellows St, Olathe, KS, 66061, USAM",
+        "city": "Olathe",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "CERNANT INC.",
+        "postalCode": "66061",
+        "secondaryAddressUnit": "Unit 1124",
+        "stateName": "KANSAS",
+        "street": "11825 S Fellows St"
+      },
+      {
+        "address": "11825 S Fellows St, Olathe, KS, 66061, USAM",
+        "city": "Olathe",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "CERNANT INC.",
+        "postalCode": "66061",
+        "secondaryAddressUnit": "Unit 1124",
+        "stateName": "KANSAS",
+        "street": "11825 S Fellows St"
+      }
+    ],
+    "recordLastUpdated": "20260618",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 340, Overland Park, KS 66213, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 340",
+          "Overland Park, KS 66213",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Blake E Vande Garde AVEK IP, 7285 West 132nd Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 340, Overland Park, KS 66213, United States",
+        "representativeAddressLines": [
+          "Suite 340",
+          "Overland Park, KS 66213",
+          "United States"
+        ],
+        "representativeName": "Blake E Vande Garde"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260615",
+        "applicationNumber": "99885628"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260615",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260618052257",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "Q ORD",
+      "markVerbalElementText": "Q-ORD"
+    }
+  },
+  "_uri": "/mark/us/0260a2e0-8dd4-4eb0-88da-3de7f691a4fe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:20.367Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

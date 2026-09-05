@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/kr/0e670075-4501-4f61-8486-435f7775d507",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "0e670075-4501-4f61-8486-435f7775d507",
+  "applicationNumber": "41-2001-0002051",
+  "registrationNumber": "4100795900000",
+  "applicationDate": "2001-02-12",
+  "registrationDate": "2002-09-24",
+  "expiryDate": "2032-09-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "고리",
+  "markTransliteration": "GOREE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "간이식당업,레스토랑업,서양음식점경영업,셀프서비스식당업,식당체인업,일본음식점경영업,카페업,한국식유흥주점경영업,한식점경영업,휴게실업",
+      "translation_language": "en",
+      "translation": "Restaurant business, restaurant business, Western restaurant management business, self-service restaurant business, restaurant chain business, Japanese restaurant management business, café business, korean entertainment business, korean business management business, restroom business"
+    }
+  ],
+  "owner": "KIM DONG HAN",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "정은섭 (JUNG, Eun Sub)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM DONG HAN",
+        "applicantNativeName": "김동한"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Restaurant business, restaurant business, Western restaurant management business, self-service restaurant business, restaurant chain business, Japanese restaurant management business, café business, korean entertainment business, korean business management business, restroom business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "간이식당업,레스토랑업,서양음식점경영업,셀프서비스식당업,식당체인업,일본음식점경영업,카페업,한국식유흥주점경영업,한식점경영업,휴게실업"
+        }
+      ]
+    },
+    "id": "0e670075-4501-4f61-8486-435f7775d507",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(AJU INTERNATIONAL LAW & PATENT GROUP)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "정은섭 (JUNG, Eun Sub)"
+      },
+      {
+        "representativeAddress": "th-th Floors, Donghee Building Gangnam-daero, Gangnam-gu, Seoul () Republic of Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인아주 (AJU INTERNATIONAL LAW & PATENT GROUP)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20010212",
+        "applicationNumber": "41-2001-0002051"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320924",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20020924",
+        "registrationNumber": "4100795900000"
+      }
+    },
+    "version": "20250625154012",
+    "wordMarkSpecification": {
+      "markTransliteration": "GOREE",
+      "markVerbalElementText": "고리"
+    }
+  },
+  "_uri": "/mark/kr/0e670075-4501-4f61-8486-435f7775d507",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

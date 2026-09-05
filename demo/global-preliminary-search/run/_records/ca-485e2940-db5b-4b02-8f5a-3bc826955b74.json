@@ -1,0 +1,279 @@
+{
+  "uri": "/mark/ca/485e2940-db5b-4b02-8f5a-3bc826955b74",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "485e2940-db5b-4b02-8f5a-3bc826955b74",
+  "applicationNumber": "1751764",
+  "registrationNumber": "TMA952239",
+  "applicationDate": "2015-10-23",
+  "registrationDate": "2016-10-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-06-22"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MR. BAR-B-Q ORIGINAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    8,
+    9,
+    11,
+    17,
+    18,
+    20,
+    21,
+    24
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        8,
+        9,
+        11,
+        17,
+        18,
+        20,
+        21,
+        24
+      ],
+      "language": "en",
+      "description": "(1) Cutlery, namely, spoons and knives, sold separately, and hand operated meat tenderizing tools; Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; Umbrellas for protecting food from insects and umbrella covers; Non-metal clips for holding table cloths on table; Barbecue utensils, namely, forks, tongs, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters and pots; corn cob holders; tableware, namely, paper plate holders not of precious meal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household cleaning use; grill covers, namely, grill grids; basting spoons; hand-operated burger presses, namely, presses for forming meat; Barbecue mitts; table cloths not made of paper; unfitted fabric covers for outdoor furniture. \n(2) Cutlery, namely, spoons and knives, sold separately, and hand operated meat tenderizing tools; Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; Umbrellas for protecting food from insects and umbrella covers; Non-metal clips for holding table cloths on table; Barbecue utensils, namely, forks, tongs, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters and pots; corn cob holders; tableware, namely, paper plate holders not of precious meal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household cleaning use; grill covers, namely, grill grids; basting spoons; hand-operated burger presses, namely, presses for forming meat; Barbecue mitts; table cloths not made of paper; unfitted fabric covers for outdoor furniture.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Mr. Bar-B-Q Products LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "MCMILLAN LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "375 Commerce Park Road, North Kingstown, Rhode Island, 02852",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "375 Commerce Park Road",
+          "North Kingstown, Rhode Island",
+          "02852"
+        ],
+        "applicantName": "Mr. Bar-B-Q Products LLC"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since as early as 2011 on wares marked (1)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in UNITED STATES OF AMERICA on wares marked (2)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for UNITED STATES OF AMERICA on November 29, 2011, under No. 4,064,323 on wares marked (2)",
+        "typeDescription": "Foreign Registration"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 24 juil/Jul 2019",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 27 juil/Jul 2018",
+      "COMMENTS / COMMENTAIRES: FROM: Blue Rhino Global Sourcing, Inc.",
+      "TO: Mr. Bar-B-Q Products LLC",
+      "Voir Preuve au dossier/See evidence on File No. 1760197"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "06,07,08,09,11,17,18,20,21,24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Cutlery, namely, spoons and knives, sold separately, and hand operated meat tenderizing tools; Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; Umbrellas for protecting food from insects and umbrella covers; Non-metal clips for holding table cloths on table; Barbecue utensils, namely, forks, tongs, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters and pots; corn cob holders; tableware, namely, paper plate holders not of precious meal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household cleaning use; grill covers, namely, grill grids; basting spoons; hand-operated burger presses, namely, presses for forming meat; Barbecue mitts; table cloths not made of paper; unfitted fabric covers for outdoor furniture. \n(2) Cutlery, namely, spoons and knives, sold separately, and hand operated meat tenderizing tools; Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; Umbrellas for protecting food from insects and umbrella covers; Non-metal clips for holding table cloths on table; Barbecue utensils, namely, forks, tongs, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters and pots; corn cob holders; tableware, namely, paper plate holders not of precious meal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household cleaning use; grill covers, namely, grill grids; basting spoons; hand-operated burger presses, namely, presses for forming meat; Barbecue mitts; table cloths not made of paper; unfitted fabric covers for outdoor furniture."
+        }
+      ]
+    },
+    "id": "485e2940-db5b-4b02-8f5a-3bc826955b74",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20201110",
+        "descriptionText": "Agent changed",
+        "information": "From: 14300 To: 14078 / Voir Preuve au dossier/See evidence on File No. 1844176"
+      },
+      {
+        "date": "20190724",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 1760197"
+      },
+      {
+        "date": "20161014",
+        "descriptionText": "Registered",
+        "responseDate": "20311014"
+      },
+      {
+        "date": "20161007",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20170407"
+      },
+      {
+        "date": "20161007",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20160622",
+        "descriptionText": "Advertised",
+        "information": "Vol.63 Issue 3217"
+      },
+      {
+        "date": "20160526",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20160405",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20160503"
+      },
+      {
+        "date": "20160405",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20151027",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20151023",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20151023",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.03",
+      "27.05.11",
+      "26.11.02",
+      "26.11.08",
+      "26.01.02",
+      "26.01.03",
+      "26.01.18",
+      "26.01.24"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "10 Hub Drive, Suite 101, Melville, NY 11747",
+        "addressLines": [
+          "10 Hub Drive, Suite 101",
+          "Melville, NY 11747"
+        ],
+        "countryName": "United States",
+        "name": "Blue Rhino Global Sourcing, Inc."
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3217",
+        "publicationVolume": "63"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "MCMILLAN LLP",
+          "BROOKFIELD PLACE, SUITE 4400",
+          "BAY WELLINGTON TOWER",
+          "181 BAY STREET",
+          "TORONTO",
+          "ONTARIO M5J2T3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "MCMILLAN LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20161007"
+      ],
+      "application": {
+        "applicationDate": "20151023",
+        "applicationNumber": "1751764"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20111129",
+          "firstUsedText": "Used in CANADA since as early as 2011 on wares marked (1)"
+        }
+      ],
+      "formalisationDate": "20151027",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20311014",
+      "publicationDate": [
+        "20160622"
+      ],
+      "registration": {
+        "registrationDate": "20161014",
+        "registrationNumber": "TMA952239"
+      }
+    },
+    "subjectHeadings": [
+      "MR. BAR-B-Q ORIGINAL",
+      "MISTER",
+      "BARBECUE",
+      "BARBEQUE"
+    ],
+    "version": "20250625110313",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MR BARBECUE ORIGINAL, MISTER BARBECUE ORIGINAL",
+      "markVerbalElementText": "MR. BAR-B-Q ORIGINAL",
+      "markVerbalElementTextFormal": "MR. BAR-B-Q ORIGINAL & Design"
+    }
+  },
+  "_uri": "/mark/ca/485e2940-db5b-4b02-8f5a-3bc826955b74",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

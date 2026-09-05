@@ -1,0 +1,209 @@
+{
+  "uri": "/mark/ve/55cd082c-2599-4b49-81dd-66c87394eb81",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "55cd082c-2599-4b49-81dd-66c87394eb81",
+  "applicationNumber": "1998-021846",
+  "registrationNumber": "N040231",
+  "applicationDate": "1998-11-24",
+  "registrationDate": "2000-06-02",
+  "expiryDate": "2010-06-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "WWW.ANDAVEN.ORG",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "actividad de una asociacion civil sin fines de lucro relacionadas con la conexion en y desde venezuela, a traves de una red de ordenadores para acceder a informaciones de cualquier tipo alojadas en los discos duros de los asi llamdos servidores de la referida red en venezuela, o en cualquier pais del mundo.",
+      "translation_language": "en",
+      "translation": "activity of a non-profit civil association related to the connection in and from Venezuela, through a network of computers to access information of any kind hosted on the hard drives of the so-called servers of the aforementioned network in Venezuela, or in any country in the world."
+    }
+  ],
+  "owner": "ASOCIACION NACIONAL DE ANUNCIANTES ANDA",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": "ELIAS LUIS FRANCISCO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARACAS",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "ASOCIACION NACIONAL DE ANUNCIANTES ANDA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "activity of a non-profit civil association related to the connection in and from Venezuela, through a network of computers to access information of any kind hosted on the hard drives of the so-called servers of the aforementioned network in Venezuela, or in any country in the world.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "actividad de una asociacion civil sin fines de lucro relacionadas con la conexion en y desde venezuela, a traves de una red de ordenadores para acceder a informaciones de cualquier tipo alojadas en los discos duros de los asi llamdos servidores de la referida red en venezuela, o en cualquier pais del mundo."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "55cd082c-2599-4b49-81dd-66c87394eb81",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "ELIAS LUIS FRANCISCO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19981124",
+        "applicationNumber": "1998-021846"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20100602",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20000602",
+        "registrationNumber": "N040231"
+      }
+    },
+    "version": "20250630160732",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "WWW.ANDAVEN.ORG"
+    }
+  },
+  "_uri": "/mark/ve/55cd082c-2599-4b49-81dd-66c87394eb81",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

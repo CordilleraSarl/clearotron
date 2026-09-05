@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/br/215968fa-2524-4839-881b-98b6cb73d5ba",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "215968fa-2524-4839-881b-98b6cb73d5ba",
+  "applicationNumber": "910950296",
+  "registrationNumber": null,
+  "applicationDate": "2016-04-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LOVE NORONHA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Organização de espetáculos [shows] [serviços de empresário]; Promotor de eventos [se artísticos/culturais]; Planejamento de festas.",
+      "translation_language": "en",
+      "translation": "Organization of shows [shows] [entrepreneur services]; Promoter of events [if artistic/cultural]; Party planning."
+    }
+  ],
+  "owner": "ZERO OITO UM COMERCIO E SERVIÇOS LTDA ME",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Elza Cristina Furtado de Mendonça",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "ZERO OITO UM COMERCIO E SERVIÇOS LTDA ME"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organization of shows [shows] [entrepreneur services]; Promoter of events [if artistic/cultural]; Party planning.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Organização de espetáculos [shows] [serviços de empresário]; Promotor de eventos [se artísticos/culturais]; Planejamento de festas."
+        }
+      ]
+    },
+    "id": "215968fa-2524-4839-881b-98b6cb73d5ba",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "Elza Cristina Furtado de Mendonça"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20160426",
+        "applicationNumber": "910950296"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260401020029",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LOVE NORONHA"
+    }
+  },
+  "_uri": "/mark/br/215968fa-2524-4839-881b-98b6cb73d5ba",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

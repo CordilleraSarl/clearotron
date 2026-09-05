@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/cn/153676c4-d322-4a08-8c84-faddb429b25c",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "153676c4-d322-4a08-8c84-faddb429b25c",
+  "applicationNumber": "82663802",
+  "registrationNumber": "82663802",
+  "applicationDate": "2024-12-20",
+  "registrationDate": "2025-06-21",
+  "expiryDate": "2035-06-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-03-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排和组织学术讨论会;导游服务;动物园服务;健身俱乐部(健身和体能训练);教育;流动图书馆;书籍出版;为艺术家提供模特服务;学校(教育);娱乐服务",
+      "translation_language": "en",
+      "translation": "Arranging and conducting academic seminars; guided tour services; zoo services; health clubs (fitness and physical training); education; mobile libraries; book publishing; model services for artists; schools (education); entertainment services"
+    }
+  ],
+  "owner": "Yang Feng",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省宁波市鄞州区福明街道昌乐路11-5号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yang Feng",
+        "applicantNativeName": "杨峰"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arranging and conducting academic seminars; guided tour services; zoo services; health clubs (fitness and physical training); education; mobile libraries; book publishing; model services for artists; schools (education); entertainment services",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排和组织学术讨论会;导游服务;动物园服务;健身俱乐部(健身和体能训练);教育;流动图书馆;书籍出版;为艺术家提供模特服务;学校(教育);娱乐服务"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Library service",
+        "Publishing service",
+        "Amusement and sports service",
+        "Training of animals",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        },
+        {
+          "subNatClassNumber": "4106",
+          "subNatGoodsServicesDescription": "Training of animals"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "153676c4-d322-4a08-8c84-faddb429b25c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1928"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京汉信知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241220",
+        "applicationNumber": "82663802"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350620",
+      "lastPublicationDate": "20250320",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250621",
+        "registrationNumber": "82663802"
+      }
+    },
+    "version": "20251005135012",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/cn/153676c4-d322-4a08-8c84-faddb429b25c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

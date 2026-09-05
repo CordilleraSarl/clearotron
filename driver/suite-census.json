@@ -111,6 +111,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-demo-container-holds-both-lanes.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-demo-report-declares-itself.test.mjs": {
           "tests": 5,
           "asserts": 14,
@@ -341,7 +347,7 @@
         },
         "a-refusal-names-what-resolves-it.test.mjs": {
           "tests": 7,
-          "asserts": 20,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -760,8 +766,8 @@
           "todos": 0
         },
         "both-doors-start-on-both-paths.test.mjs": {
-          "tests": 8,
-          "asserts": 22,
+          "tests": 18,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -910,9 +916,9 @@
           "todos": 0
         },
         "client-door.test.mjs": {
-          "tests": 29,
-          "asserts": 132,
-          "skips": 0,
+          "tests": 38,
+          "asserts": 161,
+          "skips": 1,
           "todos": 0
         },
         "client-gate.test.mjs": {
@@ -1054,8 +1060,8 @@
           "todos": 0
         },
         "connect-reasons-about-the-running-product.test.mjs": {
-          "tests": 8,
-          "asserts": 15,
+          "tests": 11,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -1300,8 +1306,8 @@
           "todos": 0
         },
         "cut-publish.test.mjs": {
-          "tests": 16,
-          "asserts": 42,
+          "tests": 10,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -1618,8 +1624,14 @@
           "todos": 0
         },
         "doctor-reads-the-units-not-the-shell.test.mjs": {
-          "tests": 7,
-          "asserts": 24,
+          "tests": 12,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "doctor-refuses-what-cannot-run.test.mjs": {
+          "tests": 8,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -2021,7 +2033,7 @@
         },
         "example-replay.test.mjs": {
           "tests": 6,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -2213,7 +2225,7 @@
         },
         "freeze-example-run.test.mjs": {
           "tests": 8,
-          "asserts": 33,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -2236,8 +2248,8 @@
           "todos": 0
         },
         "grant-command.test.mjs": {
-          "tests": 12,
-          "asserts": 39,
+          "tests": 14,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -2686,8 +2698,8 @@
           "todos": 0
         },
         "onboard-wizard.test.mjs": {
-          "tests": 49,
-          "asserts": 188,
+          "tests": 59,
+          "asserts": 217,
           "skips": 2,
           "todos": 0
         },
@@ -4139,7 +4151,7 @@
         },
         "seed-pool.test.mjs": {
           "tests": 8,
-          "asserts": 35,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -4569,6 +4581,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-demo-container-and-the-packed-gate.test.mjs": {
+          "tests": 7,
+          "asserts": 47,
+          "skips": 0,
+          "todos": 0
+        },
         "the-door-answers-the-address-it-advertises.test.mjs": {
           "tests": 6,
           "asserts": 17,
@@ -4600,8 +4618,8 @@
           "todos": 0
         },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
-          "tests": 15,
-          "asserts": 39,
+          "tests": 17,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -4620,6 +4638,12 @@
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-freezer-rewrites-what-cannot-be-committed.test.mjs": {
+          "tests": 7,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -4815,10 +4839,22 @@
           "skips": 0,
           "todos": 0
         },
+        "the-terminal-mark-is-the-svgs-geometry.test.mjs": {
+          "tests": 13,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
         "the-two-env-files-are-named-where-they-appear.test.mjs": {
           "tests": 5,
           "asserts": 12,
           "skips": 0,
+          "todos": 0
+        },
+        "the-unrelated-products-name-does-not-ship.test.mjs": {
+          "tests": 6,
+          "asserts": 10,
+          "skips": 1,
           "todos": 0
         },
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
@@ -4889,7 +4925,7 @@
         },
         "tty-style-degrades-before-it-decorates.test.mjs": {
           "tests": 7,
-          "asserts": 19,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -5374,7 +5410,7 @@
         },
         "ops-token.test.mjs": {
           "tests": 8,
-          "asserts": 38,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -5433,8 +5469,8 @@
           "todos": 0
         },
         "scope.test.mjs": {
-          "tests": 24,
-          "asserts": 106,
+          "tests": 27,
+          "asserts": 114,
           "skips": 0,
           "todos": 0
         },

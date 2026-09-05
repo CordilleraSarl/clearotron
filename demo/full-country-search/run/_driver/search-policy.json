@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "level": "full-country-search",
+  "pipeline": "clearance",
+  "stageLabel": "Full country search",
+  "components": {
+    "registerProbe": false,
+    "jxLanes": true,
+    "commonLawGrid": true
+  },
+  "recipe": null,
+  "extras": null,
+  "origins": {
+    "level": "job.product"
+  },
+  "caseLaw": true,
+  "recipeScope": null,
+  "deliveryRoute": null,
+  "enqueuedVia": "cli/enqueue",
+  "enqueuedBy": null,
+  "parentRunId": null,
+  "frozenAt": "2026-09-03T16:30:10.056Z"
+}

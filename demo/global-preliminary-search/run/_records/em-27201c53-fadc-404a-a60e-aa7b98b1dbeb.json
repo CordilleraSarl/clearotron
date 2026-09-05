@@ -1,0 +1,2379 @@
+{
+  "uri": "/mark/em/27201c53-fadc-404a-a60e-aa7b98b1dbeb",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "27201c53-fadc-404a-a60e-aa7b98b1dbeb",
+  "applicationNumber": "14814552",
+  "registrationNumber": "14814552",
+  "applicationDate": "2015-11-20",
+  "registrationDate": "2016-05-12",
+  "expiryDate": "2035-11-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-02-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MR. BAR-B-Q Original",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    8,
+    9,
+    11,
+    20,
+    21,
+    24
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "cs",
+      "description": "Cistice grilu (tekuté/chemické); Cistice grilovacích kamenu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "cs",
+      "description": "Noze, vidlicky a lzíce, Jmenovite lzíce a Noze, Náciní na krehcení masa prodávané samostatne a s rucním pohonem; Potreby pro roznení, Jmenovite, Vidle, vidlicky a Kleste stípací.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Teplomery na maso; Teplomery na merení teploty pri grilování.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "cs",
+      "description": "Grilovací sady sestávající prevázne z tyce, vidlice, motoru a vyrovnávací záteze; Prenosné plynové sporáky; Príslusenství na grilování, jmenovite kamenné mrízky, police na varení a mrízky na varení; Výmenné horáky grilu; Výmenné hadice a regulátory grilu a svetla na grilování na baterie; Varice na papricky jalapeno; Prístroje pro roznení kurat; Elektrické plácacky na brouky; Keramické brikety; Lávové kameny; Pánve na elektrické grily; Podnosy k elektrickým grilum; Zelezné grilovací mríze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "cs",
+      "description": "Nekovové spony na prichycení ubrusu na stole.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "cs",
+      "description": "Nástroje na roznení, Jmenovite, Spachtle a Míchacky, Prodávané samostatne a balené v prenosných pouzdrech; Neelektrické poklopy na grily, Jmenovite, Pánve wok, a Prístroje na výrobu palacinek; Nádobí na grilování, jmenovite kucharské spízy, drátené kosíky, mísy, ohrívací a servírovací talíre a hrnce; Drzáky na kukuricný klas; Stolní náciní, Jmenovite, Drzáky na papírové tácky, nikoliv ze vzácných kovu, drzáky na bambusové talíre, drzáky na plastové talíre a Plastové servírovací podnosy; Maslovacky; Lahve na mazání na potraviny; Skrabky na grily; Kartácky na gril na cistení grilovacích mrízek; Náhradní díly na kartácky na gril pro domácnost; Kryty pro opékací rosty; Grilovací mrízky; Lzíce na varení [kuchynské náciní]; A lisy na hamburgery s rucním pohonem, Jmenovite, Lisy na tvarování masa; Drzáky na korenky; Mlýnky na korení; Vstrikovace marinády; Mopy na potírání masa omáckou pri grilování; Potravinové stany; Elektrické odpuzovace hmyzu; Nádobí na grilování; Pánve na grilování; Pánve na smazení; Tvarované tácy na grilování; Destníky na ochranu potravin pred hmyzem a destníkové kryty; Chnapky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "cs",
+      "description": "Ubrusy nikoliv z papíru; A netvarované látkové kryty na venkovní nábytek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "da",
+      "description": "Midler (flydende/kemiske) til rengøring af grillapparater; Rengøringsmidler til grillsten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "da",
+      "description": "Knivsmedevarer, gafler og skeer, Nemlig skeer og Knive, Solgt separat samt hånddrevne redskaber til mørning af kød; Redskaber til havegrill, Nemlig, Forke og Bidetænger.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Kødtermometre; Grilltermometre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "da",
+      "description": "Rotisseriesæt hovedsagelig bestående af stang, gaffel, motor og afbalanceringsvægte; Bærbare gasovne; Tilbehør til udendørs griller, nemlig stegeriste, stegeriste i etager; Hjælpebrændere til udendørs grillapparater; Ekstraslanger og regulatorer samt batteridrevet lys til udendørs grillapparater; Udstyr til tilberedning af jalapenos; Stegeudstyr til kyllinger; Elektrisk insektlys; Keramiske briketter; Lavasten; Elektriske grillpander; Elektriske grillbakker; Grilljern.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "da",
+      "description": "Klemmer (ikke af metal) til at holde dugen fast på bordet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "da",
+      "description": "Grillredskaber, Nemlig, Spatler og Venderedskaber, Solgt separat og pakket i transportkasser; Ikke-elektriske stegebakker til udendørs grillapparater, Nemlig, Wokker, og Pandekagepander; Grillgrej, nemlig stegespid, trådkurve, skåle, varme- og serveringsfade og små skåle; Majsholdere; Bordservice, Nemlig, Holdere (ikke af ædle metaller) til paptallerkener, tallerkenholdere af bambus, tallerkenholdere af plastic og Serveringsbakker af plast; Pensler til pensling af kød; Flasker til smøring af fødevarer; Grillskraber; Grillbørster til rengøring af udendørs grillapparater; Reservedele til grillbørster til husholdningsbrug; Grilldæksler; Grillnet; Dryppeskeer [redskaber til madlavning]; Håndbetjente burgermaskiner, Nemlig, Presser til formning af kød; Stænger til at holde krydderibøtter; Krydderikværne; Marinadeinjektorer; Bagepensler; Fødevaretelte; Elektriske insektfangere; Grillplader; Grillriste; Grillpander; Grillplader; Paraplyer til beskyttelse af fødevarer fra insekter samt paraplyhylstre; Ovnhandsker.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "da",
+      "description": "Bordduge, ikke af papir; Løse møbelovertræk til havemøbler.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "nl",
+      "description": "Grillreiniger (vloeibaar/chemisch); Reinigingsmiddelen voor steengrills.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "nl",
+      "description": "Messenmakerswaren, vorken en lepels, Te weten lepels en Messen, Afzonderlijk verkocht en met de hand te bedienen gereedschap voor het mals maken van vlees; Gerei voor barbecues, Te weten, Vorken en Pincetten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Vleesthermometers; Barbecuethermometers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "nl",
+      "description": "Braadspitsets hoofdzakelijk bestaande uit staaf, vork, motor, loodjes voor het uitbalanceren; Draagbare gaspitten; Accessoires voor barbecuegrills, te weten grillroosters, grillrekken en bakroosters; Reservebranders voor barbecuegrills; Reserveslangen en -regelaars en op batterijen werkzame grillampen voor barbecuegrills; Kooktoestel voor jalapeño's; Bakgerei voor kip; Elektrische insectenverdelgers; Keramische briketten; Lavastenen; Elektrische grillpannen; Elektrische grillbakjes; Grillijzers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "nl",
+      "description": "Niet-metalen klemmen voor het bevestigen van tafelkleden aan de tafel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "nl",
+      "description": "Barbecuegerei, Te weten, Bakspatels en Wentelaars, Afzonderlijk verkocht en voorverpakt in draagkoffers; Niet-elektrische bakjes voor op barbecuegrills, Te weten, Wokken, en Flensjespannen; Kookgerei voor het grillen, te weten pennen voor het roosteren of braden, manden van draad, kommen, warmhoud- en serveerschotels en potten; Maïskolfhouders; Tafelgerei, Te weten, Houders voor papieren schotels niet van edelmetaal, schotelhouders van bamboe, schotelhouders van plastic en Plastic dienbladen; Borstels voor het bedruipen van vlees; Flessen voor het bedruipen van voedsel; Grilschrapers; Grillborstels voor het reinigen van barbecuegrills; Vervangende onderdelen van grillborstels voor huishoudelijk gebruik; Hoezen voor roosters; Grilroosters; Opscheplepels; En handbediende persen voor hamburgers, Te weten, Persen voor in vorm brengen van vlees; Houder voor specerijen; Molens voor kruiderijen; Injectie-inrichtingen voor het marineren; Bedruipkwastjes; Houders voor voedingsmiddelen; Insectendoders; Grillschaal; Grillpan; Bakpannen; Grillplaten; Paraplu's voor het beschermen van voedsel tegen insecten en parapluhoezen; Ovenhandschoenen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "nl",
+      "description": "Tafellakens, niet van papier; En universele hoezen van textiel voor tuinmeubelen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "en",
+      "description": "Grill cleaner (liquid/chemical); grill stone cleaner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "en",
+      "description": "Cutlery, namely spoons and knives, sold separately, and hand operated meat tenderizing tools; barbecue utensils, namely, forks and tongs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Meat thermometers; barbecue thermometer gauges.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks, and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; jalapeño cooker; chicken roaster; electric bug zapper; ceramic briquettes; lava rocks; electric grill skillet; electric grill tray; grill irons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Non-metal clips for holding table cloths on table.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Barbecue utensils, namely, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks, and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters, and pots; corn cob holders; tableware, namely, paper plate holders not of precious metal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household use; grill covers; grill grids; basting spoons; and hand-operated burger presses, namely, presses for forming meat; spice arm; spice grinder; marinade injector; basting mop; food tent; bug zapper; grill dish; grill skillet; grill pan; grill tray; umbrellas for protecting food from insects and umbrella covers; barbecue mitts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Table cloths not made of paper; and unfitted fabric covers for outdoor furniture.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "et",
+      "description": "Grillipuhasti (vedel/kemikaal); Grillikivipuhasti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "et",
+      "description": "Noad, kahvlid, lusikad, Nimelt lusikad ja Noad, Müüakse eraldi, ja käsikäitatavad lihapehmendusvahendid; Grillimisnõud, Teisisõnu, Hangud ja Näpitsad, näpitstangid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Lihatermomeetrid; Grillitermomeetrinäidikud.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "et",
+      "description": "Röstimiskomplektid, mis koosnevad peamiselt vardast, kahvlist, mootorist ja tasakaaluraskusest; Kaasaskantavad gaasiahjud; Grillitarvikud, nimelt kivirestid, küpsetustasandid ja küpsetusrestid; Grillide varupõletid; Grillide varuvoolikud ja regulaatorid ning akuga käitatavad grillituled; Jalape?o-küpseti; Spetsiaalse tugialusega kanapraadimispannid; Elektrilised putukatõrjevahendid; Keraamilised briketid; Laavakivid (grillahjudele); Elektrilised grillpannid; Elektrised grillalused; Grillirauad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "et",
+      "description": "Mittemetallist klambrid laudlinade laual hoidmiseks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "et",
+      "description": "Grillimisriistad, Nimelt, tangid Pahtellabidad, ja Segumasinad, Müüakse eraldi ja kandeümbristesse pakendatuna; Mitteelektrilised grillikaaned, Nimelt, Wok-pannid, ja Pannkoogipannid; Grillimisnõud, nimelt küpsetusvardad, traatkorvid, kausid, soojendus- ja serveerimiskandikud ja -potid; Maisitõlvikuhoidikud; Lauanõud, Nimelt, Pabertaldrikute hoidikud, va väärismetallist, bambustaldrikute hoidikud, plasttaldrikute hoidikud ja Plastikust serveerimiskandikud; Lihaniisutuspintslid; Toitude kastmise pudelid; Grillikaabitsad; Grilliharjad grillide puhastamiseks; Grilliharjade varuosad, kasutuseks majapidamises; Grillikaaned; Grillvõred; Kastmelusikad [köögiriistad]; Ja käsikäitatavad kotletipressid, Nimelt, Lihavormimispressid; Vürtsiveskid; Maitseaineveskid; Marinaadisüstlad; Määrimisharjad; Toidutelgid; Putukatõrjevahendid; Grillinõud; Grillvardad; Grillahjud; Grillimisrestid; Varjud ja varjutuped toidu kaitseks putukate eest; Pajakindad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "et",
+      "description": "Muust kui paberist valmistatud laudlinad; Ja välimööbli sobitamata riidekatted.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "fi",
+      "description": "Grillien puhdistusaineet (nestemäiset/kemialliset); Grillikivien puhdistusaineet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "fi",
+      "description": "Aterimet, Nimittäin lusikat ja Veitset, Erikseen myytävät, ja käsikäyttöiset lihanmureuttamistyökalut; Grillaustarvikkeet, Nimittäin, Haarukat ja Hohtimet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Lihanlämpömittarit; Ulkogrillien lämpömittarit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fi",
+      "description": "Varrassarjat, jotka koostuvat pääosin tangosta, haarukasta, moottorista ja tasapainotuspainosta; Kannettavat kaasu-uunit; Ulkogrillien varusteet, nimittäin grilliritilät, keittoritilät ja paistoritilät; Ulkogrillien vaihtopolttimet; Ulkogrillien vaihtoletkut ja säätimet ja akkukäyttöiset grillivalot; Jalapeno-keitin; Kananpaistimet; Sähkökäyttöiset hyönteislätkät; Keraamiset grillibriketit; Laavakivet; Sähkögrillien paistinpannut; Sähkögrillien tarjottimet; Grilliraudat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fi",
+      "description": "Ei-metalliset nipsuttimet pöytäliinan kiinnittämiseksi pöytään.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "fi",
+      "description": "Grillaustarvikket, Nimittäin, Lastat ja Keittiölastat, Erikseen myytävät ja kantokoteloihin valmiiksi pakatut; Ulkogrillien päällä käytettävät ei-sähkökäyttöiset osat, Nimittäin, Wokkipannut, ja Lettupannut; Grillausastiat, nimittäin paistinvartaat, lankakorit, kulhot, lämpö- ja tarjoiluvadit ja kattilat; Maissitähkänpitimet; Pöytäastiastot, Nimittäin, Paperilautastelineet ei-jalometallista, lautastelineet bambusta, lautastelineet muovista ja Muoviset tarjottimet; Harjat lihan valeluun; Ruokien valelupullot; Grillikaapimet; Grilliharjat ulkogrillien puhdistamiseen; Grilliharjojen vaihto-osat kotikäyttöön; Grillien suojukset; Grillausarinat; Valelulusikat (keittiövälineet); Ja käsikäyttöiset hampurilaispihvien puristimet, Nimittäin, Puristimet lihan muotoiluun; Maustepullokahvat; Maustemyllyt; Ruiskut marinadeja varten; Kastikesudit; Ruokateltat; Sähkötoimiset hyönteispyydykset; Grilliastiat; Grillipaistinpannut; Parilointipannut; Grillilevyt; Sateenvarjot suojaamaan ruokia hyönteisiltä ja sateenvarjojen suojat; Patakintaat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "fi",
+      "description": "Muut kuin paperiset pöytäliinat; Ja tiettyyn kokoon sovittamattomat ulkokalusteiden kangaspäällysteet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "fr",
+      "description": "Produits nettoyants (liquides/chimiques) pour grilles; Produits nettoyants pour pierre de grilles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "fr",
+      "description": "Coutellerie, fourchettes et cuillers, À savoir cuillers et Couteaux, Vendus séparément, et outils à fonctionnement manuel pour attendrir la viande; Ustensiles pour barbecues, À savoir, Fourches et Pincettes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Thermomètres à viande; Thermomètres (jauges) de barbecue.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": "Kits de rôtissoire principalement composés d'une broche, d'une fourchette, d'un moteur et de plombs d'équilibrage; Fourneaux à gaz portables; Accessoires de grilles de barbecue, à savoir grilles à charbon, grilles de cuisson et supports de cuisson; Brûleurs de rechange pour grilles de barbecue; Tuyaux et régulateurs de rechange pour grilles de barbecue et éclairage de grilles à batterie; Appareils de cuisson de jalapeños; Rôtissoires à poulets; Dispositifs électriques pour éloigner les insectes; Briquettes en céramique; Roches de lave; Poêles pour grils électriques; Plateaux pour grils électriques; Fers pour grils.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fr",
+      "description": "Pinces non métalliques pour maintenir une nappe sur une table.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "fr",
+      "description": "Ustensiles pour le barbecue, À savoir, Spatules et Mélangeurs, Vendus séparément et préemballés dans des étuis de transport; Protections non électriques pour grils de barbecue, À savoir, Woks, et Crépières; Faïence de cuisson pour grils, à savoir brochettes de cuisson, corbeilles métalliques, bols, plateaux pour servir et maintenir au chaud les aliments, et marmites; Piques brochettes à maïs; Vaisselle de table, À savoir, Supports non en métaux précieux pour assiettes en papier, supports pour assiettes en bambou, supports pour assiettes en plastique et Plateaux de service en matières plastiques; Pinceaux pour badigeonner la viande; Bouteilles pour badigeonner des aliments; Grattoirs pour grills; Brosses pour nettoyer les grilles de barbecue; Pièces de rechange de brosses pour grilles pour le ménage; Housses de grils; Grilles pour grillades; Cuillères pour arroser la viande [ustensiles de cuisson]; Et presses à fonctionnement manuel pour hamburgers, À savoir, Presses pour former la viande; Leviers à épices; Moulins à épices; Injecteurs de marinades; Brosses de cuisine; Tentes à aliments; Électrocuteurs d'insectes; Plats pour grilles; Poêles pour grilles; Poêles à griller; Plateaux pour grill; Parapluies pour protéger les aliments des insectes et fourreaux de parapluies; Gants de cuisine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "fr",
+      "description": "Tapis de table (non en papier); Et housses en tissu non préformées pour meubles d'extérieur.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "de",
+      "description": "Grillreiniger (flüssig/chemisch); Steingrillreiniger.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "de",
+      "description": "Messerschmiedewaren, Gabeln und Löffel, Nämlich Löffel und Messer, Separat verkauft, und handbetätigte Fleischzartmacher; Geräte für Barbecues, Nämlich, Gabeln [Handwerkzeuge] und Zangen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Fleischthermometer; Grillthermometer-Anzeigen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "de",
+      "description": "Grillsets, vorwiegend bestehend aus Stange, Gabel, Motor und Bleigewichten zum Auswuchten; Tragbare Gasöfen; Grillzubehör, nämlich Grillgitter, Grillgestelle und Grillroste; Ersatzbrenner für Grillgeräte; Ersatzschläuche und -ventile für Grillgeräte und batteriebetriebene Grillbeleuchtungen; Jalapeño-Aufsatz; Hähnchenbräter; Elektrische Insektenfallen; Keramik-Briketts; Lavasteine; Elektrogrillpfanne; Elektrogrilltablett; Grilleisen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "de",
+      "description": "Tischdeckenklammern, nicht aus Metall.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "de",
+      "description": "Grillutensilien, Nämlich, Pfannenwender und Wender, Separat verkauft und in Tragebehältnissen vorverpackt; Nicht elektrische Auflagen für Grillgeräte, Nämlich, Woks, und Grillpfannen; Grillgeschirr, nämlich Bratspieße, Drahtkörbe, Schalen, Wärme- und Servierplatten und Behälter; Maiskolbenhalter; Tischgeschirr, Nämlich, Papiertellerständer, nicht aus Edelmetall, Bambustellerständer, Kunststofftellerständer und Kunststoffservierplatten; Bürsten zum Bestreichen von Fleisch; Flaschen zum Einfetten von Lebensmitteln; Grillkratzer; Grillbürsten zum Reinigen von Grillgeräten; Ersatzteile für Grillbürsten für Haushaltszwecke; Grillabdeckungen; Grillgitter; Gießlöffel [Küchenutensilien]; Und handbetätigte Burgerpressen, Nämlich, Pressen zum Fleischformen; Gewürzhalter; Gewürzmühlen; Marinadenspritzen; Schrubber für Fettspritzer; Essenszelt; Elektrische Insektenvernichter; Grillschalen; Grillzange; Bratpfannen; Grilltabletts; Insektenschutzschirme und Schirmhüllen; Ofenhandschuhe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "de",
+      "description": "Tischtücher, nicht aus Papier; Und nicht zugeschnittene Stoffüberwürfe für Gartenmöbel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "hr",
+      "description": "Sredstvo za ciscenje rostilja (tekuce/kemijsko); Sredstvo za ciscenje kamena za rostilj.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "hr",
+      "description": "Pribor za jelo, I to zlice i Nozevi, Prodaju se zasebno, i rucno pokretani alati za omeksavanje mesa; Posude za rostilj, Odnosno, Vile [rogulje] i Klijesta za hvatanje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Termometri za meso; Termometri za rostilj.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "hr",
+      "description": "Kompleti za razanj koji se primarno sastoje od sipke, vilice, motora i balansnog utega; Prijenosne plinske peci; Dodaci za rostilje, i to kamene resetke, stalci za pecenje i gradele; Zamjenski plamenici za rostilje; Zamjenska crijeva i regulatori za rostilj i svjetla za rostilj na baterije; Stalak za pecenje jalapeno papricica; Pekaci pilica; Elektricni aparat protiv kukaca; Keramicki briketi; Kamen od lave; Elektricna gril-tava; Elektricna gril-tepsija; Zeljezne resetke za rostilj.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "hr",
+      "description": "Nemetalne kvacice za zadrzavanje stolnjaka na stolu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "hr",
+      "description": "Posude za rostilj, Napomena, Kuhinjske lopatice i Sjekaci, Prodaju se zasebno i prepakirani u torbe za nosenje; Neelektricni poklopci za rostilje, Napomena, Wok tave, i Aparati za palacinke; Posude za rostiljanje, i to raznjici za pecenje, zicane kosare, zdjele, pladnjevi za grijanje i posluzivanje i lonci; Drzaci za kukuruzni klip; Stolno posude, Napomena, Drzaci papirnatih tanjura od neplemenitih metala, drzaci tanjura od bambusa, plasticni drzaci tanjura i Plasticni posluzavnici; Cetke za premazivanje mesa; Boce za polijevanje hrane; Strugalice za rostilj; Cetke za rostilj za ciscenje rostilja; Zamjenski dijelovi za cetke za rostilj za kucansku uporabu; Pokrovi za rostilj; Gradela; Zlice za polijevanje hrane [kuhinjsko posude]; I rucno pokretane prese za pljeskavice, Napomena, Prese za oblikovanje mesa; Produzna sipka za zacinjanje; Mlinci zacina; Strcaljke za marinade; Metlice za zamascivanje hrane; Satorcic za hranu; Elektricni aparat protiv buba; Posuda za rostilj; Gril-tava; Tave za przenje; Gril-tepsije; Kisobrancici za zastitu hrane od kukaca i navlake za kisobrancice; Kuhinjske rukavice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "hr",
+      "description": "Stolnjaci, nisu od papira; I neoblikovane tekstilne navlake za namjestaj na otvorenom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "hu",
+      "description": "Grilltisztító (folyadék/vegyszer); Grillkotisztító.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "hu",
+      "description": "Evoeszközök, Nevezetesen kanalak és Kések, Külön árusítva, valamint kézzel muködtetett húspuhító szerszámok; Eszközök kerti sütéshez, Nevezetesen, Vasvillák, mezogazdasági villák és Fogók, csipeszek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Húshomérok; Grillhoméro muszerek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "hu",
+      "description": "Elsosorban pálcából, villából, motorból és kiegyenlítosúlyból álló grillezo készletek; Gázüzemu hordozható tuzhelyek; Barbecue grillkiegészítok, nevezetesen grillkorácsok, sütorekeszek és sütorácsok; Cserélheto égofejek barbecue grillsütokhöz; Barbecue grill cserevezetékek és szabályozók, valamint elemmel muködtetett grill-lámpák; Jalapenosütok; Csirkesüto; Elektromos bogárcsapdák; Kerámiabrikettek; Lávakövek; Elektromos grillserpenyok; Elektromos grilltálcák; Grillvasak.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "hu",
+      "description": "Asztalterítok asztalhoz rögzítésére használt nem fémbol készült csipeszek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "hu",
+      "description": "Eszközök kerti sütéshez, Nevezetesen, Spatulák és Keverogépek, Külön árusított és hordozó tokokban elocsomagolt; Nem elektromos fedok barbecue grillsütokhöz, Nevezetesen, Wokok, és Palacsintasütok; Grillezoedények, nevezetesen sütonyársak, drótkosarak, mély tálak, melegen tartó és felszolgálótálak, és edények; Kukoricacso-tartók; Étkészlet, étkezési edények, Nevezetesen, Papírtányér-alátétek nem nemesfémbol, bambuszból készült tányéralátétek, muanyag tányéralátétek és Muanyag felszolgáló tálcák; Húskeno ecsetek; Palackok/üvegek ételek szósszal történo öntözéséhez; Kaparók grillsütokhöz; Grillkefék barbecue grillsütok tisztításához; Grillkefe pótalkatrészek háztartási célokra; Grillfedok; Grillrácsok; Spicckanalak [konyhai eszközök]; És kézi muködtetésu húspogácsaprések, Nevezetesen, Prések hús formázására; Fuszerorlok; Fuszerdarálók, -örlok; Eszközök pácok befecskendezésére; Kenopamacsok; Éttermi sátrak; Elektromos rovarölok; Grilledények; Grillserpenyok; Sütoserpenyok; Rácsok grillezéshez; Ételek rovaroktól történo védelmére használt ernyok és ernyohuzatok; Grillkesztyuk.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "hu",
+      "description": "Abroszok nem papírból; Nem rögzített textilhuzatok kültéri bútorokhoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "it",
+      "description": "Detergenti per griglie (liquidi/chimici); Prodotti per pulizia della pietra per griglie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "it",
+      "description": "Coltelleria, forchette e cucchiai, Ovvero cucchiai e Coltelli, Venduti separatamente, e utensili manuali per rendere tenera la carne; Utensili per barbecue, Ovvero, Forche e Pinzettine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Termometri per la carne; Indicatori per termometri per barbecue.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "it",
+      "description": "Kit per girarrosto composti principalmente da asta, forca, motore e piombini d'equilibratura; Stufe a gas portatili; Accessori per griglie per barbecue, ovvero grate per roccia, ripiani di cottura e griglie di cottura; Bruciatori di ricambio per griglie per barbecue; Tubi flessibili di ricambio e regolatori per barbecue e luci a batteria per barbecue; Strumenti per la cottura di peperoncini jalapeño; Dispositivi per polli allo spiedo; Apparecchi elettrici per uccidere gli insetti; Formelle in ceramica; Rocce laviche; Bistecchiere elettriche; Griglie a vaschetta elettriche; Ferri per griglie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "it",
+      "description": "Morsetti non metallici per tenere ferma la tovaglia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "it",
+      "description": "Utensili per barbecue, Ovvero, Spatole e Palette, Venduti separatamente e preconfezionati in confezioni da trasporto; Coperchi non elettrici per griglie per barbecue, Ovvero, Wok, e Apparecchi per la preparazione di crêpes; Articoli per cucinare alla griglia, ovvero spiedini da cucina, cestini in fili metallici, scodelle, scaldavivande e piatti daportata e vasetti; Supporti per le pannocchie; Stoviglie da tavola, Ovvero, Porta-piatti di carta non in metalli preziosi, porta-piatti in bambù, porta-piatti di plastica e Vassoi da portata in plastica; Pennelli per ungere la carne; Flaconi per miscelare; Raschietti per griglie; Pennelli per griglie per la pulizia di griglie per barbecue; Ricambi per pennelli per griglie per uso domestico; Coperture per griglie; Griglie per grigliare; Cucchiai per bagnare la carne [utensili da cucina]; Presse per hamburger manuali, Ovvero, Presse di formatura per la carne; Bracci per spezie; Macinini per spezie; Siringhe per marinate; Pennelli per miscelare; Tende per la cucina di alimenti; Dispositivi a scarica elettrica insetticidi; Piatti per griglie; Bistecchiere; Padelle per friggere; Ripiani per grill; Ombrelli per la protezione di cibo da insetti e foderi per ombrelli; Guanti da forno.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "it",
+      "description": "Tovaglie (non di carta); Fodere di protezione per mobili per esterni non sagomate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "lt",
+      "description": "Groteliu valiklis (skystis / chemine medziaga); Kepsnines akmens valiklis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "lt",
+      "description": "Peiliai, Butent saukstai ir Peiliai, Parduodami atskirai ir rankiniai mesai minkstinti skirti irankiai; Kepsniniu reikmenys, Butent, Sakes ir Replytes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Mesos termometrai; Kepsniniu termometru matuokliai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "lt",
+      "description": "Kepimo ant iesmo rinkiniai, kuriuo sudaro pirmiausia strypas, sakute, variklis ir svarstykles; Kilnojamosios dujines virykles; Kepsniniu groteliu priedai, butent nuimamos groteles, kepimo stovai ir kepimo tinkleliai; Kepsniniu groteliu keiciamieji degikliai; Kepsniniu groteliu keiciamosios zarneles ir reguliavimo itaisai bei kepsnines lemputes su baterija; Zaliu aitriuju pipiru kepimo forma; Vistienos keptuvai; Elektrinis vabzdziu naikinimo irenginys; Keraminiai briketai; Suakmenejusi lava; Elektrines kepsnines keptuve; Elektrine kepsnines padeklas; Kepsnines znyples.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "lt",
+      "description": "Nemetaliniai spaustukai, skirti laikyti staltiese ant stalo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "lt",
+      "description": "Barbekiu irankiai, Butent, Menteles ir Maisymo masinos, Parduodami atskirai, supakuoti i nesioti skirtus deklus; Neelektriniai vartytuvai kepsninems, Butent, Kiniskos keptuves, ir Blynu keptuves; Kepsniniu reikmenys, butent kepimo iesmai, krepsiai is vielos, dubenys, siltieji ir serviravimo padekliukai, puodai; Kukuruzu burbuoliu laikikliai; Stalo reikmenys, Butent, Popieriniu leksciu laikikliai ne is brangiuju metalu, bambuko leksciu laikikliai, plastiko leksciu laikikliai ir Plastikiniai serviravimo padeklai; Sepeteliai mesai sutepti; Stiklainiai maistui marinuoti; Kepsniniu sveistukai; Kepsniniu sepeciai, skirti valyti kepsnines; Kepsniniu sepeciu keiciamosios dalys namu reikmems; Griliu dangciai; Kepinimo groteles; Saukstai kepsniams laistyti [virtuves reikmenys]; Ir rankiniai mesainiams slegti skirti itaisai, Butent, Slegimo itaisai mesai formuoti; Prieskoniu atsaka; Prieskoniu maluneliai; Marinato purkstuvai; Dygsniuotos sluostes; Maisto palapine; Musmusiai; Kepsnines lekste; Kepsnines keptuve; Keptuves; Groteliu padeklai; Skeciai, skirti apsaugoti maista nuo vabzdziu ir skeciu imautes; Orkaites pirstines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "lt",
+      "description": "Tekstilines staltieses; Ir nepritaikyti audiniu apvalkalai lauko baldams.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "lv",
+      "description": "Grila tiritajs (skidrums/kimisks); Grila akmens tiritajs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "lv",
+      "description": "Galda piederumi, Proti, karotes un Nazi, Pardots atseviski, ka ari ar roku darbinami riki galas dauzisanai; Grilesanas piederumi, Proti, Daksinas un Knaibles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Galas termometri; Grila termometri.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "lv",
+      "description": "Grila komplekti, kas galvenokart sastav no stiena, daksas, motora un svariem; Parvietojamas gazes plitis; Grila piederumi, piemeram, akmens rezgi, gatavosanas plaukti un gatavosanas rezgi; Grila rezerves degli; Grila rezerves caurules un regulatori, ka ari ar akumulatoru darbinams grila apgaismojums; Halapenjo piparu gatavotajs; Ietaises calu cepsanai; Elektrisks musu sitamais; Keramiskas briketes; Lavas akmeni; Elektriska grila panna; Elektriska grila paplate; Dzelzs izstradajumi grilam.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "lv",
+      "description": "Nemetaliskas skavas galdauta piestiprinasanai pie galda.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "lv",
+      "description": "Grilesanas piederumi, Proti, Lapstinas un Maisisanas masinas, Pardots atseviski un ieprieks sapakots maisinos; Grila pannas, kas nav elektriskas, Proti, Vokpannas, un Pankuku cepsanas pannas; Grilesanas trauki, proti, iesmi edienu gatavosanai (metala iesmi), stieplu grozi, blodas, paplates ar siltuma izolaciju un servesanas paplates, un katli; Kukuruzas valisu turetaji; Galda piederumi, Proti, Papira skivja turetaji, kas nav no dargmetala, bambusa skivja turetaji, plastmasas skivja turetaji un Plastmasas servesanas paplates; Otas galas ieziesanai; Pudeles edienu aplaistisanai; Grila skrapji; Grila birstes grilu tirisanai; Grila birstes rezerves dalas izmantosanai majsaimnieciba; Grilu parklaji; Grilesanas restes; Karotes cepesa apslacisanai [virtuves piederumi]; Un ar roku darbinami burgeru galas formetaji, Proti, Preses galas formesanai; Garsvielu trauks; Garsvielu dzirnavinas; Marinades izslaksanas ierices; Apslacisanas sukli; Edinasanas pakalpojuma nojumes; Kukainu aizsarglidzekli; Grila skivis; Grila panna; Pannas; Paplates grilesanai; Lietussargi edienu aizsargasanai no kukainiem un lietussarga futrali; Grila cimdi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "lv",
+      "description": "Galdauti, kas nav no papira; Un nepielagoti audumu parsegi ara mebelem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "mt",
+      "description": "Prodott ghat-tindif tal-grill (likwidu/kimika); Tindif ta' grill bil-gebel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "mt",
+      "description": "Pozati, Jigifieri mgharef u Skieken, Mibjugha separatament, u ghodda tat-tenderizing tal-laham imhaddma bl-idejn; Ghodod ghal barbikjus, Jigifieri, Frieket u Pinzetti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Termometri tal-laham; Gauges tat-termometri tal-barbikjus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "mt",
+      "description": "Kitts tar-rotisserie li jikkonsistu primarjament minn virga, furketta, mutur u pizijiet ghall-bilanc; Fuklari tal-gass li jingarru; Accessorji tal-grill tal-barbikju, jigifieri, gradilji tal-blat, xbieki tat-tisjir, u grids tat-tisjir; Berners tal-bdil ghall-grills tal-barbikjus; Pajpijiet u regolaturi tal-bdil ghall-grill tal-barbikju u dwal tal-grill imhaddma bil-batterija; Kuker tal-jalapeno; Dixxijiet tax-xiwi ta' tigieg fil-forn; Bug zappers elettrici; Briquettes tac-ceramika; Gebel tal-lava; Twagen tal-grill tal-elettriku; Trej tal-grill tal-elettriku; Hadid tal-grill.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "mt",
+      "description": "Klipps mhux tal-metall ghaz-zamma tat-dvalji fuq il-mejda.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "mt",
+      "description": "Ghodod ghall-barbikju, Jigifieri, Spatuli u Magni li jhalltu, Mibjugha separatament u ppakkjati minn qabel f'kaxxetti tal-garr; Toppers mhux elettrici ghall-grills tal-barbikju, Jigifieri, Twagen kbar u fondi bil-mankijiet, u Taghmir ghat-tisjir tal-pankejks; Ghodda tat-tisjir tal-grill, jigifieri, skewers tat-tisjir, qfief tal-wajer, skutelli, platters bis-shana u biex wiehed iservi bihom, u borom; Oggetti li bihom izomm ic-cifciegha tal-qamhirrum; Oggetti li jintuzaw ghal fuq il-mejda, Jigifieri, Howlders tal-platti tal-karti mhux tal-metall prezzjuz, howlders tal-platti tal-bamboo, howlders tal-platti tal-plastik u Trejs tal-plastik biex isservi; Xkupilji biex tidlek/ixxarrab il-laham; Fliexken ghat-traxxix ta' zejt jew zlazi fuq l-ikel; Barraxa ghall-gradilji; Xkupilji tal-grill ghat-tindif tal-grillijiet tal-barbikju; Partijiet tal-bdil ghall-ixkupilji tal-grill ghal uzu fid-dar; Kavers tal-grill; Gradilji ghax-xiwi; Mgharef biex troxx il-meraq fuq il-laham [ghodda tal-kcina]; U pressi tal-bergers imhaddma bl-idejn, Jigifieri, Pressi ghall-forom tal-laham; Driegh tal-hwawar; Mtiehen tal-hwawar; Injetturi tal-marinati; Moppijiet ghat-traxxix; Tinda tal-ikel; Oggetti li jeqirdu l-insetti; Dixx tal-grill; Twagen tal-grill; Twagen ghax-xiwi; Trejs ghax-xiwi; Umbrelel ghall-protezzjoni tal-ikel minn insetti u ghata tal-umbrelel; Ingwanti tal-forn.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "mt",
+      "description": "Tvalji mhux maghmula mill-karti; U kavers tad-drapp mhux issikkat ghal ghamara ta' barra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "pl",
+      "description": "Srodek do czyszczenia grilla (w plynie/chemiczny); Srodek do czyszczenia kamienia do grilla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "pl",
+      "description": "Wyroby nozownicze, Mianowicie lyzki i Noze, Sprzedawane osobno i reczne narzedzia do zmiekczania miesa; Narzedzia do grilla, Zn, Widly i Szczypce, kleszcze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Termometry do miesa; Wskazniki temperatury do grillów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "pl",
+      "description": "Zestawy roznów skladajace sie glównie z preta, widelca, silnika i ciezarka; Przenosne kuchenki gazowe; Akcesoria do grilla, mianowicie kratki, siatki do gotowania i kratki do gotowania; Wymienne palniki do grilla; Wymienne weze i regulatory do grilla i lampy do grilla zasilane bateryjnie; Urzadzenia do przyrzadzania nadziewanych papryczek jalapeno; Opiekacze do kurczaków; Elektryczne lapki na owady; Brykiety ceramiczne; Skaly magmowe; Elektryczna patelnia do grillowania; Elektryczne tace do grillowania; Kratki do grillowania.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "pl",
+      "description": "Niemetalowe klipsy do trzymania obrusu na stole.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "pl",
+      "description": "Narzedzia do grilla, Zn, Lopatki i Malaksery, Sprzedawane osobno i pakowane w etui do przenoszenia; Nieelektryczne pokrywy do grillów, Zn, Patelnie typu wok, i Patelnie do nalesników; Sprzet do grillowania, mianowicie szpikulce kuchenne, kosze druciane, miski, tace do podgrzewania i serwowania i garnki; Uchwyty do kolb kukurydzy; Zastawa stolowa, Zn, Uchwyty nie z metalu szlachetnego do talerzy papierowych, uchwyty do talerzy bambusowych, uchwyty do talerzy z tworzyw sztucznych i Tace do serwowania z tworzywa sztucznego; Pedzle do smarowania miesa; Butelki do polewania potraw; Skrobaki do grilla; Szczotki grillowe do czyszczenia grillów; Czesci wymienne do szczotek grillowych do uzytku domowego; Pokrywy do grillów; Kratki do grillowania; Lyzki do polewania pieczeni [utensylia kuchenne]; I reczne prasy do burgerów, Zn, Prasy do formowania miesa; Pólka na przyprawy; Mlynki do przypraw; Urzadzenia do wtryskiwania marynaty; Mopy do polewania; Namiot z jedzeniem; Elektryczne urzadzenia do zwalczania robactwa; Naczynia do grilla; Patelnia do grillowania; Patelnie do grilowania; Tace do grilla; Parasole chroniace zywnosc przed owadami i pokrowce na parasole; Rekawice kuchenne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "pl",
+      "description": "Bielizna stolowa tekstylna; I niedopasowane pokrowce materialowe na meble ogrodowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "pt",
+      "description": "Produtos de limpeza (líquidos/químicos) para grelhadores; Produtos para limpeza de pedras de grelhar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "pt",
+      "description": "Cuteleria, Nomeadamente colheres e Facas, Vendidas separadamente, e utensílios manuais para amaciar a carne; Utensílios para churrascos, Nomeadamente, Forquilhas e Tenazes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Termómetros para carne; Termómetros para churrasqueiras.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "pt",
+      "description": "Kits para assadores constituídos principalmente por uma vareta, garfo, motor e contrapeso; Fogões a gás portáteis; Acessórios para churrasqueiras, especificamente grelhas para colocar por cima do carvão, suportes e grelhas para cozinhar; Queimadores de substituição para churrasqueiras; Tubos flexíveis e reguladores de substituição e luzes alimentadas por bateria para churrasqueiras; Suportes para cozinhar jalapeños; Assadores de frango; Mata-insetos elétricos; Briquetes cerâmicos; Pedras de lava; Caçarolas para uso em grelhadores elétricos; Tabuleiros para uso em grelhadores elétricos; Utensílios para grelhadores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "pt",
+      "description": "Molas não metálicas para fixar toalhas de mesa à mesa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "pt",
+      "description": "Utensílios para churrascos, Nomeadamente, Espátulas e Espátulas para virar, Vendidos separadamente e pré-embalados em estojos de transporte; Aparelhos não elétricos para cozinhar alimentos em churrasqueiras, Nomeadamente, Woks, e Chapas para fazer crepes; Artigos para cozinhar alimentos em grelhadores, especificamente espetos, grelhas metálicas, recipientes, pratos e travessas para servir resistentes ao calor e panelas; Espetos de maçarocas de milho; Louça de mesa, Nomeadamente, Suportes para pratos de papel (não em metais preciosos), suportes para pratos de bambu, suportes para pratos de plástico e Bandejas para servir em plástico; Pincéis para untar a carne; Garrafas para regar alimentos; Raspadores para grelhas; Escovas para limpeza de churrasqueiras; Peças de substituição de escovas de grelhadores para uso doméstico; Tampas para grelhadores; Grelhas; Colheres para regar com molho [utensílios de cozinha]; E prensas manuais para hambúrgueres, Nomeadamente, Prensas para moldar carne; Varetas para colocação de frascos de especiarias na ponta; Moinhos de especiarias; Injetores de marinadas; Utensílios tipo mopa para churrascos; Redomas para proteger alimentos; Dispositivos anti-insetos; Travessas para cozinhar em grelhadores; Frigideiras para cozinhar em grelhadores; Sertãs; Tabuleiros de grelhador; Chapéus-de-chuva para proteger os alimentos dos insetos, e respetivas capas; Luvas de forno.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "pt",
+      "description": "Toalhas de mesa não em papel; E coberturas em tecido não ajustadas para móveis de exterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "ro",
+      "description": "Produs (lichid/chimic) de curatare pentru gratar; Produs pentru curatarea pietrelor de gratar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "ro",
+      "description": "Cutite, furculite si linguri, Si anume linguri si Cutite, Vândute separat, si anume instrumente de mâna pentru fragezirea carnii; Tacâmuri pentru gratar, Si anume, Furci si Clesti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Termometre pentru carne; Aparat de masurat pentru termometre de gratar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "ro",
+      "description": "Seturi de rotiserie care constau în primul rând în tija, furculita, motor si greutate pentru cântar; Sobe portabile pe gaz; Accesorii pentru gratare de gradina, si anume grilaje pentru piatra, suporturi de gatit si gratare de gatit; Arzatoare de schimb pentru gratare de gradina; Furtunuri de schimb pentru gratare de gradina si regulatoare si becuri pentru gratare, actionate manual; Aparat de gatit jalapeno; Suporturi pentru prajit pui; Aparat electric zapper pentru insecte; Brichete ceramice; Roci vulcanice; Tigaie pentru gratar electric; Tava pentru gratar electric; Fiare pentru gratar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "ro",
+      "description": "Cleme nemetalice pentru fixarea fetelor de masa pe masa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "ro",
+      "description": "Tacâmuri pentru gratar, Si anume, Spatule si Ustensile de intors alimentele, Vândute separat si preambalate în genti de transport; Toppere neelectrice pentru gratare de gradina, Si anume, Tigai orientale (wokuri), si Masini pentru clatite; Vase de gatit la gratar, si anume frigarui, cosuri de sârma, boluri, platouri care mentin caldura si pentru servit si oale; Suporturi pentru stiuletii de porumb; Vesela, Si anume, Suporturi pentru farfurii din hârtie, nu din metal pretios, suporturi pentru farfurii din bambus, suporturi pentru farfurii din plastic si Tavi pentru servit din plastic; Pensule pentru uns carnea; Sticle pentru uns alimente; Razuitoare pentru gratar; Perii pentru gratar folosite la curatarea gratarelor de gradina; Piese de schimb pentru perii de gratar, pentru uz menajer; Capace de gratar; Grilaje pentru gratar; Linguri pentru gatit si servit [ustensile de bucatarie]; Si prese actionate manual pentru burgeri, Si anume, Prese pentru format carnea; Brat pentru condimente; Rasnite pentru condimente; Dispozitive pentru injectarea marinadelor; Mopuri de uns; Cort pentru alimente; Dispozitive electrice pentru gândaci; Vas pentru gratar; Tigaie pentru gratar; Tigai; Tavi pentru gratare; Umbrele pentru protejarea alimentelor de insecte si huse pentru umbrele; Manusi de bucatarie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "ro",
+      "description": "Fete de masa, nu din hârtie; Si huse textile neajustate pentru mobilier de exterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "sk",
+      "description": "Prípravok na cistenie grilov (tekutý/chemický); Prípravok na cistenie kamennej grilovacej dosky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "sk",
+      "description": "Noziarsky tovar a príbory, Menovite lyzice a Noze, Predávaný samostatne a rucné nástroje na naklepávanie mäsa; Nácinie na grilovanie, Konkrétne, Vidly a Pinzety.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Teplomery do rúry na pecenie mäsa; Teplomery urcené pre grily.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sk",
+      "description": "Grilovacie súpravy obsahujúce najmä ihlicu, vidlicku a vyvazovacie závazie; Prenosné plynové sporáky; Príslusenstvo ku grilom, menovite kamenné rosty, vlnovkové plechy na pecenie a mriezky na pecenie; Vymenitelné horáky do grilov; Vymenitelné hadicky a regulátory do grilov a osvetlenie grilov na baterky; Varic na papricky jalapeno; Prístroje na grilovanie kurata; Elektrický lapac na hmyz; Keramické brikety; Lávové kamene; Elektrické panvice na grilovanie; Elektrický plech na grilovanie; Mriezky na grilovanie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "sk",
+      "description": "Nekovové spony na prichytenie obrusu na stôl.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "sk",
+      "description": "Nástroje na opekanie, Tz, Spachtle a stierky a Miesacky, Predávané samostatne a zabalené v prenosných obaloch; Neelektrické tácky ku grilom, Tz, Woky, a Prístroje na výrobu palaciniek; Nádoby na grilovanie, menovite ihlice na pecenie, drôtené kose, misky, tácky na zohrievanie a servírovanie a hrnce; Drziaky na kukuricný klas; Kuchynský riad, Tz, Papierové stojany na tácky, nie z drahých kovov, bambusové stojany na tácky, umelohmotné stojany na tácky a Plastové servírovacie podnosy; Stetce na potieranie mäsa; Flase na podlievanie jedla; Skrabáky na gril; Kefy na cistenie grilov; Náhradné diely ku kefám na grily na domáce pouzitie; Potahy na gril; Grilovacie mriezky; Kuchynské naberacky; A rucné lisy na hamburgery, Tz, Lisy na tvarovanie mäsa; Stojany na korenie; Mlynceky na korenie; Nástroje na vstrekovanie marinády; Podlievacie mopy; Kryty na jedlo; Elektrické prístroje na hubenie hmyzu; Miska na grilovanie; Panvica na grilovanie; Panvice na smazenie; Grilovacie podnosy; Poklopy na ochranu jedla pred hmyzom a obaly na poklopy; Kuchynské rukavice, chnapky.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "sk",
+      "description": "Textilné obrusy okrem tých z papiera; A neprispôsobené textilné potahy na exteriérový nábytok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "sl",
+      "description": "Pripravki za ciscenje zara (tekoci/kemicni); Pripravki za ciscenje kamna za zar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "sl",
+      "description": "Nozi, vilice in zlice, In sicer zlice in Nozi, Ki so v prodaji posamicno in rocna orodja za zmehcanje mesa; Pripomocki za zar, Sicer, Vilice in Scipalke.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Termometri za meso; Termometri za zar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sl",
+      "description": "Kompleti za pecenje, ki so sestavljeni predvsem iz palic, vilic, motorja in utezi za ravnovesje; Prenosni plinski stedilniki; Dodatki za zar, in sicer kamnite resetke, stojala za kuhanje in resetke za kuhanje; Nadomestni gorilniki za zare; Nadomestne cevi in regulatorji za zare in baterijske svetilke za zare; Kuhalniki za jalapeno paprike; Pekaci za piscance; Elektricni naprave za odstranjevanje mrcesa; Keramicni briketi; Kamni iz lave; Elektricne kozice za zar; Elektricni podstavki za zar; Zelezne plosce za zar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "sl",
+      "description": "Nekovinske sponke za drzanje namiznih prtov na mizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "sl",
+      "description": "Pripomocki za zar, Sicer, Lopatice in Obracalci, Ki so v prodaji loceno in vnaprej pakirani v nosilnih torbah; Neelektricne pokrovke za zare, Sicer, Voki, in Ponve za peko palacink; Posoda za kuhanje na zaru, in sicer nabodala za kuho, zicne kosare, sklede, krozniki za pogrevanj in servirni krozniki in lonci; Drzala za koruzne storze; Namizna posoda, Sicer, Drzala za kroznike iz papirja, ki niso iz zlahtnih kovin, drzala za kroznike iz bambusa, drzala za kroznike iz umetne snovi in Servirni pladnji iz umetnih snovi; Copici za nanasanje mascobe na meso; Steklenice za polivanje mascobe na hrano; Priprave za ciscenje zara; Scetke za ciscenje zara; Nadomestni deli za scetke za zar za gospodinjstvo; Pokrovi za zar; Resetke za zare; Zlice za zalivanje [kuhinjski pripomocki]; In rocno upravljane stiskalnice za polpete, Sicer, Stiskalnice za oblikovanje mesa; Rocice za zacimbe; Mlincki za zacimbe; Injekcije za marinado; Copici za nanasanje mascobe; Pokrivala za hrano; Naprava za unicevanje mrcesa; Posode za zar; Kozice za zar; Ponve za zar; Pladnji za zar; Dezniki za zascito hrane pred mrcesom in prevleke za deznike; Rokavice za zar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "sl",
+      "description": "Namizni prti, ki niso narejeni iz papirja; In neprilagojena pokrivala iz tkanin za zunanje pohistvo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "es",
+      "description": "Producto limpiador de parrillas (líquido/químico); Producto limpiador de piedras de parrilla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "es",
+      "description": "Artículos de cuchillería, tenedores y cucharas, En concreto cucharas y Cuchillos, Vendidos por separado, y herramientas accionadas manualmente para ablandar la carne; Utensilios para barbacoas, En concreto, Horcas para uso agrícola y Pinzas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Termómetros para la carne; Termómetros de barbacoa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "es",
+      "description": "Kits de asador que consisten principalmente en varilla, horquilla, motor y contrapeso; Estufas de gas portátiles; Accesorios de parrilla de barbacoa, en concreto, rejilla inferior, soportes para cocinar y rejillas para cocinar; Quemadores de repuesto de parrilla de barbacoa; Tubos flexibles y reguladores de repuesto de parrilla de barbacoa y luces de barbacoa que funcionan con pilas; Equipo para cocinar jalapeños; Asadores de pollos; Insecticida eléctrico; Briquetas de cerámica; Rocas de lava; Sartén honda de parrilla eléctrica; Bandeja eléctrica de parrilla; Hierros de parrilla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "es",
+      "description": "Pinzas no metálicas para sujetar los manteles sobre la mesa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "es",
+      "description": "Utensilios para barbacoas, En concreto, Espátulas y Volteadores, Vendidos por separado y previamente envasados en estuches de transporte; Superficies o recipientes no eléctricos para cocinar en parrillas de barbacoa, En concreto, Woks, y Aparatos para hacer \"crêpes\"; Artículos de cocina de parrilla, en concreto, espetones para cocinar, cestas de alambre, cuencos, fuentes térmicas y de servir, y ollas; Portamazorcas de maíz; Vajillas, En concreto, Soportes de platos de papel que no sean de metales preciosos, soportes de platos de bambú, soportes de platos de plástico y Bandejas para servir de plástico; Cepillos para ungir la carne; Botellas para embadurnar alimentos; Raspadores de parrilla; Cepillos de parrilla para limpiar parrillas de barbacoas; Partes de recambio de cepillo de parrilla para uso doméstico; Tapaderas para parrillas; Rejillas de parrilla; Cucharones [utensilios de cocina]; Y prensas de hamburguesa accionadas a mano, En concreto, Prensas para formar carne; Brazo para especiar; Molinillos de especias; Inyectores de marinada; Brochas para embadurnar; Carpas para cocinar; Dispositivos para eliminar insectos mediante descarga eléctrica; Plato de parrilla; Sartén de parrilla; Sartenes; Bandejas para parrilla; Paraguas para proteger los alimentos de los insectos y fundas de paraguas; Manoplas de cocina.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "es",
+      "description": "Tapetes de mesa que no sean de papel; Y fundas de tela no ajustables para mobiliario exterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "sw",
+      "description": "Grillrengöringsmedel (flytande/kemiskt); Grillstensrengöringsmedel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "sw",
+      "description": "Knivsmidesvaror, bestick, Nämligen skedar och Knivar, Sålt enskilt och handdrivna köttmörningsredskap; Grillredskap, Nämligen, Gafflar och Tänger.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Köttermometrar; Grilltermometermätare.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "sw",
+      "description": "Grillspettssatser bestående främst av stänger, gaffel, motor och balansvikter; Bärbara gasspisar; Grilltillbehör, nämligen grillgaller, matlagningsnät, och grillgaller; Ersättningsbrännare till utomhusgrillar; Grillersättningsslangar och regulatorer och batteridrivna grilltändare; Jalapeñokokare; Stekanordningar för kyckling; Elektriska flugfångare; Keramikbriketter; Lavastenar; Elektriska grillpannor; Elgrillar; Grilljärn.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "sw",
+      "description": "Icke-metalliska klämmor för att behålla bordsdukar på bordet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "sw",
+      "description": "Redskap för utomhusgrillar, Nämligen, Spacklar och Stekspadar, Sålda separat och förförpackade i bärpåsar; Icke-elektriska grillbrickor för utomhusgrillar, Nämligen, Wokpannor, och Pannkakslaggar; Grillmatlagningsredskap, nämligen, stekspett, trådkorgar, bunkar, värme- och serveringsfat, och grytor; Majskolvshållare; Bordsserviser, Nämligen, Hållare för papperstallrikar, ej av ädelmetall, tallrikshållare av bambu, tallrikshållare av plast och Plastiska serveringsbrickor; Borstar för pensling av kött; Flaskor för att tråckla tråd runt livsmedel; Grillskrapor; Grillborstar för rengöring av utegrillar; Ersättningsdelar för grillborstar för hushållsanvändning; Grillhuvar; Grillgaller; Össlevar [köksgeråd]; Och handdrivna hamburgerpressar, Nämligen, Pressar för att forma kött; Kryddarmar; Kryddkvarnar; Marinadsprutor; Ösningsmoppar; Mattält; Ljusfällor för insekter; Grilltallrikar; Grillpannor; Grillpannor; Grillbrickor; Paraplyn för att skydda mat från insekter och paraplyfodral; Grillvantar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "sw",
+      "description": "Borddukar ej tillverkade av papper; Icke-formsydda överdrag av tyg för utomhusmöbler.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Mr. Bar-B-Q Products LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "GRÜNECKER PATENT- UND RECHTSANWÄLTE PARTG MBB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 Commerce Drive,Hauppauge,New York, 11788",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Mr. Bar-B-Q Products LLC"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.01.02",
+      "26.11.02",
+      "26.11.07"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Cistice grilu (tekuté/chemické); Cistice grilovacích kamenu."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Noze, vidlicky a lzíce, Jmenovite lzíce a Noze, Náciní na krehcení masa prodávané samostatne a s rucním pohonem; Potreby pro roznení, Jmenovite, Vidle, vidlicky a Kleste stípací."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Teplomery na maso; Teplomery na merení teploty pri grilování."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Grilovací sady sestávající prevázne z tyce, vidlice, motoru a vyrovnávací záteze; Prenosné plynové sporáky; Príslusenství na grilování, jmenovite kamenné mrízky, police na varení a mrízky na varení; Výmenné horáky grilu; Výmenné hadice a regulátory grilu a svetla na grilování na baterie; Varice na papricky jalapeno; Prístroje pro roznení kurat; Elektrické plácacky na brouky; Keramické brikety; Lávové kameny; Pánve na elektrické grily; Podnosy k elektrickým grilum; Zelezné grilovací mríze."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Nekovové spony na prichycení ubrusu na stole."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Nástroje na roznení, Jmenovite, Spachtle a Míchacky, Prodávané samostatne a balené v prenosných pouzdrech; Neelektrické poklopy na grily, Jmenovite, Pánve wok, a Prístroje na výrobu palacinek; Nádobí na grilování, jmenovite kucharské spízy, drátené kosíky, mísy, ohrívací a servírovací talíre a hrnce; Drzáky na kukuricný klas; Stolní náciní, Jmenovite, Drzáky na papírové tácky, nikoliv ze vzácných kovu, drzáky na bambusové talíre, drzáky na plastové talíre a Plastové servírovací podnosy; Maslovacky; Lahve na mazání na potraviny; Skrabky na grily; Kartácky na gril na cistení grilovacích mrízek; Náhradní díly na kartácky na gril pro domácnost; Kryty pro opékací rosty; Grilovací mrízky; Lzíce na varení [kuchynské náciní]; A lisy na hamburgery s rucním pohonem, Jmenovite, Lisy na tvarování masa; Drzáky na korenky; Mlýnky na korení; Vstrikovace marinády; Mopy na potírání masa omáckou pri grilování; Potravinové stany; Elektrické odpuzovace hmyzu; Nádobí na grilování; Pánve na grilování; Pánve na smazení; Tvarované tácy na grilování; Destníky na ochranu potravin pred hmyzem a destníkové kryty; Chnapky."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Ubrusy nikoliv z papíru; A netvarované látkové kryty na venkovní nábytek."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Midler (flydende/kemiske) til rengøring af grillapparater; Rengøringsmidler til grillsten."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Knivsmedevarer, gafler og skeer, Nemlig skeer og Knive, Solgt separat samt hånddrevne redskaber til mørning af kød; Redskaber til havegrill, Nemlig, Forke og Bidetænger."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Kødtermometre; Grilltermometre."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Rotisseriesæt hovedsagelig bestående af stang, gaffel, motor og afbalanceringsvægte; Bærbare gasovne; Tilbehør til udendørs griller, nemlig stegeriste, stegeriste i etager; Hjælpebrændere til udendørs grillapparater; Ekstraslanger og regulatorer samt batteridrevet lys til udendørs grillapparater; Udstyr til tilberedning af jalapenos; Stegeudstyr til kyllinger; Elektrisk insektlys; Keramiske briketter; Lavasten; Elektriske grillpander; Elektriske grillbakker; Grilljern."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Klemmer (ikke af metal) til at holde dugen fast på bordet."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Grillredskaber, Nemlig, Spatler og Venderedskaber, Solgt separat og pakket i transportkasser; Ikke-elektriske stegebakker til udendørs grillapparater, Nemlig, Wokker, og Pandekagepander; Grillgrej, nemlig stegespid, trådkurve, skåle, varme- og serveringsfade og små skåle; Majsholdere; Bordservice, Nemlig, Holdere (ikke af ædle metaller) til paptallerkener, tallerkenholdere af bambus, tallerkenholdere af plastic og Serveringsbakker af plast; Pensler til pensling af kød; Flasker til smøring af fødevarer; Grillskraber; Grillbørster til rengøring af udendørs grillapparater; Reservedele til grillbørster til husholdningsbrug; Grilldæksler; Grillnet; Dryppeskeer [redskaber til madlavning]; Håndbetjente burgermaskiner, Nemlig, Presser til formning af kød; Stænger til at holde krydderibøtter; Krydderikværne; Marinadeinjektorer; Bagepensler; Fødevaretelte; Elektriske insektfangere; Grillplader; Grillriste; Grillpander; Grillplader; Paraplyer til beskyttelse af fødevarer fra insekter samt paraplyhylstre; Ovnhandsker."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Bordduge, ikke af papir; Løse møbelovertræk til havemøbler."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Grillreiniger (vloeibaar/chemisch); Reinigingsmiddelen voor steengrills."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Messenmakerswaren, vorken en lepels, Te weten lepels en Messen, Afzonderlijk verkocht en met de hand te bedienen gereedschap voor het mals maken van vlees; Gerei voor barbecues, Te weten, Vorken en Pincetten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Vleesthermometers; Barbecuethermometers."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Braadspitsets hoofdzakelijk bestaande uit staaf, vork, motor, loodjes voor het uitbalanceren; Draagbare gaspitten; Accessoires voor barbecuegrills, te weten grillroosters, grillrekken en bakroosters; Reservebranders voor barbecuegrills; Reserveslangen en -regelaars en op batterijen werkzame grillampen voor barbecuegrills; Kooktoestel voor jalapeño's; Bakgerei voor kip; Elektrische insectenverdelgers; Keramische briketten; Lavastenen; Elektrische grillpannen; Elektrische grillbakjes; Grillijzers."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Niet-metalen klemmen voor het bevestigen van tafelkleden aan de tafel."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Barbecuegerei, Te weten, Bakspatels en Wentelaars, Afzonderlijk verkocht en voorverpakt in draagkoffers; Niet-elektrische bakjes voor op barbecuegrills, Te weten, Wokken, en Flensjespannen; Kookgerei voor het grillen, te weten pennen voor het roosteren of braden, manden van draad, kommen, warmhoud- en serveerschotels en potten; Maïskolfhouders; Tafelgerei, Te weten, Houders voor papieren schotels niet van edelmetaal, schotelhouders van bamboe, schotelhouders van plastic en Plastic dienbladen; Borstels voor het bedruipen van vlees; Flessen voor het bedruipen van voedsel; Grilschrapers; Grillborstels voor het reinigen van barbecuegrills; Vervangende onderdelen van grillborstels voor huishoudelijk gebruik; Hoezen voor roosters; Grilroosters; Opscheplepels; En handbediende persen voor hamburgers, Te weten, Persen voor in vorm brengen van vlees; Houder voor specerijen; Molens voor kruiderijen; Injectie-inrichtingen voor het marineren; Bedruipkwastjes; Houders voor voedingsmiddelen; Insectendoders; Grillschaal; Grillpan; Bakpannen; Grillplaten; Paraplu's voor het beschermen van voedsel tegen insecten en parapluhoezen; Ovenhandschoenen."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Tafellakens, niet van papier; En universele hoezen van textiel voor tuinmeubelen."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Grill cleaner (liquid/chemical); grill stone cleaner."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cutlery, namely spoons and knives, sold separately, and hand operated meat tenderizing tools; barbecue utensils, namely, forks and tongs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Meat thermometers; barbecue thermometer gauges."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks, and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; jalapeño cooker; chicken roaster; electric bug zapper; ceramic briquettes; lava rocks; electric grill skillet; electric grill tray; grill irons."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Non-metal clips for holding table cloths on table."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Barbecue utensils, namely, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks, and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters, and pots; corn cob holders; tableware, namely, paper plate holders not of precious metal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household use; grill covers; grill grids; basting spoons; and hand-operated burger presses, namely, presses for forming meat; spice arm; spice grinder; marinade injector; basting mop; food tent; bug zapper; grill dish; grill skillet; grill pan; grill tray; umbrellas for protecting food from insects and umbrella covers; barbecue mitts."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Table cloths not made of paper; and unfitted fabric covers for outdoor furniture."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Grillipuhasti (vedel/kemikaal); Grillikivipuhasti."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Noad, kahvlid, lusikad, Nimelt lusikad ja Noad, Müüakse eraldi, ja käsikäitatavad lihapehmendusvahendid; Grillimisnõud, Teisisõnu, Hangud ja Näpitsad, näpitstangid."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Lihatermomeetrid; Grillitermomeetrinäidikud."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Röstimiskomplektid, mis koosnevad peamiselt vardast, kahvlist, mootorist ja tasakaaluraskusest; Kaasaskantavad gaasiahjud; Grillitarvikud, nimelt kivirestid, küpsetustasandid ja küpsetusrestid; Grillide varupõletid; Grillide varuvoolikud ja regulaatorid ning akuga käitatavad grillituled; Jalape?o-küpseti; Spetsiaalse tugialusega kanapraadimispannid; Elektrilised putukatõrjevahendid; Keraamilised briketid; Laavakivid (grillahjudele); Elektrilised grillpannid; Elektrised grillalused; Grillirauad."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Mittemetallist klambrid laudlinade laual hoidmiseks."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Grillimisriistad, Nimelt, tangid Pahtellabidad, ja Segumasinad, Müüakse eraldi ja kandeümbristesse pakendatuna; Mitteelektrilised grillikaaned, Nimelt, Wok-pannid, ja Pannkoogipannid; Grillimisnõud, nimelt küpsetusvardad, traatkorvid, kausid, soojendus- ja serveerimiskandikud ja -potid; Maisitõlvikuhoidikud; Lauanõud, Nimelt, Pabertaldrikute hoidikud, va väärismetallist, bambustaldrikute hoidikud, plasttaldrikute hoidikud ja Plastikust serveerimiskandikud; Lihaniisutuspintslid; Toitude kastmise pudelid; Grillikaabitsad; Grilliharjad grillide puhastamiseks; Grilliharjade varuosad, kasutuseks majapidamises; Grillikaaned; Grillvõred; Kastmelusikad [köögiriistad]; Ja käsikäitatavad kotletipressid, Nimelt, Lihavormimispressid; Vürtsiveskid; Maitseaineveskid; Marinaadisüstlad; Määrimisharjad; Toidutelgid; Putukatõrjevahendid; Grillinõud; Grillvardad; Grillahjud; Grillimisrestid; Varjud ja varjutuped toidu kaitseks putukate eest; Pajakindad."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Muust kui paberist valmistatud laudlinad; Ja välimööbli sobitamata riidekatted."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Grillien puhdistusaineet (nestemäiset/kemialliset); Grillikivien puhdistusaineet."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Aterimet, Nimittäin lusikat ja Veitset, Erikseen myytävät, ja käsikäyttöiset lihanmureuttamistyökalut; Grillaustarvikkeet, Nimittäin, Haarukat ja Hohtimet."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Lihanlämpömittarit; Ulkogrillien lämpömittarit."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Varrassarjat, jotka koostuvat pääosin tangosta, haarukasta, moottorista ja tasapainotuspainosta; Kannettavat kaasu-uunit; Ulkogrillien varusteet, nimittäin grilliritilät, keittoritilät ja paistoritilät; Ulkogrillien vaihtopolttimet; Ulkogrillien vaihtoletkut ja säätimet ja akkukäyttöiset grillivalot; Jalapeno-keitin; Kananpaistimet; Sähkökäyttöiset hyönteislätkät; Keraamiset grillibriketit; Laavakivet; Sähkögrillien paistinpannut; Sähkögrillien tarjottimet; Grilliraudat."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ei-metalliset nipsuttimet pöytäliinan kiinnittämiseksi pöytään."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Grillaustarvikket, Nimittäin, Lastat ja Keittiölastat, Erikseen myytävät ja kantokoteloihin valmiiksi pakatut; Ulkogrillien päällä käytettävät ei-sähkökäyttöiset osat, Nimittäin, Wokkipannut, ja Lettupannut; Grillausastiat, nimittäin paistinvartaat, lankakorit, kulhot, lämpö- ja tarjoiluvadit ja kattilat; Maissitähkänpitimet; Pöytäastiastot, Nimittäin, Paperilautastelineet ei-jalometallista, lautastelineet bambusta, lautastelineet muovista ja Muoviset tarjottimet; Harjat lihan valeluun; Ruokien valelupullot; Grillikaapimet; Grilliharjat ulkogrillien puhdistamiseen; Grilliharjojen vaihto-osat kotikäyttöön; Grillien suojukset; Grillausarinat; Valelulusikat (keittiövälineet); Ja käsikäyttöiset hampurilaispihvien puristimet, Nimittäin, Puristimet lihan muotoiluun; Maustepullokahvat; Maustemyllyt; Ruiskut marinadeja varten; Kastikesudit; Ruokateltat; Sähkötoimiset hyönteispyydykset; Grilliastiat; Grillipaistinpannut; Parilointipannut; Grillilevyt; Sateenvarjot suojaamaan ruokia hyönteisiltä ja sateenvarjojen suojat; Patakintaat."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Muut kuin paperiset pöytäliinat; Ja tiettyyn kokoon sovittamattomat ulkokalusteiden kangaspäällysteet."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits nettoyants (liquides/chimiques) pour grilles; Produits nettoyants pour pierre de grilles."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Coutellerie, fourchettes et cuillers, À savoir cuillers et Couteaux, Vendus séparément, et outils à fonctionnement manuel pour attendrir la viande; Ustensiles pour barbecues, À savoir, Fourches et Pincettes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Thermomètres à viande; Thermomètres (jauges) de barbecue."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Kits de rôtissoire principalement composés d'une broche, d'une fourchette, d'un moteur et de plombs d'équilibrage; Fourneaux à gaz portables; Accessoires de grilles de barbecue, à savoir grilles à charbon, grilles de cuisson et supports de cuisson; Brûleurs de rechange pour grilles de barbecue; Tuyaux et régulateurs de rechange pour grilles de barbecue et éclairage de grilles à batterie; Appareils de cuisson de jalapeños; Rôtissoires à poulets; Dispositifs électriques pour éloigner les insectes; Briquettes en céramique; Roches de lave; Poêles pour grils électriques; Plateaux pour grils électriques; Fers pour grils."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Pinces non métalliques pour maintenir une nappe sur une table."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Ustensiles pour le barbecue, À savoir, Spatules et Mélangeurs, Vendus séparément et préemballés dans des étuis de transport; Protections non électriques pour grils de barbecue, À savoir, Woks, et Crépières; Faïence de cuisson pour grils, à savoir brochettes de cuisson, corbeilles métalliques, bols, plateaux pour servir et maintenir au chaud les aliments, et marmites; Piques brochettes à maïs; Vaisselle de table, À savoir, Supports non en métaux précieux pour assiettes en papier, supports pour assiettes en bambou, supports pour assiettes en plastique et Plateaux de service en matières plastiques; Pinceaux pour badigeonner la viande; Bouteilles pour badigeonner des aliments; Grattoirs pour grills; Brosses pour nettoyer les grilles de barbecue; Pièces de rechange de brosses pour grilles pour le ménage; Housses de grils; Grilles pour grillades; Cuillères pour arroser la viande [ustensiles de cuisson]; Et presses à fonctionnement manuel pour hamburgers, À savoir, Presses pour former la viande; Leviers à épices; Moulins à épices; Injecteurs de marinades; Brosses de cuisine; Tentes à aliments; Électrocuteurs d'insectes; Plats pour grilles; Poêles pour grilles; Poêles à griller; Plateaux pour grill; Parapluies pour protéger les aliments des insectes et fourreaux de parapluies; Gants de cuisine."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Tapis de table (non en papier); Et housses en tissu non préformées pour meubles d'extérieur."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Grillreiniger (flüssig/chemisch); Steingrillreiniger."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Messerschmiedewaren, Gabeln und Löffel, Nämlich Löffel und Messer, Separat verkauft, und handbetätigte Fleischzartmacher; Geräte für Barbecues, Nämlich, Gabeln [Handwerkzeuge] und Zangen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Fleischthermometer; Grillthermometer-Anzeigen."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Grillsets, vorwiegend bestehend aus Stange, Gabel, Motor und Bleigewichten zum Auswuchten; Tragbare Gasöfen; Grillzubehör, nämlich Grillgitter, Grillgestelle und Grillroste; Ersatzbrenner für Grillgeräte; Ersatzschläuche und -ventile für Grillgeräte und batteriebetriebene Grillbeleuchtungen; Jalapeño-Aufsatz; Hähnchenbräter; Elektrische Insektenfallen; Keramik-Briketts; Lavasteine; Elektrogrillpfanne; Elektrogrilltablett; Grilleisen."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Tischdeckenklammern, nicht aus Metall."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Grillutensilien, Nämlich, Pfannenwender und Wender, Separat verkauft und in Tragebehältnissen vorverpackt; Nicht elektrische Auflagen für Grillgeräte, Nämlich, Woks, und Grillpfannen; Grillgeschirr, nämlich Bratspieße, Drahtkörbe, Schalen, Wärme- und Servierplatten und Behälter; Maiskolbenhalter; Tischgeschirr, Nämlich, Papiertellerständer, nicht aus Edelmetall, Bambustellerständer, Kunststofftellerständer und Kunststoffservierplatten; Bürsten zum Bestreichen von Fleisch; Flaschen zum Einfetten von Lebensmitteln; Grillkratzer; Grillbürsten zum Reinigen von Grillgeräten; Ersatzteile für Grillbürsten für Haushaltszwecke; Grillabdeckungen; Grillgitter; Gießlöffel [Küchenutensilien]; Und handbetätigte Burgerpressen, Nämlich, Pressen zum Fleischformen; Gewürzhalter; Gewürzmühlen; Marinadenspritzen; Schrubber für Fettspritzer; Essenszelt; Elektrische Insektenvernichter; Grillschalen; Grillzange; Bratpfannen; Grilltabletts; Insektenschutzschirme und Schirmhüllen; Ofenhandschuhe."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Tischtücher, nicht aus Papier; Und nicht zugeschnittene Stoffüberwürfe für Gartenmöbel."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Sredstvo za ciscenje rostilja (tekuce/kemijsko); Sredstvo za ciscenje kamena za rostilj."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pribor za jelo, I to zlice i Nozevi, Prodaju se zasebno, i rucno pokretani alati za omeksavanje mesa; Posude za rostilj, Odnosno, Vile [rogulje] i Klijesta za hvatanje."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Termometri za meso; Termometri za rostilj."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Kompleti za razanj koji se primarno sastoje od sipke, vilice, motora i balansnog utega; Prijenosne plinske peci; Dodaci za rostilje, i to kamene resetke, stalci za pecenje i gradele; Zamjenski plamenici za rostilje; Zamjenska crijeva i regulatori za rostilj i svjetla za rostilj na baterije; Stalak za pecenje jalapeno papricica; Pekaci pilica; Elektricni aparat protiv kukaca; Keramicki briketi; Kamen od lave; Elektricna gril-tava; Elektricna gril-tepsija; Zeljezne resetke za rostilj."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Nemetalne kvacice za zadrzavanje stolnjaka na stolu."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Posude za rostilj, Napomena, Kuhinjske lopatice i Sjekaci, Prodaju se zasebno i prepakirani u torbe za nosenje; Neelektricni poklopci za rostilje, Napomena, Wok tave, i Aparati za palacinke; Posude za rostiljanje, i to raznjici za pecenje, zicane kosare, zdjele, pladnjevi za grijanje i posluzivanje i lonci; Drzaci za kukuruzni klip; Stolno posude, Napomena, Drzaci papirnatih tanjura od neplemenitih metala, drzaci tanjura od bambusa, plasticni drzaci tanjura i Plasticni posluzavnici; Cetke za premazivanje mesa; Boce za polijevanje hrane; Strugalice za rostilj; Cetke za rostilj za ciscenje rostilja; Zamjenski dijelovi za cetke za rostilj za kucansku uporabu; Pokrovi za rostilj; Gradela; Zlice za polijevanje hrane [kuhinjsko posude]; I rucno pokretane prese za pljeskavice, Napomena, Prese za oblikovanje mesa; Produzna sipka za zacinjanje; Mlinci zacina; Strcaljke za marinade; Metlice za zamascivanje hrane; Satorcic za hranu; Elektricni aparat protiv buba; Posuda za rostilj; Gril-tava; Tave za przenje; Gril-tepsije; Kisobrancici za zastitu hrane od kukaca i navlake za kisobrancice; Kuhinjske rukavice."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Stolnjaci, nisu od papira; I neoblikovane tekstilne navlake za namjestaj na otvorenom."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Grilltisztító (folyadék/vegyszer); Grillkotisztító."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Evoeszközök, Nevezetesen kanalak és Kések, Külön árusítva, valamint kézzel muködtetett húspuhító szerszámok; Eszközök kerti sütéshez, Nevezetesen, Vasvillák, mezogazdasági villák és Fogók, csipeszek."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Húshomérok; Grillhoméro muszerek."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Elsosorban pálcából, villából, motorból és kiegyenlítosúlyból álló grillezo készletek; Gázüzemu hordozható tuzhelyek; Barbecue grillkiegészítok, nevezetesen grillkorácsok, sütorekeszek és sütorácsok; Cserélheto égofejek barbecue grillsütokhöz; Barbecue grill cserevezetékek és szabályozók, valamint elemmel muködtetett grill-lámpák; Jalapenosütok; Csirkesüto; Elektromos bogárcsapdák; Kerámiabrikettek; Lávakövek; Elektromos grillserpenyok; Elektromos grilltálcák; Grillvasak."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Asztalterítok asztalhoz rögzítésére használt nem fémbol készült csipeszek."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Eszközök kerti sütéshez, Nevezetesen, Spatulák és Keverogépek, Külön árusított és hordozó tokokban elocsomagolt; Nem elektromos fedok barbecue grillsütokhöz, Nevezetesen, Wokok, és Palacsintasütok; Grillezoedények, nevezetesen sütonyársak, drótkosarak, mély tálak, melegen tartó és felszolgálótálak, és edények; Kukoricacso-tartók; Étkészlet, étkezési edények, Nevezetesen, Papírtányér-alátétek nem nemesfémbol, bambuszból készült tányéralátétek, muanyag tányéralátétek és Muanyag felszolgáló tálcák; Húskeno ecsetek; Palackok/üvegek ételek szósszal történo öntözéséhez; Kaparók grillsütokhöz; Grillkefék barbecue grillsütok tisztításához; Grillkefe pótalkatrészek háztartási célokra; Grillfedok; Grillrácsok; Spicckanalak [konyhai eszközök]; És kézi muködtetésu húspogácsaprések, Nevezetesen, Prések hús formázására; Fuszerorlok; Fuszerdarálók, -örlok; Eszközök pácok befecskendezésére; Kenopamacsok; Éttermi sátrak; Elektromos rovarölok; Grilledények; Grillserpenyok; Sütoserpenyok; Rácsok grillezéshez; Ételek rovaroktól történo védelmére használt ernyok és ernyohuzatok; Grillkesztyuk."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Abroszok nem papírból; Nem rögzített textilhuzatok kültéri bútorokhoz."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Detergenti per griglie (liquidi/chimici); Prodotti per pulizia della pietra per griglie."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Coltelleria, forchette e cucchiai, Ovvero cucchiai e Coltelli, Venduti separatamente, e utensili manuali per rendere tenera la carne; Utensili per barbecue, Ovvero, Forche e Pinzettine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Termometri per la carne; Indicatori per termometri per barbecue."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Kit per girarrosto composti principalmente da asta, forca, motore e piombini d'equilibratura; Stufe a gas portatili; Accessori per griglie per barbecue, ovvero grate per roccia, ripiani di cottura e griglie di cottura; Bruciatori di ricambio per griglie per barbecue; Tubi flessibili di ricambio e regolatori per barbecue e luci a batteria per barbecue; Strumenti per la cottura di peperoncini jalapeño; Dispositivi per polli allo spiedo; Apparecchi elettrici per uccidere gli insetti; Formelle in ceramica; Rocce laviche; Bistecchiere elettriche; Griglie a vaschetta elettriche; Ferri per griglie."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Morsetti non metallici per tenere ferma la tovaglia."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Utensili per barbecue, Ovvero, Spatole e Palette, Venduti separatamente e preconfezionati in confezioni da trasporto; Coperchi non elettrici per griglie per barbecue, Ovvero, Wok, e Apparecchi per la preparazione di crêpes; Articoli per cucinare alla griglia, ovvero spiedini da cucina, cestini in fili metallici, scodelle, scaldavivande e piatti daportata e vasetti; Supporti per le pannocchie; Stoviglie da tavola, Ovvero, Porta-piatti di carta non in metalli preziosi, porta-piatti in bambù, porta-piatti di plastica e Vassoi da portata in plastica; Pennelli per ungere la carne; Flaconi per miscelare; Raschietti per griglie; Pennelli per griglie per la pulizia di griglie per barbecue; Ricambi per pennelli per griglie per uso domestico; Coperture per griglie; Griglie per grigliare; Cucchiai per bagnare la carne [utensili da cucina]; Presse per hamburger manuali, Ovvero, Presse di formatura per la carne; Bracci per spezie; Macinini per spezie; Siringhe per marinate; Pennelli per miscelare; Tende per la cucina di alimenti; Dispositivi a scarica elettrica insetticidi; Piatti per griglie; Bistecchiere; Padelle per friggere; Ripiani per grill; Ombrelli per la protezione di cibo da insetti e foderi per ombrelli; Guanti da forno."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Tovaglie (non di carta); Fodere di protezione per mobili per esterni non sagomate."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Groteliu valiklis (skystis / chemine medziaga); Kepsnines akmens valiklis."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Peiliai, Butent saukstai ir Peiliai, Parduodami atskirai ir rankiniai mesai minkstinti skirti irankiai; Kepsniniu reikmenys, Butent, Sakes ir Replytes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mesos termometrai; Kepsniniu termometru matuokliai."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kepimo ant iesmo rinkiniai, kuriuo sudaro pirmiausia strypas, sakute, variklis ir svarstykles; Kilnojamosios dujines virykles; Kepsniniu groteliu priedai, butent nuimamos groteles, kepimo stovai ir kepimo tinkleliai; Kepsniniu groteliu keiciamieji degikliai; Kepsniniu groteliu keiciamosios zarneles ir reguliavimo itaisai bei kepsnines lemputes su baterija; Zaliu aitriuju pipiru kepimo forma; Vistienos keptuvai; Elektrinis vabzdziu naikinimo irenginys; Keraminiai briketai; Suakmenejusi lava; Elektrines kepsnines keptuve; Elektrine kepsnines padeklas; Kepsnines znyples."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Nemetaliniai spaustukai, skirti laikyti staltiese ant stalo."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Barbekiu irankiai, Butent, Menteles ir Maisymo masinos, Parduodami atskirai, supakuoti i nesioti skirtus deklus; Neelektriniai vartytuvai kepsninems, Butent, Kiniskos keptuves, ir Blynu keptuves; Kepsniniu reikmenys, butent kepimo iesmai, krepsiai is vielos, dubenys, siltieji ir serviravimo padekliukai, puodai; Kukuruzu burbuoliu laikikliai; Stalo reikmenys, Butent, Popieriniu leksciu laikikliai ne is brangiuju metalu, bambuko leksciu laikikliai, plastiko leksciu laikikliai ir Plastikiniai serviravimo padeklai; Sepeteliai mesai sutepti; Stiklainiai maistui marinuoti; Kepsniniu sveistukai; Kepsniniu sepeciai, skirti valyti kepsnines; Kepsniniu sepeciu keiciamosios dalys namu reikmems; Griliu dangciai; Kepinimo groteles; Saukstai kepsniams laistyti [virtuves reikmenys]; Ir rankiniai mesainiams slegti skirti itaisai, Butent, Slegimo itaisai mesai formuoti; Prieskoniu atsaka; Prieskoniu maluneliai; Marinato purkstuvai; Dygsniuotos sluostes; Maisto palapine; Musmusiai; Kepsnines lekste; Kepsnines keptuve; Keptuves; Groteliu padeklai; Skeciai, skirti apsaugoti maista nuo vabzdziu ir skeciu imautes; Orkaites pirstines."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Tekstilines staltieses; Ir nepritaikyti audiniu apvalkalai lauko baldams."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Grila tiritajs (skidrums/kimisks); Grila akmens tiritajs."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Galda piederumi, Proti, karotes un Nazi, Pardots atseviski, ka ari ar roku darbinami riki galas dauzisanai; Grilesanas piederumi, Proti, Daksinas un Knaibles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Galas termometri; Grila termometri."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Grila komplekti, kas galvenokart sastav no stiena, daksas, motora un svariem; Parvietojamas gazes plitis; Grila piederumi, piemeram, akmens rezgi, gatavosanas plaukti un gatavosanas rezgi; Grila rezerves degli; Grila rezerves caurules un regulatori, ka ari ar akumulatoru darbinams grila apgaismojums; Halapenjo piparu gatavotajs; Ietaises calu cepsanai; Elektrisks musu sitamais; Keramiskas briketes; Lavas akmeni; Elektriska grila panna; Elektriska grila paplate; Dzelzs izstradajumi grilam."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Nemetaliskas skavas galdauta piestiprinasanai pie galda."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Grilesanas piederumi, Proti, Lapstinas un Maisisanas masinas, Pardots atseviski un ieprieks sapakots maisinos; Grila pannas, kas nav elektriskas, Proti, Vokpannas, un Pankuku cepsanas pannas; Grilesanas trauki, proti, iesmi edienu gatavosanai (metala iesmi), stieplu grozi, blodas, paplates ar siltuma izolaciju un servesanas paplates, un katli; Kukuruzas valisu turetaji; Galda piederumi, Proti, Papira skivja turetaji, kas nav no dargmetala, bambusa skivja turetaji, plastmasas skivja turetaji un Plastmasas servesanas paplates; Otas galas ieziesanai; Pudeles edienu aplaistisanai; Grila skrapji; Grila birstes grilu tirisanai; Grila birstes rezerves dalas izmantosanai majsaimnieciba; Grilu parklaji; Grilesanas restes; Karotes cepesa apslacisanai [virtuves piederumi]; Un ar roku darbinami burgeru galas formetaji, Proti, Preses galas formesanai; Garsvielu trauks; Garsvielu dzirnavinas; Marinades izslaksanas ierices; Apslacisanas sukli; Edinasanas pakalpojuma nojumes; Kukainu aizsarglidzekli; Grila skivis; Grila panna; Pannas; Paplates grilesanai; Lietussargi edienu aizsargasanai no kukainiem un lietussarga futrali; Grila cimdi."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Galdauti, kas nav no papira; Un nepielagoti audumu parsegi ara mebelem."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Prodott ghat-tindif tal-grill (likwidu/kimika); Tindif ta' grill bil-gebel."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Pozati, Jigifieri mgharef u Skieken, Mibjugha separatament, u ghodda tat-tenderizing tal-laham imhaddma bl-idejn; Ghodod ghal barbikjus, Jigifieri, Frieket u Pinzetti."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Termometri tal-laham; Gauges tat-termometri tal-barbikjus."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Kitts tar-rotisserie li jikkonsistu primarjament minn virga, furketta, mutur u pizijiet ghall-bilanc; Fuklari tal-gass li jingarru; Accessorji tal-grill tal-barbikju, jigifieri, gradilji tal-blat, xbieki tat-tisjir, u grids tat-tisjir; Berners tal-bdil ghall-grills tal-barbikjus; Pajpijiet u regolaturi tal-bdil ghall-grill tal-barbikju u dwal tal-grill imhaddma bil-batterija; Kuker tal-jalapeno; Dixxijiet tax-xiwi ta' tigieg fil-forn; Bug zappers elettrici; Briquettes tac-ceramika; Gebel tal-lava; Twagen tal-grill tal-elettriku; Trej tal-grill tal-elettriku; Hadid tal-grill."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Klipps mhux tal-metall ghaz-zamma tat-dvalji fuq il-mejda."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Ghodod ghall-barbikju, Jigifieri, Spatuli u Magni li jhalltu, Mibjugha separatament u ppakkjati minn qabel f'kaxxetti tal-garr; Toppers mhux elettrici ghall-grills tal-barbikju, Jigifieri, Twagen kbar u fondi bil-mankijiet, u Taghmir ghat-tisjir tal-pankejks; Ghodda tat-tisjir tal-grill, jigifieri, skewers tat-tisjir, qfief tal-wajer, skutelli, platters bis-shana u biex wiehed iservi bihom, u borom; Oggetti li bihom izomm ic-cifciegha tal-qamhirrum; Oggetti li jintuzaw ghal fuq il-mejda, Jigifieri, Howlders tal-platti tal-karti mhux tal-metall prezzjuz, howlders tal-platti tal-bamboo, howlders tal-platti tal-plastik u Trejs tal-plastik biex isservi; Xkupilji biex tidlek/ixxarrab il-laham; Fliexken ghat-traxxix ta' zejt jew zlazi fuq l-ikel; Barraxa ghall-gradilji; Xkupilji tal-grill ghat-tindif tal-grillijiet tal-barbikju; Partijiet tal-bdil ghall-ixkupilji tal-grill ghal uzu fid-dar; Kavers tal-grill; Gradilji ghax-xiwi; Mgharef biex troxx il-meraq fuq il-laham [ghodda tal-kcina]; U pressi tal-bergers imhaddma bl-idejn, Jigifieri, Pressi ghall-forom tal-laham; Driegh tal-hwawar; Mtiehen tal-hwawar; Injetturi tal-marinati; Moppijiet ghat-traxxix; Tinda tal-ikel; Oggetti li jeqirdu l-insetti; Dixx tal-grill; Twagen tal-grill; Twagen ghax-xiwi; Trejs ghax-xiwi; Umbrelel ghall-protezzjoni tal-ikel minn insetti u ghata tal-umbrelel; Ingwanti tal-forn."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Tvalji mhux maghmula mill-karti; U kavers tad-drapp mhux issikkat ghal ghamara ta' barra."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Srodek do czyszczenia grilla (w plynie/chemiczny); Srodek do czyszczenia kamienia do grilla."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Wyroby nozownicze, Mianowicie lyzki i Noze, Sprzedawane osobno i reczne narzedzia do zmiekczania miesa; Narzedzia do grilla, Zn, Widly i Szczypce, kleszcze."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Termometry do miesa; Wskazniki temperatury do grillów."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Zestawy roznów skladajace sie glównie z preta, widelca, silnika i ciezarka; Przenosne kuchenki gazowe; Akcesoria do grilla, mianowicie kratki, siatki do gotowania i kratki do gotowania; Wymienne palniki do grilla; Wymienne weze i regulatory do grilla i lampy do grilla zasilane bateryjnie; Urzadzenia do przyrzadzania nadziewanych papryczek jalapeno; Opiekacze do kurczaków; Elektryczne lapki na owady; Brykiety ceramiczne; Skaly magmowe; Elektryczna patelnia do grillowania; Elektryczne tace do grillowania; Kratki do grillowania."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Niemetalowe klipsy do trzymania obrusu na stole."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Narzedzia do grilla, Zn, Lopatki i Malaksery, Sprzedawane osobno i pakowane w etui do przenoszenia; Nieelektryczne pokrywy do grillów, Zn, Patelnie typu wok, i Patelnie do nalesników; Sprzet do grillowania, mianowicie szpikulce kuchenne, kosze druciane, miski, tace do podgrzewania i serwowania i garnki; Uchwyty do kolb kukurydzy; Zastawa stolowa, Zn, Uchwyty nie z metalu szlachetnego do talerzy papierowych, uchwyty do talerzy bambusowych, uchwyty do talerzy z tworzyw sztucznych i Tace do serwowania z tworzywa sztucznego; Pedzle do smarowania miesa; Butelki do polewania potraw; Skrobaki do grilla; Szczotki grillowe do czyszczenia grillów; Czesci wymienne do szczotek grillowych do uzytku domowego; Pokrywy do grillów; Kratki do grillowania; Lyzki do polewania pieczeni [utensylia kuchenne]; I reczne prasy do burgerów, Zn, Prasy do formowania miesa; Pólka na przyprawy; Mlynki do przypraw; Urzadzenia do wtryskiwania marynaty; Mopy do polewania; Namiot z jedzeniem; Elektryczne urzadzenia do zwalczania robactwa; Naczynia do grilla; Patelnia do grillowania; Patelnie do grilowania; Tace do grilla; Parasole chroniace zywnosc przed owadami i pokrowce na parasole; Rekawice kuchenne."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Bielizna stolowa tekstylna; I niedopasowane pokrowce materialowe na meble ogrodowe."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Produtos de limpeza (líquidos/químicos) para grelhadores; Produtos para limpeza de pedras de grelhar."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Cuteleria, Nomeadamente colheres e Facas, Vendidas separadamente, e utensílios manuais para amaciar a carne; Utensílios para churrascos, Nomeadamente, Forquilhas e Tenazes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Termómetros para carne; Termómetros para churrasqueiras."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Kits para assadores constituídos principalmente por uma vareta, garfo, motor e contrapeso; Fogões a gás portáteis; Acessórios para churrasqueiras, especificamente grelhas para colocar por cima do carvão, suportes e grelhas para cozinhar; Queimadores de substituição para churrasqueiras; Tubos flexíveis e reguladores de substituição e luzes alimentadas por bateria para churrasqueiras; Suportes para cozinhar jalapeños; Assadores de frango; Mata-insetos elétricos; Briquetes cerâmicos; Pedras de lava; Caçarolas para uso em grelhadores elétricos; Tabuleiros para uso em grelhadores elétricos; Utensílios para grelhadores."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Molas não metálicas para fixar toalhas de mesa à mesa."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Utensílios para churrascos, Nomeadamente, Espátulas e Espátulas para virar, Vendidos separadamente e pré-embalados em estojos de transporte; Aparelhos não elétricos para cozinhar alimentos em churrasqueiras, Nomeadamente, Woks, e Chapas para fazer crepes; Artigos para cozinhar alimentos em grelhadores, especificamente espetos, grelhas metálicas, recipientes, pratos e travessas para servir resistentes ao calor e panelas; Espetos de maçarocas de milho; Louça de mesa, Nomeadamente, Suportes para pratos de papel (não em metais preciosos), suportes para pratos de bambu, suportes para pratos de plástico e Bandejas para servir em plástico; Pincéis para untar a carne; Garrafas para regar alimentos; Raspadores para grelhas; Escovas para limpeza de churrasqueiras; Peças de substituição de escovas de grelhadores para uso doméstico; Tampas para grelhadores; Grelhas; Colheres para regar com molho [utensílios de cozinha]; E prensas manuais para hambúrgueres, Nomeadamente, Prensas para moldar carne; Varetas para colocação de frascos de especiarias na ponta; Moinhos de especiarias; Injetores de marinadas; Utensílios tipo mopa para churrascos; Redomas para proteger alimentos; Dispositivos anti-insetos; Travessas para cozinhar em grelhadores; Frigideiras para cozinhar em grelhadores; Sertãs; Tabuleiros de grelhador; Chapéus-de-chuva para proteger os alimentos dos insetos, e respetivas capas; Luvas de forno."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Toalhas de mesa não em papel; E coberturas em tecido não ajustadas para móveis de exterior."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Produs (lichid/chimic) de curatare pentru gratar; Produs pentru curatarea pietrelor de gratar."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Cutite, furculite si linguri, Si anume linguri si Cutite, Vândute separat, si anume instrumente de mâna pentru fragezirea carnii; Tacâmuri pentru gratar, Si anume, Furci si Clesti."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Termometre pentru carne; Aparat de masurat pentru termometre de gratar."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Seturi de rotiserie care constau în primul rând în tija, furculita, motor si greutate pentru cântar; Sobe portabile pe gaz; Accesorii pentru gratare de gradina, si anume grilaje pentru piatra, suporturi de gatit si gratare de gatit; Arzatoare de schimb pentru gratare de gradina; Furtunuri de schimb pentru gratare de gradina si regulatoare si becuri pentru gratare, actionate manual; Aparat de gatit jalapeno; Suporturi pentru prajit pui; Aparat electric zapper pentru insecte; Brichete ceramice; Roci vulcanice; Tigaie pentru gratar electric; Tava pentru gratar electric; Fiare pentru gratar."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Cleme nemetalice pentru fixarea fetelor de masa pe masa."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Tacâmuri pentru gratar, Si anume, Spatule si Ustensile de intors alimentele, Vândute separat si preambalate în genti de transport; Toppere neelectrice pentru gratare de gradina, Si anume, Tigai orientale (wokuri), si Masini pentru clatite; Vase de gatit la gratar, si anume frigarui, cosuri de sârma, boluri, platouri care mentin caldura si pentru servit si oale; Suporturi pentru stiuletii de porumb; Vesela, Si anume, Suporturi pentru farfurii din hârtie, nu din metal pretios, suporturi pentru farfurii din bambus, suporturi pentru farfurii din plastic si Tavi pentru servit din plastic; Pensule pentru uns carnea; Sticle pentru uns alimente; Razuitoare pentru gratar; Perii pentru gratar folosite la curatarea gratarelor de gradina; Piese de schimb pentru perii de gratar, pentru uz menajer; Capace de gratar; Grilaje pentru gratar; Linguri pentru gatit si servit [ustensile de bucatarie]; Si prese actionate manual pentru burgeri, Si anume, Prese pentru format carnea; Brat pentru condimente; Rasnite pentru condimente; Dispozitive pentru injectarea marinadelor; Mopuri de uns; Cort pentru alimente; Dispozitive electrice pentru gândaci; Vas pentru gratar; Tigaie pentru gratar; Tigai; Tavi pentru gratare; Umbrele pentru protejarea alimentelor de insecte si huse pentru umbrele; Manusi de bucatarie."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Fete de masa, nu din hârtie; Si huse textile neajustate pentru mobilier de exterior."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Prípravok na cistenie grilov (tekutý/chemický); Prípravok na cistenie kamennej grilovacej dosky."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Noziarsky tovar a príbory, Menovite lyzice a Noze, Predávaný samostatne a rucné nástroje na naklepávanie mäsa; Nácinie na grilovanie, Konkrétne, Vidly a Pinzety."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Teplomery do rúry na pecenie mäsa; Teplomery urcené pre grily."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Grilovacie súpravy obsahujúce najmä ihlicu, vidlicku a vyvazovacie závazie; Prenosné plynové sporáky; Príslusenstvo ku grilom, menovite kamenné rosty, vlnovkové plechy na pecenie a mriezky na pecenie; Vymenitelné horáky do grilov; Vymenitelné hadicky a regulátory do grilov a osvetlenie grilov na baterky; Varic na papricky jalapeno; Prístroje na grilovanie kurata; Elektrický lapac na hmyz; Keramické brikety; Lávové kamene; Elektrické panvice na grilovanie; Elektrický plech na grilovanie; Mriezky na grilovanie."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Nekovové spony na prichytenie obrusu na stôl."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Nástroje na opekanie, Tz, Spachtle a stierky a Miesacky, Predávané samostatne a zabalené v prenosných obaloch; Neelektrické tácky ku grilom, Tz, Woky, a Prístroje na výrobu palaciniek; Nádoby na grilovanie, menovite ihlice na pecenie, drôtené kose, misky, tácky na zohrievanie a servírovanie a hrnce; Drziaky na kukuricný klas; Kuchynský riad, Tz, Papierové stojany na tácky, nie z drahých kovov, bambusové stojany na tácky, umelohmotné stojany na tácky a Plastové servírovacie podnosy; Stetce na potieranie mäsa; Flase na podlievanie jedla; Skrabáky na gril; Kefy na cistenie grilov; Náhradné diely ku kefám na grily na domáce pouzitie; Potahy na gril; Grilovacie mriezky; Kuchynské naberacky; A rucné lisy na hamburgery, Tz, Lisy na tvarovanie mäsa; Stojany na korenie; Mlynceky na korenie; Nástroje na vstrekovanie marinády; Podlievacie mopy; Kryty na jedlo; Elektrické prístroje na hubenie hmyzu; Miska na grilovanie; Panvica na grilovanie; Panvice na smazenie; Grilovacie podnosy; Poklopy na ochranu jedla pred hmyzom a obaly na poklopy; Kuchynské rukavice, chnapky."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Textilné obrusy okrem tých z papiera; A neprispôsobené textilné potahy na exteriérový nábytok."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Pripravki za ciscenje zara (tekoci/kemicni); Pripravki za ciscenje kamna za zar."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nozi, vilice in zlice, In sicer zlice in Nozi, Ki so v prodaji posamicno in rocna orodja za zmehcanje mesa; Pripomocki za zar, Sicer, Vilice in Scipalke."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Termometri za meso; Termometri za zar."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Kompleti za pecenje, ki so sestavljeni predvsem iz palic, vilic, motorja in utezi za ravnovesje; Prenosni plinski stedilniki; Dodatki za zar, in sicer kamnite resetke, stojala za kuhanje in resetke za kuhanje; Nadomestni gorilniki za zare; Nadomestne cevi in regulatorji za zare in baterijske svetilke za zare; Kuhalniki za jalapeno paprike; Pekaci za piscance; Elektricni naprave za odstranjevanje mrcesa; Keramicni briketi; Kamni iz lave; Elektricne kozice za zar; Elektricni podstavki za zar; Zelezne plosce za zar."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Nekovinske sponke za drzanje namiznih prtov na mizi."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Pripomocki za zar, Sicer, Lopatice in Obracalci, Ki so v prodaji loceno in vnaprej pakirani v nosilnih torbah; Neelektricne pokrovke za zare, Sicer, Voki, in Ponve za peko palacink; Posoda za kuhanje na zaru, in sicer nabodala za kuho, zicne kosare, sklede, krozniki za pogrevanj in servirni krozniki in lonci; Drzala za koruzne storze; Namizna posoda, Sicer, Drzala za kroznike iz papirja, ki niso iz zlahtnih kovin, drzala za kroznike iz bambusa, drzala za kroznike iz umetne snovi in Servirni pladnji iz umetnih snovi; Copici za nanasanje mascobe na meso; Steklenice za polivanje mascobe na hrano; Priprave za ciscenje zara; Scetke za ciscenje zara; Nadomestni deli za scetke za zar za gospodinjstvo; Pokrovi za zar; Resetke za zare; Zlice za zalivanje [kuhinjski pripomocki]; In rocno upravljane stiskalnice za polpete, Sicer, Stiskalnice za oblikovanje mesa; Rocice za zacimbe; Mlincki za zacimbe; Injekcije za marinado; Copici za nanasanje mascobe; Pokrivala za hrano; Naprava za unicevanje mrcesa; Posode za zar; Kozice za zar; Ponve za zar; Pladnji za zar; Dezniki za zascito hrane pred mrcesom in prevleke za deznike; Rokavice za zar."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Namizni prti, ki niso narejeni iz papirja; In neprilagojena pokrivala iz tkanin za zunanje pohistvo."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Producto limpiador de parrillas (líquido/químico); Producto limpiador de piedras de parrilla."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Artículos de cuchillería, tenedores y cucharas, En concreto cucharas y Cuchillos, Vendidos por separado, y herramientas accionadas manualmente para ablandar la carne; Utensilios para barbacoas, En concreto, Horcas para uso agrícola y Pinzas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Termómetros para la carne; Termómetros de barbacoa."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Kits de asador que consisten principalmente en varilla, horquilla, motor y contrapeso; Estufas de gas portátiles; Accesorios de parrilla de barbacoa, en concreto, rejilla inferior, soportes para cocinar y rejillas para cocinar; Quemadores de repuesto de parrilla de barbacoa; Tubos flexibles y reguladores de repuesto de parrilla de barbacoa y luces de barbacoa que funcionan con pilas; Equipo para cocinar jalapeños; Asadores de pollos; Insecticida eléctrico; Briquetas de cerámica; Rocas de lava; Sartén honda de parrilla eléctrica; Bandeja eléctrica de parrilla; Hierros de parrilla."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Pinzas no metálicas para sujetar los manteles sobre la mesa."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Utensilios para barbacoas, En concreto, Espátulas y Volteadores, Vendidos por separado y previamente envasados en estuches de transporte; Superficies o recipientes no eléctricos para cocinar en parrillas de barbacoa, En concreto, Woks, y Aparatos para hacer \"crêpes\"; Artículos de cocina de parrilla, en concreto, espetones para cocinar, cestas de alambre, cuencos, fuentes térmicas y de servir, y ollas; Portamazorcas de maíz; Vajillas, En concreto, Soportes de platos de papel que no sean de metales preciosos, soportes de platos de bambú, soportes de platos de plástico y Bandejas para servir de plástico; Cepillos para ungir la carne; Botellas para embadurnar alimentos; Raspadores de parrilla; Cepillos de parrilla para limpiar parrillas de barbacoas; Partes de recambio de cepillo de parrilla para uso doméstico; Tapaderas para parrillas; Rejillas de parrilla; Cucharones [utensilios de cocina]; Y prensas de hamburguesa accionadas a mano, En concreto, Prensas para formar carne; Brazo para especiar; Molinillos de especias; Inyectores de marinada; Brochas para embadurnar; Carpas para cocinar; Dispositivos para eliminar insectos mediante descarga eléctrica; Plato de parrilla; Sartén de parrilla; Sartenes; Bandejas para parrilla; Paraguas para proteger los alimentos de los insectos y fundas de paraguas; Manoplas de cocina."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Tapetes de mesa que no sean de papel; Y fundas de tela no ajustables para mobiliario exterior."
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Grillrengöringsmedel (flytande/kemiskt); Grillstensrengöringsmedel."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Knivsmidesvaror, bestick, Nämligen skedar och Knivar, Sålt enskilt och handdrivna köttmörningsredskap; Grillredskap, Nämligen, Gafflar och Tänger."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Köttermometrar; Grilltermometermätare."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Grillspettssatser bestående främst av stänger, gaffel, motor och balansvikter; Bärbara gasspisar; Grilltillbehör, nämligen grillgaller, matlagningsnät, och grillgaller; Ersättningsbrännare till utomhusgrillar; Grillersättningsslangar och regulatorer och batteridrivna grilltändare; Jalapeñokokare; Stekanordningar för kyckling; Elektriska flugfångare; Keramikbriketter; Lavastenar; Elektriska grillpannor; Elgrillar; Grilljärn."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Icke-metalliska klämmor för att behålla bordsdukar på bordet."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Redskap för utomhusgrillar, Nämligen, Spacklar och Stekspadar, Sålda separat och förförpackade i bärpåsar; Icke-elektriska grillbrickor för utomhusgrillar, Nämligen, Wokpannor, och Pannkakslaggar; Grillmatlagningsredskap, nämligen, stekspett, trådkorgar, bunkar, värme- och serveringsfat, och grytor; Majskolvshållare; Bordsserviser, Nämligen, Hållare för papperstallrikar, ej av ädelmetall, tallrikshållare av bambu, tallrikshållare av plast och Plastiska serveringsbrickor; Borstar för pensling av kött; Flaskor för att tråckla tråd runt livsmedel; Grillskrapor; Grillborstar för rengöring av utegrillar; Ersättningsdelar för grillborstar för hushållsanvändning; Grillhuvar; Grillgaller; Össlevar [köksgeråd]; Och handdrivna hamburgerpressar, Nämligen, Pressar för att forma kött; Kryddarmar; Kryddkvarnar; Marinadsprutor; Ösningsmoppar; Mattält; Ljusfällor för insekter; Grilltallrikar; Grillpannor; Grillpannor; Grillbrickor; Paraplyn för att skydda mat från insekter och paraplyfodral; Grillvantar."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Borddukar ej tillverkade av papper; Icke-formsydda överdrag av tyg för utomhusmöbler."
+        }
+      ]
+    },
+    "id": "27201c53-fadc-404a-a60e-aa7b98b1dbeb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.01",
+      "26.11.05",
+      "26.11.08",
+      "26.11.98"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "22"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Leopoldstr. 4,München, 80802",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "GRÜNECKER PATENT- UND RECHTSANWÄLTE PARTG MBB"
+      }
+    ],
+    "secondLanguageCode": "de",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151120",
+        "applicationNumber": "14814552"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351120",
+      "lastPublicationDate": "20160203",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160512",
+        "registrationNumber": "14814552"
+      }
+    },
+    "version": "20260511180844",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MR. BAR-B-Q Original"
+    }
+  },
+  "_uri": "/mark/em/27201c53-fadc-404a-a60e-aa7b98b1dbeb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.395Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

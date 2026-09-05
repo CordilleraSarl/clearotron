@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "7a0fb9c1-6534-4467-8838-23a937da8e53",
+  "applicationNumber": "19407882",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-11",
+  "registrationDate": null,
+  "expiryDate": "2036-08-11",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels pour la gestion d'infrastructures à clés publiques (PKI); logiciels pour l'émission, la gestion et la validation de certificats numériques; logiciels d'authentification et de gestion d'identités numériques; logiciels de sécurité informatique et cryptographique.",
+      "translation_language": "en",
+      "translation": "Software for managing public key infrastructures (PKI); software for issuing, managing and validating digital certificates; software for authentication and managing digital identities; computer security and cryptographic software."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": "Transmission de données sécurisées; services de communication électronique sécurisée.",
+      "translation_language": "en",
+      "translation": "Secure data transmission; secure electronic communication services."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception, développement, maintenance et mise à disposition de logiciels pour infrastructures à clés publiques (PKI); services de cloud computing; hébergement de plateformes informatiques; services de sécurité informatique; services d'authentification de données et d'identités numériques; intégration de systèmes informatiques; services de cryptographie.",
+      "translation_language": "en",
+      "translation": "Design, development, maintenance and provision of software for public key infrastructures (PKI); cloud computing services; hosting of computer platforms; computer security services; data authentication and digital identity services; computer systems integration; cryptography services."
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": "Services d'authentification d'identités; services de sécurité pour la protection des données et des communications électroniques; services de gestion de certificats numériques.",
+      "translation_language": "en",
+      "translation": "Identity authentication services; security services for the protection of data and electronic communications; digital certificate management services."
+    }
+  ],
+  "owner": "InCert",
+  "ownerNative": null,
+  "ownerCountry": "LU",
+  "representative": "FREDERIC BLANC",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "15 Rue Léon Laval,Leudelange, 3372",
+        "applicantAddressCountryCode": "LU",
+        "applicantAddressCountryName": "Luxembourg",
+        "applicantName": "InCert"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software for managing public key infrastructures (PKI); software for issuing, managing and validating digital certificates; software for authentication and managing digital identities; computer security and cryptographic software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels pour la gestion d'infrastructures à clés publiques (PKI); logiciels pour l'émission, la gestion et la validation de certificats numériques; logiciels d'authentification et de gestion d'identités numériques; logiciels de sécurité informatique et cryptographique."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Secure data transmission; secure electronic communication services.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Transmission de données sécurisées; services de communication électronique sécurisée."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design, development, maintenance and provision of software for public key infrastructures (PKI); cloud computing services; hosting of computer platforms; computer security services; data authentication and digital identity services; computer systems integration; cryptography services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception, développement, maintenance et mise à disposition de logiciels pour infrastructures à clés publiques (PKI); services de cloud computing; hébergement de plateformes informatiques; services de sécurité informatique; services d'authentification de données et d'identités numériques; intégration de systèmes informatiques; services de cryptographie."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Identity authentication services; security services for the protection of data and electronic communications; digital certificate management services.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'authentification d'identités; services de sécurité pour la protection des données et des communications électroniques; services de gestion de certificats numériques."
+        }
+      ]
+    },
+    "id": "7a0fb9c1-6534-4467-8838-23a937da8e53",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260830",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "23 RUE CLAPEYRON,PARIS, 75008",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "FREDERIC BLANC"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260811",
+        "applicationNumber": "19407882"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360811",
+      "markCurrentStatus": "APPLICATION EXAMINATION"
+    },
+    "version": "20260830020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI"
+    }
+  },
+  "_uri": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

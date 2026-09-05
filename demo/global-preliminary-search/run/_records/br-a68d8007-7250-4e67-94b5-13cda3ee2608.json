@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/br/a68d8007-7250-4e67-94b5-13cda3ee2608",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "a68d8007-7250-4e67-94b5-13cda3ee2608",
+  "applicationNumber": "840772602",
+  "registrationNumber": "840772602",
+  "applicationDate": "2014-01-23",
+  "registrationDate": "2016-11-01",
+  "expiryDate": "2026-11-01",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços científicos e tecnológicos, pesquisa e desenho/projeto relacionados a estes; serviços de análise industrial e pesquisa; concepção, projeto e desenvolvimento de hardware e de software de computador; este de materiais nas áreas esportivas e de automóveis.",
+      "translation_language": "en",
+      "translation": "Scientific and technological services, research and design/project related thereto; industrial analysis and research services; conception, design and development of computer hardware and software; this of materials in the areas of sports and automobiles."
+    }
+  ],
+  "owner": "VENTURI AUTOMOBILES",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "KASZNAR LEONARDOS PROPRIEDADE INTELECTUAL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "VENTURI AUTOMOBILES"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services, research and design/project related thereto; industrial analysis and research services; conception, design and development of computer hardware and software; this of materials in the areas of sports and automobiles.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços científicos e tecnológicos, pesquisa e desenho/projeto relacionados a estes; serviços de análise industrial e pesquisa; concepção, projeto e desenvolvimento de hardware e de software de computador; este de materiais nas áreas esportivas e de automóveis."
+        }
+      ]
+    },
+    "id": "a68d8007-7250-4e67-94b5-13cda3ee2608",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "KASZNAR LEONARDOS PROPRIEDADE INTELECTUAL"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140123",
+        "applicationNumber": "840772602"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261101",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20161101",
+        "registrationNumber": "840772602"
+      }
+    },
+    "version": "20250630224726",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/br/a68d8007-7250-4e67-94b5-13cda3ee2608",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

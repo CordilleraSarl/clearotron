@@ -1,0 +1,276 @@
+{
+  "uri": "/mark/mn/48d3f28b-51bd-466d-ba35-06097a8230a4",
+  "provider": "clarivate",
+  "office": "mn",
+  "guid": "48d3f28b-51bd-466d-ba35-06097a8230a4",
+  "applicationNumber": "40-2017-0020178",
+  "registrationNumber": "40-0017924",
+  "applicationDate": "2017-06-22",
+  "registrationDate": "2018-03-09",
+  "expiryDate": "2027-06-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-03-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RAVEN ORCHID",
+  "markTransliteration": "RAVEN ORCHID",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    13,
+    14,
+    16,
+    18,
+    25,
+    26,
+    40,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "mn",
+      "description": "09 Осол, туяа болон галаас хамгаалах хувцас;зөөврийн компьютерийн цүнх;нүдний шил [хараа зүйн];ухаалаг гар утасны гэр.",
+      "translation_language": "en",
+      "translation": "09 Clothing for protection against accidents, radiation and fire; laptop bags; glasses [optical]; smart phone cases."
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "mn",
+      "description": "10 Хэвлийн бүс.",
+      "translation_language": "en",
+      "translation": "10 Abdominal belt."
+    },
+    {
+      "classes": [
+        13
+      ],
+      "language": "mn",
+      "description": "13 Зэр зэвсгэнд зориулсан бүс.",
+      "translation_language": "en",
+      "translation": "13 Belt for weapons."
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "mn",
+      "description": "14 Ээмэг;хүзүүний зүүлт [үнэт эдлэл];энгэрийн зүүлт [үнэт эдлэл];цагтай бугуйвч;бугуйвч [үнэт эдлэл];хатгамал давуугаар хийсэн бугуйвч [үнэт эдлэл];бугуйн цаг;бөгж [үнэт эдлэл].",
+      "translation_language": "en",
+      "translation": "14 Earrings; necklaces [jewelry]; brooches [jewelry]; watch bracelets; bracelets [jewelry]; bracelets [jewelry] with embroidery; watches; rings [jewelry]."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "mn",
+      "description": "16 Бал харандаа;үзэг.",
+      "translation_language": "en",
+      "translation": "16 Pencil; pen."
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "mn",
+      "description": "18 Амьтны хүзүүвч, ширэн оосор, хувцас;гэрийн тэжээвэр амьтанд зориулсан хувцас;цүнх;гар цүнх;мөнгөний цүнх;бичиг баримтын цүнх;гоо сайхны хэрэгслийн цүнх;гэр ахуйн цүнх;нэг мөрөвчтэй цүнх;чемодан болон аяны цүнх;юм савлах зориулалттай арьсан уут [дугтуй, цүнх];мөрөн дээгүүр давуулан бүсэлдэг арьсан бүс;сурагчийн цүнх;халаасны түрийвч;зээлийн картны гэр [түрийвч];нэрийн хуудасны гэр [түрийвч].",
+      "translation_language": "en",
+      "translation": "18 Animal collars, leather leashes, clothing; pet clothing; bags; handbags; purses; document bags; cosmetic bags; household bags; shoulder bags; suitcases and travel bags; leather bags for packing [ envelopes, bags]; leather belts worn over the shoulders; school bags; pocket wallets; credit card cases [wallets]; business card cases [wallets]."
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "mn",
+      "description": "25 Гадуур хувцас;хувцас;дотуур хувцас;савхин хувцас;сүлжмэл хувцас;унтлагын хувцас;үслэг хувцас;эмэгтэй хээнцэр дотуур хувцас [дотуур хувцас];боди [дотуур хувцас];бэлхүүсэвч [дотуур хувцас];гимнастикийн бариу хувцас;дотоож [дотуур хувцас];ёслолын дүрэмт хувцас;мотоцикл унахад зориулсан хувцас;ноосон бөс даавуун хувцас;сүлжмэл дотуур хувцас;хиймэл савхин хувцас;хөлс шингээгч дотуур хувцас;хүүхдийн өмд [дотуур хувцас];наран шарлагын газарт хэрэглэх хувцас;гутал;түрийтэй гутал;үдээстэй гутал;богино түрийтэй гутал;даавуун гутал эсхүл сандаал;хагас түрийтэй гутал;бүс [хувцасны];резинтэй бүс;бүрх малгай;дугуй малгай;саравчтай малгай;тоорцог малгай;усны малгай;нөмрөгөн алчуур;эрээн алчуур.",
+      "translation_language": "en",
+      "translation": "25 Outerwear; clothing; underwear; leather clothing; knitwear; sleepwear; fur clothing; women's fashion underwear [underwear]; body [underwear]; girdles [underwear]; tights; underwear [underwear] ;ceremonial uniforms;motorcycling clothing;wool clothing;knitted underwear;artificial leather clothing;sweat absorbent underwear;children's pants [underwear];beach wear;shoes;shoes;strap shoes;shorts sandals; cloth shoes or sandals; sandals; belts [clothing]; rubber belts; hats; round hats; brimmed hats; bowler hats; water hats; shawls; shawls."
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "mn",
+      "description": "26 Хувцас чимэглэх жижиг зүйлс;хувцас чимэглэх тоноглол;хувцас эмжихэд зориулсан бүч, уяа;гутал тоноглох арал, горхи;үнэт металл бус хүзүүний зүүлт.",
+      "translation_language": "en",
+      "translation": "26 Accessories for clothing; accessories for clothing; buckles and straps for fastening clothing; eyelets and buckles for shoe accessories; necklaces of non-precious metal."
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "mn",
+      "description": "40 Хувцас оёх;хувцас эсгүүр;хувцас эсгэх.",
+      "translation_language": "en",
+      "translation": "40 Sewing clothes; knitting clothes; knitting clothes."
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "mn",
+      "description": "45 Хувцас түрээслэх.",
+      "translation_language": "en",
+      "translation": "45 Rent clothes."
+    }
+  ],
+  "owner": "G.Orkhonselenge",
+  "ownerNative": null,
+  "ownerCountry": "MN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Khan-Uul, 15-r khoroo, Tuul Gol gudamj, 48B bair 21 toot",
+        "applicantAddressCountryCode": "MN",
+        "applicantAddressCountryName": "Mongolia",
+        "applicantName": "G.Orkhonselenge",
+        "applicantNativeAddress": "Хан-Уул, 15-р хороо, Туул Гол гудамж, 48Б байр 21 тоот",
+        "applicantNativeName": "Г.Орхонсэлэнгэ"
+      }
+    ],
+    "applicationLanguageCode": "mn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "09 Clothing for protection against accidents, radiation and fire; laptop bags; glasses [optical]; smart phone cases.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "09 Осол, туяа болон галаас хамгаалах хувцас;зөөврийн компьютерийн цүнх;нүдний шил [хараа зүйн];ухаалаг гар утасны гэр."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "10 Abdominal belt.",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "10 Хэвлийн бүс."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "13 Belt for weapons.",
+          "intClassNumber": "13",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "13 Зэр зэвсгэнд зориулсан бүс."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "14 Earrings; necklaces [jewelry]; brooches [jewelry]; watch bracelets; bracelets [jewelry]; bracelets [jewelry] with embroidery; watches; rings [jewelry].",
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "14 Ээмэг;хүзүүний зүүлт [үнэт эдлэл];энгэрийн зүүлт [үнэт эдлэл];цагтай бугуйвч;бугуйвч [үнэт эдлэл];хатгамал давуугаар хийсэн бугуйвч [үнэт эдлэл];бугуйн цаг;бөгж [үнэт эдлэл]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "16 Pencil; pen.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "16 Бал харандаа;үзэг."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "18 Animal collars, leather leashes, clothing; pet clothing; bags; handbags; purses; document bags; cosmetic bags; household bags; shoulder bags; suitcases and travel bags; leather bags for packing [ envelopes, bags]; leather belts worn over the shoulders; school bags; pocket wallets; credit card cases [wallets]; business card cases [wallets].",
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "18 Амьтны хүзүүвч, ширэн оосор, хувцас;гэрийн тэжээвэр амьтанд зориулсан хувцас;цүнх;гар цүнх;мөнгөний цүнх;бичиг баримтын цүнх;гоо сайхны хэрэгслийн цүнх;гэр ахуйн цүнх;нэг мөрөвчтэй цүнх;чемодан болон аяны цүнх;юм савлах зориулалттай арьсан уут [дугтуй, цүнх];мөрөн дээгүүр давуулан бүсэлдэг арьсан бүс;сурагчийн цүнх;халаасны түрийвч;зээлийн картны гэр [түрийвч];нэрийн хуудасны гэр [түрийвч]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "25 Outerwear; clothing; underwear; leather clothing; knitwear; sleepwear; fur clothing; women's fashion underwear [underwear]; body [underwear]; girdles [underwear]; tights; underwear [underwear] ;ceremonial uniforms;motorcycling clothing;wool clothing;knitted underwear;artificial leather clothing;sweat absorbent underwear;children's pants [underwear];beach wear;shoes;shoes;strap shoes;shorts sandals; cloth shoes or sandals; sandals; belts [clothing]; rubber belts; hats; round hats; brimmed hats; bowler hats; water hats; shawls; shawls.",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "25 Гадуур хувцас;хувцас;дотуур хувцас;савхин хувцас;сүлжмэл хувцас;унтлагын хувцас;үслэг хувцас;эмэгтэй хээнцэр дотуур хувцас [дотуур хувцас];боди [дотуур хувцас];бэлхүүсэвч [дотуур хувцас];гимнастикийн бариу хувцас;дотоож [дотуур хувцас];ёслолын дүрэмт хувцас;мотоцикл унахад зориулсан хувцас;ноосон бөс даавуун хувцас;сүлжмэл дотуур хувцас;хиймэл савхин хувцас;хөлс шингээгч дотуур хувцас;хүүхдийн өмд [дотуур хувцас];наран шарлагын газарт хэрэглэх хувцас;гутал;түрийтэй гутал;үдээстэй гутал;богино түрийтэй гутал;даавуун гутал эсхүл сандаал;хагас түрийтэй гутал;бүс [хувцасны];резинтэй бүс;бүрх малгай;дугуй малгай;саравчтай малгай;тоорцог малгай;усны малгай;нөмрөгөн алчуур;эрээн алчуур."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "26 Accessories for clothing; accessories for clothing; buckles and straps for fastening clothing; eyelets and buckles for shoe accessories; necklaces of non-precious metal.",
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "26 Хувцас чимэглэх жижиг зүйлс;хувцас чимэглэх тоноглол;хувцас эмжихэд зориулсан бүч, уяа;гутал тоноглох арал, горхи;үнэт металл бус хүзүүний зүүлт."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "40 Sewing clothes; knitting clothes; knitting clothes.",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "40 Хувцас оёх;хувцас эсгүүр;хувцас эсгэх."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "45 Rent clothes.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "mn",
+          "intGoodsServicesDescription": "45 Хувцас түрээслэх."
+        }
+      ]
+    },
+    "id": "48d3f28b-51bd-466d-ba35-06097a8230a4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.05.15",
+      "05.05.20",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2018/03"
+      }
+    ],
+    "recordLastUpdated": "20240813",
+    "registrationOfficeCode": "MN",
+    "registrationOfficeName": "Mongolia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170622",
+        "applicationNumber": "40-2017-0020178"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270622",
+      "lastPublicationDate": "20180326",
+      "markCurrentStatus": "Registered",
+      "registration": {
+        "registrationDate": "20180309",
+        "registrationNumber": "40-0017924"
+      }
+    },
+    "version": "20240813144630",
+    "wordMarkSpecification": {
+      "markTransliteration": "RAVEN ORCHID",
+      "markVerbalElementText": "RAVEN ORCHID"
+    }
+  },
+  "_uri": "/mark/mn/48d3f28b-51bd-466d-ba35-06097a8230a4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

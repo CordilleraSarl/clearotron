@@ -1,0 +1,609 @@
+{
+  "uri": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6500c73f-7f2e-41df-9a5b-a59256a128ca",
+  "applicationNumber": "97646208",
+  "registrationNumber": null,
+  "applicationDate": "2022-10-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-07-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) featuring computer software platforms in the nature of a peer-to-peer platform to facilitate bilateral trading of repo securities",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SARAH ANNE KEEFE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Congress Street, Boston, MA, 02114, USAM",
+        "applicantAddressCity": "Boston",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "02114",
+        "applicantAddressStateName": "MASSACHUSETTS",
+        "applicantAddressStreet": "One Congress Street",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantName": "State Street Bank and Trust Company",
+        "applicantSecondaryAddressUnit": "Suite 1"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) featuring computer software platforms in the nature of a peer-to-peer platform to facilitate bilateral trading of repo securities"
+        }
+      ]
+    },
+    "id": "6500c73f-7f2e-41df-9a5b-a59256a128ca",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "8",
+            "date": "20260423",
+            "text": "SUSPENDED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20240823",
+          "identifier": "92086063",
+          "interlocutoryAttorneyName": "JACOB E VIGIL",
+          "kind": "Cancellation",
+          "kindCode": "CAN",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "State Street Bank and Trust Company",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "97646208",
+                  "markVerbalElementText": "VENTURI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "BOSTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "02210",
+                  "addressState": "MA",
+                  "addressStreet": "470 ATLANTIC AVENUE, SUITE 600",
+                  "companyName": "WOMBLE BOND DICKINSON (US) LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "SARAH ANNE KEEFE"
+                }
+              ]
+            },
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "Steve Buck",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "88700834",
+                  "markVerbalElementText": "VENTURIS",
+                  "registrationNumber": "6089667"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "TUCSON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "85712",
+                  "addressState": "AZ",
+                  "addressStreet": "2720 N SWAN RD, UNIT 10A",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "STEVE BUCK"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20260513",
+              "text": "#12 P'S OPPOSITION/RESPONSE TO MOTION"
+            },
+            {
+              "code": "S",
+              "eventDate": "20260423",
+              "text": "#11 SUSPENDED PENDING DISP OF OUTSTNDNG MOT"
+            },
+            {
+              "code": "M",
+              "eventDate": "20251116",
+              "text": "#10 MOT FOR RELIEF FROM ENTRY OF DEFAULT JUDGMENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "20250110",
+              "text": "#9 TERMINATED"
+            },
+            {
+              "code": "N",
+              "eventDate": "20250110",
+              "text": "#8 DISPOSED OF BEFORE READY FOR FINAL DECSN"
+            },
+            {
+              "code": "T",
+              "eventDate": "20250106",
+              "text": "#7 BOARD'S DECISION: GRANTED"
+            },
+            {
+              "code": "G",
+              "eventDate": "20241119",
+              "text": "#6 2(A) DECEPTIVE MATTER"
+            },
+            {
+              "code": "S",
+              "eventDate": "20241023",
+              "text": "#5 SUSPENDED"
+            },
+            {
+              "code": "M",
+              "eventDate": "20241008",
+              "text": "#4 P'S MOTION TO STRIKE FROM PLEADINGS"
+            },
+            {
+              "code": "T",
+              "eventDate": "20240826",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20240826",
+              "responseDate": "20241005",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "N",
+              "eventDate": "20240823",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        },
+        {
+          "decision": {
+            "code": "9",
+            "date": "20250605",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20240823",
+          "identifier": "97646208",
+          "kind": "Ex Parte Appeal",
+          "kindCode": "EXP",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "STATE STREET BANK AND TRUST COMPANY",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "97646208",
+                  "markVerbalElementText": "VENTURI",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "BOSTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "02210",
+                  "addressState": "MA",
+                  "addressStreet": "470 ATLANTIC AVENUE, SUITE 600",
+                  "companyName": "WOMBLE BOND DICKINSON (US) LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "SARAH ANNE KEEFE"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "N",
+              "eventDate": "20250605",
+              "text": "#4 TERMINATED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20240823",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "X",
+              "eventDate": "20240823",
+              "text": "#2 APPEAL ACKNOWLEDGED: CASE REMANDED"
+            },
+            {
+              "code": "X",
+              "eventDate": "20240823",
+              "text": "#1 APPEAL TO BOARD"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20260228",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20260227",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20260227",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20260227",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20250902",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250702",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250605",
+        "descriptionText": "EXPARTE APPEAL TERMINATED"
+      },
+      {
+        "date": "20250529",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20250529",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250529",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250225",
+        "descriptionText": "REPORT COMPLETED SUSPENSION CHECK CASE STILL SUSPENDED"
+      },
+      {
+        "date": "20240827",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20240827",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20240827",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "EXPARTE APPEAL RECEIVED AT TTAB"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "JURISDICTION RESTORED TO EXAMINING ATTORNEY"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "EX PARTE APPEAL-INSTITUTED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20240522",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20240223",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20240223",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20240223",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20240208",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20240208",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20240208",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20231109",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20231109",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20230811",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230811",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230811",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230809",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20230531",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20230531",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20230531",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20221108",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221028",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "One Congress Street, Boston, MA, 02114, USAM",
+        "city": "Boston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "State Street Bank and Trust Company",
+        "postalCode": "02114",
+        "secondaryAddressUnit": "Suite 1",
+        "stateName": "MASSACHUSETTS",
+        "street": "One Congress Street"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "One Congress Street, Boston, MA, 02114, USAM",
+        "city": "Boston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "State Street Bank and Trust Company",
+        "postalCode": "02114",
+        "secondaryAddressUnit": "Suite 1",
+        "stateName": "MASSACHUSETTS",
+        "street": "One Congress Street"
+      },
+      {
+        "address": "One Congress Street, Boston, MA, 02114, USAM",
+        "city": "Boston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "name": "State Street Bank and Trust Company",
+        "postalCode": "02114",
+        "secondaryAddressUnit": "Suite 1",
+        "stateName": "MASSACHUSETTS",
+        "street": "One Congress Street"
+      }
+    ],
+    "recordLastUpdated": "20260520",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "87088588",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI WEALTH MANAGEMENT",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88700834",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURIS",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "87088588",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI WEALTH MANAGEMENT",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88700834",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURIS",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "87088588",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI WEALTH MANAGEMENT",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "88700834",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURIS",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "BOSTON, MA 02210, United States",
+        "representativeCorrespondentAddressLines": [
+          "BOSTON, MA 02210",
+          "United States"
+        ],
+        "representativeCorrespondentName": "SARAH ANNE KEEFE WOMBLE BOND DICKINSON (US) LLP, 470 ATLANTIC AVENUE, SUITE 600"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "BOSTON, MA 02210, United States",
+        "representativeAddressLines": [
+          "BOSTON, MA 02210",
+          "United States"
+        ],
+        "representativeName": "SARAH ANNE KEEFE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221025",
+        "applicationNumber": "97646208"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "extension": {
+        "approvalDate": [
+          "20260227"
+        ]
+      },
+      "ipOffice": {
+        "markOfficialStatus": "FIRST EXTENSION - GRANTED",
+        "markOfficialStatusCode": "730",
+        "markOfficialStatusDate": "20260227",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20250708"
+      ]
+    },
+    "version": "20260520050923",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

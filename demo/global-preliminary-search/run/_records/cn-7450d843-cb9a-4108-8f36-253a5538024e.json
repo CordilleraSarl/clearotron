@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/cn/7450d843-cb9a-4108-8f36-253a5538024e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "7450d843-cb9a-4108-8f36-253a5538024e",
+  "applicationNumber": "33403957",
+  "registrationNumber": null,
+  "applicationDate": "2018-09-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七日",
+  "markTransliteration": "qi ri",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "断路器开关;电源开关;电流开关;定时开关;照明开关;电源插座罩;插头、插座和其他接触器(电连接);电源插座;移动式插座;电插座",
+      "translation_language": "en",
+      "translation": "Circuit breaker switch; power switch; current switch; time switch; lighting switch; power socket cover; plug, socket and other contactors (electrical connection); power socket; mobile socket;"
+    }
+  ],
+  "owner": "Langfang City Seventh Office Equipment Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "河北省廊坊市广阳区新华路70号物产办公楼二层216号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Langfang City Seventh Office Equipment Co., Ltd.",
+        "applicantNativeName": "廊坊市七日办公设备有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Circuit breaker switch; power switch; current switch; time switch; lighting switch; power socket cover; plug, socket and other contactors (electrical connection); power socket; mobile socket;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "断路器开关;电源开关;电流开关;定时开关;照明开关;电源插座罩;插头、插座和其他接触器(电连接);电源插座;移动式插座;电插座"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "7450d843-cb9a-4108-8f36-253a5538024e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180908",
+        "applicationNumber": "33403957"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003072837",
+    "wordMarkSpecification": {
+      "markTransliteration": "qi ri",
+      "markVerbalElementText": "七日"
+    }
+  },
+  "_uri": "/mark/cn/7450d843-cb9a-4108-8f36-253a5538024e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

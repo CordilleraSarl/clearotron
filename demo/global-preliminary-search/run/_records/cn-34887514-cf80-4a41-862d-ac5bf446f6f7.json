@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/34887514-cf80-4a41-862d-ac5bf446f6f7",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "34887514-cf80-4a41-862d-ac5bf446f6f7",
+  "applicationNumber": "44711669",
+  "registrationNumber": "44711669",
+  "applicationDate": "2020-03-18",
+  "registrationDate": "2020-11-07",
+  "expiryDate": "2030-11-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-08-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "启日",
+  "markTransliteration": "QI RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电门铃,联锁门用电子门禁装置,生物指纹门锁,电子蜂鸣器,数字门锁,家用遥控器,门窥视孔(广扩镜),电锁,电子防盗装置,车辆用电锁",
+      "translation_language": "en",
+      "translation": "Electric doorbells, electronic access control devices for interlocking doors, biological fingerprint door locks, electronic buzzers, digital door locks, home remote controls, door peepholes (widening lens), electric locks, electronic anti-theft devices, electric vehicle locks"
+    }
+  ],
+  "owner": "Zhejiang Raja Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省金华市武义县熟溪街道永武二线端村段30号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Zhejiang Raja Ltd.",
+        "applicantNativeName": "浙江皇道工贸有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric doorbells, electronic access control devices for interlocking doors, biological fingerprint door locks, electronic buzzers, digital door locks, home remote controls, door peepholes (widening lens), electric locks, electronic anti-theft devices, electric vehicle locks",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电门铃,联锁门用电子门禁装置,生物指纹门锁,电子蜂鸣器,数字门锁,家用遥控器,门窥视孔(广扩镜),电锁,电子防盗装置,车辆用电锁"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Warning equipments, bells"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        }
+      ]
+    },
+    "id": "34887514-cf80-4a41-862d-ac5bf446f6f7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1706"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京九如知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200318",
+        "applicationNumber": "44711669"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301106",
+      "lastPublicationDate": "20200806",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201107",
+        "registrationNumber": "44711669"
+      }
+    },
+    "version": "20251004010526",
+    "wordMarkSpecification": {
+      "markTransliteration": "QI RI",
+      "markVerbalElementText": "启日"
+    }
+  },
+  "_uri": "/mark/cn/34887514-cf80-4a41-862d-ac5bf446f6f7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

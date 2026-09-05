@@ -1,0 +1,267 @@
+{
+  "uri": "/mark/gb/bf869277-1305-438f-b2a3-adadcafd7cf9",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "bf869277-1305-438f-b2a3-adadcafd7cf9",
+  "applicationNumber": "2274489",
+  "registrationNumber": "2274489",
+  "applicationDate": "2001-07-05",
+  "registrationDate": "2002-01-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QOLI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software; electronic publications; CD Roms; computer software and hardware to enable searching of data and connection to databases and the Internet; apparatus for recording transmission or reproduction of sound or images; magnetic data carriers, data processing equipment and computers; parts and fittings for all the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Paper, cardboard; printed matter; printed publications; newspapers, magazines; supplements; posters; periodicals; books, brochures; maps; holiday and travel guides; calendars; diaries; stationery.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Information relating to retail outlets and shops, including such information provided on-line from a computer database or from the Internet; advertising services and information services relating thereto; including such services provided on-line from a computer database or from the Internet; compilation and provision of business information, advice and statistics; business research; provision of commercial information; business information services; all the aforesaid services also provided on-line from a computer database or from the Internet; compilation of advertisements for use as web pages on the Internet; public relations services; classified advertising services; organisation of exhibitions and trade fairs for commercial and advertising purposes; recruitment, employment and personnel management services; information services relating to all the aforesaid services; all the aforesaid services also provided on-line from a computer database or from the Internet; information services relating to auctions and auctioneering, clerical services, business relocation services, secretarial services, office administration services, including all such services provided on-line from a computer database or the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Provision of information relating to insurance and financial services; analysis; evaluation, advice and information relating thereto; financial management services, financial advisory services; financial services relating to credit card services; investment schemes and accounts, bank cards, debit cards; cheque verification and cheque cashing, issuing and redemption of traveller's cheques and travel vouchers and advisory services relating thereto; information services relating to banking; estate agency services and information relating to real estate and property prices; leasing and renting of accommodation and information services relating thereto; valuation and appraisal services and information services relating thereto; all the aforesaid information and services also provided on-line from a computer database or from the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Information services relating to building, construction, installation, maintenance and repair services, including information relating to brick laying, carpentry, carpet-laying, glazing and roofing; information relating to building restoration and renovation; information relating to land drainage and irrigation and the marking of roads; information services relating to lock smithing, furniture restoration and piano tuning; information relating to cleaning services; information relating to pest and weed control; information relating to garages and garage services; information relating to the rental, hire and leasing of construction equipment; including all such information provided on-line from a computer database or the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Telecommunication of information (including web pages), computer programs and any other data; electronic mail services; provision of telecommunications access and links to computer databases and the Internet; telecommunication services provided in relation to the Internet; broadcasting services; cable television, television and radio broadcasting services; news agency services; telephone rental services; provision and rental of telephone chat lines; information services relating to all the aforesaid services; all the aforesaid services also provided on-line from a computer database or from the Internet; provision of web pages.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Information services relating to transportation, packaging and storage of goods; information relating to travel, travel agencies, journeys, tariffs, timetables and methods of transport; information services relating to gas, electronic and water supplies; information services relating to waste removal and collection; information relating to the rental, hire and leasing of vehicles, cars, planes, garages, parking places, storage units and containers and warehouses; all the aforesaid services also provided on-line from a computer database or from the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Information services relating to the treatment of materials, including blacksmithing, key-cutting, re-cycling of metals and welding; information services relating to the treatment of wood and timber, including dry-rot treatment, French polishing, mildew-proofing and stripping of floors and doors; information services relating to the treatment of minerals and buildings, including damp proofing and fire-proofing; information services relating to the treatment of liquids, chemicals, gases and air including desalination and treatment of toxic waste; information relating to the treatment of glass, plastics and ceramics; information relating to the treatment of textiles, furs, leather and paper, including curtain making, dress making and reupholstery; information services relating to the treatment of food and animals including abattoirs and taxidermy; treatment of photographic and other recording media, including photographic processing and video tape duplicating; information relating to the treatment of waste, including re-cycling; information services relating to the rental, hire and leasing of air conditioning apparatus, damp-proof injection apparatus, electricity generators and welding apparatus; including all the aforementioned services provided on-line from a computer database or the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Provision of information relating to education, sporting, political, current events, cultural activities and entertainment; information relating to television and radio; information services relating to videos and electronic games; information services relating to publishing, the publication of printed matter and printed publications; organisation of competitions, quizzes, games and recreational and cultural activities, and information services relating to the aforementioned services; all the aforesaid services also provided on-line from a computer database and/or from the Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Information services relating to the provision of food and drink, temporary accommodation and hotels, medical, hygienic and beauty care, veterinary and agricultural services, legal services, other professional services including architecture, engineering, design services, ministerial services, surveying and translation services, scientific and industrial research, security services and computer programming, including cookery information and advice, career information and advice, fashion information and advice, gardening information and advice, wheel clamping, kitchen design, religion, public baths, chiropody, dating agency services, funeral services and flower arranging; news reporting and printing services; news clipping services; commissioned writing services; syndicated writing services concerning the Internet and on-line computer services, all these services also provided on-line from a computer database and/or the Internet; providing access to and leasing time to computer databases; design, drawing and commissioned writing, all for the compilation of web pages on the Internet; information relating to the location and type of restaurants, clubs and shops; information services relating to the rental, hire and leasing of cameras, clothes, computers, drink dispensing machines, farming apparatus, furniture and marquees; information relating to all the aforesaid services, also provided on-line from a computer database or from the Internet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "UpMyStreet.com Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Simmons & Simmons LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20010504"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10th Floor, Portland House, Stag Place, London, SW1E 5BH",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "UpMyStreet.com Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software; electronic publications; CD Roms; computer software and hardware to enable searching of data and connection to databases and the Internet; apparatus for recording transmission or reproduction of sound or images; magnetic data carriers, data processing equipment and computers; parts and fittings for all the aforesaid goods."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper, cardboard; printed matter; printed publications; newspapers, magazines; supplements; posters; periodicals; books, brochures; maps; holiday and travel guides; calendars; diaries; stationery."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Information relating to retail outlets and shops, including such information provided on-line from a computer database or from the Internet; advertising services and information services relating thereto; including such services provided on-line from a computer database or from the Internet; compilation and provision of business information, advice and statistics; business research; provision of commercial information; business information services; all the aforesaid services also provided on-line from a computer database or from the Internet; compilation of advertisements for use as web pages on the Internet; public relations services; classified advertising services; organisation of exhibitions and trade fairs for commercial and advertising purposes; recruitment, employment and personnel management services; information services relating to all the aforesaid services; all the aforesaid services also provided on-line from a computer database or from the Internet; information services relating to auctions and auctioneering, clerical services, business relocation services, secretarial services, office administration services, including all such services provided on-line from a computer database or the Internet."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of information relating to insurance and financial services; analysis; evaluation, advice and information relating thereto; financial management services, financial advisory services; financial services relating to credit card services; investment schemes and accounts, bank cards, debit cards; cheque verification and cheque cashing, issuing and redemption of traveller's cheques and travel vouchers and advisory services relating thereto; information services relating to banking; estate agency services and information relating to real estate and property prices; leasing and renting of accommodation and information services relating thereto; valuation and appraisal services and information services relating thereto; all the aforesaid information and services also provided on-line from a computer database or from the Internet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Information services relating to building, construction, installation, maintenance and repair services, including information relating to brick laying, carpentry, carpet-laying, glazing and roofing; information relating to building restoration and renovation; information relating to land drainage and irrigation and the marking of roads; information services relating to lock smithing, furniture restoration and piano tuning; information relating to cleaning services; information relating to pest and weed control; information relating to garages and garage services; information relating to the rental, hire and leasing of construction equipment; including all such information provided on-line from a computer database or the Internet."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Telecommunication of information (including web pages), computer programs and any other data; electronic mail services; provision of telecommunications access and links to computer databases and the Internet; telecommunication services provided in relation to the Internet; broadcasting services; cable television, television and radio broadcasting services; news agency services; telephone rental services; provision and rental of telephone chat lines; information services relating to all the aforesaid services; all the aforesaid services also provided on-line from a computer database or from the Internet; provision of web pages."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Information services relating to transportation, packaging and storage of goods; information relating to travel, travel agencies, journeys, tariffs, timetables and methods of transport; information services relating to gas, electronic and water supplies; information services relating to waste removal and collection; information relating to the rental, hire and leasing of vehicles, cars, planes, garages, parking places, storage units and containers and warehouses; all the aforesaid services also provided on-line from a computer database or from the Internet."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Information services relating to the treatment of materials, including blacksmithing, key-cutting, re-cycling of metals and welding; information services relating to the treatment of wood and timber, including dry-rot treatment, French polishing, mildew-proofing and stripping of floors and doors; information services relating to the treatment of minerals and buildings, including damp proofing and fire-proofing; information services relating to the treatment of liquids, chemicals, gases and air including desalination and treatment of toxic waste; information relating to the treatment of glass, plastics and ceramics; information relating to the treatment of textiles, furs, leather and paper, including curtain making, dress making and reupholstery; information services relating to the treatment of food and animals including abattoirs and taxidermy; treatment of photographic and other recording media, including photographic processing and video tape duplicating; information relating to the treatment of waste, including re-cycling; information services relating to the rental, hire and leasing of air conditioning apparatus, damp-proof injection apparatus, electricity generators and welding apparatus; including all the aforementioned services provided on-line from a computer database or the Internet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of information relating to education, sporting, political, current events, cultural activities and entertainment; information relating to television and radio; information services relating to videos and electronic games; information services relating to publishing, the publication of printed matter and printed publications; organisation of competitions, quizzes, games and recreational and cultural activities, and information services relating to the aforementioned services; all the aforesaid services also provided on-line from a computer database and/or from the Internet."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Information services relating to the provision of food and drink, temporary accommodation and hotels, medical, hygienic and beauty care, veterinary and agricultural services, legal services, other professional services including architecture, engineering, design services, ministerial services, surveying and translation services, scientific and industrial research, security services and computer programming, including cookery information and advice, career information and advice, fashion information and advice, gardening information and advice, wheel clamping, kitchen design, religion, public baths, chiropody, dating agency services, funeral services and flower arranging; news reporting and printing services; news clipping services; commissioned writing services; syndicated writing services concerning the Internet and on-line computer services, all these services also provided on-line from a computer database and/or the Internet; providing access to and leasing time to computer databases; design, drawing and commissioned writing, all for the compilation of web pages on the Internet; information relating to the location and type of restaurants, clubs and shops; information services relating to the rental, hire and leasing of cameras, clothes, computers, drink dispensing machines, farming apparatus, furniture and marquees; information relating to all the aforesaid services, also provided on-line from a computer database or from the Internet."
+        }
+      ]
+    },
+    "id": "bf869277-1305-438f-b2a3-adadcafd7cf9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20010504"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "6399"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Citypoint, One Ropemaker Street, London EC2Y 9SS",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Simmons & Simmons LLP"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20010705",
+        "applicationNumber": "2274489"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ARCHIVED",
+      "registration": {
+        "registrationDate": "20020118",
+        "registrationNumber": "2274489"
+      }
+    },
+    "version": "20250627190018",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOLI"
+    }
+  },
+  "_uri": "/mark/gb/bf869277-1305-438f-b2a3-adadcafd7cf9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:02.690Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

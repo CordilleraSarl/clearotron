@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/kr/bb355353-029d-4ed6-9002-d824978e4761",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "bb355353-029d-4ed6-9002-d824978e4761",
+  "applicationNumber": "40-1986-0002604",
+  "registrationNumber": "4001394800000",
+  "applicationDate": "1986-02-15",
+  "registrationDate": "1987-03-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "보리",
+  "markTransliteration": "barley",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    8,
+    9,
+    11,
+    12,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    26
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        26
+      ],
+      "language": "ko",
+      "description": "분리기,새창으로 열림,생수기,여과기,정수기",
+      "translation_language": "en",
+      "translation": "Separator, Open in new window, Water dispenser, Filter, Water purifier"
+    }
+  ],
+  "owner": "Shin sam shik",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울시성북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Shin sam shik",
+        "applicantNativeName": "신삼식"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Separator, Open in new window, Water dispenser, Filter, Water purifier",
+          "intClassNumber": "06,07,08,09,11,12,16,17,18,19,20,21,22,24,26",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "분리기,새창으로 열림,생수기,여과기,정수기"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "038"
+        }
+      ]
+    },
+    "id": "bb355353-029d-4ed6-9002-d824978e4761",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260619",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19860215",
+        "applicationNumber": "40-1986-0002604"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19870309",
+        "registrationNumber": "4001394800000"
+      }
+    },
+    "version": "20260619021401",
+    "wordMarkSpecification": {
+      "markTransliteration": "barley",
+      "markVerbalElementText": "보리"
+    }
+  },
+  "_uri": "/mark/kr/bb355353-029d-4ed6-9002-d824978e4761",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.212Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

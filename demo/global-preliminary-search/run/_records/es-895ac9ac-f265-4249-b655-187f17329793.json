@@ -1,0 +1,167 @@
+{
+  "uri": "/mark/es/895ac9ac-f265-4249-b655-187f17329793",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "895ac9ac-f265-4249-b655-187f17329793",
+  "applicationNumber": "4204427 M8",
+  "registrationNumber": "4204427 M8",
+  "applicationDate": "2023-02-20",
+  "registrationDate": "2023-09-26",
+  "expiryDate": "2033-02-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-04-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JONDE JOVEN ORQUESTA NACIONAL DE ESPAÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de grabacion, transmision o reproduccion de sonido o imagenes; soportes de registro magneticos; aplicaciones descargables para dispositivos moviles; aplicaciones de software descargables (apps), archivos de texto, de audio y/o de imagenes descargables; archivos multimedia descargables, publicaciones electronicas descargables; programas de ordenador; libros y publicaciones descargables relativas a actividades musicales, teatrales y artisticas.",
+      "translation_language": "en",
+      "translation": "APPARATUS FOR RECORDING, TRANSMISSION OR REPRODUCTION OF SOUND OR IMAGES; MAGNETIC RECORD MEDIA; DOWNLOADABLE APPLICATIONS FOR MOBILE DEVICES; DOWNLOADABLE SOFTWARE APPLICATIONS (APPS), DOWNLOADABLE TEXT, AUDIO AND/OR IMAGE FILES; DOWNLOADABLE MULTIMEDIA FILES, DOWNLOADABLE ELECTRONIC PUBLICATIONS; COMPUTER PROGRAMS; DOWNLOADABLE BOOKS AND PUBLICATIONS RELATED TO MUSICAL, THEATER AND ARTISTIC ACTIVITIES."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Papel, carton, productos de imprenta; material de encuadernacion; fotografias; articulos de papeleria; material para artistas; pinceles; maquinas de escribir y articulos de oficina (excepto muebles); material de instruccion o material didactico (excepto aparatos); publicaciones impresas; libros y publicaciones impresas relativas a actividades musicales, teatrales y artisticas; ; revistas (publicaciones periodicas); carteles publicitarios; libros.",
+      "translation_language": "en",
+      "translation": "PAPER, CARDBOARD, PRINTED PRODUCTS; BINDING MATERIAL; PHOTOGRAPHS; STATIONERY SHOP ARTICLES; EQUIPMENT FOR ARTISTS; BRUSHES; TYPEWRITERS AND OFFICE ITEMS (EXCEPT FURNITURE); INSTRUCTIONAL MATERIAL OR DIDACTIC MATERIAL (EXCEPT APPARATUS); PRINTED PUBLICATIONS; BOOKS AND PRINTED PUBLICATIONS RELATING TO MUSICAL, THEATER AND ARTISTIC ACTIVITIES; ; MAGAZINES (PERIODICAL PUBLICATIONS); ADVERTISING POSTERS; BOOKS."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educacion; formacion; esparcimiento; organizacion de actividades culturales; organizacion de congresos, conferencias, concursos y exposiciones con fines culturales y educativos; organizacion de foros para promover intercambios culturales; organizacion de espectaculos y eventos culturales y artisticos; servicios de orquestas; esparcimiento del tipo de actuaciones de orquestas servicios bibliotecarios; servicios de documentacion y archivo; servicios editoriales; servicios de edicion y produccion de toda clase de obras audiovisuales, incluso television y radio; los servicios de produccion de espectaculos musicales y/o servicios de organizacion de espectaculos musicales (servicios de empresarios) y servicios de representaciones teatrales; servicios de producciones teatrales y musicales; servicios de entretenimiento y culturales prestados por una agrupacion teatral; suministro y explotacion de publicaciones electronicas en linea (no descargables telematicamente); publicacion electronica de libros y periodicos en linea (no descargables); publicacion de libros; organizacion de premios, certamenes y simposios vinculados al teatro; servicios electronicos de biblioteca para el suministro de informacion electronica (incluyendo informacion de archivo) en forma de textos, informacion de audio y/o video relativos a espectaculos musicales y teatrales; celebracion de festivales de artes escenicas; libros y publicaciones no descargables relativas a actividades musicales, teatrales y artisticas.",
+      "translation_language": "en",
+      "translation": "EDUCATION SERVICES; TRAINING; LEISURE; ORGANIZATION OF CULTURAL ACTIVITIES; ORGANIZATION OF CONFERENCES, CONFERENCES, COMPETITIONS AND EXHIBITIONS FOR CULTURAL AND EDUCATIONAL PURPOSES; ORGANIZATION OF FORUMS TO PROMOTE CULTURAL EXCHANGES; ORGANIZATION OF SHOWS AND CULTURAL AND ARTISTIC EVENTS; ORCHESTRA SERVICES; ENTERTAINMENT OF THE TYPE OF PERFORMANCES BY ORCHESTRAS LIBRARY SERVICES; DOCUMENTATION AND ARCHIVE SERVICES; PUBLISHING SERVICES; EDITING AND PRODUCTION SERVICES OF ALL KINDS OF AUDIOVISUAL WORKS, INCLUDING TELEVISION AND RADIO; MUSICAL SHOWS PRODUCTION SERVICES AND/OR MUSICAL SHOWS ORGANIZATION SERVICES (BUSINESS SERVICES) AND THEATER PERFORMANCE SERVICES; THEATER AND MUSICAL PRODUCTION SERVICES; ENTERTAINMENT AND CULTURAL SERVICES PROVIDED BY A THEATER GROUP; SUPPLY AND EXPLOITATION OF ONLINE ELECTRONIC PUBLICATIONS (NOT DOWNLOADABLE ELECTRONICALLY); ELECTRONIC PUBLICATION OF ONLINE BOOKS AND NEWSPAPERS (NOT DOWNLOADABLE); PUBLICATION OF BOOKS; ORGANIZATION OF AWARDS, COMPETITIONS AND SYMPOSIA RELATED TO THEATRE; ELECTRONIC LIBRARY SERVICES FOR THE SUPPLY OF ELECTRONIC INFORMATION (INCLUDING ARCHIVE INFORMATION) IN THE FORM OF TEXTS, AUDIO AND/OR VIDEO INFORMATION RELATING TO MUSICAL AND THEATER PERFORMANCES; CELEBRATION OF PERFORMING ARTS FESTIVALS; NON-DOWNLOADABLE BOOKS AND PUBLICATIONS RELATED TO MUSICAL, THEATER AND ARTISTIC ACTIVITIES."
+    }
+  ],
+  "owner": "INSTITUTO NACIONAL DE LAS ARTES ESCENICAS Y DE LA MUSICA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Gustavo Adolfo González Peces",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "INSTITUTO NACIONAL DE LAS ARTES ESCENICAS Y DE LA MUSICA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "29.02.00",
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "APPARATUS FOR RECORDING, TRANSMISSION OR REPRODUCTION OF SOUND OR IMAGES; MAGNETIC RECORD MEDIA; DOWNLOADABLE APPLICATIONS FOR MOBILE DEVICES; DOWNLOADABLE SOFTWARE APPLICATIONS (APPS), DOWNLOADABLE TEXT, AUDIO AND/OR IMAGE FILES; DOWNLOADABLE MULTIMEDIA FILES, DOWNLOADABLE ELECTRONIC PUBLICATIONS; COMPUTER PROGRAMS; DOWNLOADABLE BOOKS AND PUBLICATIONS RELATED TO MUSICAL, THEATER AND ARTISTIC ACTIVITIES.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de grabacion, transmision o reproduccion de sonido o imagenes; soportes de registro magneticos; aplicaciones descargables para dispositivos moviles; aplicaciones de software descargables (apps), archivos de texto, de audio y/o de imagenes descargables; archivos multimedia descargables, publicaciones electronicas descargables; programas de ordenador; libros y publicaciones descargables relativas a actividades musicales, teatrales y artisticas."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "PAPER, CARDBOARD, PRINTED PRODUCTS; BINDING MATERIAL; PHOTOGRAPHS; STATIONERY SHOP ARTICLES; EQUIPMENT FOR ARTISTS; BRUSHES; TYPEWRITERS AND OFFICE ITEMS (EXCEPT FURNITURE); INSTRUCTIONAL MATERIAL OR DIDACTIC MATERIAL (EXCEPT APPARATUS); PRINTED PUBLICATIONS; BOOKS AND PRINTED PUBLICATIONS RELATING TO MUSICAL, THEATER AND ARTISTIC ACTIVITIES; ; MAGAZINES (PERIODICAL PUBLICATIONS); ADVERTISING POSTERS; BOOKS.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Papel, carton, productos de imprenta; material de encuadernacion; fotografias; articulos de papeleria; material para artistas; pinceles; maquinas de escribir y articulos de oficina (excepto muebles); material de instruccion o material didactico (excepto aparatos); publicaciones impresas; libros y publicaciones impresas relativas a actividades musicales, teatrales y artisticas; ; revistas (publicaciones periodicas); carteles publicitarios; libros."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION SERVICES; TRAINING; LEISURE; ORGANIZATION OF CULTURAL ACTIVITIES; ORGANIZATION OF CONFERENCES, CONFERENCES, COMPETITIONS AND EXHIBITIONS FOR CULTURAL AND EDUCATIONAL PURPOSES; ORGANIZATION OF FORUMS TO PROMOTE CULTURAL EXCHANGES; ORGANIZATION OF SHOWS AND CULTURAL AND ARTISTIC EVENTS; ORCHESTRA SERVICES; ENTERTAINMENT OF THE TYPE OF PERFORMANCES BY ORCHESTRAS LIBRARY SERVICES; DOCUMENTATION AND ARCHIVE SERVICES; PUBLISHING SERVICES; EDITING AND PRODUCTION SERVICES OF ALL KINDS OF AUDIOVISUAL WORKS, INCLUDING TELEVISION AND RADIO; MUSICAL SHOWS PRODUCTION SERVICES AND/OR MUSICAL SHOWS ORGANIZATION SERVICES (BUSINESS SERVICES) AND THEATER PERFORMANCE SERVICES; THEATER AND MUSICAL PRODUCTION SERVICES; ENTERTAINMENT AND CULTURAL SERVICES PROVIDED BY A THEATER GROUP; SUPPLY AND EXPLOITATION OF ONLINE ELECTRONIC PUBLICATIONS (NOT DOWNLOADABLE ELECTRONICALLY); ELECTRONIC PUBLICATION OF ONLINE BOOKS AND NEWSPAPERS (NOT DOWNLOADABLE); PUBLICATION OF BOOKS; ORGANIZATION OF AWARDS, COMPETITIONS AND SYMPOSIA RELATED TO THEATRE; ELECTRONIC LIBRARY SERVICES FOR THE SUPPLY OF ELECTRONIC INFORMATION (INCLUDING ARCHIVE INFORMATION) IN THE FORM OF TEXTS, AUDIO AND/OR VIDEO INFORMATION RELATING TO MUSICAL AND THEATER PERFORMANCES; CELEBRATION OF PERFORMING ARTS FESTIVALS; NON-DOWNLOADABLE BOOKS AND PUBLICATIONS RELATED TO MUSICAL, THEATER AND ARTISTIC ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educacion; formacion; esparcimiento; organizacion de actividades culturales; organizacion de congresos, conferencias, concursos y exposiciones con fines culturales y educativos; organizacion de foros para promover intercambios culturales; organizacion de espectaculos y eventos culturales y artisticos; servicios de orquestas; esparcimiento del tipo de actuaciones de orquestas servicios bibliotecarios; servicios de documentacion y archivo; servicios editoriales; servicios de edicion y produccion de toda clase de obras audiovisuales, incluso television y radio; los servicios de produccion de espectaculos musicales y/o servicios de organizacion de espectaculos musicales (servicios de empresarios) y servicios de representaciones teatrales; servicios de producciones teatrales y musicales; servicios de entretenimiento y culturales prestados por una agrupacion teatral; suministro y explotacion de publicaciones electronicas en linea (no descargables telematicamente); publicacion electronica de libros y periodicos en linea (no descargables); publicacion de libros; organizacion de premios, certamenes y simposios vinculados al teatro; servicios electronicos de biblioteca para el suministro de informacion electronica (incluyendo informacion de archivo) en forma de textos, informacion de audio y/o video relativos a espectaculos musicales y teatrales; celebracion de festivales de artes escenicas; libros y publicaciones no descargables relativas a actividades musicales, teatrales y artisticas."
+        }
+      ]
+    },
+    "id": "895ac9ac-f265-4249-b655-187f17329793",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "ROJO Y NEGRO"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05.10",
+      "27.05.11",
+      "29.01.01",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6384"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "C/ Cedaceros, 1 28014 Madrid MADRID",
+        "representativeName": "Gustavo Adolfo González Peces"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230220",
+        "applicationNumber": "4204427 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330219",
+      "lastPublicationDate": "20230405",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230926",
+        "registrationNumber": "4204427 M8"
+      }
+    },
+    "version": "20260427171118",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JONDE JOVEN ORQUESTA NACIONAL DE ESPAÑA"
+    }
+  },
+  "_uri": "/mark/es/895ac9ac-f265-4249-b655-187f17329793",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

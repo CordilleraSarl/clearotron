@@ -1,0 +1,161 @@
+{
+  "uri": "/mark/cn/16341e8b-ddeb-46c9-8622-ec723d25e964",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "16341e8b-ddeb-46c9-8622-ec723d25e964",
+  "applicationNumber": "19461163",
+  "registrationNumber": "19461163",
+  "applicationDate": "2016-03-29",
+  "registrationDate": "2018-06-28",
+  "expiryDate": "2028-06-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-03-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "汽车行家",
+  "markTransliteration": "AUTO MAVEN qi che xing jia",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "包装设计;纺织品测试;服装设计;计算机软件安装;计算机软件维护;技术研究;室内装饰设计;提供互联网搜索引擎;网站设计咨询;艺术品鉴定",
+      "translation_language": "en",
+      "translation": "Packaging design; textile testing; costume design; computer software installation; maintenance of computer software; technical studies; interior design; provide Internet search engine; website design and consulting; art appraisal"
+    }
+  ],
+  "owner": "Beijing Information Technology Co., mini-car sector",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区信息路甲28号C座(二层)02C室-081号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Information Technology Co., mini-car sector",
+        "applicantNativeName": "北京微车界信息技术有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Packaging design; textile testing; costume design; computer software installation; maintenance of computer software; technical studies; interior design; provide Internet search engine; website design and consulting; art appraisal",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "包装设计;纺织品测试;服装设计;计算机软件安装;计算机软件维护;技术研究;室内装饰设计;提供互联网搜索引擎;网站设计咨询;艺术品鉴定"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Survey service",
+        "Registered design service",
+        "Design and information service for architecture",
+        "Dress designing service",
+        "Computer programming, and concerned services",
+        "Authenticating service for works of art"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4224",
+          "subNatGoodsServicesDescription": "Authenticating service for works of art"
+        }
+      ]
+    },
+    "id": "16341e8b-ddeb-46c9-8622-ec723d25e964",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1593"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "扶友(北京)知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160329",
+        "applicationNumber": "19461163"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280627",
+      "lastPublicationDate": "20180327",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180628",
+        "registrationNumber": "19461163"
+      }
+    },
+    "version": "20251002142223",
+    "wordMarkSpecification": {
+      "markTransliteration": "AUTO MAVEN qi che xing jia",
+      "markVerbalElementText": "汽车行家"
+    }
+  },
+  "_uri": "/mark/cn/16341e8b-ddeb-46c9-8622-ec723d25e964",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

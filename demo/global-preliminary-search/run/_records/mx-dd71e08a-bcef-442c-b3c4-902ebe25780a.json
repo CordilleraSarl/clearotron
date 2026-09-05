@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/mx/dd71e08a-bcef-442c-b3c4-902ebe25780a",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "dd71e08a-bcef-442c-b3c4-902ebe25780a",
+  "applicationNumber": "1198289",
+  "registrationNumber": "1256202",
+  "applicationDate": "2011-07-27",
+  "registrationDate": "2011-12-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores, circuitos integrados, microprocesadores, microprocesadores programables a traves de software, procesadores multinucleo, circuitos integrados de aplicacion especifica, procesadores de señal, procesadores de señal digital, procesadores de vectores, procesadores de comunicaciones, aceleradores de aplicacion especifica, bandas base inalambricas, estaciones base en un chip, incluyendo estaciones base inalambricas en un chip, sistemas en un chip.",
+      "translation_language": "en",
+      "translation": "Semiconductors, integrated circuits, CHIPS, CHIPS PROGRAMMABLE THROUGH SOFTWARE, multicore processors, INTEGRATED CIRCUITS application-specific, signal processors, digital signal processors, PROCESSORS VECTORS, communications processors, accelerators specific application, BANDS BASE WIRELESS STATIONS BASED ON A CHIP, INCLUDING WIRELESS BASE STATIONS IN A CHIP SYSTEMS ON A CHIP."
+    }
+  ],
+  "owner": "FREESCALE SEMICONDUCTOR, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX., 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "FREESCALE SEMICONDUCTOR, INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, integrated circuits, CHIPS, CHIPS PROGRAMMABLE THROUGH SOFTWARE, multicore processors, INTEGRATED CIRCUITS application-specific, signal processors, digital signal processors, PROCESSORS VECTORS, communications processors, accelerators specific application, BANDS BASE WIRELESS STATIONS BASED ON A CHIP, INCLUDING WIRELESS BASE STATIONS IN A CHIP SYSTEMS ON A CHIP.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores, circuitos integrados, microprocesadores, microprocesadores programables a traves de software, procesadores multinucleo, circuitos integrados de aplicacion especifica, procesadores de señal, procesadores de señal digital, procesadores de vectores, procesadores de comunicaciones, aceleradores de aplicacion especifica, bandas base inalambricas, estaciones base en un chip, incluyendo estaciones base inalambricas en un chip, sistemas en un chip."
+        }
+      ]
+    },
+    "id": "dd71e08a-bcef-442c-b3c4-902ebe25780a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "12",
+        "publicationYear": "2011"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110727",
+        "applicationNumber": "1198289"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20111206",
+        "registrationNumber": "1256202"
+      }
+    },
+    "version": "20250704172650",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/mx/dd71e08a-bcef-442c-b3c4-902ebe25780a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

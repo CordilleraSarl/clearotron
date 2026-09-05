@@ -1,0 +1,179 @@
+{
+  "uri": "/mark/cn/32c52485-cdfe-4402-9a9e-5232af5dc8e9",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "32c52485-cdfe-4402-9a9e-5232af5dc8e9",
+  "applicationNumber": "12592612",
+  "registrationNumber": "12592612",
+  "applicationDate": "2013-05-16",
+  "registrationDate": "2015-05-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-02-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2026-06-20",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RAVEN QUEEN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机;计算机软件;录制、通讯、重放声音和影像的装置;磁性数据介质;录音盘;光盘;DVD盘;数字录制介质;投币启动的机械装置;现金收入记录机;计算机器;数据处理设备;灭火设备;眼镜;太阳镜;照相机(摄影);计算机程序(已录制);计算机程序(可下载);动画片;收音机;计算机游戏软件;DVD盘(音像);CD播放机;电话机壳;MP3播放器;时间显示钟控收音机;头戴耳机;移动电话机外壳;耳塞机;移动电话机套;防护帽;个人数据处理设备(具有对文字及影像进行编辑和存储的功能);游戏软件",
+      "translation_language": "en",
+      "translation": "Computers; computer software; devices for recording, communicating, and reproducing sound and images; magnetic data media; recording discs; optical discs; DVDs; digital recording media; coin-operated mechanisms; cash receipt recorders; computing machines; data processing equipment; fire extinguishing equipment; eyeglasses; sunglasses; cameras (photography); computer programs (recorded); computer programs (downloadable); animated films; radios; computer game software; DVDs (audio-visual); CD players; telephone housings; MP3 players; clock-controlled radios with time display; headphones; mobile phone housings; earphones; mobile phone cases; protective caps; personal data processing devices (with functions for editing and storing text and images); game software"
+    }
+  ],
+  "owner": "MATTEL,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20121116"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "333 CONTINENTAL BOULEVARD,EL SEGUNDO,CALIFORNIA,90245-5012,U.S.A.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "MATTEL,INC.",
+        "applicantNativeName": "美泰有限公司;MATTEL,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computers; computer software; devices for recording, communicating, and reproducing sound and images; magnetic data media; recording discs; optical discs; DVDs; digital recording media; coin-operated mechanisms; cash receipt recorders; computing machines; data processing equipment; fire extinguishing equipment; eyeglasses; sunglasses; cameras (photography); computer programs (recorded); computer programs (downloadable); animated films; radios; computer game software; DVDs (audio-visual); CD players; telephone housings; MP3 players; clock-controlled radios with time display; headphones; mobile phone housings; earphones; mobile phone cases; protective caps; personal data processing devices (with functions for editing and storing text and images); game software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机;计算机软件;录制、通讯、重放声音和影像的装置;磁性数据介质;录音盘;光盘;DVD盘;数字录制介质;投币启动的机械装置;现金收入记录机;计算机器;数据处理设备;灭火设备;眼镜;太阳镜;照相机(摄影);计算机程序(已录制);计算机程序(可下载);动画片;收音机;计算机游戏软件;DVD盘(音像);CD播放机;电话机壳;MP3播放器;时间显示钟控收音机;头戴耳机;移动电话机外壳;耳塞机;移动电话机套;防护帽;个人数据处理设备(具有对文字及影像进行编辑和存储的功能);游戏软件"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Fire extinguishing instruments",
+        "Life-saving instruments",
+        "Glasses and those accessories",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0916",
+          "subNatGoodsServicesDescription": "Fire extinguishing instruments"
+        },
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "32c52485-cdfe-4402-9a9e-5232af5dc8e9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20121116"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "1443"
+      }
+    ],
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130516",
+        "applicationNumber": "12592612"
+      },
+      "cancellationDate": "20260620",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20150213",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20150514",
+        "registrationNumber": "12592612"
+      }
+    },
+    "version": "20260828020204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN QUEEN"
+    }
+  },
+  "_uri": "/mark/cn/32c52485-cdfe-4402-9a9e-5232af5dc8e9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

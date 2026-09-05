@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/mx/9360d678-6cb2-4e3e-b99a-2cd844ef940e",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "9360d678-6cb2-4e3e-b99a-2cd844ef940e",
+  "applicationNumber": "2446003",
+  "registrationNumber": "2193450",
+  "applicationDate": "2020-10-28",
+  "registrationDate": "2021-01-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Academias (educación); servicios de asistencia educativa prestados por asistentes escolares; servicios educativos prestados por escuelas; educación, enseñanza, instrucción (enseñanza); servicios educativos; organización de exposiciones con fines culturales o educativos; organización y dirección de foros presenciales educativos; orientación profesional (asesoramiento sobre educación o formación); orientación vocacional (asesoramiento sobre educación o formación); servicios de pruebas pedagógicas; publicación de libros; publicación de textos que no sean publicitarios; publicación en línea de libros y revistas especializadas en formato electrónico; puesta a disposición de instalaciones recreativas; suministro de publicaciones electrónicas en línea no descargables; organización y dirección de talleres de formación; servicios de traducción; transferencia de conocimientos especializados; servicios de tutoría (instrucción)",
+      "translation_language": "en",
+      "translation": "ACADEMIES (EDUCATION); EDUCATIONAL ASSISTANCE SERVICES PROVIDED BY SCHOOL ASSISTANTS; EDUCATIONAL SERVICES PROVIDED BY SCHOOLS; EDUCATION, TEACHING, INSTRUCTION (TEACHING); EDUCATIONAL SERVICES; ORGANIZATION OF EXHIBITIONS FOR CULTURAL OR EDUCATIONAL PURPOSES; ORGANIZATION AND DIRECTION OF EDUCATIONAL FORUMS; PROFESSIONAL GUIDANCE (ADVICE ON EDUCATION OR TRAINING); VOCATIONAL GUIDANCE (ADVICE ON EDUCATION OR TRAINING); PEDAGOGICAL TESTING SERVICES; PUBLICATION OF BOOKS; PUBLICATION OF TEXTS THAT ARE NOT ADVERTISING; ONLINE PUBLICATION OF BOOKS AND SPECIALIZED MAGAZINES IN ELECTRONIC FORMAT; DISPOSAL OF RECREATIONAL FACILITIES; PROVIDING NON-DOWNLOADABLE ONLINE ELECTRONIC PUBLICATIONS; ORGANIZATION AND DIRECTION OF TRAINING WORKSHOPS; TRANSLATE SERVICES; TRANSFER OF SPECIALIZED KNOWLEDGE; TUTORING SERVICES (INSTRUCTION)"
+    }
+  ],
+  "owner": "LESLY JOVANNA BLANCA VARELA RIVERA",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "CARLOS VARGAS ROMERO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CIRCUITO ALTOS JURIQUILLA NUM. EXT. 1162 NUM. INT. 80, ALTOS JURIQUILLA, QUERETARO, QUERETARO 76230",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "LESLY JOVANNA BLANCA VARELA RIVERA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ACADEMIES (EDUCATION); EDUCATIONAL ASSISTANCE SERVICES PROVIDED BY SCHOOL ASSISTANTS; EDUCATIONAL SERVICES PROVIDED BY SCHOOLS; EDUCATION, TEACHING, INSTRUCTION (TEACHING); EDUCATIONAL SERVICES; ORGANIZATION OF EXHIBITIONS FOR CULTURAL OR EDUCATIONAL PURPOSES; ORGANIZATION AND DIRECTION OF EDUCATIONAL FORUMS; PROFESSIONAL GUIDANCE (ADVICE ON EDUCATION OR TRAINING); VOCATIONAL GUIDANCE (ADVICE ON EDUCATION OR TRAINING); PEDAGOGICAL TESTING SERVICES; PUBLICATION OF BOOKS; PUBLICATION OF TEXTS THAT ARE NOT ADVERTISING; ONLINE PUBLICATION OF BOOKS AND SPECIALIZED MAGAZINES IN ELECTRONIC FORMAT; DISPOSAL OF RECREATIONAL FACILITIES; PROVIDING NON-DOWNLOADABLE ONLINE ELECTRONIC PUBLICATIONS; ORGANIZATION AND DIRECTION OF TRAINING WORKSHOPS; TRANSLATE SERVICES; TRANSFER OF SPECIALIZED KNOWLEDGE; TUTORING SERVICES (INSTRUCTION)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Academias (educación); servicios de asistencia educativa prestados por asistentes escolares; servicios educativos prestados por escuelas; educación, enseñanza, instrucción (enseñanza); servicios educativos; organización de exposiciones con fines culturales o educativos; organización y dirección de foros presenciales educativos; orientación profesional (asesoramiento sobre educación o formación); orientación vocacional (asesoramiento sobre educación o formación); servicios de pruebas pedagógicas; publicación de libros; publicación de textos que no sean publicitarios; publicación en línea de libros y revistas especializadas en formato electrónico; puesta a disposición de instalaciones recreativas; suministro de publicaciones electrónicas en línea no descargables; organización y dirección de talleres de formación; servicios de traducción; transferencia de conocimientos especializados; servicios de tutoría (instrucción)"
+        }
+      ]
+    },
+    "id": "9360d678-6cb2-4e3e-b99a-2cd844ef940e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.05.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0119R1",
+        "publicationYear": "2021"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "PONIENTE 140 NUM. EXT. 649, INDUSTRIAL VALLEJO, AZCAPOTZALCO, CDMX 02300, MEXICO",
+        "representativeName": "CARLOS VARGAS ROMERO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201028",
+        "applicationNumber": "2446003"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210108",
+        "registrationNumber": "2193450"
+      }
+    },
+    "version": "20250704185054",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SORI"
+    }
+  },
+  "_uri": "/mark/mx/9360d678-6cb2-4e3e-b99a-2cd844ef940e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

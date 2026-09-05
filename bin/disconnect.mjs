@@ -49,6 +49,7 @@
 // FIRST IMPORT — the rename layer must apply before any module-top env capture evaluates.
 import "../shared/env-local.mjs";
 import { createInterface } from "node:readline/promises";
+import { requireInteractive } from "../shared/invocation.mjs";   // — a prompt with nobody to answer it
 import { stdin, stdout } from "node:process";
 // `rmSync` and `execFileSync` are GONE FROM THE IMPORTS on purpose ( Q3). This verb no
 // longer touches the unit file or systemd at all, and an import kept "in case" is the readiest way for a
@@ -57,14 +58,16 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } fr
 import { join, dirname } from "node:path";
 import { homedir, userInfo } from "node:os";
 import { CONNECT_CLIENTS, clientById } from "../shared/connect-clients.mjs";
-import { disablePlan, revokeEveryonePlan, applyDisablePlan, describeClosure, recordedKeysFor, removeRecordedKeys } from "../shared/client-door.mjs";
+import { defaultDenylistPath, disablePlan, revokeEveryonePlan, applyDisablePlan, describeClosure, recordedKeysFor, removeRecordedKeys } from "../shared/client-door.mjs";
 import { loadGrants } from "../shared/scope.mjs";
 import { envFrom } from "../shared/env-aliases.mjs";
 import { atomicWrite } from "../driver/progress.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const ENV_PATH = join(homedir(), ".env");
-const DENYLIST_PATH = join(homedir(), ".config", "clearotron", "token-denylist");
+// — one owner for this path. It was written out here, in disconnect and twice
+// in start; `start` named it and created nothing, which is how a revoked key kept answering 200.
+const DENYLIST_PATH = defaultDenylistPath(homedir());
 const say = (s = "") => console.log(s);
 
 async function main() {
@@ -120,6 +123,7 @@ async function main() {
     say("");
     CONNECT_CLIENTS.forEach((c, n) => say(`    ${n + 1}) ${c.name}`));
     say("");
+    requireInteractive({ verb: "disconnect" });
     const rl = createInterface({ input: stdin, output: stdout });
     try {
       const answer = (await rl.question(`  1-${CONNECT_CLIENTS.length}: `)).trim();
@@ -236,7 +240,8 @@ async function cutEveryoneOff({ dryRun }) {
     for (const s of plan.steps) say(`    would ${s.what}`);
     return 0;
   }
-  const rl = createInterface({ input: stdin, output: stdout });
+  requireInteractive({ verb: "disconnect" });
+    const rl = createInterface({ input: stdin, output: stdout });
   let answer = "";
   try { answer = (await rl.question("  Type revoke to confirm: ")).trim(); } finally { rl.close(); }
   if (answer !== "revoke") {

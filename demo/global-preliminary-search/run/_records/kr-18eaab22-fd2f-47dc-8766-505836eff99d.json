@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/kr/18eaab22-fd2f-47dc-8766-505836eff99d",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "18eaab22-fd2f-47dc-8766-505836eff99d",
+  "applicationNumber": "40-2017-0036211",
+  "registrationNumber": null,
+  "applicationDate": "2017-03-21",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "소리 (SORi)",
+  "markTransliteration": "SORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "ic칩이 내장된 크레디트카드, 금융거래취급에 관한 컴퓨터소프트웨어, 금융문제 관련 컴퓨터 프로그램, 금융사에 관한 컴퓨터소프트웨어, 금융용 컴퓨터 단말기, 내려받기 가능한 무선단말기용 지능형애플리케이션프로그램, 내려받기 가능한 출판물, 사용자 은행계좌 정보 접속 및 은행업무거래 허가용 컴퓨터통신 소프트웨어, 스마트폰 앱 애플리케이션(소프트웨어), 시장정보분석용 컴퓨터소프트웨어, 애플리케이션 및 데이터베이스 통합용 컴퓨터소프트웨어, 자기식 직불카드, 자기식 카드, 자기식 크레디트카드, 전자식 금융서비스카드, 컴퓨터소프트웨어",
+      "translation_language": "en",
+      "translation": "Credit cards with built-in IC chips, computer software for handling financial transactions, computer programs related to financial issues, computer software for financial companies, financial computer terminals, intelligent application programs for wireless terminals that can be downloaded, publications that can be downloaded, computer communication software for accessing user bank account information and authorizing banking transactions, smartphone app applications (software), computer software for market information analysis, computer software for application and database integration, magnetic debit cards, magnetic cards, magnetic cards Credit cards, electronic financial service cards, computer software"
+    }
+  ],
+  "owner": "WOORI BANK CO.,LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인(유한)대아 (DAE-A Intellectual Property Consulting)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 중구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "WOORI BANK CO.,LTD.",
+        "applicantNativeName": "주식회사 우리은행"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Credit cards with built-in IC chips, computer software for handling financial transactions, computer programs related to financial issues, computer software for financial companies, financial computer terminals, intelligent application programs for wireless terminals that can be downloaded, publications that can be downloaded, computer communication software for accessing user bank account information and authorizing banking transactions, smartphone app applications (software), computer software for market information analysis, computer software for application and database integration, magnetic debit cards, magnetic cards, magnetic cards Credit cards, electronic financial service cards, computer software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "ic칩이 내장된 크레디트카드, 금융거래취급에 관한 컴퓨터소프트웨어, 금융문제 관련 컴퓨터 프로그램, 금융사에 관한 컴퓨터소프트웨어, 금융용 컴퓨터 단말기, 내려받기 가능한 무선단말기용 지능형애플리케이션프로그램, 내려받기 가능한 출판물, 사용자 은행계좌 정보 접속 및 은행업무거래 허가용 컴퓨터통신 소프트웨어, 스마트폰 앱 애플리케이션(소프트웨어), 시장정보분석용 컴퓨터소프트웨어, 애플리케이션 및 데이터베이스 통합용 컴퓨터소프트웨어, 자기식 직불카드, 자기식 카드, 자기식 크레디트카드, 전자식 금융서비스카드, 컴퓨터소프트웨어"
+        }
+      ]
+    },
+    "id": "18eaab22-fd2f-47dc-8766-505836eff99d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.15.21",
+      "04.05.04",
+      "26.01.16"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 역삼로 한양빌딩*층(역삼동)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인(유한)대아 (DAE-A Intellectual Property Consulting)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20170321",
+        "applicationNumber": "40-2017-0036211"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260625021117",
+    "wordMarkSpecification": {
+      "markTransliteration": "SORI",
+      "markVerbalElementText": "소리 (SORi)"
+    }
+  },
+  "_uri": "/mark/kr/18eaab22-fd2f-47dc-8766-505836eff99d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

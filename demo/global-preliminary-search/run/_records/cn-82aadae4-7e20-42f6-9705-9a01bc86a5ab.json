@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/82aadae4-7e20-42f6-9705-9a01bc86a5ab",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "82aadae4-7e20-42f6-9705-9a01bc86a5ab",
+  "applicationNumber": "69266884",
+  "registrationNumber": "69266884",
+  "applicationDate": "2023-01-17",
+  "registrationDate": "2023-07-07",
+  "expiryDate": "2033-07-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "耳机;计算机外围设备;控制和改善音响设备音质的软件;扩音器;麦克风;汽车音响设备;扬声器;扬声器喇叭;扬声器音箱;音响设备",
+      "translation_language": "en",
+      "translation": "Headphones; computer peripherals; software for controlling and improving the sound quality of audio equipment; loudspeakers; microphones; car audio equipment; loudspeakers; loudspeaker horns; speaker cabinets; audio equipment"
+    }
+  ],
+  "owner": "Ding Jiaqu",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省潮州市湘桥区磷溪镇塘边村龙中路一横3号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Ding Jiaqu",
+        "applicantNativeName": "丁佳渠"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Headphones; computer peripherals; software for controlling and improving the sound quality of audio equipment; loudspeakers; microphones; car audio equipment; loudspeakers; loudspeaker horns; speaker cabinets; audio equipment",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "耳机;计算机外围设备;控制和改善音响设备音质的软件;扩音器;麦克风;汽车音响设备;扬声器;扬声器喇叭;扬声器音箱;音响设备"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        }
+      ]
+    },
+    "id": "82aadae4-7e20-42f6-9705-9a01bc86a5ab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1834"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "汕头市中咨荣知识产权事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230117",
+        "applicationNumber": "69266884"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330706",
+      "lastPublicationDate": "20230406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230707",
+        "registrationNumber": "69266884"
+      }
+    },
+    "version": "20251005023029",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQ"
+    }
+  },
+  "_uri": "/mark/cn/82aadae4-7e20-42f6-9705-9a01bc86a5ab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "uri": "/mark/de/1b5ae0c1-0b1f-4dac-bda2-c32a246dc29a",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "1b5ae0c1-0b1f-4dac-bda2-c32a246dc29a",
+  "applicationNumber": "30674475.9",
+  "registrationNumber": "30674475",
+  "applicationDate": "2006-12-05",
+  "registrationDate": "2007-04-02",
+  "expiryDate": "2026-12-31",
+  "renewalDate": "2017-01-01",
+  "lastPublicationDate": "2007-05-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RPD Lärmsanierung Kurvenquietschen rail partner deutschland",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "de",
+      "description": "Hydraulische Schienenschmiersysteme (Maschinenteile)",
+      "translation_language": "en",
+      "translation": "Hydraulic rail lubrication systems (parts of machines)"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Montage, Installation, Einstellung und Wartung von Schienenschmiersystemen",
+      "translation_language": "en",
+      "translation": "Installation, installation, adjustment and maintenance of rail lubrication systems"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "wissenschaftliche und technologische Dienstleistungen, darunter Untersuchung von Schienenbogenlärm und Schienenverkehrslärm als Folge der Zugdurchfahrten; auf die Reduzierung von Schienenbogenlärm und Schienenverkehrslärm gerichtete Produktentwicklung mittels Schienenkonditionierung; Durchführung von Lärmpegelmessungen; Beratung in Bezug auf den technischen Gebrauch von Schienenschmiersystemen; technische Beratung über die Möglichkeiten zur Reduzierung und Sanierung von Schienenbogenlärm und Schienenverkehrslärm",
+      "translation_language": "en",
+      "translation": "Scientific and technological services, including investigation of railroad noise and railway noise as a result of train passing; Product development aimed at reducing railroad noise and rail noise by rail conditioning; Implementation of noise level measurements; Consultancy relating to the technical use of rail lubrication systems; technical advice on the possibilities for the reduction and remediation of railroad noise and rail noise"
+    }
+  ],
+  "owner": "Rail Partner Schweiz AG",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "Schalast & Partner Rechtsanwälte mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Thayngen",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Rail Partner Schweiz AG"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "07.11.15",
+      "18.01.11",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hydraulic rail lubrication systems (parts of machines)",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Hydraulische Schienenschmiersysteme (Maschinenteile)"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Installation, installation, adjustment and maintenance of rail lubrication systems",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Montage, Installation, Einstellung und Wartung von Schienenschmiersystemen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services, including investigation of railroad noise and railway noise as a result of train passing; Product development aimed at reducing railroad noise and rail noise by rail conditioning; Implementation of noise level measurements; Consultancy relating to the technical use of rail lubrication systems; technical advice on the possibilities for the reduction and remediation of railroad noise and rail noise",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "wissenschaftliche und technologische Dienstleistungen, darunter Untersuchung von Schienenbogenlärm und Schienenverkehrslärm als Folge der Zugdurchfahrten; auf die Reduzierung von Schienenbogenlärm und Schienenverkehrslärm gerichtete Produktentwicklung mittels Schienenkonditionierung; Durchführung von Lärmpegelmessungen; Beratung in Bezug auf den technischen Gebrauch von Schienenschmiersystemen; technische Beratung über die Möglichkeiten zur Reduzierung und Sanierung von Schienenbogenlärm und Schienenverkehrslärm"
+        }
+      ]
+    },
+    "id": "1b5ae0c1-0b1f-4dac-bda2-c32a246dc29a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "lila, grau, orange, schwarz, weiß"
+      }
+    ],
+    "markImageViennaClassification": [
+      "18.01.11",
+      "26.11.03",
+      "27.01.12",
+      "27.05.10",
+      "29.01.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "18"
+      }
+    ],
+    "recordLastUpdated": "20250810",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Schalast & Partner Rechtsanwälte mbB, Schöttlestr. 6, 70597 Stuttgart"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "70597 Stuttgart",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Schalast & Partner Rechtsanwälte mbB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20061205",
+        "applicationNumber": "30674475.9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261231",
+      "lastPublicationDate": "20070504",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070402",
+        "registrationNumber": "30674475"
+      },
+      "renewalDate": "20170101",
+      "renewalPublishedDate": "20160826"
+    },
+    "version": "20250810020046",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RPD Lärmsanierung Kurvenquietschen rail partner deutschland"
+    }
+  },
+  "_uri": "/mark/de/1b5ae0c1-0b1f-4dac-bda2-c32a246dc29a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

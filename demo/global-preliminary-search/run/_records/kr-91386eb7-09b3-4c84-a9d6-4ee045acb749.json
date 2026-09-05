@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/kr/91386eb7-09b3-4c84-a9d6-4ee045acb749",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "91386eb7-09b3-4c84-a9d6-4ee045acb749",
+  "applicationNumber": "40-1997-0034548",
+  "registrationNumber": null,
+  "applicationDate": "1997-07-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    8,
+    9,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    25,
+    27,
+    28,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        8,
+        9,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        25,
+        27,
+        28,
+        31
+      ],
+      "language": "ko",
+      "description": "금속완구, 리모트컨트롤을이용한작동오락기 , 리모트컨트롤을이용한작동완구 , 목제완구, 배드민튼공, 세트완구, 야구공, 야구용글러브, 야구용배트, 어린이용모형승용차",
+      "translation_language": "en",
+      "translation": "Metal toys, operating games using remote controls, operating toys using remote controls, wooden toys, badminton balls, set toys, baseball balls, baseball gloves, baseball bats, model cars for children"
+    }
+  ],
+  "owner": "SHINSEGAE INTERNATIONAL INC",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "조철현 (CHO, Chul Hyun)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SHINSEGAE INTERNATIONAL INC",
+        "applicantNativeName": "주식회사 신세계인터내셔날"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Metal toys, operating games using remote controls, operating toys using remote controls, wooden toys, badminton balls, set toys, baseball balls, baseball gloves, baseball bats, model cars for children",
+          "intClassNumber": "06,08,09,17,18,19,20,21,22,25,27,28,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "금속완구, 리모트컨트롤을이용한작동오락기 , 리모트컨트롤을이용한작동완구 , 목제완구, 배드민튼공, 세트완구, 야구공, 야구용글러브, 야구용배트, 어린이용모형승용차"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "043"
+        }
+      ]
+    },
+    "id": "91386eb7-09b3-4c84-a9d6-4ee045acb749",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260825",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울 강남구 테헤란로*길 **-* (역삼동) 신도빌딩, *층(우리특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "조철현 (CHO, Chul Hyun)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19970724",
+        "applicationNumber": "40-1997-0034548"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260825022014",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/kr/91386eb7-09b3-4c84-a9d6-4ee045acb749",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

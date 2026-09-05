@@ -1,0 +1,211 @@
+{
+  "uri": "/mark/jp/313ea0ec-9b10-4ccd-b16b-1766460e5ce3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "313ea0ec-9b10-4ccd-b16b-1766460e5ce3",
+  "applicationNumber": "H04-049854",
+  "registrationNumber": "2663703",
+  "applicationDate": "1992-03-31",
+  "registrationDate": "1994-05-31",
+  "expiryDate": "2004-05-31",
+  "renewalDate": null,
+  "lastPublicationDate": "1993-08-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ライビンクワイエット　ＬＩＶＥＮ　ＱＵＩＥＴ",
+  "markTransliteration": "RAIBINKUWAIETTO",
+  "markTranslation": "LIVEN QUIET",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    11,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    26,
+    27,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        26,
+        27,
+        31
+      ],
+      "language": null,
+      "description": "家具、畳類、建具、屋内装置品（書画および彫刻を除く）屋外装置品（他の類に属するものを除く）記念カツプ類、葬祭用具",
+      "translation_language": "en",
+      "translation": "Furniture, tatami mats, fittings, indoor equipment items (except documentaries and sculptures) Outdoor equipment items (except those belonging to other categories) Memorial cups, funerary equipment"
+    }
+  ],
+  "owner": "TOLI CORPORATION",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19920331"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ITAMI",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "TOLI CORPORATION",
+        "applicantNativeAddress": "伊丹市東有岡５丁目１２５番地",
+        "applicantNativeName": "東リ株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furniture, tatami mats, fittings, indoor equipment items (except documentaries and sculptures) Outdoor equipment items (except those belonging to other categories) Memorial cups, funerary equipment",
+          "intClassNumber": "06,09,10,11,14,16,17,18,19,20,21,22,24,26,27,31",
+          "intGoodsServicesDescription": "家具、畳類、建具、屋内装置品（書画および彫刻を除く）屋外装置品（他の類に属するものを除く）記念カツプ類、葬祭用具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "20A01"
+        },
+        {
+          "natClassNumber": "20A02"
+        },
+        {
+          "natClassNumber": "20B01"
+        },
+        {
+          "natClassNumber": "20C01"
+        },
+        {
+          "natClassNumber": "20C02"
+        },
+        {
+          "natClassNumber": "20C03"
+        },
+        {
+          "natClassNumber": "20C04"
+        },
+        {
+          "natClassNumber": "20C50"
+        },
+        {
+          "natClassNumber": "20D01"
+        },
+        {
+          "natClassNumber": "20D02"
+        },
+        {
+          "natClassNumber": "20D03"
+        },
+        {
+          "natClassNumber": "20D04"
+        },
+        {
+          "natClassNumber": "20D05"
+        },
+        {
+          "natClassNumber": "20D06"
+        },
+        {
+          "natClassNumber": "20D07"
+        },
+        {
+          "natClassNumber": "20D08"
+        },
+        {
+          "natClassNumber": "20D50"
+        },
+        {
+          "natClassNumber": "20E01"
+        },
+        {
+          "natClassNumber": "20F01"
+        }
+      ]
+    },
+    "id": "313ea0ec-9b10-4ccd-b16b-1766460e5ce3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19920331"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19920331",
+        "applicationNumber": "H04-049854"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20040531",
+      "lastPublicationDate": "19930803",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19940531",
+        "registrationNumber": "2663703"
+      }
+    },
+    "version": "20240213111848",
+    "wordMarkSpecification": {
+      "markTranslation": "LIVEN QUIET",
+      "markTransliteration": "RAIBINKUWAIETTO",
+      "markVerbalElementText": "ライビンクワイエット　ＬＩＶＥＮ　ＱＵＩＥＴ"
+    }
+  },
+  "_uri": "/mark/jp/313ea0ec-9b10-4ccd-b16b-1766460e5ce3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.561Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

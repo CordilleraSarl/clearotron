@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/br/e13102c6-3528-4225-be35-ab61e039caef",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "e13102c6-3528-4225-be35-ab61e039caef",
+  "applicationNumber": "826878512",
+  "registrationNumber": null,
+  "applicationDate": "2004-09-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Prestação de serviços de promoções e produções teatrais, prestação de artísticos técnicos, incluindo a idealização, organização, instalação e funcionamento de estabelecimento de diversões públicas, empreendimentos artísticos e produção e apresentação de shows e eventos.",
+      "translation_language": "en",
+      "translation": "Provision of promotional services and theatrical productions, provision of technical arts, including the idealization, organization, installation and operation of public entertainment establishments, artistic enterprises and production and presentation of shows and events."
+    }
+  ],
+  "owner": "YAHOO PRODUÇÕES E PROMOÇÕES ARTÍSTICAS LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "ARIBONI, FABBRI E SCHMIDT SOCIEDADE DE ADVOGADOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "YAHOO PRODUÇÕES E PROMOÇÕES ARTÍSTICAS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of promotional services and theatrical productions, provision of technical arts, including the idealization, organization, installation and operation of public entertainment establishments, artistic enterprises and production and presentation of shows and events.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Prestação de serviços de promoções e produções teatrais, prestação de artísticos técnicos, incluindo a idealização, organização, instalação e funcionamento de estabelecimento de diversões públicas, empreendimentos artísticos e produção e apresentação de shows e eventos."
+        }
+      ]
+    },
+    "id": "e13102c6-3528-4225-be35-ab61e039caef",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "ARIBONI, FABBRI E SCHMIDT SOCIEDADE DE ADVOGADOS"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040908",
+        "applicationNumber": "826878512"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630212421",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/e13102c6-3528-4225-be35-ab61e039caef",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

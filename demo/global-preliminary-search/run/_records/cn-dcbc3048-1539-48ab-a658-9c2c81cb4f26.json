@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/cn/dcbc3048-1539-48ab-a658-9c2c81cb4f26",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "dcbc3048-1539-48ab-a658-9c2c81cb4f26",
+  "applicationNumber": "3265108",
+  "registrationNumber": "3265108",
+  "applicationDate": "2002-08-06",
+  "registrationDate": "2003-10-14",
+  "expiryDate": "2033-10-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-07-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "博日",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "恒温器;实验室用层析设备;理化试验和成分分析用仪器和量器;粘度计(仪);科学用蒸馏装置;油品分析仪",
+      "translation_language": "en",
+      "translation": "Thermostats; laboratory chromatography equipment; instruments and measuring instruments for physical and chemical tests and component analysis; viscometers (instruments); scientific distillation devices; oil analyzers"
+    }
+  ],
+  "owner": "Hangzhou Bori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省杭州市高新技术产业开发区滨安路1192号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Bori Technology Co., Ltd.",
+        "applicantNativeName": "杭州博日科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Thermostats; laboratory chromatography equipment; instruments and measuring instruments for physical and chemical tests and component analysis; viscometers (instruments); scientific distillation devices; oil analyzers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "恒温器;实验室用层析设备;理化试验和成分分析用仪器和量器;粘度计(仪);科学用蒸馏装置;油品分析仪"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "dcbc3048-1539-48ab-a658-9c2c81cb4f26",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "887"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "杭州钱塘商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20020806",
+        "applicationNumber": "3265108"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331013",
+      "lastPublicationDate": "20030714",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20031014",
+        "registrationNumber": "3265108"
+      },
+      "renewalPublishedDate": "20230213"
+    },
+    "version": "20251001160111",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "博日"
+    }
+  },
+  "_uri": "/mark/cn/dcbc3048-1539-48ab-a658-9c2c81cb4f26",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

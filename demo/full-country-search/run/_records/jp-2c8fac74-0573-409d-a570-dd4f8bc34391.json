@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/jp/2c8fac74-0573-409d-a570-dd4f8bc34391",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "2c8fac74-0573-409d-a570-dd4f8bc34391",
+  "applicationNumber": "2010-083673",
+  "registrationNumber": "5406174",
+  "applicationDate": "2010-10-27",
+  "registrationDate": "2011-04-15",
+  "expiryDate": "2021-04-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-05-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＱＯＲＩＶＶＡ",
+  "markTransliteration": "KORIBUBA KYUUOOAARUAIBUIBUIEI",
+  "markTranslation": "QORIVVA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロコントローラ，マイクロプロセッサ，マルチコアマイクロコントローラ，マルチコアプロセッサ，デジタルシグナルプロセッサ，ソフトウェアをプログラム可能なマイクロコントローラ，ソフトウェアをプログラム可能なマイクロプロセッサ，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "A semiconductor, an integrated circuit, a microcontroller, a microprocessor, a multi-core microcontroller, a multi-core processor, a digital signal processor, a software programmable microcontroller, a software programmable microprocessor, other electronic applied appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20101027"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "A semiconductor, an integrated circuit, a microcontroller, a microprocessor, a multi-core microcontroller, a multi-core processor, a digital signal processor, a software programmable microcontroller, a software programmable microprocessor, other electronic applied appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロコントローラ，マイクロプロセッサ，マルチコアマイクロコントローラ，マルチコアプロセッサ，デジタルシグナルプロセッサ，ソフトウェアをプログラム可能なマイクロコントローラ，ソフトウェアをプログラム可能なマイクロプロセッサ，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "2c8fac74-0573-409d-a570-dd4f8bc34391",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20101027"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20101027",
+        "applicationNumber": "2010-083673"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20210415",
+      "lastPublicationDate": "20110524",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20110415",
+        "registrationNumber": "5406174"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "QORIVVA",
+      "markTransliteration": "KORIBUBA KYUUOOAARUAIBUIBUIEI",
+      "markVerbalElementText": "ＱＯＲＩＶＶＡ"
+    }
+  },
+  "_uri": "/mark/jp/2c8fac74-0573-409d-a570-dd4f8bc34391",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

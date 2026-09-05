@@ -1,0 +1,147 @@
+{
+  "uri": "/mark/jp/494f1681-f547-4d76-a618-3a2212956fd5",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "494f1681-f547-4d76-a618-3a2212956fd5",
+  "applicationNumber": "H04-037629",
+  "registrationNumber": "2673554",
+  "applicationDate": "1992-03-30",
+  "registrationDate": "1994-06-29",
+  "expiryDate": "2024-06-29",
+  "renewalDate": null,
+  "lastPublicationDate": "1993-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＳＭＡＲＴＭＯＳ",
+  "markTransliteration": "SUMAATOMOSU",
+  "markTranslation": "SMARTMOS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "集積回路，ＩＣチップ，その他の電子応用機械器具およびその部品，電気通信機械器具，配電用又は制御用の機械器具，電池，電線及びケーブル",
+      "translation_language": "en",
+      "translation": "Integrated circuits, IC chips, other electronic appliances and appliances and parts thereof, telecommunications machinery equipment, electrical equipment for distribution or control, batteries, wires and cables"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19920330"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Integrated circuits, IC chips, other electronic appliances and appliances and parts thereof, telecommunications machinery equipment, electrical equipment for distribution or control, batteries, wires and cables",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "集積回路，ＩＣチップ，その他の電子応用機械器具およびその部品，電気通信機械器具，配電用又は制御用の機械器具，電池，電線及びケーブル"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "494f1681-f547-4d76-a618-3a2212956fd5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19920330"
+      }
+    ],
+    "recordLastUpdated": "20250711",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19920330",
+        "applicationNumber": "H04-037629"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240629",
+      "lastPublicationDate": "19930827",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19940629",
+        "registrationNumber": "2673554"
+      }
+    },
+    "version": "20250711084322",
+    "wordMarkSpecification": {
+      "markTranslation": "SMARTMOS",
+      "markTransliteration": "SUMAATOMOSU",
+      "markVerbalElementText": "ＳＭＡＲＴＭＯＳ"
+    }
+  },
+  "_uri": "/mark/jp/494f1681-f547-4d76-a618-3a2212956fd5",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/tr/75c679d9-e05c-4d43-b82c-8cf4316cf20b",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "75c679d9-e05c-4d43-b82c-8cf4316cf20b",
+  "applicationNumber": "2021/077244",
+  "registrationNumber": null,
+  "applicationDate": "2021-05-25",
+  "registrationDate": null,
+  "expiryDate": "2031-05-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "venturı",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "tr",
+      "description": "Gözlükler, güneş gözlükleri, lensler ve bunların kutuları, kılıfları, parçaları ve aksesuarları.",
+      "translation_language": "en",
+      "translation": "Glasses, sunglasses, lenses and their boxes, cases, parts and accessories."
+    }
+  ],
+  "owner": "TBH MEDİKAL OPTİK SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KONUTKENT MAH. 3028 CAD. 8 E 21 Çankaya Ankara",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "TBH MEDİKAL OPTİK SANAYİ VE TİCARET LİMİTED ŞİRKETİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Glasses, sunglasses, lenses and their boxes, cases, parts and accessories.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Gözlükler, güneş gözlükleri, lensler ve bunların kutuları, kılıfları, parçaları ve aksesuarları."
+        }
+      ]
+    },
+    "id": "75c679d9-e05c-4d43-b82c-8cf4316cf20b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "379"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210525",
+        "applicationNumber": "2021/077244"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20310525",
+      "lastPublicationDate": "20210827",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250708183737",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "venturı"
+    }
+  },
+  "_uri": "/mark/tr/75c679d9-e05c-4d43-b82c-8cf4316cf20b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

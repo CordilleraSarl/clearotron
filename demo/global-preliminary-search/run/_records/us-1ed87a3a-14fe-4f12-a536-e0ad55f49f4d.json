@@ -1,0 +1,256 @@
+{
+  "uri": "/mark/us/1ed87a3a-14fe-4f12-a536-e0ad55f49f4d",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "1ed87a3a-14fe-4f12-a536-e0ad55f49f4d",
+  "applicationNumber": "78577866",
+  "registrationNumber": "3059065",
+  "applicationDate": "2005-03-01",
+  "registrationDate": "2006-02-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2005-11-22"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2012-09-21",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Telephones, steam irons, CD players, and radios",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "World Electronic Corp",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2610 E. 37th Street, Vernon, CA, 90058",
+        "applicantAddressCity": "Vernon",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "90058",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "2610 E. 37th Street",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "World Electronic Corp"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "24.09.07",
+      "30.01.11",
+      "30.05.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Telephones, steam irons, CD players, and radios"
+        }
+      ]
+    },
+    "id": "1ed87a3a-14fe-4f12-a536-e0ad55f49f4d",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20120921",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20060214",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20051122",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20051102",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20051001",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20051001",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20050921",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20050921",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20050308",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2610 E. 37th Street, Vernon, CA, 90058",
+        "city": "Vernon",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "World Electronic Corp",
+        "postalCode": "90058",
+        "stateName": "CALIFORNIA",
+        "street": "2610 E. 37th Street"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2610 E. 37th Street, Vernon, CA, 90058",
+        "city": "Vernon",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "World Electronic Corp",
+        "postalCode": "90058",
+        "stateName": "CALIFORNIA",
+        "street": "2610 E. 37th Street"
+      },
+      {
+        "address": "2610 E. 37th Street, Vernon, CA, 90058",
+        "city": "Vernon",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "World Electronic Corp",
+        "postalCode": "90058",
+        "stateName": "CALIFORNIA",
+        "street": "2610 E. 37th Street"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2610 E. 37th Street, Vernon, CA, 90058",
+        "city": "Vernon",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "World Electronic Corp",
+        "postalCode": "90058",
+        "stateName": "CALIFORNIA",
+        "street": "2610 E. 37th Street"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "VERNON, CA 90058-1723, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "VERNON, CA 90058-1723",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "WORLD ELECTRONIC CORP, 2610 E 37TH ST"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "VERNON, CA 90058-1723, UNITED STATES",
+        "representativeAddressLines": [
+          "VERNON, CA 90058-1723",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20050301",
+        "applicationNumber": "78577866"
+      },
+      "cancellationDate": "20120921",
+      "cancellationPublicationDate": "20121030",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20040101"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20040101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20120921",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20051122"
+      ],
+      "registration": {
+        "registrationDate": "20060214",
+        "registrationNumber": "3059065"
+      }
+    },
+    "version": "20260110004528",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/us/1ed87a3a-14fe-4f12-a536-e0ad55f49f4d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.791Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

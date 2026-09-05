@@ -1,0 +1,187 @@
+{
+  "uri": "/mark/gb/4c9d57bc-66f2-42a3-b1fa-52de4c5c54d6",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "4c9d57bc-66f2-42a3-b1fa-52de4c5c54d6",
+  "applicationNumber": "3030527",
+  "registrationNumber": "3030527",
+  "applicationDate": "2013-11-13",
+  "registrationDate": "2014-03-07",
+  "expiryDate": "2033-11-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LIVE NORTH OF THE RIVER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    14,
+    16,
+    18,
+    21,
+    25
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Mobile phone covers; mobile phone cases; mouse mats.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "en",
+      "description": "Brooches; Bracelets; Bangles; Necklaces; Pendants; key rings; wrist bands.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Tube pass holders/wallets; train pass holders/wallets; postcards; greeting cards; paper note pads; beer mats; paper bags; plastic bags.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "en",
+      "description": "Leather wallets; Imitation leather wallets; Cloth bags;  handbags; umbrellas, purses; plastic tube/train card holders; pvc tube/train pass holders.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Glass mugs; ceramic mugs; china mugs; wooden chopping boards; plastic chopping boards.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Cotton T-shirts; polyester t-shirts; baseball caps; beanie hats; mixed fabric t-shirts; knickers; G-strings; boxer shorts; y fronts; socks.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Katie Banatvala",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Flat 21 Angel Point, 330-336 City Road, London EC1V 2PZ",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Katie Banatvala"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mobile phone covers; mobile phone cases; mouse mats."
+        },
+        {
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Brooches; Bracelets; Bangles; Necklaces; Pendants; key rings; wrist bands."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Tube pass holders/wallets; train pass holders/wallets; postcards; greeting cards; paper note pads; beer mats; paper bags; plastic bags."
+        },
+        {
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Leather wallets; Imitation leather wallets; Cloth bags;  handbags; umbrellas, purses; plastic tube/train card holders; pvc tube/train pass holders."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Glass mugs; ceramic mugs; china mugs; wooden chopping boards; plastic chopping boards."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cotton T-shirts; polyester t-shirts; baseball caps; beanie hats; mixed fabric t-shirts; knickers; G-strings; boxer shorts; y fronts; socks."
+        }
+      ]
+    },
+    "id": "4c9d57bc-66f2-42a3-b1fa-52de4c5c54d6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2013/051"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20131113",
+        "applicationNumber": "3030527"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331113",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20140307",
+        "registrationNumber": "3030527"
+      }
+    },
+    "version": "20250627193420",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LIVE NORTH OF THE RIVER"
+    }
+  },
+  "_uri": "/mark/gb/4c9d57bc-66f2-42a3-b1fa-52de4c5c54d6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

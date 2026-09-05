@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/gb/f1fcec65-722c-4f54-b6bd-0e310e0b72fb",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f1fcec65-722c-4f54-b6bd-0e310e0b72fb",
+  "applicationNumber": "3531977",
+  "registrationNumber": "3531977",
+  "applicationDate": "2020-09-10",
+  "registrationDate": "2021-02-05",
+  "expiryDate": "2030-09-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "THE VIC GROSVENOR CASINOS THE VIC GROSVENOR CASINOS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable games; downloadable bingo games; downloadable poker games; computer software and downloadable software, including downloadable software in the nature of a mobile application, all for use in bingo, poker, games, gaming, gambling, betting, sports betting, lotteries and competitions; downloadable casino games; downloadable electronic game programs and computer software platforms that may be accessed via the Internet, computers and wireless devices, all for use in the fields of bingo games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; gambling software; gaming software; betting software; sports betting software; electronic bingo games; electronic gambling; electronic bingo pens; electronic games and gaming apparatus adapted for use with a television receiver; interactive electronic apparatus adapted for use with a television receiver for use in gaming services; hand held electronic apparatus for providing internet access to selected web sites; amusement machines and apparatus adapted for use with a television receiver; parts and fittings for the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Entertainment services; casino services; gaming and gambling services; betting, casino game and card game services; amusements; organisation, production and presentation of competitions, poker tournaments and gaming events; including the provision of all the aforesaid services rendered live or through the medium of television or provided on-line from a computer database or via the Internet; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; hosting and arranging of corporate hospitality, private functions and parties (entertainment); education and information services relating to gaming and poker.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "21.01.02"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable games; downloadable bingo games; downloadable poker games; computer software and downloadable software, including downloadable software in the nature of a mobile application, all for use in bingo, poker, games, gaming, gambling, betting, sports betting, lotteries and competitions; downloadable casino games; downloadable electronic game programs and computer software platforms that may be accessed via the Internet, computers and wireless devices, all for use in the fields of bingo games, gaming, gambling, lotteries and competitions; computer and video game cassettes, cartridges, discs and programs, including interactive programs; gambling software; gaming software; betting software; sports betting software; electronic bingo games; electronic gambling; electronic bingo pens; electronic games and gaming apparatus adapted for use with a television receiver; interactive electronic apparatus adapted for use with a television receiver for use in gaming services; hand held electronic apparatus for providing internet access to selected web sites; amusement machines and apparatus adapted for use with a television receiver; parts and fittings for the aforesaid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Entertainment services; casino services; gaming and gambling services; betting, casino game and card game services; amusements; organisation, production and presentation of competitions, poker tournaments and gaming events; including the provision of all the aforesaid services rendered live or through the medium of television or provided on-line from a computer database or via the Internet; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; hosting and arranging of corporate hospitality, private functions and parties (entertainment); education and information services relating to gaming and poker."
+        }
+      ]
+    },
+    "id": "f1fcec65-722c-4f54-b6bd-0e310e0b72fb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.13.25",
+      "27.99.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2020/048"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Belgrave Centre, Talbot Street, Nottingham NG1 5GG",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200910",
+        "applicationNumber": "3531977"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300910",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210205",
+        "registrationNumber": "3531977"
+      }
+    },
+    "version": "20250627201138",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE VIC GROSVENOR CASINOS THE VIC GROSVENOR CASINOS"
+    }
+  },
+  "_uri": "/mark/gb/f1fcec65-722c-4f54-b6bd-0e310e0b72fb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

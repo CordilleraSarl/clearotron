@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/c9c8308d-2368-4a2c-8a9a-a9673466ce4d",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c9c8308d-2368-4a2c-8a9a-a9673466ce4d",
+  "applicationNumber": "62219941",
+  "registrationNumber": "62219941",
+  "applicationDate": "2022-01-18",
+  "registrationDate": "2022-08-07",
+  "expiryDate": "2032-08-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-05-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SCHCARVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "可下载的手机应用软件,无线电设备,扬声器,扬声器音箱,录音载体,耳机,便携式媒体播放器,印刷电路板,移动电源(可充电电池),电池",
+      "translation_language": "en",
+      "translation": "Downloadable mobile phone applications, radio equipment, speakers, speaker cabinets, recording carriers, headphones, portable media players, printed circuit boards, power banks (rechargeable batteries), batteries"
+    }
+  ],
+  "owner": "Shenzhen Tongxinrui Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区坂田街道岗头社区新围仔五和大道4006号酷石科创中心314",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Tongxinrui Technology Co., Ltd.",
+        "applicantNativeName": "深圳市同芯锐科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable mobile phone applications, radio equipment, speakers, speaker cabinets, recording carriers, headphones, portable media players, printed circuit boards, power banks (rechargeable batteries), batteries",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "可下载的手机应用软件,无线电设备,扬声器,扬声器音箱,录音载体,耳机,便携式媒体播放器,印刷电路板,移动电源(可充电电池),电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "c9c8308d-2368-4a2c-8a9a-a9673466ce4d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1790"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市中科创为专利代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220118",
+        "applicationNumber": "62219941"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320806",
+      "lastPublicationDate": "20220506",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220807",
+        "registrationNumber": "62219941"
+      }
+    },
+    "version": "20251004191150",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SCHCARVENOR"
+    }
+  },
+  "_uri": "/mark/cn/c9c8308d-2368-4a2c-8a9a-a9673466ce4d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/cu/7069fe25-0dcc-4420-97d2-af3ae91bb1e9",
+  "provider": "clarivate",
+  "office": "cu",
+  "guid": "7069fe25-0dcc-4420-97d2-af3ae91bb1e9",
+  "applicationNumber": "2014-0840",
+  "registrationNumber": null,
+  "applicationDate": "2014-10-01",
+  "registrationDate": null,
+  "expiryDate": "2024-10-01",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Gori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    21,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "es",
+      "description": "Para distinguir muebles de madera y/o metal (tubos, barras de acero, planchas, perfiles), fundición de aluminio, vidrio, tapizados, plásticos, cartón y fibras naturales; muebles para niños y niñas; sillas y butacas en miniaturas, tallas en madera y figuras ornamentales.",
+      "translation_language": "en",
+      "translation": "Concerning furniture of wood and/or metal (pipe, bar steel, irons, sections), aluminium castings, glass, upjolstering, plastic, cardboard and natural fibres; furniture for children and girls; chairs and armchairs at miniatures, sizes at wood and ornamental figures"
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "es",
+      "description": "Para distinguir vajillas; artículos utilitarios para el hogar.",
+      "translation_language": "en",
+      "translation": "Concerning tableware; items utilitarian for home"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicio de comercialización de muebles de madera y/o metal (tubos, barras de acero, planchas, perfiles), fundición en aluminio, vidrio, tapizados, plásticos, cartón y fibras naturales; muebles y juguetes para niños y niñas; artículos de cerámica (vajillas) y otros de carácter utilitario; comercialización de obras de arte y productos de diseño en miniatura, específicamente maquetas de muebles considerados clásicos del diseño industrial como sillas y butacas.",
+      "translation_language": "en",
+      "translation": "Service of merchandising than furniture of wood and/or metal (pipe, bar steel, irons, sections), foundry at aluminium, glass, upjolstering, plastic, cardboard and natural fibres; furniture and toys for children and girls; ceramic articles, tableware. and others than type utilitarian; marketing than civil engineering works. and products of ~diseñ~ or at miniature, specifically models than furniture considered classic of ~diseñ~ or industrial in the form of chairs and armchairs"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicio de diseño industrial, específicamente, diseño de mobiliario para el hogar, oficina y para espacios públicos, que incluye asientos (sillas, sofás, butacas y sillones), mesas, estanterías, escaparates, camas y otros muebles de almacenamiento, muebles multifuncionales (sofá-cama, mesa plegable); diseño de productos utilitarios y decorativos para el hogar a saber: cubiertos, vajilla, colgadores, cajones, bandejas, relojes, centros de mesa, tallas en madera y figuras ornamentales; diseño de muebles y juguetes para niños y niñas.",
+      "translation_language": "en",
+      "translation": "Industrial design services, specifically, design for furniture for home, office and for public spaces, including seating (chairs, settees, armchairs and armchairs), tables, shelves, windows, beds and others furniture for storage, furniture multiple function (sofa bed, table folding); design for goods utilitarian and decorative for home namely: flatware, tableware, hooks, drawers, trays, watches, epergnes, sizes at wood and ornamental figures; design of furniture and toys for children and girls"
+    }
+  ],
+  "owner": "JAROL CUELLAR VALLE",
+  "ownerNative": null,
+  "ownerCountry": "CU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "E TENERIA Y FOMENTO CP MUNICIPIO CARDENAS PROVINCIA MATANZAS",
+        "applicantAddressCountryCode": "CU",
+        "applicantAddressCountryName": "Cuba",
+        "applicantName": "JAROL CUELLAR VALLE"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Concerning furniture of wood and/or metal (pipe, bar steel, irons, sections), aluminium castings, glass, upjolstering, plastic, cardboard and natural fibres; furniture for children and girls; chairs and armchairs at miniatures, sizes at wood and ornamental figures",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Para distinguir muebles de madera y/o metal (tubos, barras de acero, planchas, perfiles), fundición de aluminio, vidrio, tapizados, plásticos, cartón y fibras naturales; muebles para niños y niñas; sillas y butacas en miniaturas, tallas en madera y figuras ornamentales."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Concerning tableware; items utilitarian for home",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Para distinguir vajillas; artículos utilitarios para el hogar."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Service of merchandising than furniture of wood and/or metal (pipe, bar steel, irons, sections), foundry at aluminium, glass, upjolstering, plastic, cardboard and natural fibres; furniture and toys for children and girls; ceramic articles, tableware. and others than type utilitarian; marketing than civil engineering works. and products of ~diseñ~ or at miniature, specifically models than furniture considered classic of ~diseñ~ or industrial in the form of chairs and armchairs",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicio de comercialización de muebles de madera y/o metal (tubos, barras de acero, planchas, perfiles), fundición en aluminio, vidrio, tapizados, plásticos, cartón y fibras naturales; muebles y juguetes para niños y niñas; artículos de cerámica (vajillas) y otros de carácter utilitario; comercialización de obras de arte y productos de diseño en miniatura, específicamente maquetas de muebles considerados clásicos del diseño industrial como sillas y butacas."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Industrial design services, specifically, design for furniture for home, office and for public spaces, including seating (chairs, settees, armchairs and armchairs), tables, shelves, windows, beds and others furniture for storage, furniture multiple function (sofa bed, table folding); design for goods utilitarian and decorative for home namely: flatware, tableware, hooks, drawers, trays, watches, epergnes, sizes at wood and ornamental figures; design of furniture and toys for children and girls",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicio de diseño industrial, específicamente, diseño de mobiliario para el hogar, oficina y para espacios públicos, que incluye asientos (sillas, sofás, butacas y sillones), mesas, estanterías, escaparates, camas y otros muebles de almacenamiento, muebles multifuncionales (sofá-cama, mesa plegable); diseño de productos utilitarios y decorativos para el hogar a saber: cubiertos, vajilla, colgadores, cajones, bandejas, relojes, centros de mesa, tallas en madera y figuras ornamentales; diseño de muebles y juguetes para niños y niñas."
+        }
+      ]
+    },
+    "id": "7069fe25-0dcc-4420-97d2-af3ae91bb1e9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "CU",
+    "registrationOfficeName": "Cuba",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141001",
+        "applicationNumber": "2014-0840"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20241001",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427172138",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Gori"
+    }
+  },
+  "_uri": "/mark/cu/7069fe25-0dcc-4420-97d2-af3ae91bb1e9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

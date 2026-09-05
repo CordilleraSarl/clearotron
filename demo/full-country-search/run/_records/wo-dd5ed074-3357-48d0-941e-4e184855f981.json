@@ -1,0 +1,223 @@
+{
+  "uri": "/mark/wo/dd5ed074-3357-48d0-941e-4e184855f981",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "dd5ed074-3357-48d0-941e-4e184855f981",
+  "applicationNumber": null,
+  "registrationNumber": "1272439",
+  "applicationDate": null,
+  "registrationDate": "2015-08-21",
+  "expiryDate": "2035-08-21",
+  "renewalDate": "2025-08-21",
+  "lastPublicationDate": "2025-09-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORMINO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "High-frequency apparatus; precision measuring apparatus; satellite navigational apparatus; radios; data processing apparatus; intercommunication apparatus; regulating apparatus, electric; measuring devices, electric; monitoring apparatus, electric; integrated circuit cards, smart cards; integrated circuits; printed circuits; recorded computer software; computer memory hardware; microprocessors; wafers for integrated circuits; processors, namely, central processing units; recorded computer operating programs; integrated circuit chips; radar apparatus; semi-conductors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils à haute fréquence; appareils de mesurage de précision; appareils de navigation par satellite; radios; appareils de traitement de données; appareils d'intercommunication; appareils électriques de réglage; dispositifs de mesurage électriques; appareils électriques de surveillance; cartes à circuits intégrés, cartes à puce; circuits intégrés; circuits imprimés; logiciels informatiques enregistrés; matériel pour mémoires informatiques; microprocesseurs; plaquettes pour circuits intégrés; processeurs, à savoir unités centrales de traitement; programmes de systèmes d'exploitation d'ordinateur enregistrés; puces à circuits intégrés; radars; semi-conducteurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de alta frecuencia; aparatos de medición de precisión; aparatos de navegación por satélite; aparatos de radio; aparatos de procesamiento de datos; aparatos de intercomunicación; aparatos eléctricos de regulación; dispositivos eléctricos de medición; aparatos eléctricos de monitorización; tarjetas de circuitos integrados, tarjetas inteligentes; circuitos integrados; circuitos impresos; software grabado; memorias informáticas; microprocesadores; obleas para circuitos integrados; procesadores, a saber, unidades centrales de procesamiento; programas de sistemas operativos informáticos grabados; chips de circuitos integrados; radares; semiconductores.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Teledyne e2v Semiconductors SAS",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20150813",
+      "priorityNumber": "014464416"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20150813",
+          "basicApplicationNumber": "014464416"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CH",
+      "CN",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "TR",
+      "US",
+      "RU"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4 Rue de Rochepleine Saint-Égrève F-38120",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Teledyne e2v Semiconductors SAS"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20150813",
+            "basicApplicationNumber": "014464416"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM"
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "01.15.21",
+      "21.01.09",
+      "29.02.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CH",
+      "CN",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "TR",
+      "US",
+      "RU"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "High-frequency apparatus; precision measuring apparatus; satellite navigational apparatus; radios; data processing apparatus; intercommunication apparatus; regulating apparatus, electric; measuring devices, electric; monitoring apparatus, electric; integrated circuit cards, smart cards; integrated circuits; printed circuits; recorded computer software; computer memory hardware; microprocessors; wafers for integrated circuits; processors, namely, central processing units; recorded computer operating programs; integrated circuit chips; radar apparatus; semi-conductors."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils à haute fréquence; appareils de mesurage de précision; appareils de navigation par satellite; radios; appareils de traitement de données; appareils d'intercommunication; appareils électriques de réglage; dispositifs de mesurage électriques; appareils électriques de surveillance; cartes à circuits intégrés, cartes à puce; circuits intégrés; circuits imprimés; logiciels informatiques enregistrés; matériel pour mémoires informatiques; microprocesseurs; plaquettes pour circuits intégrés; processeurs, à savoir unités centrales de traitement; programmes de systèmes d'exploitation d'ordinateur enregistrés; puces à circuits intégrés; radars; semi-conducteurs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de alta frecuencia; aparatos de medición de precisión; aparatos de navegación por satélite; aparatos de radio; aparatos de procesamiento de datos; aparatos de intercomunicación; aparatos eléctricos de regulación; dispositivos eléctricos de medición; aparatos eléctricos de monitorización; tarjetas de circuitos integrados, tarjetas inteligentes; circuitos integrados; circuitos impresos; software grabado; memorias informáticas; microprocesadores; obleas para circuitos integrados; procesadores, a saber, unidades centrales de procesamiento; programas de sistemas operativos informáticos grabados; chips de circuitos integrados; radares; semiconductores."
+        }
+      ]
+    },
+    "id": "dd5ed074-3357-48d0-941e-4e184855f981",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Blue \"(PANTONE:7699 C)\" and blue \"(PANTONE:7459 C)\". Brand logo + letter Q, Blue Pantone 7699 C Letters O,R,M,I,N,O: Blue, Pantone 7459 C.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Bleu \"(PANTONE:7699 C)\" et bleu \"(PANTONE:7459 C)\". Logo de la marque + lettre Q, bleu Pantone 7699 C, lettres O, R, M, I, N, O: bleu, Pantone 7459 C.",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Azul \"(PANTONE: 7699 C)\" y azul \" (PANTONE: 7459 C)\" Logotipo de la marca + letra Q, azul Pantone 7699 C letras O, R, M, I, N, O: azul Pantone 7459 C.",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "21.01",
+      "27.05",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20150813",
+        "priorityNumber": "014464416"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "34"
+      }
+    ],
+    "recordLastUpdated": "20251124",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350821",
+      "lastPublicationDate": "20250904",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20150821",
+        "registrationNumber": "1272439"
+      },
+      "renewalDate": "20250821",
+      "renewalPublishedDate": "20250904"
+    },
+    "version": "20251124110000",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORMINO"
+    }
+  },
+  "_uri": "/mark/wo/dd5ed074-3357-48d0-941e-4e184855f981",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

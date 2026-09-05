@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/no/a3260af2-d0f9-477c-b5da-6a9ae2384371",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "a3260af2-d0f9-477c-b5da-6a9ae2384371",
+  "applicationNumber": "201811270",
+  "registrationNumber": null,
+  "applicationDate": "2018-08-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Active Nordic",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "no",
+      "description": "Klær; treningsklær; fritidsklær.",
+      "translation_language": "en",
+      "translation": "Clothing; sportswear; casual wear."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Trening og trim; treningssentertjenester; personlig trener [mosjon og trim].",
+      "translation_language": "en",
+      "translation": "Exercise and fitness; fitness center services; personal trainer [exercise and fitness]."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Softwaretjenester [saas].",
+      "translation_language": "en",
+      "translation": "Software services [saas]."
+    }
+  ],
+  "owner": "OLAV A LYSENSTØEN",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "0194 OSLO",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "OLAV A LYSENSTØEN"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing; sportswear; casual wear.",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Klær; treningsklær; fritidsklær."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Exercise and fitness; fitness center services; personal trainer [exercise and fitness].",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Trening og trim; treningssentertjenester; personlig trener [mosjon og trim]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software services [saas].",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Softwaretjenester [saas]."
+        }
+      ]
+    },
+    "id": "a3260af2-d0f9-477c-b5da-6a9ae2384371",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20180828",
+        "applicationNumber": "201811270"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "FINALLY SHELVED"
+    },
+    "version": "20250808020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Active Nordic"
+    }
+  },
+  "_uri": "/mark/no/a3260af2-d0f9-477c-b5da-6a9ae2384371",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

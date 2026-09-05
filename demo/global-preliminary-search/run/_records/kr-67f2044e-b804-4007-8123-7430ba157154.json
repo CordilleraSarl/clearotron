@@ -1,0 +1,153 @@
+{
+  "uri": "/mark/kr/67f2044e-b804-4007-8123-7430ba157154",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "67f2044e-b804-4007-8123-7430ba157154",
+  "applicationNumber": "41-1996-0011209",
+  "registrationNumber": "4100502820000",
+  "applicationDate": "1996-09-10",
+  "registrationDate": "1998-12-04",
+  "expiryDate": "2028-12-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": "K O R I",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "ko",
+      "description": "상업정보제공업",
+      "translation_language": "en",
+      "translation": "Commercial information provider"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "온라인전자출판물제공업(읽기전용),통신강좌업",
+      "translation_language": "en",
+      "translation": "Online electronic publishing service (read-only), communication lecture"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "기술정보제공업,기술조사업",
+      "translation_language": "en",
+      "translation": "Technical information service business, technical service business"
+    }
+  ],
+  "owner": "KT Corporation",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박영순 (PARK, Young Sun)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 성남시 분당구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KT Corporation",
+        "applicantNativeName": "주식회사 케이티"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Commercial information provider",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "상업정보제공업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Online electronic publishing service (read-only), communication lecture",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "온라인전자출판물제공업(읽기전용),통신강좌업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical information service business, technical service business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기술정보제공업,기술조사업"
+        }
+      ]
+    },
+    "id": "67f2044e-b804-4007-8123-7430ba157154",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "# Seongji Heights Cha Bldg., Yeoksam -dong, Gangnam-gu, Seoul, Korea(PARK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박영순 (PARK, Young Sun)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19960910",
+        "applicationNumber": "41-1996-0011209"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281204",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19981204",
+        "registrationNumber": "4100502820000"
+      }
+    },
+    "version": "20250625145419",
+    "wordMarkSpecification": {
+      "markTransliteration": "K O R I",
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/kr/67f2044e-b804-4007-8123-7430ba157154",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

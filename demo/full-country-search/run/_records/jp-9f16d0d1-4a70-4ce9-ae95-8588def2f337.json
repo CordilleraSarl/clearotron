@@ -1,0 +1,218 @@
+{
+  "uri": "/mark/jp/9f16d0d1-4a70-4ce9-ae95-8588def2f337",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "9f16d0d1-4a70-4ce9-ae95-8588def2f337",
+  "applicationNumber": "2018-030319",
+  "registrationNumber": "6115118",
+  "applicationDate": "2018-03-14",
+  "registrationDate": "2019-01-18",
+  "expiryDate": "2029-01-18",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-02-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "インビザ",
+  "markTransliteration": "INBIZA",
+  "markTranslation": "INVISA",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    10,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正及び不正咬合治療用の歯列矯正器具，歯科／歯列矯正用機器・歯周治療用機器・小児歯科用機器・歯科補綴用機器及び歯内治療用機器の部品及び附属品，捕捉した医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアから成る医療用機械器具，医療用デジタル画像の捕捉・保存・検索及び電気通信媒体を介した伝送用の口腔内スキャニングカメラ，医療用画像の捕捉用のスキャニングカメラ，歯列矯正器具，外科用・内科用及び歯科用の機械器具，医療用機械器具",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances for orthodontic and malocclusion treatments, dental / orthodontic appliances / devices for periodontal treatment · devices for pediatric dental · devices for dental prostheses and parts and accessories for endodontic treatment, capture A computer software for display of a medical image and a computer hardware for displaying a medical image which has been stored, an intraoral scanning camera for capturing, storing and retrieving medical digital images and for transmission via a telecommunication medium, Scanning cameras for capturing, orthodontic appliances, surgical and medical and dental machinery and equipment, medical equipment for medical use"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "受託による歯列矯正器具の製造，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Production of orthodontic appliances by consignment, assembly / manufacture or processing of medical machinery and equipment, processing of artificial limbs or dentures (including \"processing of medical materials\")"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科研究，アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守，医薬品・化粧品又は食品の試験・検査又は研究，機械器具に関する試験又は研究，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Dental research, provision of orthodontic or dental treatment computer software by an application service provider, provision of temporary use of orthodontic or dental treatment computer software incapable of downloading online, information processing of data by a computer, Design, creation or maintenance of programs of electronic computers, testing / examination or research on pharmaceuticals / cosmetics or foods, testing or research on machinery and equipment, provision of programs for electronic computers"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医療及び矯正歯科医療，歯科医療及び矯正歯科医療に関する情報の提供，歯科医療及び矯正歯科医療に関する助言，医療情報の提供",
+      "translation_language": "en",
+      "translation": "Provide information on dentistry and orthodontic medicine, dentistry and orthodontic medicine, advice on dentistry and orthodontic treatment, provision of medical information"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20180314"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances for orthodontic and malocclusion treatments, dental / orthodontic appliances / devices for periodontal treatment · devices for pediatric dental · devices for dental prostheses and parts and accessories for endodontic treatment, capture A computer software for display of a medical image and a computer hardware for displaying a medical image which has been stored, an intraoral scanning camera for capturing, storing and retrieving medical digital images and for transmission via a telecommunication medium, Scanning cameras for capturing, orthodontic appliances, surgical and medical and dental machinery and equipment, medical equipment for medical use",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正及び不正咬合治療用の歯列矯正器具，歯科／歯列矯正用機器・歯周治療用機器・小児歯科用機器・歯科補綴用機器及び歯内治療用機器の部品及び附属品，捕捉した医療用画像の表示用のコンピュータソフトウェア及びコンピュータハードウェアから成る医療用機械器具，医療用デジタル画像の捕捉・保存・検索及び電気通信媒体を介した伝送用の口腔内スキャニングカメラ，医療用画像の捕捉用のスキャニングカメラ，歯列矯正器具，外科用・内科用及び歯科用の機械器具，医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Production of orthodontic appliances by consignment, assembly / manufacture or processing of medical machinery and equipment, processing of artificial limbs or dentures (including \"processing of medical materials\")",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "受託による歯列矯正器具の製造，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental research, provision of orthodontic or dental treatment computer software by an application service provider, provision of temporary use of orthodontic or dental treatment computer software incapable of downloading online, information processing of data by a computer, Design, creation or maintenance of programs of electronic computers, testing / examination or research on pharmaceuticals / cosmetics or foods, testing or research on machinery and equipment, provision of programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科研究，アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守，医薬品・化粧品又は食品の試験・検査又は研究，機械器具に関する試験又は研究，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide information on dentistry and orthodontic medicine, dentistry and orthodontic medicine, advice on dentistry and orthodontic treatment, provision of medical information",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医療及び矯正歯科医療，歯科医療及び矯正歯科医療に関する情報の提供，歯科医療及び矯正歯科医療に関する助言，医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "9f16d0d1-4a70-4ce9-ae95-8588def2f337",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180314"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180314",
+        "applicationNumber": "2018-030319"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290118",
+      "lastPublicationDate": "20190212",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190118",
+        "registrationNumber": "6115118"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISA",
+      "markTransliteration": "INBIZA",
+      "markVerbalElementText": "インビザ"
+    }
+  },
+  "_uri": "/mark/jp/9f16d0d1-4a70-4ce9-ae95-8588def2f337",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.740Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

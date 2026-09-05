@@ -1,0 +1,208 @@
+{
+  "uri": "/mark/wo/981a36e8-50f9-438e-b3ac-a53435e26aa9",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "981a36e8-50f9-438e-b3ac-a53435e26aa9",
+  "applicationNumber": null,
+  "registrationNumber": "672159",
+  "applicationDate": null,
+  "registrationDate": "1997-03-21",
+  "expiryDate": "2027-03-21",
+  "renewalDate": "2017-03-21",
+  "lastPublicationDate": "2017-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GREENCHIP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Integrated circuits.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Circuits intégrés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Circuitos integrados.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "19961004",
+      "priorityNumber": "594.678"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "19961004",
+          "basicRegistrationNumber": "594.678"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AT",
+      "AU",
+      "CN",
+      "ES",
+      "FR",
+      "IT",
+      "JP",
+      "SG",
+      "US",
+      "VN",
+      "RU"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "19961004",
+            "basicRegistrationNumber": "594.678"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AT",
+      "AU",
+      "CN",
+      "ES",
+      "FR",
+      "IT",
+      "JP",
+      "SG",
+      "US",
+      "VN",
+      "RU"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Integrated circuits."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Circuits intégrés."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Circuitos integrados."
+        }
+      ]
+    },
+    "id": "981a36e8-50f9-438e-b3ac-a53435e26aa9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "19961004",
+        "priorityNumber": "594.678"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "12"
+      }
+    ],
+    "recordLastUpdated": "20251219",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270321",
+      "lastPublicationDate": "20170406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19970321",
+        "registrationNumber": "672159"
+      },
+      "renewalDate": "20170321",
+      "renewalPublishedDate": "20170406"
+    },
+    "version": "20251219020137",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GREENCHIP"
+    }
+  },
+  "_uri": "/mark/wo/981a36e8-50f9-438e-b3ac-a53435e26aa9",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

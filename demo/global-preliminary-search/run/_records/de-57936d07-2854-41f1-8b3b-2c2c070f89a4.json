@@ -1,0 +1,162 @@
+{
+  "uri": "/mark/de/57936d07-2854-41f1-8b3b-2c2c070f89a4",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "57936d07-2854-41f1-8b3b-2c2c070f89a4",
+  "applicationNumber": "302016111174.7",
+  "registrationNumber": "302016111174",
+  "applicationDate": "2016-12-09",
+  "registrationDate": "2017-03-03",
+  "expiryDate": "2026-12-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-04-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Druckereierzeugnisse",
+      "translation_language": "en",
+      "translation": "Printed matter"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Coaching; Demonstrationsunterricht von praktischen Übungen; Erziehung und Unterricht; Gymnastikunterricht; Herausgabe von Texten, ausgenommen Werbetexte; Organisation und Durchführung von kulturellen und/oder sportlichen Veranstaltungen; Turnunterricht; Veranstaltung und Durchführung von Seminaren; Veranstaltung und Durchführung von Workshops [Ausbildung]",
+      "translation_language": "en",
+      "translation": "Coaching; Demonstration lessons of practical exercises; Education; Gym class; Publication of texts, other than publicity texts; Arranging and conducting cultural and / or sporting events; Physical education; Arranging and conducting seminars; Arranging and conducting of workshops [training]"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "de",
+      "description": "Medizinische Dienstleistungen; Gesundheitsberatung; physiotherapeutische Behandlungen; therapeutische und ärztliche Versorgung und Betreuung",
+      "translation_language": "en",
+      "translation": "Medical services; Health advice; physiotherapeutic treatments; therapeutic and medical care and care"
+    }
+  ],
+  "owner": "Schmiedecke, Werner",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Hofstetter, Schurack & Partner Patent- und Rechtsanwaltskanzlei PartG mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "84048 Mainburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Schmiedecke, Werner"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Druckereierzeugnisse"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Coaching; Demonstration lessons of practical exercises; Education; Gym class; Publication of texts, other than publicity texts; Arranging and conducting cultural and / or sporting events; Physical education; Arranging and conducting seminars; Arranging and conducting of workshops [training]",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Coaching; Demonstrationsunterricht von praktischen Übungen; Erziehung und Unterricht; Gymnastikunterricht; Herausgabe von Texten, ausgenommen Werbetexte; Organisation und Durchführung von kulturellen und/oder sportlichen Veranstaltungen; Turnunterricht; Veranstaltung und Durchführung von Seminaren; Veranstaltung und Durchführung von Workshops [Ausbildung]"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical services; Health advice; physiotherapeutic treatments; therapeutic and medical care and care",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Medizinische Dienstleistungen; Gesundheitsberatung; physiotherapeutische Behandlungen; therapeutische und ärztliche Versorgung und Betreuung"
+        }
+      ]
+    },
+    "id": "57936d07-2854-41f1-8b3b-2c2c070f89a4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "14"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Hofstetter, Schurack & Partner Patent- und Rechtsanwaltskanzlei PartG mbB, Balanstr. 73, 81541 München"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "81541 München",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Hofstetter, Schurack & Partner Patent- und Rechtsanwaltskanzlei PartG mbB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161209",
+        "applicationNumber": "302016111174.7"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261231",
+      "lastPublicationDate": "20170407",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170303",
+        "registrationNumber": "302016111174"
+      }
+    },
+    "version": "20250627162340",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke"
+    }
+  },
+  "_uri": "/mark/de/57936d07-2854-41f1-8b3b-2c2c070f89a4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.070Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

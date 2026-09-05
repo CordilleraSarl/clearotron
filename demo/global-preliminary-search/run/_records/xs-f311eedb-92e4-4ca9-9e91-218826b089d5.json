@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/xs/f311eedb-92e4-4ca9-9e91-218826b089d5",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "f311eedb-92e4-4ca9-9e91-218826b089d5",
+  "applicationNumber": null,
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": "1992-05-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SVC SPARTANBURG VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Treatment of venous disorders",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "JOHN E BOTTSFORD JR MD",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "385 SERPENTINE DR, SPARTANBURG, SC, 29304",
+        "applicantAddressCity": "SPARTANBURG",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "29304",
+        "applicantAddressStateName": "SOUTH CAROLINA",
+        "applicantAddressStreet": "385 SERPENTINE DR",
+        "applicantName": "JOHN E BOTTSFORD JR MD"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Treatment of venous disorders"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "100",
+          "natGoodsServicesDescription": "Treatment of venous disorders"
+        }
+      ]
+    },
+    "id": "f311eedb-92e4-4ca9-9e91-218826b089d5",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADEMARK",
+    "mannerOfDisplay": "DISPLAYING IT IN ADVERTISEMENTS OF THE SERVICE, ON DOCUMENTS, WRAPPERS, OR ARTICLES DELIVERED IN CONNECTION WITH THE SERVICES RENDERED.",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "385 SERPENTINE DR, SPARTANBURG, SC, 29304",
+        "city": "SPARTANBURG",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "name": "JOHN E BOTTSFORD JR MD",
+        "postalCode": "29304",
+        "stateName": "SOUTH CAROLINA",
+        "street": "385 SERPENTINE DR"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "19901231"
+        }
+      ],
+      "firstUsedAnywhereDate": "19901231",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "NONRENEWED"
+        ]
+      },
+      "markCurrentStatus": "NONRENEWED",
+      "registration": {
+        "registrationDate": "19920505"
+      }
+    },
+    "usStateOfficeCode": "SC",
+    "usStateOfficeName": "SOUTH CAROLINA",
+    "version": "20240305082952",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SVC SPARTANBURG VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/f311eedb-92e4-4ca9-9e91-218826b089d5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

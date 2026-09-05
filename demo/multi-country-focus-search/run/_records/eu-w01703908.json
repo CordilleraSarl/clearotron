@@ -1,0 +1,73 @@
+{
+  "uri": "/mark/eu/W01703908",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "W01703908",
+  "applicationNumber": "W01703908",
+  "registrationNumber": "W01703908",
+  "applicationDate": null,
+  "registrationDate": "2022-10-21",
+  "expiryDate": "2032-10-21",
+  "statusClass": "live",
+  "statusText": "ACCEPTED",
+  "statusDate": "2022-12-22",
+  "markText": "Hori",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "INTERNATIONAL_TRADEMARK",
+  "niceClasses": [],
+  "owner": "HORI CO., LTD.",
+  "ownerCountry": null,
+  "representative": "TAKAHASHI Shinya",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Computer screen filters",
+            "computer screens",
+            "earphones",
+            "fitted plastic films known as skins for covering and protecting mobile devices, namely, tablets",
+            "gaming headsets adapted for use in playing video games."
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 28,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Apparatus for electronic games other than those adapted for use with an external display screen or monitor",
+            "fitted plastic films known as skins for covering and protecting electronic gaming apparatus, namely, hand held video games",
+            "hand held joy stick units for playing video games",
+            "hand held units for playing electronic games",
+            "hand held units for playing video games other than those adapted for use with an external display screen or monitor",
+            "hand-held units for playing electronic games for use with external display screen or monitor",
+            "protective carrying cases specially adapted for handheld video games",
+            "protective carrying cases specially adapted for video game consoles for use with an external display screen or monitor",
+            "video game interactive hand held remote controls for playing electronic games",
+            "video game interactive remote control units",
+            "remote controls for playing electronic games."
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/W01703908",
+  "_uri": "/mark/eu/w01703908",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:28.631Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

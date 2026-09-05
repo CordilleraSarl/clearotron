@@ -159,3 +159,98 @@ test("2176-F34 THE PLANT — with the value genuinely absent from the units, doc
       `doctor reported the door as half-configured while ~/.env sets its value:\n${r.out}`);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
+
+// ── 2196: THE SAME FAULT, ONE NAME OVER ─────────────────────────────────────────────────────────────
+//
+// PORTAL_MCP_URL was read from the units and PORTAL_OPS_TOKEN from `process.env`, three lines apart in
+// the same block. `start --background` writes the token into the file the units load and exports it
+// into nobody's shell, so `doctor` afterwards said "no ops token is set ... The Start button fails at
+// the door" while the door answered 200. Same shape as F34 above, which is why it belongs beside it.
+
+const ENV_WITH_TOKEN = [
+  "PORTAL_MCP_URL=http://127.0.0.1:18790",
+  "CLIENT_MCP_ACCOUNT_ACCESS=1",
+  "PORTAL_OPS_TOKEN=v1.not-a-real-token.for-this-arm",
+].join("\n") + "\n";
+
+test("2196 an ops token the UNITS carry is not reported missing to a reader with an empty shell", () => {
+  const home = installedHome(ENV_WITH_TOKEN);
+  try {
+    const r = doctor(home);
+    assert.doesNotMatch(r.out, /no ops token is set/,
+      "the token is in the file the units load and in no shell — reporting it missing is an assertion "
+      + "about the units made from the operator's environment, and it told the owner a working install "
+      + "fails at the door");
+    assert.doesNotMatch(r.out, /The Start button fails at the door/, r.out);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("2196 THE PLANT — with the token genuinely absent from the units, doctor still says so", () => {
+  // Without this, the arm above is satisfied by a doctor that stopped checking the token at all.
+  const home = installedHome(GOOD_ENV);   // PORTAL_MCP_URL, deliberately no PORTAL_OPS_TOKEN
+  try {
+    const r = doctor(home);
+    assert.match(r.out, /no ops token is set/,
+      "a genuinely half-wired lane must still be reported — the fix is reading the right place, not "
+      + "reporting less");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// ── 2192 F9: LINGERING, THE PREREQUISITE THAT FAILS WITHOUT WRITING ANYTHING ────────────────────────
+//
+// `--background` installs USER units. Without lingering, systemd tears this account's user manager down
+// at logout and the units stop — no unit failure, no journal line, no port. The box reads healthy until
+// nobody is logged in. `start --background` refuses when the manager is UNREACHABLE, but a manager that
+// answers in this session says nothing about whether it survives the session.
+//
+// `loginctl` is shimmed rather than trusted, so both answers are driven on any host — the runner's own
+// lingering state must not decide what these arms measure.
+
+/** A doctor run whose `loginctl` is a script we wrote, placed ahead of the real one on PATH. */
+function doctorWithLoginctl(home, script) {
+  const shim = mkdtempSync(join(tmpdir(), "f9-shim-"));
+  writeFileSync(join(shim, "loginctl"), script, { mode: 0o755 });
+  try {
+    const out = execFileSync(process.execPath, [ONBOARD, "--check"], {
+      encoding: "utf8", stdio: "pipe", timeout: 120_000,
+      env: { HOME: home, PATH: [shim, NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+    });
+    return { code: 0, out };
+  } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
+  finally { rmSync(shim, { recursive: true, force: true }); }
+}
+
+test("2192-F9 units installed and lingering OFF is named, with the command that fixes it", () => {
+  const home = installedHome(GOOD_ENV);
+  try {
+    const r = doctorWithLoginctl(home, "#!/bin/sh\necho Linger=no\n");
+    assert.match(r.out, /lingering is OFF/,
+      "this is the prerequisite that fails without writing anything — if doctor does not say it, nothing does");
+    assert.match(r.out, /loginctl enable-linger/, "and a finding a reader cannot act on is half a finding");
+    assert.match(r.out, /no unit failure and no journal line/,
+      "the silent failure mode is the point: a reader who is told only 'lingering is off' does not know "
+      + "what it costs them");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("2192-F9 lingering ON is reported and manufactures no finding", () => {
+  const home = installedHome(GOOD_ENV);
+  try {
+    const r = doctorWithLoginctl(home, "#!/bin/sh\necho Linger=yes\n");
+    assert.match(r.out, /lingering is on/, "the ordinary hosted box must read as fine");
+    assert.doesNotMatch(r.out, /lingering is OFF/, "and carry none of the finding above");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("2192-F9 a loginctl that cannot answer is a could-not-look, never an 'it is off'", () => {
+  const home = installedHome(GOOD_ENV);
+  try {
+    const r = doctorWithLoginctl(home, "#!/bin/sh\necho 'Failed to connect to bus: No medium found' >&2\nexit 1\n");
+    assert.match(r.out, /could not tell whether lingering is on/,
+      "reporting a prerequisite as unmet because the question could not be asked is the same lie in the "
+      + "other direction");
+    assert.doesNotMatch(r.out, /lingering is OFF/, r.out);
+    assert.doesNotMatch(r.out, /^Failed to connect to bus/m,
+      "and the shim's raw stderr must not reach the report any more than systemctl's did");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});

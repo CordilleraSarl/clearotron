@@ -1,0 +1,144 @@
+{
+  "uri": "/mark/au/e8200761-d5bf-40d0-a3cd-8b6b8c2d97e0",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "e8200761-d5bf-40d0-a3cd-8b6b8c2d97e0",
+  "applicationNumber": "2066798",
+  "registrationNumber": "2066798",
+  "applicationDate": "2020-02-05",
+  "registrationDate": "2020-02-05",
+  "expiryDate": "2030-02-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-10-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FOUR WHEEL DRIVE NSW & ACT FOUR WHEEL DRIVE NORTHERN TERRITORY FOUR WHEEL DRIVE SOUTH AUSTRALIA FOUR WHEEL DRIVE VICTORIA FOUR WHEEL DRIVE WESTERN AUSTRALIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "Provisions of paragraph 44(3)(b) and/or Reg 4.15A(3)(b) applied."
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Organisation of competitions; camp services; arranging and conducting conferences, seminars or workshops; club services; educational services; organisation of exhibitions; all of the aforementioned relating to four wheel drive vehicles and off road travel and enthusiasts of four wheel drive vehicles and off road travel",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Australian National Four Wheel Drive Council Inc",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PO Box 709 Kiama 2533, NSW",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Australian National Four Wheel Drive Council Inc"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Organisation of competitions; camp services; arranging and conducting conferences, seminars or workshops; club services; educational services; organisation of exhibitions; all of the aforementioned relating to four wheel drive vehicles and off road travel and enthusiasts of four wheel drive vehicles and off road travel"
+        }
+      ]
+    },
+    "id": "e8200761-d5bf-40d0-a3cd-8b6b8c2d97e0",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "Provisions of paragraph 44(3)(b) and/or Reg 4.15A(3)(b) applied."
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "4W DRIVE, TENT, MOUNTAINS, SOUTHERN-CROSS & WAVES IN TRIANGLE,BROKEN BY ANNULUS"
+      }
+    ],
+    "markImageViennaClassification": [
+      "07.01.25",
+      "18.01.09",
+      "01.11.03",
+      "26.03.01",
+      "26.03.12",
+      "26.03.13",
+      "26.03.16",
+      "26.03.24",
+      "06.01.02",
+      "25.05.25",
+      "26.11.03",
+      "26.11.13",
+      "26.01.01",
+      "26.01.04",
+      "26.01.21",
+      "26.07.03"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PO Box 905 HORNSBY 2077 NSW",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Adams Pluck"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200205",
+        "applicationNumber": "2066798"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300205",
+      "lastPublicationDate": "20211026",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20200205",
+        "registrationNumber": "2066798"
+      }
+    },
+    "version": "20250625163755",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FOUR WHEEL DRIVE NSW & ACT FOUR WHEEL DRIVE NORTHERN TERRITORY FOUR WHEEL DRIVE SOUTH AUSTRALIA FOUR WHEEL DRIVE VICTORIA FOUR WHEEL DRIVE WESTERN AUSTRALIA"
+    }
+  },
+  "_uri": "/mark/au/e8200761-d5bf-40d0-a3cd-8b6b8c2d97e0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

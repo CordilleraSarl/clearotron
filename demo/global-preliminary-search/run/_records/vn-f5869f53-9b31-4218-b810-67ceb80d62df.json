@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/vn/f5869f53-9b31-4218-b810-67ceb80d62df",
+  "provider": "clarivate",
+  "office": "vn",
+  "guid": "f5869f53-9b31-4218-b810-67ceb80d62df",
+  "applicationNumber": "4200600946",
+  "registrationNumber": "40105329",
+  "applicationDate": "2006-01-18",
+  "registrationDate": "2008-07-18",
+  "expiryDate": "2026-01-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "nori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "vi",
+      "description": "Giám định hàng hóa; giám định phương tiện vận tải.",
+      "translation_language": "en",
+      "translation": "Check product; Inspection of means of transport."
+    }
+  ],
+  "owner": "Công ty cổ phần giám định Phương Bắc",
+  "ownerNative": null,
+  "ownerCountry": "VN",
+  "representative": "INVESTIP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2.5-2.6-2.7-2.8 Phan Xích Long, phường 3, quận Bình Thạnh, thành phố Hồ Chí Minh",
+        "applicantAddressCountryCode": "VN",
+        "applicantAddressCountryName": "Vietnam",
+        "applicantName": "Công ty cổ phần giám định Phương Bắc"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Check product; Inspection of means of transport.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Giám định hàng hóa; giám định phương tiện vận tải."
+        }
+      ]
+    },
+    "id": "f5869f53-9b31-4218-b810-67ceb80d62df",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250517",
+    "registrationOfficeCode": "VN",
+    "registrationOfficeName": "Vietnam",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VN",
+        "representativeAddressCountryName": "Vietnam",
+        "representativeName": "INVESTIP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060118",
+        "applicationNumber": "4200600946"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260118",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080718",
+        "registrationNumber": "40105329"
+      }
+    },
+    "version": "20250517184313",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "nori"
+    }
+  },
+  "_uri": "/mark/vn/f5869f53-9b31-4218-b810-67ceb80d62df",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

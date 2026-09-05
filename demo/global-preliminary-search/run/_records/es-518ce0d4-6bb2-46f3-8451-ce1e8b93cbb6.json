@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/es/518ce0d4-6bb2-46f3-8451-ce1e8b93cbb6",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "518ce0d4-6bb2-46f3-8451-ce1e8b93cbb6",
+  "applicationNumber": "4242594 M8",
+  "registrationNumber": "4242594 M8",
+  "applicationDate": "2023-11-28",
+  "registrationDate": "2024-08-22",
+  "expiryDate": "2033-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-02-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "T trevenque group",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño conexos; servicios de analisis industrial, investigacion industrial y diseño industrial; control de calidad y servicios de autenticacion; diseño y desarrollo de hardware y software",
+      "translation_language": "en",
+      "translation": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RELATED RESEARCH AND DESIGN SERVICES; INDUSTRIAL ANALYSIS, INDUSTRIAL RESEARCH AND INDUSTRIAL DESIGN SERVICES; QUALITY CONTROL AND AUTHENTICATION SERVICES; DESIGN AND DEVELOPMENT OF HARDWARE AND SOFTWARE"
+    }
+  ],
+  "owner": "Trevenque Sistemas de Información,S.L.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Trevenque Sistemas de Información,S.L."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "26.04.06",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RELATED RESEARCH AND DESIGN SERVICES; INDUSTRIAL ANALYSIS, INDUSTRIAL RESEARCH AND INDUSTRIAL DESIGN SERVICES; QUALITY CONTROL AND AUTHENTICATION SERVICES; DESIGN AND DEVELOPMENT OF HARDWARE AND SOFTWARE",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño conexos; servicios de analisis industrial, investigacion industrial y diseño industrial; control de calidad y servicios de autenticacion; diseño y desarrollo de hardware y software"
+        }
+      ]
+    },
+    "id": "518ce0d4-6bb2-46f3-8451-ce1e8b93cbb6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "PANTONE 2725C"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.04",
+      "27.05.10",
+      "29.01.04",
+      "29.01.05",
+      "29.01.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6607"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231128",
+        "applicationNumber": "4242594 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331127",
+      "lastPublicationDate": "20240229",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240822",
+        "registrationNumber": "4242594 M8"
+      }
+    },
+    "version": "20260427171320",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "T trevenque group"
+    }
+  },
+  "_uri": "/mark/es/518ce0d4-6bb2-46f3-8451-ce1e8b93cbb6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

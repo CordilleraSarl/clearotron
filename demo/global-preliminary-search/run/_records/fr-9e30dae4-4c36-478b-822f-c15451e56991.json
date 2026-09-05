@@ -1,0 +1,144 @@
+{
+  "uri": "/mark/fr/9e30dae4-4c36-478b-822f-c15451e56991",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "9e30dae4-4c36-478b-822f-c15451e56991",
+  "applicationNumber": "24 5028969",
+  "registrationNumber": "24 5028969",
+  "applicationDate": "2024-02-09",
+  "registrationDate": null,
+  "expiryDate": "2034-02-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-03-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils et instruments scientifiques de mesurage ; appareils médicaux de mesure, de commande et d'analyse pour la reproduction de données sur un écran d'ordinateur à l'aide de logiciels et par voie de transmission sans fil ; scanners ; scanners tridimensionnels ; lasers de mesure ; logiciel à usage médical ; logiciels pour appareils et instruments de mesurage",
+      "translation_language": "en",
+      "translation": "Scientific measuring devices and instruments; medical measuring, control and analysis devices for reproducing data on a computer screen using software and by wireless transmission; scanners; three-dimensional scanners; measuring lasers; software for medical use; software for measuring devices and instruments"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fr",
+      "description": ": Scanners optiques pour examens médicaux ; scanners pour le diagnostic médical ; appareils et instruments de mesurage ; dispositifs d'analyse de l'oreille ; dispositifs d'analyse d'appareils auditifs ; équipements d'examen d'oreilles.",
+      "translation_language": "en",
+      "translation": "Optical scanners for medical examinations; scanners for medical diagnosis; measuring devices and instruments; ear analysis devices; hearing aid analysis devices; ear examination equipment."
+    }
+  ],
+  "owner": "PROD' EMBOUT TECHNOLOGIE Société par actions simplifiée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "@MARK, Jean-Marie ALGOUD",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Créteil Parc, 10, rue Soddy, 94000 Créteil",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "PROD' EMBOUT TECHNOLOGIE Société par actions simplifiée"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific measuring devices and instruments; medical measuring, control and analysis devices for reproducing data on a computer screen using software and by wireless transmission; scanners; three-dimensional scanners; measuring lasers; software for medical use; software for measuring devices and instruments",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et instruments scientifiques de mesurage ; appareils médicaux de mesure, de commande et d'analyse pour la reproduction de données sur un écran d'ordinateur à l'aide de logiciels et par voie de transmission sans fil ; scanners ; scanners tridimensionnels ; lasers de mesure ; logiciel à usage médical ; logiciels pour appareils et instruments de mesurage"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Optical scanners for medical examinations; scanners for medical diagnosis; measuring devices and instruments; ear analysis devices; hearing aid analysis devices; ear examination equipment.",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Scanners optiques pour examens médicaux ; scanners pour le diagnostic médical ; appareils et instruments de mesurage ; dispositifs d'analyse de l'oreille ; dispositifs d'analyse d'appareils auditifs ; équipements d'examen d'oreilles."
+        }
+      ]
+    },
+    "id": "9e30dae4-4c36-478b-822f-c15451e56991",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "Demande d'extension : Polynésie française"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "09"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeAddress": "16, rue Milton, 75009 PARIS",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "@MARK, Jean-Marie ALGOUD"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240209",
+        "applicationNumber": "24 5028969"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340209",
+      "lastPublicationDate": "20240301",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "24 5028969"
+      }
+    },
+    "version": "20250426165939",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/fr/9e30dae4-4c36-478b-822f-c15451e56991",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

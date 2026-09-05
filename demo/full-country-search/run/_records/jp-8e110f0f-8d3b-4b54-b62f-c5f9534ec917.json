@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/8e110f0f-8d3b-4b54-b62f-c5f9534ec917",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "8e110f0f-8d3b-4b54-b62f-c5f9534ec917",
+  "applicationNumber": "2015-012224",
+  "registrationNumber": "5760787",
+  "applicationDate": "2015-02-10",
+  "registrationDate": "2015-04-24",
+  "expiryDate": "2035-04-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-06-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Ｑｏｒｖｏ",
+  "markTransliteration": "KOOBO KORUBO KWORUBO",
+  "markTranslation": "QORVO",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "無線通信用増幅器，ＩＣチップ，電子回路，集積回路モジュール，集積回路，半導体，その他の電子応用機械器具及びその部品，電気通信機械器具",
+      "translation_language": "en",
+      "translation": "An amplifier for radio communication, an IC chip, an electronic circuit, an integrated circuit module, an integrated circuit, a semiconductor, other electronic applied equipment and its parts, a telecommunications machine tool"
+    }
+  ],
+  "owner": "QORVO US INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Nagoya International IP Firm",
+  "priorities": [
+    {
+      "priorityDate": "20140814"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "QORVO US INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "コルボ　ユーエス　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "An amplifier for radio communication, an IC chip, an electronic circuit, an integrated circuit module, an integrated circuit, a semiconductor, other electronic applied equipment and its parts, a telecommunications machine tool",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "無線通信用増幅器，ＩＣチップ，電子回路，集積回路モジュール，集積回路，半導体，その他の電子応用機械器具及びその部品，電気通信機械器具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        }
+      ]
+    },
+    "id": "8e110f0f-8d3b-4b54-b62f-c5f9534ec917",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01.15",
+      "27.05.01.17",
+      "27.05.01.22",
+      "27.05.04.00",
+      "27.05.23.94"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20140814"
+      }
+    ],
+    "recordLastUpdated": "20250131",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Nagoya International IP Firm",
+        "representativeNativeName": "名古屋国際弁理士法人"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150210",
+        "applicationNumber": "2015-012224"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350424",
+      "lastPublicationDate": "20150602",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150424",
+        "registrationNumber": "5760787"
+      }
+    },
+    "version": "20250131083840",
+    "wordMarkSpecification": {
+      "markTranslation": "QORVO",
+      "markTransliteration": "KOOBO KORUBO KWORUBO",
+      "markVerbalElementText": "Ｑｏｒｖｏ"
+    }
+  },
+  "_uri": "/mark/jp/8e110f0f-8d3b-4b54-b62f-c5f9534ec917",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

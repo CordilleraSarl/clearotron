@@ -1,0 +1,248 @@
+{
+  "uri": "/mark/us/401fcb46-65b8-4af2-a4fc-fbc29bd124a0",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "401fcb46-65b8-4af2-a4fc-fbc29bd124a0",
+  "applicationNumber": "86484158",
+  "registrationNumber": null,
+  "applicationDate": "2014-12-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2015-09-10",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "HEAVEN OR HELL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Cinematographic films; animated cartoons; film strips; movies; magnetic recordings; optical recordings; magneto-optical recordings; solid-state recordings; audio-visual teaching apparatus; electronic books and publications; downloadable electronic games via the Internet and wireless devices; multi-media discs and publications; multi-media recordings and publications; laser-readable discs; video discs and publications; computer software; computer programs; digital recordings; media bearing, or for recording, sound and/or video and/or data and/or information; apparatus and instruments for recording and/or reproducing sound and/or video and/or information; holograms; floppy disks; sound recordings; pre-recorded disks; recording disks; compact discs; gramophone records; audio tapes; tape cassettes; video tapes; laser discs; compact discs-interactive CD ROMS; digital video discs (DVD); communications apparatus and instruments; telephones; mobile phones; chargers; chargers for mobile phones; hands-free apparatus for mobile phones; software for digital games, software for mobile phone games; games software recorded on DVD; multi-media discs and electronic publications (downloadable); video discs and electronic publications (downloadable); digital video discs (DVD)",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "INT. CL. 28 Games and playthings; gymnastic and sporting articles not included in other classes; hand-held computer games equipment which is self contained (not adapted for use with TV receivers); electronic toys and electronic games; dolls and dolls' clothing; accessories for dolls; dolls' houses; dolls' furniture; dolls' furniture accessories; teddy bears; toy action figures; toy vehicles; scale model vehicles; toy building structures and toy vehicle tracks; soft toys; plush toys; play sets and play cases; balloons; playing cards; novelty jokes; novelties for parties; toy masks; face masks; puzzles; masks; decorations for Christmas trees; skateboards; skates; skating boots with skates attached; sporting bags and containers adapted for carrying sports articles; golf gloves; gloves for games; puppets; marionettes; playing balls; kites; bats; balls; marbles; amusement apparatus adapted for use with television receivers; interactive games adapted for use with television receivers; electrical and video amusement apparatus and instruments; parts and fittings and accessories for all the aforesaid goods",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment and education services; publishing services; entertainment, education and instruction by or relating to radio and television; education and entertainment services in the form of television programme, radio, cable, satellite and Internet programmes; production, presentation and rental of television and radio programmes, cinematographic films, shows, cable programmes, satellite programmes, Internet programmes and sound and video recordings; publication, production and rental of educational and instructional materials; interactive telephone competitions; provision of education and entertainment by means of radio, television, satellite, cable, telephone, the worldwide web and the Internet; organization of shows; rental of sound recordings and of pre-recorded shows, films, radio and television performances; production of video tapes and video discs; radio entertainment; television entertainment; cinema entertainment; theatre entertainment; game shows; television entertainment services involving telephonic audience participation; interactive entertainment for use with a mobile phone; internet based games; operation of lottery and games of chance; amusement game services; gaming services; gambling services; betting services; casino services; card game and casino tournaments, competitions, contests, games and/or events; lotteries; the provision of any of the aforesaid services to mobile phones, via a mobile network, by communications satellite, by microwave or other electronic, digital and analogue media, live, electronically, via computer network, via the internet, online and through the medium of television; organisation, production and presentation of events for educational, cultural or entertainment purposes; organisation, production, management and presentation of competitions, contests, games, game shows, quizzes, fun days, exhibitions, shows, roadshows, staged events, theatrical performances, concerts, live performances and participation events; organisation, production and provision of video clips via mobile or computer networks for entertainment and/or educational purposes; provision of games via mobile or computer networks; provision of interactive voice recognition games and competitions; competitions and quizzes provided by telephone and mobile phones; conducting and organising of phone-in competitions; competitions, quizzes and lotteries provided on-line; operation of lottery and games of chance",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "FremantleMedia Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1 Stephen Street, London, W1T1AL, GBRI",
+        "applicantAddressCity": "London",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantAddressPostalCode": "W1T1AL",
+        "applicantAddressStreet": "1 Stephen Street",
+        "applicantJurisdictionOfIncorporation": "UNITED KINGDOM",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "FremantleMedia Limited"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Cinematographic films; animated cartoons; film strips; movies; magnetic recordings; optical recordings; magneto-optical recordings; solid-state recordings; audio-visual teaching apparatus; electronic books and publications; downloadable electronic games via the Internet and wireless devices; multi-media discs and publications; multi-media recordings and publications; laser-readable discs; video discs and publications; computer software; computer programs; digital recordings; media bearing, or for recording, sound and/or video and/or data and/or information; apparatus and instruments for recording and/or reproducing sound and/or video and/or information; holograms; floppy disks; sound recordings; pre-recorded disks; recording disks; compact discs; gramophone records; audio tapes; tape cassettes; video tapes; laser discs; compact discs-interactive CD ROMS; digital video discs (DVD); communications apparatus and instruments; telephones; mobile phones; chargers; chargers for mobile phones; hands-free apparatus for mobile phones; software for digital games, software for mobile phone games; games software recorded on DVD; multi-media discs and electronic publications (downloadable); video discs and electronic publications (downloadable); digital video discs (DVD)"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "INT. CL. 28 Games and playthings; gymnastic and sporting articles not included in other classes; hand-held computer games equipment which is self contained (not adapted for use with TV receivers); electronic toys and electronic games; dolls and dolls' clothing; accessories for dolls; dolls' houses; dolls' furniture; dolls' furniture accessories; teddy bears; toy action figures; toy vehicles; scale model vehicles; toy building structures and toy vehicle tracks; soft toys; plush toys; play sets and play cases; balloons; playing cards; novelty jokes; novelties for parties; toy masks; face masks; puzzles; masks; decorations for Christmas trees; skateboards; skates; skating boots with skates attached; sporting bags and containers adapted for carrying sports articles; golf gloves; gloves for games; puppets; marionettes; playing balls; kites; bats; balls; marbles; amusement apparatus adapted for use with television receivers; interactive games adapted for use with television receivers; electrical and video amusement apparatus and instruments; parts and fittings and accessories for all the aforesaid goods"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment and education services; publishing services; entertainment, education and instruction by or relating to radio and television; education and entertainment services in the form of television programme, radio, cable, satellite and Internet programmes; production, presentation and rental of television and radio programmes, cinematographic films, shows, cable programmes, satellite programmes, Internet programmes and sound and video recordings; publication, production and rental of educational and instructional materials; interactive telephone competitions; provision of education and entertainment by means of radio, television, satellite, cable, telephone, the worldwide web and the Internet; organization of shows; rental of sound recordings and of pre-recorded shows, films, radio and television performances; production of video tapes and video discs; radio entertainment; television entertainment; cinema entertainment; theatre entertainment; game shows; television entertainment services involving telephonic audience participation; interactive entertainment for use with a mobile phone; internet based games; operation of lottery and games of chance; amusement game services; gaming services; gambling services; betting services; casino services; card game and casino tournaments, competitions, contests, games and/or events; lotteries; the provision of any of the aforesaid services to mobile phones, via a mobile network, by communications satellite, by microwave or other electronic, digital and analogue media, live, electronically, via computer network, via the internet, online and through the medium of television; organisation, production and presentation of events for educational, cultural or entertainment purposes; organisation, production, management and presentation of competitions, contests, games, game shows, quizzes, fun days, exhibitions, shows, roadshows, staged events, theatrical performances, concerts, live performances and participation events; organisation, production and provision of video clips via mobile or computer networks for entertainment and/or educational purposes; provision of games via mobile or computer networks; provision of interactive voice recognition games and competitions; competitions and quizzes provided by telephone and mobile phones; conducting and organising of phone-in competitions; competitions, quizzes and lotteries provided on-line; operation of lottery and games of chance"
+        }
+      ]
+    },
+    "id": "401fcb46-65b8-4af2-a4fc-fbc29bd124a0",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20151023",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20151023",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20150309",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20150309",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150309",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150225",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20141223",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20141223",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1 Stephen Street, London, W1T1AL, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "FremantleMedia Limited",
+        "postalCode": "W1T1AL",
+        "street": "1 Stephen Street"
+      },
+      {
+        "address": "1 Stephen Street, London, W1T1AL, GBRI",
+        "city": "London",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "FremantleMedia Limited",
+        "postalCode": "W1T1AL",
+        "street": "1 Stephen Street"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "LONDON, W1T1AL, UNITED KINGDOM",
+        "representativeCorrespondentAddressLines": [
+          "LONDON, W1T1AL",
+          "UNITED KINGDOM"
+        ],
+        "representativeCorrespondentName": "ISABELLE BRENDER FREMANTLEMEDIA LIMITED, 1 STEPHEN STREET"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "LONDON, W1T1AL, UNITED KINGDOM",
+        "representativeAddressLines": [
+          "LONDON, W1T1AL",
+          "UNITED KINGDOM"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20150910",
+      "active": false,
+      "application": {
+        "applicationDate": "20141219",
+        "applicationNumber": "86484158"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20151023",
+        "markOfficialStatusEvents": [
+          "Section 44(e) Filed",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260110231209",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR HELL"
+    }
+  },
+  "_uri": "/mark/us/401fcb46-65b8-4af2-a4fc-fbc29bd124a0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

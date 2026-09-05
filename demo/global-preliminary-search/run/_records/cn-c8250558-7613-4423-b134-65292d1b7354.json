@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/c8250558-7613-4423-b134-65292d1b7354",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c8250558-7613-4423-b134-65292d1b7354",
+  "applicationNumber": "90349889A",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VANQER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "培训;摄影;提供不可下载的在线视频;提供不可下载的在线图像;提供关于消遣活动的信息;文字出版(广告宣传文本除外);娱乐服务;组织表演(演出);组织角色扮演娱乐活动;组织文化或教育展览",
+      "translation_language": "en",
+      "translation": ". Training; photography; providing online videos that cannot be downloaded; providing online images that cannot be downloaded; providing information on recreational activities; print publications (excluding advertising texts); entertainment services; organizing performances; organizing role-playing entertainment activities; organizing cultural or educational exhibitions."
+    }
+  ],
+  "owner": "Wanke (Chengdu) Cultural Creativity Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "四川省成都市龙泉驿区大面街道新建路118号百悦锦城18栋32层3214号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wanke (Chengdu) Cultural Creativity Co., Ltd.",
+        "applicantNativeName": "顽客(成都)文化创意有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ". Training; photography; providing online videos that cannot be downloaded; providing online images that cannot be downloaded; providing information on recreational activities; print publications (excluding advertising texts); entertainment services; organizing performances; organizing role-playing entertainment activities; organizing cultural or educational exhibitions.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "培训;摄影;提供不可下载的在线视频;提供不可下载的在线图像;提供关于消遣活动的信息;文字出版(广告宣传文本除外);娱乐服务;组织表演(演出);组织角色扮演娱乐活动;组织文化或教育展览"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "c8250558-7613-4423-b134-65292d1b7354",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1992"
+      }
+    ],
+    "recordLastUpdated": "20260806",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260303",
+        "applicationNumber": "90349889A"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260720",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260806020313",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANQER"
+    }
+  },
+  "_uri": "/mark/cn/c8250558-7613-4423-b134-65292d1b7354",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:14.632Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

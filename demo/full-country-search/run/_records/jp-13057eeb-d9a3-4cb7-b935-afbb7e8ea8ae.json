@@ -1,0 +1,144 @@
+{
+  "uri": "/mark/jp/13057eeb-d9a3-4cb7-b935-afbb7e8ea8ae",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "13057eeb-d9a3-4cb7-b935-afbb7e8ea8ae",
+  "applicationNumber": "2026-000901",
+  "registrationNumber": null,
+  "applicationDate": "2026-01-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ＦＹＮＥＺＱＯＲ",
+  "markTransliteration": "FAINEZUKOORU FAINZUKOORU FINEZUKOORU",
+  "markTranslation": "FYNEZQOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータ記憶装置，コンパクトディスクプレーヤー，電子計算機及びその周辺機器，ハードディスクユニット，テレビゲーム機用メモリーカード，望遠鏡，コンピュータ周辺機器",
+      "translation_language": "en",
+      "translation": "Computer storage devices, compact disc players, electronic computers and their peripherals, hard disk units, memory cards for video game consoles, telescopes, computer peripherals"
+    }
+  ],
+  "owner": "Guangdong Quanyuan Shidai Supply Chain Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "Wang, Xue",
+  "priorities": [
+    {
+      "priorityDate": "20260106"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHUUGOKU",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Guangdong Quanyuan Shidai Supply Chain Co., Ltd.",
+        "applicantNativeAddress": "中国",
+        "applicantNativeName": "広東全遠時代供應鏈有限公司"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer storage devices, compact disc players, electronic computers and their peripherals, hard disk units, memory cards for video game consoles, telescopes, computer peripherals",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータ記憶装置，コンパクトディスクプレーヤー，電子計算機及びその周辺機器，ハードディスクユニット，テレビゲーム機用メモリーカード，望遠鏡，コンピュータ周辺機器"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Game programs for arcade video game machines"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic machines and apparatus; Cinematographic machines and apparatus; Optical machines and apparatus"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Game programs for home video game machines; Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        }
+      ]
+    },
+    "id": "13057eeb-d9a3-4cb7-b935-afbb7e8ea8ae",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20260106"
+      }
+    ],
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Wang, Xue",
+        "representativeNativeName": "王　雪"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260106",
+        "applicationNumber": "2026-000901"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260828085941",
+    "wordMarkSpecification": {
+      "markTranslation": "FYNEZQOR",
+      "markTransliteration": "FAINEZUKOORU FAINZUKOORU FINEZUKOORU",
+      "markVerbalElementText": "ＦＹＮＥＺＱＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/13057eeb-d9a3-4cb7-b935-afbb7e8ea8ae",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.710Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

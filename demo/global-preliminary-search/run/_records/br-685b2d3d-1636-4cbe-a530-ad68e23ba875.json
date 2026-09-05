@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/br/685b2d3d-1636-4cbe-a530-ad68e23ba875",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "685b2d3d-1636-4cbe-a530-ad68e23ba875",
+  "applicationNumber": "819234494",
+  "registrationNumber": null,
+  "applicationDate": "1996-04-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "PREVENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        9,
+        10,
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços médicos e auxiliares.",
+      "translation_language": "en",
+      "translation": "Medical and auxiliary services."
+    }
+  ],
+  "owner": "PREVENCOR DIAGNOSTICO NAO INVASIVO LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "EMP. ESCRITÓRIO DE MARCAS E PATENTES",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "PREVENCOR DIAGNOSTICO NAO INVASIVO LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical and auxiliary services.",
+          "intClassNumber": "05,09,10,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços médicos e auxiliares."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "39.10"
+        }
+      ]
+    },
+    "id": "685b2d3d-1636-4cbe-a530-ad68e23ba875",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "EMP. ESCRITÓRIO DE MARCAS E PATENTES"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19960415",
+        "applicationNumber": "819234494"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630201227",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENCOR"
+    }
+  },
+  "_uri": "/mark/br/685b2d3d-1636-4cbe-a530-ad68e23ba875",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

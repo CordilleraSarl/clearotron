@@ -1,0 +1,414 @@
+{
+  "uri": "/mark/us/a2a46ccb-44ea-4626-8291-aa84530c2e1f",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a2a46ccb-44ea-4626-8291-aa84530c2e1f",
+  "applicationNumber": "87801295",
+  "registrationNumber": null,
+  "applicationDate": "2018-02-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-09-03"
+  ],
+  "abandonmentDate": "2021-11-29",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "GROSVENOR CONSORTIUM",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"CONSORTIUM\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Educational services, namely, conducting conferences, lectures, seminars, classes, round tables, workshops, panel discussions, and professional development programs in the field of asset management",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Capital Management, L.P.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Bruce Goldner",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Chicago, IL, 60611",
+        "applicantAddressCity": "Chicago",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "60611",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantJurisdictionOfIncorporation": "ILLINOIS",
+        "applicantLegalEntity": "LIMITED PARTNERSHIP",
+        "applicantName": "Grosvenor Capital Management, L.P.",
+        "applicantSecondaryAddressUnit": "900 North Michigan Avenue, Suite 1100",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., Illinois"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Educational services, namely, conducting conferences, lectures, seminars, classes, round tables, workshops, panel discussions, and professional development programs in the field of asset management"
+        }
+      ]
+    },
+    "id": "a2a46ccb-44ea-4626-8291-aa84530c2e1f",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"CONSORTIUM\""
+    ],
+    "markEvents": [
+      {
+        "date": "20211129",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20211129",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20210407",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20210405",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20210405",
+        "descriptionText": "SOU EXTENSION 3 FILED"
+      },
+      {
+        "date": "20210405",
+        "descriptionText": "SOU EXTENSION 3 GRANTED"
+      },
+      {
+        "date": "20201010",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20201008",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20201008",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20201008",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20200410",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20200408",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20200408",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20200408",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20191029",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20190903",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20190903",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20190814",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20190729",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20190729",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20190729",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20190729",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20190729",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190725",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190724",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190724",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20190207",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190207",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190207",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190115",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20190114",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20190114",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190114",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20180724",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20180713",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20180713",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180713",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180709",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20180705",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20180704",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20180615",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20180601",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180225",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20180220",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "900 North Michigan Avenue, Suite 1100, Chicago, IL, 60611",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., Illinois"
+          }
+        ],
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "LIMITED PARTNERSHIP",
+        "name": "Grosvenor Capital Management, L.P.",
+        "postalCode": "60611",
+        "stateName": "ILLINOIS",
+        "street": "900 North Michigan Avenue, Suite 1100"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Chicago, IL, 60611",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., Illinois"
+          }
+        ],
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "LIMITED PARTNERSHIP",
+        "name": "Grosvenor Capital Management, L.P.",
+        "postalCode": "60611",
+        "secondaryAddressUnit": "900 North Michigan Avenue, Suite 1100",
+        "stateName": "ILLINOIS"
+      },
+      {
+        "address": "Chicago, IL, 60611",
+        "city": "Chicago",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "GCM, L.L.C., Illinois"
+          }
+        ],
+        "jurisdictionOfIncorporation": "ILLINOIS",
+        "legalEntity": "LIMITED PARTNERSHIP",
+        "name": "Grosvenor Capital Management, L.P.",
+        "postalCode": "60611",
+        "secondaryAddressUnit": "900 North Michigan Avenue, Suite 1100",
+        "stateName": "ILLINOIS"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEW YORK, NY 10001-8602, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEW YORK, NY 10001-8602",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Bruce Goldner SKADDEN, ARPS, SLATE, MEAGHER & FLOM LLP, One Manhattan West"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEW YORK, NY 10001-8602, UNITED STATES",
+        "representativeAddressLines": [
+          "NEW YORK, NY 10001-8602",
+          "UNITED STATES"
+        ],
+        "representativeName": "Bruce Goldner"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20211129",
+      "active": false,
+      "application": {
+        "applicationDate": "20180216",
+        "applicationNumber": "87801295"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "extension": {
+        "approvalDate": [
+          "20210405"
+        ]
+      },
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20211129",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20190903"
+      ],
+      "withdrawalDate": [
+        "20180705"
+      ]
+    },
+    "version": "20260113071104",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR CONSORTIUM"
+    }
+  },
+  "_uri": "/mark/us/a2a46ccb-44ea-4626-8291-aa84530c2e1f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

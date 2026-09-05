@@ -1,0 +1,96 @@
+{
+  "uri": "/mark/de/768e1349-6610-4c35-8f3b-ac6ffd87b361",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "768e1349-6610-4c35-8f3b-ac6ffd87b361",
+  "applicationNumber": "SU 13222",
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "1988-01-30",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENO REPORT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Zeitschriftenherausgabe.",
+      "translation_language": "en",
+      "translation": "MAGAZINE PUBLISHING."
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "MAGAZINE PUBLISHING.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Zeitschriftenherausgabe."
+        }
+      ]
+    },
+    "id": "768e1349-6610-4c35-8f3b-ac6ffd87b361",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "status": {
+      "abandonmentDate": "19880130",
+      "active": false,
+      "application": {
+        "applicationNumber": "SU 13222"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "markCurrentStatus": "REFUSED REQUEST ON ABSOLUTE GROUNDS"
+    },
+    "version": "20250627130637",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENO REPORT"
+    }
+  },
+  "_uri": "/mark/de/768e1349-6610-4c35-8f3b-ac6ffd87b361",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.813Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

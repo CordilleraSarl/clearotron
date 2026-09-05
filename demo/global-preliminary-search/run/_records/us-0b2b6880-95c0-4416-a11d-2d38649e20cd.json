@@ -1,0 +1,350 @@
+{
+  "uri": "/mark/us/0b2b6880-95c0-4416-a11d-2d38649e20cd",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0b2b6880-95c0-4416-a11d-2d38649e20cd",
+  "applicationNumber": "76029590",
+  "registrationNumber": "2535756",
+  "applicationDate": "2000-04-20",
+  "registrationDate": "2002-02-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2001-11-13"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2014-02-18",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "HEAVEN OR LAS VEGAS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"LAS VEGAS\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Rental of theatrical props",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Kimball Nelson, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20070723",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "11814 W. Jefferson Blvd., Culver City, CA, 90230",
+        "applicantAddressCity": "Culver City",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "90230",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "11814 W. Jefferson Blvd.",
+        "applicantAliasName": "DBA HEAVEN OR LAS VEGAS",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Kimball Nelson, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.11.10",
+      "26.11.33",
+      "26.11.36",
+      "26.11.37",
+      "26.19.01",
+      "26.19.07",
+      "26.19.10"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Rental of theatrical props"
+        }
+      ]
+    },
+    "id": "0b2b6880-95c0-4416-a11d-2d38649e20cd",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"LAS VEGAS\""
+    ],
+    "markEvents": [
+      {
+        "date": "20140218",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)"
+      },
+      {
+        "date": "20110727",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20110727",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 8 & 9"
+      },
+      {
+        "date": "20110615",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20070723",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20070711",
+        "descriptionText": "ASSIGNED TO PARALEGAL"
+      },
+      {
+        "date": "20070612",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20070612",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) FILED"
+      },
+      {
+        "date": "20070403",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20020205",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20011113",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20011024",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20010920",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010911",
+        "descriptionText": "EXAMINERS AMENDMENT MAILED"
+      },
+      {
+        "date": "20010903",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20010726",
+        "descriptionText": "USE AMENDMENT ACCEPTED"
+      },
+      {
+        "date": "20010531",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20010404",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20010329",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20010308",
+        "descriptionText": "AMENDMENT TO USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20010126",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20010125",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20010118",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20001127",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20001122",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20001024",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20000927",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20000922",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "11814 W. Jefferson Blvd., Culver City, CA, 90230",
+        "aliasName": "DBA HEAVEN OR LAS VEGAS",
+        "city": "Culver City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Kimball Nelson, Inc.",
+        "postalCode": "90230",
+        "stateName": "CALIFORNIA",
+        "street": "11814 W. Jefferson Blvd."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "11814 W. Jefferson Blvd., Culver City, CA, 90230",
+        "aliasName": "DBA HEAVEN OR LAS VEGAS",
+        "city": "Culver City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Kimball Nelson, Inc.",
+        "postalCode": "90230",
+        "stateName": "CALIFORNIA",
+        "street": "11814 W. Jefferson Blvd."
+      },
+      {
+        "address": "11814 W. Jefferson Blvd., Culver City, CA, 90230",
+        "aliasName": "DBA HEAVEN OR LAS VEGAS",
+        "city": "Culver City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Kimball Nelson, Inc.",
+        "postalCode": "90230",
+        "stateName": "CALIFORNIA",
+        "street": "11814 W. Jefferson Blvd."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "11814 W. Jefferson Blvd., Culver City, CA, 90230",
+        "aliasName": "DBA HEAVEN OR LAS VEGAS",
+        "city": "Culver City",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Kimball Nelson, Inc.",
+        "postalCode": "90230",
+        "stateName": "CALIFORNIA",
+        "street": "11814 W. Jefferson Blvd."
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "CULVER CITY, CA 90230, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "CULVER CITY, CA 90230",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Kimball Nelson, Inc., 11814 W JEFFERSON BLVD"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "CULVER CITY, CA 90230, UNITED STATES",
+        "representativeAddressLines": [
+          "CULVER CITY, CA 90230",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20000420",
+        "applicationNumber": "76029590"
+      },
+      "cancellationDate": "20140218",
+      "cancellationPublicationDate": "20140325",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19960229"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19960229"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20140218",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20011113"
+      ],
+      "registration": {
+        "registrationDate": "20020205",
+        "registrationNumber": "2535756"
+      }
+    },
+    "version": "20260109052120",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR LAS VEGAS"
+    }
+  },
+  "_uri": "/mark/us/0b2b6880-95c0-4416-a11d-2d38649e20cd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

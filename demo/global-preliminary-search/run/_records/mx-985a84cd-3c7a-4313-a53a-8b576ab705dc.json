@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/mx/985a84cd-3c7a-4313-a53a-8b576ab705dc",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "985a84cd-3c7a-4313-a53a-8b576ab705dc",
+  "applicationNumber": "2599755",
+  "registrationNumber": "2402450",
+  "applicationDate": "2021-08-17",
+  "registrationDate": "2022-06-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENQUISH ENTRENAMIENTO FUNCIONAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Centro de acondicionamiento fisico, entrenamiento funcional personalizado y grupal",
+      "translation_language": "en",
+      "translation": "CENTER FOR PHYSICAL CONDITIONING, PERSONALIZED AND GROUP FUNCTIONAL TRAINING"
+    }
+  ],
+  "owner": "ALFONSO ZAMBRANO LARA",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "ALFONSO ZAMBRANO LARA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PROL.BLVD. CAMPESTRE NUM. EXT. 2804 NUM. INT. 6, CAÑADA DEL REFUGIO, LEO, LEON GTO 37358",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "ALFONSO ZAMBRANO LARA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CENTER FOR PHYSICAL CONDITIONING, PERSONALIZED AND GROUP FUNCTIONAL TRAINING",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Centro de acondicionamiento fisico, entrenamiento funcional personalizado y grupal"
+        }
+      ]
+    },
+    "id": "985a84cd-3c7a-4313-a53a-8b576ab705dc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0616R1",
+        "publicationYear": "2022"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PROL.BLVD. CAMPESTRE NUM. EXT. 2804 NUM. INT. 6, CAÑADA DEL REFUGIO, LEON , LEON GTO 37358, MEXICO"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "PROL. BLVD.CAMPESTRE NUM. EXT. 2804 NUM. INT. 6, CAÑADA DEL REFUGIO, LEON, GUANAJUATO 37358, MEXICO",
+        "representativeName": "ALFONSO ZAMBRANO LARA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210817",
+        "applicationNumber": "2599755"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220603",
+        "registrationNumber": "2402450"
+      }
+    },
+    "version": "20250704190430",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQUISH ENTRENAMIENTO FUNCIONAL"
+    }
+  },
+  "_uri": "/mark/mx/985a84cd-3c7a-4313-a53a-8b576ab705dc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

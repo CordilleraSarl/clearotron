@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/mx/c3189be6-ae91-4126-b949-650012311a61",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "c3189be6-ae91-4126-b949-650012311a61",
+  "applicationNumber": "2601122",
+  "registrationNumber": "2317010",
+  "applicationDate": "2021-08-19",
+  "registrationDate": "2021-10-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HEAVEN OR HELL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Organizacion de competiciones deportivas y competiciones deportivo; suministro de informacion en linea sobre estrategias de videojuegos y juegos de ordenador; actividades deportivas y recreativas; servicios de entretenimiento; actividades deportivas y culturales; facilitacion de informacion en linea relacionado con juegos informaticos y mejoras de ordenador para juegos",
+      "translation_language": "en",
+      "translation": "ORGANIZATION OF SPORTS COMPETITIONS AND SPORTS COMPETITIONS; PROVIDING ONLINE INFORMATION ABOUT VIDEO GAMES AND COMPUTER GAMES STRATEGIES; SPORTS AND RECREATIONAL ACTIVITIES; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES; PROVIDING ONLINE INFORMATION RELATED TO COMPUTER GAMES AND COMPUTER IMPROVEMENTS FOR GAMES"
+    }
+  ],
+  "owner": "MAGDALENA DE JESUS CAMPOS CARRETO",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "MAGDALENA DE JESUS CAMPOS CARRETO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "AVENIDA INSURGENTES SUR NUM. EXT. 2065 NUM. INT. PISO 7 TORRE B, SAN ÁNGEL, ALVARO OBREGON, CIUDAD DE MÉXICO 01000",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "MAGDALENA DE JESUS CAMPOS CARRETO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ORGANIZATION OF SPORTS COMPETITIONS AND SPORTS COMPETITIONS; PROVIDING ONLINE INFORMATION ABOUT VIDEO GAMES AND COMPUTER GAMES STRATEGIES; SPORTS AND RECREATIONAL ACTIVITIES; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES; PROVIDING ONLINE INFORMATION RELATED TO COMPUTER GAMES AND COMPUTER IMPROVEMENTS FOR GAMES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Organizacion de competiciones deportivas y competiciones deportivo; suministro de informacion en linea sobre estrategias de videojuegos y juegos de ordenador; actividades deportivas y recreativas; servicios de entretenimiento; actividades deportivas y culturales; facilitacion de informacion en linea relacionado con juegos informaticos y mejoras de ordenador para juegos"
+        }
+      ]
+    },
+    "id": "c3189be6-ae91-4126-b949-650012311a61",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.17"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1029R1",
+        "publicationYear": "2021"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "AVENIDA RICARDO FLORES MAGÓN NUM. EXT. 358 NUM. INT. 1D, SANTA MARÍA LA RIBERA, CUAUHTÉMOC, CIUDAD DE MEXICO 06400, MEXICO",
+        "representativeName": "MAGDALENA DE JESUS CAMPOS CARRETO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210819",
+        "applicationNumber": "2601122"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20211026",
+        "registrationNumber": "2317010"
+      }
+    },
+    "version": "20250704190430",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR HELL"
+    }
+  },
+  "_uri": "/mark/mx/c3189be6-ae91-4126-b949-650012311a61",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

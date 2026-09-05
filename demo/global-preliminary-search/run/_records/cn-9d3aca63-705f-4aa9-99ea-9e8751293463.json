@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/cn/9d3aca63-705f-4aa9-99ea-9e8751293463",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9d3aca63-705f-4aa9-99ea-9e8751293463",
+  "applicationNumber": "58674073",
+  "registrationNumber": "58674073",
+  "applicationDate": "2021-08-23",
+  "registrationDate": "2022-04-28",
+  "expiryDate": "2032-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "OORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电影摄影机,霓虹灯广告牌,智能手机,视频显示屏,电子香烟用充电器,动画片,全息图,复印机(照相、静电、热)",
+      "translation_language": "en",
+      "translation": "Movie cameras, neon signs, smart phones, video displays, chargers for electronic cigarettes, cartoons, holograms, copiers (photographic, static, thermal)"
+    }
+  ],
+  "owner": "Shenzhen Jump Yaoguangnian Art Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市福田区福田街道福安社区福华一路138号国际商会大厦B栋508-509",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Jump Yaoguangnian Art Technology Co., Ltd.",
+        "applicantNativeName": "深圳跳耀光年艺术科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Movie cameras, neon signs, smart phones, video displays, chargers for electronic cigarettes, cartoons, holograms, copiers (photographic, static, thermal)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电影摄影机,霓虹灯广告牌,智能手机,视频显示屏,电子香烟用充电器,动画片,全息图,复印机(照相、静电、热)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Signalling apparatus and instruments",
+        "Equipments used in communication and navigation",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "9d3aca63-705f-4aa9-99ea-9e8751293463",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1777"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市恒融知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210823",
+        "applicationNumber": "58674073"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320427",
+      "lastPublicationDate": "20220127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220428",
+        "registrationNumber": "58674073"
+      }
+    },
+    "version": "20251004153014",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "OORI"
+    }
+  },
+  "_uri": "/mark/cn/9d3aca63-705f-4aa9-99ea-9e8751293463",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:56.893Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

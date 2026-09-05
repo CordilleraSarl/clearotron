@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/f1ff507c-2f93-489e-b301-756113038196",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "f1ff507c-2f93-489e-b301-756113038196",
+  "applicationNumber": "2025-038423",
+  "registrationNumber": "6967686",
+  "applicationDate": "2025-04-09",
+  "registrationDate": "2025-09-12",
+  "expiryDate": "2035-09-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-09-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "インビザライン",
+  "markTransliteration": "INBIZARAIN",
+  "markTranslation": "INVISALIGN",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "デジタル画像の処理用のダウンロード可能なコンピュータソフトウェア，患者の医療情報の管理用のダウンロード可能なコンピュータソフトウェア，デジタル画像及び写真の編成及び閲覧用のダウンロード可能なコンピュータソフトウェア，患者の治療計画のモデリング用のダウンロード可能なシミュレーション用コンピュータソフトウェア，患者の歯の状態の画像の作成・可視化・検索及び保存用のソフトウェア（携帯電話機用のダウンロード可能なコンピュータアプリケーションソフトウェア），データ及び情報の収集・編集・編成・修正・ブックマーク・送信・保存及び共有用のダウンロード可能なコンピュータソフトウェア，歯科の分野における情報のアクセス・読み取り及び追跡用のダウンロード可能なコンピュータソフトウェア，歯科の分野におけるソフトウェア開発及び機械学習用の人工知能を用いたダウンロード可能なコンピュータプログラム，電子計算機用プログラム",
+      "translation_language": "en",
+      "translation": "Downloadable computer software for processing digital images, downloadable computer software for managing patient medical information, downloadable computer software for organizing and viewing digital images and photographs, modeling patient treatment plans Downloadable computer software for simulation, software for creating / visualizing / searching and saving images of patient's tooth condition (downloadable computer application software for mobile phones), collecting / editing / organizing / modifying data and information • Uses downloadable computer software for bookmarking, sending, storing and sharing, downloadable computer software for accessing, reading and tracking information in the field of dentistry, and artificial intelligence for software development and machine learning in the field of dentistry. Downloadable computer programs, computer programs"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IDAKA MASATO",
+  "priorities": [
+    {
+      "priorityDate": "20250409"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable computer software for processing digital images, downloadable computer software for managing patient medical information, downloadable computer software for organizing and viewing digital images and photographs, modeling patient treatment plans Downloadable computer software for simulation, software for creating / visualizing / searching and saving images of patient's tooth condition (downloadable computer application software for mobile phones), collecting / editing / organizing / modifying data and information • Uses downloadable computer software for bookmarking, sending, storing and sharing, downloadable computer software for accessing, reading and tracking information in the field of dentistry, and artificial intelligence for software development and machine learning in the field of dentistry. Downloadable computer programs, computer programs",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "デジタル画像の処理用のダウンロード可能なコンピュータソフトウェア，患者の医療情報の管理用のダウンロード可能なコンピュータソフトウェア，デジタル画像及び写真の編成及び閲覧用のダウンロード可能なコンピュータソフトウェア，患者の治療計画のモデリング用のダウンロード可能なシミュレーション用コンピュータソフトウェア，患者の歯の状態の画像の作成・可視化・検索及び保存用のソフトウェア（携帯電話機用のダウンロード可能なコンピュータアプリケーションソフトウェア），データ及び情報の収集・編集・編成・修正・ブックマーク・送信・保存及び共有用のダウンロード可能なコンピュータソフトウェア，歯科の分野における情報のアクセス・読み取り及び追跡用のダウンロード可能なコンピュータソフトウェア，歯科の分野におけるソフトウェア開発及び機械学習用の人工知能を用いたダウンロード可能なコンピュータプログラム，電子計算機用プログラム"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        }
+      ]
+    },
+    "id": "f1ff507c-2f93-489e-b301-756113038196",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20250409"
+      }
+    ],
+    "recordLastUpdated": "20251010",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IDAKA MASATO",
+        "representativeNativeName": "井▲高▼　将斗"
+      },
+      {
+        "representativeName": "Mikata, Ryoji",
+        "representativeNativeName": "見方　良二"
+      },
+      {
+        "representativeName": "YAMAMOTO KENSAKU",
+        "representativeNativeName": "山本　健策"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      },
+      {
+        "representativeName": "ISHIKAWA DAISUKE",
+        "representativeNativeName": "石川　大輔"
+      },
+      {
+        "representativeName": "IIDA TAKATOSHI",
+        "representativeNativeName": "飯田　貴敏"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250409",
+        "applicationNumber": "2025-038423"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350912",
+      "lastPublicationDate": "20250924",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250912",
+        "registrationNumber": "6967686"
+      }
+    },
+    "version": "20251010084835",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN",
+      "markTransliteration": "INBIZARAIN",
+      "markVerbalElementText": "インビザライン"
+    }
+  },
+  "_uri": "/mark/jp/f1ff507c-2f93-489e-b301-756113038196",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

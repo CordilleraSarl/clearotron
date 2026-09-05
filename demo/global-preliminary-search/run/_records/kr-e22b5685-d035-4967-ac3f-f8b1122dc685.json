@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/kr/e22b5685-d035-4967-ac3f-f8b1122dc685",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e22b5685-d035-4967-ac3f-f8b1122dc685",
+  "applicationNumber": "40-2006-0053582",
+  "registrationNumber": "4007297320000",
+  "applicationDate": "2006-10-24",
+  "registrationDate": "2007-11-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "bori",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "투약용 디스펜서, 비건축용 가공 광학유리, 곡척(曲尺), 부척(副尺), 턱촌목, 가스분석기구, 공기분석장치, 보통안경, 선글라스, 가산기(加算器), 계산용 원반, 판매기(전기식 또는 전자식은 제외한다), 가솔린스테이션용장치, 산불진화용 안전기구, 소화기, 가스누출경보기, 도난경보기(수송기계기구용은 제외한다), 교통사고방지용 착용반사판, 명멸신호등, 유원지용 기계기구, 자동회전막대출입구, 전기식 문닫힘장치, 구명보트, 소방정(消防艇), 로켓, 인공위성, 소방차, 자동차용 여송연라이터, 아크용접기, 전기아크용접장치, 전기아크절단장치, 가축 사육용 전기 울타리, 검란기(檢卵器), 이온화장치(공기처리용은 제외한다), 전해조(電解槽), 건전지, 광전지, 습전지, 축전지, 태양전지, 검류계, 공중선측정기, 발진기, 광섬유케이블, 나선(裸線), 동력케이블, 소켓, 양극, 음극, 가스마스크, 방독마스크",
+      "translation_language": "en",
+      "translation": "Dispenser for dosing, processed optical glass for non-construction use, grain chuck, small chuck, chin and chin, gas analyzer, air analyzer, regular glasses, sunglasses, adder, calculator disc, vending machine (electric or electric type) Electronic type is excluded), gasoline station equipment, forest fire safety equipment, fire extinguisher, gas leak alarm, burglar alarm (excluding transport machinery), wearable reflector for preventing traffic accidents, flashing lights, amusement park machinery, automatic rotation Bar entrance, electric door closing device, lifeboat, fire boat, rocket, artificial satellite, fire engine, automobile cigar lighter, arc welding machine, electric arc welding device, electric arc cutting device, electric fence for livestock breeding, checker (檢卵器), ionizer (excluding air treatment), electrolyzer, dry cell, photovoltaic cell, wet cell, storage battery, solar cell, galvanometer, aerial meter, oscillator, optical fiber cable, spiral wire, power Cable, socket, anode, cathode, gas mask, gas mask"
+    }
+  ],
+  "owner": "JIN-DO COUNTY .",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "최석원 (CHOE SUK WON)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "전라남도 진도군",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "JIN-DO COUNTY .",
+        "applicantNativeName": "진도군"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dispenser for dosing, processed optical glass for non-construction use, grain chuck, small chuck, chin and chin, gas analyzer, air analyzer, regular glasses, sunglasses, adder, calculator disc, vending machine (electric or electric type) Electronic type is excluded), gasoline station equipment, forest fire safety equipment, fire extinguisher, gas leak alarm, burglar alarm (excluding transport machinery), wearable reflector for preventing traffic accidents, flashing lights, amusement park machinery, automatic rotation Bar entrance, electric door closing device, lifeboat, fire boat, rocket, artificial satellite, fire engine, automobile cigar lighter, arc welding machine, electric arc welding device, electric arc cutting device, electric fence for livestock breeding, checker (檢卵器), ionizer (excluding air treatment), electrolyzer, dry cell, photovoltaic cell, wet cell, storage battery, solar cell, galvanometer, aerial meter, oscillator, optical fiber cable, spiral wire, power Cable, socket, anode, cathode, gas mask, gas mask",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "투약용 디스펜서, 비건축용 가공 광학유리, 곡척(曲尺), 부척(副尺), 턱촌목, 가스분석기구, 공기분석장치, 보통안경, 선글라스, 가산기(加算器), 계산용 원반, 판매기(전기식 또는 전자식은 제외한다), 가솔린스테이션용장치, 산불진화용 안전기구, 소화기, 가스누출경보기, 도난경보기(수송기계기구용은 제외한다), 교통사고방지용 착용반사판, 명멸신호등, 유원지용 기계기구, 자동회전막대출입구, 전기식 문닫힘장치, 구명보트, 소방정(消防艇), 로켓, 인공위성, 소방차, 자동차용 여송연라이터, 아크용접기, 전기아크용접장치, 전기아크절단장치, 가축 사육용 전기 울타리, 검란기(檢卵器), 이온화장치(공기처리용은 제외한다), 전해조(電解槽), 건전지, 광전지, 습전지, 축전지, 태양전지, 검류계, 공중선측정기, 발진기, 광섬유케이블, 나선(裸線), 동력케이블, 소켓, 양극, 음극, 가스마스크, 방독마스크"
+        }
+      ]
+    },
+    "id": "e22b5685-d035-4967-ac3f-f8b1122dc685",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "ENC Dream Tower , Gasan-dong Geumcheon-gu, Seoul - KOREA(C&L INT'L PATENT LAW OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "최석원 (CHOE SUK WON)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20061024",
+        "applicationNumber": "40-2006-0053582"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20071130",
+        "registrationNumber": "4007297320000"
+      }
+    },
+    "version": "20250625161109",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "bori"
+    }
+  },
+  "_uri": "/mark/kr/e22b5685-d035-4967-ac3f-f8b1122dc685",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.212Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

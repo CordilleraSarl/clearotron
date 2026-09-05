@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/ea5c478b-5979-40ea-888e-e8083fd647bf",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "ea5c478b-5979-40ea-888e-e8083fd647bf",
+  "applicationNumber": "26950115",
+  "registrationNumber": "26950115",
+  "applicationDate": "2017-10-18",
+  "registrationDate": "2020-01-14",
+  "expiryDate": "2030-01-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-10-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七巧板",
+  "markTransliteration": "PIECE PUZZLE SEVEN qi qiao ban",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "组织彩票发行,动物园服务,为艺术家提供模特服务,动物训练",
+      "translation_language": "en",
+      "translation": "Organize lottery distribution, zoo services, provide model services for artists, and animal training"
+    }
+  ],
+  "owner": "Heze Tangram Education Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "山东省菏泽市开发区开发区中华路501号(牡丹大酒店一楼西)",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Heze Tangram Education Technology Co., Ltd.",
+        "applicantNativeName": "菏泽七巧板教育科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organize lottery distribution, zoo services, provide model services for artists, and animal training",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "组织彩票发行,动物园服务,为艺术家提供模特服务,动物训练"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Training of animals",
+        "Other service included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4106",
+          "subNatGoodsServicesDescription": "Training of animals"
+        },
+        {
+          "subNatClassNumber": "4107",
+          "subNatGoodsServicesDescription": "Other service included in this class"
+        }
+      ]
+    },
+    "id": "ea5c478b-5979-40ea-888e-e8083fd647bf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.41.2a",
+      "26.07.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1667"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "山东商盾企业管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171018",
+        "applicationNumber": "26950115"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300113",
+      "lastPublicationDate": "20191013",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200114",
+        "registrationNumber": "26950115"
+      }
+    },
+    "version": "20251002234810",
+    "wordMarkSpecification": {
+      "markTransliteration": "PIECE PUZZLE SEVEN qi qiao ban",
+      "markVerbalElementText": "七巧板"
+    }
+  },
+  "_uri": "/mark/cn/ea5c478b-5979-40ea-888e-e8083fd647bf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

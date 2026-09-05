@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/tr/99f78874-eb4f-4a0f-8dfa-26c7d76f2ee5",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "99f78874-eb4f-4a0f-8dfa-26c7d76f2ee5",
+  "applicationNumber": "2019/03925",
+  "registrationNumber": "2019 03925",
+  "applicationDate": "2019-01-15",
+  "registrationDate": null,
+  "expiryDate": "2029-01-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-07-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "kalben \"koruma altında yetişen gençler ve koruyucu aile derneği",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri.",
+      "translation_language": "en",
+      "translation": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services."
+    }
+  ],
+  "owner": "KALBEN KORUMA ALTINDA YETİŞEN GENÇLER VE KORUYUCU AİLE DERNEĞİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "YAVUZ TİRYAKİOĞLU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "RÜŞTİYE SOKAK. NO: 45/1. FENERBAHÇE Kadıköy İstanbul",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "KALBEN KORUMA ALTINDA YETİŞEN GENÇLER VE KORUYUCU AİLE DERNEĞİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri."
+        }
+      ]
+    },
+    "id": "99f78874-eb4f-4a0f-8dfa-26c7d76f2ee5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.07.12",
+      "02.09.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "460"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "KOZYATAĞI MAH. DEĞİRMEN SOK. AR PLAZA D BLOK NO:13/2 K:4 - KADIKÖY/İSTANBUL",
+        "representativeName": "YAVUZ TİRYAKİOĞLU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190115",
+        "applicationNumber": "2019/03925"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290115",
+      "lastPublicationDate": "20190731",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2019 03925"
+      }
+    },
+    "version": "20250708180319",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "kalben \"koruma altında yetişen gençler ve koruyucu aile derneği"
+    }
+  },
+  "_uri": "/mark/tr/99f78874-eb4f-4a0f-8dfa-26c7d76f2ee5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.070Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

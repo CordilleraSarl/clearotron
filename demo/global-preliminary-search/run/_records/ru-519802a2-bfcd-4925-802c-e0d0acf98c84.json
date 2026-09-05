@@ -1,0 +1,203 @@
+{
+  "uri": "/mark/ru/519802a2-bfcd-4925-802c-e0d0acf98c84",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "519802a2-bfcd-4925-802c-e0d0acf98c84",
+  "applicationNumber": "99704961",
+  "registrationNumber": "192563",
+  "applicationDate": "1999-04-06",
+  "registrationDate": "2000-08-11",
+  "expiryDate": "2029-04-06",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "КОРИ",
+  "markTransliteration": "KORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "20010125 R."
+  ],
+  "niceClasses": [
+    9,
+    16,
+    35,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ru",
+      "description": "- автоответчики телефонные; акустические переговорные трубки; акустические устройства связи; аппараты для передачи звука; аудиовизуальные средства обучения; аппаратура телеуправления; блоки памяти для вычислительных машин; буквопечатающие аппараты телеграфные; видеотелефоны; видеоэкраны; вычислительные машины; диски гибкие; диски звукозаписи; диски магнитные; диски оптические; дисководы для компьютеров; дисководы для компьютеров с автоматической сменой дисков; экраны (щитки) для защиты лица рабочего; запоминающие устройства для вычислительных машин; запоминающие устройства [накопители] на магнитных лентах вычислительных машин; зуммеры; интерфейсы для вычислительных машин; калькуляторы; картриджи; компьютеры; копировальные аппараты и машины [фотокопировальные, электростатические и термические]; магнитные гибкие диски; манипуляторы типа \"мышь\" [устройства для обработки информации); модемы; мониторы; носители звукозаписи; периферийные устройства вычислительных машин; программное обеспечение вычислительных машин [записанные программы]; программы оперативного обслуживания для вычислительных машин; переговорные устройства; передатчики дальней связи [дистанционные]; передающие аппараты телефонные; печатающие устройства компьютеров [принтеры]; процессоры [центральные блоки обработки информации]; радиотелеграфные станции; регистрационные устройства вычислительных машин; светокопировальные аппараты; сканирующие устройства [оборудование для обработки информации]; телеграфные аппараты; телетайпы; телефонные аппараты; телевыключатели; телепрерыватели; телефонные трубки; устройства для воспроизведения звука [звукозаписи]; устройства для обработки информации; устройства для обучения; устройства для сопряжения для вычислительных машин; устройства для дистанционного управления; факсимильные аппараты; фототелеграфные аппараты; составные части указанных выше изделий.",
+      "translation_language": "en",
+      "translation": "- telephone answering machines; acoustic voice tube; acoustic communication device; apparatus for transmission of sound; audiovisual instruction; remote control equipment; memories for computers; direct-printing telegraph apparatus; videophones; video screens; computers; flexible disks; recording discs; magnetic disks; optical disks; disk drives for computers; disk drives for computers jukeboxes; screens (shields) to protect an individual worker; memory devices for computers; storage devices [drives] tape computers; buzzers; interfaces for computers; calculators; cartridges; computers; copiers and machines [photocopiers, electrostatic and thermal]; magnetic floppy disks; Handling \"mouse\" [information processing apparatus); modems; monitors; recording media; peripherals computers; software of computers [recorded programs]; operation software for computers; communication devices; transmitters LD [remote]; transmitting telephone sets; computer printers [printers]; CPU [central processing unit]; radiotelegraph stations; registration device computers; photocopying machines; scanners [data processing equipment]; telegraphs; TTY; telephones; televyklyuchateli; telepreryvateli; handsets; apparatus for reproducing sound [sound recording]; the information processing apparatus; devices for learning; devices for interfacing to computers; devices for remote control; fax machines; photocopy machines; components of the above products."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ru",
+      "description": "- устройства и машины для размножения копий, их составные части; катушки для копировальных лент; красящие ленты; множительные аппараты, их составные части; ленты копировальные для печатающих устройств.",
+      "translation_language": "en",
+      "translation": "- machines and equipment for the reproduction of copies of their component parts; coils for copying tapes; ribbons; duplicating machines, their components; tape copy stationery."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "- служба телефонных ответчиков; информация о деловой активности; информация статистическая; анализ себестоимости; составление отчетов о состоянии счетов; сбор информации в машинные базы данных; систематизация информации в машинных базах данных; служба коммерческой информации; автоматизированное ведение файлов; исследования в области деловых операций; помощь по управлении делами [по разработке проектов, планов, составлению смет]; прогнозирование экономическое; оформление витрин; подготовка платежных документов; публикация рекламных текстов; радиореклама; распространение образцов; реклама; выпуск рекламных материалов; почтовая рассылка рекламных материалов; аренда площадей для размещения рекламы; фотокопирование; сбыт товаров через посредников; репродуцирование документов; запись сообщений; прокат конторских машин и оборудования; прокат фотокопировальной техники; управление гостиницами.",
+      "translation_language": "en",
+      "translation": "- Phone Service defendants; information on business activity; statistical information; cost analysis; reporting of accounts; collection of information into computer databases; systematization of information in databases, machine; service commercial information; automated management of files; research in the field of business operations; assistance in managing the affairs of [project development, planning, budgeting]; economic forecasting; window dressing; preparation of payment documents; publication of advertising texts; radio advertising; distribution of samples; advertising; production of promotional materials; mailing of promotional materials; rental of advertising space; photocopying; distribution of goods through intermediaries; reproduction of documents; record messages; rental of office machines and equipment; rental of photocopiers; management of hotels."
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ru",
+      "description": "- ремонт и техническое обслуживание автомобилей; антикоррозионная обработка; антикоррозионная обработка частей транспортных средств; восстановление шин; вулканизация [ремонт шин]; наварка протекторов на шины; восстановление протекторов на шинах; восстановление (капитальный ремонт) двигателей, полностью или частично изношенных; восстановление (капитальный ремонт) машин, полностью или частично изношенных; восстановление (капитальный ремонт) машин, вышедших из строя; полирование кузовов транспортных средств; смазка частей транспортных средств; аварийный ремонт транспортных средств; техническое обслуживание транспортных средств; чистка транспортных средств; мытье автомобилей; окраска и обновление вывесок; бурение скважин; строительство зданий; снос зданий; строительство; строительство лесов; монтаж строительных лесов; мытье окон; строительство и техническое обслуживание нефтепроводов; строительство портов; строительство киосков и павильонов, рынков; строительство заводов, фабрик; строительство молов, дамб, волнорезов; подводное строительство; каменно-строительные работы; кладка кирпича; кровельные работы; штукатурные работы; малярные работы; оборудование и ремонт складов; слесарно-водопроводные работы; водопроводные работы; газопроводные работы; герметизация зданий при строительстве; очистка внутренней поверхности зданий; очистка наружной поверхности зданий; изоляция зданий при строительстве; установка и ремонт отопительного оборудования; подводные ремонтные работы; установка и ремонт лифтов; установка, ремонт и техническое обслуживание машинного оборудования; надзор строительный; обойные работы; прокат подъемных кранов для строительных работ; прокат бульдозеров; прокат строительной техники; прокат экскаваторов; информация по вопросам ремонта; информация по вопросам строительства; ремонт и техническое обслуживание комнат-сейфов; ремонт и техническое обслуживание сейфов; установка, обслуживание и ремонт компьютеров; установка, ремонт и техническое обслуживание конторского оборудования; установка и ремонт устройств аварийной сигнализации, срабатывающей в случае ограбления; установка и ремонт электрооборудования; установка и ремонт телефонов.",
+      "translation_language": "en",
+      "translation": "- repair and maintenance of motor vehicles; anti-corrosion treatment; anti-corrosion treatment of the vehicle; retreading; Cure [tire repair]; retreaded tire treads; retreaded tires; recovery (overhaul) engines that have been worn or partially destroyed; recovery (overhaul) machines, fully or partially worn; recovery (overhaul) machines that fail; polishing vehicle bodies; lubrication of the vehicle; emergency repair of vehicles; vehicle maintenance; cleaning vehicles; car wash; painting and updating signage; drilling of wells; construction of buildings; demolition of buildings; construction; construction forests; installation of scaffolding; window washing; construction and maintenance of pipelines; construction of ports; construction of kiosks and pavilions, markets; construction of factories; construction of piers, dams, breakwaters; underwater construction; masonry work; bricklaying; roofing works; plastering; painting; equipment and repair depots; plumbing work; plumbing; gas pipeline work; sealing of buildings under construction; cleaning of the inner surface of the buildings; Cleaning the exterior of buildings; insulation of buildings under construction; installation and repair of heating equipment; underwater repairs; installation and repair of elevators; installation, repair and maintenance of machinery; construction inspection; wallpaper coating works; rental of cranes for construction works; rental of bulldozers; rental of construction equipment; rental of excavators; information on repair; Information on the construction; repair and maintenance rooms, safes; repair and maintenance of safes; installation, maintenance and repair of computers; installation, repair and maintenance of office equipment; installation and repair of alarm devices, triggered in the event of a robbery; installation and repair of electrical equipment; Telephone installation and repair."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ru",
+      "description": "- услуги в области связи: волоконнооптическая связь; информация по вопросам связи; радиотелефонная связь; связь по телефону; связь с использованием компьютерных терминалов; связь спутниковая; связь телеграфная; связь телефонная; факсимильная связь; пейджинговая служба; передача сообщений; передача сообщений и изображений с использованием средств вычислительной техники; почта электронная; передача телеграмм; прокат аппаратуры для передачи сообщений; прокат телекоммуникационного оборудования; прокат телефонных аппаратов; прокат факсимильных аппаратов; прокат модемов; телефонное обслуживание.",
+      "translation_language": "en",
+      "translation": "- Services in the field of communication: fiber-optic communications; Information concerning communication; telephone communications; communications by telephone; communication with a computer terminal; communications satellite; telegraphic communication; telephone communications; facsimile; paging service; transmission of messages; transmission of messages and images with the use of computer technology; e-mail; transmission of telegrams; rental of apparatus for transmitting messages; rental of telecommunications equipment; rental of telephones; rental of fax machines; rental of modems; telephone service."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ru",
+      "description": "- аренда машинного времени; аренда машинного времени для доступа к базам данных; восстановление баз данных; консультации в области вычислительной техники; корректировка программного обеспечения вычислительных машин; составление программ для компьютеров; программирование; услуги по обслуживанию программного обеспечения; программное обеспечение вычислительных машин; вычислительные машины; разработка программного обеспечения вычислительных машин; составление программ для вычислительных машин; прокат вычислительных машин; прокат средств программного обеспечения; прокат компьютеров; консультации по вопросам строительства; консультации профессиональные, не связанные с деловыми операциями; машинный системный анализ; микрофильмирование; изготовление микрофильмов; использование запатентованных изобретений; научно-исследовательские разработки; проектно- конструкторские разработки; разработка строительных проектов; создание новых видов товаров; изучение проектов технических; экспертиза инженерно-техническая; чертежные работы; изыскания геологические; снабжение продовольственными товарами; типографское дело (минитипографии); фотографирование; базы туристические; обслуживание баров; бронирование мест в гостиницах; бронирование мест в гостиницах для временного проживания; бронирование мест в гостиницах для проживания с пансионом; буфеты; буфеты общественные; гостиницы; служба по предоставлению мест в пансионатах; служба по предоставлению мест в гостиницах; закусочные; кафе; кафетерии; бронирование мест в пансионатах; пансионаты [меблированные комнаты с питанием]; парикмахерские; продажа (реализация) продукции производственно-технического назначения и товаров народного потребления; рестораны; рестораны самообслуживания; сопровождение в общественных местах; туристические базы.",
+      "translation_language": "en",
+      "translation": "- rental of machine time; rental of computer time for access to databases; database recovery; consulting in the field of computing; computer software adjustment; drawing up programs for computers; programming; software maintenance services; computer software; computing machines; computer software development; compilation of computer programs; computer rental; software rental; computer rental; construction advice; professional advice, not related to business operations; machine system analysis; microfilming; microfilm manufacturing; use of patented inventions; research and development; design development; development of construction projects; the creation of new types of goods; study of technical projects; engineering expertise; drawing work; geological surveys; food supply; typography (mini-typography); photographing; tourist bases; bar service; hotel reservation; booking hotel rooms for temporary residence; hotel reservations for staying with a boarding house; buffets; public buffets; hotels; service for the provision of places in boarding houses; a hotel accommodation service; snack bars; Cafe; cafeteria; booking of places in boarding houses; pensions [furnished rooms with meals]; hair salons; sale (sale) of industrial and technical products and consumer goods; restaurants; self-service restaurants; escort in public places; tourist bases."
+    }
+  ],
+  "owner": "KORI",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Татарстан респ., г.Казань",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "KORI",
+        "applicantNativeName": "Общество с ограниченной ответственностью \"Кори-лимитед\""
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- telephone answering machines; acoustic voice tube; acoustic communication device; apparatus for transmission of sound; audiovisual instruction; remote control equipment; memories for computers; direct-printing telegraph apparatus; videophones; video screens; computers; flexible disks; recording discs; magnetic disks; optical disks; disk drives for computers; disk drives for computers jukeboxes; screens (shields) to protect an individual worker; memory devices for computers; storage devices [drives] tape computers; buzzers; interfaces for computers; calculators; cartridges; computers; copiers and machines [photocopiers, electrostatic and thermal]; magnetic floppy disks; Handling \"mouse\" [information processing apparatus); modems; monitors; recording media; peripherals computers; software of computers [recorded programs]; operation software for computers; communication devices; transmitters LD [remote]; transmitting telephone sets; computer printers [printers]; CPU [central processing unit]; radiotelegraph stations; registration device computers; photocopying machines; scanners [data processing equipment]; telegraphs; TTY; telephones; televyklyuchateli; telepreryvateli; handsets; apparatus for reproducing sound [sound recording]; the information processing apparatus; devices for learning; devices for interfacing to computers; devices for remote control; fax machines; photocopy machines; components of the above products.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- автоответчики телефонные; акустические переговорные трубки; акустические устройства связи; аппараты для передачи звука; аудиовизуальные средства обучения; аппаратура телеуправления; блоки памяти для вычислительных машин; буквопечатающие аппараты телеграфные; видеотелефоны; видеоэкраны; вычислительные машины; диски гибкие; диски звукозаписи; диски магнитные; диски оптические; дисководы для компьютеров; дисководы для компьютеров с автоматической сменой дисков; экраны (щитки) для защиты лица рабочего; запоминающие устройства для вычислительных машин; запоминающие устройства [накопители] на магнитных лентах вычислительных машин; зуммеры; интерфейсы для вычислительных машин; калькуляторы; картриджи; компьютеры; копировальные аппараты и машины [фотокопировальные, электростатические и термические]; магнитные гибкие диски; манипуляторы типа \"мышь\" [устройства для обработки информации); модемы; мониторы; носители звукозаписи; периферийные устройства вычислительных машин; программное обеспечение вычислительных машин [записанные программы]; программы оперативного обслуживания для вычислительных машин; переговорные устройства; передатчики дальней связи [дистанционные]; передающие аппараты телефонные; печатающие устройства компьютеров [принтеры]; процессоры [центральные блоки обработки информации]; радиотелеграфные станции; регистрационные устройства вычислительных машин; светокопировальные аппараты; сканирующие устройства [оборудование для обработки информации]; телеграфные аппараты; телетайпы; телефонные аппараты; телевыключатели; телепрерыватели; телефонные трубки; устройства для воспроизведения звука [звукозаписи]; устройства для обработки информации; устройства для обучения; устройства для сопряжения для вычислительных машин; устройства для дистанционного управления; факсимильные аппараты; фототелеграфные аппараты; составные части указанных выше изделий."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- machines and equipment for the reproduction of copies of their component parts; coils for copying tapes; ribbons; duplicating machines, their components; tape copy stationery.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- устройства и машины для размножения копий, их составные части; катушки для копировальных лент; красящие ленты; множительные аппараты, их составные части; ленты копировальные для печатающих устройств."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- Phone Service defendants; information on business activity; statistical information; cost analysis; reporting of accounts; collection of information into computer databases; systematization of information in databases, machine; service commercial information; automated management of files; research in the field of business operations; assistance in managing the affairs of [project development, planning, budgeting]; economic forecasting; window dressing; preparation of payment documents; publication of advertising texts; radio advertising; distribution of samples; advertising; production of promotional materials; mailing of promotional materials; rental of advertising space; photocopying; distribution of goods through intermediaries; reproduction of documents; record messages; rental of office machines and equipment; rental of photocopiers; management of hotels.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- служба телефонных ответчиков; информация о деловой активности; информация статистическая; анализ себестоимости; составление отчетов о состоянии счетов; сбор информации в машинные базы данных; систематизация информации в машинных базах данных; служба коммерческой информации; автоматизированное ведение файлов; исследования в области деловых операций; помощь по управлении делами [по разработке проектов, планов, составлению смет]; прогнозирование экономическое; оформление витрин; подготовка платежных документов; публикация рекламных текстов; радиореклама; распространение образцов; реклама; выпуск рекламных материалов; почтовая рассылка рекламных материалов; аренда площадей для размещения рекламы; фотокопирование; сбыт товаров через посредников; репродуцирование документов; запись сообщений; прокат конторских машин и оборудования; прокат фотокопировальной техники; управление гостиницами."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- repair and maintenance of motor vehicles; anti-corrosion treatment; anti-corrosion treatment of the vehicle; retreading; Cure [tire repair]; retreaded tire treads; retreaded tires; recovery (overhaul) engines that have been worn or partially destroyed; recovery (overhaul) machines, fully or partially worn; recovery (overhaul) machines that fail; polishing vehicle bodies; lubrication of the vehicle; emergency repair of vehicles; vehicle maintenance; cleaning vehicles; car wash; painting and updating signage; drilling of wells; construction of buildings; demolition of buildings; construction; construction forests; installation of scaffolding; window washing; construction and maintenance of pipelines; construction of ports; construction of kiosks and pavilions, markets; construction of factories; construction of piers, dams, breakwaters; underwater construction; masonry work; bricklaying; roofing works; plastering; painting; equipment and repair depots; plumbing work; plumbing; gas pipeline work; sealing of buildings under construction; cleaning of the inner surface of the buildings; Cleaning the exterior of buildings; insulation of buildings under construction; installation and repair of heating equipment; underwater repairs; installation and repair of elevators; installation, repair and maintenance of machinery; construction inspection; wallpaper coating works; rental of cranes for construction works; rental of bulldozers; rental of construction equipment; rental of excavators; information on repair; Information on the construction; repair and maintenance rooms, safes; repair and maintenance of safes; installation, maintenance and repair of computers; installation, repair and maintenance of office equipment; installation and repair of alarm devices, triggered in the event of a robbery; installation and repair of electrical equipment; Telephone installation and repair.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- ремонт и техническое обслуживание автомобилей; антикоррозионная обработка; антикоррозионная обработка частей транспортных средств; восстановление шин; вулканизация [ремонт шин]; наварка протекторов на шины; восстановление протекторов на шинах; восстановление (капитальный ремонт) двигателей, полностью или частично изношенных; восстановление (капитальный ремонт) машин, полностью или частично изношенных; восстановление (капитальный ремонт) машин, вышедших из строя; полирование кузовов транспортных средств; смазка частей транспортных средств; аварийный ремонт транспортных средств; техническое обслуживание транспортных средств; чистка транспортных средств; мытье автомобилей; окраска и обновление вывесок; бурение скважин; строительство зданий; снос зданий; строительство; строительство лесов; монтаж строительных лесов; мытье окон; строительство и техническое обслуживание нефтепроводов; строительство портов; строительство киосков и павильонов, рынков; строительство заводов, фабрик; строительство молов, дамб, волнорезов; подводное строительство; каменно-строительные работы; кладка кирпича; кровельные работы; штукатурные работы; малярные работы; оборудование и ремонт складов; слесарно-водопроводные работы; водопроводные работы; газопроводные работы; герметизация зданий при строительстве; очистка внутренней поверхности зданий; очистка наружной поверхности зданий; изоляция зданий при строительстве; установка и ремонт отопительного оборудования; подводные ремонтные работы; установка и ремонт лифтов; установка, ремонт и техническое обслуживание машинного оборудования; надзор строительный; обойные работы; прокат подъемных кранов для строительных работ; прокат бульдозеров; прокат строительной техники; прокат экскаваторов; информация по вопросам ремонта; информация по вопросам строительства; ремонт и техническое обслуживание комнат-сейфов; ремонт и техническое обслуживание сейфов; установка, обслуживание и ремонт компьютеров; установка, ремонт и техническое обслуживание конторского оборудования; установка и ремонт устройств аварийной сигнализации, срабатывающей в случае ограбления; установка и ремонт электрооборудования; установка и ремонт телефонов."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- Services in the field of communication: fiber-optic communications; Information concerning communication; telephone communications; communications by telephone; communication with a computer terminal; communications satellite; telegraphic communication; telephone communications; facsimile; paging service; transmission of messages; transmission of messages and images with the use of computer technology; e-mail; transmission of telegrams; rental of apparatus for transmitting messages; rental of telecommunications equipment; rental of telephones; rental of fax machines; rental of modems; telephone service.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- услуги в области связи: волоконнооптическая связь; информация по вопросам связи; радиотелефонная связь; связь по телефону; связь с использованием компьютерных терминалов; связь спутниковая; связь телеграфная; связь телефонная; факсимильная связь; пейджинговая служба; передача сообщений; передача сообщений и изображений с использованием средств вычислительной техники; почта электронная; передача телеграмм; прокат аппаратуры для передачи сообщений; прокат телекоммуникационного оборудования; прокат телефонных аппаратов; прокат факсимильных аппаратов; прокат модемов; телефонное обслуживание."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- rental of machine time; rental of computer time for access to databases; database recovery; consulting in the field of computing; computer software adjustment; drawing up programs for computers; programming; software maintenance services; computer software; computing machines; computer software development; compilation of computer programs; computer rental; software rental; computer rental; construction advice; professional advice, not related to business operations; machine system analysis; microfilming; microfilm manufacturing; use of patented inventions; research and development; design development; development of construction projects; the creation of new types of goods; study of technical projects; engineering expertise; drawing work; geological surveys; food supply; typography (mini-typography); photographing; tourist bases; bar service; hotel reservation; booking hotel rooms for temporary residence; hotel reservations for staying with a boarding house; buffets; public buffets; hotels; service for the provision of places in boarding houses; a hotel accommodation service; snack bars; Cafe; cafeteria; booking of places in boarding houses; pensions [furnished rooms with meals]; hair salons; sale (sale) of industrial and technical products and consumer goods; restaurants; self-service restaurants; escort in public places; tourist bases.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- аренда машинного времени; аренда машинного времени для доступа к базам данных; восстановление баз данных; консультации в области вычислительной техники; корректировка программного обеспечения вычислительных машин; составление программ для компьютеров; программирование; услуги по обслуживанию программного обеспечения; программное обеспечение вычислительных машин; вычислительные машины; разработка программного обеспечения вычислительных машин; составление программ для вычислительных машин; прокат вычислительных машин; прокат средств программного обеспечения; прокат компьютеров; консультации по вопросам строительства; консультации профессиональные, не связанные с деловыми операциями; машинный системный анализ; микрофильмирование; изготовление микрофильмов; использование запатентованных изобретений; научно-исследовательские разработки; проектно- конструкторские разработки; разработка строительных проектов; создание новых видов товаров; изучение проектов технических; экспертиза инженерно-техническая; чертежные работы; изыскания геологические; снабжение продовольственными товарами; типографское дело (минитипографии); фотографирование; базы туристические; обслуживание баров; бронирование мест в гостиницах; бронирование мест в гостиницах для временного проживания; бронирование мест в гостиницах для проживания с пансионом; буфеты; буфеты общественные; гостиницы; служба по предоставлению мест в пансионатах; служба по предоставлению мест в гостиницах; закусочные; кафе; кафетерии; бронирование мест в пансионатах; пансионаты [меблированные комнаты с питанием]; парикмахерские; продажа (реализация) продукции производственно-технического назначения и товаров народного потребления; рестораны; рестораны самообслуживания; сопровождение в общественных местах; туристические базы."
+        }
+      ]
+    },
+    "id": "519802a2-bfcd-4925-802c-e0d0acf98c84",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "20010125 R."
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.09.17"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19990406",
+        "applicationNumber": "99704961"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20000811",
+        "registrationNumber": "192563"
+      }
+    },
+    "version": "20250705072320",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORI",
+      "markVerbalElementText": "КОРИ"
+    }
+  },
+  "_uri": "/mark/ru/519802a2-bfcd-4925-802c-e0d0acf98c84",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.791Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

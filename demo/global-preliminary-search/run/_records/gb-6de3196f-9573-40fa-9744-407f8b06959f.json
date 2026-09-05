@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/gb/6de3196f-9573-40fa-9744-407f8b06959f",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "6de3196f-9573-40fa-9744-407f8b06959f",
+  "applicationNumber": "3984425",
+  "registrationNumber": "3984425",
+  "applicationDate": "2023-11-27",
+  "registrationDate": "2024-02-23",
+  "expiryDate": "2033-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Venoros",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software;Software applications;Business software;Project management software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management and consulting services;Business consultancy (Professional -).",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Venoros LTD",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Rosenau Road, London SW11 4QN",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Venoros LTD"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software;Software applications;Business software;Project management software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management and consulting services;Business consultancy (Professional -)."
+        }
+      ]
+    },
+    "id": "6de3196f-9573-40fa-9744-407f8b06959f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2023/049"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231127",
+        "applicationNumber": "3984425"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331127",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240223",
+        "registrationNumber": "3984425"
+      }
+    },
+    "version": "20250627223204",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Venoros"
+    }
+  },
+  "_uri": "/mark/gb/6de3196f-9573-40fa-9744-407f8b06959f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

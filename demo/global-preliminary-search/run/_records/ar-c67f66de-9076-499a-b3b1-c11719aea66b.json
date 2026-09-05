@@ -1,0 +1,103 @@
+{
+  "uri": "/mark/ar/c67f66de-9076-499a-b3b1-c11719aea66b",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "c67f66de-9076-499a-b3b1-c11719aea66b",
+  "applicationNumber": "4766113",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "RAVENCOREX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Clase 42 : Internacional Limitada SOLAMENTE:ALMACENAMIENTO ELECTRONICO DE DATOS ;ANALISIS DE SISTEMAS INFORMATICOS ;CONSULTORIA TECNOLOGICA EN EL AMBITO DE LA INTELIGENCIA ARTIFICIAL ;CONVERSION DE DATOS Y DE PROGRAMAS INFORMATICOS (QUE NO SEA CONVERSION FISICA) ;DESARROLLO DE PLATAFORMAS INFORMATICAS ;DISEÑO DE SISTEMAS INFORMATICOS ;DISEÑO DE SITIOS WEB ;DISEÑO DE SOFTWARE ;DISEÑO DE SOFTWARE DE BASES DE DATOS ;INTELIGENCIA ARTIFICIAL COMO SERVICIO IAAAS ;PLATAFORMA COMO SERVICIO PAAS ;PROGRAMACION INFORMATICA ;SERVICIOS DE CONSULTORIA TECNOLOGICA PARA LA TRANSFORMACION DIGITAL ;SERVICIOS DE INGENIERIA DE SOFTWARE PARA EL PROCESAMIENTO DE DATOS ;SERVICIOS DE PROGRAMACION INFORMATICA PARA ALMACENES DE DATOS DATA WAREHOUSE ;SERVICIOS DE PROGRAMACION INFORMATICA PARA ANALISIS COMERCIAL Y ELABORACION DE INFORMES ;SERVICIOS DE PROGRAMACION INFORMATICA PARA EL PROCESAMIENTO DE DATOS ;SERVICIOS INFORMATICOS EN LA NUBE ;SOFTWARE COMO SERVICIO SAAS ;SUMINISTRO DE SISTEMAS INFORMATICOS VIRTUALES PARA LA COMPUTACION EN LA NUBE ;",
+      "translation_language": "en",
+      "translation": "Class 42: International Limited ONLY: ELECTRONIC DATA STORAGE; COMPUTER SYSTEMS ANALYSIS; TECHNOLOGY CONSULTING IN THE FIELD OF ARTIFICIAL INTELLIGENCE; DATA AND SOFTWARE CONVERSION (OTHER THAN PHYSICAL CONVERSION); DEVELOPMENT OF COMPUTER PLATFORMS; COMPUTER SYSTEMS DESIGN; WEBSITE DESIGN; SOFTWARE DESIGN; DATABASE SOFTWARE DESIGN; ARTIFICIAL INTELLIGENCE AS A SERVICE (IAAAS); PLATFORM AS A SERVICE (PaaS); COMPUTER PROGRAMMING; TECHNOLOGY CONSULTING SERVICES FOR DIGITAL TRANSFORMATION; SOFTWARE ENGINEERING SERVICES FOR DATA PROCESSING; SERVICES OF Computer programming for data warehouses; Computer programming services for business analysis and report generation; Computer programming services for data processing; Cloud computing services; Software as a Service (SaaS); Provision of virtual computing systems for cloud computing;"
+    }
+  ],
+  "owner": "VELEZ MARTIN MANUEL - SCACCIANTE NATALIA",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "VELEZ MARTIN MANUEL - SCACCIANTE NATALIA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 42: International Limited ONLY: ELECTRONIC DATA STORAGE; COMPUTER SYSTEMS ANALYSIS; TECHNOLOGY CONSULTING IN THE FIELD OF ARTIFICIAL INTELLIGENCE; DATA AND SOFTWARE CONVERSION (OTHER THAN PHYSICAL CONVERSION); DEVELOPMENT OF COMPUTER PLATFORMS; COMPUTER SYSTEMS DESIGN; WEBSITE DESIGN; SOFTWARE DESIGN; DATABASE SOFTWARE DESIGN; ARTIFICIAL INTELLIGENCE AS A SERVICE (IAAAS); PLATFORM AS A SERVICE (PaaS); COMPUTER PROGRAMMING; TECHNOLOGY CONSULTING SERVICES FOR DIGITAL TRANSFORMATION; SOFTWARE ENGINEERING SERVICES FOR DATA PROCESSING; SERVICES OF Computer programming for data warehouses; Computer programming services for business analysis and report generation; Computer programming services for data processing; Cloud computing services; Software as a Service (SaaS); Provision of virtual computing systems for cloud computing;",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 42 : Internacional Limitada SOLAMENTE:ALMACENAMIENTO ELECTRONICO DE DATOS ;ANALISIS DE SISTEMAS INFORMATICOS ;CONSULTORIA TECNOLOGICA EN EL AMBITO DE LA INTELIGENCIA ARTIFICIAL ;CONVERSION DE DATOS Y DE PROGRAMAS INFORMATICOS (QUE NO SEA CONVERSION FISICA) ;DESARROLLO DE PLATAFORMAS INFORMATICAS ;DISEÑO DE SISTEMAS INFORMATICOS ;DISEÑO DE SITIOS WEB ;DISEÑO DE SOFTWARE ;DISEÑO DE SOFTWARE DE BASES DE DATOS ;INTELIGENCIA ARTIFICIAL COMO SERVICIO IAAAS ;PLATAFORMA COMO SERVICIO PAAS ;PROGRAMACION INFORMATICA ;SERVICIOS DE CONSULTORIA TECNOLOGICA PARA LA TRANSFORMACION DIGITAL ;SERVICIOS DE INGENIERIA DE SOFTWARE PARA EL PROCESAMIENTO DE DATOS ;SERVICIOS DE PROGRAMACION INFORMATICA PARA ALMACENES DE DATOS DATA WAREHOUSE ;SERVICIOS DE PROGRAMACION INFORMATICA PARA ANALISIS COMERCIAL Y ELABORACION DE INFORMES ;SERVICIOS DE PROGRAMACION INFORMATICA PARA EL PROCESAMIENTO DE DATOS ;SERVICIOS INFORMATICOS EN LA NUBE ;SOFTWARE COMO SERVICIO SAAS ;SUMINISTRO DE SISTEMAS INFORMATICOS VIRTUALES PARA LA COMPUTACION EN LA NUBE ;"
+        }
+      ]
+    },
+    "id": "c67f66de-9076-499a-b3b1-c11719aea66b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260902",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260812",
+        "applicationNumber": "4766113"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "NEW APPLICATION"
+    },
+    "version": "20260902020521",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVENCOREX"
+    }
+  },
+  "_uri": "/mark/ar/c67f66de-9076-499a-b3b1-c11719aea66b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

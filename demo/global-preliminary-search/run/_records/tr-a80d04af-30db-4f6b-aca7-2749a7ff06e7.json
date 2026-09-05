@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+  "applicationNumber": "2026/024104",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-23",
+  "registrationDate": null,
+  "expiryDate": "2036-02-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-03-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "V vancora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        42
+      ],
+      "language": "tr",
+      "description": "Reklamcılık, pazarlama ve halkla ilişkiler ile ilgili hizmetler, ticari ve reklam amaçlı sergi ve fuarların organizasyonu hizmetleri; alıcı ve satıcılar için çevrimiçi pazaryeri (internet sitesi) sağlama hizmetleri.Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri, mühendislik ve mimari tasarım hizmetleri, kalite ve standart belgelendirme ile bu amaçlı mal/hizmetlerin test edilmesi. Kara taşıtları oto ekspertiz hizmetleri: Taşıtın kazası olup olmadığını kontrol; taşıtın dış kontrolleri, taşıtın iç kontrolleri, taşıtın alt kontrolleri, taşıtın motor bölümünün kontrolleri, varsa hataların tespiti ve raporlanması hizmetleri.Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri.Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım, ürün tasarımı hizmetleri (peyzaj tasarımı hariç).Sanat eserleri orijinallik onay hizmetleri.",
+      "translation_language": "en",
+      "translation": "Services related to advertising, marketing and public relations, services for the organization of exhibitions and fairs for commercial and advertising purposes; services for providing online marketplaces (websites) for buyers and sellers. Scientific and industrial examination, research services; engineering services, engineering and architectural design services, quality and standard certification and testing of goods/services for this purpose. Land vehicle auto expertise services: Checking whether the vehicle has had an accident; external controls of the vehicle, internal controls of the vehicle, sub-controls of the vehicle, controls of the engine compartment of the vehicle, detection and reporting of errors, if any. Computer services: computer programming, protection of computers against viruses, computer system design, design, maintenance and updating of websites on behalf of others, software design, rental and updating, providing internet search engines, hosting, consultancy in the field of computer hardware, rental of computer hardware services. All kinds of design services included in this class but not included in the scope of engineering, architecture and computer services; graphic art design, product design services (except landscape design). Originality approval services for works of art."
+    }
+  ],
+  "owner": "RAMAZAN CEYLAN",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "RAMAZAN CEYLAN"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Services related to advertising, marketing and public relations, services for the organization of exhibitions and fairs for commercial and advertising purposes; services for providing online marketplaces (websites) for buyers and sellers. Scientific and industrial examination, research services; engineering services, engineering and architectural design services, quality and standard certification and testing of goods/services for this purpose. Land vehicle auto expertise services: Checking whether the vehicle has had an accident; external controls of the vehicle, internal controls of the vehicle, sub-controls of the vehicle, controls of the engine compartment of the vehicle, detection and reporting of errors, if any. Computer services: computer programming, protection of computers against viruses, computer system design, design, maintenance and updating of websites on behalf of others, software design, rental and updating, providing internet search engines, hosting, consultancy in the field of computer hardware, rental of computer hardware services. All kinds of design services included in this class but not included in the scope of engineering, architecture and computer services; graphic art design, product design services (except landscape design). Originality approval services for works of art.",
+          "intClassNumber": "35,42",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Reklamcılık, pazarlama ve halkla ilişkiler ile ilgili hizmetler, ticari ve reklam amaçlı sergi ve fuarların organizasyonu hizmetleri; alıcı ve satıcılar için çevrimiçi pazaryeri (internet sitesi) sağlama hizmetleri.Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri, mühendislik ve mimari tasarım hizmetleri, kalite ve standart belgelendirme ile bu amaçlı mal/hizmetlerin test edilmesi. Kara taşıtları oto ekspertiz hizmetleri: Taşıtın kazası olup olmadığını kontrol; taşıtın dış kontrolleri, taşıtın iç kontrolleri, taşıtın alt kontrolleri, taşıtın motor bölümünün kontrolleri, varsa hataların tespiti ve raporlanması hizmetleri.Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri.Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım, ürün tasarımı hizmetleri (peyzaj tasarımı hariç).Sanat eserleri orijinallik onay hizmetleri."
+        }
+      ]
+    },
+    "id": "a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "489"
+      }
+    ],
+    "recordLastUpdated": "20260410",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260223",
+        "applicationNumber": "2026/024104"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360223",
+      "lastPublicationDate": "20260327",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260410020039",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "V vancora"
+    }
+  },
+  "_uri": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/de/dc747ede-6249-467b-b721-5eeaaabf5350",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "dc747ede-6249-467b-b721-5eeaaabf5350",
+  "applicationNumber": "302017220391.5",
+  "registrationNumber": "302017220391",
+  "applicationDate": "2017-07-03",
+  "registrationDate": "2017-09-13",
+  "expiryDate": "2027-07-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-10-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Mövenort Verlag",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Dienstleistungen eines Verlages, ausgenommen Druckarbeiten",
+      "translation_language": "en",
+      "translation": "Publishing services, except printing"
+    }
+  ],
+  "owner": "Lambrecht, Walter, Dr.",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "18374 Zingst",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Lambrecht, Walter, Dr."
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Publishing services, except printing",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Dienstleistungen eines Verlages, ausgenommen Druckarbeiten"
+        }
+      ]
+    },
+    "id": "dc747ede-6249-467b-b721-5eeaaabf5350",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "41"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Lambrecht, Rämel 1, 18374 Zingst"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170703",
+        "applicationNumber": "302017220391.5"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270731",
+      "lastPublicationDate": "20171013",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170913",
+        "registrationNumber": "302017220391"
+      }
+    },
+    "version": "20250627162444",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Mövenort Verlag"
+    }
+  },
+  "_uri": "/mark/de/dc747ede-6249-467b-b721-5eeaaabf5350",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

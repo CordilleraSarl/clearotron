@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/br/ec58f62a-021c-4eba-a66b-0bce891a87ab",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "ec58f62a-021c-4eba-a66b-0bce891a87ab",
+  "applicationNumber": "816454809",
+  "registrationNumber": null,
+  "applicationDate": "1991-10-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    19,
+    21,
+    22,
+    37
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        19,
+        21,
+        22,
+        37
+      ],
+      "language": "pt",
+      "description": "[CLASS 07. 10]: : Máquinas, equipamentos e dispositivos industriais em geral. [CLASS 07. 35]: : Veículos hidroviários, outras embarcações e seus implementos. [CLASS 07. 60]: : Partes, componentes e acessórios de máquinas, veículos, implementos, dispositivos e meios de transporte.",
+      "translation_language": "en",
+      "translation": "[CLASS 07. 10]: : Machines, equipment and industrial devices in general. [CLASS 07. 35]: : Waterway vehicles, other vessels and their implements. [CLASS 07. 60]: : Parts, components and accessories of machines, vehicles, implements, devices and means of transport."
+    }
+  ],
+  "owner": "GORI ALL - WOOD INTERNATIONAL AS.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "GORI ALL - WOOD INTERNATIONAL AS."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "[CLASS 07. 10]: : Machines, equipment and industrial devices in general. [CLASS 07. 35]: : Waterway vehicles, other vessels and their implements. [CLASS 07. 60]: : Parts, components and accessories of machines, vehicles, implements, devices and means of transport.",
+          "intClassNumber": "06,07,08,09,10,11,12,13,14,19,21,22,37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "[CLASS 07. 10]: : Máquinas, equipamentos e dispositivos industriais em geral. [CLASS 07. 35]: : Veículos hidroviários, outras embarcações e seus implementos. [CLASS 07. 60]: : Partes, componentes e acessórios de máquinas, veículos, implementos, dispositivos e meios de transporte."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "07.10"
+        },
+        {
+          "natClassNumber": "07.35"
+        },
+        {
+          "natClassNumber": "07.60"
+        }
+      ]
+    },
+    "id": "ec58f62a-021c-4eba-a66b-0bce891a87ab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19911017",
+        "applicationNumber": "816454809"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630192905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/ec58f62a-021c-4eba-a66b-0bce891a87ab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

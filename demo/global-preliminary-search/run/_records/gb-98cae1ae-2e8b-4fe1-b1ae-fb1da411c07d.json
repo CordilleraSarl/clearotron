@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/gb/98cae1ae-2e8b-4fe1-b1ae-fb1da411c07d",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "98cae1ae-2e8b-4fe1-b1ae-fb1da411c07d",
+  "applicationNumber": "4425903",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-04",
+  "registrationDate": null,
+  "expiryDate": "2036-08-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Avenor Practice",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business consultancy services; workplace wellbeing consultancy; organisational consultancy; consultancy relating to employee wellbeing; consultancy relating to workforce wellbeing; advisory services relating to organisational development and workplace wellbeing; procurement of contracts for the purchase and sale of goods, services and works; procurement of contracts for others; consultancy services relating to the procurement of goods for others, professional reflective practice services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services; training services; workshops; seminars; coaching; mentoring; professional development training; provision of educational courses; provision of online training; publication of educational materials relating to mental health, wellbeing, reflective practice, resilience, leadership and professional development.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Counselling services; psychotherapy services; mental health counselling; wellbeing services; emotional support services; stress management counselling; bereavement counselling; relationship counselling; professional reflective practice services; consultancy and advisory services relating to mental health and emotional wellbeing.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Michelle Mary Kelly",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Rose Drive, Falkirk FK2 8RR, Falkirk",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Michelle Mary Kelly"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business consultancy services; workplace wellbeing consultancy; organisational consultancy; consultancy relating to employee wellbeing; consultancy relating to workforce wellbeing; advisory services relating to organisational development and workplace wellbeing; procurement of contracts for the purchase and sale of goods, services and works; procurement of contracts for others; consultancy services relating to the procurement of goods for others, professional reflective practice services."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services; training services; workshops; seminars; coaching; mentoring; professional development training; provision of educational courses; provision of online training; publication of educational materials relating to mental health, wellbeing, reflective practice, resilience, leadership and professional development."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Counselling services; psychotherapy services; mental health counselling; wellbeing services; emotional support services; stress management counselling; bereavement counselling; relationship counselling; professional reflective practice services; consultancy and advisory services relating to mental health and emotional wellbeing."
+        }
+      ]
+    },
+    "id": "98cae1ae-2e8b-4fe1-b1ae-fb1da411c07d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260821",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260804",
+        "applicationNumber": "4425903"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360804",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260821020017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Avenor Practice"
+    }
+  },
+  "_uri": "/mark/gb/98cae1ae-2e8b-4fe1-b1ae-fb1da411c07d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

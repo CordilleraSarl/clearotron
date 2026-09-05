@@ -1,0 +1,309 @@
+{
+  "uri": "/mark/kz/a5a73473-bdde-4105-a5f9-6e7b07a28f61",
+  "provider": "clarivate",
+  "office": "kz",
+  "guid": "a5a73473-bdde-4105-a5f9-6e7b07a28f61",
+  "applicationNumber": "159769",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-03",
+  "registrationDate": null,
+  "expiryDate": "2036-04-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "NEO TECH PROVEN QUALITY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    17,
+    20,
+    21,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "ru",
+      "description": "клейковина [клей], за исключением канцелярского или бытового клея; клей эпоксидный; препараты химические для удаления нагара в двигателях;",
+      "translation_language": "en",
+      "translation": "gluten [glue], with the exception of office or household glue;epoxy glue;chemical preparations for removing carbon deposits in engines;"
+    },
+    {
+      "classes": [
+        2
+      ],
+      "language": "ru",
+      "description": "краски, политуры, лаки; средства защитные, предохраняющие металлы от коррозии и древесину от разрушения; составы для предохранения от ржавчины; аэрозольные краски; канифоль; герметики для защиты от ржавчины; вещества, предохраняющие от ржавчины, в виде покрытий; составы покрытий для предохранения транспортных средств от ржавчины; краски антикоррозийные;",
+      "translation_language": "en",
+      "translation": "paints, polishes, varnishes;protective agents that protect metals from corrosion and wood from destruction;rust prevention compounds;aerosol paints;rosin;rust protection sealants;rust-preventing coatings;coating compositions for protecting vehicles from rust;anti-corrosion paints;"
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "ru",
+      "description": "автохимия и автокосметика, включенные в 03 класс; автошампуни; аэрозоли-полироли; воски полировочные; жидкости для чистки стекол, в том числе ветровых; препараты для удаления красок; продукты для наведения блеска [для полировки]; средства для наружной мойки двигателей авто (не для промышленных целей); средства моющие, за исключением используемых для промышленных и медицинских целей; очиститель аэрозольный; очиститель ржавчины; пенообразующее средство для очистки двигателя; очиститель для кондиционера; пенный очиститель для панелей; жидкий очиститель для панелей;",
+      "translation_language": "en",
+      "translation": "auto chemicals and auto cosmetics included in class 03;car shampoos;aerosol polishes;polishing waxes;liquids for cleaning glass, including windshields;paint removers;polishing products;products for external cleaning of car engines (not for industrial purposes);detergents, except those used for industrial and medical purposes;aerosol cleaner;rust remover;foaming engine cleaner;air conditioner cleaner;foam panel cleaner;liquid panel cleaner;"
+    },
+    {
+      "classes": [
+        5
+      ],
+      "language": "ru",
+      "description": "освежители воздуха автомобильные [дезодоранты]; освежители воздуха для автомобилей;",
+      "translation_language": "en",
+      "translation": "car air fresheners [deodorants];car air fresheners;"
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "ru",
+      "description": "болты крепёжные металлические; гайки металлические; шайбы [металлическая фурнитура]; винты крепежные металлические; скобяные изделия; цепи металлические; цепи предохранительные металлические; фурнитура для кроватей металлическая; фурнитура для мебели металлическая; язычки для замков; замки висячие; ящики для инструментов металлические пустые; хомуты зажимные из металла; канистры металлические; кабели и провода металлические, неэлектрические;",
+      "translation_language": "en",
+      "translation": "metal fastening bolts;metal nuts;washers [metal fittings];metal fastening screws;hardware;metal chains;metal safety chains;metal bed fittings;metal furniture fittings;tongues for locks;padlocks;empty metal tool boxes;metal clamping clamps;metal canisters;metal cables and wires, non-electrical;"
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "ru",
+      "description": "электроинструменты; аккумуляторные дрели; аккумуляторные перфораторы; шуруповерты электрические; аккумуляторные гайковерты и винтоверты; сетевые угловые шлифмашины; ленточные шлифмашины; аккумуляторные сабельные пилы; аккумуляторные пилы торцовочные; цепные пилы; аккумуляторные циркулярные пилы; аккумуляторные миксеры; аккумуляторные клеевые пистолеты; аккумуляторные пистолеты для герметика; пистолеты для нанесения клея электрические; аккумуляторные степлеры; инструменты садовые с приводом; аккумуляторные кусторезы; аккумуляторные триммеры; аккумуляторные газонокосилки; насадки для шуруповерта; тестомесильные машины; машины стиральные; пылесосы; блендеры электрические;",
+      "translation_language": "en",
+      "translation": "power tools;cordless drills;cordless rotary hammers;electric screwdrivers;cordless impact wrenches and screwdrivers;corded angle grinders;belt sanders;cordless reciprocating saws;cordless miter saws;chain saws;cordless circular saws;cordless mixers;cordless glue guns;cordless sealant guns;electric glue guns;cordless staplers;powered garden tools;cordless hedge trimmers;cordless trimmers;cordless lawn mowers;screwdriver attachments;dough mixing machines;washing machines;vacuum cleaners;electric blenders;"
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "ru",
+      "description": "буравы; буры [ручные инструменты]; буры для плотницких работ; инвентарь садово-огородный с ручным приводом; инструменты клепальные [ручные инструменты]; инструменты ручные с ручным приводом; киянки [ручные инструменты]; ключи [ручные инструменты]; ключи гаечные [ручные инструменты]; кувалды; молотки [ручные инструменты]; напильники [инструменты]; напильники наждачные; отвертки неэлектрические; патроны сверлильные [ручные инструменты]; сверла [части ручных инструментов]; тесаки; топоры; тиски зажимные; инструменты режущие [ручные инструменты]; пилы [ручные инструменты]; ножовки по дереву с металлической ручкой; ножовки по металлу; клещи зажимные; плоскогубцы; бокорезы; щипцы; ключ разводной; инструменты абразивные [ручные инструменты]; инструменты для резки труб; инструменты клепальные[ручные инструменты]; инструменты развальцовочные [ручные инструменты]; пистолеты для нанесения шовного герметика неэлектрические; струбцины пластмассовые; степлеры ручные; отрезные круги по металлу; коронки по дереву; коронки по металлу; набор инструментов для автомобиля; набор головок по гипсокартону; стриппер; кримпер; диски по бетону; диски отрезные по металлу; утюги для одежды; штроборезы; граверы;",
+      "translation_language": "en",
+      "translation": "drills;drills [hand tools];carpentry drills;hand-operated gardening tools;riveting tools [hand tools];hand-operated tools;mallets [hand tools];keys [hand tools];spanners [hand tools];sledgehammers;hammers [hand tools];files [tools];emery files;non-electric screwdrivers;drill chucks [hand tools];drills [parts of hand tools];cleavers;axes;clamping vice;cutting tools [hand tools];saws [hand tools];wood saws with metal handles;hacksaws for metal;clamping pliers;pliers;side cutters;forceps;adjustable wrench;abrasive tools [hand tools];pipe cutting tools;riveting tools [hand tools];flaring tools [hand tools];non-electric joint sealant guns;plastic clamps;hand staplers;cutting wheels for metal;wood crowns;metal crowns;car tool kit;set of drywall heads;stripper;crimper;concrete discs;cutting discs for metal;clothes irons;wall chasers;engravers;"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ru",
+      "description": "весы напольные; вилки штепсельные электрические; замки электрические; инструменты измерительные; кабели коаксиальные; кабели оптико-волоконные; кабели электрические; коробки ответвительные [электричество]; коробки распределительные [электричество]; коробки соединительные [электричество]; оболочки для электрических кабелей; предохранители электрические; преобразователи электрические; приборы и инструменты для взвешивания; приборы измерительные; проводники электрические; розетки штепсельные электрические; уровни [приборы для определения горизонтального положения]; розетки и включатели; удлинители электрические; тройник сетевой;",
+      "translation_language": "en",
+      "translation": "floor scales;electrical plugs;electric locks;measuring instruments;coaxial cables;fiber optic cables;electric cables;junction boxes [electricity];distribution boxes [electricity];junction boxes [electricity];sheaths for electrical cables;electrical fuses;electrical converters;weighing devices and instruments;measuring instruments;electrical conductors;electrical plug sockets;levels [devices for determining horizontal position];sockets and switches;electrical extension cords;network tee;"
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "ru",
+      "description": "абажуры; держатели для абажуров; лампочки светодиодные [LED]; лампы ацетиленовые; лампы взрывобезопасные; лампы для освещения умные; лампы дуговые; лампы электрические; люстры; нити накаливания для электрических ламп; палочки светящиеся для освещения; патроны для ламп; патроны для электрических ламп; приборы и установки осветительные; приборы осветительные светодиодные [LED]; прожекторы; прожекторы световые; рассеиватели света; светильники; светильники напольные; светильники плафонные потолочные; торшеры; трубки для ламп; трубки люминесцентные для освещения; фонари карманные; фонари налобные; фонари осветительные; фонари свечные; холодильники; электрические кипятильники; фены для волос; пароварки электрические; электрические орешницы; вентиляторы бытовые электрические; кофеварки электрические; плиты газовые; кондиционеры бытовые;",
+      "translation_language": "en",
+      "translation": "lampshades;lampshade holders;LED light bulbs;acetylene lamps;explosion-proof lamps;smart lighting bulbs;arc lamps;electric lamps;chandeliers;filaments for electric lamps;glow sticks for lighting;lamp holders;sockets for electric lamps;lighting devices and installations;LED lighting fixtures;spotlights;spotlights;light diffusers;lamps;floor lamps;ceiling lamps;floor lamps;lamp tubes;fluorescent tubes for lighting;pocket flashlights;headlamps;lighting lanterns;candle lanterns;refrigerators;electric kettles;hair dryers;electric steamers;electric nutcrackers;household electric fans;electric coffee makers;gas stoves;household air conditioners;"
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "ru",
+      "description": "насадки шлангов для орошения; шланги для полива; пена монтажная; герметики силиконовые; герметики акриловые;",
+      "translation_language": "en",
+      "translation": "irrigation hose nozzles;watering hoses;mounting foam;silicone sealants;acrylic sealants;"
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "ru",
+      "description": "ящики для инструментов неметаллические пустые; хомуты для кабелей, неметаллические; хомуты для труб из резины; хомуты для труб неметаллические;",
+      "translation_language": "en",
+      "translation": "empty non-metallic tool boxes;cable ties, non-metallic;rubber pipe clamps;non-metallic pipe clamps;"
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "ru",
+      "description": "кофеварки неэлектрические; кофейники неэлектрические; кофемолки ручные; фильтры для кофе неэлектрические;",
+      "translation_language": "en",
+      "translation": "non-electric coffee makers;non-electric coffee pots;manual coffee grinders;non-electric coffee filters;"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "демонстрация товаров; оформление витрин; предоставление торговых интернет-площадок покупателям и продавцам товаров и услуг; презентация товаров на всех медиасредствах с целью розничной продажи; продвижение продаж для третьих лиц; реклама; реклама интерактивная в компьютерной сети; реклама наружная; реклама с оплатой за клик; реклама телевизионная; услуги розничной и оптовой продажи товаров; услуги интернет-магазинов; предоставление деловой и коммерческой информации через вебсайты; консультирование потребителей по выбору товаров и услуг; организация выставок, ярмарок и коммерческих мероприятий.",
+      "translation_language": "en",
+      "translation": "demonstration of goods;window dressing;provision of online trading platforms to buyers and sellers of goods and services;presentation of products on all media for the purpose of retail sales;sales promotion for third parties;advertising;interactive advertising on the computer network;outdoor advertising;pay-per-click advertising;television advertising;retail and wholesale services for goods;online store services;provision of business and commercial information through websites;consulting consumers on the selection of goods and services;organization of exhibitions, fairs and commercial events."
+    }
+  ],
+  "owner": "HIGU AYUP KHUSEINOVICH",
+  "ownerNative": null,
+  "ownerCountry": "KZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ZYAMBJLSKAJA",
+        "applicantAddressCountryCode": "KZ",
+        "applicantAddressCountryName": "Kazakhstan",
+        "applicantName": "HIGU AYUP KHUSEINOVICH",
+        "applicantNativeName": "Хигу Аюп Хусеинович (KZ) Higu Ayup Khuseinovich (KZ) (Республика Казахстан, Жамбылская область, Кордайский район, улица Щимар Дауров, дом 93, село Сортобе 080426)"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "gluten [glue], with the exception of office or household glue;epoxy glue;chemical preparations for removing carbon deposits in engines;",
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "клейковина [клей], за исключением канцелярского или бытового клея; клей эпоксидный; препараты химические для удаления нагара в двигателях;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "paints, polishes, varnishes;protective agents that protect metals from corrosion and wood from destruction;rust prevention compounds;aerosol paints;rosin;rust protection sealants;rust-preventing coatings;coating compositions for protecting vehicles from rust;anti-corrosion paints;",
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "краски, политуры, лаки; средства защитные, предохраняющие металлы от коррозии и древесину от разрушения; составы для предохранения от ржавчины; аэрозольные краски; канифоль; герметики для защиты от ржавчины; вещества, предохраняющие от ржавчины, в виде покрытий; составы покрытий для предохранения транспортных средств от ржавчины; краски антикоррозийные;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "auto chemicals and auto cosmetics included in class 03;car shampoos;aerosol polishes;polishing waxes;liquids for cleaning glass, including windshields;paint removers;polishing products;products for external cleaning of car engines (not for industrial purposes);detergents, except those used for industrial and medical purposes;aerosol cleaner;rust remover;foaming engine cleaner;air conditioner cleaner;foam panel cleaner;liquid panel cleaner;",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "автохимия и автокосметика, включенные в 03 класс; автошампуни; аэрозоли-полироли; воски полировочные; жидкости для чистки стекол, в том числе ветровых; препараты для удаления красок; продукты для наведения блеска [для полировки]; средства для наружной мойки двигателей авто (не для промышленных целей); средства моющие, за исключением используемых для промышленных и медицинских целей; очиститель аэрозольный; очиститель ржавчины; пенообразующее средство для очистки двигателя; очиститель для кондиционера; пенный очиститель для панелей; жидкий очиститель для панелей;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "car air fresheners [deodorants];car air fresheners;",
+          "intClassNumber": "05",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "освежители воздуха автомобильные [дезодоранты]; освежители воздуха для автомобилей;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "metal fastening bolts;metal nuts;washers [metal fittings];metal fastening screws;hardware;metal chains;metal safety chains;metal bed fittings;metal furniture fittings;tongues for locks;padlocks;empty metal tool boxes;metal clamping clamps;metal canisters;metal cables and wires, non-electrical;",
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "болты крепёжные металлические; гайки металлические; шайбы [металлическая фурнитура]; винты крепежные металлические; скобяные изделия; цепи металлические; цепи предохранительные металлические; фурнитура для кроватей металлическая; фурнитура для мебели металлическая; язычки для замков; замки висячие; ящики для инструментов металлические пустые; хомуты зажимные из металла; канистры металлические; кабели и провода металлические, неэлектрические;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "power tools;cordless drills;cordless rotary hammers;electric screwdrivers;cordless impact wrenches and screwdrivers;corded angle grinders;belt sanders;cordless reciprocating saws;cordless miter saws;chain saws;cordless circular saws;cordless mixers;cordless glue guns;cordless sealant guns;electric glue guns;cordless staplers;powered garden tools;cordless hedge trimmers;cordless trimmers;cordless lawn mowers;screwdriver attachments;dough mixing machines;washing machines;vacuum cleaners;electric blenders;",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "электроинструменты; аккумуляторные дрели; аккумуляторные перфораторы; шуруповерты электрические; аккумуляторные гайковерты и винтоверты; сетевые угловые шлифмашины; ленточные шлифмашины; аккумуляторные сабельные пилы; аккумуляторные пилы торцовочные; цепные пилы; аккумуляторные циркулярные пилы; аккумуляторные миксеры; аккумуляторные клеевые пистолеты; аккумуляторные пистолеты для герметика; пистолеты для нанесения клея электрические; аккумуляторные степлеры; инструменты садовые с приводом; аккумуляторные кусторезы; аккумуляторные триммеры; аккумуляторные газонокосилки; насадки для шуруповерта; тестомесильные машины; машины стиральные; пылесосы; блендеры электрические;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "drills;drills [hand tools];carpentry drills;hand-operated gardening tools;riveting tools [hand tools];hand-operated tools;mallets [hand tools];keys [hand tools];spanners [hand tools];sledgehammers;hammers [hand tools];files [tools];emery files;non-electric screwdrivers;drill chucks [hand tools];drills [parts of hand tools];cleavers;axes;clamping vice;cutting tools [hand tools];saws [hand tools];wood saws with metal handles;hacksaws for metal;clamping pliers;pliers;side cutters;forceps;adjustable wrench;abrasive tools [hand tools];pipe cutting tools;riveting tools [hand tools];flaring tools [hand tools];non-electric joint sealant guns;plastic clamps;hand staplers;cutting wheels for metal;wood crowns;metal crowns;car tool kit;set of drywall heads;stripper;crimper;concrete discs;cutting discs for metal;clothes irons;wall chasers;engravers;",
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "буравы; буры [ручные инструменты]; буры для плотницких работ; инвентарь садово-огородный с ручным приводом; инструменты клепальные [ручные инструменты]; инструменты ручные с ручным приводом; киянки [ручные инструменты]; ключи [ручные инструменты]; ключи гаечные [ручные инструменты]; кувалды; молотки [ручные инструменты]; напильники [инструменты]; напильники наждачные; отвертки неэлектрические; патроны сверлильные [ручные инструменты]; сверла [части ручных инструментов]; тесаки; топоры; тиски зажимные; инструменты режущие [ручные инструменты]; пилы [ручные инструменты]; ножовки по дереву с металлической ручкой; ножовки по металлу; клещи зажимные; плоскогубцы; бокорезы; щипцы; ключ разводной; инструменты абразивные [ручные инструменты]; инструменты для резки труб; инструменты клепальные[ручные инструменты]; инструменты развальцовочные [ручные инструменты]; пистолеты для нанесения шовного герметика неэлектрические; струбцины пластмассовые; степлеры ручные; отрезные круги по металлу; коронки по дереву; коронки по металлу; набор инструментов для автомобиля; набор головок по гипсокартону; стриппер; кримпер; диски по бетону; диски отрезные по металлу; утюги для одежды; штроборезы; граверы;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "floor scales;electrical plugs;electric locks;measuring instruments;coaxial cables;fiber optic cables;electric cables;junction boxes [electricity];distribution boxes [electricity];junction boxes [electricity];sheaths for electrical cables;electrical fuses;electrical converters;weighing devices and instruments;measuring instruments;electrical conductors;electrical plug sockets;levels [devices for determining horizontal position];sockets and switches;electrical extension cords;network tee;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "весы напольные; вилки штепсельные электрические; замки электрические; инструменты измерительные; кабели коаксиальные; кабели оптико-волоконные; кабели электрические; коробки ответвительные [электричество]; коробки распределительные [электричество]; коробки соединительные [электричество]; оболочки для электрических кабелей; предохранители электрические; преобразователи электрические; приборы и инструменты для взвешивания; приборы измерительные; проводники электрические; розетки штепсельные электрические; уровни [приборы для определения горизонтального положения]; розетки и включатели; удлинители электрические; тройник сетевой;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "lampshades;lampshade holders;LED light bulbs;acetylene lamps;explosion-proof lamps;smart lighting bulbs;arc lamps;electric lamps;chandeliers;filaments for electric lamps;glow sticks for lighting;lamp holders;sockets for electric lamps;lighting devices and installations;LED lighting fixtures;spotlights;spotlights;light diffusers;lamps;floor lamps;ceiling lamps;floor lamps;lamp tubes;fluorescent tubes for lighting;pocket flashlights;headlamps;lighting lanterns;candle lanterns;refrigerators;electric kettles;hair dryers;electric steamers;electric nutcrackers;household electric fans;electric coffee makers;gas stoves;household air conditioners;",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "абажуры; держатели для абажуров; лампочки светодиодные [LED]; лампы ацетиленовые; лампы взрывобезопасные; лампы для освещения умные; лампы дуговые; лампы электрические; люстры; нити накаливания для электрических ламп; палочки светящиеся для освещения; патроны для ламп; патроны для электрических ламп; приборы и установки осветительные; приборы осветительные светодиодные [LED]; прожекторы; прожекторы световые; рассеиватели света; светильники; светильники напольные; светильники плафонные потолочные; торшеры; трубки для ламп; трубки люминесцентные для освещения; фонари карманные; фонари налобные; фонари осветительные; фонари свечные; холодильники; электрические кипятильники; фены для волос; пароварки электрические; электрические орешницы; вентиляторы бытовые электрические; кофеварки электрические; плиты газовые; кондиционеры бытовые;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "irrigation hose nozzles;watering hoses;mounting foam;silicone sealants;acrylic sealants;",
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "насадки шлангов для орошения; шланги для полива; пена монтажная; герметики силиконовые; герметики акриловые;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "empty non-metallic tool boxes;cable ties, non-metallic;rubber pipe clamps;non-metallic pipe clamps;",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "ящики для инструментов неметаллические пустые; хомуты для кабелей, неметаллические; хомуты для труб из резины; хомуты для труб неметаллические;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "non-electric coffee makers;non-electric coffee pots;manual coffee grinders;non-electric coffee filters;",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "кофеварки неэлектрические; кофейники неэлектрические; кофемолки ручные; фильтры для кофе неэлектрические;"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "demonstration of goods;window dressing;provision of online trading platforms to buyers and sellers of goods and services;presentation of products on all media for the purpose of retail sales;sales promotion for third parties;advertising;interactive advertising on the computer network;outdoor advertising;pay-per-click advertising;television advertising;retail and wholesale services for goods;online store services;provision of business and commercial information through websites;consulting consumers on the selection of goods and services;organization of exhibitions, fairs and commercial events.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "демонстрация товаров; оформление витрин; предоставление торговых интернет-площадок покупателям и продавцам товаров и услуг; презентация товаров на всех медиасредствах с целью розничной продажи; продвижение продаж для третьих лиц; реклама; реклама интерактивная в компьютерной сети; реклама наружная; реклама с оплатой за клик; реклама телевизионная; услуги розничной и оптовой продажи товаров; услуги интернет-магазинов; предоставление деловой и коммерческой информации через вебсайты; консультирование потребителей по выбору товаров и услуг; организация выставок, ярмарок и коммерческих мероприятий."
+        }
+      ]
+    },
+    "id": "a5a73473-bdde-4105-a5f9-6e7b07a28f61",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260604",
+    "registrationOfficeCode": "KZ",
+    "registrationOfficeName": "Kazakhstan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260403",
+        "applicationNumber": "159769"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360403",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260604171337",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NEO TECH PROVEN QUALITY"
+    }
+  },
+  "_uri": "/mark/kz/a5a73473-bdde-4105-a5f9-6e7b07a28f61",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/77ca6862-4e0d-403d-b3c7-200bbed21066",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "77ca6862-4e0d-403d-b3c7-200bbed21066",
+  "applicationNumber": "78933094",
+  "registrationNumber": "78933094",
+  "applicationDate": "2024-05-30",
+  "registrationDate": "2024-12-07",
+  "expiryDate": "2034-12-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-09-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "便携式充电器;便携式计算机用电池充电器;电动运载工具用充电站;电源插头转换器;光伏发电设备;太阳能电池组件;太阳能发电用光伏装置和设备;为电动车辆提供动力的充电电池;移动电源(可充电电池);转接插头",
+      "translation_language": "en",
+      "translation": "Portable chargers; battery chargers for portable computers; charging stations for electric vehicles; power plug converters; photovoltaic power generation equipment; solar cell modules; photovoltaic devices and equipment for solar power generation; rechargeable batteries for powering electric vehicles; mobile power supplies (rechargeable batteries); adapter plugs"
+    }
+  ],
+  "owner": "Shenzhen Chenyin Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区坂田街道杨美社区旺塘10巷13号204",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Chenyin Trading Co., Ltd.",
+        "applicantNativeName": "深圳市辰音贸易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Portable chargers; battery chargers for portable computers; charging stations for electric vehicles; power plug converters; photovoltaic power generation equipment; solar cell modules; photovoltaic devices and equipment for solar power generation; rechargeable batteries for powering electric vehicles; mobile power supplies (rechargeable batteries); adapter plugs",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "便携式充电器;便携式计算机用电池充电器;电动运载工具用充电站;电源插头转换器;光伏发电设备;太阳能电池组件;太阳能发电用光伏装置和设备;为电动车辆提供动力的充电电池;移动电源(可充电电池);转接插头"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "77ca6862-4e0d-403d-b3c7-200bbed21066",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1902"
+      }
+    ],
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳睿诚知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240530",
+        "applicationNumber": "78933094"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341206",
+      "lastPublicationDate": "20240906",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241207",
+        "registrationNumber": "78933094"
+      }
+    },
+    "version": "20251005103021",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/cn/77ca6862-4e0d-403d-b3c7-200bbed21066",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

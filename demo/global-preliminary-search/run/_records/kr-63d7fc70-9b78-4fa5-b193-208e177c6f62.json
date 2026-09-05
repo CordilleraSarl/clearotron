@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/kr/63d7fc70-9b78-4fa5-b193-208e177c6f62",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "63d7fc70-9b78-4fa5-b193-208e177c6f62",
+  "applicationNumber": "41-1993-0003081",
+  "registrationNumber": "4100253470000",
+  "applicationDate": "1993-06-07",
+  "registrationDate": "1994-11-07",
+  "expiryDate": "2034-11-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "도서출판 보리",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "교과서출판업,서적출판업,온라인전자서적및잡지출판업,전자탁상출판업",
+      "translation_language": "en",
+      "translation": "Textbook publishing business, book publishing business, online electronic book and magazine publishing business, electronic desk publishing business"
+    }
+  ],
+  "owner": "BORI PUBLISHING CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 파주시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "BORI PUBLISHING CO., LTD",
+        "applicantNativeName": "주식회사 도서출판보리"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Textbook publishing business, book publishing business, online electronic book and magazine publishing business, electronic desk publishing business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교과서출판업,서적출판업,온라인전자서적및잡지출판업,전자탁상출판업"
+        }
+      ]
+    },
+    "id": "63d7fc70-9b78-4fa5-b193-208e177c6f62",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19930607",
+        "applicationNumber": "41-1993-0003081"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341107",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19941107",
+        "registrationNumber": "4100253470000"
+      }
+    },
+    "version": "20250625144300",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "도서출판 보리"
+    }
+  },
+  "_uri": "/mark/kr/63d7fc70-9b78-4fa5-b193-208e177c6f62",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.212Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

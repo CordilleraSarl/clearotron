@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+  "applicationNumber": "31669041",
+  "registrationNumber": "31669041",
+  "applicationDate": "2018-06-16",
+  "registrationDate": "2019-07-28",
+  "expiryDate": "2029-07-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-04-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VANCARO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "服装设计",
+      "translation_language": "en",
+      "translation": "clothing design"
+    }
+  ],
+  "owner": "Beijing Wanrun Chengda Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市通州区中关村科技园区通州园光机电一体化产业基地政府路2号144室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Wanrun Chengda Technology Co., Ltd.",
+        "applicantNativeName": "北京万润诚达科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "clothing design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "服装设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Dress designing service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        }
+      ]
+    },
+    "id": "5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1645"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "财宝知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180616",
+        "applicationNumber": "31669041"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290727",
+      "lastPublicationDate": "20190427",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190728",
+        "registrationNumber": "31669041"
+      }
+    },
+    "version": "20251003051216",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCARO"
+    }
+  },
+  "_uri": "/mark/cn/5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

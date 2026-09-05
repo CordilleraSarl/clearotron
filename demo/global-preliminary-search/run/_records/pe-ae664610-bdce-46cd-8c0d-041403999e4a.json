@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/pe/ae664610-bdce-46cd-8c0d-041403999e4a",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "ae664610-bdce-46cd-8c0d-041403999e4a",
+  "applicationNumber": "35584-2025",
+  "registrationNumber": "S00169477",
+  "applicationDate": "2025-07-07",
+  "registrationDate": "2025-08-29",
+  "expiryDate": "2035-08-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIANKA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "education; training; entertainment services; sports and cultural activities."
+    }
+  ],
+  "owner": "REYNOSO BENDEZU GARDENIA",
+  "ownerNative": null,
+  "ownerCountry": "CO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LIMA - LIMA - SAN ISIDRO",
+        "applicantAddressCountryCode": "CO",
+        "applicantAddressCountryName": "Colombia",
+        "applicantName": "REYNOSO BENDEZU GARDENIA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education; training; entertainment services; sports and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "educación; formación; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "ae664610-bdce-46cd-8c0d-041403999e4a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.24",
+      "27.05.17",
+      "27.05.07",
+      "03.07.01",
+      "03.07.17"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250916",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250707",
+        "applicationNumber": "35584-2025"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350829",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250829",
+        "registrationNumber": "S00169477"
+      }
+    },
+    "version": "20250916020236",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIANKA"
+    }
+  },
+  "_uri": "/mark/pe/ae664610-bdce-46cd-8c0d-041403999e4a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

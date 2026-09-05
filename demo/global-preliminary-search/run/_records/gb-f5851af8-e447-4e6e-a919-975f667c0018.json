@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/gb/f5851af8-e447-4e6e-a919-975f667c0018",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f5851af8-e447-4e6e-a919-975f667c0018",
+  "applicationNumber": "4347419",
+  "registrationNumber": "4347419",
+  "applicationDate": "2026-03-01",
+  "registrationDate": "2026-05-22",
+  "expiryDate": "2036-03-01",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Drive Northeast",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Driving instruction;Instruction in driving;Vehicle driving instruction;Commercial vehicle driving instruction;Driving instruction in road safety;Providing training in motor vehicle driving;Advanced driving instruction for drivers of motor cars;Driving schools;Training services for drivers in driving skills;Driving academy services;Driver training;Training of car drivers;Motorcycle riding instruction;Instruction services relating to driving;Motorcycle training;Road safety training;Diving instruction;Education, teaching and training;Training and instruction.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Michael Clark",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "14 Norfolk Avenue, Birtley, Chester Le Street Dh3 2dg, Gateshead",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Michael Clark"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Driving instruction;Instruction in driving;Vehicle driving instruction;Commercial vehicle driving instruction;Driving instruction in road safety;Providing training in motor vehicle driving;Advanced driving instruction for drivers of motor cars;Driving schools;Training services for drivers in driving skills;Driving academy services;Driver training;Training of car drivers;Motorcycle riding instruction;Instruction services relating to driving;Motorcycle training;Road safety training;Diving instruction;Education, teaching and training;Training and instruction."
+        }
+      ]
+    },
+    "id": "f5851af8-e447-4e6e-a919-975f667c0018",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2026/011"
+      }
+    ],
+    "recordLastUpdated": "20260531",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260301",
+        "applicationNumber": "4347419"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360301",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260522",
+        "registrationNumber": "4347419"
+      }
+    },
+    "version": "20260531020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Drive Northeast"
+    }
+  },
+  "_uri": "/mark/gb/f5851af8-e447-4e6e-a919-975f667c0018",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

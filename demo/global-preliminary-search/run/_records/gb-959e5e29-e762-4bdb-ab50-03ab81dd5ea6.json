@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/959e5e29-e762-4bdb-ab50-03ab81dd5ea6",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "959e5e29-e762-4bdb-ab50-03ab81dd5ea6",
+  "applicationNumber": "UK00900692913",
+  "registrationNumber": "UK00900692913",
+  "applicationDate": "1997-12-02",
+  "registrationDate": "1999-10-01",
+  "expiryDate": "2027-12-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "sevenOrients",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; camcorders, cinematographic cameras; sound recording strips; sound recording carriers; cameras (photography); videodisks; optical discs; television apparatus; videotapes; compact discs (audio, video); CDroms; magnetic data medias; exposed cinematographic films; editing appliances for cinematographic films; screens (photography); projection screen; computer software (recorded).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Photographs; artists' materials; posters; albums; magazine; newspapers; books; booklets; almanacs; indexes; postcards; printer's type; printed paper; printed matter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Radio and television entertainment; film production and videdotape film production; entertainment information; rental of show scenery; rental of motion pictures; videotape editing; production of radio and television programs; organisation of exhibitions for cultural or educational purposes; organisation of competitions (education or entertainment); arranging and conducting of colloquiums, conferences, congresses, seminars, symposiums; publication of books; production of radio and television programs.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENORIENTS, Société à Responsabilité Limitée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Wynne-Jones IP Limited",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "19970604",
+      "priorityNumber": "97680976"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "76, avenue de Saint Mandé, Paris 75012",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "SEVENORIENTS, Société à Responsabilité Limitée"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; camcorders, cinematographic cameras; sound recording strips; sound recording carriers; cameras (photography); videodisks; optical discs; television apparatus; videotapes; compact discs (audio, video); CDroms; magnetic data medias; exposed cinematographic films; editing appliances for cinematographic films; screens (photography); projection screen; computer software (recorded)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Photographs; artists' materials; posters; albums; magazine; newspapers; books; booklets; almanacs; indexes; postcards; printer's type; printed paper; printed matter."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Radio and television entertainment; film production and videdotape film production; entertainment information; rental of show scenery; rental of motion pictures; videotape editing; production of radio and television programs; organisation of exhibitions for cultural or educational purposes; organisation of competitions (education or entertainment); arranging and conducting of colloquiums, conferences, congresses, seminars, symposiums; publication of books; production of radio and television programs."
+        }
+      ]
+    },
+    "id": "959e5e29-e762-4bdb-ab50-03ab81dd5ea6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "19970604",
+        "priorityNumber": "97680976"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Southgate House, Southgate Street, Gloucester GL1 1UB, Gloucestershire",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Wynne-Jones IP Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19971202",
+        "applicationNumber": "UK00900692913"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271202",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19991001",
+        "registrationNumber": "UK00900692913"
+      }
+    },
+    "version": "20250627202054",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "sevenOrients"
+    }
+  },
+  "_uri": "/mark/gb/959e5e29-e762-4bdb-ab50-03ab81dd5ea6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

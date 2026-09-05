@@ -1,0 +1,320 @@
+{
+  "uri": "/mark/us/d3f29f81-70e3-4b38-ba7a-afea3db125b1",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "d3f29f81-70e3-4b38-ba7a-afea3db125b1",
+  "applicationNumber": "86264014",
+  "registrationNumber": "4733087",
+  "applicationDate": "2014-04-28",
+  "registrationDate": "2015-05-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2014-09-16"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2021-11-26",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer application software for mobile phones, namely, software for exploring, discovering, and sharing location-based information; Computer application software for mobile phones, portable media and computers, namely, software for exploring, discovering, and sharing location-based information",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Top Qork Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "IL",
+  "representative": "Russell D. Mayer",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "c/o Livnat, Mayer & Co., Jerusalem, 9148101, ISRA",
+        "applicantAddressCity": "Jerusalem",
+        "applicantAddressCountryCode": "IL",
+        "applicantAddressCountryName": "Israel",
+        "applicantAddressPostalCode": "9148101",
+        "applicantAddressStreet": "c/o Livnat, Mayer & Co.",
+        "applicantJurisdictionOfIncorporation": "ISRAEL",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Top Qork Ltd.",
+        "applicantSecondaryAddressUnit": "POB 48193"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer application software for mobile phones, namely, software for exploring, discovering, and sharing location-based information; Computer application software for mobile phones, portable media and computers, namely, software for exploring, discovering, and sharing location-based information"
+        }
+      ]
+    },
+    "id": "d3f29f81-70e3-4b38-ba7a-afea3db125b1",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20211126",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20200505",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20150505",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20150331",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20150312",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20150310",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20150202",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20150202",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20141111",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20140916",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20140916",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20140827",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20140811",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20140811",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140512",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140501",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "c/o Livnat, Mayer & Co., Jerusalem, 9148101, ISRA",
+        "city": "Jerusalem",
+        "countryCode": "IL",
+        "countryName": "Israel",
+        "jurisdictionOfIncorporation": "ISRAEL",
+        "legalEntity": "CORPORATION",
+        "name": "Top Qork Ltd.",
+        "postalCode": "9148101",
+        "secondaryAddressUnit": "POB 48193",
+        "street": "c/o Livnat, Mayer & Co."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "c/o Livnat, Mayer & Co., Jerusalem, 9148101, ISRA",
+        "city": "Jerusalem",
+        "countryCode": "IL",
+        "countryName": "Israel",
+        "jurisdictionOfIncorporation": "ISRAEL",
+        "legalEntity": "CORPORATION",
+        "name": "Top Qork Ltd.",
+        "postalCode": "9148101",
+        "secondaryAddressUnit": "POB 48193",
+        "street": "c/o Livnat, Mayer & Co."
+      },
+      {
+        "address": "c/o Livnat, Mayer & Co., Jerusalem, 9148101, ISRA",
+        "city": "Jerusalem",
+        "countryCode": "IL",
+        "countryName": "Israel",
+        "jurisdictionOfIncorporation": "ISRAEL",
+        "legalEntity": "CORPORATION",
+        "name": "Top Qork Ltd.",
+        "postalCode": "9148101",
+        "secondaryAddressUnit": "POB 48193",
+        "street": "c/o Livnat, Mayer & Co."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "c/o Livnat, Mayer & Co., Jerusalem, 9148101, ISRA",
+        "city": "Jerusalem",
+        "countryCode": "IL",
+        "countryName": "Israel",
+        "jurisdictionOfIncorporation": "ISRAEL",
+        "legalEntity": "CORPORATION",
+        "name": "Top Qork Ltd.",
+        "postalCode": "9148101",
+        "secondaryAddressUnit": "POB 48193",
+        "street": "c/o Livnat, Mayer & Co."
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "86841636",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "DATA CORK",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86841636",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "DATA CORK",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86841636",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "DATA CORK",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "86841636",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "DATA CORK",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "JERUSALEM, 9148101, ISRAEL",
+        "representativeCorrespondentAddressLines": [
+          "JERUSALEM, 9148101",
+          "ISRAEL"
+        ],
+        "representativeCorrespondentName": "RUSSELL D. MAYER LIVNAT, MAYER & CO., P.O.B. 48193"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "JERUSALEM, 9148101, ISRAEL",
+        "representativeAddressLines": [
+          "JERUSALEM, 9148101",
+          "ISRAEL"
+        ],
+        "representativeName": "Russell D. Mayer"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140428",
+        "applicationNumber": "86264014"
+      },
+      "cancellationDate": "20211126",
+      "cancellationPublicationDate": "20220104",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20141111"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20150115"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20211126",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20140916"
+      ],
+      "registration": {
+        "registrationDate": "20150505",
+        "registrationNumber": "4733087"
+      }
+    },
+    "version": "20260110204241",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CORK",
+      "markVerbalElementText": "QORK"
+    }
+  },
+  "_uri": "/mark/us/d3f29f81-70e3-4b38-ba7a-afea3db125b1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:15.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

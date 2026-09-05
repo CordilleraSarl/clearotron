@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/bx/e49220dc-73bf-4e89-80b6-b27964c513a2",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "e49220dc-73bf-4e89-80b6-b27964c513a2",
+  "applicationNumber": "1360084",
+  "registrationNumber": "1020283",
+  "applicationDate": "2017-08-31",
+  "registrationDate": "2017-11-22",
+  "expiryDate": "2027-08-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qiri",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Computersoftware voor het verstrekken van informatie via internet; Software voor het analyseren van marktgegevens; Software voor het analyseren van het gedrag van klanten in onlineshops; Software voor het creëren van dynamische websites; Software voor het verwerken van marktinformatie; Software voor zakelijke technologie.",
+      "translation_language": "en",
+      "translation": "Computer software for providing information via the Internet; software for analyzing market data; computer software for analyzing customer behavior in online shops; software for creating dynamic websites; software for processing market information; Business technology software."
+    }
+  ],
+  "owner": "Sellvation marketing BV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Industrieweg zuid 22 nummer 3, 3958 VX Amerongen",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Sellvation marketing BV"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for providing information via the Internet; software for analyzing market data; computer software for analyzing customer behavior in online shops; software for creating dynamic websites; software for processing market information; Business technology software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Computersoftware voor het verstrekken van informatie via internet; Software voor het analyseren van marktgegevens; Software voor het analyseren van het gedrag van klanten in onlineshops; Software voor het creëren van dynamische websites; Software voor het verwerken van marktinformatie; Software voor zakelijke technologie."
+        }
+      ]
+    },
+    "id": "e49220dc-73bf-4e89-80b6-b27964c513a2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1122"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170831",
+        "applicationNumber": "1360084"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270831",
+      "lastPublicationDate": "20171122",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20171122",
+        "registrationNumber": "1020283"
+      }
+    },
+    "version": "20250623182257",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qiri"
+    }
+  },
+  "_uri": "/mark/bx/e49220dc-73bf-4e89-80b6-b27964c513a2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

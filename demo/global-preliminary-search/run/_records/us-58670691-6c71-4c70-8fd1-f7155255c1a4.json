@@ -1,0 +1,226 @@
+{
+  "uri": "/mark/us/58670691-6c71-4c70-8fd1-f7155255c1a4",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "58670691-6c71-4c70-8fd1-f7155255c1a4",
+  "applicationNumber": "77948072",
+  "registrationNumber": null,
+  "applicationDate": "2010-03-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2011-07-20",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 computer software for providing games, providing VoIP communication, and monitoring a user's daily activities, all in the field of caring for the elderly and disabled; computer hardware, namely, desktop computers with touchscreens, tabletop intercoms, and wall-mounted intercoms",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "DSA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Arthur T. Yuan",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O. Box 410446, St. Louis, MO, 63141",
+        "applicantAddressCity": "St. Louis",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "63141",
+        "applicantAddressStateName": "MISSOURI",
+        "applicantAddressStreet": "P.O. Box 410446",
+        "applicantJurisdictionOfIncorporation": "MISSOURI",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "DSA, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 computer software for providing games, providing VoIP communication, and monitoring a user's daily activities, all in the field of caring for the elderly and disabled; computer hardware, namely, desktop computers with touchscreens, tabletop intercoms, and wall-mounted intercoms"
+        }
+      ]
+    },
+    "id": "58670691-6c71-4c70-8fd1-f7155255c1a4",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20110831",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20110831",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20110120",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20110120",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20110120",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20101221",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20101221",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20101221",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20101130",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20100604",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20100604",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20100604",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20100604",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20100305",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20100305",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "P.O. Box 410446, St. Louis, MO, 63141",
+        "city": "St. Louis",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MISSOURI",
+        "legalEntity": "CORPORATION",
+        "name": "DSA, Inc.",
+        "postalCode": "63141",
+        "stateName": "MISSOURI",
+        "street": "P.O. Box 410446"
+      },
+      {
+        "address": "P.O. Box 410446, St. Louis, MO, 63141",
+        "city": "St. Louis",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MISSOURI",
+        "legalEntity": "CORPORATION",
+        "name": "DSA, Inc.",
+        "postalCode": "63141",
+        "stateName": "MISSOURI",
+        "street": "P.O. Box 410446"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SAINT LOUIS, MO 63102-2728, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SAINT LOUIS, MO 63102-2728",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ARTHUR T. YUAN SENNIGER POWERS, LLP, 100 N BROADWAY FL 17"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SAINT LOUIS, MO 63102-2728, UNITED STATES",
+        "representativeAddressLines": [
+          "SAINT LOUIS, MO 63102-2728",
+          "UNITED STATES"
+        ],
+        "representativeName": "Arthur T. Yuan"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20110720",
+      "active": false,
+      "application": {
+        "applicationDate": "20100302",
+        "applicationNumber": "77948072"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20110831",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260109205149",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/58670691-6c71-4c70-8fd1-f7155255c1a4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

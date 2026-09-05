@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "310027f2-0562-46fe-abea-385f068a8150",
+  "applicationNumber": "2019-046708",
+  "registrationNumber": "6231111",
+  "applicationDate": "2019-04-02",
+  "registrationDate": "2020-03-02",
+  "expiryDate": "2030-03-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-03-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Ｖｅｎｋｕｒｉ",
+  "markTransliteration": "BENKURI",
+  "markTranslation": "VENKURI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "再充電可能な電池，タコグラフ，ビデオカメラ，映写装置，イヤホン，ヘッドホン，スピーカー用筐体，電気プラグ，モニター付監視装置（医療用のものを除く。），バッテリーチャージャー",
+      "translation_language": "en",
+      "translation": "Rechargeable battery, tachograph, video camera, projection device, earphone, headphone, speaker case, electric plug, monitor with monitor (except for medical use), battery charger"
+    }
+  ],
+  "owner": "YIWU TENGDING UMBRELLA CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "KANEKO HIROSHI",
+  "priorities": [
+    {
+      "priorityDate": "20190402"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "applicantNativeAddress": "中華人民共和国",
+        "applicantNativeName": "義烏市騰鼎傘業有限公司"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Rechargeable battery, tachograph, video camera, projection device, earphone, headphone, speaker case, electric plug, monitor with monitor (except for medical use), battery charger",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "再充電可能な電池，タコグラフ，ビデオカメラ，映写装置，イヤホン，ヘッドホン，スピーカー用筐体，電気プラグ，モニター付監視装置（医療用のものを除く。），バッテリーチャージャー"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic machines and apparatus; Cinematographic machines and apparatus; Optical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Solar batteries; Batteries and cells"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        }
+      ]
+    },
+    "id": "310027f2-0562-46fe-abea-385f068a8150",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20190402"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KANEKO HIROSHI",
+        "representativeNativeName": "金子　宏"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190402",
+        "applicationNumber": "2019-046708"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300302",
+      "lastPublicationDate": "20200324",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200302",
+        "registrationNumber": "6231111"
+      }
+    },
+    "version": "20240320105608",
+    "wordMarkSpecification": {
+      "markTranslation": "VENKURI",
+      "markTransliteration": "BENKURI",
+      "markVerbalElementText": "Ｖｅｎｋｕｒｉ"
+    }
+  },
+  "_uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:40.608Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

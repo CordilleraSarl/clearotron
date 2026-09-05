@@ -1,0 +1,377 @@
+{
+  "uri": "/mark/us/74143a70-2b51-46e1-88d0-4eb2a3f0cbef",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "74143a70-2b51-46e1-88d0-4eb2a3f0cbef",
+  "applicationNumber": "74239852",
+  "registrationNumber": "1774438",
+  "applicationDate": "1992-01-24",
+  "registrationDate": "1993-06-01",
+  "expiryDate": null,
+  "renewalDate": "2023-06-01",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1993-03-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR PROPERTIES LTD.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"PROPERTIES LTD.\""
+  ],
+  "niceClasses": [
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "INT. CL. 37 real estate development",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 hotel management",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Properties Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Susan N. Acquista, Esq.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20230221",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "San Francisco, CA, 941114421",
+        "applicantAddressCity": "San Francisco",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "941114421",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Grosvenor Properties Ltd.",
+        "applicantSecondaryAddressUnit": "222 Front Street, 7th Floor"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "04.05.01",
+      "04.05.24",
+      "26.09.10",
+      "26.09.37"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "INT. CL. 37 real estate development"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 hotel management"
+        }
+      ]
+    },
+    "id": "74143a70-2b51-46e1-88d0-4eb2a3f0cbef",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"PROPERTIES LTD.\""
+    ],
+    "markEvents": [
+      {
+        "date": "20230221",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20230221",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20230221",
+        "descriptionText": "REGISTERED AND RENEWED (THIRD RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20230221",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20220601",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20130509",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20130509",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20130509",
+        "descriptionText": "REGISTERED AND RENEWED (SECOND RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20130509",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20130417",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20090223",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20030811",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20030811",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20030523",
+        "descriptionText": "REGISTERED - COMBINED SECTION 8 (10-YR) & SEC. 9 FILED"
+      },
+      {
+        "date": "20030522",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "19981214",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "19980911",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "19930601",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19930309",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19930205",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19930108",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "19930108",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19921230",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "19921216",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19921209",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "19921130",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "19921117",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "19921117",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19920417",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19920326",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "San Francisco, CA, 94104",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Grosvenor Properties Ltd.",
+        "postalCode": "94104",
+        "secondaryAddressUnit": "160 Sansome Street, Suite 800",
+        "stateName": "CALIFORNIA"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "San Francisco, CA, 941114421",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Grosvenor Properties Ltd.",
+        "postalCode": "941114421",
+        "secondaryAddressUnit": "222 Front Street, 7th Floor",
+        "stateName": "CALIFORNIA"
+      },
+      {
+        "address": "San Francisco, CA, 941114421",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Grosvenor Properties Ltd.",
+        "postalCode": "941114421",
+        "secondaryAddressUnit": "222 Front Street, 7th Floor",
+        "stateName": "CALIFORNIA"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "San Francisco, CA, 94104",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Grosvenor Properties Ltd.",
+        "postalCode": "94104",
+        "secondaryAddressUnit": "160 Sansome Street, Suite 800",
+        "stateName": "CALIFORNIA"
+      }
+    ],
+    "recordLastUpdated": "20260108",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "San Francisco, CA 94105, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "San Francisco, CA 94105",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Susan N. Acquista, Esq. DLA Piper LLP (US), 555 Mission Street, Ste 2400"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "San Francisco, CA 94105, UNITED STATES",
+        "representativeAddressLines": [
+          "San Francisco, CA 94105",
+          "UNITED STATES"
+        ],
+        "representativeName": "Susan N. Acquista, Esq."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19920124",
+        "applicationNumber": "74239852"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "37",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19870112"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19870112"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "37",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19870112"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19870112"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20230221",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "19930309"
+      ],
+      "registration": {
+        "registrationDate": "19930601",
+        "registrationNumber": "1774438"
+      },
+      "renewalDate": "20230601"
+    },
+    "version": "20260108025730",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR PROPERTIES LTD."
+    }
+  },
+  "_uri": "/mark/us/74143a70-2b51-46e1-88d0-4eb2a3f0cbef",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

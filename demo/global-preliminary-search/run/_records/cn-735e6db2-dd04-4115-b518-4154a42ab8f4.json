@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/cn/735e6db2-dd04-4115-b518-4154a42ab8f4",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "735e6db2-dd04-4115-b518-4154a42ab8f4",
+  "applicationNumber": "51641666",
+  "registrationNumber": "51641666",
+  "applicationDate": "2020-11-26",
+  "registrationDate": "2021-08-21",
+  "expiryDate": "2031-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "克文克理",
+  "markTransliteration": "KE WEN KE LI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "化学服务,计算机软件设计,技术研究,纺织品测试,软件即服务(SaaS),计算机技术咨询,土地测量,生物学研究,气象信息,包装设计",
+      "translation_language": "en",
+      "translation": "Chemical services, computer software design, technical research, textile testing, software as a service (SaaS), computer technology consulting, land surveying, biological research, meteorological information, packaging design"
+    }
+  ],
+  "owner": "Mingde New Thinking Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市昌平区中关村科技园区昌平园超前路37号院16号楼4层B区402室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Mingde New Thinking Technology Co., Ltd.",
+        "applicantNativeName": "明德新思路科技股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chemical services, computer software design, technical research, textile testing, software as a service (SaaS), computer technology consulting, land surveying, biological research, meteorological information, packaging design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "化学服务,计算机软件设计,技术研究,纺织品测试,软件即服务(SaaS),计算机技术咨询,土地测量,生物学研究,气象信息,包装设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Geological surveys, research and development service",
+        "Chemical research service",
+        "Biological research service",
+        "Meteorological information service",
+        "Survey service",
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4210",
+          "subNatGoodsServicesDescription": "Geological surveys, research and development service"
+        },
+        {
+          "subNatClassNumber": "4211",
+          "subNatGoodsServicesDescription": "Chemical research service"
+        },
+        {
+          "subNatClassNumber": "4212",
+          "subNatGoodsServicesDescription": "Biological research service"
+        },
+        {
+          "subNatClassNumber": "4213",
+          "subNatGoodsServicesDescription": "Meteorological information service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "735e6db2-dd04-4115-b518-4154a42ab8f4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1744"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "济南泉润企业管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201126",
+        "applicationNumber": "51641666"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310820",
+      "lastPublicationDate": "20210520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210821",
+        "registrationNumber": "51641666"
+      }
+    },
+    "version": "20251004083933",
+    "wordMarkSpecification": {
+      "markTransliteration": "KE WEN KE LI",
+      "markVerbalElementText": "克文克理"
+    }
+  },
+  "_uri": "/mark/cn/735e6db2-dd04-4115-b518-4154a42ab8f4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

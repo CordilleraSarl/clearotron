@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/pt/c4e2b988-1f03-4b3e-8a4e-dc093b5e91e0",
+  "provider": "clarivate",
+  "office": "pt",
+  "guid": "c4e2b988-1f03-4b3e-8a4e-dc093b5e91e0",
+  "applicationNumber": "754271 MNA",
+  "registrationNumber": "754271 MNA",
+  "applicationDate": "2025-10-06",
+  "registrationDate": "2026-01-21",
+  "expiryDate": "2035-10-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-10-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QIRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software e aplicações para dispositivos móveis.",
+      "translation_language": "en",
+      "translation": "SOFTWARE AND APPLICATIONS FOR MOBILE DEVICES."
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "pt",
+      "description": "serviços de assessoria relacionados com saúde.",
+      "translation_language": "en",
+      "translation": "health-related advisory services."
+    }
+  ],
+  "owner": "Fábio André Barroso Luís",
+  "ownerNative": null,
+  "ownerCountry": "PT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "- Portugal",
+        "applicantAddressCountryCode": "PT",
+        "applicantAddressCountryName": "Portugal",
+        "applicantName": "Fábio André Barroso Luís"
+      }
+    ],
+    "applicationLanguageCode": "po",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SOFTWARE AND APPLICATIONS FOR MOBILE DEVICES.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software e aplicações para dispositivos móveis."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "health-related advisory services.",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "serviços de assessoria relacionados com saúde."
+        }
+      ]
+    },
+    "id": "c4e2b988-1f03-4b3e-8a4e-dc093b5e91e0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "198/2025"
+      }
+    ],
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "PT",
+    "registrationOfficeName": "Portugal",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251006",
+        "applicationNumber": "754271 MNA"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351006",
+      "lastPublicationDate": "20251014",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260121",
+        "registrationNumber": "754271 MNA"
+      }
+    },
+    "version": "20260812020028",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QIRI"
+    }
+  },
+  "_uri": "/mark/pt/c4e2b988-1f03-4b3e-8a4e-dc093b5e91e0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

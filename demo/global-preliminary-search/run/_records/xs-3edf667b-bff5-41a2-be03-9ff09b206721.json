@@ -1,0 +1,794 @@
+{
+  "uri": "/mark/xs/3edf667b-bff5-41a2-be03-9ff09b206721",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "3edf667b-bff5-41a2-be03-9ff09b206721",
+  "applicationNumber": null,
+  "registrationNumber": "20075702025",
+  "applicationDate": null,
+  "registrationDate": "2007-06-13",
+  "expiryDate": "2017-06-12",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENCORE CAPITAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        2
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        5
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        13
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        19
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        22
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        23
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        27
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        31
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        34
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENCORE SOLUTIONS LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4500 SW KRUSE WAY NO 350, LAKE OSWEGO, OR, 97035-2578, USAM",
+        "applicantAddressCity": "LAKE OSWEGO",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "97035-2578",
+        "applicantAddressStateName": "OREGON",
+        "applicantAddressStreet": "4500 SW KRUSE WAY NO 350",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "VENCORE SOLUTIONS LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "04",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "05",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "06",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "13",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "14",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "15",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "18",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "19",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "22",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "23",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "26",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "27",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "29",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "31",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "32",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "33",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "34",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "3edf667b-bff5-41a2-be03-9ff09b206721",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADEMARK & SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "4500 SW KRUSE WAY NO 350, LAKE OSWEGO, OR, 97035-2578, USAM",
+        "city": "LAKE OSWEGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "VENCORE SOLUTIONS LLC",
+        "postalCode": "97035-2578",
+        "stateName": "OREGON",
+        "street": "4500 SW KRUSE WAY NO 350"
+      }
+    ],
+    "recordLastUpdated": "20260626",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20170612",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20070613"
+        }
+      ],
+      "firstUsedAnywhereDate": "20070613",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20070613",
+        "registrationNumber": "20075702025"
+      }
+    },
+    "usStateOfficeCode": "WI",
+    "usStateOfficeName": "WISCONSIN",
+    "version": "20260626150224",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCORE CAPITAL"
+    }
+  },
+  "_uri": "/mark/xs/3edf667b-bff5-41a2-be03-9ff09b206721",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

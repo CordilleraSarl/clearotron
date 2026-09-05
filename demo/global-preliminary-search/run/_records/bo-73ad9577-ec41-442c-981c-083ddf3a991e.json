@@ -1,0 +1,192 @@
+{
+  "uri": "/mark/bo/73ad9577-ec41-442c-981c-083ddf3a991e",
+  "provider": "clarivate",
+  "office": "bo",
+  "guid": "73ad9577-ec41-442c-981c-083ddf3a991e",
+  "applicationNumber": "5604-2017",
+  "registrationNumber": "178456 C",
+  "applicationDate": null,
+  "registrationDate": "2018-04-13",
+  "expiryDate": "2028-04-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DESARROLLOS URBANISTICOS E INMOBILIARIOS IVENOR S.R.L.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "No owner available",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "No owner available"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "73ad9577-ec41-442c-981c-083ddf3a991e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240126",
+    "registrationOfficeCode": "BO",
+    "registrationOfficeName": "Bolivia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationNumber": "5604-2017"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280413",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180413",
+        "registrationNumber": "178456 C"
+      }
+    },
+    "version": "20240126102749",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DESARROLLOS URBANISTICOS E INMOBILIARIOS IVENOR S.R.L."
+    }
+  },
+  "_uri": "/mark/bo/73ad9577-ec41-442c-981c-083ddf3a991e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

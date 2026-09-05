@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/xs/0a69dab7-f40b-41c4-b569-2d36b340fcc1",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "0a69dab7-f40b-41c4-b569-2d36b340fcc1",
+  "applicationNumber": null,
+  "registrationNumber": "A-234035_41_1",
+  "applicationDate": null,
+  "registrationDate": "2019-04-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "KNOWLEDGE, INITIATIVE, NORTH, GIVE BACK Y KING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Knowledge, initiative, north, give back.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LEON L. L. C.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "VILLA INTERAMERICANA, PASEO REAL #10, SAN GERMAN, PR 00683",
+        "applicantAddressStreet": "VILLA INTERAMERICANA, PASEO REAL #10, SAN GERMAN, PR 00683",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "LEON L. L. C."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Knowledge, initiative, north, give back."
+        }
+      ]
+    },
+    "id": "0a69dab7-f40b-41c4-b569-2d36b340fcc1",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "UN CUADRADO, UN LEÓN Y 5. QUE INDICAN KNOWLEDGE, INITIATIVE, NORTH, GIVE BACK Y KING. UN CUADRADO, EN SU INTERIOR LA. KING EN FORMA VERTICAL A MANO IZQUIERDA Y A MANO DERECHA LA CARA DE UN LEÓN. ALREDEDOR DEL CUADRADO, LAS. KNOWLEDGE, INITIATIVE, NORTH, GIVE BACK.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "VILLA INTERAMERICANA, PASEO REAL #10, SAN GERMAN, PR 00683",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "LEON L. L. C.",
+        "street": "VILLA INTERAMERICANA, PASEO REAL #10, SAN GERMAN, PR 00683"
+      }
+    ],
+    "recordLastUpdated": "20251031",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "VILLA INTERAMERICANA PASEO REAL, #10, SAN GERMÁN, PR 00683",
+        "representativeCorrespondentAddressStreet": "VILLA INTERAMERICANA PASEO REAL, #10, SAN GERMÁN, PR 00683",
+        "representativeCorrespondentName": "EMANUELLE E SANTIAGO MARTINEZ"
+      }
+    ],
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "ABANDONED"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "registration": {
+        "registrationDate": "20190429",
+        "registrationNumber": "A-234035_41_1"
+      }
+    },
+    "usStateOfficeCode": "PR",
+    "usStateOfficeName": "PUERTO RICO",
+    "version": "20251031170806",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "UN CUADRADO UN LEON Y 5",
+      "markVerbalElementText": "KNOWLEDGE, INITIATIVE, NORTH, GIVE BACK Y KING"
+    }
+  },
+  "_uri": "/mark/xs/0a69dab7-f40b-41c4-b569-2d36b340fcc1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/a439dd92-b393-4ada-a16b-890f4bb5ed70",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a439dd92-b393-4ada-a16b-890f4bb5ed70",
+  "applicationNumber": "40-1982-0008324",
+  "registrationNumber": "4000935050000",
+  "applicationDate": "1982-08-12",
+  "registrationDate": "1983-07-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "LORI",
+  "markTransliteration": "LORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    11,
+    14,
+    17,
+    20
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        11,
+        14,
+        17,
+        20
+      ],
+      "language": "ko",
+      "description": "고리,열쇠,자물쇠,커튼용철물,키이홀더",
+      "translation_language": "en",
+      "translation": "Rings, keys, locks, hardware for curtains, key holders"
+    }
+  ],
+  "owner": "Lori Corporation",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "남상선 (Sang Sun NAM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국커넥티",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Lori Corporation",
+        "applicantNativeName": "로리코포레이션"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Rings, keys, locks, hardware for curtains, key holders",
+          "intClassNumber": "06,09,11,14,17,20",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "고리,열쇠,자물쇠,커튼용철물,키이홀더"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "030"
+        }
+      ]
+    },
+    "id": "a439dd92-b393-4ada-a16b-890f4bb5ed70",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "남상선 (Sang Sun NAM)"
+      },
+      {
+        "representativeAddress": "서울특별시 중구 칠패로 , 호 (봉래동가, 우남빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "남상육 (Nam Sang Youck)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19820812",
+        "applicationNumber": "40-1982-0008324"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19830726",
+        "registrationNumber": "4000935050000"
+      }
+    },
+    "version": "20250625193933",
+    "wordMarkSpecification": {
+      "markTransliteration": "LORI",
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/kr/a439dd92-b393-4ada-a16b-890f4bb5ed70",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

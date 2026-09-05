@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/my/47220a43-2541-47e0-84e2-7f9dafe7faa4",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "47220a43-2541-47e0-84e2-7f9dafe7faa4",
+  "applicationNumber": "2012011238",
+  "registrationNumber": null,
+  "applicationDate": "2012-07-03",
+  "registrationDate": "2012-07-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "EORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs (downloadable software); computer game programs; computer application software for mobile phones; pre-recorded electronic media of non-music (excluding computer softwares); computer software; electronic publications/downloadable videotapes; animated cartoons; all included in class 9.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NHC Media Co,Ltd",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "Goh Mei Ling",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Digital Empire 310Ho 685, Beoman-ro,Geumcheon-gu Seoul",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NHC Media Co,Ltd"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs (downloadable software); computer game programs; computer application software for mobile phones; pre-recorded electronic media of non-music (excluding computer softwares); computer software; electronic publications/downloadable videotapes; animated cartoons; all included in class 9."
+        }
+      ]
+    },
+    "id": "47220a43-2541-47e0-84e2-7f9dafe7faa4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.01.14",
+      "03.01.16",
+      "05.03.11",
+      "27.03.01",
+      "27.03.03",
+      "27.05.01",
+      "27.05.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Henry Goh & Co. Sdn. Bhd.; VO2-10-06 Lingkaran SV, Sunway Velocity, Jalan Peel Wilayah Persekutuan 55100 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Goh Mei Ling"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120703",
+        "applicationNumber": "2012011238"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20120703"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EORI"
+    }
+  },
+  "_uri": "/mark/my/47220a43-2541-47e0-84e2-7f9dafe7faa4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:13.069Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

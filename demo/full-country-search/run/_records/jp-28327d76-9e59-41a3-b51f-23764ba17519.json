@@ -1,0 +1,168 @@
+{
+  "uri": "/mark/jp/28327d76-9e59-41a3-b51f-23764ba17519",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "28327d76-9e59-41a3-b51f-23764ba17519",
+  "applicationNumber": "2003-096330",
+  "registrationNumber": null,
+  "applicationDate": "2003-10-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＭＯ　Ｊ　ＴＳＵ　Ｋ　Ｉ　ＭＥＩＳ　ＨＯ　ＩＮＳＡ　ＴＳ　Ｕ　ＭＯＪＩＩＮＳ　ＴＳＵＯＲＩＮ　Ａ・ＢＥ　文字印刷　折り鍋　Ｆ・ＯＵＲ　ｑ－ＯＲＩ　１６折り　ＲＩＮＡＢＥ　折りなべ",
+  "markTransliteration": "FOOKYUUORIORINABE ICHIROKUORIORINABE JUUROKUORIORINABE MEISHOUINSATSU MOJIINSATSUORINABE MOJITSUKI",
+  "markTranslation": "MOJITSUKI MEISHO INSATSU MOJIINSATSU 0RINABE FOUR Q-ORIORINABE 16 ORI",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    21,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        21
+      ],
+      "language": null,
+      "description": "紙製又はアルミニウム箔製一人コンロ調理用鍋",
+      "translation_language": "en",
+      "translation": "Paper or aluminum foil cooker cooker cooker"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "宿泊施設の提供，宿泊施設の提供の契約の媒介又は取次ぎ，飲食物の提供",
+      "translation_language": "en",
+      "translation": "Provision of accommodation facilities, mediation or intermediation of contracts for providing accommodation facilities, provision of food and drink"
+    }
+  ],
+  "owner": "K.K. KAMIFUJI FACTORY",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20031016"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "IZUMI OSAKA FU",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. KAMIFUJI FACTORY",
+        "applicantNativeAddress": "大阪府和泉市箕形町４２５番地",
+        "applicantNativeName": "株式会社神藤製作所"
+      },
+      {
+        "applicantAddress": "IZUMI OSAKA FU",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. SEIKOSHA",
+        "applicantNativeAddress": "大阪府和泉市箕形町４丁目６番７７号",
+        "applicantNativeName": "株式会社精巧社"
+      },
+      {
+        "applicantAddress": "KISHIWADA OSAKA FU",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "LTD. SNT SEIKOSHA",
+        "applicantNativeAddress": "大阪府岸和田市西之内町２番１－６０２号",
+        "applicantNativeName": "有限会社エスエヌテイ精巧社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper or aluminum foil cooker cooker cooker",
+          "intClassNumber": "21",
+          "intGoodsServicesDescription": "紙製又はアルミニウム箔製一人コンロ調理用鍋"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of accommodation facilities, mediation or intermediation of contracts for providing accommodation facilities, provision of food and drink",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "宿泊施設の提供，宿泊施設の提供の契約の媒介又は取次ぎ，飲食物の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "19A01",
+          "natGoodsServicesDescription": "Pans, Non-electric coffee pots not of precious metal, Tetsubin (cast iron kettles), Kettles"
+        },
+        {
+          "natClassNumber": "42A01"
+        },
+        {
+          "natClassNumber": "42A02"
+        },
+        {
+          "natClassNumber": "42B01"
+        }
+      ]
+    },
+    "id": "28327d76-9e59-41a3-b51f-23764ba17519",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "11.01.10.00",
+      "11.01.25.00",
+      "19.19.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20031016"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20031016",
+        "applicationNumber": "2003-096330"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20240320140914",
+    "wordMarkSpecification": {
+      "markTranslation": "MOJITSUKI MEISHO INSATSU MOJIINSATSU 0RINABE FOUR Q-ORIORINABE 16 ORI",
+      "markTransliteration": "FOOKYUUORIORINABE ICHIROKUORIORINABE JUUROKUORIORINABE MEISHOUINSATSU MOJIINSATSUORINABE MOJITSUKI",
+      "markVerbalElementText": "ＭＯ　Ｊ　ＴＳＵ　Ｋ　Ｉ　ＭＥＩＳ　ＨＯ　ＩＮＳＡ　ＴＳ　Ｕ　ＭＯＪＩＩＮＳ　ＴＳＵＯＲＩＮ　Ａ・ＢＥ　文字印刷　折り鍋　Ｆ・ＯＵＲ　ｑ－ＯＲＩ　１６折り　ＲＩＮＡＢＥ　折りなべ"
+    }
+  },
+  "_uri": "/mark/jp/28327d76-9e59-41a3-b51f-23764ba17519",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

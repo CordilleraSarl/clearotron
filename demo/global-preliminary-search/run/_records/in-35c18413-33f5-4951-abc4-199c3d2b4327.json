@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/35c18413-33f5-4951-abc4-199c3d2b4327",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "35c18413-33f5-4951-abc4-199c3d2b4327",
+  "applicationNumber": "4812303",
+  "registrationNumber": "3607437",
+  "applicationDate": "2021-01-07",
+  "registrationDate": "2024-06-13",
+  "expiryDate": "2031-01-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Eduvenor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Providing of training; Entertainment; Sporting and cultural activities",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "EDUVENOR LLP Limited Liability Partnership(LLP)",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "MANENDRA SINGH & ASSOCIATES[20214]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "J 203 2nd Floor Greenarch GH 10A Sector TechZone IV Greater Noida West Greater Noida West Gautam Buddha Nagar UP 201306",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "EDUVENOR LLP Limited Liability Partnership(LLP)"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Providing of training; Entertainment; Sporting and cultural activities"
+        }
+      ]
+    },
+    "id": "35c18413-33f5-4951-abc4-199c3d2b4327",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2139"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "B-104, DURGA VIHAR, KHANPUR, NEW DELHI 110062",
+        "representativeName": "MANENDRA SINGH & ASSOCIATES[20214]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210107",
+        "applicationNumber": "4812303"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310107",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240613",
+        "registrationNumber": "3607437"
+      }
+    },
+    "version": "20250710152350",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Eduvenor"
+    }
+  },
+  "_uri": "/mark/in/35c18413-33f5-4951-abc4-199c3d2b4327",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

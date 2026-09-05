@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "framework": {
+    "source": "house-triage",
+    "ladder": [
+      "Very High",
+      "High",
+      "Medium",
+      "Manageable",
+      "Low"
+    ]
+  },
+  "batch": {
+    "productContext": "The client is launching a consumer mobile app that takes and tracks water-quality readings, sold direct to the public through app stores, with online training services bundled alongside it.",
+    "standardCaveats": [
+      "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.",
+      "This is a Knockout search, not a clearance. A mark not knocked out here is not clear — it is not knocked out at this screen's depth, and proceeds to clearance. Nothing above is a finding of availability."
+    ],
+    "executiveSummary": "This chunk carries a single coined name for a consumer water-quality app and its bundled online training, and the screening did not surface a blocker to using it.\n\n## VENQORI\n\n**Low** (Classes 9, 42, 41; belt-and-braces 35).\n\n- Coined and dictionary-empty, with no water, testing or environmental meaning for a third party to already be trading on — the condition the ladder's lowest band requires.\n- Nothing using the exact name was identified in the app-store and general web results screened: no app, company, service, cultural property, famous mark or negative association.\n- The two closest located strings are coined corporate names in industrial manufacturing and in pharmaceuticals, both remote from consumer software, water testing and online training; each is carried as a finding at the lowest band rather than dropped.\n- The name sits outside the descriptive naming convention the screened water-quality apps share, so what residual pressure exists is phonetic and visual rather than descriptive."
+  },
+  "marks": [
+    {
+      "ref": "project-ven-01",
+      "name": "VENQORI",
+      "classesSearched": [
+        9,
+        42,
+        41
+      ],
+      "beltAndBraces": [
+        35
+      ],
+      "contextFraming": "VENQORI is the consumer-facing house and product name for the water-quality monitoring app itself and for the online training bundled with it — the name on the app-store listing and the whole offering, not a feature, tier or sub-brand within a larger line; as a string it is coined and dictionary-empty, a made-up Latinate-sounding compound with no water, testing or environmental meaning to borrow from, so it should be read as a fanciful mark whose risk sits in phonetic and visual neighbours rather than in shared descriptive wording.",
+      "rating": "Low",
+      "ratingQualifier": null,
+      "classesDriving": [
+        9,
+        42,
+        41
+      ],
+      "crowdedField": false,
+      "degraded": null,
+      "parodyNote": "No parody of, or evocation of, a famous mark or entertainment property was identified for this string. A fantasy-fiction faction name shares only the VEN- opening, which is too weak and too remote from consumer software to read as an evocation.",
+      "registerEstimate": "A coined, dictionary-empty Latinate string of this shape would be expected to attract little filing activity under the name itself, with any pressure more likely to come from phonetically adjacent coined corporate names adopted in other industries than from anything in the water-quality or app-software space. This is an expectation only, not a search result.",
+      "bullets": [
+        "The string is coined and dictionary-empty — there is no descriptive wording in it for a third party to already own, and no everyday meaning that would invite parallel adoption in this field.",
+        "The water-quality apps surfaced in the screened marketplace results are named descriptively or by acronym, a convention VENQORI sits outside entirely.",
+        "Such near-neighbour pressure as exists comes from coined corporate names trading in industrial manufacturing and in pharmaceuticals, not from anything operating in software, water testing or online training.",
+        "The .com at the exact name did not resolve on retrieval, so no dominant commercial web presence attaches to the name — though that establishes nothing about who holds the domain."
+      ],
+      "basis": "The name is coined and dictionary-empty, no use of the exact string was identified in the app-store, marketplace and general web results screened for Classes 9, 42 and 41, and the closest located strings trade in fields materially remote from consumer water-quality software and bundled training.",
+      "factors": [
+        "Coined and fanciful as a whole word, which is the condition on which this ladder's lowest band is available.",
+        "No app, company, service, cultural property or famous mark using the exact name was identified in the results screened.",
+        "The closest located commercial strings differ by a letter or a consonant and trade in industrial manufacturing and pharmaceuticals respectively.",
+        "No negative, controversial or reputationally charged association with the exact term was identified."
+      ],
+      "counterFactors": [
+        "One located corporate name is a single trailing letter away from the mark, which keeps a phonetic-neighbour question live even though its trade is remote.",
+        "The domain at the exact name did not resolve, so an inactive holder behind it cannot be ruled in or out on this material."
+      ],
+      "mitigation": "Confirmation that either near-neighbour trades, or plans to trade, in consumer software, water testing or online training would move this read.",
+      "assessment": "## The name\n\nVENQORI is the consumer-facing house and product name for the client's water-quality monitoring app and the online training bundled with it — the name on the app-store listing and on the whole offering, not a feature or a tier inside a larger line. As a string it is invented: Latinate in shape, dictionary-empty, and carrying no water, testing or environmental meaning that a competitor could already be using. That matters more than it may appear. A fanciful name has no descriptive core for anyone else to be sitting on, so the risk it carries is not the usual risk of shared vocabulary — it is the narrower risk of a coined neighbour that looks or sounds close.\n\n## What the landscape looks like\n\n- Nothing using the exact name was identified in the app-store, marketplace and general web results screened: no app, no company, no training or water-testing service, no software offering.\n- The water-quality apps that did surface are named descriptively or by acronym. VENQORI does not participate in that naming convention, which means it is not competing for distinctiveness inside a crowd of similar titles.\n- No famous mark, cultural property or entertainment reference using the exact term was identified, and no negative or reputationally charged association attaches to it.\n- The closest located strings are coined corporate names — one an industrial manufacturer across textiles, packaging, machinery and automation, the other a pharmaceutical and consumer-healthcare business. Both are carried below as findings at the lowest band rather than set aside, because a one-letter or one-consonant difference is close enough that the reviewing lawyer should see it named.\n\n## What drives the rating\n\nThe rating turns on the two halves of the comparison moving in the same direction. On the name side, the neighbours are genuinely close as strings but neither is the mark: one adds a trailing vowel, the other swaps the consonant. On the goods side, industrial manufacturing and pharmaceuticals are remote from a consumer app that records water readings and from bundled online training — different shelves, different buyers, different channels. Where a coined mark meets no on-field user of the name and only off-field users of near-neighbours, the screen does not produce a blocker.\n\nWhat holds the read where it is rather than lower is that closeness itself: a single trailing letter separates the mark from an operating multinational, and the .com at the exact name did not resolve on retrieval, so nothing rules out an inactive holder behind it.\n\n## What to do with it\n\nTreat VENQORI as not knocked out at this depth and let it proceed to clearance. Two things are worth carrying forward into that next stage: whether either near-neighbour has any software, environmental-testing or training activity beyond the trade described in the screened material, and the ownership and status of the exact-name domain, which this screen established only as non-resolving.",
+      "findings": [
+        {
+          "ordinal": 1,
+          "name": "Venqor Group",
+          "owner": "Venqor Group (corporate ownership not verified on the searched material)",
+          "band": "Low",
+          "net": "This is the closest located commercial string to the mark, but its trade is remote enough from consumer water-quality software and online training that it does not present an obvious blocker to use.",
+          "type": "Active Business",
+          "evidence": [
+            "https://www.venqorgroup.com/"
+          ],
+          "basis": "The searched material describes a multinational industrial manufacturer across textiles, packaging, machinery, automation and related industrial products, with no identified activity in consumer software, water-quality monitoring or training; the string differs from the mark only by the trailing vowel, so the closeness is on the name alone and the goods half of the comparison does not meet."
+        },
+        {
+          "ordinal": 2,
+          "name": "Venkor Pharma",
+          "owner": "Venkor Pharma (corporate ownership not verified on the searched material)",
+          "band": "Low",
+          "net": "The name is moderately similar in sound and spelling, but the business sits in pharmaceuticals and consumer healthcare and does not create an obvious obstacle to the client's use.",
+          "type": "Active Business",
+          "evidence": [
+            "https://venkorpharma.com/"
+          ],
+          "basis": "The searched material identifies prescription, OTC, supplement and related healthcare products; the consonant differs from the mark and the trailing vowel is absent, and the commercial field shares no channel, shelf or customer with a consumer water-testing app or bundled online training."
+        }
+      ],
+      "negatives": [
+        {
+          "term": "VENQORI (exact name)",
+          "source": "App-store, marketplace and general web results reviewed for this mark",
+          "note": "No company, product, app, training service, water-testing service or software offering using the exact name was identified in the results screened."
+        },
+        {
+          "term": "VENQORI — famous marks and cultural properties",
+          "source": "General web, entertainment and cultural search results reviewed for this mark",
+          "note": "No famous or widely recognised mark, and no TV, film, book, music or game property, using the exact name was identified in the results screened."
+        },
+        {
+          "term": "VENQORI — negative associations",
+          "source": "General web and news results reviewed for this mark",
+          "note": "No negative, controversial, offensive, political, extremist or scandal-related association with the exact term was identified in the results screened."
+        },
+        {
+          "term": "venqori.com",
+          "source": "Attempted website retrieval during research",
+          "note": "The domain did not resolve on retrieval and no website content was returned; this does not establish whether it is unregistered, registered but inactive, or temporarily unavailable."
+        }
+      ],
+      "purpleNotes": [
+        "Staff lawyer — please check for firm-specific history on VENQORI and on the near-neighbour corporate names carried in the findings.",
+        "The jurisdiction, corporate ownership and operating status of both near-neighbour businesses were not independently verified beyond the cited site descriptions; worth confirming at clearance whether either has software, environmental-testing or training activity beyond the trade described.",
+        "Domain status for the exact name is unresolved — the retrieval failure is a DNS non-resolution, not evidence of availability. Confirm registrant and status before the client relies on the .com."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "uri": "/mark/jp/ea837fbd-7df4-4a0f-8c52-6804af1bb972",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "ea837fbd-7df4-4a0f-8c52-6804af1bb972",
+  "applicationNumber": "2018-098510",
+  "registrationNumber": "6154696",
+  "applicationDate": "2018-08-01",
+  "registrationDate": "2019-06-21",
+  "expiryDate": "2029-06-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-07-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "の　のれんライブ　ＮＯＲＥＮ－ＬＩＶＥ",
+  "markTransliteration": "NORENRAIBU",
+  "markTranslation": "NO NOREN LIVE NOREN-LIVE",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "音楽の演奏，セミナー・シンポジウム・会議・講演会の企画・運営又は開催，コンサートの企画又は運営，興行場の座席の手配，飲食物の提供を伴う音楽の演奏の興行の企画又は運営，娯楽の提供，映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，落語の興行の企画又は運営，落語の上演又は実演，技芸・スポーツ又は知識の教授，演芸の上演，演劇の演出又は上演，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。）",
+      "translation_language": "en",
+      "translation": "Planning or operation of music, seminars · symposia · conferences · lectures, planning or management of concerts, planning or management of concerts, arrangement of seats at box offices, planning or management of performances of music performances accompanying the provision of food and drink, entertainment Planning or management of entertainment of Rakugo's entertainment, staged or demonstrated Rakugo, professor of arts and sports or knowledge, performances of performances, production or performance of theater, Planning, operation or holding of box office (excluding movies, entertainment, theatrical performances, performances of music performances, sports, horse races, bicyclists, racing boats, and those related to entertainment of small car races.)"
+    }
+  ],
+  "owner": "YAMASAKI FUMIAKI",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "SHIMODA KAZUNORI",
+  "priorities": [
+    {
+      "priorityDate": "20180801"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KAWASAKI KANAGAWA KEN",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "YAMASAKI FUMIAKI",
+        "applicantNativeAddress": "神奈川県川崎市",
+        "applicantNativeName": "山嵜　文明"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Planning or operation of music, seminars · symposia · conferences · lectures, planning or management of concerts, planning or management of concerts, arrangement of seats at box offices, planning or management of performances of music performances accompanying the provision of food and drink, entertainment Planning or management of entertainment of Rakugo's entertainment, staged or demonstrated Rakugo, professor of arts and sports or knowledge, performances of performances, production or performance of theater, Planning, operation or holding of box office (excluding movies, entertainment, theatrical performances, performances of music performances, sports, horse races, bicyclists, racing boats, and those related to entertainment of small car races.)",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "音楽の演奏，セミナー・シンポジウム・会議・講演会の企画・運営又は開催，コンサートの企画又は運営，興行場の座席の手配，飲食物の提供を伴う音楽の演奏の興行の企画又は運営，娯楽の提供，映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，落語の興行の企画又は運営，落語の上演又は実演，技芸・スポーツ又は知識の教授，演芸の上演，演劇の演出又は上演，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。）"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "41E01",
+          "natGoodsServicesDescription": "Arranging and planning of movies, shows, plays or musical performances"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Providing digital music from the Internet, not downloadable; Presentation of live show performances; Direction or presentation of plays; Presentation of musical performances"
+        },
+        {
+          "natClassNumber": "41E04",
+          "natGoodsServicesDescription": "Production of radio or television programs"
+        },
+        {
+          "natClassNumber": "41E05",
+          "natGoodsServicesDescription": "Production of videotape film in the field of education, culture, entertainment or sports [not for movies or television programs and not for advertising or publicity]"
+        },
+        {
+          "natClassNumber": "41F01",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of sports competitions"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        },
+        {
+          "natClassNumber": "41G01",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of horse races"
+        },
+        {
+          "natClassNumber": "41G02",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of bicycle races"
+        },
+        {
+          "natClassNumber": "41G03",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of boat races"
+        },
+        {
+          "natClassNumber": "41G04",
+          "natGoodsServicesDescription": "Organization, arranging and conducting of auto races"
+        },
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "41L01",
+          "natGoodsServicesDescription": "Booking of seats for shows"
+        }
+      ]
+    },
+    "id": "ea837fbd-7df4-4a0f-8c52-6804af1bb972",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "09.01.11.00",
+      "09.01.20.02",
+      "27.05.01.40",
+      "27.05.21.00",
+      "29.01.04.02",
+      "29.01.08.01",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180801"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "SHIMODA KAZUNORI",
+        "representativeNativeName": "下田　一徳"
+      },
+      {
+        "representativeName": "NAKAGAWA KEITA",
+        "representativeNativeName": "中川　慶太"
+      },
+      {
+        "representativeName": "TSUJITA TOMOKO",
+        "representativeNativeName": "辻田　朋子"
+      },
+      {
+        "representativeName": "HIGUCHI YORIKO",
+        "representativeNativeName": "樋口　頼子"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20180801",
+        "applicationNumber": "2018-098510"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20290621",
+      "lastPublicationDate": "20190716",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20190621",
+        "registrationNumber": "6154696"
+      }
+    },
+    "version": "20250704083449",
+    "wordMarkSpecification": {
+      "markTranslation": "NO NOREN LIVE NOREN-LIVE",
+      "markTransliteration": "NORENRAIBU",
+      "markVerbalElementText": "の　のれんライブ　ＮＯＲＥＮ－ＬＩＶＥ"
+    }
+  },
+  "_uri": "/mark/jp/ea837fbd-7df4-4a0f-8c52-6804af1bb972",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:17.152Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

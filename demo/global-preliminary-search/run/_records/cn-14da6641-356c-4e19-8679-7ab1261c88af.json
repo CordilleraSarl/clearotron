@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/cn/14da6641-356c-4e19-8679-7ab1261c88af",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "14da6641-356c-4e19-8679-7ab1261c88af",
+  "applicationNumber": "22761628",
+  "registrationNumber": "22761628",
+  "applicationDate": "2017-02-06",
+  "registrationDate": "2018-02-21",
+  "expiryDate": "2028-02-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "企业魂",
+  "markTransliteration": "SOHEAVEN qi ye hun",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "培训;教育;教学;组织教育或娱乐竞赛;安排和组织学术讨论会;安排和组织会议;电子书籍和杂志的在线出版;娱乐服务;演出制作;电视文娱节目",
+      "translation_language": "en",
+      "translation": "Training; education; teaching; organizing educational or entertainment competitions; arranging and organizing seminars; arranging and organizing meetings; online publishing of electronic books and magazines; entertainment services; performance production; television entertainment programs"
+    }
+  ],
+  "owner": "Mind Sea Training Technology Consulting (Shanghai) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市浦东新区牡丹路60号4楼402室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Mind Sea Training Technology Consulting (Shanghai) Co., Ltd.",
+        "applicantNativeName": "心灵海培训技术咨询(上海)有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training; education; teaching; organizing educational or entertainment competitions; arranging and organizing seminars; arranging and organizing meetings; online publishing of electronic books and magazines; entertainment services; performance production; television entertainment programs",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "培训;教育;教学;组织教育或娱乐竞赛;安排和组织学术讨论会;安排和组织会议;电子书籍和杂志的在线出版;娱乐服务;演出制作;电视文娱节目"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "14da6641-356c-4e19-8679-7ab1261c88af",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1576"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海永暨知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170206",
+        "applicationNumber": "22761628"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280220",
+      "lastPublicationDate": "20171120",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180221",
+        "registrationNumber": "22761628"
+      }
+    },
+    "version": "20251002185205",
+    "wordMarkSpecification": {
+      "markTransliteration": "SOHEAVEN qi ye hun",
+      "markVerbalElementText": "企业魂"
+    }
+  },
+  "_uri": "/mark/cn/14da6641-356c-4e19-8679-7ab1261c88af",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

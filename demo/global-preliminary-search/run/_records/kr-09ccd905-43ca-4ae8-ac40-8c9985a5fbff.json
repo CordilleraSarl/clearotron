@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/kr/09ccd905-43ca-4ae8-ac40-8c9985a5fbff",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "09ccd905-43ca-4ae8-ac40-8c9985a5fbff",
+  "applicationNumber": "41-2004-0009654",
+  "registrationNumber": null,
+  "applicationDate": "2004-05-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "PaRI",
+  "markTransliteration": "PORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "기술조사업, 웹사이트의 제작 및 유지 대행업, 컴퓨터 소프트웨어 설치업, 컴퓨터 시스템 디자인업, 컴퓨터 프로그램 및 자료의 자료전환 서비스업, 컴퓨터 프로그램 복제업, 컴퓨터데이터복구업, 컴퓨터소프트웨어디자인업, 컴퓨터소프트웨어업데이팅업, 컴퓨터프로그래밍업",
+      "translation_language": "en",
+      "translation": "Technical research business, website production and maintenance agency business, computer software installation business, computer system design business, computer program and data conversion service business, computer program duplication business, computer data recovery business, computer software design business, computer software updating business, computer programming business."
+    }
+  ],
+  "owner": "KOUN, OH-SUNG",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "대전광역시 서구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KOUN, OH-SUNG",
+        "applicantNativeName": "권오성"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical research business, website production and maintenance agency business, computer software installation business, computer system design business, computer program and data conversion service business, computer program duplication business, computer data recovery business, computer software design business, computer software updating business, computer programming business.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기술조사업, 웹사이트의 제작 및 유지 대행업, 컴퓨터 소프트웨어 설치업, 컴퓨터 시스템 디자인업, 컴퓨터 프로그램 및 자료의 자료전환 서비스업, 컴퓨터 프로그램 복제업, 컴퓨터데이터복구업, 컴퓨터소프트웨어디자인업, 컴퓨터소프트웨어업데이팅업, 컴퓨터프로그래밍업"
+        }
+      ]
+    },
+    "id": "09ccd905-43ca-4ae8-ac40-8c9985a5fbff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.11.07",
+      "27.03.03"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260514",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040501",
+        "applicationNumber": "41-2004-0009654"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260514020353",
+    "wordMarkSpecification": {
+      "markTransliteration": "PORI",
+      "markVerbalElementText": "PaRI"
+    }
+  },
+  "_uri": "/mark/kr/09ccd905-43ca-4ae8-ac40-8c9985a5fbff",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:33.543Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "uri": "/mark/cl/8481c678-2dc5-4c66-8df6-f72df8c73b41",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "8481c678-2dc5-4c66-8df6-f72df8c73b41",
+  "applicationNumber": "294297",
+  "registrationNumber": null,
+  "applicationDate": "1994-12-14",
+  "registrationDate": "1995-09-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GEOVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Denegada) De asesoria, consulta y orientacion profesional y tecnca.",
+      "translation_language": "en",
+      "translation": "(Denied) For advice, consultation and professional and technical guidance."
+    }
+  ],
+  "owner": "VEIGA MARTINEZ JOSE FLOREAL",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "VEIGA MARTINEZ JOSE FLOREAL"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Denied) For advice, consultation and professional and technical guidance.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Denegada) De asesoria, consulta y orientacion profesional y tecnca."
+        }
+      ]
+    },
+    "id": "8481c678-2dc5-4c66-8df6-f72df8c73b41",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19941214",
+        "applicationNumber": "294297"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19950906"
+      }
+    },
+    "version": "20260615173944",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GEOVENOR"
+    }
+  },
+  "_uri": "/mark/cl/8481c678-2dc5-4c66-8df6-f72df8c73b41",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

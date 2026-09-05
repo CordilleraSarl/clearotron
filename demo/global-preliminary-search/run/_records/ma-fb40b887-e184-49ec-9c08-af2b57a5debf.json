@@ -1,0 +1,147 @@
+{
+  "uri": "/mark/ma/fb40b887-e184-49ec-9c08-af2b57a5debf",
+  "provider": "clarivate",
+  "office": "ma",
+  "guid": "fb40b887-e184-49ec-9c08-af2b57a5debf",
+  "applicationNumber": "278100",
+  "registrationNumber": "278100",
+  "applicationDate": "2024-12-18",
+  "registrationDate": null,
+  "expiryDate": "2034-12-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VR VENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": "Appareils à souder électriques; aspirateurs de poussière.",
+      "translation_language": "en",
+      "translation": "Electric welding equipment; dust extractors."
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Adaptateurs électriques; appareils de dosage; appareils de projection; appareils de radio; appareils de télé appel radio; appareils de télévision; appareils électriques de surveillance; appareils et machines de sondage; appareils photographiques; appareils pour l'enregistrement de temps; accouplements électriques; accumulateurs électriques; amplificateurs; ampoules de flash; appareils à haute fréquence; appareils à glacer les épreuves photographiques; appareils de téléguidage; appareils électriques de commutation; appareils électriques de contrôle; appareils électriques de mesure; appareils pour le mesurage de la vitesse [photographie]; voltmètres; appareils pour la mesure des distances; appareils pour la recharge des accumulateurs électriques; automates à musique à prépaiement; câbles électriques; calculatrices de poche; casques à écouteurs; claviers d'ordinateur; clés USB; convertisseurs électriques; coques pour tablettes électroniques.",
+      "translation_language": "en",
+      "translation": "Electrical adapters; dosing apparatus; projection apparatus; radio apparatus; radio telephony apparatus; television apparatus; electrical monitoring apparatus; surveying apparatus and machines; photographic apparatus; time-recording apparatus; electrical couplings; electric accumulators; amplifiers; flash bulbs; high-frequency apparatus; photographic proof-glazing apparatus; remote-guiding apparatus; electrical switching apparatus; electrical control apparatus; electrical measuring apparatus; speed-measuring apparatus [photography]; voltmeters; distance-measuring apparatus; apparatus for recharging electric accumulators; coin-operated music machines; electrical cables; pocket calculators; headsets; computer keyboards; USB flash drives; electrical converters; electronic tablet cases."
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": "Appareils à air chaud; appareils et machines à glace; appareils et machines frigorifiques; calorifères; appareils électriques de chauffage; abat-jour; évaporateurs; fers à bricelets électriques; feux pour automobiles; feux pour bicyclettes; glacières électriques; réfrigérateurs; robinets; robinets de canalisation; sèche-cheveux; sécheurs d'air; séchoirs [appareils].",
+      "translation_language": "en",
+      "translation": "Hot air appliances; ice-making appliances and machines; refrigeration appliances and machines; heaters; electric heating appliances; lampshades; evaporators; electric wafer irons; automobile lights; bicycle lights; electric coolers; refrigerators; taps; drain taps; hair dryers; air dryers; dryers [appliances]."
+    }
+  ],
+  "owner": "BOURAS  MOHAMED",
+  "ownerNative": null,
+  "ownerCountry": "MA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "LOT BADER NR 137 TIT MELLIL  CASABLANCA",
+        "applicantAddressCountryCode": "MA",
+        "applicantAddressCountryName": "Morocco",
+        "applicantName": "BOURAS  MOHAMED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric welding equipment; dust extractors.",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils à souder électriques; aspirateurs de poussière."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrical adapters; dosing apparatus; projection apparatus; radio apparatus; radio telephony apparatus; television apparatus; electrical monitoring apparatus; surveying apparatus and machines; photographic apparatus; time-recording apparatus; electrical couplings; electric accumulators; amplifiers; flash bulbs; high-frequency apparatus; photographic proof-glazing apparatus; remote-guiding apparatus; electrical switching apparatus; electrical control apparatus; electrical measuring apparatus; speed-measuring apparatus [photography]; voltmeters; distance-measuring apparatus; apparatus for recharging electric accumulators; coin-operated music machines; electrical cables; pocket calculators; headsets; computer keyboards; USB flash drives; electrical converters; electronic tablet cases.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Adaptateurs électriques; appareils de dosage; appareils de projection; appareils de radio; appareils de télé appel radio; appareils de télévision; appareils électriques de surveillance; appareils et machines de sondage; appareils photographiques; appareils pour l'enregistrement de temps; accouplements électriques; accumulateurs électriques; amplificateurs; ampoules de flash; appareils à haute fréquence; appareils à glacer les épreuves photographiques; appareils de téléguidage; appareils électriques de commutation; appareils électriques de contrôle; appareils électriques de mesure; appareils pour le mesurage de la vitesse [photographie]; voltmètres; appareils pour la mesure des distances; appareils pour la recharge des accumulateurs électriques; automates à musique à prépaiement; câbles électriques; calculatrices de poche; casques à écouteurs; claviers d'ordinateur; clés USB; convertisseurs électriques; coques pour tablettes électroniques."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hot air appliances; ice-making appliances and machines; refrigeration appliances and machines; heaters; electric heating appliances; lampshades; evaporators; electric wafer irons; automobile lights; bicycle lights; electric coolers; refrigerators; taps; drain taps; hair dryers; air dryers; dryers [appliances].",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils à air chaud; appareils et machines à glace; appareils et machines frigorifiques; calorifères; appareils électriques de chauffage; abat-jour; évaporateurs; fers à bricelets électriques; feux pour automobiles; feux pour bicyclettes; glacières électriques; réfrigérateurs; robinets; robinets de canalisation; sèche-cheveux; sécheurs d'air; séchoirs [appareils]."
+        }
+      ]
+    },
+    "id": "fb40b887-e184-49ec-9c08-af2b57a5debf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "211",
+        "publicationVolume": "1"
+      }
+    ],
+    "recordLastUpdated": "20260807",
+    "registrationOfficeCode": "MA",
+    "registrationOfficeName": "Morocco",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241218",
+        "applicationNumber": "278100"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341218",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "278100"
+      }
+    },
+    "version": "20260807050510",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VR VENCOR"
+    }
+  },
+  "_uri": "/mark/ma/fb40b887-e184-49ec-9c08-af2b57a5debf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.747Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

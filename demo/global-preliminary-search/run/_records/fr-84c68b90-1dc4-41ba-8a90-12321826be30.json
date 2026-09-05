@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/fr/84c68b90-1dc4-41ba-8a90-12321826be30",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "84c68b90-1dc4-41ba-8a90-12321826be30",
+  "applicationNumber": "25 5132823",
+  "registrationNumber": "25 5132823",
+  "applicationDate": "2025-03-25",
+  "registrationDate": null,
+  "expiryDate": "2035-03-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-04-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qomi",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils et instruments scientifiques ; appareils et instruments nautiques ; appareils et instruments géodésiques ; appareils et instruments photographiques ; appareils cinématographiques ; appareils et instruments optiques ; appareils et instruments de pesage ; instruments et appareils de mesure ; appareils et instruments de signalisation ; appareils et instruments de vérification (contrôle) ; appareils et instruments pour l'enseignement ; appareils pour l'enregistrement du son ; appareils pour la transmission du son ; appareils pour la reproduction du son ; appareils d'enregistrement d'images ; appareils de transmission d'images ; appareils de reproduction d'images ; supports d'enregistrement numériques ; mécanismes pour appareils à prépaiement ; caisses enregistreuses ; machines à calculer ; porte-monnaies électroniques téléchargeables ; équipements de traitement de données ; ordinateurs ; tablettes électroniques ; ordiphones [smartphones] ; liseuses électroniques ; logiciels de jeux téléchargeables ; logiciels enregistrés ; périphériques d'ordinateurs ; détecteurs ; fils électriques ; relais électriques ; combinaisons de plongée ; gants de plongée ; masques de plongée ; vêtements de protection contre les accidents, les radiations et le feu ; dispositifs de protection personnelle contre les accidents ; extincteurs ; lunettes de vue ; lunettes 3D ; casques de réalité virtuelle ; articles de lunetterie ; étuis à lunettes ; cartes à mémoire ou à microprocesseur ; sacoches conçues pour ordinateurs portables ; montres intelligentes ; batteries électriques ; batteries pour cigarettes électroniques ; bornes de recharge pour véhicules électriques ; appareils pour le diagnostic non à usage médical",
+      "translation_language": "en",
+      "translation": "Scientific apparatus and instruments; nautical apparatus and instruments; surveying apparatus and instruments; photographic apparatus and instruments; cinematographic apparatus; optical apparatus and instruments; weighing apparatus and instruments; measuring instruments and instruments; signalling apparatus and instruments; checking (control) apparatus and instruments; teaching apparatus and instruments; sound recording apparatus; sound transmission apparatus; sound reproducing apparatus; image recording apparatus; image transmission apparatus; image reproducing apparatus; digital recording media; mechanisms for coin-operated apparatus; cash registers; calculating machines; downloadable electronic purses; data processing equipment; computers; electronic tablets; smartphones; e-readers; downloadable game software; recorded software; computer peripherals; detectors; electric wires; electric relays; diving suits; diving gloves; diving masks; clothing for protection against accidents, radiation and fire; personal protective devices against accidents; fire extinguishers; eyeglasses; 3D glasses; virtual reality headsets; eyewear; eyeglass cases; memory or microprocessor cards; bags designed for laptops; smart watches; electric batteries; batteries for electronic cigarettes; charging stations for electric vehicles; diagnostic apparatus not for medical use"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Expertises (travaux d'ingénieurs) ; recherches scientifiques ; recherches technologiques ; développement de logiciels ; recherche et développement de nouveaux produits pour des tiers ; conduite d'études de projets techniques ; architecture ; décoration intérieure ; élaboration (conception) de logiciels ; installation de logiciels ; maintenance de logiciels ; mise à jour de logiciels ; location de logiciels ; fourniture de logiciels non téléchargeables en ligne ; programmation informatique ; analyse de systèmes informatiques ; conception de systèmes informatiques ; services de conseillers en matière de conception et de développement de matériel informatique ; numérisation de documents ; logiciels en tant que services (SaaS) ; mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'oeuvres d'art ; audits en matière d'énergie ; stockage électronique de données.",
+      "translation_language": "en",
+      "translation": "Expertise (engineering work); scientific research; technological research; software development; research and development of new products for third parties; conducting technical project studies; architecture; interior design; software development (design); software installation; software maintenance; software updating; software rental; provision of non-downloadable software online; computer programming; computer systems analysis; computer systems design; computer hardware design and development consultancy services; document scanning; software as a service (SaaS); provision of virtual computer systems via cloud computing; information technology (IT) support services (software troubleshooting); server hosting; technical inspection of motor vehicles; graphic art design services; styling (industrial aesthetics); art authentication; energy audits; electronic data storage."
+    }
+  ],
+  "owner": "WP Origami Société par actions simplifiée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "15 Rue des Halles, 75001 Paris",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "WP Origami Société par actions simplifiée"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific apparatus and instruments; nautical apparatus and instruments; surveying apparatus and instruments; photographic apparatus and instruments; cinematographic apparatus; optical apparatus and instruments; weighing apparatus and instruments; measuring instruments and instruments; signalling apparatus and instruments; checking (control) apparatus and instruments; teaching apparatus and instruments; sound recording apparatus; sound transmission apparatus; sound reproducing apparatus; image recording apparatus; image transmission apparatus; image reproducing apparatus; digital recording media; mechanisms for coin-operated apparatus; cash registers; calculating machines; downloadable electronic purses; data processing equipment; computers; electronic tablets; smartphones; e-readers; downloadable game software; recorded software; computer peripherals; detectors; electric wires; electric relays; diving suits; diving gloves; diving masks; clothing for protection against accidents, radiation and fire; personal protective devices against accidents; fire extinguishers; eyeglasses; 3D glasses; virtual reality headsets; eyewear; eyeglass cases; memory or microprocessor cards; bags designed for laptops; smart watches; electric batteries; batteries for electronic cigarettes; charging stations for electric vehicles; diagnostic apparatus not for medical use",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et instruments scientifiques ; appareils et instruments nautiques ; appareils et instruments géodésiques ; appareils et instruments photographiques ; appareils cinématographiques ; appareils et instruments optiques ; appareils et instruments de pesage ; instruments et appareils de mesure ; appareils et instruments de signalisation ; appareils et instruments de vérification (contrôle) ; appareils et instruments pour l'enseignement ; appareils pour l'enregistrement du son ; appareils pour la transmission du son ; appareils pour la reproduction du son ; appareils d'enregistrement d'images ; appareils de transmission d'images ; appareils de reproduction d'images ; supports d'enregistrement numériques ; mécanismes pour appareils à prépaiement ; caisses enregistreuses ; machines à calculer ; porte-monnaies électroniques téléchargeables ; équipements de traitement de données ; ordinateurs ; tablettes électroniques ; ordiphones [smartphones] ; liseuses électroniques ; logiciels de jeux téléchargeables ; logiciels enregistrés ; périphériques d'ordinateurs ; détecteurs ; fils électriques ; relais électriques ; combinaisons de plongée ; gants de plongée ; masques de plongée ; vêtements de protection contre les accidents, les radiations et le feu ; dispositifs de protection personnelle contre les accidents ; extincteurs ; lunettes de vue ; lunettes 3D ; casques de réalité virtuelle ; articles de lunetterie ; étuis à lunettes ; cartes à mémoire ou à microprocesseur ; sacoches conçues pour ordinateurs portables ; montres intelligentes ; batteries électriques ; batteries pour cigarettes électroniques ; bornes de recharge pour véhicules électriques ; appareils pour le diagnostic non à usage médical"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Expertise (engineering work); scientific research; technological research; software development; research and development of new products for third parties; conducting technical project studies; architecture; interior design; software development (design); software installation; software maintenance; software updating; software rental; provision of non-downloadable software online; computer programming; computer systems analysis; computer systems design; computer hardware design and development consultancy services; document scanning; software as a service (SaaS); provision of virtual computer systems via cloud computing; information technology (IT) support services (software troubleshooting); server hosting; technical inspection of motor vehicles; graphic art design services; styling (industrial aesthetics); art authentication; energy audits; electronic data storage.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Expertises (travaux d'ingénieurs) ; recherches scientifiques ; recherches technologiques ; développement de logiciels ; recherche et développement de nouveaux produits pour des tiers ; conduite d'études de projets techniques ; architecture ; décoration intérieure ; élaboration (conception) de logiciels ; installation de logiciels ; maintenance de logiciels ; mise à jour de logiciels ; location de logiciels ; fourniture de logiciels non téléchargeables en ligne ; programmation informatique ; analyse de systèmes informatiques ; conception de systèmes informatiques ; services de conseillers en matière de conception et de développement de matériel informatique ; numérisation de documents ; logiciels en tant que services (SaaS) ; mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'oeuvres d'art ; audits en matière d'énergie ; stockage électronique de données."
+        }
+      ]
+    },
+    "id": "84c68b90-1dc4-41ba-8a90-12321826be30",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "16"
+      }
+    ],
+    "recordLastUpdated": "20250715",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250325",
+        "applicationNumber": "25 5132823"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350325",
+      "lastPublicationDate": "20250418",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "25 5132823"
+      }
+    },
+    "version": "20250715020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qomi"
+    }
+  },
+  "_uri": "/mark/fr/84c68b90-1dc4-41ba-8a90-12321826be30",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:47.873Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/br/f00f93ce-2431-4d05-9688-02af68b67577",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "f00f93ce-2431-4d05-9688-02af68b67577",
+  "applicationNumber": "821263676",
+  "registrationNumber": null,
+  "applicationDate": "1998-10-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SEVEN QUESTIONS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    5,
+    8,
+    9,
+    10,
+    14,
+    16,
+    18,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    34,
+    35,
+    36,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        14,
+        16,
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        34,
+        35,
+        36,
+        37,
+        40,
+        42
+      ],
+      "language": "pt",
+      "description": "[CLASS 25. 10]: : Roupas e acessórios do vestuário de uso comum. [CLASS 25. 20]: : Roupas e acessórios do vestuário para prática de esportes. [CLASS 25. 60]: : Artigos de viagem.",
+      "translation_language": "en",
+      "translation": "[CLASS 25. 10]: : General wear clothing and clothing accessories. [CLASS 25. 20]: : Sports clothing and clothing accessories. [CLASS 25. 60]: : Travel goods."
+    }
+  ],
+  "owner": "SEVEN QUESTION CONFECÇÕES LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "FERNANDES ASSOCIADOS S/C LTDA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "SEVEN QUESTION CONFECÇÕES LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "[CLASS 25. 10]: : General wear clothing and clothing accessories. [CLASS 25. 20]: : Sports clothing and clothing accessories. [CLASS 25. 60]: : Travel goods.",
+          "intClassNumber": "03,05,08,09,10,14,16,18,21,22,23,24,25,26,28,34,35,36,37,40,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "[CLASS 25. 10]: : Roupas e acessórios do vestuário de uso comum. [CLASS 25. 20]: : Roupas e acessórios do vestuário para prática de esportes. [CLASS 25. 60]: : Artigos de viagem."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "25.10"
+        },
+        {
+          "natClassNumber": "25.20"
+        },
+        {
+          "natClassNumber": "25.60"
+        }
+      ]
+    },
+    "id": "f00f93ce-2431-4d05-9688-02af68b67577",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "FERNANDES ASSOCIADOS S/C LTDA."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19981029",
+        "applicationNumber": "821263676"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630202146",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN QUESTIONS"
+    }
+  },
+  "_uri": "/mark/br/f00f93ce-2431-4d05-9688-02af68b67577",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "uri": "/mark/jp/6a0d267c-bc3f-4921-9d79-c8ac3fa6cdb1",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "6a0d267c-bc3f-4921-9d79-c8ac3fa6cdb1",
+  "applicationNumber": "2017-095694",
+  "registrationNumber": "5988201",
+  "applicationDate": "2017-07-18",
+  "registrationDate": "2017-10-13",
+  "expiryDate": "2027-10-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    10,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯列矯正器具，歯科用機械器具，医療用機械器具",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances, dental machinery tools, medical machinery tools"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "受託による歯列矯正器具の製造，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Production of orthodontic appliances by consignment, processing of artificial limbs or dentures (including \"processing of medical materials\")"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科研究，医薬品・化粧品又は食品の試験・検査又は研究，機械器具に関する試験又は研究",
+      "translation_language": "en",
+      "translation": "Dental research, testing / examination or research on pharmaceuticals / cosmetics or foods, tests or research on machinery and equipment"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "歯科医療及び矯正歯科医療，歯科医療及び矯正歯科医療に関する情報の提供，歯科医療及び矯正歯科医療に関する助言，医療情報の提供",
+      "translation_language": "en",
+      "translation": "Provide information on dentistry and orthodontic medicine, dentistry and orthodontic medicine, advice on dentistry and orthodontic treatment, provision of medical information"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20170228"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances, dental machinery tools, medical machinery tools",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯列矯正器具，歯科用機械器具，医療用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Production of orthodontic appliances by consignment, processing of artificial limbs or dentures (including \"processing of medical materials\")",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "受託による歯列矯正器具の製造，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental research, testing / examination or research on pharmaceuticals / cosmetics or foods, tests or research on machinery and equipment",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科研究，医薬品・化粧品又は食品の試験・検査又は研究，機械器具に関する試験又は研究"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide information on dentistry and orthodontic medicine, dentistry and orthodontic medicine, advice on dentistry and orthodontic treatment, provision of medical information",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "歯科医療及び矯正歯科医療，歯科医療及び矯正歯科医療に関する情報の提供，歯科医療及び矯正歯科医療に関する助言，医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical apparatus and instruments, other than walking aids, and crutches"
+        },
+        {
+          "natClassNumber": "10D02",
+          "natGoodsServicesDescription": "Walking aids for medical purposes; Crutches"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "6a0d267c-bc3f-4921-9d79-c8ac3fa6cdb1",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "05.05.19.00",
+      "05.05.20.00",
+      "05.05.21.00",
+      "25.07.01.00",
+      "25.07.08.00",
+      "26.02.05.00",
+      "26.13.25.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20170228"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170718",
+        "applicationNumber": "2017-095694"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271013",
+      "lastPublicationDate": "20171107",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20171013",
+        "registrationNumber": "5988201"
+      }
+    },
+    "version": "20240320153104"
+  },
+  "_uri": "/mark/jp/6a0d267c-bc3f-4921-9d79-c8ac3fa6cdb1",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

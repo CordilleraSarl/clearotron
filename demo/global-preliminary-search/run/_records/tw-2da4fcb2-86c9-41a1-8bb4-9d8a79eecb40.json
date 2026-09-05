@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/tw/2da4fcb2-86c9-41a1-8bb4-9d8a79eecb40",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "2da4fcb2-86c9-41a1-8bb4-9d8a79eecb40",
+  "applicationNumber": "069017103",
+  "registrationNumber": "00147334",
+  "applicationDate": "1980-07-24",
+  "registrationDate": "1981-01-16",
+  "expiryDate": "1998-07-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "zh",
+      "description": "第079類:迴轉計、轉數計、積算迴轉計等計數器具及其他計量、測量器具",
+      "translation_language": "en",
+      "translation": "Class 079: Counting instruments such as gyrometers, tachometers, totalizing gyrometers and other measuring and measuring instruments"
+    }
+  ],
+  "owner": "gu li jing ji zhi zuo suo gu fen you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "gu li jing ji zhi zuo suo gu fen you xian gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 079: Counting instruments such as gyrometers, tachometers, totalizing gyrometers and other measuring and measuring instruments",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第079類:迴轉計、轉數計、積算迴轉計等計數器具及其他計量、測量器具"
+        }
+      ]
+    },
+    "id": "2da4fcb2-86c9-41a1-8bb4-9d8a79eecb40",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19800724",
+        "applicationNumber": "069017103"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19980731",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19810116",
+        "registrationNumber": "00147334"
+      }
+    },
+    "version": "20260331172739",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/tw/2da4fcb2-86c9-41a1-8bb4-9d8a79eecb40",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

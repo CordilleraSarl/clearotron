@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/bx/393117da-df32-4088-a65f-e6ec0467bec5",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "393117da-df32-4088-a65f-e6ec0467bec5",
+  "applicationNumber": "1146783",
+  "registrationNumber": "R 837492",
+  "applicationDate": "2007-11-07",
+  "registrationDate": "2008-04-07",
+  "expiryDate": "2027-11-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-05-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VOLUIT LEVEN KORTENBERG K",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Papier, karton en hieruit vervaardigde producten voor zover niet begrepen in andere klassen; drukwerken; boekbinderswaren; foto's; schrijfbehoeften; kleefstoffen voor kantoorgebruik of voor de huishouding; materiaal voor kunstenaars; penselen; schrijfmachines en kantoorartikelen (uitgezonderd meubelen); leermiddelen en onderwijsmateriaal (uitgezonderd toestellen); plastic materialen voor verpakking, voor zover niet begrepen in andere klassen; drukletters; clichés.",
+      "translation_language": "en",
+      "translation": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; bookbinding goods; photos; stationery; adhesives for stationery or household purposes; materials for artists; brushes; typewriters and office requisites (except furniture); teaching aids and teaching material (except apparatus); plastic materials for packaging, not included in other classes; block letters; cliches."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "administratieve diensten.",
+      "translation_language": "en",
+      "translation": "administrative services."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opvoeding; opleiding; onderwijs; ontspanning; sportieve en culturele activiteiten.",
+      "translation_language": "en",
+      "translation": "Education; education; Education; relaxation; sporting and cultural activities."
+    }
+  ],
+  "owner": "Gemeentebestuur Kortenberg, Administratief Centrum",
+  "ownerNative": null,
+  "ownerCountry": "BE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "De Walsplein 30, 3070 Kortenberg",
+        "applicantAddressCountryCode": "BE",
+        "applicantAddressCountryName": "Belgium",
+        "applicantName": "Gemeentebestuur Kortenberg, Administratief Centrum"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "cmMarkImageEUclassification": [
+      "24.17.01",
+      "26.03.23",
+      "37.01.11"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; printed matter; bookbinding goods; photos; stationery; adhesives for stationery or household purposes; materials for artists; brushes; typewriters and office requisites (except furniture); teaching aids and teaching material (except apparatus); plastic materials for packaging, not included in other classes; block letters; cliches.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Papier, karton en hieruit vervaardigde producten voor zover niet begrepen in andere klassen; drukwerken; boekbinderswaren; foto's; schrijfbehoeften; kleefstoffen voor kantoorgebruik of voor de huishouding; materiaal voor kunstenaars; penselen; schrijfmachines en kantoorartikelen (uitgezonderd meubelen); leermiddelen en onderwijsmateriaal (uitgezonderd toestellen); plastic materialen voor verpakking, voor zover niet begrepen in andere klassen; drukletters; clichés."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "administrative services.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "administratieve diensten."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; education; Education; relaxation; sporting and cultural activities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opvoeding; opleiding; onderwijs; ontspanning; sportieve en culturele activiteiten."
+        }
+      ]
+    },
+    "id": "393117da-df32-4088-a65f-e6ec0467bec5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "- Blauw (C=91%, M=0%, Y=4%, K=0%) en grijs (C=56%, M=43%, Y=42%, K=33%)",
+        "markImageColourClaimedTextLanguageCode": "nl"
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.17.04",
+      "27.05.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0508"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20071107",
+        "applicationNumber": "1146783"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271107",
+      "lastPublicationDate": "20170508",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080407",
+        "registrationNumber": "R 837492"
+      },
+      "renewalPublishedDate": "20170508"
+    },
+    "version": "20250623180316",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VOLUIT LEVEN KORTENBERG K"
+    }
+  },
+  "_uri": "/mark/bx/393117da-df32-4088-a65f-e6ec0467bec5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.776Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

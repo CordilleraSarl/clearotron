@@ -1,0 +1,403 @@
+{
+  "uri": "/mark/us/5a8db749-63cf-403a-843c-54df8f9b4580",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5a8db749-63cf-403a-843c-54df8f9b4580",
+  "applicationNumber": "87803478",
+  "registrationNumber": "5840483",
+  "applicationDate": "2018-02-20",
+  "registrationDate": "2019-08-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-02-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2026-03-06",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "INT. CL. 36 Providing an online digital asset exchange for trading cryptocurrency tokens in the field of removal of carbon dioxide from the atmosphere; Financial management and administration services, namely, providing an electronic platform for generating, trading, sending, and receiving cryptocurrency tokens in the field of removal of carbon dioxide from the atmosphere",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service featuring software for generating, trading, sending, receiving, storing and safeguarding cryptocurrency tokens using blockchain technology; Providing temporary use of online nondownloadable software for managing the exchange of cryptocurrency tokens in the field of removal of carbon dioxide from the atmosphere",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NORI HOLDINGS, LLC",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Erin M. Karp",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "100 N HOWARD ST, SPOKANE, WASHINGTON, 99201",
+        "applicantAddressCity": "SPOKANE",
+        "applicantAddressPostalCode": "99201",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantAddressStreet": "100 N HOWARD ST",
+        "applicantJurisdictionOfIncorporation": "WASHINGTON",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "NORI HOLDINGS, LLC",
+        "applicantSecondaryAddressUnit": "#6452"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "100 N HOWARD ST, SPOKANE, WASHINGTON, 99201",
+            "city": "SPOKANE",
+            "jurisdictionOfIncorporation": "WASHINGTON",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "NORI HOLDINGS, LLC",
+            "postalCode": "99201",
+            "secondaryAddressUnit": "#6452",
+            "stateName": "WASHINGTON",
+            "street": "100 N HOWARD ST"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "WASHINGTON",
+            "legalEntity": "CORPORATION",
+            "name": "NORI INC.",
+            "previousName": "FORMERLY NORI LLC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "2208 NW MARKET ST, SUITE 403, SEATTLE, WA 98107",
+            "addressLines": [
+              "SCOTT SMITH",
+              "2208 NW MARKET ST",
+              "SUITE 403",
+              "SEATTLE, WA 98107"
+            ],
+            "name": "SCOTT SMITH"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20240930",
+        "recordedDate": "20241009",
+        "reelFrameNumber": "8607/0530"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "INT. CL. 36 Providing an online digital asset exchange for trading cryptocurrency tokens in the field of removal of carbon dioxide from the atmosphere; Financial management and administration services, namely, providing an electronic platform for generating, trading, sending, and receiving cryptocurrency tokens in the field of removal of carbon dioxide from the atmosphere"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service featuring software for generating, trading, sending, receiving, storing and safeguarding cryptocurrency tokens using blockchain technology; Providing temporary use of online nondownloadable software for managing the exchange of cryptocurrency tokens in the field of removal of carbon dioxide from the atmosphere"
+        }
+      ]
+    },
+    "id": "5a8db749-63cf-403a-843c-54df8f9b4580",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260306",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20241016",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20240820",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20190820",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190713",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20190712",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20190711",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20190711",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20190402",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20190205",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20190205",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20190116",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20181231",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20181211",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20181210",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20181210",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20181210",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20181210",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20181203",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20181203",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20180810",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180611",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20180611",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180611",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180605",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180226",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20180223",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2233 NW 58th Street, Unit 345, Seattle, WA, 98107, USAM",
+        "city": "Seattle",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Nori LLC",
+        "postalCode": "98107",
+        "stateName": "WASHINGTON",
+        "street": "2233 NW 58th Street, Unit 345"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2233 NW 58th Street, Unit 345, Seattle, WA, 98107, USAM",
+        "city": "Seattle",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Nori LLC",
+        "postalCode": "98107",
+        "stateName": "WASHINGTON",
+        "street": "2233 NW 58th Street, Unit 345"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2233 NW 58th Street, Unit 345, Seattle, WA, 98107, USAM",
+        "city": "Seattle",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Nori LLC",
+        "postalCode": "98107",
+        "stateName": "WASHINGTON",
+        "street": "2233 NW 58th Street, Unit 345"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "100 N HOWARD ST, SPOKANE, WA, 99201, USAM",
+        "city": "SPOKANE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "NORI HOLDINGS, LLC",
+        "postalCode": "99201",
+        "secondaryAddressUnit": "#6452",
+        "stateName": "WASHINGTON",
+        "street": "100 N HOWARD ST"
+      }
+    ],
+    "recordLastUpdated": "20260402",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Seattle, WA 98104, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Seattle, WA 98104",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Erin M. Karp Cairncross & Hempelmann, 524 2nd Ave., Suite 500"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Seattle, WA 98104, UNITED STATES",
+        "representativeAddressLines": [
+          "Seattle, WA 98104",
+          "UNITED STATES"
+        ],
+        "representativeName": "Erin M. Karp"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20180220",
+        "applicationNumber": "87803478"
+      },
+      "cancellationDate": "20260306",
+      "cancellationPublicationDate": "20260331",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "36",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20190601"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20190601"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "36",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20190601"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20190601"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20260306",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20190205"
+      ],
+      "registration": {
+        "registrationDate": "20190820",
+        "registrationNumber": "5840483"
+      }
+    },
+    "version": "20260402084339",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/us/5a8db749-63cf-403a-843c-54df8f9b4580",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.691Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

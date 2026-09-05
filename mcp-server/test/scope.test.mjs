@@ -270,7 +270,7 @@ test("clientSafe is declared on exactly the plain-language client tools", () => 
 
 // ── Revocation is refusal ON SIGHT, and the record is an ID, never the key ────
 
-import { tokenId } from "../lib/scope.mjs";
+import { tokenId, isRevoked } from "../lib/scope.mjs";
 import { mkdtempSync, writeFileSync, appendFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -313,4 +313,42 @@ test("2082: tokenId reads OUR OWN mint's recordable facts, and only those", () =
   // string is an absence to report, not a crash to eat the key in.
   for (const bad of [null, 42, "", "v1.not-base64.sig", "v2.x.y", tok.split(".").slice(0, 2).join(".")])
     assert.equal(tokenId(bad), null, `tokenId(${JSON.stringify(bad)}) must be null`);
+}));
+
+// ── 2191 F14 · AN UNREADABLE DENYLIST REFUSES, IT DOES NOT WAVE THROUGH ─────────────────────────────
+//
+// This returned false — "not revoked" — on any unreadable list. On a default `clearotron start` install
+// the door was pointed at a file nothing created, so every revocation check silently passed and a
+// revoked key completed a full handshake with nothing logged. Overwatch ruling, recorded on 1889 for
+// the owner with the reversal path: fail CLOSED at request time. The cost is a visible outage that
+// names its cause, instead of an invisible hole.
+
+test("2191-F14 an unreadable denylist REFUSES the token instead of assuming it is good", () => {
+  const dir = mkdtempSync(join(tmpdir(), "denylist-missing-"));
+  const missing = join(dir, "token-denylist");   // named, never created — the default install's state
+  try {
+    let e = null;
+    try { isRevoked("some-jti", { denylistPath: missing }); }
+    catch (caught) { e = caught; }
+    assert.ok(e, "an unreadable denylist must THROW — returning false here is the whole defect");
+    assert.match(e.message, /revocation could not be checked/, e.message);
+    assert.equal(e.code, "REVOCATION_UNCHECKABLE",
+      "the door keys its louder log line on this code — a bare Error would read as an ordinary bad key");
+    assert.match(e.message, new RegExp(missing.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+      "and it must name the file, or the operator cannot act on it");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("2191-F14 an UNSET denylist is still not a refusal — that path is the documented single-tenant trust", () => {
+  // The two absences are different and must stay different. No denylist configured is a deployment that
+  // never asked for one; a denylist configured and unreadable is one that asked and cannot look. Making
+  // both refuse would break every install that has never touched the variable.
+  assert.equal(isRevoked("some-jti", { denylistPath: undefined }), false);
+  assert.equal(isRevoked("some-jti", { denylistPath: "" }), false);
+});
+
+test("2191-F14 a readable denylist still answers both ways — the refusal is not unconditional", () => withDenylist((path) => {
+  assert.equal(isRevoked("not-listed", { denylistPath: path }), false, "an id that is not on the list is not revoked");
+  writeFileSync(path, "# armed by the arm\nlisted-jti\n");
+  assert.equal(isRevoked("listed-jti", { denylistPath: path }), true, "and one that is, is");
 }));

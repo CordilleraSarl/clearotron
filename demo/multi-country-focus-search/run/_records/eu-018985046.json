@@ -1,0 +1,70 @@
+{
+  "uri": "/mark/eu/018985046",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "018985046",
+  "applicationNumber": "018985046",
+  "registrationNumber": "018985046",
+  "applicationDate": "2024-02-09",
+  "registrationDate": "2024-07-23",
+  "expiryDate": "2034-02-09",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2024-07-24",
+  "markText": "DORI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "PROD' EMBOUT TECHNOLOGIE",
+  "ownerCountry": null,
+  "representative": "CABINET @MARK",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Scientific apparatus and instruments for measurement",
+            " Image scanners",
+            " 3D scanners",
+            " Lasers for measuring purposes",
+            " software for medical purposes",
+            " Software for measuring apparatus and instruments",
+            " Measuring apparatus and instruments"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 10,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Optical scanners for medical inspection purposes",
+            " Scanners for medical diagnosis",
+            " Ear analysis devices",
+            " Hearing aid devices",
+            " Equipment for examination of the ear",
+            " Medical measuring, control and analysis instruments for the reproduction of data on a computer screen using software and wireless transmission"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/018985046",
+  "_uri": "/mark/eu/018985046",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:30.036Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

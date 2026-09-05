@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/tr/4ed354e3-ec6f-4676-93ad-af47008e5e44",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "4ed354e3-ec6f-4676-93ad-af47008e5e44",
+  "applicationNumber": "2020/40634",
+  "registrationNumber": "2020 40634",
+  "applicationDate": "2020-04-11",
+  "registrationDate": null,
+  "expiryDate": "2030-04-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-11-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "venore worldwide creative",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "tr",
+      "description": "Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri, mühendislik ve mimari tasarım hizmetleri, kalite ve standart belgelendirme amaçlı mal/hizmetlerin test edilmesi. Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri. Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım hizmetleri (reklam amaçlı tasarım ve peyzaj tasarımı hariç). Sanat eserleri orijinallik onay hizmetleri.",
+      "translation_language": "en",
+      "translation": "Scientific and industrial examination, research services; engineering services, engineering and architectural design services, testing of goods/services for quality and standard certification. Computer services: computer programming, computer virus protection, computer system design, designing, maintaining and updating websites on behalf of others, software design, rental and updating, internet search engine provision, hosting, computer equipment consulting, computer equipment rental services. All kinds of design services, which are included in this class and do not fall under the scope of engineering, architecture, computer services; graphic art design services (excluding advertising design and landscape design). Artworks authenticity verification services."
+    }
+  ],
+  "owner": "GÖRKEM GÜVENDİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Denizevleri Mahallesi 205. Sokak No:10 Atakum Samsun",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "GÖRKEM GÜVENDİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and industrial examination, research services; engineering services, engineering and architectural design services, testing of goods/services for quality and standard certification. Computer services: computer programming, computer virus protection, computer system design, designing, maintaining and updating websites on behalf of others, software design, rental and updating, internet search engine provision, hosting, computer equipment consulting, computer equipment rental services. All kinds of design services, which are included in this class and do not fall under the scope of engineering, architecture, computer services; graphic art design services (excluding advertising design and landscape design). Artworks authenticity verification services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri, mühendislik ve mimari tasarım hizmetleri, kalite ve standart belgelendirme amaçlı mal/hizmetlerin test edilmesi. Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri. Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım hizmetleri (reklam amaçlı tasarım ve peyzaj tasarımı hariç). Sanat eserleri orijinallik onay hizmetleri."
+        }
+      ]
+    },
+    "id": "4ed354e3-ec6f-4676-93ad-af47008e5e44",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.03.01",
+      "02.03.04",
+      "02.03.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "468"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200411",
+        "applicationNumber": "2020/40634"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300411",
+      "lastPublicationDate": "20201130",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2020 40634"
+      }
+    },
+    "version": "20250708181919",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "venore worldwide creative"
+    }
+  },
+  "_uri": "/mark/tr/4ed354e3-ec6f-4676-93ad-af47008e5e44",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/gb/3760b084-e0b5-427e-80c3-11076469cbbe",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3760b084-e0b5-427e-80c3-11076469cbbe",
+  "applicationNumber": "4419445",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-22",
+  "registrationDate": null,
+  "expiryDate": "2036-07-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Drive North East School of Motoring",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Driving schools.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Graeme Macdonald",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7 Glendale Close, Blaydon-On-Tyne Ne216hd, Gateshead",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Graeme Macdonald"
+      },
+      {
+        "applicantAddress": "110 Langdon Road, Newcastle Upon Tyne Ne55ly, Newcastle Upon Tyne",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Stewart Beaty"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "18.01.07",
+      "18.01.25",
+      "18.07.11",
+      "26.01.01",
+      "26.01.06",
+      "26.04.10",
+      "37.01.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Driving schools."
+        }
+      ]
+    },
+    "id": "3760b084-e0b5-427e-80c3-11076469cbbe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "18.07.00",
+      "27.03.00",
+      "27.05.01",
+      "27.05.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260821",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260722",
+        "applicationNumber": "4419445"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360722",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260821020017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Drive North East School of Motoring"
+    }
+  },
+  "_uri": "/mark/gb/3760b084-e0b5-427e-80c3-11076469cbbe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

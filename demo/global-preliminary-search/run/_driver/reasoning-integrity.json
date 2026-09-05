@@ -1,0 +1,56 @@
+{
+  "ts": "2026-09-02T17:33:13.458Z",
+  "inputs": {
+    "narrative": true,
+    "report": true,
+    "review": true,
+    "registerFindings": true,
+    "commonLaw": true,
+    "matterContext": true,
+    "placement": true,
+    "findings": true
+  },
+  "engagement": {
+    "total": 0,
+    "blandCount": 0,
+    "bland": [],
+    "receipts": []
+  },
+  "ruleShape": [],
+  "reviewerCoherence": [],
+  "tripwires": {
+    "recallFloor": [],
+    "reviewFreshness": {
+      "pass": false,
+      "detail": "the review brought in no input the run had not already produced — re-reading the same files can only show they agree with themselves; it cannot surface what the run missed (no fresh probe / no new record cited)"
+    },
+    "seedNeutrality": [],
+    "probativeGrading": [],
+    "matrixCeiling": [],
+    "statusHonesty": {
+      "pass": false,
+      "detail": "the delivery reads as clean/complete while a material layer did not finish (primary-sweep, primary-sweep / exact: vεηqοrι [cl 9, 42, 41], primary-sweep / exact: vеnqоri [cl 9, 42, 41], primary-sweep / exact: qοrι [cl 9, 42, 41], primary-sweep / exact: qоri [cl 9, 42, 41], incumbent-class, incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / default: QORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / exact: VENQORI [cl 9, 42, 41], incumbent-class / exact: QORI [cl 9, 42, 41], incumbent-class / the applicant's own earlier rights, field:general-purpose data analytics, dashboarding and alerting software (downloadable or saas), field:environmental monitoring software generally — air quality, emissions, soil, hydrology, weather and compliance-reporting platforms) — the headline cannot be cleaner than the weakest coverage unit; state the gap in the status, not only the footnotes"
+    },
+    "deadlineUrgency": [],
+    "unresolvedDisagreements": [],
+    "orphanFindings": [],
+    "crosscheckMissing": [],
+    "recallRegression": [],
+    "deadlineCarry": [],
+    "documentGrowth": [
+      {
+        "stage": "common-law-half:b",
+        "trigger": "frame-reopen",
+        "before": 14779,
+        "after": 25598,
+        "growthBytes": 10819,
+        "growthPct": 73
+      }
+    ]
+  },
+  "tripFlags": [
+    "status-honesty: the delivery reads as clean/complete while a material layer did not finish (primary-sweep, primary-sweep / exact: vεηqοrι [cl 9, 42, 41], primary-sweep / exact: vеnqоri [cl 9, 42, 41], primary-sweep / exact: qοrι [cl 9, 42, 41], primary-sweep / exact: qоri [cl 9, 42, 41], incumbent-class, incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41], incumbent-class / default: QORI [cl 9, 42, 41], incumbent-class / owner: Xylem [cl 9, 42, 41], incumbent-class / default: VENQORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / default: QORI [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / owner: Xylem Inc. [cl 9, 42, 41, 11, 1, 40, 44], incumbent-class / exact: VENQORI [cl 9, 42, 41], incumbent-class / exact: QORI [cl 9, 42, 41], incumbent-class / the applicant's own earlier rights, field:general-purpose data analytics, dashboarding and alerting software (downloadable or saas), field:environmental monitoring software generally — air quality, emissions, soil, hydrology, weather and compliance-reporting platforms) — the headline cannot be cleaner than the weakest coverage unit; state the gap in the status, not only the footnotes",
+    "document-growth: common-law-half:b grew 73% (14779 → 25598 bytes) under trigger \"frame-reopen\" — a repair defends or corrects, it does not add; review what the pass appended"
+  ],
+  "registryCorrections": []
+}

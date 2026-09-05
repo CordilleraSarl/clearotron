@@ -1,0 +1,230 @@
+{
+  "uri": "/mark/jp/ad7e5e5a-6c7b-49ae-9fdb-39b6e2e9e8dc",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "ad7e5e5a-6c7b-49ae-9fdb-39b6e2e9e8dc",
+  "applicationNumber": "2018-033439",
+  "registrationNumber": "6130094",
+  "applicationDate": "2018-03-22",
+  "registrationDate": "2019-03-15",
+  "expiryDate": "2029-03-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-04-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＩＮＶＩＳＡＬＩＧＮ　ＧＯ",
+  "markTransliteration": "INBISARAINGOO",
+  "markTranslation": "INVISALIGN GO",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科／歯列矯正治療用のコンピュータソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用及び歯列矯正治療の計画立案用の歯科専門家向けコンピュータソフトウェア，レーザー光スキャナー・光学式スキャナー・コンピュータスクリーン及びこれらと共に使用するためのコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software (digital image software for tooth and jaw movement and treatment plan drafting), computer software for creation of 3D digital models of teeth and jaw, computer application software for portable and hand-held electronic devices ( Computer software for dental / orthodontic treatment), computer software for creation of individually customized orthodontic treatment policy, computer software for providing / tracking / correcting patient data regarding the proposed orthodontic treatment policy and the like Computer software for dental professionals, for evaluating the condition of the individual teeth and for planning orthodontic treatment, laser light scanners, optical scanners, computer screens and computer software for use therewith Computer, computer software, data processing apparatus, electronic applied machinery and parts thereof"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "受託による歯列矯正器具の製造，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Production of orthodontic appliances by consignment, assembly / manufacture or processing of medical machinery and equipment, processing of artificial limbs or dentures (including \"processing of medical materials\")"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯科及び歯列矯正の分野における訓練",
+      "translation_language": "en",
+      "translation": "Training in the field of dentistry and orthodontics"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科研究，アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守",
+      "translation_language": "en",
+      "translation": "Dental research, provision of orthodontic or dental care computer software by application service providers, provision of temporary use of orthodontic or dental care computer software not available for download online, information processing of computerized data, Design, creation or maintenance of computer program"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IDAKA MASATO",
+  "priorities": [
+    {
+      "priorityDate": "20180322"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (digital image software for tooth and jaw movement and treatment plan drafting), computer software for creation of 3D digital models of teeth and jaw, computer application software for portable and hand-held electronic devices ( Computer software for dental / orthodontic treatment), computer software for creation of individually customized orthodontic treatment policy, computer software for providing / tracking / correcting patient data regarding the proposed orthodontic treatment policy and the like Computer software for dental professionals, for evaluating the condition of the individual teeth and for planning orthodontic treatment, laser light scanners, optical scanners, computer screens and computer software for use therewith Computer, computer software, data processing apparatus, electronic applied machinery and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア（歯及び顎の移動及び治療計画案の描写用のデジタル画像ソフトウェア），歯及び顎の３次元デジタルモデルの作成用のコンピュータソフトウェア，持ち運び可能な及び手持ち式電子機器用のコンピュータアプリケーションソフトウェア（歯科／歯列矯正治療用のコンピュータソフトウェア），個別にカスタマイズされた歯列矯正治療方針の作成用のコンピュータソフトウェア，歯列矯正治療方針案及びこれに関する患者データの提供・追跡及び修正用のコンピュータソフトウェア，個々の歯の状態の評価用及び歯列矯正治療の計画立案用の歯科専門家向けコンピュータソフトウェア，レーザー光スキャナー・光学式スキャナー・コンピュータスクリーン及びこれらと共に使用するためのコンピュータソフトウェア，コンピュータ，コンピュータソフトウェア，データ処理装置，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Production of orthodontic appliances by consignment, assembly / manufacture or processing of medical machinery and equipment, processing of artificial limbs or dentures (including \"processing of medical materials\")",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "受託による歯列矯正器具の製造，医療用機械器具の組立・製造又は加工，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in the field of dentistry and orthodontics",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯科及び歯列矯正の分野における訓練"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental research, provision of orthodontic or dental care computer software by application service providers, provision of temporary use of orthodontic or dental care computer software not available for download online, information processing of computerized data, Design, creation or maintenance of computer program",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科研究，アプリケーションサービスプロバイダーによる歯列矯正又は歯科治療用コンピュータソフトウェアの提供，オンラインによるダウンロードが不可能な歯列矯正又は歯科治療用コンピュータソフトウェアの一時的な使用の提供，コンピュータによるデータの情報処理，電子計算機のプログラムの設計・作成又は保守"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "ad7e5e5a-6c7b-49ae-9fdb-39b6e2e9e8dc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20180322"
+      }
+    ],
+    "recordLastUpdated": "20240329",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IDAKA MASATO",
+        "representativeNativeName": "井▲高▼　将斗"
+      },
+      {
+        "representativeName": "YAMAMOTO KENSAKU",
+        "representativeNativeName": "山本　健策"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      },
+      {
+        "representativeName": "ISHIKAWA DAISUKE",
+        "representativeNativeName": "石川　大輔"
+      },
+      {
+        "representativeName": "IIDA TAKATOSHI",
+        "representativeNativeName": "飯田　貴敏"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180322",
+        "applicationNumber": "2018-033439"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290315",
+      "lastPublicationDate": "20190409",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20190315",
+        "registrationNumber": "6130094"
+      }
+    },
+    "version": "20240329081204",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN GO",
+      "markTransliteration": "INBISARAINGOO",
+      "markVerbalElementText": "ＩＮＶＩＳＡＬＩＧＮ　ＧＯ"
+    }
+  },
+  "_uri": "/mark/jp/ad7e5e5a-6c7b-49ae-9fdb-39b6e2e9e8dc",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

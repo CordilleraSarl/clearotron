@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/gb/74772721-face-4fb4-a8cf-4b9be82856ba",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "74772721-face-4fb4-a8cf-4b9be82856ba",
+  "applicationNumber": "UK00914636724",
+  "registrationNumber": "UK00914636724",
+  "applicationDate": "2015-10-05",
+  "registrationDate": "2016-01-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Optical fibre apparatus; optical fibre connectors; optical fibre interfaces; optical fibre cables; parts and fittings for all the aforementioned; all the aforesaid goods not being able to be intended for the vehicles.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Ridgemount Technologies Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Cameron Intellectual Property Ltd",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 5, Field Farm Business Centre, Launton, Bicester OX26 5EL",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Ridgemount Technologies Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Optical fibre apparatus; optical fibre connectors; optical fibre interfaces; optical fibre cables; parts and fittings for all the aforementioned; all the aforesaid goods not being able to be intended for the vehicles."
+        }
+      ]
+    },
+    "id": "74772721-face-4fb4-a8cf-4b9be82856ba",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260424",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Moncrieff House, Floor 4/1, 69 West Nile Street, Glasgow G1 2QB",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Cameron Intellectual Property Ltd"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20151005",
+        "applicationNumber": "UK00914636724"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "REMOVED FROM THE RECORD",
+      "registration": {
+        "registrationDate": "20160129",
+        "registrationNumber": "UK00914636724"
+      }
+    },
+    "version": "20260424020014",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/gb/74772721-face-4fb4-a8cf-4b9be82856ba",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

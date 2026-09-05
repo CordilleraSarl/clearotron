@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/cn/06f9ccb2-7290-4221-9878-f9f9c58dc114",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "06f9ccb2-7290-4221-9878-f9f9c58dc114",
+  "applicationNumber": "53170312",
+  "registrationNumber": "53170312",
+  "applicationDate": "2021-01-21",
+  "registrationDate": "2022-01-21",
+  "expiryDate": "2032-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "YORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "示波器,测量仪器,频率计,功率计,电气测量用稳压器,精密测量仪器,计量仪表,内燃机仪表,高频仪器",
+      "translation_language": "en",
+      "translation": "Oscilloscopes, measuring instruments, frequency meters, power meters, voltage regulators for electrical measurement, precision measuring instruments, measuring instruments, internal combustion engine instruments, high-frequency instruments"
+    }
+  ],
+  "owner": "Ikuo Lee",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省苏州市吴中区木渎镇新旅程花园3-4幢303室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Ikuo Lee",
+        "applicantNativeName": "李郁夫"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Oscilloscopes, measuring instruments, frequency meters, power meters, voltage regulators for electrical measurement, precision measuring instruments, measuring instruments, internal combustion engine instruments, high-frequency instruments",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "示波器,测量仪器,频率计,功率计,电气测量用稳压器,精密测量仪器,计量仪表,内燃机仪表,高频仪器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "06f9ccb2-7290-4221-9878-f9f9c58dc114",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.11"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1764"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "江苏中睿联禾知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210121",
+        "applicationNumber": "53170312"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320120",
+      "lastPublicationDate": "20211020",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220121",
+        "registrationNumber": "53170312"
+      }
+    },
+    "version": "20251004104526",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "YORI"
+    }
+  },
+  "_uri": "/mark/cn/06f9ccb2-7290-4221-9878-f9f9c58dc114",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.803Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

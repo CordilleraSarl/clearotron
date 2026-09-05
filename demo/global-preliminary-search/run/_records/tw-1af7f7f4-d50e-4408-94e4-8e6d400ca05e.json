@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/tw/1af7f7f4-d50e-4408-94e4-8e6d400ca05e",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "1af7f7f4-d50e-4408-94e4-8e6d400ca05e",
+  "applicationNumber": "089071845",
+  "registrationNumber": "00159737",
+  "applicationDate": "2000-12-14",
+  "registrationDate": "2002-02-16",
+  "expiryDate": "2022-02-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七七 SEVEN SEVEN",
+  "markTransliteration": "77 SEVEN SEVEN QIQI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "zh",
+      "description": "第042類:髮型設計、燙髮、染髮、剪髮，美顏、化粧、皮膚保養、修指甲，三溫暖、按摩、澡堂，減肥，美容諮詢顧問，各種服飾、衣褲之租賃。",
+      "translation_language": "en",
+      "translation": "Class 042: Hair styling, hair perming, hair dyeing, hair cutting, beautification, makeup, skin care, manicure, sauna, massage, bathhouse, weight loss, beauty consulting, rental of various clothing and clothing."
+    }
+  ],
+  "owner": "HUNYA FOODS CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantName": "HUNYA FOODS CO., LTD.",
+        "applicantNativeAddress": "新北市新店區寶興路45巷8弄3號5樓",
+        "applicantNativeName": "宏亞食品股份有限公司 HUNYA FOODS CO., LTD."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 042: Hair styling, hair perming, hair dyeing, hair cutting, beautification, makeup, skin care, manicure, sauna, massage, bathhouse, weight loss, beauty consulting, rental of various clothing and clothing.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第042類:髮型設計、燙髮、染髮、剪髮，美顏、化粧、皮膚保養、修指甲，三溫暖、按摩、澡堂，減肥，美容諮詢顧問，各種服飾、衣褲之租賃。"
+        }
+      ]
+    },
+    "id": "1af7f7f4-d50e-4408-94e4-8e6d400ca05e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "藍漢瑜"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20001214",
+        "applicationNumber": "089071845"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20220215",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20020216",
+        "registrationNumber": "00159737"
+      }
+    },
+    "version": "20260331121110",
+    "wordMarkSpecification": {
+      "markTransliteration": "77 SEVEN SEVEN QIQI",
+      "markVerbalElementText": "七七 SEVEN SEVEN"
+    }
+  },
+  "_uri": "/mark/tw/1af7f7f4-d50e-4408-94e4-8e6d400ca05e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.568Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

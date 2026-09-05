@@ -1,0 +1,206 @@
+{
+  "uri": "/mark/au/b1e29244-f07f-43a4-aa36-71c9bc608341",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "b1e29244-f07f-43a4-aa36-71c9bc608341",
+  "applicationNumber": "2193432",
+  "registrationNumber": "2193432",
+  "applicationDate": "2021-07-09",
+  "registrationDate": "2021-07-09",
+  "expiryDate": "2031-07-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-12-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qorg",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    36,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs for sales purposes; Computer programs for the management of sales; Application software; Communication software; Computer software; Computer software applications (downloadable); Computer software downloaded from the internet; Computer software for business purposes; Computer software products; Computer software programs; Computer graphics software; Computer modelling language software; Computer programs and recorded software distributed online; Computer software (programs); Computer software (recorded); Computer software adapted for use in the operation of computers; Computer software and hardware platforms for cooperative intelligent transport systems; Computer software and hardware platforms for intelligent transport systems; Computer software designed to estimate costs; Computer software designed to estimate resource requirements; Computer software for accounting systems; Computer software for analysing market information; Computer software for authorising access to data bases; Computer software for processing market information; Computer software for the analysis of defects; Computer software for time control; Computer software packages; Computer software platforms, recorded or downloadable; Computer software programs for database management; Computer software programs for spreadsheet management; Data processing software; Downloadable software applications (apps); Education software; Interactive computer software; Integrated software packages; Interactive video software; Interactive entertainment software for use with computers; Packaged software; Personal computer application software; Recorded computer software; Simulation software for use in digital computers; Speech recognition software; Virtual assistant software; Games software; Video game programs (software); Programmed video games (software); Computer game software, downloadable; Computer game software, recorded; Computer programs relating to the training of personnel; Training manuals in electronic format; Training guides in the form of a computer program; Training guides in electronic format",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Technological printed publications; Manuals relating to information technology; Printed matter relating to information technology; Discrete input forms for information technology purposes; Printed matter pertaining to information technology; Catalogues relating to computer software; Computer software operating manuals; Documentation for use in the development of computer software programs; Handbooks relating to computer software (sold with the software); Instruction guides sold with computer software; Instruction manuals (handbooks) sold with computer software; Instruction manuals relating to computer software; Instruction manuals sold with computer software; Manuals for computer software; Manuals for computer software (sold with the software); Manuals for use with software; Printed books relating to software; Printed manuals relating to computer graphics software; Printed publications relating to computer software; Manuals for business training courses",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Compilation of information relating to information technology; Technology transfer services (business services); Data processing for businesses; Efficiency or process auditing (examining, reviewing or assessing the working of a business or organization); Data processing for the collection of data for business purposes; Career information and advisory services (other than educational and training advice); Business strategy services; Planning of marketing strategies; Business research; Collection of information relating to market research; Collection of market research information; Computerised business research; Market research; Conducting of business research; Conducting of market research; Interpretation of market research data; Market research data collection services; Market research data retrieval services; Market research for advertising; Market research studies; Marketing research; Research of business information; Research services relating to advertising; Research services relating to business; Research services relating to marketing; Business administration consultancy; Business consultancy; Business consultancy relating to the administration of information technology; Business consultancy services relating to data processing; Business consultancy services relating to the supply of quality management systems; Business management and organization consultancy; Business management consultancy; Business management organisation consultancy; Commercial management consultancy; Consultancy regarding advertising communications strategies; Consultancy relating to business document management; Consultancy relating to business management; Consultancy relating to personnel management; Consultancy relating to the management of personnel; Corporate management consultancy; Data management consultancy; Management consultancy in information analysis; Management consultations relating to business; Personnel management consultancy; Risk management consultancy (business); Business consultancy services relating to the promotion of fund raising campaigns; Business consultancy services relating to the marketing of fund raising campaigns; Business consultancy services relating to marketing; Business consultancy to firms; Business consultancy to individuals; Business consultation; Business consultation relating to advertising; Business consulting services relating to logistics; Business franchising consultancy and business support services; Business organisation consulting; Business organization consultancy; Business planning consultancy; Business recruitment consultancy; Consultancy relating to advertising; Consultancy relating to business acquisition; Consultancy relating to business efficiency; Consultancy relating to auditing; Consultancy relating to business organisation; Consultancy relating to business planning; Consultancy relating to business promotion; Consultancy relating to data processing; Consultancy relating to marketing; Consultancy relating to personnel recruitment; Consultancy relating to sales promotions; Consultancy relating to the establishment and running of businesses; Consultancy relating to the preparation of business statistics; Consultancy relating to the selection of personnel; Market assessment consultancy; Personnel recruitment consultancy; Marketing consultancy; Market reporting consultancy; Professional business consultancy",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Venture capital management; Venture capital financing; Venture capital fund management",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Business training consultancy services; Business training services; Career advisory services (education or training advice); Career counselling (education or training advice); Career counselling (training and education advice); Career information and advisory services (educational and training advice); Arranging and conducting of workshops (training); Computer training; Computer training advisory services; Conducting training seminars; Conducting workshops (training); Consultancy services relating to training; Computerised training; Coaching (training); Providing courses of training; Technical training; Training consultancy",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Creating and designing website based indexes of information for others using information technology; Creating and designing website-based indexes of information for others (information technology services); Information services relating to information technology; Information technology services provided on an outsourcing basis; Providing information relating to computer technology and programming via a website; Provision of information relating to information technology; Advisory services relating to planning applications; Application Service Provider (ASP) services; Online provision of web-based applications (non-downloadable); Advisory services relating to technological research; Providing information, including online, about scientific and technological services and research and design relating thereto; Analysis of statistical data for scientific research; Provision of information relating to scientific research; Research and development of new products for others; Research and development of products; Research in the field of telecommunications technology; Research relating to computer programming; Research relating to computers; Research relating to data processing; Research relating to design; Research relating to engineering; Research relating to technology; Research relating to telecommunication; Research to develop new products; Advisory services relating to computer software; Computer software advisory services; Development of computer software application solutions; Provision of online non-downloadable software (application service provider); User authentication services using single sign-on technology for online software applications; Computer software development; Computer software design; Computer software engineering; Computer software programming services; Computer support services (programming and software installation, repair and maintenance services); Computer support services (software advisory and information services); Design and development of computer software for others; Design of computer software; Development of computer software; Development of software; Diagnosis of faults in computer software; Hosting of software as a service (SaaS); Installation and maintenance of computer software; Installation of computer software; Installation of middleware (software); Installation, repair and maintenance of middleware (software); Maintenance of computer software; Online provision of web-based software (non-downloadable); Providing information, including online, about design and development of computer hardware and software; Provision of online non-downloadable web-based software; Rental of computer software; Repair of computer software; Software as a service (SaaS); Software creation; Software development in the framework of software publishing; Software engineering; Temporary use of online non-downloadable software; Updating of computer software; Upgrading of computer software; Writing of computer software; Computer programming consultancy; Computer software consultancy; Computer technology consultancy; Consultancy in the design and development of computer software; Information technology (IT) consultancy; Information technology (IT) services (computer hardware, software and peripherals design and technical consultancy); Research, engineering and technical consultancy for industry; Internet security consultancy; Quality assurance consultancy; Scientific consultancy; Technological consultancy; Technological consultation services; Telecommunications technology consultancy; Website design consultancy",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Licensing of technology; Licensing (legal services) in the framework of software publishing; Licensing of computer software (legal services); Licensing of software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Megha Birudavolu",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2 Milparinka Ave Glenwood 2768, NSW",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Megha Birudavolu"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs for sales purposes; Computer programs for the management of sales; Application software; Communication software; Computer software; Computer software applications (downloadable); Computer software downloaded from the internet; Computer software for business purposes; Computer software products; Computer software programs; Computer graphics software; Computer modelling language software; Computer programs and recorded software distributed online; Computer software (programs); Computer software (recorded); Computer software adapted for use in the operation of computers; Computer software and hardware platforms for cooperative intelligent transport systems; Computer software and hardware platforms for intelligent transport systems; Computer software designed to estimate costs; Computer software designed to estimate resource requirements; Computer software for accounting systems; Computer software for analysing market information; Computer software for authorising access to data bases; Computer software for processing market information; Computer software for the analysis of defects; Computer software for time control; Computer software packages; Computer software platforms, recorded or downloadable; Computer software programs for database management; Computer software programs for spreadsheet management; Data processing software; Downloadable software applications (apps); Education software; Interactive computer software; Integrated software packages; Interactive video software; Interactive entertainment software for use with computers; Packaged software; Personal computer application software; Recorded computer software; Simulation software for use in digital computers; Speech recognition software; Virtual assistant software; Games software; Video game programs (software); Programmed video games (software); Computer game software, downloadable; Computer game software, recorded; Computer programs relating to the training of personnel; Training manuals in electronic format; Training guides in the form of a computer program; Training guides in electronic format"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Technological printed publications; Manuals relating to information technology; Printed matter relating to information technology; Discrete input forms for information technology purposes; Printed matter pertaining to information technology; Catalogues relating to computer software; Computer software operating manuals; Documentation for use in the development of computer software programs; Handbooks relating to computer software (sold with the software); Instruction guides sold with computer software; Instruction manuals (handbooks) sold with computer software; Instruction manuals relating to computer software; Instruction manuals sold with computer software; Manuals for computer software; Manuals for computer software (sold with the software); Manuals for use with software; Printed books relating to software; Printed manuals relating to computer graphics software; Printed publications relating to computer software; Manuals for business training courses"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Compilation of information relating to information technology; Technology transfer services (business services); Data processing for businesses; Efficiency or process auditing (examining, reviewing or assessing the working of a business or organization); Data processing for the collection of data for business purposes; Career information and advisory services (other than educational and training advice); Business strategy services; Planning of marketing strategies; Business research; Collection of information relating to market research; Collection of market research information; Computerised business research; Market research; Conducting of business research; Conducting of market research; Interpretation of market research data; Market research data collection services; Market research data retrieval services; Market research for advertising; Market research studies; Marketing research; Research of business information; Research services relating to advertising; Research services relating to business; Research services relating to marketing; Business administration consultancy; Business consultancy; Business consultancy relating to the administration of information technology; Business consultancy services relating to data processing; Business consultancy services relating to the supply of quality management systems; Business management and organization consultancy; Business management consultancy; Business management organisation consultancy; Commercial management consultancy; Consultancy regarding advertising communications strategies; Consultancy relating to business document management; Consultancy relating to business management; Consultancy relating to personnel management; Consultancy relating to the management of personnel; Corporate management consultancy; Data management consultancy; Management consultancy in information analysis; Management consultations relating to business; Personnel management consultancy; Risk management consultancy (business); Business consultancy services relating to the promotion of fund raising campaigns; Business consultancy services relating to the marketing of fund raising campaigns; Business consultancy services relating to marketing; Business consultancy to firms; Business consultancy to individuals; Business consultation; Business consultation relating to advertising; Business consulting services relating to logistics; Business franchising consultancy and business support services; Business organisation consulting; Business organization consultancy; Business planning consultancy; Business recruitment consultancy; Consultancy relating to advertising; Consultancy relating to business acquisition; Consultancy relating to business efficiency; Consultancy relating to auditing; Consultancy relating to business organisation; Consultancy relating to business planning; Consultancy relating to business promotion; Consultancy relating to data processing; Consultancy relating to marketing; Consultancy relating to personnel recruitment; Consultancy relating to sales promotions; Consultancy relating to the establishment and running of businesses; Consultancy relating to the preparation of business statistics; Consultancy relating to the selection of personnel; Market assessment consultancy; Personnel recruitment consultancy; Marketing consultancy; Market reporting consultancy; Professional business consultancy"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Venture capital management; Venture capital financing; Venture capital fund management"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business training consultancy services; Business training services; Career advisory services (education or training advice); Career counselling (education or training advice); Career counselling (training and education advice); Career information and advisory services (educational and training advice); Arranging and conducting of workshops (training); Computer training; Computer training advisory services; Conducting training seminars; Conducting workshops (training); Consultancy services relating to training; Computerised training; Coaching (training); Providing courses of training; Technical training; Training consultancy"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Creating and designing website based indexes of information for others using information technology; Creating and designing website-based indexes of information for others (information technology services); Information services relating to information technology; Information technology services provided on an outsourcing basis; Providing information relating to computer technology and programming via a website; Provision of information relating to information technology; Advisory services relating to planning applications; Application Service Provider (ASP) services; Online provision of web-based applications (non-downloadable); Advisory services relating to technological research; Providing information, including online, about scientific and technological services and research and design relating thereto; Analysis of statistical data for scientific research; Provision of information relating to scientific research; Research and development of new products for others; Research and development of products; Research in the field of telecommunications technology; Research relating to computer programming; Research relating to computers; Research relating to data processing; Research relating to design; Research relating to engineering; Research relating to technology; Research relating to telecommunication; Research to develop new products; Advisory services relating to computer software; Computer software advisory services; Development of computer software application solutions; Provision of online non-downloadable software (application service provider); User authentication services using single sign-on technology for online software applications; Computer software development; Computer software design; Computer software engineering; Computer software programming services; Computer support services (programming and software installation, repair and maintenance services); Computer support services (software advisory and information services); Design and development of computer software for others; Design of computer software; Development of computer software; Development of software; Diagnosis of faults in computer software; Hosting of software as a service (SaaS); Installation and maintenance of computer software; Installation of computer software; Installation of middleware (software); Installation, repair and maintenance of middleware (software); Maintenance of computer software; Online provision of web-based software (non-downloadable); Providing information, including online, about design and development of computer hardware and software; Provision of online non-downloadable web-based software; Rental of computer software; Repair of computer software; Software as a service (SaaS); Software creation; Software development in the framework of software publishing; Software engineering; Temporary use of online non-downloadable software; Updating of computer software; Upgrading of computer software; Writing of computer software; Computer programming consultancy; Computer software consultancy; Computer technology consultancy; Consultancy in the design and development of computer software; Information technology (IT) consultancy; Information technology (IT) services (computer hardware, software and peripherals design and technical consultancy); Research, engineering and technical consultancy for industry; Internet security consultancy; Quality assurance consultancy; Scientific consultancy; Technological consultancy; Technological consultation services; Telecommunications technology consultancy; Website design consultancy"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of technology; Licensing (legal services) in the framework of software publishing; Licensing of computer software (legal services); Licensing of software"
+        }
+      ]
+    },
+    "id": "b1e29244-f07f-43a4-aa36-71c9bc608341",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "2 Milparinka Ave Glenwood 2768 NSW",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Megha Birudavolu"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210709",
+        "applicationNumber": "2193432"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310709",
+      "lastPublicationDate": "20211210",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20210709",
+        "registrationNumber": "2193432"
+      }
+    },
+    "version": "20250625164518",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qorg"
+    }
+  },
+  "_uri": "/mark/au/b1e29244-f07f-43a4-aa36-71c9bc608341",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:08.869Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

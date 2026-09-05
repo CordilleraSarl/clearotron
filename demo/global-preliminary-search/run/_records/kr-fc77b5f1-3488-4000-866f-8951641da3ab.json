@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/kr/fc77b5f1-3488-4000-866f-8951641da3ab",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "fc77b5f1-3488-4000-866f-8951641da3ab",
+  "applicationNumber": "40-1988-0002781",
+  "registrationNumber": "4001721040000",
+  "applicationDate": "1988-02-09",
+  "registrationDate": "1989-06-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENTURI",
+  "markTransliteration": "VENTURI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    14,
+    16,
+    18,
+    19,
+    20,
+    21,
+    24,
+    26,
+    27,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        18,
+        19,
+        20,
+        21,
+        24,
+        26,
+        27,
+        28
+      ],
+      "language": "ko",
+      "description": "등산용버너",
+      "translation_language": "en",
+      "translation": "Climbing Burner"
+    }
+  ],
+  "owner": "The Coleman Company Inc. (Telaware Corporation)",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "남상선 (Sang Sun NAM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국캔사",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "The Coleman Company Inc. (Telaware Corporation)",
+        "applicantNativeName": "더콜맨캄파니인코포레이티드(텔라웨어주법인)"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Climbing Burner",
+          "intClassNumber": "01,05,06,07,08,09,11,14,16,18,19,20,21,24,26,27,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "등산용버너"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "018"
+        }
+      ]
+    },
+    "id": "fc77b5f1-3488-4000-866f-8951641da3ab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "SEOUL(NONE OFFICE)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "남상선 (Sang Sun NAM)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19880209",
+        "applicationNumber": "40-1988-0002781"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19890614",
+        "registrationNumber": "4001721040000"
+      }
+    },
+    "version": "20250625194158",
+    "wordMarkSpecification": {
+      "markTransliteration": "VENTURI",
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/kr/fc77b5f1-3488-4000-866f-8951641da3ab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

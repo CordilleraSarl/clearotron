@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/59720c20-a514-4860-8393-e186b09d8c97",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "59720c20-a514-4860-8393-e186b09d8c97",
+  "applicationNumber": "UK00904849841",
+  "registrationNumber": "UK00904849841",
+  "applicationDate": "2006-01-20",
+  "registrationDate": "2007-02-09",
+  "expiryDate": "2036-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOPI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Quality improvement services, namely, business and management assessment services for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement; quality improvement services, namely business and management assessment services for others; provision of information, advice and consultancy in relation to all of the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing quality assurance, quality control and quality assessment services; providing quality assurance, quality control and quality assessment in the field of oncology practices and cancer treatment; provision of information, advice and consultancy services in relation to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "American Society of Clinical Oncology",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "CMS Cameron McKenna Nabarro Olswang LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050720",
+      "priorityNumber": "78674180"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1900 Duke Street, Suite 200, Alexandria, 22314",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "American Society of Clinical Oncology"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Quality improvement services, namely, business and management assessment services for oncology practices for purposes of documenting concordance with quality measures, implementing best practices, and documenting improvement; quality improvement services, namely business and management assessment services for others; provision of information, advice and consultancy in relation to all of the aforesaid services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing quality assurance, quality control and quality assessment services; providing quality assurance, quality control and quality assessment in the field of oncology practices and cancer treatment; provision of information, advice and consultancy services in relation to all the aforesaid services."
+        }
+      ]
+    },
+    "id": "59720c20-a514-4860-8393-e186b09d8c97",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050720",
+        "priorityNumber": "78674180"
+      }
+    ],
+    "recordLastUpdated": "20251216",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Cannon Place, 78 Cannon St, London EC4N 6AF",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "CMS Cameron McKenna Nabarro Olswang LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060120",
+        "applicationNumber": "UK00904849841"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360120",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20070209",
+        "registrationNumber": "UK00904849841"
+      }
+    },
+    "version": "20251216020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOPI"
+    }
+  },
+  "_uri": "/mark/gb/59720c20-a514-4860-8393-e186b09d8c97",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:04.037Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,794 @@
+{
+  "uri": "/mark/us/4d17be77-ff24-468d-beb1-eee2d7b22582",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "4d17be77-ff24-468d-beb1-eee2d7b22582",
+  "applicationNumber": "87311932",
+  "registrationNumber": "5809797",
+  "applicationDate": "2017-01-24",
+  "registrationDate": "2019-07-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-01-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2026-02-06",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "MOTOMASTER 1933 PROVEN QUALITY QUALITÉ ÉPROUVÉE",
+  "markTransliteration": null,
+  "markTranslation": "MOTOR MASTER 1933 PROVEN QUALITY PROVEN QUALITY",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"1933\" \"QUALITY\" AND \"QUALITE\""
+  ],
+  "niceClasses": [
+    1,
+    3,
+    4,
+    7,
+    8,
+    9,
+    11,
+    12,
+    27,
+    37
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": null,
+      "description": "INT. CL. 1 Anti-freeze; automobile body filler; automatic transmission fluid; brake fluid; coolants for vehicle engines; chemical compounds used for flushing engines; frost shields, namely, ice and frost shield vehicle glass treatment de-icing fluids; chemical additives for motor fuel, namely, fuel stabilizers; chemical fuel injection cleaner additive; fuel treatment fluids being chemical cleaning solvents for cleaning combustion chambers, intake valves and fuel injectors; gas fuel stabilizer coolants for motor vehicles; chemical fuel gas treatment additives; gasoline antifreeze; ignition protector fluid; chemical liquid resin for automotive body repair; lock de-icer fluid; fillers for marine vehicle body repair; chemical resin for repair of marine vehicles; power steering conditioner fluid; power steering fluid; radiator anti-freeze; radiator flush; cooling system engine and radiator leak sealing preparations for motor vehicles being automobile and marine vehicle leak sealants; transmission conditioner, namely, automatic transmission fluids; windshield de-icer fluid; windshield washer antifreeze",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": null,
+      "description": "INT. CL. 3 Automotive cleaning preparations in the nature of brake cleaner, carburetor cleaner, and engine cleaner; car wax; chrome polish; glass cleaner; automobile and marine vehicles pre-wax cleaners; rust removing preparations; salt stain remover; automotive tire cleaner, namely, automobile tire cleaning preparations; windshield washing fluid; engine degreasers, other than for use in manufacturing processes",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": null,
+      "description": "INT. CL. 4 Battery anti-corrosion gel, namely, anti-seize industrial and non-industrial vehicular, marine, and automotive lubricants for batteries; camshaft lubricating oil; lubricating oil for compressors; 2-cycle engine oil; 4-cycle engine oil; diesel farm and truck industrial, lubricating, automotive, and machine grease; differential automotive lubricant; extreme pressure gear oil; extreme pressure automotive grease; gear oil; automotive grease; hydraulic oil; lock automotive lubricant; mineral gear oil; motor oil; motorcycle oil; outboard motor oil; penetrating oil; semi-synthetic motor oil for use with vehicles; snowmobile engine oil; synthetic motor oil; tire lubricating oil; water pump automotive lubricant; wheel bearing automotive and marine vehicles grease",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": null,
+      "description": "INT. CL. 7 Parts and accessories for land and marine vehicles, namely, air filters for engines and motors, hydraulic jacks, oil filters, spark plugs",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": null,
+      "description": "INT. CL. 8 Manually operated held-held crimping tools, namely, crimping wrenches and gear pullers",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Parts and accessories for land and marine vehicles, namely, automotive batteries, battery cables, automotive battery chargers, battery testers, booster cables being jumper cables for automotive and marine vehicles, cassette player holders, circuit testers, dimmer light switches, door switches for power door locks and power mirrors on vehicles, freeze testers for checking quality of motor vehicle antifreeze, automotive fuses, headlamp switches, horn electric relays, ignition electrical switches, breaker points for automobile engines, namely, contact circuit breakers, pressure switches for monitoring, controlling, and switching hydraulic or pneumatic systems, rectifiers, solenoid switches being solenoid valves, starter electrical and power switches, stoplight switches, thermostats, toggle electrical switches, vacuum electrical and power switches, voltage tester, voltage regulators; power packs, namely, AC/DC power supplies for automobiles",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": null,
+      "description": "INT. CL. 11 Lights for motor vehicles, namely, back up lamps, brake lights, fog lamps, and turn signal lamps; vehicle engine block heaters; light bulbs; radiator caps; trailer lights and wiring therefor for motor vehicles; sealed beam lamps being parts and accessories for land and marine vehicles",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": "INT. CL. 12 Parts and accessories for land and marine vehicles, namely, tire pumps, tires, trailer hitches, fitted truck bed liners, wheel cover for vehicles, windshield wiper blades; automotive transmission sealer being automotive parts",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        27
+      ],
+      "language": null,
+      "description": "INT. CL. 27 Car mats, namely, floor mats for vehicles",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "INT. CL. 37 Repair of automobiles; servicing and maintenance of vehicles",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Canadian Tire Corporation, Limited",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "CA",
+      "priorityCountryName": "Canada",
+      "priorityExpiryDate": "20320111",
+      "priorityRegistrationDate": "20160111",
+      "priorityRegistrationNumber": "TMA925516"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2180 Yonge Street, Toronto Ontario, M4P2V8, CANA",
+        "applicantAddressCity": "Toronto Ontario",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressPostalCode": "M4P2V8",
+        "applicantAddressStreet": "2180 Yonge Street",
+        "applicantJurisdictionOfIncorporation": "CANADA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Canadian Tire Corporation, Limited"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "26.01.06",
+      "26.01.10",
+      "26.01.32",
+      "26.01.37",
+      "26.11.11",
+      "26.11.37",
+      "26.11.54"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsServicesDescription": "INT. CL. 1 Anti-freeze; automobile body filler; automatic transmission fluid; brake fluid; coolants for vehicle engines; chemical compounds used for flushing engines; frost shields, namely, ice and frost shield vehicle glass treatment de-icing fluids; chemical additives for motor fuel, namely, fuel stabilizers; chemical fuel injection cleaner additive; fuel treatment fluids being chemical cleaning solvents for cleaning combustion chambers, intake valves and fuel injectors; gas fuel stabilizer coolants for motor vehicles; chemical fuel gas treatment additives; gasoline antifreeze; ignition protector fluid; chemical liquid resin for automotive body repair; lock de-icer fluid; fillers for marine vehicle body repair; chemical resin for repair of marine vehicles; power steering conditioner fluid; power steering fluid; radiator anti-freeze; radiator flush; cooling system engine and radiator leak sealing preparations for motor vehicles being automobile and marine vehicle leak sealants; transmission conditioner, namely, automatic transmission fluids; windshield de-icer fluid; windshield washer antifreeze"
+        },
+        {
+          "intClassNumber": "03",
+          "intGoodsServicesDescription": "INT. CL. 3 Automotive cleaning preparations in the nature of brake cleaner, carburetor cleaner, and engine cleaner; car wax; chrome polish; glass cleaner; automobile and marine vehicles pre-wax cleaners; rust removing preparations; salt stain remover; automotive tire cleaner, namely, automobile tire cleaning preparations; windshield washing fluid; engine degreasers, other than for use in manufacturing processes"
+        },
+        {
+          "intClassNumber": "04",
+          "intGoodsServicesDescription": "INT. CL. 4 Battery anti-corrosion gel, namely, anti-seize industrial and non-industrial vehicular, marine, and automotive lubricants for batteries; camshaft lubricating oil; lubricating oil for compressors; 2-cycle engine oil; 4-cycle engine oil; diesel farm and truck industrial, lubricating, automotive, and machine grease; differential automotive lubricant; extreme pressure gear oil; extreme pressure automotive grease; gear oil; automotive grease; hydraulic oil; lock automotive lubricant; mineral gear oil; motor oil; motorcycle oil; outboard motor oil; penetrating oil; semi-synthetic motor oil for use with vehicles; snowmobile engine oil; synthetic motor oil; tire lubricating oil; water pump automotive lubricant; wheel bearing automotive and marine vehicles grease"
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsServicesDescription": "INT. CL. 7 Parts and accessories for land and marine vehicles, namely, air filters for engines and motors, hydraulic jacks, oil filters, spark plugs"
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsServicesDescription": "INT. CL. 8 Manually operated held-held crimping tools, namely, crimping wrenches and gear pullers"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Parts and accessories for land and marine vehicles, namely, automotive batteries, battery cables, automotive battery chargers, battery testers, booster cables being jumper cables for automotive and marine vehicles, cassette player holders, circuit testers, dimmer light switches, door switches for power door locks and power mirrors on vehicles, freeze testers for checking quality of motor vehicle antifreeze, automotive fuses, headlamp switches, horn electric relays, ignition electrical switches, breaker points for automobile engines, namely, contact circuit breakers, pressure switches for monitoring, controlling, and switching hydraulic or pneumatic systems, rectifiers, solenoid switches being solenoid valves, starter electrical and power switches, stoplight switches, thermostats, toggle electrical switches, vacuum electrical and power switches, voltage tester, voltage regulators; power packs, namely, AC/DC power supplies for automobiles"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsServicesDescription": "INT. CL. 11 Lights for motor vehicles, namely, back up lamps, brake lights, fog lamps, and turn signal lamps; vehicle engine block heaters; light bulbs; radiator caps; trailer lights and wiring therefor for motor vehicles; sealed beam lamps being parts and accessories for land and marine vehicles"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsServicesDescription": "INT. CL. 12 Parts and accessories for land and marine vehicles, namely, tire pumps, tires, trailer hitches, fitted truck bed liners, wheel cover for vehicles, windshield wiper blades; automotive transmission sealer being automotive parts"
+        },
+        {
+          "intClassNumber": "27",
+          "intGoodsServicesDescription": "INT. CL. 27 Car mats, namely, floor mats for vehicles"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "INT. CL. 37 Repair of automobiles; servicing and maintenance of vehicles"
+        }
+      ]
+    },
+    "id": "4d17be77-ff24-468d-beb1-eee2d7b22582",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20210910",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20200504",
+          "identifier": "91255607",
+          "interlocutoryAttorneyName": "WINSTON T FOLMAR",
+          "kind": "Opposition",
+          "kindCode": "OPS",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "ADP DISTRIBUTORS INC.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "87873861",
+                  "markVerbalElementText": "ROTOMASTER",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "PLEASANT RIDGE",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "48069",
+                  "addressState": "MI",
+                  "addressStreet": "23716 WOODWARD AVE",
+                  "companyName": "BRIDGE INTELLECTUAL PROPERTY SERVICES PL",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "JENNIFER SHEEHAN ANDERSON"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "CANADIAN TIRE CORPORATION, LIMITED",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "85269915",
+                  "markVerbalElementText": "MOTOMASTER",
+                  "registrationNumber": "4127919"
+                },
+                {
+                  "applicationNumber": "87311904",
+                  "markVerbalElementText": "MOTOMASTER",
+                  "registrationNumber": "5987120"
+                },
+                {
+                  "applicationNumber": "87311932",
+                  "markVerbalElementText": "MOTOMASTER 1933 PROVEN QUALITY QUALITÉ ÉPROUVÉE",
+                  "registrationNumber": "5809797"
+                },
+                {
+                  "applicationNumber": "87311948",
+                  "markVerbalElementText": "MOTOMASTER 1933",
+                  "registrationNumber": "5706607"
+                },
+                {
+                  "applicationNumber": "88569435",
+                  "markVerbalElementText": "M MOTOMASTER OEPLUS",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88569428",
+                  "markVerbalElementText": "M MOTOMASTER NAUTILUS",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88569424",
+                  "markVerbalElementText": "MOTOMASTER",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88569417",
+                  "markVerbalElementText": "M MOTOMASTER",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88569394",
+                  "markVerbalElementText": "M MOTOMASTER ELIMINATOR",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "INDIANAPOLIS",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "46204-3535",
+                  "addressState": "IN",
+                  "addressStreet": "11 SOUTH MERIDIAN ST",
+                  "companyName": "BARNES & THORNBURG LLP",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "DAVID A. W. WONG"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20210910",
+              "text": "#25 TERMINATED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20210910",
+              "text": "#24 BD'S  DECISION: DISMISSED W/O PREJUDICE"
+            },
+            {
+              "code": "N",
+              "eventDate": "20210906",
+              "text": "#23 WITHDRAWAL OF OPPOSITION"
+            },
+            {
+              "code": "W",
+              "eventDate": "20210714",
+              "text": "#22 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20210707",
+              "text": "#21 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20210429",
+              "text": "#20 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20210429",
+              "text": "#19 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20210302",
+              "text": "#18 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20210302",
+              "text": "#17 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20210106",
+              "text": "#16 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20210105",
+              "text": "#15 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "G",
+              "eventDate": "20201208",
+              "text": "#14 2(C) NAME/PORTRAIT/SIGNATURE W/O CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20201208",
+              "text": "#13 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20201208",
+              "text": "#12 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20201006",
+              "text": "#11 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20201006",
+              "text": "#10 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20200810",
+              "text": "#9 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200810",
+              "text": "#8 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20200630",
+              "text": "#7 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200630",
+              "text": "#6 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "W",
+              "eventDate": "20200609",
+              "text": "#5 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200609",
+              "text": "#4 D'S MOT FOR EXTEN. OF TIME W/ CONSENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200504",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200504",
+              "responseDate": "20200613",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "N",
+              "eventDate": "20200504",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "markDisclaimers": [
+      "\"1933\" \"QUALITY\" AND \"QUALITE\""
+    ],
+    "markEvents": [
+      {
+        "date": "20260206",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20240723",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20190723",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20190620",
+        "descriptionText": "1(B) BASIS DELETED; PROCEED TO REGISTRATION"
+      },
+      {
+        "date": "20190612",
+        "descriptionText": "TEAS DELETE 1(B) BASIS RECEIVED"
+      },
+      {
+        "date": "20190612",
+        "descriptionText": "NOTICE OF ALLOWANCE CANCELLED"
+      },
+      {
+        "date": "20190305",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20190108",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20190108",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20181219",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20181130",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20181129",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20181129",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20181129",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20181129",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20181129",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20181117",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20181117",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20181115",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20181115",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20180515",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20180515",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180515",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20180510",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180508",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20180508",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20180506",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20180430",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20180430",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20171031",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20171031",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20171031",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20171028",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20171028",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20171024",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20171024",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20170426",
+        "descriptionText": "DATA MODIFICATION COMPLETED"
+      },
+      {
+        "date": "20170425",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20170425",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20170425",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170425",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170419",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170131",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20170128",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20170127",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the stylized wording \"MOTOMASTER 1933\" which appears within an oblong geometric shape with rounded corners, with \"1933\" written vertically, and is superimposed over a circle with an incomplete border with the words \"PROVEN QUALITY\" at the top of the circle and the words \"QUALITÉ ÉPROUVÉE\" appearing at the bottom of the circle.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2180 Yonge Street, Toronto Ontario, M4P2V8, CANA",
+        "city": "Toronto Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "CORPORATION",
+        "name": "Canadian Tire Corporation, Limited",
+        "postalCode": "M4P2V8",
+        "street": "2180 Yonge Street"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2180 Yonge Street, Toronto Ontario, M4P2V8, CANA",
+        "city": "Toronto Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "CORPORATION",
+        "name": "Canadian Tire Corporation, Limited",
+        "postalCode": "M4P2V8",
+        "street": "2180 Yonge Street"
+      },
+      {
+        "address": "2180 Yonge Street, Toronto Ontario, M4P2V8, CANA",
+        "city": "Toronto Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "CORPORATION",
+        "name": "Canadian Tire Corporation, Limited",
+        "postalCode": "M4P2V8",
+        "street": "2180 Yonge Street"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2180 Yonge Street, Toronto Ontario, M4P2V8, CANA",
+        "city": "Toronto Ontario",
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "jurisdictionOfIncorporation": "CANADA",
+        "legalEntity": "CORPORATION",
+        "name": "Canadian Tire Corporation, Limited",
+        "postalCode": "M4P2V8",
+        "street": "2180 Yonge Street"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "CA",
+        "priorityCountryName": "Canada",
+        "priorityExpiryDate": "20320111",
+        "priorityRegistrationDate": "20160111",
+        "priorityRegistrationNumber": "TMA925516"
+      }
+    ],
+    "recordLastUpdated": "20260304",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "WASHINGTON, DC 20043-9998, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "WASHINGTON, DC 20043-9998",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Andrew D. Price VENABLE LLP, P.O. BOX 34385"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Andrew D. Price",
+        "representativeAddress": "WASHINGTON, DC 20043-9998, UNITED STATES",
+        "representativeAddressLines": [
+          "WASHINGTON, DC 20043-9998",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20170124",
+        "applicationNumber": "87311932"
+      },
+      "cancellationDate": "20260206",
+      "cancellationPublicationDate": "20260303",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20260206",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Use Application - Filed",
+          "Section 44(e) Filed",
+          "Section 44(e) Amended",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20190108"
+      ],
+      "registration": {
+        "registrationDate": "20190723",
+        "registrationNumber": "5809797"
+      }
+    },
+    "version": "20260304084105",
+    "wordMarkSpecification": {
+      "markTranslation": "MOTOR MASTER 1933 PROVEN QUALITY PROVEN QUALITY",
+      "markTranslationDescription": "The English translation of \"QUALITÉ ÉPROUVÉE\" in the mark is \"PROVEN QUALITY\".",
+      "markVerbalElementCrossReferences": "MOTOR MASTER 1933 PROVEN QUALITY QUALITE EPROUVEE",
+      "markVerbalElementText": "MOTOMASTER 1933 PROVEN QUALITY QUALITÉ ÉPROUVÉE"
+    }
+  },
+  "_uri": "/mark/us/4d17be77-ff24-468d-beb1-eee2d7b22582",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

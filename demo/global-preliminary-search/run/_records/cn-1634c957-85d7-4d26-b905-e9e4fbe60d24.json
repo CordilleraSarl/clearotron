@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/1634c957-85d7-4d26-b905-e9e4fbe60d24",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "1634c957-85d7-4d26-b905-e9e4fbe60d24",
+  "applicationNumber": "31173694",
+  "registrationNumber": "31173694",
+  "applicationDate": "2018-05-25",
+  "registrationDate": "2019-03-07",
+  "expiryDate": "2029-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机软件(已录制);变压器(电);配电箱(电);逆变器(电);整流器;电池充电器;电动运载工具用充电站;整流用电力装置;电站自动化装置;控制板(电)",
+      "translation_language": "en",
+      "translation": "Computer software (recorded); transformer (electricity); distribution box (electricity); inverter (electricity); rectifier; battery charger; charging station for electric vehicles; rectifier power unit; power station automation unit; (Electricity)"
+    }
+  ],
+  "owner": "Hunan Kerui Transformer Electric Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省株洲市株洲(国家)高新技术开发区黑龙江路629号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hunan Kerui Transformer Electric Co., Ltd.",
+        "applicantNativeName": "湖南科瑞变流电气股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software (recorded); transformer (electricity); distribution box (electricity); inverter (electricity); rectifier; battery charger; charging station for electric vehicles; rectifier power unit; power station automation unit; (Electricity)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机软件(已录制);变压器(电);配电箱(电);逆变器(电);整流器;电池充电器;电动运载工具用充电站;整流用电力装置;电站自动化装置;控制板(电)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers",
+        "Electrical controlling apparatus and equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        }
+      ]
+    },
+    "id": "1634c957-85d7-4d26-b905-e9e4fbe60d24",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1626"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京集佳知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180525",
+        "applicationNumber": "31173694"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290306",
+      "lastPublicationDate": "20181206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190307",
+        "registrationNumber": "31173694"
+      }
+    },
+    "version": "20251003045125",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/cn/1634c957-85d7-4d26-b905-e9e4fbe60d24",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

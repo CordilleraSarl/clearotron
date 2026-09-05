@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/kr/2decae35-0365-4d6e-8b8e-07dec4f8d2ac",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "2decae35-0365-4d6e-8b8e-07dec4f8d2ac",
+  "applicationNumber": "41-2000-0011550",
+  "registrationNumber": "4100743950000",
+  "applicationDate": "2000-04-19",
+  "registrationDate": "2002-03-20",
+  "expiryDate": "2032-03-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "WOORI",
+  "markTransliteration": "WORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "기계연구업,물리연구업,연구개발대행업,화학연구분석업",
+      "translation_language": "en",
+      "translation": "Mechanical research, physics research, research and development agency, chemical research analysis"
+    }
+  ],
+  "owner": "Woori Technologies Corporation",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "송호찬 (SONG, Ho Chan)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 마포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Woori Technologies Corporation",
+        "applicantNativeName": "주식회사 우리기술"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Mechanical research, physics research, research and development agency, chemical research analysis",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기계연구업,물리연구업,연구개발대행업,화학연구분석업"
+        }
+      ]
+    },
+    "id": "2decae35-0365-4d6e-8b8e-07dec4f8d2ac",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(HOCHAN SONG Patent & Trademark Law Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "송호찬 (SONG, Ho Chan)"
+      },
+      {
+        "representativeName": "채윤 (Chae yun)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20000419",
+        "applicationNumber": "41-2000-0011550"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320320",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20020320",
+        "registrationNumber": "4100743950000"
+      }
+    },
+    "version": "20250625155355",
+    "wordMarkSpecification": {
+      "markTransliteration": "WORI",
+      "markVerbalElementText": "WOORI"
+    }
+  },
+  "_uri": "/mark/kr/2decae35-0365-4d6e-8b8e-07dec4f8d2ac",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:55.751Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

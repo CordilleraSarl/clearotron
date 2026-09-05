@@ -1,0 +1,297 @@
+{
+  "uri": "/mark/us/d7f15e23-f3a6-4ca0-9d05-14f908360947",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "d7f15e23-f3a6-4ca0-9d05-14f908360947",
+  "applicationNumber": "88804914",
+  "registrationNumber": "6141571",
+  "applicationDate": "2020-02-20",
+  "registrationDate": "2020-09-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2020-06-16"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Verifying and monitoring the credentials of healthcare providers and facilities for business purposes",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for creating, tracking and managing credentials and certifications of healthcare providers and facilities",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Integra DMEnsion, LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Bryan J. Massey",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20260115",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "3221 West Big Beaver Rd, Suite 211, Troy, MI, 48084, USAM",
+        "applicantAddressCity": "Troy",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "48084",
+        "applicantAddressStateName": "MICHIGAN",
+        "applicantAddressStreet": "3221 West Big Beaver Rd, Suite 211",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Integra DMEnsion, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Verifying and monitoring the credentials of healthcare providers and facilities for business purposes"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for creating, tracking and managing credentials and certifications of healthcare providers and facilities"
+        }
+      ]
+    },
+    "id": "d7f15e23-f3a6-4ca0-9d05-14f908360947",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260115",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20260115",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20260115",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20251010",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20250901",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20200901",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200616",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20200616",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20200527",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20200509",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20200509",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200225",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20200224",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3221 West Big Beaver Rd, Suite 211, Troy, MI, 48084, USAM",
+        "city": "Troy",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Integra DMEnsion, LLC",
+        "postalCode": "48084",
+        "stateName": "MICHIGAN",
+        "street": "3221 West Big Beaver Rd, Suite 211"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "3221 West Big Beaver Rd, Suite 211, Troy, MI, 48084, USAM",
+        "city": "Troy",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Integra DMEnsion, LLC",
+        "postalCode": "48084",
+        "stateName": "MICHIGAN",
+        "street": "3221 West Big Beaver Rd, Suite 211"
+      },
+      {
+        "address": "3221 West Big Beaver Rd, Suite 211, Troy, MI, 48084, USAM",
+        "city": "Troy",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Integra DMEnsion, LLC",
+        "postalCode": "48084",
+        "stateName": "MICHIGAN",
+        "street": "3221 West Big Beaver Rd, Suite 211"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3221 West Big Beaver Rd, Suite 211, Troy, MI, 48084, USAM",
+        "city": "Troy",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Integra DMEnsion, LLC",
+        "postalCode": "48084",
+        "stateName": "MICHIGAN",
+        "street": "3221 West Big Beaver Rd, Suite 211"
+      }
+    ],
+    "recordLastUpdated": "20260416",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SALT LAKE CITY, UT 84101, United States",
+        "representativeCorrespondentAddressLines": [
+          "SALT LAKE CITY, UT 84101",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Bryan J. Massey KUNZLER BEAN & ADAMSON, 50 W. BROADWAY, SUITE 1000"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SALT LAKE CITY, UT 84101, United States",
+        "representativeAddressLines": [
+          "SALT LAKE CITY, UT 84101",
+          "United States"
+        ],
+        "representativeName": "Bryan J. Massey"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200220",
+        "applicationNumber": "88804914"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20191217"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20191217"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20200122"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20200122"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 8 & 15 - ACCEPTED AND ACKNOWLEDGED",
+        "markOfficialStatusCode": "702",
+        "markOfficialStatusDate": "20260115",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20200616"
+      ],
+      "registration": {
+        "registrationDate": "20200901",
+        "registrationNumber": "6141571"
+      }
+    },
+    "version": "20260416081220",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/us/d7f15e23-f3a6-4ca0-9d05-14f908360947",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.997Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

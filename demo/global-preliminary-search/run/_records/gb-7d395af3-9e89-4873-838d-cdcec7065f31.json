@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/gb/7d395af3-9e89-4873-838d-cdcec7065f31",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "7d395af3-9e89-4873-838d-cdcec7065f31",
+  "applicationNumber": "UK00909581356",
+  "registrationNumber": "UK00909581356",
+  "applicationDate": "2010-12-08",
+  "registrationDate": "2011-04-15",
+  "expiryDate": "2030-12-08",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Venor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "en",
+      "description": "Diagnostic preparations and reagents for quality control testing of medical products, pharmaceuticals, cosmetics, chemicals, laboratory reagents, their raw materials and manufacturing environments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; Industrial analysis and research services; Design and development of computer hardware and software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Minerva Biolabs GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Schkopauer Ring 13, Berlin 12681",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Minerva Biolabs GmbH"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Diagnostic preparations and reagents for quality control testing of medical products, pharmaceuticals, cosmetics, chemicals, laboratory reagents, their raw materials and manufacturing environments."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; Industrial analysis and research services; Design and development of computer hardware and software."
+        }
+      ]
+    },
+    "id": "7d395af3-9e89-4873-838d-cdcec7065f31",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101208",
+        "applicationNumber": "UK00909581356"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301208",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110415",
+        "registrationNumber": "UK00909581356"
+      }
+    },
+    "version": "20250627202053",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Venor"
+    }
+  },
+  "_uri": "/mark/gb/7d395af3-9e89-4873-838d-cdcec7065f31",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

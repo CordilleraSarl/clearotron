@@ -1,0 +1,341 @@
+{
+  "uri": "/mark/us/a3a266f6-2351-46a9-bcca-4f89cbffecb8",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "a3a266f6-2351-46a9-bcca-4f89cbffecb8",
+  "applicationNumber": "78377326",
+  "registrationNumber": "2933182",
+  "applicationDate": "2004-03-02",
+  "registrationDate": "2005-03-15",
+  "expiryDate": null,
+  "renewalDate": "2015-03-15",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2004-12-21"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2025-09-26",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "AGAVE NORTENO",
+  "markTransliteration": null,
+  "markTranslation": "AGAVE NORTHERN",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 [ Musical sound recordings ]",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment in the nature of live performances by a musical band",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Castro, Margarito",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Michael Schlesinger",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20150330",
+      "descriptionText": "REGISTERED - PARTIAL SEC. 8 (10-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "2413 Stokes Lane, Alexandria, VA, 22307",
+        "applicantAddressCity": "Alexandria",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "22307",
+        "applicantAddressStateName": "VIRGINIA",
+        "applicantAddressStreet": "2413 Stokes Lane",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Castro, Margarito"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 [ Musical sound recordings ]"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment in the nature of live performances by a musical band"
+        }
+      ]
+    },
+    "id": "a3a266f6-2351-46a9-bcca-4f89cbffecb8",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250926",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20240315",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20190226",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 8 (10-YR) ACCEPTED"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "REGISTERED - SEC. 9 GRANTED/CHECK RECORD FOR SEC. 8"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20150330",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20150316",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20110326",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20110322",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20110315",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20050315",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20041221",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20041201",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20041014",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20041013",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20040920",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20040919",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20040919",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20040918",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20040318",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6424 Julian Street, Springfield, VA, 22150",
+        "city": "Springfield",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Castro, Margarito",
+        "postalCode": "22150",
+        "stateName": "VIRGINIA",
+        "street": "6424 Julian Street"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2413 Stokes Lane, Alexandria, VA, 22307",
+        "city": "Alexandria",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Castro, Margarito",
+        "postalCode": "22307",
+        "stateName": "VIRGINIA",
+        "street": "2413 Stokes Lane"
+      },
+      {
+        "address": "2413 Stokes Lane, Alexandria, VA, 22307",
+        "city": "Alexandria",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Castro, Margarito",
+        "postalCode": "22307",
+        "stateName": "VIRGINIA",
+        "street": "2413 Stokes Lane"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "6424 Julian Street, Springfield, VA, 22150",
+        "city": "Springfield",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Castro, Margarito",
+        "postalCode": "22150",
+        "stateName": "VIRGINIA",
+        "street": "6424 Julian Street"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "18th Floor, Los Angeles, CA 90067, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "18th Floor",
+          "Los Angeles, CA 90067",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "MICHAEL SCHLESINGER Mitchell Silberberg & Knupp LLP, 2049 Century Park East"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "18th Floor, Los Angeles, CA 90067, UNITED STATES",
+        "representativeAddressLines": [
+          "18th Floor",
+          "Los Angeles, CA 90067",
+          "UNITED STATES"
+        ],
+        "representativeName": "Michael Schlesinger"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040302",
+        "applicationNumber": "78377326"
+      },
+      "cancellationDate": "20250926",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20030101"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20021201"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20030101"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20021201"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusComments": [
+          "CANCELLED SECTION 8 IN INT. CL. 9. MAR 30, 2015"
+        ],
+        "markOfficialStatusDate": "20250926",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20041221"
+      ],
+      "registration": {
+        "registrationDate": "20050315",
+        "registrationNumber": "2933182"
+      },
+      "renewalDate": "20150315"
+    },
+    "version": "20260130163824",
+    "wordMarkSpecification": {
+      "markTranslation": "AGAVE NORTHERN",
+      "markTranslationDescription": "The English translation of the word \"NORTENO\" in the mark is \"northern\".",
+      "markVerbalElementText": "AGAVE NORTENO"
+    }
+  },
+  "_uri": "/mark/us/a3a266f6-2351-46a9-bcca-4f89cbffecb8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

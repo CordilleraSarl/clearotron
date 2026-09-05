@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/fee53e92-ca19-4b0a-8c09-f6b11b1941b4",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "fee53e92-ca19-4b0a-8c09-f6b11b1941b4",
+  "applicationNumber": "2002-003001",
+  "registrationNumber": "4616744",
+  "applicationDate": "2002-01-21",
+  "registrationDate": "2002-10-25",
+  "expiryDate": "2012-10-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2002-11-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＢＬＵＥ　ＳＴＲＥＡＫ",
+  "markTransliteration": "BURUUSUTORIIKU BURUUTORIIKU",
+  "markTranslation": "BLUE STREAK",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，コンピュータハードウェア，特定用途向け集積回路，集積回路，回路版，マイクロコントローラー，マイクロプロセッサー，システム化した複数の部品を載せた半導体チップ，マイクロコンピュータ，バスインターフェイス，その他の電子応用機械器具及びその部品，マクロ電池その他の電池",
+      "translation_language": "en",
+      "translation": "Semiconductor, computer hardware, application specific integrated circuits, integrated circuits, circuit versions, microcontrollers, microprocessors, semiconductor chips carrying systemized parts, microcomputers, bus interfaces and other electronic applied machines and equipment thereof Parts, macro batteries Other batteries"
+    }
+  ],
+  "owner": "NXP SEMICONDUCTORS USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "AKIMOTO TERUWO",
+  "priorities": [
+    {
+      "priorityDate": "20020121"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CALIFORNIA STATE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP SEMICONDUCTORS USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国　９５１３１，カリフォルニア州，サンノゼ，マッケイ　ドライブ　１１０９",
+        "applicantNativeName": "エヌエックスピー　セミコンダクターズ　ユーエスエイ　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor, computer hardware, application specific integrated circuits, integrated circuits, circuit versions, microcontrollers, microprocessors, semiconductor chips carrying systemized parts, microcomputers, bus interfaces and other electronic applied machines and equipment thereof Parts, macro batteries Other batteries",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，コンピュータハードウェア，特定用途向け集積回路，集積回路，回路版，マイクロコントローラー，マイクロプロセッサー，システム化した複数の部品を載せた半導体チップ，マイクロコンピュータ，バスインターフェイス，その他の電子応用機械器具及びその部品，マクロ電池その他の電池"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A03",
+          "natGoodsServicesDescription": "Batteries"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "fee53e92-ca19-4b0a-8c09-f6b11b1941b4",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.02.00",
+      "26.04.07.00",
+      "26.04.12.00",
+      "26.04.18.00",
+      "26.13.25.00",
+      "27.05.01.19",
+      "27.05.21.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20020121"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "AKIMOTO TERUWO",
+        "representativeNativeName": "秋元　輝雄"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20020121",
+        "applicationNumber": "2002-003001"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20121025",
+      "lastPublicationDate": "20021126",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20021025",
+        "registrationNumber": "4616744"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "BLUE STREAK",
+      "markTransliteration": "BURUUSUTORIIKU BURUUTORIIKU",
+      "markVerbalElementText": "ＢＬＵＥ　ＳＴＲＥＡＫ"
+    }
+  },
+  "_uri": "/mark/jp/fee53e92-ca19-4b0a-8c09-f6b11b1941b4",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

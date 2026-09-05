@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/kr/c711d9d7-60df-401b-8d1e-4430dba0fbd6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "c711d9d7-60df-401b-8d1e-4430dba0fbd6",
+  "applicationNumber": "40-1996-0040413",
+  "registrationNumber": "4004045700000",
+  "applicationDate": "1996-09-10",
+  "registrationDate": "1998-06-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "고리",
+  "markTransliteration": "GOREE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    17,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        17,
+        21
+      ],
+      "language": "ko",
+      "description": "tv수신기,모사전송기,발전등,변압기,새창으로 열림,전자계산기,전화기,축전지,휴대용통신기계기구",
+      "translation_language": "en",
+      "translation": "TV receiver, facsimile transmitter, power generation lamp, transformer, open in new window, electronic calculator, telephone, storage battery, portable communication equipment"
+    }
+  ],
+  "owner": "KOREA TELECOM",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박영순 (PARK, Young Sun)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 종로구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KOREA TELECOM",
+        "applicantNativeName": "한국전기통신공사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "TV receiver, facsimile transmitter, power generation lamp, transformer, open in new window, electronic calculator, telephone, storage battery, portable communication equipment",
+          "intClassNumber": "07,08,09,10,11,17,21",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "tv수신기,모사전송기,발전등,변압기,새창으로 열림,전자계산기,전화기,축전지,휴대용통신기계기구"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "039"
+        }
+      ]
+    },
+    "id": "c711d9d7-60df-401b-8d1e-4430dba0fbd6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "# Seongji Heights Cha Bldg., Yeoksam -dong, Gangnam-gu, Seoul, Korea(PARK&PARTNERS)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박영순 (PARK, Young Sun)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19960910",
+        "applicationNumber": "40-1996-0040413"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19980615",
+        "registrationNumber": "4004045700000"
+      }
+    },
+    "version": "20250625145419",
+    "wordMarkSpecification": {
+      "markTransliteration": "GOREE",
+      "markVerbalElementText": "고리"
+    }
+  },
+  "_uri": "/mark/kr/c711d9d7-60df-401b-8d1e-4430dba0fbd6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

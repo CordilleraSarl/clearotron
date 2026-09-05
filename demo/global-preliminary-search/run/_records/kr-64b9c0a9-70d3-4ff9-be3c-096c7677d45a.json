@@ -1,0 +1,147 @@
+{
+  "uri": "/mark/kr/64b9c0a9-70d3-4ff9-be3c-096c7677d45a",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "64b9c0a9-70d3-4ff9-be3c-096c7677d45a",
+  "applicationNumber": "40-1970-0000493",
+  "registrationNumber": "4000194380000",
+  "applicationDate": "1970-02-16",
+  "registrationDate": "1970-05-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "조리",
+  "markTransliteration": "cooking",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    14,
+    16,
+    18,
+    19,
+    20,
+    21,
+    24,
+    26,
+    27,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        18,
+        19,
+        20,
+        21,
+        24,
+        26,
+        27,
+        28
+      ],
+      "language": "ko",
+      "description": "냄비,도시락통,밥통,새창으로 열림,솥,유기,쟁반,주물,주전자,찬합",
+      "translation_language": "en",
+      "translation": "Pot, lunch box, rice cooker, new window, pot, organic, tray, casting, kettle, box"
+    }
+  ],
+  "owner": "Lee Sang Yong",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "부산광역시 서구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Lee Sang Yong",
+        "applicantNativeName": "이상용"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pot, lunch box, rice cooker, new window, pot, organic, tray, casting, kettle, box",
+          "intClassNumber": "01,05,06,07,08,09,11,14,16,18,19,20,21,24,26,27,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "냄비,도시락통,밥통,새창으로 열림,솥,유기,쟁반,주물,주전자,찬합"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "018"
+        }
+      ]
+    },
+    "id": "64b9c0a9-70d3-4ff9-be3c-096c7677d45a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19700216",
+        "applicationNumber": "40-1970-0000493"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19700523",
+        "registrationNumber": "4000194380000"
+      }
+    },
+    "version": "20250625200542",
+    "wordMarkSpecification": {
+      "markTransliteration": "cooking",
+      "markVerbalElementText": "조리"
+    }
+  },
+  "_uri": "/mark/kr/64b9c0a9-70d3-4ff9-be3c-096c7677d45a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

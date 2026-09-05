@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+  "applicationNumber": "37216828",
+  "registrationNumber": null,
+  "applicationDate": "2019-04-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENKURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "测距仪;电源插座;耳机;放映设备;非医用监控装置;摄像机;头戴式耳机;行车记录仪;扬声器音箱;移动电源（可充电电池）",
+      "translation_language": "en",
+      "translation": "range finder; power socket; earphone; projection equipment; non-medical monitoring device; camera; headset; driving recorder; speaker speaker; mobile power (rechargeable battery)"
+    }
+  ],
+  "owner": "Yiwu Tengding Umbrella Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省金华市义乌市稠江街道义乌万达广场7幢3单元1501室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yiwu Tengding Umbrella Co., Ltd.",
+        "applicantNativeName": "义乌市腾鼎伞业有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "range finder; power socket; earphone; projection equipment; non-medical monitoring device; camera; headset; driving recorder; speaker speaker; mobile power (rechargeable battery)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "测距仪;电源插座;耳机;放映设备;非医用监控装置;摄像机;头戴式耳机;行车记录仪;扬声器音箱;移动电源（可充电电池）"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市前海普集知识产权代理有限公司义乌分公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190401",
+        "applicationNumber": "37216828"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003152326",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKURI"
+    }
+  },
+  "_uri": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

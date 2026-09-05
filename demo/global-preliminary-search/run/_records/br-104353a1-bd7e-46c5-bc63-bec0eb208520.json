@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/br/104353a1-bd7e-46c5-bc63-bec0eb208520",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "104353a1-bd7e-46c5-bc63-bec0eb208520",
+  "applicationNumber": "921706120",
+  "registrationNumber": "921706120",
+  "applicationDate": "2020-12-30",
+  "registrationDate": "2021-11-30",
+  "expiryDate": "2031-11-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LIVE NORTE",
+  "markTransliteration": null,
+  "markTranslation": "NORTE AO VIVO",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Aluguel de câmeras de vídeo;Aluguel de cenários para palco;Aluguel de cenários para shows;Aluguel de equipamento de áudio;Aluguel de equipamento de lazer;Aluguel de equipamentos desportivos, exceto veículos;Aluguel de equipamentos para gravação de som;Aluguel de equipamentos para iluminação de teatro ou estúdios de televisão;Aluguel de salão de festas;Decoração de festas, cerimônias e eventos;Promotor de eventos [se artísticos/culturais];Serviços de aluguel de projetores e acessórios cinematográficos;Serviços de cerimonial [planejamento de eventos] sem fins comerciais ou publicitários;Serviços de técnico de iluminação para eventos;Sonorização de eventos para empresas e similares.",
+      "translation_language": "en",
+      "translation": "Rental of video cameras; Rental of stage sets; Rental of stage sets; Rental of audio equipment; Rental of leisure equipment; Rental of sports equipment, except vehicles; Rental of sound recording equipment; for theater or television studio lighting; ballroom rental; decoration of parties, ceremonies and events; event promoter [whether artistic/cultural]; cinema projector and accessory rental services; ceremonial services [event planning] not for commercial or advertising purposes; services of lighting technicians for events; sounding of events for companies and the like."
+    }
+  ],
+  "owner": "LIVE NORTE SERVICOS DE PRODUCAO E EVENTOS LTDA",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "GEORGE CARNEIRO MEDEIROS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "LIVE NORTE SERVICOS DE PRODUCAO E EVENTOS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Rental of video cameras; Rental of stage sets; Rental of stage sets; Rental of audio equipment; Rental of leisure equipment; Rental of sports equipment, except vehicles; Rental of sound recording equipment; for theater or television studio lighting; ballroom rental; decoration of parties, ceremonies and events; event promoter [whether artistic/cultural]; cinema projector and accessory rental services; ceremonial services [event planning] not for commercial or advertising purposes; services of lighting technicians for events; sounding of events for companies and the like.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aluguel de câmeras de vídeo;Aluguel de cenários para palco;Aluguel de cenários para shows;Aluguel de equipamento de áudio;Aluguel de equipamento de lazer;Aluguel de equipamentos desportivos, exceto veículos;Aluguel de equipamentos para gravação de som;Aluguel de equipamentos para iluminação de teatro ou estúdios de televisão;Aluguel de salão de festas;Decoração de festas, cerimônias e eventos;Promotor de eventos [se artísticos/culturais];Serviços de aluguel de projetores e acessórios cinematográficos;Serviços de cerimonial [planejamento de eventos] sem fins comerciais ou publicitários;Serviços de técnico de iluminação para eventos;Sonorização de eventos para empresas e similares."
+        }
+      ]
+    },
+    "id": "104353a1-bd7e-46c5-bc63-bec0eb208520",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "29.01.03",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250701",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "GEORGE CARNEIRO MEDEIROS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201230",
+        "applicationNumber": "921706120"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311130",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211130",
+        "registrationNumber": "921706120"
+      }
+    },
+    "version": "20250701002251",
+    "wordMarkSpecification": {
+      "markTranslation": "NORTE AO VIVO",
+      "markVerbalElementText": "LIVE NORTE"
+    }
+  },
+  "_uri": "/mark/br/104353a1-bd7e-46c5-bc63-bec0eb208520",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

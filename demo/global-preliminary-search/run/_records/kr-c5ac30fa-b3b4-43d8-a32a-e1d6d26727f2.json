@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/kr/c5ac30fa-b3b4-43d8-a32a-e1d6d26727f2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "c5ac30fa-b3b4-43d8-a32a-e1d6d26727f2",
+  "applicationNumber": "40-1998-0005270",
+  "registrationNumber": "4004386130000",
+  "applicationDate": "1998-02-26",
+  "registrationDate": "1999-01-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "코리",
+  "markTransliteration": "KORRY",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    15,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        15,
+        28
+      ],
+      "language": "ko",
+      "description": "기타,녹음된테이프(음악인것),녹화된테이프(음악인것),레코드판,뮤직박스,바이올린,음악이담긴cd,전기기타,피아노,하모니카",
+      "translation_language": "en",
+      "translation": "Other, recorded tapes (music), recorded tapes (music), record plates, music boxes, violins, CDs with music, electric guitars, piano, harmonica"
+    }
+  ],
+  "owner": "HS Ad Inc. CO.,LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김재만 (Kim Jae Man)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 마포구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "HS Ad Inc. CO.,LTD.",
+        "applicantNativeName": "주식회사 에이치에스애드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Other, recorded tapes (music), recorded tapes (music), record plates, music boxes, violins, CDs with music, electric guitars, piano, harmonica",
+          "intClassNumber": "09,15,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기타,녹음된테이프(음악인것),녹화된테이프(음악인것),레코드판,뮤직박스,바이올린,음악이담긴cd,전기기타,피아노,하모니카"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "051"
+        }
+      ]
+    },
+    "id": "c5ac30fa-b3b4-43d8-a32a-e1d6d26727f2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(PanKorea Patent & Law Firm)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김재만 (Kim Jae Man)"
+      },
+      {
+        "representativeAddress": "(YOU ME PATENT & LAW FIRM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김원근 (KIM WON KEUN)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980226",
+        "applicationNumber": "40-1998-0005270"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19990120",
+        "registrationNumber": "4004386130000"
+      }
+    },
+    "version": "20250625154743",
+    "wordMarkSpecification": {
+      "markTransliteration": "KORRY",
+      "markVerbalElementText": "코리"
+    }
+  },
+  "_uri": "/mark/kr/c5ac30fa-b3b4-43d8-a32a-e1d6d26727f2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

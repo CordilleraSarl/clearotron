@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/xs/2538d3e8-b2f8-417d-861d-1fba7972bba9",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "2538d3e8-b2f8-417d-861d-1fba7972bba9",
+  "applicationNumber": null,
+  "registrationNumber": "2052167",
+  "applicationDate": null,
+  "registrationDate": "2011-10-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2016-10-10",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ALL INCLUSIVE NORDONIA CLASS REUNION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CHERYL D. KILROY",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1588 BONNIE RD., MACEDONIA, OH, 44056",
+        "applicantAddressCity": "MACEDONIA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "44056",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "1588 BONNIE RD.",
+        "applicantName": "CHERYL D. KILROY"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "2538d3e8-b2f8-417d-861d-1fba7972bba9",
+    "ipRightKind": "tmk",
+    "kindMark": "FICTITIOUS NAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1588 BONNIE RD., MACEDONIA, OH, 44056",
+        "city": "MACEDONIA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "name": "CHERYL D. KILROY",
+        "postalCode": "44056",
+        "stateName": "OHIO",
+        "street": "1588 BONNIE RD."
+      }
+    ],
+    "recordLastUpdated": "20241214",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cancellationDate": "20161010",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "CANCELLED"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "registration": {
+        "registrationDate": "20111003",
+        "registrationNumber": "2052167"
+      }
+    },
+    "usStateOfficeCode": "OH",
+    "usStateOfficeName": "OHIO",
+    "version": "20241214113450",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ALL INCLUSIVE NORDONIA CLASS REUNION"
+    }
+  },
+  "_uri": "/mark/xs/2538d3e8-b2f8-417d-861d-1fba7972bba9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

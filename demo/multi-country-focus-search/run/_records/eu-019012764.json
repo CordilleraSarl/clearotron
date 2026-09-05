@@ -1,0 +1,65 @@
+{
+  "uri": "/mark/eu/019012764",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "019012764",
+  "applicationNumber": "019012764",
+  "registrationNumber": "019012764",
+  "applicationDate": "2024-04-12",
+  "registrationDate": "2024-08-28",
+  "expiryDate": "2034-04-12",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2024-08-29",
+  "markText": "QOFI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "Elton Labs B.V.",
+  "ownerCountry": null,
+  "representative": "ALGEMEEN OCTROOI- EN MERKENBUREAU B.V.",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Software",
+            " Apps",
+            " Software for the remote and intelligent control of heating apparatus for dispensing hot beverages and of installations for heating or cooling beverages"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 11,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Coffee machines, electric",
+            " Appliances for cooking foodstuffs, Apparatus for cooking beverages, Apparatus for heating foodstuffs, Apparatus for heating beverages, food cooling, apparatus for chilling beverages, Apparatus to preserve food and Apparatus for preserving beverages",
+            " Heating apparatus for dispensing hot beverages",
+            " Installations for heating beverages",
+            " Coffee capsules, empty, for electric coffee machines"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019012764",
+  "_uri": "/mark/eu/019012764",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:33.563Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

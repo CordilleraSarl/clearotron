@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/xs/5d306120-855d-46e6-a910-790313b620f7",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "5d306120-855d-46e6-a910-790313b620f7",
+  "applicationNumber": null,
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": "1996-09-18",
+  "expiryDate": null,
+  "renewalDate": "2016-08-10",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LAWRENCE DUCHOW AND THE RED RAVEN ORCHESTRA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Music - musical group, the red raven name as it applies to music or a music group.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "BARBARA DUSHOW KIENEAST",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6472 9TH ST. RD., OMRO, WI, 54963",
+        "applicantAddressCity": "OMRO",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "54963",
+        "applicantAddressStateName": "WISCONSIN",
+        "applicantAddressStreet": "6472 9TH ST. RD.",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "BARBARA DUSHOW KIENEAST"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Music - musical group, the red raven name as it applies to music or a music group."
+        }
+      ]
+    },
+    "id": "5d306120-855d-46e6-a910-790313b620f7",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "6472 9TH ST RD., OMRO, WI, 54963",
+        "city": "OMRO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "BARBARA (DUCHOW) KIENTAST",
+        "phoneNumber": "414-685-6191",
+        "postalCode": "54963",
+        "stateName": "WISCONSIN",
+        "street": "6472 9TH ST RD."
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "6472 9TH ST. RD., OMRO, WI, 54963",
+        "city": "OMRO",
+        "legalEntity": "INDIVIDUAL",
+        "name": "BARBARA (DUCHOW) KIENAST",
+        "postalCode": "54963",
+        "renewalDate": "20060809",
+        "stateName": "WISCONSIN",
+        "street": "6472 9TH ST. RD."
+      },
+      {
+        "address": "6472 9TH ST. RD., OMRO, WI, 54963",
+        "city": "OMRO",
+        "legalEntity": "INDIVIDUAL",
+        "name": "BARBARA DUSHOW KIENEAST",
+        "postalCode": "54963",
+        "renewalDate": "20160810",
+        "stateName": "WISCONSIN",
+        "street": "6472 9TH ST. RD."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "19961001",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "19960918"
+      },
+      "renewalDate": "20160810"
+    },
+    "usStateOfficeCode": "WI",
+    "usStateOfficeName": "WISCONSIN",
+    "version": "20240305084558",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LAWRENCE DUCHOW AND THE RED RAVEN ORCHESTRA"
+    }
+  },
+  "_uri": "/mark/xs/5d306120-855d-46e6-a910-790313b620f7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

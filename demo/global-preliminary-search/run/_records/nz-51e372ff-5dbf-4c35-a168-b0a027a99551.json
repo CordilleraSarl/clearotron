@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "51e372ff-5dbf-4c35-a168-b0a027a99551",
+  "applicationNumber": "1313060",
+  "registrationNumber": "1313060",
+  "applicationDate": "2026-01-20",
+  "registrationDate": "2026-07-28",
+  "expiryDate": "2036-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENKARO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Administrative management of real estate companies; business administration and management relating to real estate; business administration and management services relating to real estate; business management of apartments; business management of real estate companies; business management of real estate agencies; outsourced administrative management of real estate companies; real estate sales management services; outsourced administrative management of real estate agencies; commercial business management; business information management; real estate sales management; business project management; business management planning; business management assistance; business risk management services; business project management and administration; business management, administration and information services; consultancy relating to the establishment and management of businesses; collecting information for business management; business management of companies; management of business projects for others; business management and administration services; providing online company management services in relation to accounting, and business project management; online marketing services; business consulting services for start-up companies; marketing; business marketing; business management; business management consulting; business management and consulting; business project management services for construction projects; business management consultancy in the field of digital technology; business management consultancy in the field of information technology.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Property management; property portfolio management; property asset management services; property management services; property investment and management services; real estate and property management; real estate property management; real estate and property management services; real estate services relating to the management of property investments; real estate services related to management of property investments; real estate management of commercial property; real estate management of rental properties; administration of property portfolios; real estate management services relating to residential buildings; property investment; management of assets; multi-family property management; real estate management services relating to building complexes; real estate management services relating to commercial buildings; real estate management consultancy; real estate management services; real estate management services relating to housing estates; asset management services; management of investment assets; management of apartments; real estate management services relating to office premises; real estate management services relating to industrial premises; real estate management services relating to retail premises; real estate management consultation; providing real estate information relating to property and land; real property acquisition; real estate and housing management; providing property assessments and analytics; asset and portfolio management services; real estate brokerage, management and appraisal services; advisory services relating to mortgages for residential properties; advisory services relating to residential property mortgages; real estate agency services for the leasing of property; real estate agency services for the rental of property; real estate management of retirement communities; apartment management services; private equity investment management; consultancy services relating to real estate; asset management services for third parties; digital asset management services; virtual brokerage of real estate properties; securing of funds for the purchase of property; debt management services; time-share property management services; financial management of holding companies; financial management of shares in other companies; management of assets for third parties; business investment services; financial management for businesses; financial management of companies; management of buildings.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Real estate development [building and construction services]; building construction supervision services for real estate projects; advisory services relating to the renovation of property; property construction; on-site building project management; providing on-line information relating to building construction; providing online information relating to building construction; providing online information relating to the construction of buildings; providing on-line information relating to the construction of buildings; on site building project management; building project management [construction supervision]; on site building project management [construction supervision].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Training in the field of real estate management; education in the field of business management; providing online training; providing on-line training; training courses in strategic planning relating to advertising, promotion, marketing and business; training in the field of business management; education and training in the field of business management; training services in the field of project management; teaching and training services in the fields of business, industry and information technology.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software as a service [saas] for in the field of property inspections and risk assessment; technical planning relating to real estate development projects; design and development of websites in the marketing field for advertising agencies; engineering project management services; building project management [construction drafting, design and planning]; construction project management services [construction drafting, design and planning]; technical project planning services; design and development of software; software design and development services; consultancy relating to the design and development of computer software; design and development of software for web site development; consultancy relating to the design and development of information and communications technology; consulting services in the field of software as a service [saas]; hosting of software as a service [saas]; platform as a service [paas]; design and development of visualization technologies for advertising real estate, commercial products and businesses of others; consultancy in the field of computer technology.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENKARO LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Waldorf Crescent, Orewa 0931",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "VENKARO LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Administrative management of real estate companies; business administration and management relating to real estate; business administration and management services relating to real estate; business management of apartments; business management of real estate companies; business management of real estate agencies; outsourced administrative management of real estate companies; real estate sales management services; outsourced administrative management of real estate agencies; commercial business management; business information management; real estate sales management; business project management; business management planning; business management assistance; business risk management services; business project management and administration; business management, administration and information services; consultancy relating to the establishment and management of businesses; collecting information for business management; business management of companies; management of business projects for others; business management and administration services; providing online company management services in relation to accounting, and business project management; online marketing services; business consulting services for start-up companies; marketing; business marketing; business management; business management consulting; business management and consulting; business project management services for construction projects; business management consultancy in the field of digital technology; business management consultancy in the field of information technology."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Property management; property portfolio management; property asset management services; property management services; property investment and management services; real estate and property management; real estate property management; real estate and property management services; real estate services relating to the management of property investments; real estate services related to management of property investments; real estate management of commercial property; real estate management of rental properties; administration of property portfolios; real estate management services relating to residential buildings; property investment; management of assets; multi-family property management; real estate management services relating to building complexes; real estate management services relating to commercial buildings; real estate management consultancy; real estate management services; real estate management services relating to housing estates; asset management services; management of investment assets; management of apartments; real estate management services relating to office premises; real estate management services relating to industrial premises; real estate management services relating to retail premises; real estate management consultation; providing real estate information relating to property and land; real property acquisition; real estate and housing management; providing property assessments and analytics; asset and portfolio management services; real estate brokerage, management and appraisal services; advisory services relating to mortgages for residential properties; advisory services relating to residential property mortgages; real estate agency services for the leasing of property; real estate agency services for the rental of property; real estate management of retirement communities; apartment management services; private equity investment management; consultancy services relating to real estate; asset management services for third parties; digital asset management services; virtual brokerage of real estate properties; securing of funds for the purchase of property; debt management services; time-share property management services; financial management of holding companies; financial management of shares in other companies; management of assets for third parties; business investment services; financial management for businesses; financial management of companies; management of buildings."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Real estate development [building and construction services]; building construction supervision services for real estate projects; advisory services relating to the renovation of property; property construction; on-site building project management; providing on-line information relating to building construction; providing online information relating to building construction; providing online information relating to the construction of buildings; providing on-line information relating to the construction of buildings; on site building project management; building project management [construction supervision]; on site building project management [construction supervision]."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Training in the field of real estate management; education in the field of business management; providing online training; providing on-line training; training courses in strategic planning relating to advertising, promotion, marketing and business; training in the field of business management; education and training in the field of business management; training services in the field of project management; teaching and training services in the fields of business, industry and information technology."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software as a service [saas] for in the field of property inspections and risk assessment; technical planning relating to real estate development projects; design and development of websites in the marketing field for advertising agencies; engineering project management services; building project management [construction drafting, design and planning]; construction project management services [construction drafting, design and planning]; technical project planning services; design and development of software; software design and development services; consultancy relating to the design and development of computer software; design and development of software for web site development; consultancy relating to the design and development of information and communications technology; consulting services in the field of software as a service [saas]; hosting of software as a service [saas]; platform as a service [paas]; design and development of visualization technologies for advertising real estate, commercial products and businesses of others; consultancy in the field of computer technology."
+        }
+      ]
+    },
+    "id": "51e372ff-5dbf-4c35-a168-b0a027a99551",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260805",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260120",
+        "applicationNumber": "1313060"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360120",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260728",
+        "registrationNumber": "1313060"
+      }
+    },
+    "version": "20260805020302",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKARO"
+    }
+  },
+  "_uri": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

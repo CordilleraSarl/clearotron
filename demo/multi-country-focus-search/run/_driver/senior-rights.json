@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "policy": "open-item",
+  "rows": [
+    {
+      "ordinal": 1,
+      "mark": "qori",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 2,
+      "mark": "VENTURI",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 3,
+      "mark": "VENTURI",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 4,
+      "mark": "VENTURI",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 5,
+      "mark": "QORIA",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 6,
+      "mark": "QUORI",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 7,
+      "mark": "VENARI",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 8,
+      "mark": "VENTORIX",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 9,
+      "mark": "EVENTORI",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 10,
+      "mark": "VENTURI (venturi.io)",
+      "applicable": false,
+      "reason": "no register legs (use/marketplace evidence path)"
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+{
+  "uri": "/mark/jp/69591bcd-a268-479d-a29d-c33babdedfe3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "69591bcd-a268-479d-a29d-c33babdedfe3",
+  "applicationNumber": "2020-089476",
+  "registrationNumber": null,
+  "applicationDate": "2020-07-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Ｗｏｖｅｎ　ＣＯＲＥ",
+  "markTransliteration": "UOOBUNKOA",
+  "markTranslation": "WOVEN CORE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    39,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "乗物運転技能訓練用シミュレーター，電気通信機械器具，無線通信機械器具，携帯用通信機械器具，車両用通信機械器具，無線応用機械器具，乗物用ナビゲーション装置，電気通信機械器具の部品及び附属品，携帯情報端末，電子応用機械器具及びその部品，電子計算機及びその周辺機器，電子計算機用プログラム，自動運転車の運行管理用コンピュータプログラム，自動運転車用コンピュータプログラム，コンピュータ操作用プログラム（記憶されたもの），車載用コンピュータ操作用プログラム（記憶されたもの），コンピュータソフトウェア（記憶されたもの），車載用コンピュータソフトウェア（記憶されたもの），コンピュータソフトウェア用アプリケーション（電気通信回線を通じてダウンロードにより販売されるもの），コンピュータハードウェア，車載用コンピュータハードウェア，車載用カメラ，動作感知センサー，動作認識センサー，各種センサーから異常信号を検知して警報を発する無線式警報装置，速度測定用センサー，ナビゲーション装置，ナビゲーション地図情報受信装置，電子計算機プログラム，地図情報用コンピュータプログラム，地図情報作成のためのコンピュータデータベース用の電子計算機用プログラム，地図情報を提供するための電子計算機及び電子計算機用プログラム，地図情報用コンピュータソフトウェア，車両の自動運転用シミュレーター，車両の自動運転シミュレーター用コンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動を管理するためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動に関するシミュレーションを行うためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するシミュレーションを行うためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するシミュレーションを行うためのコンピュータプログラム",
+      "translation_language": "en",
+      "translation": "Vehicle driving skill training simulator, telecommunications equipment, wireless communication equipment, portable communication equipment, vehicle communication equipment, wireless application equipment, vehicle navigation equipment, telecommunications equipment parts and accessories, mobile phones Information terminal, electronically-applied machine and its parts, computer and its peripherals, computer program, computer program for operation management of self-driving car, computer program for self-driving car, computer operation program (stored) , In-vehicle computer operation program (stored), computer software (stored), vehicle computer software (stored), computer software application (sold by download through a telecommunication line) , Computer hardware, in-vehicle computer hardware, in-vehicle camera, motion sensor, motion recognition sensor, wireless alarm device that detects an abnormal signal from various sensors and issues an alarm, speed measurement sensor, navigation device, navigation map Information receiving device, computer program, computer program for map information, computer program for computer database for map information creation, computer and computer program for providing map information, computer software for map information, Simulator for automatic driving of vehicles, computer program for automatic driving simulator of vehicles, computer program for managing movement by autonomous driving vehicles in environment-friendly cities (so-called smart cities) with thorough resource saving, thorough resource saving Computer programs for managing the operation and operation status of commercial facilities in eco-friendly cities (so-called smart cities), lifelines for electricity, gas, water, etc. in eco-friendly cities (so-called smart cities) with thorough resource conservation Computer program for supplying and managing energy related to energy conservation, computer program for simulating movement by autonomous driving vehicle in resource-saving city (so-called smart city), resource-saving environment-friendly type A computer program for simulating the operation and operation of commercial facilities in a city (so-called smart city), an environment-friendly city (so-called smart city) that thoroughly implements resource saving A computer program for simulating the supply and management of energy related to lifelines such as electricity, gas, and water."
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": "自動車，無人自動車（自動運転車），貨物自動車，自動運転貨物自動車，自動車並びにその部品及び附属品，無人航空機，自動運転バス，バス並びにその部品及び附属品，トラック並びにその部品及び附属品，自動運転車，自動運転車用の自動運転装置",
+      "translation_language": "en",
+      "translation": "Automobiles, unmanned vehicles (autonomous vehicles), freight vehicles, self-driving freight vehicles, automobiles and their parts and accessories, unmanned aircraft, self-driving buses, buses and their parts and accessories, trucks and their parts and accessories, automatic Autonomous driving device for driving vehicles and autonomous vehicles"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": null,
+      "description": "道路情報の提供，インターネットその他の通信ネットワークを利用した道路交通情報の提供，全地球測位システム（ＧＰＳ）を用いた車両の位置情報の提供，地図上の車両の所在位置に関する情報の提供，車両の運行管理・移動状況把握に関する情報の提供，道路の交通量に関する情報の提供及び情報の管理，道路の渋滞予測に関する情報の提供，道路の渋滞情報の提供，道路交通情報の提供",
+      "translation_language": "en",
+      "translation": "Provision of road information, provision of road traffic information using the Internet and other communication networks, provision of vehicle position information using the global positioning system (GPS), provision of information on the location of vehicles on a map, Providing information related to operation management and movement status, providing and managing information related to road traffic, providing information related to traffic congestion prediction, providing traffic congestion information, providing road traffic information"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，自動運転車用電子計算機のプログラムの設計・作成又は保守，インターネットを介した自動運転車の運行管理用コンピュータプログラムの提供，インターネットを介した自動運転車用コンピュータプログラムの提供，遠隔操作によるデータのバックアップ，コンピュータープラットフォームの開発，コンピュータソフトウェアのバージョンアップ，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，電子計算機用プログラムの提供，クラウドコンピューティング，コンピュータソフトウェア及びハードウェアの試験，コンピュータソフトウェアの検査，電子計算機の貸与，自動運転技術・自動運転車・自動運転車用のコンピュータソフトウェアに関する試験・研究・設計・開発及びこれらに関する指導・助言・情報の提供・コンサルティング，検索エンジンの提供，地図情報に関する検索エンジンの提供，地図情報作成のためのコンピュータデータベース用コンピュータプログラムの設計・作成又は保守，地図の作製，地図のデザイン考案，自動運転技術・自動運転車に関する科学的及び技術的な研究開発，車両の自動運転用コンピュータソフトウェアの開発，車両の自動運転用コンピュータソフトウェアの提供，車両の自動運転用シミュレーターの開発，車両の自動運転用シミュレーターの開発に関する情報の提供，車両の自動運転用シミュレーターのコンピュータソフトウェアの開発，車両の自動運転用シミュレーターのコンピュータソフトウェアの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動を管理するためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動に関するシミュレーションを行うためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するシミュレーションを行うためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するシミュレーションを行うためのコンピュータプログラムの提供",
+      "translation_language": "en",
+      "translation": "Design / creation / maintenance of computer programs, design / creation / maintenance of computer programs for automatic driving vehicles, provision of computer programs for operation management of automatic driving vehicles via the Internet, for automatic driving vehicles via the Internet Providing computer programs, backing up data by remote operation, developing computer platforms, upgrading computer software, electronic computers, automobiles, and other highly specialized knowledge and techniques for accurate operations according to their applications. Introduction and explanation of machine performance and operation methods that require experience, provision of computer programs, cloud computing, computer software and hardware testing, computer software inspection, computer lending, automatic driving technology, etc. For testing, research, design, and development of computer software for autonomous vehicles and vehicles, as well as guidance, advice, information provision, consulting, search engine provision, search engine provision for map information, and map information creation. Design, creation or maintenance of computer programs for computer databases, map creation, map design devising, scientific and technical research and development on automatic driving technology and automatic driving vehicles, development of computer software for automatic driving of vehicles, vehicles Providing computer software for automatic driving of vehicles, developing simulators for automatic driving of vehicles, providing information on developing simulators for automatic driving of vehicles, developing computer software for simulators for automatic driving of vehicles, and simulators for automatic driving of vehicles. Providing computer software, providing computer programs to manage movement by autonomous vehicles in environment-friendly cities (so-called smart cities) that thoroughly save resources, and environment-friendly cities that thoroughly save resources (so-called smart cities) ) To provide computer programs to manage the operation and operation status of commercial facilities, and to supply and manage energy related to lifelines such as electricity, gas, and water in environment-friendly cities (so-called smart cities) that thoroughly conserve resources. Providing a computer program for the computer program, providing a computer program for simulating movement by an autonomous vehicle in an environment-friendly city (so-called smart city) that thoroughly saves resources, and an environment-friendly city that thoroughly saves resources (Iwa) Providing computer programs for simulating the operation and operation status of commercial facilities in (Yuru Smart City), and lifelines such as electricity, gas, and water in environment-friendly cities (so-called smart cities) that thoroughly conserve resources. Providing computer programs for simulating energy supply management"
+    }
+  ],
+  "owner": "WOVEN PLANET HOLDINGS INC.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "NAKAMURA CHIKOU",
+  "priorities": [
+    {
+      "priorityDate": "20200720"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHUO-KU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "WOVEN PLANET HOLDINGS INC.",
+        "applicantNativeAddress": "東京都中央区",
+        "applicantNativeName": "ウーブン・プラネット・ホールディングス株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Vehicle driving skill training simulator, telecommunications equipment, wireless communication equipment, portable communication equipment, vehicle communication equipment, wireless application equipment, vehicle navigation equipment, telecommunications equipment parts and accessories, mobile phones Information terminal, electronically-applied machine and its parts, computer and its peripherals, computer program, computer program for operation management of self-driving car, computer program for self-driving car, computer operation program (stored) , In-vehicle computer operation program (stored), computer software (stored), vehicle computer software (stored), computer software application (sold by download through a telecommunication line) , Computer hardware, in-vehicle computer hardware, in-vehicle camera, motion sensor, motion recognition sensor, wireless alarm device that detects an abnormal signal from various sensors and issues an alarm, speed measurement sensor, navigation device, navigation map Information receiving device, computer program, computer program for map information, computer program for computer database for map information creation, computer and computer program for providing map information, computer software for map information, Simulator for automatic driving of vehicles, computer program for automatic driving simulator of vehicles, computer program for managing movement by autonomous driving vehicles in environment-friendly cities (so-called smart cities) with thorough resource saving, thorough resource saving Computer programs for managing the operation and operation status of commercial facilities in eco-friendly cities (so-called smart cities), lifelines for electricity, gas, water, etc. in eco-friendly cities (so-called smart cities) with thorough resource conservation Computer program for supplying and managing energy related to energy conservation, computer program for simulating movement by autonomous driving vehicle in resource-saving city (so-called smart city), resource-saving environment-friendly type A computer program for simulating the operation and operation of commercial facilities in a city (so-called smart city), an environment-friendly city (so-called smart city) that thoroughly implements resource saving A computer program for simulating the supply and management of energy related to lifelines such as electricity, gas, and water.",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "乗物運転技能訓練用シミュレーター，電気通信機械器具，無線通信機械器具，携帯用通信機械器具，車両用通信機械器具，無線応用機械器具，乗物用ナビゲーション装置，電気通信機械器具の部品及び附属品，携帯情報端末，電子応用機械器具及びその部品，電子計算機及びその周辺機器，電子計算機用プログラム，自動運転車の運行管理用コンピュータプログラム，自動運転車用コンピュータプログラム，コンピュータ操作用プログラム（記憶されたもの），車載用コンピュータ操作用プログラム（記憶されたもの），コンピュータソフトウェア（記憶されたもの），車載用コンピュータソフトウェア（記憶されたもの），コンピュータソフトウェア用アプリケーション（電気通信回線を通じてダウンロードにより販売されるもの），コンピュータハードウェア，車載用コンピュータハードウェア，車載用カメラ，動作感知センサー，動作認識センサー，各種センサーから異常信号を検知して警報を発する無線式警報装置，速度測定用センサー，ナビゲーション装置，ナビゲーション地図情報受信装置，電子計算機プログラム，地図情報用コンピュータプログラム，地図情報作成のためのコンピュータデータベース用の電子計算機用プログラム，地図情報を提供するための電子計算機及び電子計算機用プログラム，地図情報用コンピュータソフトウェア，車両の自動運転用シミュレーター，車両の自動運転シミュレーター用コンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動を管理するためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動に関するシミュレーションを行うためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するシミュレーションを行うためのコンピュータプログラム，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するシミュレーションを行うためのコンピュータプログラム"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Automobiles, unmanned vehicles (autonomous vehicles), freight vehicles, self-driving freight vehicles, automobiles and their parts and accessories, unmanned aircraft, self-driving buses, buses and their parts and accessories, trucks and their parts and accessories, automatic Autonomous driving device for driving vehicles and autonomous vehicles",
+          "intClassNumber": "12",
+          "intGoodsServicesDescription": "自動車，無人自動車（自動運転車），貨物自動車，自動運転貨物自動車，自動車並びにその部品及び附属品，無人航空機，自動運転バス，バス並びにその部品及び附属品，トラック並びにその部品及び附属品，自動運転車，自動運転車用の自動運転装置"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of road information, provision of road traffic information using the Internet and other communication networks, provision of vehicle position information using the global positioning system (GPS), provision of information on the location of vehicles on a map, Providing information related to operation management and movement status, providing and managing information related to road traffic, providing information related to traffic congestion prediction, providing traffic congestion information, providing road traffic information",
+          "intClassNumber": "39",
+          "intGoodsServicesDescription": "道路情報の提供，インターネットその他の通信ネットワークを利用した道路交通情報の提供，全地球測位システム（ＧＰＳ）を用いた車両の位置情報の提供，地図上の車両の所在位置に関する情報の提供，車両の運行管理・移動状況把握に関する情報の提供，道路の交通量に関する情報の提供及び情報の管理，道路の渋滞予測に関する情報の提供，道路の渋滞情報の提供，道路交通情報の提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design / creation / maintenance of computer programs, design / creation / maintenance of computer programs for automatic driving vehicles, provision of computer programs for operation management of automatic driving vehicles via the Internet, for automatic driving vehicles via the Internet Providing computer programs, backing up data by remote operation, developing computer platforms, upgrading computer software, electronic computers, automobiles, and other highly specialized knowledge and techniques for accurate operations according to their applications. Introduction and explanation of machine performance and operation methods that require experience, provision of computer programs, cloud computing, computer software and hardware testing, computer software inspection, computer lending, automatic driving technology, etc. For testing, research, design, and development of computer software for autonomous vehicles and vehicles, as well as guidance, advice, information provision, consulting, search engine provision, search engine provision for map information, and map information creation. Design, creation or maintenance of computer programs for computer databases, map creation, map design devising, scientific and technical research and development on automatic driving technology and automatic driving vehicles, development of computer software for automatic driving of vehicles, vehicles Providing computer software for automatic driving of vehicles, developing simulators for automatic driving of vehicles, providing information on developing simulators for automatic driving of vehicles, developing computer software for simulators for automatic driving of vehicles, and simulators for automatic driving of vehicles. Providing computer software, providing computer programs to manage movement by autonomous vehicles in environment-friendly cities (so-called smart cities) that thoroughly save resources, and environment-friendly cities that thoroughly save resources (so-called smart cities) ) To provide computer programs to manage the operation and operation status of commercial facilities, and to supply and manage energy related to lifelines such as electricity, gas, and water in environment-friendly cities (so-called smart cities) that thoroughly conserve resources. Providing a computer program for the computer program, providing a computer program for simulating movement by an autonomous vehicle in an environment-friendly city (so-called smart city) that thoroughly saves resources, and an environment-friendly city that thoroughly saves resources (Iwa) Providing computer programs for simulating the operation and operation status of commercial facilities in (Yuru Smart City), and lifelines such as electricity, gas, and water in environment-friendly cities (so-called smart cities) that thoroughly conserve resources. Providing computer programs for simulating energy supply management",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，自動運転車用電子計算機のプログラムの設計・作成又は保守，インターネットを介した自動運転車の運行管理用コンピュータプログラムの提供，インターネットを介した自動運転車用コンピュータプログラムの提供，遠隔操作によるデータのバックアップ，コンピュータープラットフォームの開発，コンピュータソフトウェアのバージョンアップ，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，電子計算機用プログラムの提供，クラウドコンピューティング，コンピュータソフトウェア及びハードウェアの試験，コンピュータソフトウェアの検査，電子計算機の貸与，自動運転技術・自動運転車・自動運転車用のコンピュータソフトウェアに関する試験・研究・設計・開発及びこれらに関する指導・助言・情報の提供・コンサルティング，検索エンジンの提供，地図情報に関する検索エンジンの提供，地図情報作成のためのコンピュータデータベース用コンピュータプログラムの設計・作成又は保守，地図の作製，地図のデザイン考案，自動運転技術・自動運転車に関する科学的及び技術的な研究開発，車両の自動運転用コンピュータソフトウェアの開発，車両の自動運転用コンピュータソフトウェアの提供，車両の自動運転用シミュレーターの開発，車両の自動運転用シミュレーターの開発に関する情報の提供，車両の自動運転用シミュレーターのコンピュータソフトウェアの開発，車両の自動運転用シミュレーターのコンピュータソフトウェアの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動を管理するためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における自動運転車両による移動に関するシミュレーションを行うためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における商業施設の運営及び稼働状況を管理するシミュレーションを行うためのコンピュータプログラムの提供，省資源化を徹底した環境配慮型都市（いわゆるスマートシティ）における電気・ガス・水等ライフラインに関するエネルギーを供給管理するシミュレーションを行うためのコンピュータプログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G04",
+          "natGoodsServicesDescription": "Fire alarms; Gas alarms; Anti-theft warning apparatus"
+        },
+        {
+          "natClassNumber": "09G64",
+          "natGoodsServicesDescription": "Simulators for the steering and control of vehicles"
+        },
+        {
+          "natClassNumber": "10B01",
+          "natGoodsServicesDescription": "Photographic machines and apparatus; Cinematographic machines and apparatus; Optical machines and apparatus"
+        },
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "12A02",
+          "natGoodsServicesDescription": "Aircraft and their parts and fittings"
+        },
+        {
+          "natClassNumber": "12A05",
+          "natGoodsServicesDescription": "Automobiles and their parts and fittings"
+        },
+        {
+          "natClassNumber": "39B01",
+          "natGoodsServicesDescription": "Car transport"
+        },
+        {
+          "natClassNumber": "39B02",
+          "natGoodsServicesDescription": "Providing road and traffic information"
+        },
+        {
+          "natClassNumber": "42N01",
+          "natGoodsServicesDescription": "Architectural design; Surveying"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q03",
+          "natGoodsServicesDescription": "Testing, inspection or research on agriculture, livestock breeding or fisheries"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "69591bcd-a268-479d-a29d-c33babdedfe3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20200720"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAKAMURA CHIKOU",
+        "representativeNativeName": "中村　知公"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20200720",
+        "applicationNumber": "2020-089476"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20240321110851",
+    "wordMarkSpecification": {
+      "markTranslation": "WOVEN CORE",
+      "markTransliteration": "UOOBUNKOA",
+      "markVerbalElementText": "Ｗｏｖｅｎ　ＣＯＲＥ"
+    }
+  },
+  "_uri": "/mark/jp/69591bcd-a268-479d-a29d-c33babdedfe3",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:13.124Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/bc944f50-918c-4ff2-bf12-65a07f375d10",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "bc944f50-918c-4ff2-bf12-65a07f375d10",
+  "applicationNumber": "2014-009932",
+  "registrationNumber": "5765533",
+  "applicationDate": "2014-02-12",
+  "registrationDate": "2015-05-22",
+  "expiryDate": "2035-05-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-06-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＵＭＥＭＳ",
+  "markTransliteration": "YUUEMUIIEMUESU YUUMEMUZU",
+  "markTranslation": "UMEMS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，３次元集積回路，一つの集積回路チップに用いる電子応用機械器具用小型インターフェース，自動車・工業製品・民生品・医療の分野で用いる動作・振動・圧力・磁界・電磁波波長エネルギーの物理的変化を検知するためのセンサー，加速度計，ジャイロセンサー，圧力センサー，気圧センサー，高度計，絶対圧センサー，慣性センサー，物理量を測定するためのセンサー，電子応用機械器具及びその部品，測定機械器具但し、医療の分野で用いる動作・振動・圧力・磁界・電磁波波長エネルギーの物理的変化を検知するためのセンサーを除く",
+      "translation_language": "en",
+      "translation": "Semiconductors, integrated circuits, three-dimensional integrated circuits, small interfaces for electronic machinery and equipment used in one integrated circuit chip, operation, vibration, pressure, magnetic field, electromagnetic wave wavelength energy used in the fields of automobiles, industrial products, consumer products, and medical care. Sensors for detecting physical changes, accelerometers, gyro sensors, pressure sensors, barometric pressure sensors, altimeters, absolute pressure sensors, inertial sensors, sensors for measuring physical quantities, electronic applied mechanical devices and their parts, measuring mechanical devices However, it excludes sensors for detecting physical changes in motion, vibration, pressure, magnetic field, electromagnetic wave wavelength energy used in the medical field."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20140212"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, integrated circuits, three-dimensional integrated circuits, small interfaces for electronic machinery and equipment used in one integrated circuit chip, operation, vibration, pressure, magnetic field, electromagnetic wave wavelength energy used in the fields of automobiles, industrial products, consumer products, and medical care. Sensors for detecting physical changes, accelerometers, gyro sensors, pressure sensors, barometric pressure sensors, altimeters, absolute pressure sensors, inertial sensors, sensors for measuring physical quantities, electronic applied mechanical devices and their parts, measuring mechanical devices However, it excludes sensors for detecting physical changes in motion, vibration, pressure, magnetic field, electromagnetic wave wavelength energy used in the medical field.",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，３次元集積回路，一つの集積回路チップに用いる電子応用機械器具用小型インターフェース，自動車・工業製品・民生品・医療の分野で用いる動作・振動・圧力・磁界・電磁波波長エネルギーの物理的変化を検知するためのセンサー，加速度計，ジャイロセンサー，圧力センサー，気圧センサー，高度計，絶対圧センサー，慣性センサー，物理量を測定するためのセンサー，電子応用機械器具及びその部品，測定機械器具但し、医療の分野で用いる動作・振動・圧力・磁界・電磁波波長エネルギーの物理的変化を検知するためのセンサーを除く"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring or testing machines and instruments"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic meters and testers"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        }
+      ]
+    },
+    "id": "bc944f50-918c-4ff2-bf12-65a07f375d10",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20140212"
+      }
+    ],
+    "recordLastUpdated": "20251024",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140212",
+        "applicationNumber": "2014-009932"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350522",
+      "lastPublicationDate": "20150623",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150522",
+        "registrationNumber": "5765533"
+      }
+    },
+    "version": "20251024082610",
+    "wordMarkSpecification": {
+      "markTranslation": "UMEMS",
+      "markTransliteration": "YUUEMUIIEMUESU YUUMEMUZU",
+      "markVerbalElementText": "ＵＭＥＭＳ"
+    }
+  },
+  "_uri": "/mark/jp/bc944f50-918c-4ff2-bf12-65a07f375d10",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

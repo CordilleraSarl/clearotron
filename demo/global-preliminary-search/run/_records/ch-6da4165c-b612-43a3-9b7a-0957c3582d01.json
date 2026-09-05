@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/ch/6da4165c-b612-43a3-9b7a-0957c3582d01",
+  "provider": "clarivate",
+  "office": "ch",
+  "guid": "6da4165c-b612-43a3-9b7a-0957c3582d01",
+  "applicationNumber": "6319/2002",
+  "registrationNumber": "504951",
+  "applicationDate": "2002-07-17",
+  "registrationDate": "2002-11-07",
+  "expiryDate": "2032-07-17",
+  "renewalDate": "2012-07-17",
+  "lastPublicationDate": "2002-11-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    17,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        17,
+        40,
+        41,
+        42
+      ],
+      "language": "de",
+      "description": "6 Gleit -und Dichtmaterialien, nämlich metallische Folien. 7 Kompressoren; Motoren (ausgenommen Motoren für Landfahrzeuge); Bestandteile für Kompressoren und Verbrennungsmotoren, insbesondere Radialdichtringe, Kolbenringe, Ventile und Flachdichtungen; Metallische Dichtungen, nämlich Flachdichtungen und Dichtringe (Motorenbestandteile); Nichtmetallische Dichtungen für Motoren und Kompressoren. 17 Metallische Dichtungen, nämlich Flachdichtungen und Dichtringe. 40 Bearbeitung von Dichtmaterialien. 41 Ausbildung in der Anwendung und technischen Auslegung von Dichtmaterialien. 42 Berechnung und Auslegung von Dichtmaterialien; Ingenieurarbeiten in Zusammenhang mit Dichtungsproblemen.",
+      "translation_language": "en",
+      "translation": "6 Sliding and sealing materials, namely metallic foils. 7 compressors; motors and engines (except for land vehicles); Components for compressors and internal combustion engines, in particular radial sealing rings, piston rings, valves and flat gaskets; Metallic seals, namely flat seals and sealing rings (motor components); Non-metallic gaskets for engines and compressors. 17 Metallic gaskets, namely flat gaskets and sealing rings. 40 processing of sealing materials. 41 Training in the application and technical design of sealing materials. 42 Calculation and design of sealing materials; Engineering work related to sealing problems."
+    }
+  ],
+  "owner": "Schubarth + Co. AG",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "FMP Fuhrer Marbach & Partner",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lange Gasse 90, 4052 Basel",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Schubarth + Co. AG"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "6 Sliding and sealing materials, namely metallic foils. 7 compressors; motors and engines (except for land vehicles); Components for compressors and internal combustion engines, in particular radial sealing rings, piston rings, valves and flat gaskets; Metallic seals, namely flat seals and sealing rings (motor components); Non-metallic gaskets for engines and compressors. 17 Metallic gaskets, namely flat gaskets and sealing rings. 40 processing of sealing materials. 41 Training in the application and technical design of sealing materials. 42 Calculation and design of sealing materials; Engineering work related to sealing problems.",
+          "intClassNumber": "06,07,17,40,41,42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "6 Gleit -und Dichtmaterialien, nämlich metallische Folien. 7 Kompressoren; Motoren (ausgenommen Motoren für Landfahrzeuge); Bestandteile für Kompressoren und Verbrennungsmotoren, insbesondere Radialdichtringe, Kolbenringe, Ventile und Flachdichtungen; Metallische Dichtungen, nämlich Flachdichtungen und Dichtringe (Motorenbestandteile); Nichtmetallische Dichtungen für Motoren und Kompressoren. 17 Metallische Dichtungen, nämlich Flachdichtungen und Dichtringe. 40 Bearbeitung von Dichtmaterialien. 41 Ausbildung in der Anwendung und technischen Auslegung von Dichtmaterialien. 42 Berechnung und Auslegung von Dichtmaterialien; Ingenieurarbeiten in Zusammenhang mit Dichtungsproblemen."
+        }
+      ]
+    },
+    "id": "6da4165c-b612-43a3-9b7a-0957c3582d01",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00029",
+        "publicationVolume": "226"
+      }
+    ],
+    "recordLastUpdated": "20251119",
+    "registrationOfficeCode": "CH",
+    "registrationOfficeName": "Switzerland",
+    "representatives": [
+      {
+        "representativeAddress": "Konsumstrasse 16 A Postfach 3000 Bern 14",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "FMP Fuhrer Marbach & Partner"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20020717",
+        "applicationNumber": "6319/2002"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320717",
+      "lastPublicationDate": "20021121",
+      "registration": {
+        "registrationDate": "20021107",
+        "registrationNumber": "504951"
+      },
+      "renewalDate": "20120717",
+      "renewalPublishedDate": "20220126"
+    },
+    "version": "20251119021124",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/ch/6da4165c-b612-43a3-9b7a-0957c3582d01",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

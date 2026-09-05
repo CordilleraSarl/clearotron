@@ -32,7 +32,7 @@
 // It also needs a PUBLISHED RUN to measure, and that requirement is why this file was the only browser
 // check CI never ran: every other one serves the built bundle or renders a report from the
 // repo's own fixtures, and this one wanted a pool. `--fixture-pool` removes that asymmetry — it replays the
-// committed frozen run in examples/sample-run/ through bin/example.mjs into a throwaway directory, which
+// committed frozen run in demo/ through bin/example.mjs into a throwaway directory, which
 // produces exactly the `<runId>/report.html` + `meta.json` pair pickRun() looks for.
 //
 // The demo is SPAWNED rather than reimplemented, and that is a safety property, not a shortcut: it
@@ -111,7 +111,7 @@ function resolvePool() {
   if (has("fixture-pool")) return { pool: buildFixturePool(), built: true };
   console.error(`render-check: no pool. Pass --pool <dir> or set CLEAROTRON_REPORTS_DIR — there is no default,`);
   console.error("  because the old one was /srv/trademark-archive, a deployed server's real client archive.");
-  console.error("  Or pass --fixture-pool to replay examples/sample-run/ into a throwaway pool.");
+  console.error("  Or pass --fixture-pool to replay demo/ into a throwaway pool.");
   process.exit(2);
 }
 

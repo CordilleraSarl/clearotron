@@ -1,0 +1,102 @@
+{
+  "uri": "/mark/ng/7f409019-1894-4522-a369-a12d625e925c",
+  "provider": "clarivate",
+  "office": "ng",
+  "guid": "7f409019-1894-4522-a369-a12d625e925c",
+  "applicationNumber": "NG/TM/O/2022/69827",
+  "registrationNumber": null,
+  "applicationDate": "2022-06-23",
+  "registrationDate": null,
+  "expiryDate": "2029-06-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific & technological services & research and design relating thereto individual analysis research services, design and development of computers, hardware and software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VERIFYME NIGERIA LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CASHCRAFT BUILDING MURTALA MUHAMMEDWAY ALAGOMEJI YABA LAGOS",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "VERIFYME NIGERIA LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific & technological services & research and design relating thereto individual analysis research services, design and development of computers, hardware and software"
+        }
+      ]
+    },
+    "id": "7f409019-1894-4522-a369-a12d625e925c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20251031",
+    "registrationOfficeCode": "NG",
+    "registrationOfficeName": "Nigeria",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220623",
+        "applicationNumber": "NG/TM/O/2022/69827"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20290623",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20251031050110",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/ng/7f409019-1894-4522-a369-a12d625e925c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.424Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

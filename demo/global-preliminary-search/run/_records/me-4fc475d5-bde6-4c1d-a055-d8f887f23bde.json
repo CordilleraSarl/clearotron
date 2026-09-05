@@ -1,0 +1,194 @@
+{
+  "uri": "/mark/me/4fc475d5-bde6-4c1d-a055-d8f887f23bde",
+  "provider": "clarivate",
+  "office": "me",
+  "guid": "4fc475d5-bde6-4c1d-a055-d8f887f23bde",
+  "applicationNumber": "2010-0417",
+  "registrationNumber": "Z7126",
+  "applicationDate": "2010-11-10",
+  "registrationDate": "2013-01-28",
+  "expiryDate": "2020-11-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "sr",
+      "description": "Aparati i instrumenti naučni, pomorski, geodetski. fotografski, kinematografski, optički, za vaganje, mjerenje, signalizaciju, košrolu (inspekciju), spašavanje i nastavu, aparati i instrumenti za provođenje, prekid, transformaciju, akumulaciju, regulisanje ili kontrolu električne energije, aparati za snimanje, prenos i reprodukovanje zvuka ili slike, magnetni nosioci podataka, diskovi za snimanje, automatske mašine i mehanizmi za aparate koji se pokreću novcem ili žetonom, registar kase, računske mašine, oprema za obradu podataka i kompjuteri, aparati za gašenje požara",
+      "translation_language": "en",
+      "translation": "Apparatus and instruments Scientific, nautical, surveying. photographic, cinematographic, optical, weighing, measuring, signaling, košrolu (inspection), rescue and teaching, apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling electricity, apparatus for recording, transmission and reproduction of sound or images magnetic data carriers, recording discs, automatic machines and mechanisms for appliances that are coin-operated, cash registers, calculating machines, data processing equipment and computers, fire extinguishers"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sr",
+      "description": "Oglašavanje, vođenje poslova, poslovno upravljanje, kancelarijski poslovi",
+      "translation_language": "en",
+      "translation": "Advertising, business management, business management, office work"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "sr",
+      "description": "Telekomunikacije",
+      "translation_language": "en",
+      "translation": "telecomunications"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sr",
+      "description": "Obrazovne usluge, pripremanje obuke, razonoda, sportske i kulturne aktivnosti",
+      "translation_language": "en",
+      "translation": "Educational services, training preparation, entertainment, sports and cultural activities"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sr",
+      "description": "Naučne i tehnološke usluge i istraživanje i projektovanje u vezi navedenih usluga, usluge industrijske analize i istraživanja, projektovanje i razvoj kompjuterskog hardvera i softvera",
+      "translation_language": "en",
+      "translation": "Scientific and technological services and research and design relating thereto, industrial analysis and research, design and development of computer hardware and software"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sr",
+      "description": "Pravne usluge, usluge obezbjeđenja radi zaštite imovine i lica, individualne i društvene usluge koje pružaju drugi, radi zadovoljavanja potreba pojedinaca",
+      "translation_language": "en",
+      "translation": "Legal services, security services for the protection of property and persons, individual and social services provided by others, in order to meet the needs of individuals"
+    }
+  ],
+  "owner": "DOO DORI SISTEM BAR",
+  "ownerNative": null,
+  "ownerCountry": "ME",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "ME",
+        "applicantAddressCountryName": "Montenegro",
+        "applicantName": "DOO DORI SISTEM BAR",
+        "applicantNativeAddress": "BAR",
+        "applicantNativeName": "DOO DORI SISTEM BAR"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Apparatus and instruments Scientific, nautical, surveying. photographic, cinematographic, optical, weighing, measuring, signaling, košrolu (inspection), rescue and teaching, apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling electricity, apparatus for recording, transmission and reproduction of sound or images magnetic data carriers, recording discs, automatic machines and mechanisms for appliances that are coin-operated, cash registers, calculating machines, data processing equipment and computers, fire extinguishers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Aparati i instrumenti naučni, pomorski, geodetski. fotografski, kinematografski, optički, za vaganje, mjerenje, signalizaciju, košrolu (inspekciju), spašavanje i nastavu, aparati i instrumenti za provođenje, prekid, transformaciju, akumulaciju, regulisanje ili kontrolu električne energije, aparati za snimanje, prenos i reprodukovanje zvuka ili slike, magnetni nosioci podataka, diskovi za snimanje, automatske mašine i mehanizmi za aparate koji se pokreću novcem ili žetonom, registar kase, računske mašine, oprema za obradu podataka i kompjuteri, aparati za gašenje požara"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, business management, business management, office work",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Oglašavanje, vođenje poslova, poslovno upravljanje, kancelarijski poslovi"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "telecomunications",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Telekomunikacije"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Educational services, training preparation, entertainment, sports and cultural activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Obrazovne usluge, pripremanje obuke, razonoda, sportske i kulturne aktivnosti"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services and research and design relating thereto, industrial analysis and research, design and development of computer hardware and software",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Naučne i tehnološke usluge i istraživanje i projektovanje u vezi navedenih usluga, usluge industrijske analize i istraživanja, projektovanje i razvoj kompjuterskog hardvera i softvera"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Legal services, security services for the protection of property and persons, individual and social services provided by others, in order to meet the needs of individuals",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sr",
+          "intGoodsServicesDescription": "Pravne usluge, usluge obezbjeđenja radi zaštite imovine i lica, individualne i društvene usluge koje pružaju drugi, radi zadovoljavanja potreba pojedinaca"
+        }
+      ]
+    },
+    "id": "4fc475d5-bde6-4c1d-a055-d8f887f23bde",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20241217",
+    "registrationOfficeCode": "ME",
+    "registrationOfficeName": "Montenegro",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101110",
+        "applicationNumber": "2010-0417"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20201110",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20130128",
+        "registrationNumber": "Z7126"
+      }
+    },
+    "version": "20241217151544",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/me/4fc475d5-bde6-4c1d-a055-d8f887f23bde",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

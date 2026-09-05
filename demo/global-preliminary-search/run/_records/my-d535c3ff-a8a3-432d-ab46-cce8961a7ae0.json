@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/my/d535c3ff-a8a3-432d-ab46-cce8961a7ae0",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "d535c3ff-a8a3-432d-ab46-cce8961a7ae0",
+  "applicationNumber": "09012725",
+  "registrationNumber": null,
+  "applicationDate": "2009-07-30",
+  "registrationDate": "2009-07-30",
+  "expiryDate": "2029-07-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "YOU & ME - RIGHT BRAIN LEARNING SPECIALIST",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Right brain learning centre, right brain education program, child educational services, child mental and skill development programs, conducting classes for children, providing training and workshops for children, all right brain educational activities; all included in class 41.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "You N Me Resources Sdn Bhd",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": "Chung Chee Yien",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "21-1, Jalan USJ 10/1D Taipan Business Centre 47620 Subang Jaya SELANGOR Selangor",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "You N Me Resources Sdn Bhd"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Right brain learning centre, right brain education program, child educational services, child mental and skill development programs, conducting classes for children, providing training and workshops for children, all right brain educational activities; all included in class 41."
+        }
+      ]
+    },
+    "id": "d535c3ff-a8a3-432d-ab46-cce8961a7ae0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.01.01",
+      "01.01.02",
+      "03.13.02",
+      "03.13.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "NBS Intellectual Sdn. Bhd. I-3-3, Block I, Setiawalk, Persiaran Wawasan Pusat Bandar Puchong, Puchong 47160 Selangor",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Chung Chee Yien"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090730",
+        "applicationNumber": "09012725"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290730",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090730"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "YOU & ME - RIGHT BRAIN LEARNING SPECIALIST"
+    }
+  },
+  "_uri": "/mark/my/d535c3ff-a8a3-432d-ab46-cce8961a7ae0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

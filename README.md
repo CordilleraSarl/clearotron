@@ -23,7 +23,7 @@ no gateway, no platform, and nothing about your matters reaches us.
 so `npm install -g clearotron` will not give you the command yet.
 
 ```bash
-git clone https://github.com/CordilleraSarl/clearotron.git
+git clone https://github.com/CordilleraSarl/Clearotron
 cd clearotron
 npm install                    # every workspace
 npm run build -w portal-ui     # the browser bundle is not committed — build it once

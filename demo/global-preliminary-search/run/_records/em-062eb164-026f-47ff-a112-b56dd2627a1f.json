@@ -1,0 +1,1076 @@
+{
+  "uri": "/mark/em/062eb164-026f-47ff-a112-b56dd2627a1f",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "062eb164-026f-47ff-a112-b56dd2627a1f",
+  "applicationNumber": "19258653",
+  "registrationNumber": "19258653",
+  "applicationDate": "2025-10-09",
+  "registrationDate": "2026-03-04",
+  "expiryDate": "2035-10-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-11-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software; Pocítacové programy na zpracování dat; Databáze; Databázové motory; Servery pocítacových databází; Software pro správu dat; Pocítacový software pro správu databází; Software pro správu úlozist pro dlouhodobou archivaci.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Poradenské sluzby v oblasti vývoje produktu a zlepsování kvality softwaru; Konzultacní sluzby v oboru software jako sluzba (SAAS); Software jako sluzba [SaaS]; Konzultacní a poradenské sluzby v oblasti pocítacového hardwaru a softwaru; Vývoj softwaru pro ukládání a obnovu multimediálních dat; Vývoj softwaru na prevod dat a multimediálního obsahu mezi ruznými protokoly; Vývoj, aktualizace a údrzba softwaru a databázových systému; Instalace a úprava pocítacových softwarových aplikací; Návrhy softwarových balíku na zakázku; Poskytování on-line softwaru bez moznosti stazení; Sluzby v oblasti technické podpory pocítacového softwaru; Navrhování a vývoj softwaru pro správ úlozist; Navrhování a vývoj pocítacového softwaru pro správu databází.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "cs",
+      "description": "Poskytování licencí k pocítacovému softwaru [právní sluzby].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software; Computerprogrammer til databehandling; Databaser; Databasemaskiner; Computerdatabaseservere; Software til datastyring; Computersoftwareprogrammer til databasestyring; Lagringsforvaltningssoftware til langtidsarkivering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Rådgivningsvirksomhed inden for produktudvikling og kvalitetsforbedring af software; Rådgivning inden for software som en tjeneste (SaaS); Software as a service [saas]; Konsulent- og rådgivningsvirksomhed vedrørende computerhardware og -software; Udvikling af software til lagring og tilbagekaldelse af multimediedata; Udvikling af software til konvertering af data- og multimedieindhold fra og til forskellige protokoller; Udvikling, opdatering og vedligeholdese af software- og databasesystemer; Installering og brugertilpasning af applikationssoftware til computere; Specialdesign af softwarepakker; Tilvejebringelse af online, ikke-downloadable software; Teknisk bistand i forbindelse med computersoftware; Design og udvikling af lagringsforvaltningssoftware; Design og udvikling af software til databasestyring.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "da",
+      "description": "Licensering af computer software [juridisk bistand].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software; Computerprogramma's voor de gegevensverwerking; Computerdatabases; Database-engines; Servers voor databases; Gegevensbeheer software; Computer software voor databasebeheer; Software voor geheugenbeheer voor langdurige archivering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Advisering op het gebied van productontwikkeling en kwaliteitsverbetering met betrekking tot software; Advisering op het gebied van het ter beschikking stellen van software [SaaS]; Ter beschikking stellen van software [SaaS]; Consultancy en advisering inzake hardware en software; Ontwikkeling van software voor het opslaan en opvragen van multimediagegevens; Ontwikkeling van software voor omzetting van gegevens en multimediamateriaal van en naar verschillende protocollen; Ontwikkeling, updating en onderhoud van software- en databasesystemen; Installatie en op de persoon afgestemd ontwerp van software voor computers; Softwarepakketten (Klantspecifiek ontwerp van -); Ter beschikking stellen van online niet-downloadbare software; Technische ondersteuning met betrekking tot software; Het ontwerpen en ontwikkelen van software voor geheugenbeheer; Ontwerp en ontwikkeling van software voor databankbeheer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "nl",
+      "description": "Licentieverlening op het gebied van software [juridische diensten].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software; Computer programmes for data processing; Databases; Database engines; Computer database servers; Data management software; Computer software for database management; Memory management software for long-term archiving.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Advisory services in the field of product development and quality improvement of software; Consulting services in the field of software as a service [SaaS]; Software as a service [SaaS]; Consultancy and advice on computer software and hardware; Development of software for multimedia data storing and recalling; Development of software for data and multimedia content conversion from and to different protocols; Development, updating and maintenance of software and database systems; Installation and customisation of computer applications software; Custom design of software packages; Providing online, non-downloadable software; Computer software technical support services; Design and development of memory management software; Design and development of software for database management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Licensing of computer software [legal services].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Tarkvara; Arvutiprogrammid andmetöötluseks; Arvutite andmebaasid; Andmebaasimootorid; Arvutite andmekogude serverid; Andmehaldustarkvara; Arvutitarkvaraprogrammid andmebaasi haldamiseks; Pikaajalise arhiveerimise mäluhaldustarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tarkvara toote- ja kvaliteediarenduse nõustamine; Teenustarkvara [SaaS] valdkonna konsulteerimisteenused; Pilveteenused [SaaS]; Arvuti riist- ja tarkvara konsultatsiooni- ja nõustamisteenused; Multimeediumandmete salvestamise ja taastamise tarkvara väljatöötamine; Andmete ja multimeediumisisu erinevatest protokollidest ja protokollidesse teisendamise tarkvara väljatöötamine; Tarkvara ja andmebaaside arendamine, uuendamine ja hooldamine; Arvutitarkvara installeerimine ja kohandamine; Tellimuspõhine tarkvarapakettide projekteerimine; Onlain-tarkvara,v.a allalaetava, pakkumine; Arvutitarkvara tehnilise toe teenused; Mäluhaldustarkvara projekteerimine ja arendamine; Andmebaaside haldustarkvara projekteerimine ja arendamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "et",
+      "description": "Arvutitarkvara litsentsimine [juriidilised teenused].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot; Tietojenkäsittelyohjelmistot; Tietokonetietokannat; Tietokantakoneet; Tietokoneiden tietokantapalvelimet; Tiedonhallintaohjelmistot; Tietokoneohjelmat tietokantojen hallintaa varten; Muistinhallintaohjelmistot pitkäaikaisarkistointiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Neuvontapalvelut tietokoneohjelmistojen tuotekehittelyn ja laadun parantamisen alalla; Konsultointipalvelut verkkosovelluspalvelujen [SaaS] alalla; Verkkosovelluspalvelut [SaaS]; Konsultointi- ja neuvontapalvelut tietokonelaitteistojen ja ohjelmistojen alalla; Ohjelmistojen kehittäminen multimediadatan tallennusta ja takaisinottoa varten; Ohjelmistojen kehittäminen datan ja multimediasisällön muuntamista varten eri protokollasta toiseen; Ohjelmistojen ja tietokantajärjestelmien kehittäminen, ajanmukaistaminen ja huolto; Tietokoneiden sovellusohjelmistojen asennus ja asiakaskohtainen suunnittelu; Ohjelmistopakettien suunnittelu tilauksesta; Muiden kuin ladattavien ohjelmistojen tarjoaminen online-periaatteella; Tietokoneohjelmistoihin liittyvät tekniset tukipalvelut; Muistinhallintaohjelmistojen suunnittelu ja kehittäminen; Tietokantojen hallintaohjelmistojen suunnittelu ja kehittäminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fi",
+      "description": "Tietokoneohjelmistojen lisensointi [oikeuspalveluna].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciel; Programmes informatiques de traitement de données; Bases de données; Moteurs de base de données; Centres serveurs de bases de données; Logiciels de gestion de données; Logiciels de gestion de bases de données; Logiciel de gestion du stockage pour l'archivage à long terme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseil dans le domaine du développement de produits et de l'amélioration de la qualité de logiciels; Services d'assistance dans le domaine des services de logiciels-services (SaaS); Logiciels en tant que service [SaaS]; Services de consultation et de conseil dans le domaine du matériel et des logiciels informatiques; Développement de logiciels pour le stockage et le rappel de données multimédias; Développement de logiciels pour la conversion de données et de contenus multimédias à partir de et vers différents protocoles; Développement, mise à jour et maintenance de logiciels et de systèmes de bases de données; Installation et personnalisation de logiciels d'application pour ordinateurs; Conception sur commande de progiciels; Fourniture de logiciels non téléchargeables en ligne; Services d'assistance technique en matière de logiciels; Conception et développement de logiciels de gestion de la mémoire; Conception et développement de logiciels pour la gestion de bases de données.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": "Concession de licences de logiciels [services juridiques].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software; Software zur Datenverarbeitung; Datenbanken; Datenbank-Engines; Datenbankserver; Datenmanagement-Software; Computersoftware für Datenbankverwaltung; Speicherverwaltungssoftware für die Langzeitarchivierung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Beratung auf dem Gebiet der Produktentwicklung und der Qualitätsverbesserung von Software; Beratung im Bereich Software as a Service [SaaS]; Software as a Service [SaaS]; Consulting und Beratung auf dem Gebiet der Computerhardware und -software; Entwicklung von Software zum Speichern und Abrufen von Multimedia-Daten; Entwicklung von Software zur Konvertierung von Daten und Multimediainhalten von verschiedenen Protokollen und in verschiedene Protokolle; Entwicklung, Aktualisierung und Pflege von Software und Datenbanken; Installation und kundenspezifische Anpassung von Anwendungssoftware für Computer; Kundenspezifisches Design von Softwarepaketen; Online-Bereitstellung von nicht herunterladbarer Software; Technischer Support im Softwarebereich; Entwurf und Entwicklung von Speicherverwaltungssoftware; Entwurf und Entwicklung von Datenbankverwaltungssoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "de",
+      "description": "Lizenzierung von Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver; Softver za obradu podataka; Baze podataka; Moduli baza podataka; Racunalni posluzitelji za baze podataka; Softver za upravljanje podatcima; Racunalni softver za upravljanje bazama podataka; Softver za upravljanje pohranom za dugorocno arhiviranje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Savjetodavne usluge na podrucju razvoja i poboljsanja kakvoce softverskih proizvoda; Usluge savjetovanja u podrucju softvera kao usluge (SAAS); Softver kao usluga [SaaS]; Konzultacije i pruzanje savjeta o racunalnom softveru i hardveru; Razvoj softvera za skladistenje i pristupanje multimedijskim podacima; Razvoj softvera za pretvaranje podataka i multimedijskog sadrzaja iz i u razne protokole; Razvoj, aktualiziranje i odrzavanje softvera i sustava baza podataka; Instalacija i prilagodba softvera za racunalne aplikacije; Dizajniranje racunalnih programskih paketa po narudzbi; Pruzanje softvera na internetu koji se ne moze preuzeti; Usluge tehnicke podrske za racunalni softver; Dizajn i razvoj softvera za upravljanje pohranom; Dizajn i razvoj racunalnog softvera za upravljanje bazama podataka.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hr",
+      "description": "Ustupanje licenci za softvere [pravne usluge].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Szoftverek; Adatfeldolgozó szoftverek; Adatbázisok; Adatbázismotorok; Számítógépes adatbázis szerverek; Adatkezelo szoftverek; Számítógépes szoftver programok adatbáziskezeléshez; Tároláskezelo szoftverek hosszú távú archiváláshoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tanácsadási szolgáltatások szoftverek fejlesztésének és minoségjavításának területén; Szoftverszolgáltatásokkal (SAAS) kapcsolatos konzultáció; Szoftver mint szolgáltatás [SaaS]; Számítógéphardverrel és -szoftverrel kapcsolatos szaktanácsadói és konzultációs szolgáltatások; Multimédiás adattároló és -kinyero szoftverek fejlesztése; Adat- és multimédiás tartalmak protokollokról protokollokra történo átalakításához használt szoftverek fejlesztése; Szoftver- és adatbázisrendszerek fejlesztése, frissítése és karbantartása; Számítógépes szoftveralkalmazások telepítése és testreszabása; Szoftvercsomagok igény szerinti tervezése; Nem letöltheto, online szoftverek biztosítása; Számítógépes szoftver technikai támogató szolgáltatások; Tároláskezelo szoftverek tervezése és fejlesztése; Adatbázis kezelésére szolgáló szoftverek tervezése és fejlesztése.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hu",
+      "description": "Számítógépes szoftverek licenszelése, engedélyezése [jogi szolgáltatások].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software; Programmi per computer per l'elaborazione di dati; Banche dati; Motori di banche dati; Server di banche dati; Software per la gestione di dati; Programmi software per la gestione di banche dati; Software di gestione della memoria per archiviazione a lungo termine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Consulenza in materia di sviluppo di prodotti e miglioramento della qualità di software; Servizi di consulenza in materia di software come servizio [SaaS]; Software come servizio [SaaS]; Consulenza nel settore dell'hardware e del software; Sviluppo di software per archiviazione e richiamo di dati multimediali; Sviluppo di software per conversione di dati e contenuti multimediali da e verso protocolli diversi; Sviluppo, aggiornamento e manutenzione di software e sistemi di banche dati; Installazione e personalizzazione di software applicativo per computer; Progettazione personalizzata di pacchetti software; Fornitura online di software non scaricabili; Servizi di assistenza tecnica in materia di software; Progettazione e sviluppo di software di gestione della memoria; Progettazione e sviluppo di software per la gestione di banche dati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "it",
+      "description": "Concessione di licenze di software [servizi giuridici].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Programine iranga; Kompiuteriu duomenu dorojimo programos; Duomenu bazes; Duomenu baziu paieskos sistemu modulines programos; Kompiuteriniu duomenu baziu serveriai; Duomenu valdymo programine iranga; Kompiuteriu programine iranga programos duomenu bazems tvarkyti; Ilgalaikio archyvavimo valdymo programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Programines irangos tobulinimo ir kokybes gerinimo konsultacijos; Programines irangos kaip paslaugos [SaaS] konsultacijos; Programine iranga kaip paslauga [SaaS]; Konsultacijos ir patarimai kompiuteriu programines ir aparatines irangos srityje; Multimedijos duomenu saugojimo ir atkurimo programines irangos kurimas; Programines irangos kurimas duomenu ir multimedijos turiniui konvertuoti is vieno protokolo i kita; Programines irangos ir duomenu baziu sistemu projektavimas, atnaujinimas ir prieziura; Kompiuteriu taikomuju programu instaliavimas ir pritaikymas individualiam vartotojui; Uzsakytinis programines irangos paketu projektavimas; Neparsisiunciamosios internetines programines irangos parupinimas; Kompiuteriu programines irangos technines pagalbos paslaugos; Atminties valdymo programines irangos projektavimas ir kurimas; Duomenu bazes valdymo programines irangos projektavimas ir tobulinimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lt",
+      "description": "Kompiuteriniu programu licencijavimas [juridines paslaugos].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmatura; Datorprogrammas datu apstradei; Datubazes; Datubazu dzineji (programmatura); Datoru datubazu serveri; Programmatura datu vadibai; Datoru programmatura datubazu parvaldibai; Kratuvju parvaldibas programmatura ilgstosai arhivesanai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Konsultativie pakalpojumi programmaturas produktu izstrades un kvalitates uzlabosanas joma; Konsultaciju pakalpojumi programmaturas ka pakalpojums (SAAS) joma; Programmatura ka pakalpojums (SaaS); Konsultaciju un padomu sniegsana datoraparaturas un programmaturas joma; Programmaturas izstrade multivides datu uzglabasanai un atgusanai; Programmaturas izstrade datu un multivides satura parveidosanai dazadu protokolu starpa; Programmaturas un datubazu sistemu izstrade, atjauninasana un uzturesana; Lietojumprogrammu uzstadisana un pielagosana individualam vajadzibam; Programmaturas pakotnu individuala projektesana; Nelejupieladejamas tiessaistes programmaturas nodrosinasana; Datoru programmaturas tehniskas palidzibas pakalpojumi; Kratuvju parvaldibas programmaturas projektesana un izstrade; Datubazu parvaldibas programmaturas projektesana un izstrade.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lv",
+      "description": "Datoru programmaturas licencesana (juridiskie pakalpojumi).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer; Programmi tal-kompjuter ghall-ipprocessar ta' data; Banek tad-data; Magni tal-banek tad-data; Servers tad-database tal-kompjuter; Softwer ghall-gestjoni tad-data; Softwer tal-kompjuter ghall-gestjoni tad-database; Software ghall-gestjoni ta' mhazen ghall-arkivjar ghal perijodu fit-tul.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' ghoti ta' pariri fil-qasam tal-izvilupp tal-prodotti u tat-titjib tal-kwalità tas-softwer; Servizzi ta' konsulenza fil-qasam tas-softwer bhala servizz [SAAS]; Softwer bhala servizz [SaaS]; Servizzi ta' konsulenza u pariri fil-qasam tal-hardwer u s-softwer tal-kompjuter; Zvilupp ta' softwer ghall-hazna u l-irkuprar ta' data multimedjali; Zvilupp ta' softwer ghall-konverzjoni ta' kontenut multimedjali u ta' dejta minn u lejn protokolli differenti; L-izvilupp, l-aggornament u l-manutenzjoni ta' softwer u ta' sistemi ta' databases; Installazzjoni u personalizzazzjoni ta' applikazzjonijiet ta' softwer fuq il-kompjuter; Disinn ta' pakketti ta' softwer maghmula skont l-ordni; Il-provvista ta' softwer online li ma jistax jitnizzel; Servizzi ta' appogg tekniku ghas-softwer tal-kompjuter; Abbozz u zvilupp ta' software ghall-gestjoni ta' mhazen; Disinn u zvilupp ta' softwer ghall-gestjoni ta' dejtabejzis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "mt",
+      "description": "Licenzjar ta' softwer tal-kompjuter [servizzi legali].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie; Programy komputerowe do przetwarzania danych; Komputerowe bazy danych; Silniki baz danych; Serwery komputerowych baz danych; Oprogramowanie do zarzadzania danymi; Oprogramowanie komputerowe [programy] do zarzadzania bazami danych; Oprogramowanie do zarzadzania pamiecia masowa do dlugoterminowej archiwizacji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi doradcze w dziedzinie opracowywania produktów i podnoszenia jakosci oprogramowania; Uslugi doradztwa w zakresie oprogramowania jako uslugi [SaaS]; Oprogramowanie jako usluga [SaaS]; Doradztwo i konsultacje w zakresie sprzetu i oprogramowania komputerowego; Opracowywanie oprogramowania do magazynowania i przywolywania danych multimedialnych; Opracowywanie oprogramowania do konwertowania danych i tresci multimedialnych z i na inne protokoly; Opracowywanie, aktualizacja i konserwacja systemów oprogramowania komputerowego i baz danych; Instalacja i dostosowanie na zamówienie aplikacji oprogramowania komputerowego; Projektowanie pakietów oprogramowania na zamówienie; Udostepnianie online oprogramowania nie do pobrania; Uslugi wsparcia technicznego w zakresie oprogramowania komputerowego; Projektowanie i rozwój oprogramowania do zarzadzania pamiecia; Projektowanie i opracowywanie oprogramowania komputerowego do zarzadzania bazami danych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pl",
+      "description": "Licencjonowanie oprogramowania komputerowego [uslugi prawne].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software; Programas de computador para processamento de dados; Bases de dados; Motores de bases de dados; Centros servidores de bases de dados; Software de gestão de dados; Software para gestão de bases de dados; Software de gestão de memória para arquivamento de longo prazo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de assessoria no domínio do desenvolvimento de produtos e da melhoria da qualidade de software; Serviços de consultadoria no domínio do software como serviço [SaaS]; Software como serviço [SaaS]; Serviços de consultoria e assessoria em matéria de hardware e software; Desenvolvimento de software para armazenamento e recuperação de dados multimédia; Desenvolvimento de software para conversão de dados e conteúdos multimédia de e para diferentes protocolos; Desenvolvimento, atualização e manutenção de software e de sistemas de bases de dados; Instalação e personalização de software de aplicação para computadores; Design customizado de pacotes de software; Fornecimento de software em linha não descarregável; Serviços de assistência técnica a software; Conceção e desenvolvimento de software de gestão de memória; Conceção e desenvolvimento de software para gestão de bases de dados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pt",
+      "description": "Licenciamento de software [serviços jurídicos].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software; Software de prelucrare a datelor; Baze de date computerizate; Motoare de baze de date; Servere pentru baze de date informatizate; Software de gestiune a datelor; Programe informatice pentru administrarea bazelor de date; Software de gestionare a stocarii pentru arhivare pe termen lung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii de consultanta în domeniul dezvoltarii de produse si al îmbunatatirii calitatii produselor software; Consultanta în domeniul software-ului ca serviciu [SAAS]; Software ca serviciu [SaaS]; Consultanta si consiliere în materie de hardware si software de calculator; Dezvoltare de software pentru stocarea si recuperarea datelor multimedia; Dezvoltare de software pentru conversia de date si continut multimedia între diferite protocoale; Dezvoltare, actualizare si întretinere de software si sisteme de baze de date; Instalare si personalizare de aplicatii software de calculator; Proiectare la comanda de pachete de software; Furnizare de software nedescarcabil online; Servicii de asistenta tehnica în materie de software de calculator; Proiectarea si dezvoltarea de software de gestionare a memoriei; Proiectare si dezvoltare de software pentru gestionarea bazelor de date.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ro",
+      "description": "Acordare de licente pentru software de calculator [servicii juridice].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér; Pocítacové programy na spracovanie údajov; Pocítacové databázy; Databázové motory; Servery pocítacových databáz; Softvér pre správu dát; Pocítacový sofvér na manazment databáz; Pocítacový softvér na správu pamäte na dlhodobú archiváciu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Poradenské sluzby v oblasti vývoja produktov a zlepsovania kvality softvéru; Konzultacné sluzby v oblasti softvéru ako sluzby [SaaS]; Poskytovanie softvéru prostredníctvom internetu (SaaS); Poradenstvo v oblasti pocítacového hardvéru a softvéru; Vývoj softvéru na ukladanie a obnovu multimediálnych údajov; Vývoj softvéru na konverziu dát a multimediálneho obsahu medzi rôznymi protokolmi; Vývoj, aktualizácia a údrzba softvérových a databázových systémov; Instalácia aplikácií a ich prispôsobenie na zákazku pocítacového softvéru; Zákazkové navrhovanie softvérových balíkov; Poskytovanie onlinového nestiahnutelného softvéru; Sluzby technickej podpory pre pocítacový softvér; Návrh a vývoj softvéru na správu pamäte; Navrhovanie a vývoj softvéru na riadenie databáz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sk",
+      "description": "Udelovanie licencií na pocítacové programy (právne sluzby).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema; Racunalniski programi za obdelavo podatkov; Podatkovne baze; Mehanizmi podatkovnih zbirk; Racunalniski strezniki za podatkovne baze; Programska oprema za upravljanje podatkov; Racunalniska programska oprema za upravljanje baz podatkov; Programska oprema za upravljanje pomnilnikov za dolgotrajno arhiviranje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Svetovalne storitve na podrocju razvoja proizvodov in izboljsanja kakovosti programske opreme; Svetovalne storitve na podrocju programske opreme kot storitve [SaaS]; Programska oprema kot storitev [SaaS]; Svetovanje na podrocju racunalniske programske in strojne opreme; Razvoj programske opreme za shranjevanje in ponovni priklic multimedijskih podatkov; Razvoj programske opreme za pretvorbo podatkov in vecpredstavnostnih vsebin iz razlicnih protokolov in vanje; Razvoj, posodabljanje in vzdrzevanje programske opreme in sistemov podatkovnih zbirk; Namestitev in prireditev racunalniske aplikacijske programske opreme; Oblikovanje paketov programske opreme po meri; Zagotavljanje spletne, nenalozljive programske opreme; Storitve tehnicne podpore za racunalnisko programsko opremo; Oblikovanje in razvoj programske opreme za upravljanje pomnilnikov; Oblikovanje in razvoj programske opreme za upravljanje podatkovnih baz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sl",
+      "description": "Izdaja licenc za racunalnisko programsko opremo (pravne storitve).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software; Software de ordenador para el tratamiento de la información; Bancos de datos; Motores de bases de datos; Servidores de bases de datos informáticas; Software de gestión de datos; Software de gestión de bases de datos; Software de gestión de almacenamiento para el archivo a largo plazo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de asesoramiento en materia de desarrollo de productos y mejora de la calidad de software; Servicios de consultoría en materia de software como un servicio [SaaS]; Software como servicio [SaaS]; Servicios de consultoría y asesoría en el campo del hardware y software informáticos; Desarrollo de software para el almacenamiento y recuperación de datos multimedia; Desarrollo de software para la conversión de datos y contenidos multimedia entre protocolos diferentes; Desarrollo, actualización y mantenimiento de sistemas de software y bases de datos; Instalación y personalización de software de aplicaciones para ordenadores; Diseño personalizado de paquetes de software; Facilitación de software en línea no descargable; Servicios de asistencia técnica para software; Diseño y desarrollo de software de gestión de memoria; Diseño y desarrollo de software para gestionar bases de datos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "es",
+      "description": "Concesión de licencias de software [servicios jurídicos].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Mjukvaror; Datorprogramvara för databehandling; Databaser; Databasmotorer; Centra för databasservrar; Programvara för datahantering; Datorprogram för hantering av databaser; Programvara för lagringshantering för långsiktig arkivering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Rådgivning inom området för produktutveckling och kvalitetsförbättring av programvara; Rådgivning avseende molntjänster [SaaS]; Molntjänster [SaaS]; Konsulttjänster och rådgivning inom området datormaskinvara och datorprogramvara; Utveckling av programvara för att spara och hämta multimediedata; Utveckling av programvara för konvertering av data och multimedieinnehåll från och till olika protokoll; Utveckling, uppdatering och underhåll av programvara och databassystem; Installation och kundanpassning av datorprogram; Specialutformning av programvarupaket; Upplåtande online av inte nedladdningsbar mjukvara; Tekniskt stöd rörande datorprogramvara; Design och utveckling av Programvara för lagringshantering; Design och utveckling av programvara för databashantering.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sw",
+      "description": "Datorprogram (licensiering av -)[juridiska tjänster].",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "startext GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "MARTINI MOGG VOGT PARTGMBB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Riemenschneiderstraße 11,Bonn, 53175",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "startext GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software; Pocítacové programy na zpracování dat; Databáze; Databázové motory; Servery pocítacových databází; Software pro správu dat; Pocítacový software pro správu databází; Software pro správu úlozist pro dlouhodobou archivaci."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poradenské sluzby v oblasti vývoje produktu a zlepsování kvality softwaru; Konzultacní sluzby v oboru software jako sluzba (SAAS); Software jako sluzba [SaaS]; Konzultacní a poradenské sluzby v oblasti pocítacového hardwaru a softwaru; Vývoj softwaru pro ukládání a obnovu multimediálních dat; Vývoj softwaru na prevod dat a multimediálního obsahu mezi ruznými protokoly; Vývoj, aktualizace a údrzba softwaru a databázových systému; Instalace a úprava pocítacových softwarových aplikací; Návrhy softwarových balíku na zakázku; Poskytování on-line softwaru bez moznosti stazení; Sluzby v oblasti technické podpory pocítacového softwaru; Navrhování a vývoj softwaru pro správ úlozist; Navrhování a vývoj pocítacového softwaru pro správu databází."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Poskytování licencí k pocítacovému softwaru [právní sluzby]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software; Computerprogrammer til databehandling; Databaser; Databasemaskiner; Computerdatabaseservere; Software til datastyring; Computersoftwareprogrammer til databasestyring; Lagringsforvaltningssoftware til langtidsarkivering."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Rådgivningsvirksomhed inden for produktudvikling og kvalitetsforbedring af software; Rådgivning inden for software som en tjeneste (SaaS); Software as a service [saas]; Konsulent- og rådgivningsvirksomhed vedrørende computerhardware og -software; Udvikling af software til lagring og tilbagekaldelse af multimediedata; Udvikling af software til konvertering af data- og multimedieindhold fra og til forskellige protokoller; Udvikling, opdatering og vedligeholdese af software- og databasesystemer; Installering og brugertilpasning af applikationssoftware til computere; Specialdesign af softwarepakker; Tilvejebringelse af online, ikke-downloadable software; Teknisk bistand i forbindelse med computersoftware; Design og udvikling af lagringsforvaltningssoftware; Design og udvikling af software til databasestyring."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Licensering af computer software [juridisk bistand]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software; Computerprogramma's voor de gegevensverwerking; Computerdatabases; Database-engines; Servers voor databases; Gegevensbeheer software; Computer software voor databasebeheer; Software voor geheugenbeheer voor langdurige archivering."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Advisering op het gebied van productontwikkeling en kwaliteitsverbetering met betrekking tot software; Advisering op het gebied van het ter beschikking stellen van software [SaaS]; Ter beschikking stellen van software [SaaS]; Consultancy en advisering inzake hardware en software; Ontwikkeling van software voor het opslaan en opvragen van multimediagegevens; Ontwikkeling van software voor omzetting van gegevens en multimediamateriaal van en naar verschillende protocollen; Ontwikkeling, updating en onderhoud van software- en databasesystemen; Installatie en op de persoon afgestemd ontwerp van software voor computers; Softwarepakketten (Klantspecifiek ontwerp van -); Ter beschikking stellen van online niet-downloadbare software; Technische ondersteuning met betrekking tot software; Het ontwerpen en ontwikkelen van software voor geheugenbeheer; Ontwerp en ontwikkeling van software voor databankbeheer."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Licentieverlening op het gebied van software [juridische diensten]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software; Computer programmes for data processing; Databases; Database engines; Computer database servers; Data management software; Computer software for database management; Memory management software for long-term archiving."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advisory services in the field of product development and quality improvement of software; Consulting services in the field of software as a service [SaaS]; Software as a service [SaaS]; Consultancy and advice on computer software and hardware; Development of software for multimedia data storing and recalling; Development of software for data and multimedia content conversion from and to different protocols; Development, updating and maintenance of software and database systems; Installation and customisation of computer applications software; Custom design of software packages; Providing online, non-downloadable software; Computer software technical support services; Design and development of memory management software; Design and development of software for database management."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Licensing of computer software [legal services]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara; Arvutiprogrammid andmetöötluseks; Arvutite andmebaasid; Andmebaasimootorid; Arvutite andmekogude serverid; Andmehaldustarkvara; Arvutitarkvaraprogrammid andmebaasi haldamiseks; Pikaajalise arhiveerimise mäluhaldustarkvara."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara toote- ja kvaliteediarenduse nõustamine; Teenustarkvara [SaaS] valdkonna konsulteerimisteenused; Pilveteenused [SaaS]; Arvuti riist- ja tarkvara konsultatsiooni- ja nõustamisteenused; Multimeediumandmete salvestamise ja taastamise tarkvara väljatöötamine; Andmete ja multimeediumisisu erinevatest protokollidest ja protokollidesse teisendamise tarkvara väljatöötamine; Tarkvara ja andmebaaside arendamine, uuendamine ja hooldamine; Arvutitarkvara installeerimine ja kohandamine; Tellimuspõhine tarkvarapakettide projekteerimine; Onlain-tarkvara,v.a allalaetava, pakkumine; Arvutitarkvara tehnilise toe teenused; Mäluhaldustarkvara projekteerimine ja arendamine; Andmebaaside haldustarkvara projekteerimine ja arendamine."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arvutitarkvara litsentsimine [juriidilised teenused]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot; Tietojenkäsittelyohjelmistot; Tietokonetietokannat; Tietokantakoneet; Tietokoneiden tietokantapalvelimet; Tiedonhallintaohjelmistot; Tietokoneohjelmat tietokantojen hallintaa varten; Muistinhallintaohjelmistot pitkäaikaisarkistointiin."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Neuvontapalvelut tietokoneohjelmistojen tuotekehittelyn ja laadun parantamisen alalla; Konsultointipalvelut verkkosovelluspalvelujen [SaaS] alalla; Verkkosovelluspalvelut [SaaS]; Konsultointi- ja neuvontapalvelut tietokonelaitteistojen ja ohjelmistojen alalla; Ohjelmistojen kehittäminen multimediadatan tallennusta ja takaisinottoa varten; Ohjelmistojen kehittäminen datan ja multimediasisällön muuntamista varten eri protokollasta toiseen; Ohjelmistojen ja tietokantajärjestelmien kehittäminen, ajanmukaistaminen ja huolto; Tietokoneiden sovellusohjelmistojen asennus ja asiakaskohtainen suunnittelu; Ohjelmistopakettien suunnittelu tilauksesta; Muiden kuin ladattavien ohjelmistojen tarjoaminen online-periaatteella; Tietokoneohjelmistoihin liittyvät tekniset tukipalvelut; Muistinhallintaohjelmistojen suunnittelu ja kehittäminen; Tietokantojen hallintaohjelmistojen suunnittelu ja kehittäminen."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokoneohjelmistojen lisensointi [oikeuspalveluna]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciel; Programmes informatiques de traitement de données; Bases de données; Moteurs de base de données; Centres serveurs de bases de données; Logiciels de gestion de données; Logiciels de gestion de bases de données; Logiciel de gestion du stockage pour l'archivage à long terme."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseil dans le domaine du développement de produits et de l'amélioration de la qualité de logiciels; Services d'assistance dans le domaine des services de logiciels-services (SaaS); Logiciels en tant que service [SaaS]; Services de consultation et de conseil dans le domaine du matériel et des logiciels informatiques; Développement de logiciels pour le stockage et le rappel de données multimédias; Développement de logiciels pour la conversion de données et de contenus multimédias à partir de et vers différents protocoles; Développement, mise à jour et maintenance de logiciels et de systèmes de bases de données; Installation et personnalisation de logiciels d'application pour ordinateurs; Conception sur commande de progiciels; Fourniture de logiciels non téléchargeables en ligne; Services d'assistance technique en matière de logiciels; Conception et développement de logiciels de gestion de la mémoire; Conception et développement de logiciels pour la gestion de bases de données."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Concession de licences de logiciels [services juridiques]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software; Software zur Datenverarbeitung; Datenbanken; Datenbank-Engines; Datenbankserver; Datenmanagement-Software; Computersoftware für Datenbankverwaltung; Speicherverwaltungssoftware für die Langzeitarchivierung."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Beratung auf dem Gebiet der Produktentwicklung und der Qualitätsverbesserung von Software; Beratung im Bereich Software as a Service [SaaS]; Software as a Service [SaaS]; Consulting und Beratung auf dem Gebiet der Computerhardware und -software; Entwicklung von Software zum Speichern und Abrufen von Multimedia-Daten; Entwicklung von Software zur Konvertierung von Daten und Multimediainhalten von verschiedenen Protokollen und in verschiedene Protokolle; Entwicklung, Aktualisierung und Pflege von Software und Datenbanken; Installation und kundenspezifische Anpassung von Anwendungssoftware für Computer; Kundenspezifisches Design von Softwarepaketen; Online-Bereitstellung von nicht herunterladbarer Software; Technischer Support im Softwarebereich; Entwurf und Entwicklung von Speicherverwaltungssoftware; Entwurf und Entwicklung von Datenbankverwaltungssoftware."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Lizenzierung von Software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver; Softver za obradu podataka; Baze podataka; Moduli baza podataka; Racunalni posluzitelji za baze podataka; Softver za upravljanje podatcima; Racunalni softver za upravljanje bazama podataka; Softver za upravljanje pohranom za dugorocno arhiviranje."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Savjetodavne usluge na podrucju razvoja i poboljsanja kakvoce softverskih proizvoda; Usluge savjetovanja u podrucju softvera kao usluge (SAAS); Softver kao usluga [SaaS]; Konzultacije i pruzanje savjeta o racunalnom softveru i hardveru; Razvoj softvera za skladistenje i pristupanje multimedijskim podacima; Razvoj softvera za pretvaranje podataka i multimedijskog sadrzaja iz i u razne protokole; Razvoj, aktualiziranje i odrzavanje softvera i sustava baza podataka; Instalacija i prilagodba softvera za racunalne aplikacije; Dizajniranje racunalnih programskih paketa po narudzbi; Pruzanje softvera na internetu koji se ne moze preuzeti; Usluge tehnicke podrske za racunalni softver; Dizajn i razvoj softvera za upravljanje pohranom; Dizajn i razvoj racunalnog softvera za upravljanje bazama podataka."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Ustupanje licenci za softvere [pravne usluge]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek; Adatfeldolgozó szoftverek; Adatbázisok; Adatbázismotorok; Számítógépes adatbázis szerverek; Adatkezelo szoftverek; Számítógépes szoftver programok adatbáziskezeléshez; Tároláskezelo szoftverek hosszú távú archiváláshoz."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tanácsadási szolgáltatások szoftverek fejlesztésének és minoségjavításának területén; Szoftverszolgáltatásokkal (SAAS) kapcsolatos konzultáció; Szoftver mint szolgáltatás [SaaS]; Számítógéphardverrel és -szoftverrel kapcsolatos szaktanácsadói és konzultációs szolgáltatások; Multimédiás adattároló és -kinyero szoftverek fejlesztése; Adat- és multimédiás tartalmak protokollokról protokollokra történo átalakításához használt szoftverek fejlesztése; Szoftver- és adatbázisrendszerek fejlesztése, frissítése és karbantartása; Számítógépes szoftveralkalmazások telepítése és testreszabása; Szoftvercsomagok igény szerinti tervezése; Nem letöltheto, online szoftverek biztosítása; Számítógépes szoftver technikai támogató szolgáltatások; Tároláskezelo szoftverek tervezése és fejlesztése; Adatbázis kezelésére szolgáló szoftverek tervezése és fejlesztése."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes szoftverek licenszelése, engedélyezése [jogi szolgáltatások]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software; Programmi per computer per l'elaborazione di dati; Banche dati; Motori di banche dati; Server di banche dati; Software per la gestione di dati; Programmi software per la gestione di banche dati; Software di gestione della memoria per archiviazione a lungo termine."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Consulenza in materia di sviluppo di prodotti e miglioramento della qualità di software; Servizi di consulenza in materia di software come servizio [SaaS]; Software come servizio [SaaS]; Consulenza nel settore dell'hardware e del software; Sviluppo di software per archiviazione e richiamo di dati multimediali; Sviluppo di software per conversione di dati e contenuti multimediali da e verso protocolli diversi; Sviluppo, aggiornamento e manutenzione di software e sistemi di banche dati; Installazione e personalizzazione di software applicativo per computer; Progettazione personalizzata di pacchetti software; Fornitura online di software non scaricabili; Servizi di assistenza tecnica in materia di software; Progettazione e sviluppo di software di gestione della memoria; Progettazione e sviluppo di software per la gestione di banche dati."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Concessione di licenze di software [servizi giuridici]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga; Kompiuteriu duomenu dorojimo programos; Duomenu bazes; Duomenu baziu paieskos sistemu modulines programos; Kompiuteriniu duomenu baziu serveriai; Duomenu valdymo programine iranga; Kompiuteriu programine iranga programos duomenu bazems tvarkyti; Ilgalaikio archyvavimo valdymo programine iranga."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programines irangos tobulinimo ir kokybes gerinimo konsultacijos; Programines irangos kaip paslaugos [SaaS] konsultacijos; Programine iranga kaip paslauga [SaaS]; Konsultacijos ir patarimai kompiuteriu programines ir aparatines irangos srityje; Multimedijos duomenu saugojimo ir atkurimo programines irangos kurimas; Programines irangos kurimas duomenu ir multimedijos turiniui konvertuoti is vieno protokolo i kita; Programines irangos ir duomenu baziu sistemu projektavimas, atnaujinimas ir prieziura; Kompiuteriu taikomuju programu instaliavimas ir pritaikymas individualiam vartotojui; Uzsakytinis programines irangos paketu projektavimas; Neparsisiunciamosios internetines programines irangos parupinimas; Kompiuteriu programines irangos technines pagalbos paslaugos; Atminties valdymo programines irangos projektavimas ir kurimas; Duomenu bazes valdymo programines irangos projektavimas ir tobulinimas."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuteriniu programu licencijavimas [juridines paslaugos]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura; Datorprogrammas datu apstradei; Datubazes; Datubazu dzineji (programmatura); Datoru datubazu serveri; Programmatura datu vadibai; Datoru programmatura datubazu parvaldibai; Kratuvju parvaldibas programmatura ilgstosai arhivesanai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Konsultativie pakalpojumi programmaturas produktu izstrades un kvalitates uzlabosanas joma; Konsultaciju pakalpojumi programmaturas ka pakalpojums (SAAS) joma; Programmatura ka pakalpojums (SaaS); Konsultaciju un padomu sniegsana datoraparaturas un programmaturas joma; Programmaturas izstrade multivides datu uzglabasanai un atgusanai; Programmaturas izstrade datu un multivides satura parveidosanai dazadu protokolu starpa; Programmaturas un datubazu sistemu izstrade, atjauninasana un uzturesana; Lietojumprogrammu uzstadisana un pielagosana individualam vajadzibam; Programmaturas pakotnu individuala projektesana; Nelejupieladejamas tiessaistes programmaturas nodrosinasana; Datoru programmaturas tehniskas palidzibas pakalpojumi; Kratuvju parvaldibas programmaturas projektesana un izstrade; Datubazu parvaldibas programmaturas projektesana un izstrade."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datoru programmaturas licencesana (juridiskie pakalpojumi)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer; Programmi tal-kompjuter ghall-ipprocessar ta' data; Banek tad-data; Magni tal-banek tad-data; Servers tad-database tal-kompjuter; Softwer ghall-gestjoni tad-data; Softwer tal-kompjuter ghall-gestjoni tad-database; Software ghall-gestjoni ta' mhazen ghall-arkivjar ghal perijodu fit-tul."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' ghoti ta' pariri fil-qasam tal-izvilupp tal-prodotti u tat-titjib tal-kwalità tas-softwer; Servizzi ta' konsulenza fil-qasam tas-softwer bhala servizz [SAAS]; Softwer bhala servizz [SaaS]; Servizzi ta' konsulenza u pariri fil-qasam tal-hardwer u s-softwer tal-kompjuter; Zvilupp ta' softwer ghall-hazna u l-irkuprar ta' data multimedjali; Zvilupp ta' softwer ghall-konverzjoni ta' kontenut multimedjali u ta' dejta minn u lejn protokolli differenti; L-izvilupp, l-aggornament u l-manutenzjoni ta' softwer u ta' sistemi ta' databases; Installazzjoni u personalizzazzjoni ta' applikazzjonijiet ta' softwer fuq il-kompjuter; Disinn ta' pakketti ta' softwer maghmula skont l-ordni; Il-provvista ta' softwer online li ma jistax jitnizzel; Servizzi ta' appogg tekniku ghas-softwer tal-kompjuter; Abbozz u zvilupp ta' software ghall-gestjoni ta' mhazen; Disinn u zvilupp ta' softwer ghall-gestjoni ta' dejtabejzis."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Licenzjar ta' softwer tal-kompjuter [servizzi legali]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie; Programy komputerowe do przetwarzania danych; Komputerowe bazy danych; Silniki baz danych; Serwery komputerowych baz danych; Oprogramowanie do zarzadzania danymi; Oprogramowanie komputerowe [programy] do zarzadzania bazami danych; Oprogramowanie do zarzadzania pamiecia masowa do dlugoterminowej archiwizacji."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi doradcze w dziedzinie opracowywania produktów i podnoszenia jakosci oprogramowania; Uslugi doradztwa w zakresie oprogramowania jako uslugi [SaaS]; Oprogramowanie jako usluga [SaaS]; Doradztwo i konsultacje w zakresie sprzetu i oprogramowania komputerowego; Opracowywanie oprogramowania do magazynowania i przywolywania danych multimedialnych; Opracowywanie oprogramowania do konwertowania danych i tresci multimedialnych z i na inne protokoly; Opracowywanie, aktualizacja i konserwacja systemów oprogramowania komputerowego i baz danych; Instalacja i dostosowanie na zamówienie aplikacji oprogramowania komputerowego; Projektowanie pakietów oprogramowania na zamówienie; Udostepnianie online oprogramowania nie do pobrania; Uslugi wsparcia technicznego w zakresie oprogramowania komputerowego; Projektowanie i rozwój oprogramowania do zarzadzania pamiecia; Projektowanie i opracowywanie oprogramowania komputerowego do zarzadzania bazami danych."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Licencjonowanie oprogramowania komputerowego [uslugi prawne]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software; Programas de computador para processamento de dados; Bases de dados; Motores de bases de dados; Centros servidores de bases de dados; Software de gestão de dados; Software para gestão de bases de dados; Software de gestão de memória para arquivamento de longo prazo."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de assessoria no domínio do desenvolvimento de produtos e da melhoria da qualidade de software; Serviços de consultadoria no domínio do software como serviço [SaaS]; Software como serviço [SaaS]; Serviços de consultoria e assessoria em matéria de hardware e software; Desenvolvimento de software para armazenamento e recuperação de dados multimédia; Desenvolvimento de software para conversão de dados e conteúdos multimédia de e para diferentes protocolos; Desenvolvimento, atualização e manutenção de software e de sistemas de bases de dados; Instalação e personalização de software de aplicação para computadores; Design customizado de pacotes de software; Fornecimento de software em linha não descarregável; Serviços de assistência técnica a software; Conceção e desenvolvimento de software de gestão de memória; Conceção e desenvolvimento de software para gestão de bases de dados."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Licenciamento de software [serviços jurídicos]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software; Software de prelucrare a datelor; Baze de date computerizate; Motoare de baze de date; Servere pentru baze de date informatizate; Software de gestiune a datelor; Programe informatice pentru administrarea bazelor de date; Software de gestionare a stocarii pentru arhivare pe termen lung."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de consultanta în domeniul dezvoltarii de produse si al îmbunatatirii calitatii produselor software; Consultanta în domeniul software-ului ca serviciu [SAAS]; Software ca serviciu [SaaS]; Consultanta si consiliere în materie de hardware si software de calculator; Dezvoltare de software pentru stocarea si recuperarea datelor multimedia; Dezvoltare de software pentru conversia de date si continut multimedia între diferite protocoale; Dezvoltare, actualizare si întretinere de software si sisteme de baze de date; Instalare si personalizare de aplicatii software de calculator; Proiectare la comanda de pachete de software; Furnizare de software nedescarcabil online; Servicii de asistenta tehnica în materie de software de calculator; Proiectarea si dezvoltarea de software de gestionare a memoriei; Proiectare si dezvoltare de software pentru gestionarea bazelor de date."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Acordare de licente pentru software de calculator [servicii juridice]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér; Pocítacové programy na spracovanie údajov; Pocítacové databázy; Databázové motory; Servery pocítacových databáz; Softvér pre správu dát; Pocítacový sofvér na manazment databáz; Pocítacový softvér na správu pamäte na dlhodobú archiváciu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Poradenské sluzby v oblasti vývoja produktov a zlepsovania kvality softvéru; Konzultacné sluzby v oblasti softvéru ako sluzby [SaaS]; Poskytovanie softvéru prostredníctvom internetu (SaaS); Poradenstvo v oblasti pocítacového hardvéru a softvéru; Vývoj softvéru na ukladanie a obnovu multimediálnych údajov; Vývoj softvéru na konverziu dát a multimediálneho obsahu medzi rôznymi protokolmi; Vývoj, aktualizácia a údrzba softvérových a databázových systémov; Instalácia aplikácií a ich prispôsobenie na zákazku pocítacového softvéru; Zákazkové navrhovanie softvérových balíkov; Poskytovanie onlinového nestiahnutelného softvéru; Sluzby technickej podpory pre pocítacový softvér; Návrh a vývoj softvéru na správu pamäte; Navrhovanie a vývoj softvéru na riadenie databáz."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Udelovanie licencií na pocítacové programy (právne sluzby)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema; Racunalniski programi za obdelavo podatkov; Podatkovne baze; Mehanizmi podatkovnih zbirk; Racunalniski strezniki za podatkovne baze; Programska oprema za upravljanje podatkov; Racunalniska programska oprema za upravljanje baz podatkov; Programska oprema za upravljanje pomnilnikov za dolgotrajno arhiviranje."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Svetovalne storitve na podrocju razvoja proizvodov in izboljsanja kakovosti programske opreme; Svetovalne storitve na podrocju programske opreme kot storitve [SaaS]; Programska oprema kot storitev [SaaS]; Svetovanje na podrocju racunalniske programske in strojne opreme; Razvoj programske opreme za shranjevanje in ponovni priklic multimedijskih podatkov; Razvoj programske opreme za pretvorbo podatkov in vecpredstavnostnih vsebin iz razlicnih protokolov in vanje; Razvoj, posodabljanje in vzdrzevanje programske opreme in sistemov podatkovnih zbirk; Namestitev in prireditev racunalniske aplikacijske programske opreme; Oblikovanje paketov programske opreme po meri; Zagotavljanje spletne, nenalozljive programske opreme; Storitve tehnicne podpore za racunalnisko programsko opremo; Oblikovanje in razvoj programske opreme za upravljanje pomnilnikov; Oblikovanje in razvoj programske opreme za upravljanje podatkovnih baz."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Izdaja licenc za racunalnisko programsko opremo (pravne storitve)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software; Software de ordenador para el tratamiento de la información; Bancos de datos; Motores de bases de datos; Servidores de bases de datos informáticas; Software de gestión de datos; Software de gestión de bases de datos; Software de gestión de almacenamiento para el archivo a largo plazo."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de asesoramiento en materia de desarrollo de productos y mejora de la calidad de software; Servicios de consultoría en materia de software como un servicio [SaaS]; Software como servicio [SaaS]; Servicios de consultoría y asesoría en el campo del hardware y software informáticos; Desarrollo de software para el almacenamiento y recuperación de datos multimedia; Desarrollo de software para la conversión de datos y contenidos multimedia entre protocolos diferentes; Desarrollo, actualización y mantenimiento de sistemas de software y bases de datos; Instalación y personalización de software de aplicaciones para ordenadores; Diseño personalizado de paquetes de software; Facilitación de software en línea no descargable; Servicios de asistencia técnica para software; Diseño y desarrollo de software de gestión de memoria; Diseño y desarrollo de software para gestionar bases de datos."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Concesión de licencias de software [servicios jurídicos]."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Mjukvaror; Datorprogramvara för databehandling; Databaser; Databasmotorer; Centra för databasservrar; Programvara för datahantering; Datorprogram för hantering av databaser; Programvara för lagringshantering för långsiktig arkivering."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Rådgivning inom området för produktutveckling och kvalitetsförbättring av programvara; Rådgivning avseende molntjänster [SaaS]; Molntjänster [SaaS]; Konsulttjänster och rådgivning inom området datormaskinvara och datorprogramvara; Utveckling av programvara för att spara och hämta multimediedata; Utveckling av programvara för konvertering av data och multimedieinnehåll från och till olika protokoll; Utveckling, uppdatering och underhåll av programvara och databassystem; Installation och kundanpassning av datorprogram; Specialutformning av programvarupaket; Upplåtande online av inte nedladdningsbar mjukvara; Tekniskt stöd rörande datorprogramvara; Design och utveckling av Programvara för lagringshantering; Design och utveckling av programvara för databashantering."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Datorprogram (licensiering av -)[juridiska tjänster]."
+        }
+      ]
+    },
+    "id": "062eb164-026f-47ff-a112-b56dd2627a1f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "222"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Ferdinand-Sauerbruch-Straße 28,Koblenz, 56073",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "MARTINI MOGG VOGT PARTGMBB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251009",
+        "applicationNumber": "19258653"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351009",
+      "lastPublicationDate": "20251124",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260304",
+        "registrationNumber": "19258653"
+      }
+    },
+    "version": "20260512020508",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SORI"
+    }
+  },
+  "_uri": "/mark/em/062eb164-026f-47ff-a112-b56dd2627a1f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.877Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

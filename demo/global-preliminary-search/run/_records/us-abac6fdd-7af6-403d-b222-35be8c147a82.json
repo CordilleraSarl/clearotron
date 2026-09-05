@@ -1,0 +1,651 @@
+{
+  "uri": "/mark/us/abac6fdd-7af6-403d-b222-35be8c147a82",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "abac6fdd-7af6-403d-b222-35be8c147a82",
+  "applicationNumber": "88374569",
+  "registrationNumber": null,
+  "applicationDate": "2019-04-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2021-06-01"
+  ],
+  "abandonmentDate": "2024-03-04",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "ONE-HEAVEN.ORG",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Promoting public interest and awareness of education, linguistics, philosophy, history, law, religion, political science, economics, sociology, physics, chemistry and materials science",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Education services, namely, providing on-line classes, seminars, workshops and academic reference library services in the fields of education, linguistics, philosophy, history, law, religion, political science, economics, sociology, physics, chemistry and materials science and distributing course materials in connection therewith",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "The Trustee of the OCollins Foundation Trust",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Wilmington, DE, 19801",
+        "applicantAddressCity": "Wilmington",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "19801",
+        "applicantAddressStateName": "DELAWARE",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "TRUST",
+        "applicantName": "The Trustee of the OCollins Foundation Trust",
+        "applicantSecondaryAddressUnit": "901 N Market St Suite 705",
+        "entities": [
+          {
+            "name": "Guardians and Trustees Company, a Delaware corporation"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Promoting public interest and awareness of education, linguistics, philosophy, history, law, religion, political science, economics, sociology, physics, chemistry and materials science"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Education services, namely, providing on-line classes, seminars, workshops and academic reference library services in the fields of education, linguistics, philosophy, history, law, religion, political science, economics, sociology, physics, chemistry and materials science and distributing course materials in connection therewith"
+        }
+      ]
+    },
+    "id": "abac6fdd-7af6-403d-b222-35be8c147a82",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20200224",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20191011",
+          "identifier": "92072528",
+          "interlocutoryAttorneyName": "GEOFFREY MCNUTT",
+          "kind": "Cancellation",
+          "kindCode": "CAN",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "THE KERUBALE ABEGAZ CHARITABLE FOUNDATION, LLC",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "87376297",
+                  "markVerbalElementText": "UCADIA ECCLESIA FOUNDATION",
+                  "registrationNumber": "5291116"
+                },
+                {
+                  "applicationNumber": "87458148",
+                  "markVerbalElementText": "THE UCADIA GAZETTE ONE HEAVEN EDITION",
+                  "registrationNumber": "5587261"
+                },
+                {
+                  "applicationNumber": "87470449",
+                  "markVerbalElementText": "THE UCADIA GAZETTE ONE HEAVEN EDITION",
+                  "registrationNumber": "5607944"
+                },
+                {
+                  "applicationNumber": "87395520",
+                  "markVerbalElementText": "SOCIETY OF ONE HEAVEN",
+                  "registrationNumber": "5493361"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "HIGH POINT",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "27265-9998",
+                  "addressState": "NC",
+                  "addressStreet": "1515 YORK AVENUE",
+                  "companyName": "THE KERUBALE ABEGAZ CHARITABLE FOUNDATION LLC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "KERUBALE ABEGAZ"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "THE TRUSTEES OF THE OCOLLINS FOUNDATION TRUST COMPOSED OF GUARDIANS AND TRUSTEES COMPANY",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "88374581",
+                  "markVerbalElementText": "UCADIA ECCLESIA FOUNDATION",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88067434",
+                  "markVerbalElementText": "UCADIA",
+                  "registrationNumber": "5803666"
+                },
+                {
+                  "applicationNumber": "88051171",
+                  "markVerbalElementText": "UCADIA.COM",
+                  "registrationNumber": "5803625"
+                },
+                {
+                  "applicationNumber": "88051127",
+                  "markVerbalElementText": "UCADIA BOOKS COMPANY",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88374585",
+                  "markVerbalElementText": "UCADIA GAZETTE",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88374618",
+                  "registrationNumber": "0000000"
+                },
+                {
+                  "applicationNumber": "88374569",
+                  "markVerbalElementText": "ONE-HEAVEN.ORG",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "WILMINGTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "19801",
+                  "addressState": "DE",
+                  "addressStreet": "901 N MARKET STREET, SUITE 705",
+                  "companyName": "GUARDIANS AND TRUSTEES COMPANY",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "IAN MILLER"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20200224",
+              "text": "#14 998"
+            },
+            {
+              "code": "T",
+              "eventDate": "20200224",
+              "text": "#13 BOARD'S DECISION: DISMISSED W/ PREJUDICE"
+            },
+            {
+              "code": "N",
+              "eventDate": "20200129",
+              "text": "#12 WITHDRAWAL OF PETITION FOR CANCELLATION"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191114",
+              "text": "#11 CONSOLIDATED W/92071152 AND 92072592; TD RESET"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191105",
+              "text": "#10 P'S REPLY IN SUPPORT OF MOTION"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191023",
+              "text": "#9 D MOT FOR DISCOVERY"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191023",
+              "text": "#8 D'S OPPOSITION/RESPONSE TO MOTION"
+            },
+            {
+              "code": "M",
+              "eventDate": "20191022",
+              "text": "#7 P'S MOTION FOR SUMMARY JUDGMENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191022",
+              "text": "#6 D EMAIL TO EXAMINING ATTY"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191021",
+              "text": "#5 D MOT TO AMEND ANSWER"
+            },
+            {
+              "code": "N",
+              "eventDate": "20191019",
+              "text": "#4 ANSWER"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191018",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20191018",
+              "responseDate": "20191127",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "N",
+              "eventDate": "20191011",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20240304",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20240304",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20230727",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20230725",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20230725",
+        "descriptionText": "SOU EXTENSION 4 GRANTED"
+      },
+      {
+        "date": "20230725",
+        "descriptionText": "SOU EXTENSION 4 FILED"
+      },
+      {
+        "date": "20230127",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20230125",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20230125",
+        "descriptionText": "SOU EXTENSION 3 FILED"
+      },
+      {
+        "date": "20230125",
+        "descriptionText": "SOU EXTENSION 3 GRANTED"
+      },
+      {
+        "date": "20220728",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20220726",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20220726",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20220726",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20220127",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20220125",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20220125",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20220125",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20210727",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20210601",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20210601",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20210512",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20210423",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20210419",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20210419",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20210419",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20210419",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20210330",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20210330",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20210329",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20210308",
+        "descriptionText": "ACTION CONTINUING A FINAL - COMPLETED"
+      },
+      {
+        "date": "20210308",
+        "descriptionText": "NOTIFICATION OF SUBSEQUENT FINAL EMAILED"
+      },
+      {
+        "date": "20210308",
+        "descriptionText": "CONTINUATION OF FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20210220",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20210220",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20210217",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20200831",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20200831",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20200831",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20200806",
+        "descriptionText": "SUSPENSION CHECKED - TO ATTORNEY FOR ACTION"
+      },
+      {
+        "date": "20200805",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20200106",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20200106",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20200106",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20191216",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20191215",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20191215",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20190624",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20190624",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190624",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20190617",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20190424",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20190410",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "901 N Market St Suite 705, Wilmington, DE, 19801",
+        "city": "Wilmington",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Guardians and Trustees Company, a Delaware corporation"
+          }
+        ],
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "TRUST",
+        "name": "The Trustee of the OCollins Foundation Trust",
+        "postalCode": "19801",
+        "stateName": "DELAWARE",
+        "street": "901 N Market St Suite 705"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Wilmington, DE, 19801",
+        "city": "Wilmington",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Guardians and Trustees Company, a Delaware corporation"
+          }
+        ],
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "TRUST",
+        "name": "The Trustee of the OCollins Foundation Trust",
+        "postalCode": "19801",
+        "secondaryAddressUnit": "901 N Market St Suite 705",
+        "stateName": "DELAWARE"
+      },
+      {
+        "address": "Wilmington, DE, 19801",
+        "city": "Wilmington",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Guardians and Trustees Company, a Delaware corporation"
+          }
+        ],
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "TRUST",
+        "name": "The Trustee of the OCollins Foundation Trust",
+        "postalCode": "19801",
+        "secondaryAddressUnit": "901 N Market St Suite 705",
+        "stateName": "DELAWARE"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "87395520",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SOCIETY OF ONE HEAVEN",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "87395520",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SOCIETY OF ONE HEAVEN",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "87395520",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "SOCIETY OF ONE HEAVEN",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Wilmington, DE 19801, United States",
+        "representativeCorrespondentAddressLines": [
+          "Wilmington, DE 19801",
+          "United States"
+        ],
+        "representativeCorrespondentName": "The Trustee of the OCollins Foundation Trust, 901 N Market St Suite 705"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Wilmington, DE 19801, United States",
+        "representativeAddressLines": [
+          "Wilmington, DE 19801",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20240304",
+      "active": false,
+      "application": {
+        "applicationDate": "20190406",
+        "applicationNumber": "88374569"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "extension": {
+        "approvalDate": [
+          "20220125",
+          "20220726",
+          "20230125",
+          "20230725"
+        ]
+      },
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20240304",
+        "markOfficialStatusEvents": [
+          "Intent to Use",
+          "FILED AS USE APPLICATION",
+          "Use Application - Filed"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20210601"
+      ]
+    },
+    "version": "20260113072112",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "ONE HEAVEN ORG, 1 HEAVEN ORG",
+      "markVerbalElementText": "ONE-HEAVEN.ORG"
+    }
+  },
+  "_uri": "/mark/us/abac6fdd-7af6-403d-b222-35be8c147a82",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

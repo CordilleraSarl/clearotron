@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/br/2bca872d-4584-40ac-ab42-c32e45cb6f92",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "2bca872d-4584-40ac-ab42-c32e45cb6f92",
+  "applicationNumber": "831180838",
+  "registrationNumber": "831180838",
+  "applicationDate": "2011-08-03",
+  "registrationDate": "2014-11-04",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Semicondutores, circuitos integrados, microprocessadores, microprocessadores programáveis por software, processadores multinúcleo ('multicore'), circuitos integrados de aplicação específica, processadores de sinais, processadores de sinais digitais, processadores de vetores, processadores de comunicações, aceleradores de aplicação específica, bandas - base sem fio, estações de base em um chip, incluindo estações de base sem fio em um chip, sistema - em - um - chip ('soc').",
+      "translation_language": "en",
+      "translation": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROPROCESSORS, SOFTWARE PROGRAMMABLE MICROPROCESSORS, MULTI-NUCLEUS PROCESSORS (&#39;MULTICORE&#39;), APPLICATION-SPECIFIC INTEGRATED CIRCUITS, SIGNAL PROCESSORS, SIGNAL PROCESSORS, DIGITICAL SIGNAL PROCESSORS, DIGITICAL SIGNAL PROCESSORS, DIGITICAL PROCESSOR - WIRELESS BASE, BASE STATIONS ON ONE CHIP, INCLUDING WIRELESS BASE STATIONS ON ONE CHIP, SYSTEM - IN - ONE - CHIP (&#39;SOC&#39;)."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "MOMSEN, LEONARDOS & CIA",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20110203",
+      "priorityNumber": "85/233451"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROPROCESSORS, SOFTWARE PROGRAMMABLE MICROPROCESSORS, MULTI-NUCLEUS PROCESSORS (&#39;MULTICORE&#39;), APPLICATION-SPECIFIC INTEGRATED CIRCUITS, SIGNAL PROCESSORS, SIGNAL PROCESSORS, DIGITICAL SIGNAL PROCESSORS, DIGITICAL SIGNAL PROCESSORS, DIGITICAL PROCESSOR - WIRELESS BASE, BASE STATIONS ON ONE CHIP, INCLUDING WIRELESS BASE STATIONS ON ONE CHIP, SYSTEM - IN - ONE - CHIP (&#39;SOC&#39;).",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Semicondutores, circuitos integrados, microprocessadores, microprocessadores programáveis por software, processadores multinúcleo ('multicore'), circuitos integrados de aplicação específica, processadores de sinais, processadores de sinais digitais, processadores de vetores, processadores de comunicações, aceleradores de aplicação específica, bandas - base sem fio, estações de base em um chip, incluindo estações de base sem fio em um chip, sistema - em - um - chip ('soc')."
+        }
+      ]
+    },
+    "id": "2bca872d-4584-40ac-ab42-c32e45cb6f92",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20110203",
+        "priorityNumber": "85/233451"
+      }
+    ],
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MOMSEN, LEONARDOS & CIA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110803",
+        "applicationNumber": "831180838"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20141104",
+        "registrationNumber": "831180838"
+      }
+    },
+    "version": "20250630222437",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/br/2bca872d-4584-40ac-ab42-c32e45cb6f92",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

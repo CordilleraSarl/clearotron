@@ -1,0 +1,104 @@
+{
+  "uri": "/mark/mx/5c45737c-82c6-4476-889a-95f89f6e4e42",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "5c45737c-82c6-4476-889a-95f89f6e4e42",
+  "applicationNumber": "3594380",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "JOVEN ORQUESTA MEXICO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion, capacitacion, entretenimiento, produccion de espectaculos, actividades culturales. En especial servicios de compositores y autores de musica, produccion musical autoedicion electronica (micro edicion), suministro en linea de musica no descargable, grupos musicales, servicios de orquestas; actuaciones en directo por parte de un grupo musical; servicios de estudios de grabacion, organizacion y direccion de conciertos, recitales y eventos culturales).",
+      "translation_language": "en",
+      "translation": "EDUCATION, TRAINING, ENTERTAINMENT, PRODUCTION OF SHOWS, CULTURAL ACTIVITIES. ESPECIALLY SERVICES OF COMPOSERS AND MUSIC AUTHORS, MUSIC PRODUCTION, ELECTRONIC SELF-PUBLISHING (MICRO-PUBLISHING), ONLINE SUPPLY OF NON-DOWNLOADABLE MUSIC, MUSICAL GROUPS, ORCHESTRA SERVICES; LIVE PERFORMANCES BY A MUSICAL GROUP; RECORDING STUDIO SERVICES, ORGANIZATION AND MANAGEMENT OF CONCERTS, RECITALS AND CULTURAL EVENTS)."
+    }
+  ],
+  "owner": "MOISES ANZO SERRANO",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "IGNACIO ALLENDE NUM. EXT. 14, BARRIO SAN PEDRO, IZTAPALAPA, CIUDAD DE MEXICO 09000",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "MOISES ANZO SERRANO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION, TRAINING, ENTERTAINMENT, PRODUCTION OF SHOWS, CULTURAL ACTIVITIES. ESPECIALLY SERVICES OF COMPOSERS AND MUSIC AUTHORS, MUSIC PRODUCTION, ELECTRONIC SELF-PUBLISHING (MICRO-PUBLISHING), ONLINE SUPPLY OF NON-DOWNLOADABLE MUSIC, MUSICAL GROUPS, ORCHESTRA SERVICES; LIVE PERFORMANCES BY A MUSICAL GROUP; RECORDING STUDIO SERVICES, ORGANIZATION AND MANAGEMENT OF CONCERTS, RECITALS AND CULTURAL EVENTS).",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion, capacitacion, entretenimiento, produccion de espectaculos, actividades culturales. En especial servicios de compositores y autores de musica, produccion musical autoedicion electronica (micro edicion), suministro en linea de musica no descargable, grupos musicales, servicios de orquestas; actuaciones en directo por parte de un grupo musical; servicios de estudios de grabacion, organizacion y direccion de conciertos, recitales y eventos culturales)."
+        }
+      ]
+    },
+    "id": "5c45737c-82c6-4476-889a-95f89f6e4e42",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260430",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260406",
+        "applicationNumber": "3594380"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260430020051",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA MEXICO"
+    }
+  },
+  "_uri": "/mark/mx/5c45737c-82c6-4476-889a-95f89f6e4e42",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

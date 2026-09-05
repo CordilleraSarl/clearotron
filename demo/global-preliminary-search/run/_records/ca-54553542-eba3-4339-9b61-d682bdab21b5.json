@@ -1,0 +1,464 @@
+{
+  "uri": "/mark/ca/54553542-eba3-4339-9b61-d682bdab21b5",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "54553542-eba3-4339-9b61-d682bdab21b5",
+  "applicationNumber": "679462",
+  "registrationNumber": "TMA421368",
+  "applicationDate": "1991-04-02",
+  "registrationDate": "1993-12-24",
+  "expiryDate": null,
+  "renewalDate": "2023-12-24",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1993-05-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    4,
+    7,
+    8,
+    9,
+    11,
+    12,
+    27,
+    36,
+    37,
+    39,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        4,
+        7,
+        8,
+        9,
+        11,
+        12,
+        27,
+        36,
+        37,
+        39,
+        41,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Huiles et graisses industrielles, lubrifiants, combustibles, essences pour moteurs d'automobiles. \n(2) Outils pour véhicules automobiles, nommément, tournevis, marteaux, crics, scies, clefs dynamométriques, compresseur de ressort.; équipements électriques pour véhicules automobiles, nommément, bougies d'allumages. \n(3) Outils pour véhicules automobiles, nommément, clefs diverses pour tout type de visserie, pince, clefs à bougies, clefs pour filtre à huile, chandelles, extracteurs de roulement, de rotules, de moyeux. \n(4) Appareils de reproduction du son et des images destinés aux automobiles, nommément: émetteur et récepteur radio, lecteur enregistreur de cassettes, lecteur de disque-compact, magnétoscope et lecteur vidéo, booster, équalizer, télévision, téléphone, télécopieur, antenne, fils et prolongateur d'antenne; équipements électriques pour véhicules automobiles, nommément: batterie, cosses, fils et cbles électriques, interrupteur, connecteur, relais, gaines, centrale clignotante, sonde, fusibles; extincteurs. \n(5) Installation d'éclairage pour véhicules automobiles, nommément: ampoules, phares additionnels; unité de chauffage, de ventilation et de climatisation pour véhicules. \n(6) Automobiles, pièces d'automobiles; appareils de protection contre le vol, nommément; alarmes et dispositif pour neutraliser le déplacement et le démarrage des véhicules. \n(7) Tapis et revêtements de sol pour véhicules automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4,
+        7,
+        8,
+        9,
+        11,
+        12,
+        27,
+        36,
+        37,
+        39,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Industrial oils and greases, lubricants, fuels, gasoline for automobile engines. (2) Tools for motor vehicles, namely, screwdriver, hammers, jacks, saws, torque wrenches, spring compressor.;electrical equipment for motor vehicles, namely, spark plugs. (3) Tools for motor vehicles, namely, various keys for all types of screws, pliers, candle keys, oil filter keys, candles, bearing pullers, ball joints, hubs. (4) Sound and image reproduction apparatus for automobiles, namely: radio transmitter and receiver, cassette recorder player, compact disc player, VCR and video player, booster, equalize, television, phone, fax machine, antenna, antenna cables and extension;electrical equipment for motor vehicles, namely: battery, pods, electric wires and cables, light switch, connector, relay, sheaths, flasher unit, probe, fuses;fire extinguishers. (5) Lighting installation for motor vehicles, namely: light bulbs, additional headlights;heating unit, ventilation and air conditioning systems for vehicles. (6) Automobiles, auto parts;theft protection devices, namely;alarms and device to neutralize the movement and starting of vehicles. (7) Carpets and floor coverings for motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4,
+        7,
+        8,
+        9,
+        11,
+        12,
+        27,
+        36,
+        37,
+        39,
+        41,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Services d'assurances et de finances, nommément: services d'assurances en matières automobiles et de financement de véhicules automobiles. \n(2) Tous services d'entretien de réparation, de nettoyage de véhicules automobiles. \n(3) Services de location d'automobiles. \n(4) Services d'organisation de manifestations sportives, nommément: services d'organisation de compétitions automobiles. \n(5) Travaux d'ingénieurs, services de mise au point de véhicules automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4,
+        7,
+        8,
+        9,
+        11,
+        12,
+        27,
+        36,
+        37,
+        39,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Insurance and financial services, namely: automobile insurance and automobile vehicle financing services. (2) All repair maintenance services, automotive cleaning. (3) Car rental services. (4) Sports event organization services, namely: services for the organization of automobile competitions. (5) Engineering works, automotive tuning services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo Pallanca Pastor",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "DECODE LEGAL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7, rue du Gabian, Monaco",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantAddressLines": [
+          "7, rue du Gabian",
+          "Monaco"
+        ],
+        "applicantName": "Gildo Pallanca Pastor"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in FRANCE on wares marked (1) (2) (3) (4) (5) (6) (7) on services (1) ( 2) (3) (4) (5)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for FRANCE on 01 October 1990, under the no. 1,643,291 in connection with the on wares marked (1) (2) (3) (4) (5) (6) (7)",
+        "typeDescription": "Foreign Registration"
+      }
+    ],
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Name / Nom",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 06 nov/Nov 2002",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 29 avr/Apr 1992",
+      "COMMENTS / COMMENTAIRES: FROM: MVS MANUFACTURE DE VOITURES DE SPORT,",
+      "UNE SOCIETE ANONYME DE DROIT FRANCAIS,",
+      "Voir Preuve au dossier/See evidence on File No. 679462",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 06 nov/Nov 2002",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 11 juin/Jun 1996",
+      "COMMENTS / COMMENTAIRES: FROM: VENTURI S.A.",
+      "TO: NAKARIN BENZ GROUP COL LTD",
+      "Voir Preuve au dossier/See evidence on File No. 679462",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 06 nov/Nov 2002",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 02 déc/Dec 1996",
+      "COMMENTS / COMMENTAIRES: FROM: NAKARIN BENZ GROUP COL LTD",
+      "TO: VENTURI PARIS S.A.",
+      "Voir Preuve au dossier/See evidence on File No. 679462",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 06 nov/Nov 2002",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 18 mai/May 2000",
+      "COMMENTS / COMMENTAIRES: FROM: VENTURI PARIS S.A.",
+      "TO: GILDO PIERRE PALLANCA-PASTOR",
+      "Voir Preuve au dossier/See evidence on File No. 679462",
+      "Record License Agreement / Accord de licence enregistré",
+      "DATE RECORDED / DATE CONSIGNEE: 04 mai/May 2011",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 04 mai/May 2011",
+      "COMMENTS / COMMENTAIRES: Venturi Automobiles, S.A.M.",
+      "Voir Preuve au dossier/See evidence on File No. 679462",
+      "AMENDMENT TO REGISTRATION / MODIFICATION A L'ENREGISTREMENT:",
+      "TYPE OF AMENDMENT / GENRE DE MODIFICATION: Paragraph 41(1)(a) - Owner Information / Alinéa 41(1)(a) - information sur le propriétaire",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 22 juin/Jun 2011",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 22 juin/Jun 2011",
+      "COMMENTS / COMMENTAIRES: Voir Preuve au dossier/See evidence on File No. 679462"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "04,07,08,09,11,12,27,36,37,39,41,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Huiles et graisses industrielles, lubrifiants, combustibles, essences pour moteurs d'automobiles. \n(2) Outils pour véhicules automobiles, nommément, tournevis, marteaux, crics, scies, clefs dynamométriques, compresseur de ressort.; équipements électriques pour véhicules automobiles, nommément, bougies d'allumages. \n(3) Outils pour véhicules automobiles, nommément, clefs diverses pour tout type de visserie, pince, clefs à bougies, clefs pour filtre à huile, chandelles, extracteurs de roulement, de rotules, de moyeux. \n(4) Appareils de reproduction du son et des images destinés aux automobiles, nommément: émetteur et récepteur radio, lecteur enregistreur de cassettes, lecteur de disque-compact, magnétoscope et lecteur vidéo, booster, équalizer, télévision, téléphone, télécopieur, antenne, fils et prolongateur d'antenne; équipements électriques pour véhicules automobiles, nommément: batterie, cosses, fils et cbles électriques, interrupteur, connecteur, relais, gaines, centrale clignotante, sonde, fusibles; extincteurs. \n(5) Installation d'éclairage pour véhicules automobiles, nommément: ampoules, phares additionnels; unité de chauffage, de ventilation et de climatisation pour véhicules. \n(6) Automobiles, pièces d'automobiles; appareils de protection contre le vol, nommément; alarmes et dispositif pour neutraliser le déplacement et le démarrage des véhicules. \n(7) Tapis et revêtements de sol pour véhicules automobiles."
+        },
+        {
+          "intClassNumber": "04,07,08,09,11,12,27,36,37,39,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Industrial oils and greases, lubricants, fuels, gasoline for automobile engines. (2) Tools for motor vehicles, namely, screwdriver, hammers, jacks, saws, torque wrenches, spring compressor.;electrical equipment for motor vehicles, namely, spark plugs. (3) Tools for motor vehicles, namely, various keys for all types of screws, pliers, candle keys, oil filter keys, candles, bearing pullers, ball joints, hubs. (4) Sound and image reproduction apparatus for automobiles, namely: radio transmitter and receiver, cassette recorder player, compact disc player, VCR and video player, booster, equalize, television, phone, fax machine, antenna, antenna cables and extension;electrical equipment for motor vehicles, namely: battery, pods, electric wires and cables, light switch, connector, relay, sheaths, flasher unit, probe, fuses;fire extinguishers. (5) Lighting installation for motor vehicles, namely: light bulbs, additional headlights;heating unit, ventilation and air conditioning systems for vehicles. (6) Automobiles, auto parts;theft protection devices, namely;alarms and device to neutralize the movement and starting of vehicles. (7) Carpets and floor coverings for motor vehicles."
+        },
+        {
+          "intClassNumber": "04,07,08,09,11,12,27,36,37,39,41,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Services d'assurances et de finances, nommément: services d'assurances en matières automobiles et de financement de véhicules automobiles. \n(2) Tous services d'entretien de réparation, de nettoyage de véhicules automobiles. \n(3) Services de location d'automobiles. \n(4) Services d'organisation de manifestations sportives, nommément: services d'organisation de compétitions automobiles. \n(5) Travaux d'ingénieurs, services de mise au point de véhicules automobiles."
+        },
+        {
+          "intClassNumber": "04,07,08,09,11,12,27,36,37,39,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Insurance and financial services, namely: automobile insurance and automobile vehicle financing services. (2) All repair maintenance services, automotive cleaning. (3) Car rental services. (4) Sports event organization services, namely: services for the organization of automobile competitions. (5) Engineering works, automotive tuning services."
+        }
+      ]
+    },
+    "id": "54553542-eba3-4339-9b61-d682bdab21b5",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250814",
+        "descriptionText": "Adjusted Renewal Fee Received"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "Adjusted Renewal Fee Notice Sent",
+        "information": "Additional Classes:11",
+        "responseDate": "20250908"
+      },
+      {
+        "date": "20250708",
+        "descriptionText": "281"
+      },
+      {
+        "date": "20241104",
+        "descriptionText": "280",
+        "responseDate": "20250504"
+      },
+      {
+        "date": "20240508",
+        "descriptionText": "Agent changed",
+        "information": "From/De: 4779 To/A: 15527"
+      },
+      {
+        "date": "20240503",
+        "descriptionText": "280",
+        "responseDate": "20241103"
+      },
+      {
+        "date": "20231224",
+        "descriptionText": "Renewed",
+        "information": "DP:2023/09/28 RD:2023/09/28 RR:(15527) BENOÎT & CÔTÉ INC.",
+        "responseDate": "20331224"
+      },
+      {
+        "date": "20110622",
+        "descriptionText": "Amendment to Registration",
+        "information": "Section 41(1)(a) - Owner Information / Voir Preuve au dossier/See evidence on File No. 679462"
+      },
+      {
+        "date": "20110504",
+        "descriptionText": "Licence Agreement Recorded",
+        "information": "Record License Agreement / Voir Preuve au dossier/See evidence on File No. 679462"
+      },
+      {
+        "date": "20081224",
+        "descriptionText": "Renewed",
+        "information": "DP:2008/10/06 RD:2008/10/06 RR:(4779) ROBIC",
+        "responseDate": "20231224"
+      },
+      {
+        "date": "20021106",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 679462"
+      },
+      {
+        "date": "20021106",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 679462"
+      },
+      {
+        "date": "20021106",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment / Voir Preuve au dossier/See evidence on File No. 679462"
+      },
+      {
+        "date": "20021106",
+        "descriptionText": "Amendment to Registration",
+        "information": "Name / Voir Preuve au dossier/See evidence on File No. 679462"
+      },
+      {
+        "date": "20021010",
+        "descriptionText": "Assignment Correspondence Created",
+        "responseDate": "20030410"
+      },
+      {
+        "date": "19931224",
+        "descriptionText": "Registered",
+        "responseDate": "20081224"
+      },
+      {
+        "date": "19930730",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "19940130"
+      },
+      {
+        "date": "19930730",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "19930505",
+        "descriptionText": "Advertised",
+        "information": "Vol.40 Issue 2010"
+      },
+      {
+        "date": "19930110",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "19920618",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "19920423",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "19920205",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "19910924",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "19910812",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "19910402",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "19910402",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "03.07.01",
+      "03.07.16",
+      "26.03.01",
+      "26.03.06",
+      "26.03.15",
+      "26.01.02",
+      "01.03.02"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "ZONE INDUSTRIELLE DU CORMIER, 49300 CHOLET",
+        "addressLines": [
+          "ZONE INDUSTRIELLE DU CORMIER,",
+          "49300 CHOLET,"
+        ],
+        "countryName": "France",
+        "name": "VENTURI S.A."
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "NAKARIN BENZ GROUP COL LTD",
+          "ZONE INDUSTRIELLE DU CORMIER,",
+          "49300 CHOLET,",
+          "FRANCE"
+        ],
+        "name": "NAKARIN BENZ GROUP COL LTD"
+      },
+      {
+        "addressLines": [
+          "VENTURI PARIS S.A.",
+          "ZONE INDUSTRIELLE DU CORMIER,",
+          "49300 CHOLET,",
+          "FRANCE"
+        ],
+        "name": "VENTURI PARIS S.A."
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2010",
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20260304",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "DECODE LEGAL",
+          "560 boul. Crémazie Est",
+          "3e étage",
+          "Montréal",
+          "QUEBEC H2P1E8"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "DECODE LEGAL",
+        "representativeReferenceNumber": "TM6087CA00"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "19930730"
+      ],
+      "application": {
+        "applicationDate": "19910402",
+        "applicationNumber": "679462"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20331224",
+      "publicationDate": [
+        "19930505"
+      ],
+      "registration": {
+        "registrationDate": "19931224",
+        "registrationNumber": "TMA421368"
+      },
+      "renewalDate": "20231224"
+    },
+    "subjectHeadings": [
+      "VENTURI"
+    ],
+    "version": "20260304100130",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI",
+      "markVerbalElementTextFormal": "VENTURI & DESIGN"
+    }
+  },
+  "_uri": "/mark/ca/54553542-eba3-4339-9b61-d682bdab21b5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

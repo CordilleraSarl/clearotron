@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/gb/f1e14a34-258a-4e40-92f9-75b385f913ff",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f1e14a34-258a-4e40-92f9-75b385f913ff",
+  "applicationNumber": "3685321",
+  "registrationNumber": "3685321",
+  "applicationDate": "2021-08-23",
+  "registrationDate": "2022-12-09",
+  "expiryDate": "2031-08-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qorg",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer programs for sales purposes; Computer programs for the management of sales; Application software; Communication software; Computer software; Computer software applications (downloadable); Computer software downloaded from the internet; Computer software for business purposes; Computer software products; Computer software programs; Computer graphics software; Computer modelling language software; Computer programs and recorded software distributed online; Computer software (programs); Computer software (recorded); Computer software adapted for use in the operation of computers; Computer software and hardware platforms for cooperative intelligent transport systems; Computer software and hardware platforms for intelligent transport systems; Computer software designed to estimate costs; Computer software designed to estimate resource requirements; Computer software for accounting systems; Computer software for analysing market information; Computer software for authorising access to data bases; Computer software for processing market information; Computer software for the analysis of defects; Computer software for time control; Computer software packages; Computer software platforms, recorded or downloadable; Computer software programs for database management; Computer software programs for spreadsheet management; Data processing software; Downloadable software applications (apps); Education software; Interactive computer software; Integrated software packages; Interactive video software; Interactive entertainment software for use with computers; Packaged software; Personal computer application software; Recorded computer software; Simulation software for use in digital computers; Speech recognition software; Virtual assistant software; Computer programs relating to the training of personnel; Training manuals in electronic format; Training guides in the form of a computer program; Training guides in electronic format; None of the aforesaid goods for use in relation to musical and gaming instruments and devices, DJ equipment, audio recording equipment and audio recording software including synthesisers, digital synthesisers, analog synthesisers, dynamic phrase synthesisers, synthesisersoftware, keyboards, stage keyboards, entertainer keyboards, headphones, sequencers, midi keyboards, percussion synthesiser, drummachines, pianos, digital pianos, mixers, recorders, sound effects devices, tuners, metronomes, vocal pitch trainers, microphones, amplifiers,speakers, music players and music player mobile applications, headphone amplifier kits, music playing devices; all of the aforesaid goods only in relation to business process automation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Creating and designing website based indexes of information for others using information technology; Creating and designing website-based indexes of information for others (information technology services); Information services relating to information technology; Information technology services provided on an outsourcing basis; Providing information relating to computer technology and programming via a website; Provision of information relating to information technology; Advisory services relating to planning applications; Application Service Provider (ASP) services; Online provision of web-based applications (non-downloadable); Advisory services relating to technological research; Providing information, including online, about scientific and technological services and research and design relating thereto; Analysis of statistical data for scientific research; Provision of information relating to scientific research; Research and development of new products for others; Research and development of products; Research in the field of telecommunications technology; Research relating to computer programming; Research relating to computers; Research relating to data processing; Research relating to design; Research relating to engineering; Research relating to technology; Research relating to telecommunication; Research to develop new products; Advisory services relating to computer software; Computer software advisory services; Development of computer software application solutions; Provision of online non-downloadable software (application service provider); User authentication services using single sign-on technology for online software applications; Computer software development; Computer software design; Computer software engineering; Computer software programming services; Computer support services (programming and software installation, repair and maintenance services); Computer support services (software advisory and information services); Design and development of computer software for others; Design of computer software; Development of computer software; Development of software; Diagnosis of faults in computer software; Hosting of software as a service (SaaS); Installation and maintenance of computer software; Installation of computer software; Installation of middleware (software); Installation, repair and maintenance of middleware (software); Maintenance of computer software; Online provision of web-based software (non-downloadable); Providing information, including online, about design and development of computer hardware and software; Provision of online non-downloadable web-based software; Rental of computer software; Repair of computer software; Software as a service (SaaS); Software creation; Software development in the framework of software publishing; Software engineering; Temporary use of online non-downloadable software; Updating of computer software; Upgrading of computer software; Writing of computer software; Computer programming consultancy; Computer software consultancy; Computer technology consultancy; Consultancy in the design and development of computer software; Information technology (IT) consultancy; Information technology (IT) services (computer hardware, software and peripherals design and technical consultancy); Research, engineering and technical consultancy for industry; Internet security consultancy; Quality assurance consultancy; Scientific consultancy; Technological consultancy; Technological consultation services; Telecommunications technology consultancy; Website design consultancy;; None of the aforesaid services for use in relation to musical and gaming instruments and devices, DJ equipment, audio recording equipmentand audio recording software including synthesisers, digital synthesisers, analog synthesisers, dynamic phrase synthesisers, synthesisersoftware, keyboards, stage keyboards, entertainer keyboards, headphones, sequencers, midi keyboards, percussion synthesiser, drummachines, pianos, digital pianos, mixers, recorders, sound effects devices, tuners, metronomes, vocal pitch trainers, microphones, amplifiers,speakers, music players and music player mobile applications, headphone amplifier kits, music playing devices; all of the aforesaid services only in relation to business process automation.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Megha Birudavolu",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "Trade Mark Wizards Limited",
+  "priorities": [
+    {
+      "priorityCountryCode": "AU",
+      "priorityCountryName": "Australia",
+      "priorityDate": "20210709",
+      "priorityNumber": "2193432"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2 Kosmina Street, Glenwood, New South Wales 2768, New South Wales",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Megha Birudavolu"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer programs for sales purposes; Computer programs for the management of sales; Application software; Communication software; Computer software; Computer software applications (downloadable); Computer software downloaded from the internet; Computer software for business purposes; Computer software products; Computer software programs; Computer graphics software; Computer modelling language software; Computer programs and recorded software distributed online; Computer software (programs); Computer software (recorded); Computer software adapted for use in the operation of computers; Computer software and hardware platforms for cooperative intelligent transport systems; Computer software and hardware platforms for intelligent transport systems; Computer software designed to estimate costs; Computer software designed to estimate resource requirements; Computer software for accounting systems; Computer software for analysing market information; Computer software for authorising access to data bases; Computer software for processing market information; Computer software for the analysis of defects; Computer software for time control; Computer software packages; Computer software platforms, recorded or downloadable; Computer software programs for database management; Computer software programs for spreadsheet management; Data processing software; Downloadable software applications (apps); Education software; Interactive computer software; Integrated software packages; Interactive video software; Interactive entertainment software for use with computers; Packaged software; Personal computer application software; Recorded computer software; Simulation software for use in digital computers; Speech recognition software; Virtual assistant software; Computer programs relating to the training of personnel; Training manuals in electronic format; Training guides in the form of a computer program; Training guides in electronic format; None of the aforesaid goods for use in relation to musical and gaming instruments and devices, DJ equipment, audio recording equipment and audio recording software including synthesisers, digital synthesisers, analog synthesisers, dynamic phrase synthesisers, synthesisersoftware, keyboards, stage keyboards, entertainer keyboards, headphones, sequencers, midi keyboards, percussion synthesiser, drummachines, pianos, digital pianos, mixers, recorders, sound effects devices, tuners, metronomes, vocal pitch trainers, microphones, amplifiers,speakers, music players and music player mobile applications, headphone amplifier kits, music playing devices; all of the aforesaid goods only in relation to business process automation."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Creating and designing website based indexes of information for others using information technology; Creating and designing website-based indexes of information for others (information technology services); Information services relating to information technology; Information technology services provided on an outsourcing basis; Providing information relating to computer technology and programming via a website; Provision of information relating to information technology; Advisory services relating to planning applications; Application Service Provider (ASP) services; Online provision of web-based applications (non-downloadable); Advisory services relating to technological research; Providing information, including online, about scientific and technological services and research and design relating thereto; Analysis of statistical data for scientific research; Provision of information relating to scientific research; Research and development of new products for others; Research and development of products; Research in the field of telecommunications technology; Research relating to computer programming; Research relating to computers; Research relating to data processing; Research relating to design; Research relating to engineering; Research relating to technology; Research relating to telecommunication; Research to develop new products; Advisory services relating to computer software; Computer software advisory services; Development of computer software application solutions; Provision of online non-downloadable software (application service provider); User authentication services using single sign-on technology for online software applications; Computer software development; Computer software design; Computer software engineering; Computer software programming services; Computer support services (programming and software installation, repair and maintenance services); Computer support services (software advisory and information services); Design and development of computer software for others; Design of computer software; Development of computer software; Development of software; Diagnosis of faults in computer software; Hosting of software as a service (SaaS); Installation and maintenance of computer software; Installation of computer software; Installation of middleware (software); Installation, repair and maintenance of middleware (software); Maintenance of computer software; Online provision of web-based software (non-downloadable); Providing information, including online, about design and development of computer hardware and software; Provision of online non-downloadable web-based software; Rental of computer software; Repair of computer software; Software as a service (SaaS); Software creation; Software development in the framework of software publishing; Software engineering; Temporary use of online non-downloadable software; Updating of computer software; Upgrading of computer software; Writing of computer software; Computer programming consultancy; Computer software consultancy; Computer technology consultancy; Consultancy in the design and development of computer software; Information technology (IT) consultancy; Information technology (IT) services (computer hardware, software and peripherals design and technical consultancy); Research, engineering and technical consultancy for industry; Internet security consultancy; Quality assurance consultancy; Scientific consultancy; Technological consultancy; Technological consultation services; Telecommunications technology consultancy; Website design consultancy;; None of the aforesaid services for use in relation to musical and gaming instruments and devices, DJ equipment, audio recording equipmentand audio recording software including synthesisers, digital synthesisers, analog synthesisers, dynamic phrase synthesisers, synthesisersoftware, keyboards, stage keyboards, entertainer keyboards, headphones, sequencers, midi keyboards, percussion synthesiser, drummachines, pianos, digital pianos, mixers, recorders, sound effects devices, tuners, metronomes, vocal pitch trainers, microphones, amplifiers,speakers, music players and music player mobile applications, headphone amplifier kits, music playing devices; all of the aforesaid services only in relation to business process automation."
+        }
+      ]
+    },
+    "id": "f1e14a34-258a-4e40-92f9-75b385f913ff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "AU",
+        "priorityCountryName": "Australia",
+        "priorityDate": "20210709",
+        "priorityNumber": "2193432"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "2021/046"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "7 Bell Yard, Holborn, London WC2A 2JR",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Trade Mark Wizards Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210823",
+        "applicationNumber": "3685321"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310823",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20221209",
+        "registrationNumber": "3685321"
+      }
+    },
+    "version": "20250627221639",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qorg"
+    }
+  },
+  "_uri": "/mark/gb/f1e14a34-258a-4e40-92f9-75b385f913ff",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:08.869Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

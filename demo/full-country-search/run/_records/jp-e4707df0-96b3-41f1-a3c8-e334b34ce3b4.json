@@ -1,0 +1,190 @@
+{
+  "uri": "/mark/jp/e4707df0-96b3-41f1-a3c8-e334b34ce3b4",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "e4707df0-96b3-41f1-a3c8-e334b34ce3b4",
+  "applicationNumber": "H01-082825",
+  "registrationNumber": "2708632",
+  "applicationDate": "1989-07-21",
+  "registrationDate": "1995-07-31",
+  "expiryDate": "2005-07-31",
+  "renewalDate": null,
+  "lastPublicationDate": "1994-10-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＳＥＶＥＮ　ＯＲＤＥＲ　ＳＩＳＴＥＭ",
+  "markTransliteration": "SEBUNOODAASHISUTEMU",
+  "markTranslation": "SEVEN ORDER SISTEM",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    16,
+    17,
+    18,
+    20,
+    21,
+    22,
+    24,
+    25,
+    26,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        9,
+        10,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        24,
+        25,
+        26,
+        28
+      ],
+      "language": null,
+      "description": "被服（運動用特殊被服を除く。）布製身回品（他の類に属するものを除く。）寝具類（寝台を除く。）",
+      "translation_language": "en",
+      "translation": "Clothing (excluding special clothing for exercise.) Cloth body gown items (excluding those belonging to other categories) Bedding (excluding couch)"
+    }
+  ],
+  "owner": "K.K. HAKUYOSHA",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19890721"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. HAKUYOSHA",
+        "applicantNativeAddress": "東京都千代田区岩本町３―９―１７　スリ―セブンビル",
+        "applicantNativeName": "株式会社白洋社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing (excluding special clothing for exercise.) Cloth body gown items (excluding those belonging to other categories) Bedding (excluding couch)",
+          "intClassNumber": "05,09,10,16,17,18,20,21,22,24,25,26,28",
+          "intGoodsServicesDescription": "被服（運動用特殊被服を除く。）布製身回品（他の類に属するものを除く。）寝具類（寝台を除く。）"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "17A01"
+        },
+        {
+          "natClassNumber": "17A02"
+        },
+        {
+          "natClassNumber": "17A03"
+        },
+        {
+          "natClassNumber": "17A04"
+        },
+        {
+          "natClassNumber": "17A05"
+        },
+        {
+          "natClassNumber": "17A06"
+        },
+        {
+          "natClassNumber": "17A07"
+        },
+        {
+          "natClassNumber": "17A08"
+        },
+        {
+          "natClassNumber": "17A09"
+        },
+        {
+          "natClassNumber": "17A10"
+        },
+        {
+          "natClassNumber": "17B01"
+        },
+        {
+          "natClassNumber": "17C01"
+        }
+      ]
+    },
+    "id": "e4707df0-96b3-41f1-a3c8-e334b34ce3b4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.01.00",
+      "26.02.07.00",
+      "27.05.01.04",
+      "27.05.01.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19890721"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19890721",
+        "applicationNumber": "H01-082825"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20050731",
+      "lastPublicationDate": "19941012",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19950731",
+        "registrationNumber": "2708632"
+      }
+    },
+    "version": "20240320163449",
+    "wordMarkSpecification": {
+      "markTranslation": "SEVEN ORDER SISTEM",
+      "markTransliteration": "SEBUNOODAASHISUTEMU",
+      "markVerbalElementText": "ＳＥＶＥＮ　ＯＲＤＥＲ　ＳＩＳＴＥＭ"
+    }
+  },
+  "_uri": "/mark/jp/e4707df0-96b3-41f1-a3c8-e334b34ce3b4",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:17.153Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

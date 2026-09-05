@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/8065dd66-d03b-4fe8-9d4c-95873d464a3a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "8065dd66-d03b-4fe8-9d4c-95873d464a3a",
+  "applicationNumber": "UK00909409392",
+  "registrationNumber": "UK00909409392",
+  "applicationDate": "2010-09-29",
+  "registrationDate": "2011-03-25",
+  "expiryDate": "2030-09-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "en",
+      "description": "Agricultural machines and mechanical agricultural implements, and parts, components and accessories therefor, in particular combine harvesters, mowing machines, reapers, knives for mowing machines, reapers and binders, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines; cleaning machines for biological products, and for biological, organic and inorganic bulk materials.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Arranging of workshops, courses and training courses, with regard to operating, maintaining and servicing combine harvesters and parts therefor, and with regard to combine harvester logistics; combine harvester training.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Mechanical engineering, research and construction drafting, in particular for agricultural machines and apparatus and parts, components and accessories therefor, in particular combine harvesters, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines, cleaning machines for biological products, and for biological, organic and inorganic bulk materials.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Jörg Wollesen",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "VOMBERG & SCHART",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Landwehrstr. 64, Solingen 42699",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Jörg Wollesen"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Agricultural machines and mechanical agricultural implements, and parts, components and accessories therefor, in particular combine harvesters, mowing machines, reapers, knives for mowing machines, reapers and binders, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines; cleaning machines for biological products, and for biological, organic and inorganic bulk materials."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Arranging of workshops, courses and training courses, with regard to operating, maintaining and servicing combine harvesters and parts therefor, and with regard to combine harvester logistics; combine harvester training."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mechanical engineering, research and construction drafting, in particular for agricultural machines and apparatus and parts, components and accessories therefor, in particular combine harvesters, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines, cleaning machines for biological products, and for biological, organic and inorganic bulk materials."
+        }
+      ]
+    },
+    "id": "8065dd66-d03b-4fe8-9d4c-95873d464a3a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Schulstr. 8, Solingen 42653",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "VOMBERG & SCHART"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100929",
+        "applicationNumber": "UK00909409392"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300929",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110325",
+        "registrationNumber": "UK00909409392"
+      }
+    },
+    "version": "20250627205249",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/gb/8065dd66-d03b-4fe8-9d4c-95873d464a3a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

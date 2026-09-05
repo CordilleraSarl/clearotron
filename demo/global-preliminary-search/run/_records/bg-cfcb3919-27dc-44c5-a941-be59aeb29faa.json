@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/bg/cfcb3919-27dc-44c5-a941-be59aeb29faa",
+  "provider": "clarivate",
+  "office": "bg",
+  "guid": "cfcb3919-27dc-44c5-a941-be59aeb29faa",
+  "applicationNumber": "BG/N/2025/179205",
+  "registrationNumber": "179205",
+  "applicationDate": "2025-10-15",
+  "registrationDate": "2026-03-06",
+  "expiryDate": "2035-10-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SCIENTORIUM JUVENORUM",
+  "markTransliteration": "SCIENTORIUM JUVENORUM",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "обучение; развлечение; спортна и културна дейност; организиране на образователни симпозиуми; организиране на симпозиуми с цел обучение; организиране и провеждане на конференции, конгреси, симпозиуми; провеждане на обучения; провеждане на курсове, семинари и обучения; образователни услуги в областта на училищата по медицина; обучение в областта на медицината; курсове (обучение) свързани с медицината; образователни услуги, свързани с медицината; организиране на семинари и събирания в областта на медицината; преподаване в областта на медицината; публикуване на журнали, книги и ръководства в областта на медицината; услуги по обучение в областта на медицината.",
+      "translation_language": "en",
+      "translation": "Education; entertainment; sporting and cultural activities; organisation of educational symposia; organisation of symposia for educational purposes; organisation and holding of conferences, congresses, symposiums; conducting of training; conducting of courses, seminars and training; educational services in the field of medical schools; training in the field of medicine; courses (training) relating to medicine; educational services relating to medicine; organisation of seminars and gatherings in the field of medicine; teaching in the field of medicine; publication of journals, books and manuals in the field of medicine; training services in the field of medicine."
+    }
+  ],
+  "owner": "ASSOCIATION BULGARIAN SCIENTIFIC SOCIETY OF IMMUNONCOLOGY",
+  "ownerNative": null,
+  "ownerCountry": "BG",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BG",
+        "applicantAddressCountryName": "Bulgaria",
+        "applicantName": "ASSOCIATION BULGARIAN SCIENTIFIC SOCIETY OF IMMUNONCOLOGY",
+        "applicantNativeAddress": "България, София, бул. Н. Й. Вапцаров № 15Б",
+        "applicantNativeName": "СДРУЖЕНИЕ БЪЛГАРСКО НАУЧНО ДРУЖЕСТВО ПО ИМУНООНКОЛОГИЯ"
+      }
+    ],
+    "applicationLanguageCode": "bg",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; entertainment; sporting and cultural activities; organisation of educational symposia; organisation of symposia for educational purposes; organisation and holding of conferences, congresses, symposiums; conducting of training; conducting of courses, seminars and training; educational services in the field of medical schools; training in the field of medicine; courses (training) relating to medicine; educational services relating to medicine; organisation of seminars and gatherings in the field of medicine; teaching in the field of medicine; publication of journals, books and manuals in the field of medicine; training services in the field of medicine.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "обучение; развлечение; спортна и културна дейност; организиране на образователни симпозиуми; организиране на симпозиуми с цел обучение; организиране и провеждане на конференции, конгреси, симпозиуми; провеждане на обучения; провеждане на курсове, семинари и обучения; образователни услуги в областта на училищата по медицина; обучение в областта на медицината; курсове (обучение) свързани с медицината; образователни услуги, свързани с медицината; организиране на семинари и събирания в областта на медицината; преподаване в областта на медицината; публикуване на журнали, книги и ръководства в областта на медицината; услуги по обучение в областта на медицината."
+        }
+      ]
+    },
+    "id": "cfcb3919-27dc-44c5-a941-be59aeb29faa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260514",
+    "registrationOfficeCode": "BG",
+    "registrationOfficeName": "Bulgaria",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "BG",
+        "representativeAddressCountryName": "Bulgaria",
+        "representativeNativeAddress": "България, София, ул. Гебедже № 10, ап. 1",
+        "representativeNativeName": "Ива Пламенова Семенкова"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251015",
+        "applicationNumber": "BG/N/2025/179205"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351015",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260306",
+        "registrationNumber": "179205"
+      }
+    },
+    "version": "20260514020054",
+    "wordMarkSpecification": {
+      "markTransliteration": "SCIENTORIUM JUVENORUM",
+      "markVerbalElementText": "SCIENTORIUM JUVENORUM"
+    }
+  },
+  "_uri": "/mark/bg/cfcb3919-27dc-44c5-a941-be59aeb29faa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.809Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

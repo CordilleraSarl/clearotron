@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/br/df9e77b4-a7a5-4fcd-9b78-62000daf6b89",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "df9e77b4-a7a5-4fcd-9b78-62000daf6b89",
+  "applicationNumber": "820197408",
+  "registrationNumber": "820197408",
+  "applicationDate": "1997-09-12",
+  "registrationDate": "2018-07-17",
+  "expiryDate": "2028-07-17",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        42
+      ],
+      "language": "pt",
+      "description": "Café.",
+      "translation_language": "en",
+      "translation": "CAFÉ."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "TINOCO, SOARES & FILHO S/C LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CAFÉ.",
+          "intClassNumber": "05,29,30,31,32,33,35,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Café."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "30.10"
+        }
+      ]
+    },
+    "id": "df9e77b4-a7a5-4fcd-9b78-62000daf6b89",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.01.01",
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TINOCO, SOARES & FILHO S/C LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19970912",
+        "applicationNumber": "820197408"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280717",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180717",
+        "registrationNumber": "820197408"
+      }
+    },
+    "version": "20250630200523",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/df9e77b4-a7a5-4fcd-9b78-62000daf6b89",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

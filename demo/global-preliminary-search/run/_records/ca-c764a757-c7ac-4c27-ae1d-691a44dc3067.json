@@ -1,0 +1,275 @@
+{
+  "uri": "/mark/ca/c764a757-c7ac-4c27-ae1d-691a44dc3067",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "c764a757-c7ac-4c27-ae1d-691a44dc3067",
+  "applicationNumber": "150410",
+  "registrationNumber": "TMDA50942",
+  "applicationDate": "1930-01-13",
+  "registrationDate": "1930-11-17",
+  "expiryDate": null,
+  "renewalDate": "2000-11-17",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        10
+      ],
+      "language": "en",
+      "description": "(1) Fluid meters and controllers.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GENERAL SIGNAL CORPORATION (a Delaware corporation)",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Corporation Trust Center, 1209 Orange Street, Wilmington, New Castle, Delaware 19801",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "Corporation Trust Center,",
+          "1209 Orange Street,",
+          "Wilmington, New Castle,",
+          "Delaware 19801,"
+        ],
+        "applicantName": "GENERAL SIGNAL CORPORATION (a Delaware corporation)"
+      }
+    ],
+    "categorizedTexts": {},
+    "footNotes": [
+      "THIS REGISTER DOES NOT REFLECT ALL CHANGES OF TITLE PRIOR TO 1980 SEE FILE FOR FURTHER INFORMATION / CETTE PAGE DU REGISTRE NE TIENT PAS COMPTE DE TOUS LES CHANGEMENTS DE TITRE APPORTES AVANT 1980 VOIR LE DOSSIER POUR RENSEIGNEMENTS SUPPLEMENTAIRES",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Owner / Propriétaire",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 31 mai/May 1971",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 20 sept/Sep 1967",
+      "COMMENTS / COMMENTAIRES: GENERAL SIGNAL CORPORATION",
+      "(NEW YORK CORPORATION)",
+      "SEE EVIDENCE ON FILE/VOIR PREUVE SUR LE DOSSIER",
+      "105041",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Owner / Propriétaire",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 03 fév/Feb 1981",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 30 sept/Sep 1980",
+      "COMMENTS / COMMENTAIRES: GENERAL SIGNAL CONTROLS, INC.",
+      "(A DELAWARE CORPORATION)",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 16 déc/Dec 1988",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 22 août/Aug 1988",
+      "COMMENTS / COMMENTAIRES: CHANGED/MODIFIER:",
+      "FROM/DE: GENERAL SIGNAL CONTROLS, INC. (A Delaware Corporation)",
+      "TO/A: LEEDS & NORTHRUP COMPANY (A DELAWARE CORPORATION)",
+      "SEE EVIDENCE ON FILE/VOIR PREUVE SUR LE DOSSIER 150410",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Assignment / Cession",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 27 nov/Nov 1998",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 16 sept/Sep 1998",
+      "COMMENTS / COMMENTAIRES: FROM: LEEDS & NORTHRUP COMPANY",
+      "(A DELAWARE CORPORATION)",
+      "TO: GENERAL SIGNAL CORPORATION",
+      "(A NEW YORK CORPORATION)",
+      "Voir Preuve au dossier/See evidence on File No. 150410",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Merger / Fusionnement",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 09 juin/Jun 1999",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 06 oct/Oct 1998",
+      "COMMENTS / COMMENTAIRES: FROM: GENERAL SIGNAL CORPORATION",
+      "(A NEW YORK CORPORATION)",
+      "TO: SAC CORP.",
+      "(a Delaware corporation)",
+      "Voir Preuve au dossier/See evidence on File No. 182589",
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Name and Address / Nom et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 09 juin/Jun 1999",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 06 oct/Oct 1998",
+      "COMMENTS / COMMENTAIRES: FROM: SAC CORP.",
+      "(a Delaware corporation)",
+      "TO: GENERAL SIGNAL CORPORATION",
+      "(a Delaware corporation)",
+      "Voir Preuve au dossier/See evidence on File No. 182589"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Fluid meters and controllers."
+        }
+      ]
+    },
+    "id": "c764a757-c7ac-4c27-ae1d-691a44dc3067",
+    "ipRightKind": "tmk",
+    "kindMark": "Specific Mark",
+    "markEvents": [
+      {
+        "date": "20160630",
+        "descriptionText": "Automatic Expungement - Failure to Renew"
+      },
+      {
+        "date": "20151209",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20160609"
+      },
+      {
+        "date": "20110901",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: To: 4779 / Voir Preuve au dossier/See evidence on File No. 150410"
+      },
+      {
+        "date": "20110801",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 4779 To:"
+      },
+      {
+        "date": "20001206",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20010606"
+      },
+      {
+        "date": "20001117",
+        "descriptionText": "Renewed",
+        "information": "DP:2001/01/12 RD: 2001/01/03",
+        "responseDate": "20151117"
+      },
+      {
+        "date": "19990609",
+        "descriptionText": "Change in Title Registered",
+        "information": "Name and Address"
+      },
+      {
+        "date": "19990609",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 12 To: 4779"
+      },
+      {
+        "date": "19990609",
+        "descriptionText": "Change in Title Registered",
+        "information": "Merger"
+      },
+      {
+        "date": "19981127",
+        "descriptionText": "Change in Title Registered",
+        "information": "Assignment"
+      },
+      {
+        "date": "19981127",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 8390 To: 12"
+      },
+      {
+        "date": "19851117",
+        "descriptionText": "Renewed"
+      },
+      {
+        "date": "19301117",
+        "descriptionText": "Registered"
+      },
+      {
+        "date": "19300113",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMDA - Trademark And Design Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "9 Codding St., Provindence, Rhode Island",
+        "addressLines": [
+          "9 Codding St.",
+          "Provindence, Rhode Island"
+        ],
+        "countryName": "United States",
+        "name": "BUILDERS IRON FOUNDRY (A Rhode Island Corporation)"
+      }
+    ],
+    "previousOwners": [
+      {
+        "addressLines": [
+          "LEEDS & NORTHRUP COMPANY (A DELAWARE CORPORATION)",
+          "Sumneytown Pike",
+          "North Wales, Pennsylvania 19454",
+          "UNITED STATES OF AMERICA"
+        ],
+        "name": "LEEDS & NORTHRUP COMPANY (A DELAWARE CORPORATION)"
+      },
+      {
+        "addressLines": [
+          "GENERAL SIGNAL CORPORATION (A NEW YORK CORPORATION)",
+          "HIGH RIDGE PARK",
+          "STAMFORD, CONNECTICUT 06904",
+          "UNITED STATES OF AMERICA"
+        ],
+        "name": "GENERAL SIGNAL CORPORATION (A NEW YORK CORPORATION)"
+      }
+    ],
+    "recordLastUpdated": "20250619",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19300113",
+        "applicationNumber": "150410"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expungementDate": "20160630",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20151117",
+      "registration": {
+        "registrationDate": "19301117",
+        "registrationNumber": "TMDA50942"
+      },
+      "renewalDate": "20001117"
+    },
+    "subjectHeadings": [
+      "VENTURI"
+    ],
+    "version": "20250619210439",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI",
+      "markVerbalElementTextFormal": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ca/c764a757-c7ac-4c27-ae1d-691a44dc3067",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

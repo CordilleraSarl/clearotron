@@ -1,0 +1,269 @@
+{
+  "uri": "/mark/us/dd27fbaa-90ed-4f4f-9836-13caf80aab78",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "dd27fbaa-90ed-4f4f-9836-13caf80aab78",
+  "applicationNumber": "86891380",
+  "registrationNumber": null,
+  "applicationDate": "2016-01-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-08-09"
+  ],
+  "abandonmentDate": "2017-05-08",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QORB",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electrical and scientific apparatus for measuring properties of cementitious mixtures",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QuipIP, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "DONALD C. LUCAS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Suite 795, Pittsburgh, PA, 15213",
+        "applicantAddressCity": "Pittsburgh",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "15213",
+        "applicantAddressStateName": "PENNSYLVANIA",
+        "applicantAddressStreet": "Suite 795",
+        "applicantJurisdictionOfIncorporation": "PENNSYLVANIA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "QuipIP, LLC",
+        "applicantSecondaryAddressUnit": "5001 Baum Blvd."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electrical and scientific apparatus for measuring properties of cementitious mixtures"
+        }
+      ]
+    },
+    "id": "dd27fbaa-90ed-4f4f-9836-13caf80aab78",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20170508",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20170508",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20161004",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20160809",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20160809",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20160720",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20160705",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20160625",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160614",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20160614",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20160606",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20160524",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20160514",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20160514",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20160514",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20160514",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20160204",
+        "descriptionText": "NOTICE OF PSEUDO MARK E-MAILED"
+      },
+      {
+        "date": "20160203",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20160202",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Suite 795, Pittsburgh, PA, 15213",
+        "city": "Pittsburgh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "PENNSYLVANIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QuipIP, LLC",
+        "postalCode": "15213",
+        "secondaryAddressUnit": "5001 Baum Blvd.",
+        "stateName": "PENNSYLVANIA",
+        "street": "Suite 795"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Suite 795, Pittsburgh, PA, 15213",
+        "city": "Pittsburgh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "PENNSYLVANIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QuipIP, LLC",
+        "postalCode": "15213",
+        "secondaryAddressUnit": "5001 Baum Blvd.",
+        "stateName": "PENNSYLVANIA",
+        "street": "Suite 795"
+      },
+      {
+        "address": "Suite 795, Pittsburgh, PA, 15213",
+        "city": "Pittsburgh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "PENNSYLVANIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QuipIP, LLC",
+        "postalCode": "15213",
+        "secondaryAddressUnit": "5001 Baum Blvd.",
+        "stateName": "PENNSYLVANIA",
+        "street": "Suite 795"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "21 ST. FLOOR, NEW YORK, NY 10004, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "21 ST. FLOOR",
+          "NEW YORK, NY 10004",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "DONALD C. LUCAS LUCAS & MERCANTI, LLP, 30 BROAD STREET"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "21 ST. FLOOR, NEW YORK, NY 10004, UNITED STATES",
+        "representativeAddressLines": [
+          "21 ST. FLOOR",
+          "NEW YORK, NY 10004",
+          "UNITED STATES"
+        ],
+        "representativeName": "DONALD C. LUCAS"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20170508",
+      "active": false,
+      "application": {
+        "applicationDate": "20160129",
+        "applicationNumber": "86891380"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20170508",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20160809"
+      ]
+    },
+    "version": "20260111034103",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"QOrb\" has no meaning in a foreign language.",
+      "markVerbalElementCrossReferences": "SORB",
+      "markVerbalElementText": "QORB"
+    }
+  },
+  "_uri": "/mark/us/dd27fbaa-90ed-4f4f-9836-13caf80aab78",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:49.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/ve/e2d74a58-5f62-4a08-83d0-137493bcf4ea",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "e2d74a58-5f62-4a08-83d0-137493bcf4ea",
+  "applicationNumber": "1998-002369",
+  "registrationNumber": null,
+  "applicationDate": "1998-02-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENQUIMEX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "todo lo relacionado con la industria quimica, incluyendo la compra, venta, distribucion y comercializacion de los productos terminados y los insumos para su procesamiento e igualmente, la compra, venta, distribucion y comercializacion de equipos, maquinaria y otros insumos necesarios a dicha industria, promover las exportaciones e importaciones de productos quimicos en general, tomando en cuenta las las necesidades de la industria en el pais. otras actividades conexas o '.",
+      "translation_language": "en",
+      "translation": "everything related to the chemical industry, including the purchase, sale, distribution and marketing of the finished products and the inputs for their processing and also, the purchase, sale, distribution and marketing of equipment, machinery and other necessary inputs to said industry, promote exports and imports of chemical products in general, taking into account the needs of the industry in the country. other related activities or &#39;."
+    }
+  ],
+  "owner": "RAMIREZ LOAIZA OSCAR AUGUSTO",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": "RAMIREZ LOAIZA OSCAR AUGUSTO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARACAS",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "RAMIREZ LOAIZA OSCAR AUGUSTO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "everything related to the chemical industry, including the purchase, sale, distribution and marketing of the finished products and the inputs for their processing and also, the purchase, sale, distribution and marketing of equipment, machinery and other necessary inputs to said industry, promote exports and imports of chemical products in general, taking into account the needs of the industry in the country. other related activities or &#39;.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "todo lo relacionado con la industria quimica, incluyendo la compra, venta, distribucion y comercializacion de los productos terminados y los insumos para su procesamiento e igualmente, la compra, venta, distribucion y comercializacion de equipos, maquinaria y otros insumos necesarios a dicha industria, promover las exportaciones e importaciones de productos quimicos en general, tomando en cuenta las las necesidades de la industria en el pais. otras actividades conexas o '."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "e2d74a58-5f62-4a08-83d0-137493bcf4ea",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "RAMIREZ LOAIZA OSCAR AUGUSTO"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19980212",
+        "applicationNumber": "1998-002369"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK"
+    },
+    "version": "20250630160732",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENQUIMEX"
+    }
+  },
+  "_uri": "/mark/ve/e2d74a58-5f62-4a08-83d0-137493bcf4ea",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.568Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/454700c4-a792-43c6-81ff-53e0cad7ce79",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "454700c4-a792-43c6-81ff-53e0cad7ce79",
+  "applicationNumber": "90087769",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ADVENQI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电子防盗报警器;耳机;骨传导耳机;平板电脑保护套;平板电脑用屏幕保护膜;平板电脑专用支架;手机充电器;手机壳;手机屏幕专用保护膜;手机套;手机用自拍杆;手机专用支架;数据线;头戴式耳机;头戴式无线耳机;无线充电器;无线蓝牙耳机;虚拟现实游戏用耳机;扬声器;移动电源(可充电电池)",
+      "translation_language": "en",
+      "translation": "Electronic anti-theft alarms; headphones; bone conduction headphones; tablet protective cases; tablet screen protectors; tablet stands; mobile phone chargers; mobile phone cases; mobile phone screen protectors; mobile phone covers; selfie sticks; mobile phone stands; data cables; over-ear headphones; wireless over-ear headphones; wireless chargers; wireless Bluetooth headphones; virtual reality gaming headphones; speakers; power banks (rechargeable batteries)"
+    }
+  ],
+  "owner": "Shenzhen Four O'Clock E-commerce Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区坂田街道坂田社区坂雪岗大道3012号六层8621室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Four O'Clock E-commerce Co., Ltd.",
+        "applicantNativeName": "深圳市四点钟电子商务有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic anti-theft alarms; headphones; bone conduction headphones; tablet protective cases; tablet screen protectors; tablet stands; mobile phone chargers; mobile phone cases; mobile phone screen protectors; mobile phone covers; selfie sticks; mobile phone stands; data cables; over-ear headphones; wireless over-ear headphones; wireless chargers; wireless Bluetooth headphones; virtual reality gaming headphones; speakers; power banks (rechargeable batteries)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电子防盗报警器;耳机;骨传导耳机;平板电脑保护套;平板电脑用屏幕保护膜;平板电脑专用支架;手机充电器;手机壳;手机屏幕专用保护膜;手机套;手机用自拍杆;手机专用支架;数据线;头戴式耳机;头戴式无线耳机;无线充电器;无线蓝牙耳机;虚拟现实游戏用耳机;扬声器;移动电源(可充电电池)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Cables",
+        "Warning equipments, bells",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "454700c4-a792-43c6-81ff-53e0cad7ce79",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1984"
+      }
+    ],
+    "recordLastUpdated": "20260605",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260204",
+        "applicationNumber": "90087769"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260520",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260605020333",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ADVENQI"
+    }
+  },
+  "_uri": "/mark/cn/454700c4-a792-43c6-81ff-53e0cad7ce79",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/e2d132de-fd0c-4655-bd37-37a4e779ee99",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "e2d132de-fd0c-4655-bd37-37a4e779ee99",
+  "applicationNumber": "7225485",
+  "registrationNumber": null,
+  "applicationDate": "2025-09-09",
+  "registrationDate": null,
+  "expiryDate": "2035-09-09",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic cables and wires, Connecting equipment for electronics.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KSHITEJ MENDIRATTA, PROPRIETOR OF M/S HARMONY AUDIO Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "AMANDEEP SINGH[23660]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "FIRST FLOOR, SCO-46, SECTOR 18D, CHANDIGARH 160018.",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "KSHITEJ MENDIRATTA, PROPRIETOR OF M/S HARMONY AUDIO Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic cables and wires, Connecting equipment for electronics."
+        }
+      ]
+    },
+    "id": "e2d132de-fd0c-4655-bd37-37a4e779ee99",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250930",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "PLOT NO.62-63, KHASRA NO.103-104, RAJPUR KHURD EXTENSION, NEW DELHI-110068",
+        "representativeName": "AMANDEEP SINGH[23660]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250909",
+        "applicationNumber": "7225485"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350909",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20250930020102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORD"
+    }
+  },
+  "_uri": "/mark/in/e2d132de-fd0c-4655-bd37-37a4e779ee99",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:20.367Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

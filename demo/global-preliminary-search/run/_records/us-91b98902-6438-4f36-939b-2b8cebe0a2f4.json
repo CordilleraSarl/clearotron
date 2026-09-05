@@ -1,0 +1,503 @@
+{
+  "uri": "/mark/us/91b98902-6438-4f36-939b-2b8cebe0a2f4",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "91b98902-6438-4f36-939b-2b8cebe0a2f4",
+  "applicationNumber": "73625965",
+  "registrationNumber": "1457785",
+  "applicationDate": "1986-10-20",
+  "registrationDate": "1987-09-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1987-03-31"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2014-06-27",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VEINCARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Vascular diagnostic and treatment services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "DANIEL PATCH",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "19940204",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "SUITE 210, BOCA RATON, FLORIDA",
+        "applicantAddressCity": "BOCA RATON",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantAddressStreet": "SUITE 210",
+        "applicantJurisdictionOfIncorporation": "FLORIDA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+        "applicantSecondaryAddressUnit": "7000 WEST PALMETTO PARK ROAD"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "jurisdictionOfIncorporation": "OHIO",
+            "legalEntity": "CORPORATION",
+            "name": "CIRCULATORY CENTER OF OHIO, INC., THE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "OHIO",
+            "legalEntity": "CORPORATION",
+            "name": "VEINCARE OF OHIO, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "515 N. FLAGLER DRIVE, 400 NORTHBRIDGE TOWER, WEST PALM BEACH, FLORIDA 33401",
+            "addressLines": [
+              "ECKERT SEAMANS CHERIN & MELLOTT",
+              "515 N. FLAGLER DRIVE",
+              "400 NORTHBRIDGE TOWER",
+              "WEST PALM BEACH, FLORIDA 33401"
+            ],
+            "name": "ECKERT SEAMANS CHERIN & MELLOTT"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME 19880308",
+        "executedDate": "19900827",
+        "recordedDate": "19910729",
+        "reelFrameNumber": "0803/0670"
+      },
+      {
+        "assignees": [
+          {
+            "address": "SUITE 210, BOCA RATON, FLORIDA",
+            "city": "BOCA RATON",
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "CORPORATION",
+            "name": "VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+            "secondaryAddressUnit": "7000 WEST PALMETTO PARK ROAD",
+            "stateName": "FLORIDA",
+            "street": "SUITE 210"
+          }
+        ],
+        "assignors": [
+          {
+            "address": "YOUNGSTOWN, OHIO",
+            "city": "YOUNGSTOWN",
+            "jurisdictionOfIncorporation": "OHIO",
+            "legalEntity": "CORPORATION",
+            "name": "CIRCULATORY CENTER OF OHIO, INC.",
+            "secondaryAddressUnit": "548 GYPSY LANE",
+            "stateName": "OHIO"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ATTORNEYS AT LAW, 400 NORTHBRIDGE TOWER, 515 NORTH FLAGLER DRIVE",
+            "addressLines": [
+              "ECKERT SEAMANS CHERIN & MELOTT",
+              "ATTORNEYS AT LAW",
+              "400 NORTHBRIDGE TOWER",
+              "515 NORTH FLAGLER DRIVE",
+              "WEST PALM BEACH, FL 33401"
+            ],
+            "name": "ECKERT SEAMANS CHERIN & MELOTT"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST AND THE GOODWILL",
+        "executedDate": "19910711",
+        "recordedDate": "19910729",
+        "reelFrameNumber": "0803/0672"
+      },
+      {
+        "assignees": [
+          {
+            "jurisdictionOfIncorporation": "OHIO",
+            "legalEntity": "CORPORATION",
+            "name": "CIRCULATORY CENTER OF OHIO, INC., THE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "OHIO",
+            "legalEntity": "CORPORATION",
+            "name": "VEINCARE OF OHIO, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "POST OFFICE BOX 1185, PITTSBURGH, PA 15230-1185",
+            "addressLines": [
+              "DANIEL PATCH",
+              "POST OFFICE BOX 1185",
+              "PITTSBURGH, PA 15230-1185"
+            ],
+            "name": "DANIEL PATCH"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME EFFECTIVE ON MAR. 8, 1988 IN OH.",
+        "executedDate": "19910321",
+        "recordedDate": "19910328",
+        "reelFrameNumber": "0776/0944"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Vascular diagnostic and treatment services"
+        }
+      ]
+    },
+    "id": "91b98902-6438-4f36-939b-2b8cebe0a2f4",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "19910914",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "19900214",
+          "identifier": "92018671",
+          "interlocutoryAttorneyName": "TERRY EHOLTZMAN",
+          "kind": "Cancellation",
+          "kindCode": "CAN",
+          "litigationParties": [
+            {
+              "companyName": "AND VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "ROBERT M. BIEGELEISEN KNIGHT, M.D.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "00000000",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "PHILADELPHIA",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "19103",
+                  "addressState": "PA",
+                  "addressStreet": "3232 IVB BUILDING 1700 MARKET STREET",
+                  "companyName": "C/O STEELE, GOULD & FRIED",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "GREGORY A. NELSON"
+                }
+              ]
+            },
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "NO OWNER INFORMATION AVAILABLE",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "73625965",
+                  "markVerbalElementText": "VEINCARE",
+                  "registrationNumber": "1457785"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "N",
+              "eventDate": "19910914",
+              "text": "#9 TERMINATED"
+            },
+            {
+              "code": "T",
+              "eventDate": "19910827",
+              "text": "#8 PET TO CAN DISMISSED AS MOOT"
+            },
+            {
+              "code": "T",
+              "eventDate": "19910729",
+              "text": "#7 PL'S MOT TO DISMISS W/CONSENT"
+            },
+            {
+              "code": "T",
+              "eventDate": "19910705",
+              "text": "#6 PLAINTIFF GIVE TIL 7-25-91 TO SHOW CAUSE"
+            },
+            {
+              "code": "T",
+              "eventDate": "19900702",
+              "text": "#5 TRIAL DATES SET"
+            },
+            {
+              "code": "N",
+              "eventDate": "19900615",
+              "text": "#4 ANSWER"
+            },
+            {
+              "code": "E",
+              "eventDate": "19900504",
+              "responseDate": "19900613",
+              "text": "#3 NOTICE SENT AND ANSWER DUE"
+            },
+            {
+              "code": "T",
+              "eventDate": "19900504",
+              "text": "#2 PENDING, INSTITUTED"
+            },
+            {
+              "code": "N",
+              "eventDate": "19900214",
+              "text": "#1 FILED AND FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20140627",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20070321",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "19940204",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "19930914",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "19910914",
+        "descriptionText": "CANCELLATION TERMINATED NO. 999999"
+      },
+      {
+        "date": "19910419",
+        "descriptionText": "CORRECTION UNDER SECTION 7 - PROCESSED"
+      },
+      {
+        "date": "19910328",
+        "descriptionText": "RESPONSE RECEIVED TO POST REG. ACTION"
+      },
+      {
+        "date": "19910305",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 7"
+      },
+      {
+        "date": "19901115",
+        "descriptionText": "REQUEST FOR SECT 7 TOTAL SURRENDER FILED"
+      },
+      {
+        "date": "19900504",
+        "descriptionText": "CANCELLATION INSTITUTED NO. 999999"
+      },
+      {
+        "date": "19870915",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19870331",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19870228",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19870114",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19861224",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "19861219",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "IN THE STATEMENT, COLUMN 1, LINE 1, AFTER VEINCARE, \"OF OHIO\" SHOULD BE INSERTED.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "YOUNGSTOWN, OH, 44505",
+        "city": "YOUNGSTOWN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OHIO",
+        "legalEntity": "CORPORATION",
+        "name": "VEINCARE OF OHIO, INC.",
+        "postalCode": "44505",
+        "secondaryAddressUnit": "548 GYPSY LANE",
+        "stateName": "OHIO"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "YOUNGSTOWN, OH, 44505",
+        "city": "YOUNGSTOWN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OHIO",
+        "legalEntity": "CORPORATION",
+        "name": "VEINCARE OF OHIO, INC.",
+        "postalCode": "44505",
+        "secondaryAddressUnit": "548 GYPSY LANE",
+        "stateName": "OHIO"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "YOUNGSTOWN, OH, 44505",
+        "city": "YOUNGSTOWN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OHIO",
+        "legalEntity": "CORPORATION",
+        "name": "VEINCARE OF OHIO, INC.",
+        "postalCode": "44505",
+        "secondaryAddressUnit": "548 GYPSY LANE",
+        "stateName": "OHIO"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "7000 WEST PALMETTO PARK ROAD, SUITE 210, BOCA RATON, FL",
+        "city": "BOCA RATON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "CORPORATION",
+        "name": "VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+        "stateName": "FLORIDA",
+        "street": "7000 WEST PALMETTO PARK ROAD, SUITE 210"
+      }
+    ],
+    "recordLastUpdated": "20260107",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "P O BOX 3188, WEST PALM BEACH, FL 33402-3188, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "P O BOX 3188",
+          "WEST PALM BEACH, FL 33402-3188",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "J RODMAN STEELE JR QUARLES & BRADY, FOURTH FL 222 LAKEVIEW AVE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "P O BOX 3188, WEST PALM BEACH, FL 33402-3188, UNITED STATES",
+        "representativeAddressLines": [
+          "P O BOX 3188",
+          "WEST PALM BEACH, FL 33402-3188",
+          "UNITED STATES"
+        ],
+        "representativeName": "DANIEL PATCH"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19861020",
+        "applicationNumber": "73625965"
+      },
+      "cancellationDate": "20140627",
+      "cancellationPublicationDate": "20140805",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19860930"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19860930"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20140627",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "19870331"
+      ],
+      "registration": {
+        "registrationDate": "19870915",
+        "registrationNumber": "1457785"
+      }
+    },
+    "version": "20260107094511",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VEINCARE"
+    }
+  },
+  "_uri": "/mark/us/91b98902-6438-4f36-939b-2b8cebe0a2f4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.807Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

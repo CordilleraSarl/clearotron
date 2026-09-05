@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+  "applicationNumber": "85905881",
+  "registrationNumber": null,
+  "applicationDate": "2025-06-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "万葵电气",
+  "markTransliteration": "VANCORE ELECTRICAL WAN KUI DIAN QI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "半导体芯片;变压器(电);电磁线圈;电线圈;供热管理用电气控制设备;计算机芯片;继电器;配电箱(电);生物芯片;芯片(集成电路)",
+      "translation_language": "en",
+      "translation": "Semiconductor chips; transformers (electrical); electromagnetic coils; electric coils; electrical control equipment for heat management; computer chips; relays; distribution boxes (electrical); biochips; chips (integrated circuits)"
+    }
+  ],
+  "owner": "Shenzhen Cape can Electric Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市光明区公明街道李松蓢社区第二工业区城德轩科技园I栋厂房101",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Cape can Electric Technology Co., Ltd",
+        "applicantNativeName": "深圳市普能电气技术有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor chips; transformers (electrical); electromagnetic coils; electric coils; electrical control equipment for heat management; computer chips; relays; distribution boxes (electrical); biochips; chips (integrated circuits)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体芯片;变压器(电);电磁线圈;电线圈;供热管理用电气控制设备;计算机芯片;继电器;配电箱(电);生物芯片;芯片(集成电路)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Electrical controlling apparatus and equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        }
+      ]
+    },
+    "id": "b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "郑州凯派尔知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250613",
+        "applicationNumber": "85905881"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005163439",
+    "wordMarkSpecification": {
+      "markTransliteration": "VANCORE ELECTRICAL WAN KUI DIAN QI",
+      "markVerbalElementText": "万葵电气"
+    }
+  },
+  "_uri": "/mark/cn/b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

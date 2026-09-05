@@ -1,0 +1,179 @@
+{
+  "uri": "/mark/jp/69883b4e-a294-4325-9b7f-04b894c94615",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "69883b4e-a294-4325-9b7f-04b894c94615",
+  "applicationNumber": "2008-085722",
+  "registrationNumber": "5221707",
+  "applicationDate": "2008-10-22",
+  "registrationDate": "2009-04-10",
+  "expiryDate": "2019-04-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2009-05-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "動作周波数・動作電圧・動作電力の管理に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセット，静的電力及び動的電力の最適化に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセット，電力の管理・最適化・低減に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセット，動作周波数・動作電圧・動作電力の管理・静的電力及び動的電力の最適化・電力の管理・最適化・低減に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセットの附属品として販売される製品仕様書・半導体アプリケーションに関する開発マニュアル・半導体アプリケーションに関する訓練マニュアル，製品仕様書・半導体アプリケーションの開発マニュアル・半導体アプリケーションに関する訓練マニュアルを内容とするダウンロード可能な電子出版物，その他の電子応用機械器具及びその部品，その他の電子出版物",
+      "translation_language": "en",
+      "translation": "Semiconductor device used for management of operating frequency, operating voltage, operating power · Microcontroller · Integrated circuit · Circuit board · Chip set, Semiconductor device used for optimizing static power and dynamic power · Microcontroller · Integrated circuit · Circuit board · Chipset, semiconductor device used for power management · optimization · reduction · microcontroller · integrated circuit · circuit board · chipset, operating frequency · operating voltage · operating power management · optimization of static power and dynamic power · Semiconductor device used for power management · optimization · reduction · Microcontroller · Integrated circuit · Circuit board · Product specifications to be sold as accessories of chip set · Development manual on semiconductor application · Training manual on semiconductor application, product specification Document · Semiconductor application development manual · Semiconductor Downloadable electronic publications to the training documentation for applications and content, and other electronic applications machinery and equipment and parts thereof, other electronic publications"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "半導体アプリケーションの開発マニュアル，半導体装置・マイクロコントローラ・集積回路・回路基板・チップセットに関する製品仕様書，半導体アプリケーションに関する訓練マニュアル，その他の印刷物",
+      "translation_language": "en",
+      "translation": "Development manual for semiconductor applications, product specifications on semiconductor devices · microcontrollers · integrated circuits · circuit board · chip sets, training manuals on semiconductor applications, other printed materials"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20080804"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor device used for management of operating frequency, operating voltage, operating power · Microcontroller · Integrated circuit · Circuit board · Chip set, Semiconductor device used for optimizing static power and dynamic power · Microcontroller · Integrated circuit · Circuit board · Chipset, semiconductor device used for power management · optimization · reduction · microcontroller · integrated circuit · circuit board · chipset, operating frequency · operating voltage · operating power management · optimization of static power and dynamic power · Semiconductor device used for power management · optimization · reduction · Microcontroller · Integrated circuit · Circuit board · Product specifications to be sold as accessories of chip set · Development manual on semiconductor application · Training manual on semiconductor application, product specification Document · Semiconductor application development manual · Semiconductor Downloadable electronic publications to the training documentation for applications and content, and other electronic applications machinery and equipment and parts thereof, other electronic publications",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "動作周波数・動作電圧・動作電力の管理に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセット，静的電力及び動的電力の最適化に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセット，電力の管理・最適化・低減に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセット，動作周波数・動作電圧・動作電力の管理・静的電力及び動的電力の最適化・電力の管理・最適化・低減に用いる半導体装置・マイクロコントローラ・集積回路・回路基板・チップセットの附属品として販売される製品仕様書・半導体アプリケーションに関する開発マニュアル・半導体アプリケーションに関する訓練マニュアル，製品仕様書・半導体アプリケーションの開発マニュアル・半導体アプリケーションに関する訓練マニュアルを内容とするダウンロード可能な電子出版物，その他の電子応用機械器具及びその部品，その他の電子出版物"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Development manual for semiconductor applications, product specifications on semiconductor devices · microcontrollers · integrated circuits · circuit board · chip sets, training manuals on semiconductor applications, other printed materials",
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "半導体アプリケーションの開発マニュアル，半導体装置・マイクロコントローラ・集積回路・回路基板・チップセットに関する製品仕様書，半導体アプリケーションに関する訓練マニュアル，その他の印刷物"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Exposed cinematographic films, Exposed slide films, Slide film mounts, Downloadable image files, Recorded video discs and video tapes"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Printed matter"
+        }
+      ]
+    },
+    "id": "69883b4e-a294-4325-9b7f-04b894c94615",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageViennaClassification": [
+      "25.07.01.00",
+      "25.07.03.00",
+      "26.04.03.00",
+      "26.04.08.00",
+      "26.04.09.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20080804"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "MORI CHIKAKO",
+        "representativeNativeName": "森　智香子"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20081022",
+        "applicationNumber": "2008-085722"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20190410",
+      "lastPublicationDate": "20090519",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20090410",
+        "registrationNumber": "5221707"
+      }
+    },
+    "version": "20240321121007"
+  },
+  "_uri": "/mark/jp/69883b4e-a294-4325-9b7f-04b894c94615",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

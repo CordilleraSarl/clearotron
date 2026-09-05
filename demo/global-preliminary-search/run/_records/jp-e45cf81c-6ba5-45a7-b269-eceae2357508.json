@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/jp/e45cf81c-6ba5-45a7-b269-eceae2357508",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "e45cf81c-6ba5-45a7-b269-eceae2357508",
+  "applicationNumber": "2021-086542",
+  "registrationNumber": null,
+  "applicationDate": "2021-06-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Ｄｏｒｉ",
+  "markTransliteration": "DOORI DORI",
+  "markTranslation": "DORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "アプリケーションソフトウェアの提供，電子計算機用プログラムの提供，アプリケーションソフトウェアの貸与，電子計算機用プログラムの貸与",
+      "translation_language": "en",
+      "translation": "Provision of application software, provision of programs for electronic computers, lending of application software, lending of programs for electronic computers"
+    }
+  ],
+  "owner": "ALTAVISTARISE CO.,LTD",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20210628"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SETAGAYA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "ALTAVISTARISE CO.,LTD",
+        "applicantNativeAddress": "東京都世田谷区",
+        "applicantNativeName": "株式会社アルタビスタライズ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of application software, provision of programs for electronic computers, lending of application software, lending of programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "アプリケーションソフトウェアの提供，電子計算機用プログラムの提供，アプリケーションソフトウェアの貸与，電子計算機用プログラムの貸与"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "e45cf81c-6ba5-45a7-b269-eceae2357508",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20210628"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20210628",
+        "applicationNumber": "2021-086542"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427105811",
+    "wordMarkSpecification": {
+      "markTranslation": "DORI",
+      "markTransliteration": "DOORI DORI",
+      "markVerbalElementText": "Ｄｏｒｉ"
+    }
+  },
+  "_uri": "/mark/jp/e45cf81c-6ba5-45a7-b269-eceae2357508",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

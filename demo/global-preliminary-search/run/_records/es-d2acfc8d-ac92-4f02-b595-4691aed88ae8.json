@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/es/d2acfc8d-ac92-4f02-b595-4691aed88ae8",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "d2acfc8d-ac92-4f02-b595-4691aed88ae8",
+  "applicationNumber": "2927002 M2",
+  "registrationNumber": "2927002 M2",
+  "applicationDate": "2010-04-27",
+  "registrationDate": "2010-08-27",
+  "expiryDate": "2030-04-26",
+  "renewalDate": "2020-04-21",
+  "lastPublicationDate": "2010-05-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA BARROCA DE ANDALUCIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educacion, formacion y esparcimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "EDUCATION, TRAINING AND LEISURE SERVICES; SPORTS AND CULTURAL ACTIVITIES."
+    }
+  ],
+  "owner": "CONSORCIO ORQUESTA CIUDAD DE MALAGA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "UNGRIA LOPEZ, JAVIER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "CONSORCIO ORQUESTA CIUDAD DE MALAGA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "01.03.02",
+      "01.11.02",
+      "25.05.01",
+      "26.01.12",
+      "27.01.02",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION, TRAINING AND LEISURE SERVICES; SPORTS AND CULTURAL ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educacion, formacion y esparcimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "d2acfc8d-ac92-4f02-b595-4691aed88ae8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "AMARILLO - AZUL - BLANCO - NEGRO.-"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.03.16"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "3183"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "AV. RAMON Y CAJAL, 78 - 28043 - MADRID",
+        "representativeName": "UNGRIA LOPEZ, JAVIER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100427",
+        "applicationNumber": "2927002 M2"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300426",
+      "lastPublicationDate": "20100510",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20100827",
+        "registrationNumber": "2927002 M2"
+      },
+      "renewalDate": "20200421",
+      "renewalPublishedDate": "20200428"
+    },
+    "version": "20260427161529",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA BARROCA DE ANDALUCIA"
+    }
+  },
+  "_uri": "/mark/es/d2acfc8d-ac92-4f02-b595-4691aed88ae8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

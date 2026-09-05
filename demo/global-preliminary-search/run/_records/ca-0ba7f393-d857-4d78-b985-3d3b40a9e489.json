@@ -1,0 +1,280 @@
+{
+  "uri": "/mark/ca/0ba7f393-d857-4d78-b985-3d3b40a9e489",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "0ba7f393-d857-4d78-b985-3d3b40a9e489",
+  "applicationNumber": "2022681",
+  "registrationNumber": "TMA1134038",
+  "applicationDate": "2019-10-25",
+  "registrationDate": "2022-07-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-04-20"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SCISSOR SEVEN qi",
+  "markTransliteration": null,
+  "markTranslation": "SCISSOR SEVEN SEVEN",
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    25,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        25,
+        28,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Animated cartoons; downloadable computer programs for creating computer games; recorded computer game programs; personal computers; rechargeable batteries for cameras and mobile phones; earphones; mobile phone cases; selfie sticks [hand-held monopods]; videotapes recorded with animated cartoons; mouse pads \n(2) Jackets [clothing]; clothing, namely T-shirts, hoodies, shirts, sweaters, casual tops, casual pants, jeans, sweatpants, dresses; raincoats; footwear, namely shoes; caps being headwear; hosiery; gloves [clothing]; turbans; sleep masks; tee-shirts \n(3) Chess games; Apparatus for games, namely, arcade video game machines, home video game machines; amusement machines, automatic and coin-operated; toys, namely children's multiple activity toys, electronic action toys, plastic toys, inflatable toys; toys for pets; scale model kits [toys]; body-building apparatus, namely treadmills, dumbbells; skateboards; in-line roller skates; grip bands for rackets",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        25,
+        28,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Educational services in the form of fine arts schools; organization of cosplay entertainment events; entertainment services in the nature of non-downloadable television shows transmitted via the internet; production of radio and television programmes; layout services, other than for advertising purposes, namely floor plan layout design services for others for trade shows, exhibitions, expositions, conferences, conventions and meetings; providing amusement arcade services; game services provided online from a computer network; entertainment in the form of television shows; providing audio and video studios; production of music",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Sharefun Studio",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "NEOMARK LTD.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Room 233-234, Building 17-2, No. 40, Guangzhi Street, Haizhu District, Guangzhou City, Guangdong Province",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressLines": [
+          "Room 233-234, Building 17-2, No. 40,",
+          "Guangzhi Street, Haizhu District,",
+          "Guangzhou City, Guangdong Province"
+        ],
+        "applicantName": "Sharefun Studio"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,25,28,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Animated cartoons; downloadable computer programs for creating computer games; recorded computer game programs; personal computers; rechargeable batteries for cameras and mobile phones; earphones; mobile phone cases; selfie sticks [hand-held monopods]; videotapes recorded with animated cartoons; mouse pads \n(2) Jackets [clothing]; clothing, namely T-shirts, hoodies, shirts, sweaters, casual tops, casual pants, jeans, sweatpants, dresses; raincoats; footwear, namely shoes; caps being headwear; hosiery; gloves [clothing]; turbans; sleep masks; tee-shirts \n(3) Chess games; Apparatus for games, namely, arcade video game machines, home video game machines; amusement machines, automatic and coin-operated; toys, namely children's multiple activity toys, electronic action toys, plastic toys, inflatable toys; toys for pets; scale model kits [toys]; body-building apparatus, namely treadmills, dumbbells; skateboards; in-line roller skates; grip bands for rackets"
+        },
+        {
+          "intClassNumber": "09,25,28,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Educational services in the form of fine arts schools; organization of cosplay entertainment events; entertainment services in the nature of non-downloadable television shows transmitted via the internet; production of radio and television programmes; layout services, other than for advertising purposes, namely floor plan layout design services for others for trade shows, exhibitions, expositions, conferences, conventions and meetings; providing amusement arcade services; game services provided online from a computer network; entertainment in the form of television shows; providing audio and video studios; production of music"
+        }
+      ]
+    },
+    "id": "0ba7f393-d857-4d78-b985-3d3b40a9e489",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1525040"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20220713",
+        "descriptionText": "Statement of Grant of Protection Sent (following a Provisional Refusal)"
+      },
+      {
+        "date": "20220713",
+        "descriptionText": "Registered"
+      },
+      {
+        "date": "20220713",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20220420",
+        "descriptionText": "Advertised",
+        "information": "Vol.69 Issue 3521"
+      },
+      {
+        "date": "20220418",
+        "descriptionText": "Opposition Start Date Notice Sent",
+        "information": "Requested on 2022/04/18 05:00:16 in program jr500m1"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20220125",
+        "descriptionText": "Agent changed",
+        "information": "From: To: 15416 / Voir Preuve au dossier/See evidence on File No. 2022681"
+      },
+      {
+        "date": "20210816",
+        "descriptionText": "Total Provisional Refusal Sent",
+        "responseDate": "20220216"
+      },
+      {
+        "date": "20210816",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20220216"
+      },
+      {
+        "date": "20210816",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20210216",
+        "descriptionText": "Notification of Possible Oppositions Sent"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "Designation Notification - Madrid Protocol",
+        "responseDate": "20211016"
+      },
+      {
+        "date": "20200415",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20200415",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20191025",
+        "descriptionText": "International Registration",
+        "responseDate": "20291025"
+      },
+      {
+        "date": "20191025",
+        "descriptionText": "Filed",
+        "information": "Registration"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "02.05.01",
+      "02.05.02",
+      "02.05.23",
+      "02.09.12",
+      "26.01.01",
+      "26.01.03",
+      "26.01.19",
+      "26.01.26",
+      "28.03.00"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Room 233-234, Building 17-2, No. 40, Guangzhi Street, Haizhu District, Guangzhou City, Guangdong Province",
+        "addressLines": [
+          "Room 233-234, Building 17-2, No. 40,",
+          "Guangzhi Street, Haizhu District,",
+          "Guangzhou City, Guangdong Province"
+        ],
+        "countryName": "China",
+        "name": "Sharefun Studio"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3521",
+        "publicationVolume": "69"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "NEOMARK LTD.",
+          "7450 rue Saint-Hubert",
+          "Montréal",
+          "QUEBEC H2R2N3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "NEOMARK LTD."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191025",
+        "applicationNumber": "2022681"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "formalisationDate": "20200415",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20291025",
+      "publicationDate": [
+        "20220420"
+      ],
+      "registration": {
+        "registrationDate": "20220713",
+        "registrationNumber": "TMA1134038"
+      }
+    },
+    "subjectHeadings": [
+      "SCISSOR SEVEN QI",
+      "SEVEN",
+      "7"
+    ],
+    "version": "20250625111140",
+    "wordMarkSpecification": {
+      "markTranslation": "SCISSOR SEVEN SEVEN",
+      "markTranslationDescription": "The translation provided by the applicant of the Chinese word(s) QI is SEVEN. The transliteration provided by the applicant of the Chinese character(s) is QI.",
+      "markVerbalElementCrossReferences": "SCISSOR 7 qi",
+      "markVerbalElementText": "SCISSOR SEVEN qi",
+      "markVerbalElementTextFormal": "SCISSOR SEVEN"
+    }
+  },
+  "_uri": "/mark/ca/0ba7f393-d857-4d78-b985-3d3b40a9e489",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.562Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

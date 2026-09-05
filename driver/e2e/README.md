@@ -80,7 +80,7 @@ row 2's product under a second client setup (a different `profileKey` plus a pro
 written **as the config store must receive them**, in a repo-side design document rather than in the
 store. A `R7.json` committed here would be read by nothing — `scenarioStore()` resolves only
 `$CLEAROTRON_E2E_DIR/scenarios/` — while looking exactly like a delivered scenario. They have not been
-received; what stops them being decoration is `driver/test/e2e-product-comparison.test.mjs`, which
+received; what stops them being decoration is the product-comparison arm in the driver suite, which
 lifts every block out of that document and puts it through both admission gates plus the store lint,
 offline, exactly as the harness sweeps a real store before anything spends. They
 carry a `compare` block; `scripts/compare.mjs` selects and orders on it. R0–R6 are untouched by that

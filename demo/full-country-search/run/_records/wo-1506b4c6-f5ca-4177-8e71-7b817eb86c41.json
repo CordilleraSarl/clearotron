@@ -1,0 +1,406 @@
+{
+  "uri": "/mark/wo/1506b4c6-f5ca-4177-8e71-7b817eb86c41",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "1506b4c6-f5ca-4177-8e71-7b817eb86c41",
+  "applicationNumber": null,
+  "registrationNumber": "1402575",
+  "applicationDate": null,
+  "registrationDate": "2017-09-04",
+  "expiryDate": "2027-09-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-05-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CUBICURE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    7,
+    10,
+    17,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "en",
+      "description": "Polymer beads for use in manufacturing; fluorinated polymers; cationic polymers; polymer solutions; aqueous linear polymer gels; polymer resins, unprocessed; polymers for use as reference standards in industry; plasticizers for use in synthetic polymers; polymeric intermediates; aqueous polymer dispersions; chemicals for use in polymerisations; polymer beads for use in manufacturing; reinforced polymers; polymerization plastics; chemical additives to polymers; chemical compositions being photo curable for polymers; polymer dispersions; polymers for use as reference standards in science; chemicals for use in the manufacture of smoke suppressed polymers; developers for use with light sensitive materials; photoinitiators for the polymerization of artificial resins; polyamides; polymers for industrial use; plasticizers for use in natural polymers; chemicals for use in the manufacture of flame retardant polymers; polymer compounds for use in manufacture; developers for positive type photoresist; polymers for use as reference standards in science; polymerization plastics; polymer compounds for use in manufacture; chemical compositions for polymerization of organic compounds for the plastics industry; chemical compounds for use in the manufacture of polymers; water absorbing polymers; aqueous linear polymer gels; chemical substances for modifying the properties of polymers; chemical addtitives to polymers; unprocessed synthetic polymers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "en",
+      "description": "3D printers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Polymerisation apparatus for dental purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "en",
+      "description": "Semi-processed synthetic polymer resins; polymer films for use in manufacture; polymer resin fibres (other than for use in textiles); elastomer polymers, semi-worked polymer resins; polymer film used for manufacturing electronic circuits; semi-worked thermoplastic filaments used for 3D printing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "3D reproduction services; polymerization; rental of 3D printers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Development of new technology for others; design and testing for new product development; development of measuring and testing methods; development of testing methods; design and development of new products; research and development services in the field of engineering; industrial development services; development of industrial products; development of industrial machinery; research and development services; design and development of new technology for others, research and development of new products for others; research and development of new products for third parties in the field of plastic materials; development of machining techniques; product research and development; software design and development; services for the development of methods of testing; design and development of engineering products; design and development of industrial products; research and development of new products for others; design and development of medical technology; development and test of chemical production methods; research and development services in the field of chemistry; development of industrial processes; design of software for use with printing machines; design and development of consumer products; development of new products; creation of control programs for electric operation control and drive modules; development of industrial processes; product research and development; research and development of new products; research to develop new products; design and development of testing and analysis methods; consultancy services in the field of technological development; product design and development; scientific research and development.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "fr",
+      "description": "Billes polymères destinées à être utilisées pour des procédés de fabrication; polymères fluorés; polymères cationiques; solutions polymères; gels polymériques linéaires aqueux; résines polymères à l'état brut; polymères en tant que substances de référence à usage industriel; plastifiants à utiliser pour des polymères synthétiques; polymères intermédiaires; dispersions de polymères aqueuses; produits chimiques destinés aux polymérisations; billes polymères pour procédés de fabrication; polymères renforcés; plastiques obtenus par polymérisation; additifs chimiques pour polymères; compositions chimiques photodurcissables pour polymères; dispersions de polymères; polymères en tant que substances de référence à usage scientifique; produits chimiques utilisés dans la fabrication de polymères de suppression de fumée; révélateurs à utiliser avec des matériaux photosensibles; initiateurs de photos pour la polymérisation de résines artificielles; polyamides; polymères à usage industriel; plastifiants destinés à être utilisés dans des polymères naturels; produits chimiques utilisés dans la fabrication de polymères ignifuges; composés polymériques destinés à la fabrication; développeurs pour résines photosensibles de type positif; polymères en tant que substances de référence à usage scientifique; plastiques obtenus par polymérisation; composés polymériques destinés à la fabrication; compositions chimiques pour la polymérisation de composés organiques pour l'industrie des plastiques; composés chimiques pour la fabrication de polymères; polymères absorbant l'eau; gels polymériques linéaires aqueux; substances chimiques pour la modification des propriétés de polymères; additifs chimiques pour polymères; polymères synthétiques à l'état brut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": "Imprimantes 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fr",
+      "description": "Appareils de polymérisation à usage dentaire.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "fr",
+      "description": "Résines polymères synthétiques mi-ouvrées; films polymères à utiliser au cours d'opérations de fabrication; fibres de résine polymère (autres qu'à usage textile); polymères élastomères, résines polymères mi-ouvrées; films polymères destinés à la fabrication de circuits électroniques; filaments thermoplastiques mi-ouvrés utilisés pour l'impression 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Services de reproduction en 3D; polymérisation; location d'imprimantes 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Développement de nouvelles technologies pour des tiers; conception et essai pour le développement de nouveaux produits; développement de méthodes de mesurage et d'essai; services de développement de méthodes d'essai; conception et développement de nouveaux produits; services de recherche et développement dans le domaine de l'ingénierie; services de développement industriel; développement de produits industriels; mise au point de machines industrielles; services de recherche et développement; services de conception et développement de nouvelles technologies pour des tiers, services de recherche et développement de nouveaux produits pour des tiers; recherche et développement de nouveaux produits pour des tiers dans le domaine des matières plastiques; développement de techniques d'usinage; recherche et développement de produits; conception et développement de logiciels; services pour le développement de méthodes de test; conception et développement de produits d'ingénierie; conception et développement de produits industriels; recherche et développement de nouveaux produits pour des tiers; conception et développement de technologies médicales; mise au point et essai de méthodes de production chimique; services de recherche et développement dans le domaine de la chimie; mise au point de procédés industriels; conception de logiciels destinés à être utilisés avec des machines à imprimer; services de conception et développement de produits de consommation; développement de nouveaux produits; création de programmes de commande pour modules de commande et d'entraînement à fonctionnement électrique; mise au point de procédés industriels; recherche et développement de produits; recherche et développement de nouveaux produits; services de recherche pour le développement de nouveaux produits; conception et développement de méthodes d'analyse et essai; services de conseillers dans le domaine du développement technologique; conception et développement de produits; recherche et développement scientifiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        1
+      ],
+      "language": "es",
+      "description": "Cuentas de polímeros para procesos de fabricación; polímeros fluorados; polímeros catiónicos; soluciones poliméricas; geles de polímeros lineales acuosos; resinas poliméricas en bruto; polímeros utilizados como estándares de referencia en la industria; plastificantes para polímeros sintéticos; productos intermedios poliméricos; dispersiones poliméricas acuosas; productos químicos para polimerizaciones; perlas de polímeros para la fabricación; polímeros reforzados; plásticos de polimerización; aditivos químicos para polímeros; composiciones químicas en forma de polímeros curables de fotos; dispersiones poliméricas; polímeros utilizados como estándares de referencia en la ciencia; productos químicos para la fabricación de polímeros sin humo; agentes de revelado para utilizar con materiales fotosensibles; fotoiniciadores para la polimerización de resinas artificiales; poliamidas; polímeros para uso industrial; plastificantes para polímeros naturales; productos químicos para la fabricación de polímeros pirorretardantes; compuestos poliméricos para procesos de fabricación; reveladores para fotoresistencias de tipo positivo; polímeros utilizados como estándares de referencia en la ciencia; plásticos de polimerización; compuestos poliméricos para procesos de fabricación; composiciones químicas para la polimerización de compuestos orgánicos para la industria del plástico; compuestos químicos para la fabricación de polímeros; polímeros absorbentes de agua; geles de polímeros lineales acuosos; sustancias químicas para modificar las propiedades de polímeros; aditivos químicos para polímeros; polímeros sintéticos en bruto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "es",
+      "description": "Impresoras 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "es",
+      "description": "Aparatos de polimerización para uso odontológico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "es",
+      "description": "Resinas poliméricas sintéticas semiprocesadas; películas de polímeros para la industria manufacturera; fibras de resina polimérica (que no sean para uso textil); polímeros elastómeros, resinas poliméricas semielaboradas; películas de polímeros para uso en la fabricación de circuitos electrónicos; filamentos termoplásticos semielaborados para la impresión 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Servicios de reproducción tridimensional; polimerización; alquiler de impresoras 3D.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Desarrollo de nuevas tecnologías para terceros; diseño y ensayos para el desarrollo de nuevos productos; desarrollo de métodos de medición y prueba; concepción de métodos de prueba; diseño y desarrollo de nuevos productos; servicios de investigación y desarrollo en el ámbito de la ingeniería; servicios de desarrollo industrial; desarrollo de productos industriales; desarrollo de maquinaria industrial; servicios de investigación y desarrollo; diseño y desarrollo de nuevas tecnologías por cuenta de terceros, investigación y desarrollo de nuevos productos por cuenta de terceros; Investigación y desarrollo de nuevos productos para terceros, en particular en el ámbito de las materias plásticas; desarrollo de técnicas de mecanizado; investigación y desarrollo de productos; diseño y desarrollo de software; servicios de desarrollo de métodos de ensayo; diseño y desarrollo de productos de ingeniería; diseño y desarrollo de productos industriales; investigación y desarrollo de nuevos productos para terceros; diseño y desarrollo de tecnología médica; desarrollo y pruebas de métodos de producción química; servicios de investigación y desarrollo en el ámbito químico; desarrollo de procesos industriales; diseño de software para impresoras; diseño y desarrollo de productos de consumo; desarrollo de nuevos productos; creación de programas de control para módulos de control de operaciones eléctricas y de accionamiento; desarrollo de procesos industriales; investigación y desarrollo de productos; investigación y desarrollo de nuevos productos; servicios de investigación y desarrollo de nuevos productos; diseño y desarrollo de métodos de prueba y análisis; servicios de consultoría en materia de desarrollo tecnológico; diseño y desarrollo de productos; investigación y desarrollo científicos.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "SONN Patentanwälte GmbH & Co KG",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20170224",
+          "basicApplicationNumber": "AM 60197/2017"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "AT",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20170307",
+          "basicRegistrationNumber": "291779"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "DE",
+      "JP",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "410 North Scottsdale Road Tempe AZ 85281",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20170224",
+            "basicApplicationNumber": "AM 60197/2017"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "AT",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20170307",
+            "basicRegistrationNumber": "291779"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "DE",
+      "JP",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Polymer beads for use in manufacturing; fluorinated polymers; cationic polymers; polymer solutions; aqueous linear polymer gels; polymer resins, unprocessed; polymers for use as reference standards in industry; plasticizers for use in synthetic polymers; polymeric intermediates; aqueous polymer dispersions; chemicals for use in polymerisations; polymer beads for use in manufacturing; reinforced polymers; polymerization plastics; chemical additives to polymers; chemical compositions being photo curable for polymers; polymer dispersions; polymers for use as reference standards in science; chemicals for use in the manufacture of smoke suppressed polymers; developers for use with light sensitive materials; photoinitiators for the polymerization of artificial resins; polyamides; polymers for industrial use; plasticizers for use in natural polymers; chemicals for use in the manufacture of flame retardant polymers; polymer compounds for use in manufacture; developers for positive type photoresist; polymers for use as reference standards in science; polymerization plastics; polymer compounds for use in manufacture; chemical compositions for polymerization of organic compounds for the plastics industry; chemical compounds for use in the manufacture of polymers; water absorbing polymers; aqueous linear polymer gels; chemical substances for modifying the properties of polymers; chemical addtitives to polymers; unprocessed synthetic polymers."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "3D printers."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Polymerisation apparatus for dental purposes."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semi-processed synthetic polymer resins; polymer films for use in manufacture; polymer resin fibres (other than for use in textiles); elastomer polymers, semi-worked polymer resins; polymer film used for manufacturing electronic circuits; semi-worked thermoplastic filaments used for 3D printing."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "3D reproduction services; polymerization; rental of 3D printers."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Development of new technology for others; design and testing for new product development; development of measuring and testing methods; development of testing methods; design and development of new products; research and development services in the field of engineering; industrial development services; development of industrial products; development of industrial machinery; research and development services; design and development of new technology for others, research and development of new products for others; research and development of new products for third parties in the field of plastic materials; development of machining techniques; product research and development; software design and development; services for the development of methods of testing; design and development of engineering products; design and development of industrial products; research and development of new products for others; design and development of medical technology; development and test of chemical production methods; research and development services in the field of chemistry; development of industrial processes; design of software for use with printing machines; design and development of consumer products; development of new products; creation of control programs for electric operation control and drive modules; development of industrial processes; product research and development; research and development of new products; research to develop new products; design and development of testing and analysis methods; consultancy services in the field of technological development; product design and development; scientific research and development."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Billes polymères destinées à être utilisées pour des procédés de fabrication; polymères fluorés; polymères cationiques; solutions polymères; gels polymériques linéaires aqueux; résines polymères à l'état brut; polymères en tant que substances de référence à usage industriel; plastifiants à utiliser pour des polymères synthétiques; polymères intermédiaires; dispersions de polymères aqueuses; produits chimiques destinés aux polymérisations; billes polymères pour procédés de fabrication; polymères renforcés; plastiques obtenus par polymérisation; additifs chimiques pour polymères; compositions chimiques photodurcissables pour polymères; dispersions de polymères; polymères en tant que substances de référence à usage scientifique; produits chimiques utilisés dans la fabrication de polymères de suppression de fumée; révélateurs à utiliser avec des matériaux photosensibles; initiateurs de photos pour la polymérisation de résines artificielles; polyamides; polymères à usage industriel; plastifiants destinés à être utilisés dans des polymères naturels; produits chimiques utilisés dans la fabrication de polymères ignifuges; composés polymériques destinés à la fabrication; développeurs pour résines photosensibles de type positif; polymères en tant que substances de référence à usage scientifique; plastiques obtenus par polymérisation; composés polymériques destinés à la fabrication; compositions chimiques pour la polymérisation de composés organiques pour l'industrie des plastiques; composés chimiques pour la fabrication de polymères; polymères absorbant l'eau; gels polymériques linéaires aqueux; substances chimiques pour la modification des propriétés de polymères; additifs chimiques pour polymères; polymères synthétiques à l'état brut."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Imprimantes 3D."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils de polymérisation à usage dentaire."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Résines polymères synthétiques mi-ouvrées; films polymères à utiliser au cours d'opérations de fabrication; fibres de résine polymère (autres qu'à usage textile); polymères élastomères, résines polymères mi-ouvrées; films polymères destinés à la fabrication de circuits électroniques; filaments thermoplastiques mi-ouvrés utilisés pour l'impression 3D."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de reproduction en 3D; polymérisation; location d'imprimantes 3D."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Développement de nouvelles technologies pour des tiers; conception et essai pour le développement de nouveaux produits; développement de méthodes de mesurage et d'essai; services de développement de méthodes d'essai; conception et développement de nouveaux produits; services de recherche et développement dans le domaine de l'ingénierie; services de développement industriel; développement de produits industriels; mise au point de machines industrielles; services de recherche et développement; services de conception et développement de nouvelles technologies pour des tiers, services de recherche et développement de nouveaux produits pour des tiers; recherche et développement de nouveaux produits pour des tiers dans le domaine des matières plastiques; développement de techniques d'usinage; recherche et développement de produits; conception et développement de logiciels; services pour le développement de méthodes de test; conception et développement de produits d'ingénierie; conception et développement de produits industriels; recherche et développement de nouveaux produits pour des tiers; conception et développement de technologies médicales; mise au point et essai de méthodes de production chimique; services de recherche et développement dans le domaine de la chimie; mise au point de procédés industriels; conception de logiciels destinés à être utilisés avec des machines à imprimer; services de conception et développement de produits de consommation; développement de nouveaux produits; création de programmes de commande pour modules de commande et d'entraînement à fonctionnement électrique; mise au point de procédés industriels; recherche et développement de produits; recherche et développement de nouveaux produits; services de recherche pour le développement de nouveaux produits; conception et développement de méthodes d'analyse et essai; services de conseillers dans le domaine du développement technologique; conception et développement de produits; recherche et développement scientifiques."
+        },
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Cuentas de polímeros para procesos de fabricación; polímeros fluorados; polímeros catiónicos; soluciones poliméricas; geles de polímeros lineales acuosos; resinas poliméricas en bruto; polímeros utilizados como estándares de referencia en la industria; plastificantes para polímeros sintéticos; productos intermedios poliméricos; dispersiones poliméricas acuosas; productos químicos para polimerizaciones; perlas de polímeros para la fabricación; polímeros reforzados; plásticos de polimerización; aditivos químicos para polímeros; composiciones químicas en forma de polímeros curables de fotos; dispersiones poliméricas; polímeros utilizados como estándares de referencia en la ciencia; productos químicos para la fabricación de polímeros sin humo; agentes de revelado para utilizar con materiales fotosensibles; fotoiniciadores para la polimerización de resinas artificiales; poliamidas; polímeros para uso industrial; plastificantes para polímeros naturales; productos químicos para la fabricación de polímeros pirorretardantes; compuestos poliméricos para procesos de fabricación; reveladores para fotoresistencias de tipo positivo; polímeros utilizados como estándares de referencia en la ciencia; plásticos de polimerización; compuestos poliméricos para procesos de fabricación; composiciones químicas para la polimerización de compuestos orgánicos para la industria del plástico; compuestos químicos para la fabricación de polímeros; polímeros absorbentes de agua; geles de polímeros lineales acuosos; sustancias químicas para modificar las propiedades de polímeros; aditivos químicos para polímeros; polímeros sintéticos en bruto."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Impresoras 3D."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de polimerización para uso odontológico."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Resinas poliméricas sintéticas semiprocesadas; películas de polímeros para la industria manufacturera; fibras de resina polimérica (que no sean para uso textil); polímeros elastómeros, resinas poliméricas semielaboradas; películas de polímeros para uso en la fabricación de circuitos electrónicos; filamentos termoplásticos semielaborados para la impresión 3D."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de reproducción tridimensional; polimerización; alquiler de impresoras 3D."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo de nuevas tecnologías para terceros; diseño y ensayos para el desarrollo de nuevos productos; desarrollo de métodos de medición y prueba; concepción de métodos de prueba; diseño y desarrollo de nuevos productos; servicios de investigación y desarrollo en el ámbito de la ingeniería; servicios de desarrollo industrial; desarrollo de productos industriales; desarrollo de maquinaria industrial; servicios de investigación y desarrollo; diseño y desarrollo de nuevas tecnologías por cuenta de terceros, investigación y desarrollo de nuevos productos por cuenta de terceros; Investigación y desarrollo de nuevos productos para terceros, en particular en el ámbito de las materias plásticas; desarrollo de técnicas de mecanizado; investigación y desarrollo de productos; diseño y desarrollo de software; servicios de desarrollo de métodos de ensayo; diseño y desarrollo de productos de ingeniería; diseño y desarrollo de productos industriales; investigación y desarrollo de nuevos productos para terceros; diseño y desarrollo de tecnología médica; desarrollo y pruebas de métodos de producción química; servicios de investigación y desarrollo en el ámbito químico; desarrollo de procesos industriales; diseño de software para impresoras; diseño y desarrollo de productos de consumo; desarrollo de nuevos productos; creación de programas de control para módulos de control de operaciones eléctricas y de accionamiento; desarrollo de procesos industriales; investigación y desarrollo de productos; investigación y desarrollo de nuevos productos; servicios de investigación y desarrollo de nuevos productos; diseño y desarrollo de métodos de prueba y análisis; servicios de consultoría en materia de desarrollo tecnológico; diseño y desarrollo de productos; investigación y desarrollo científicos."
+        }
+      ]
+    },
+    "id": "1506b4c6-f5ca-4177-8e71-7b817eb86c41",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "18"
+      }
+    ],
+    "recordLastUpdated": "20251026",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Riemergasse 14 Wien A-1010",
+        "representativeAddressCountryCode": "AT",
+        "representativeAddressCountryName": "Austria",
+        "representativeName": "SONN Patentanwälte GmbH & Co KG"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270904",
+      "lastPublicationDate": "20180517",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170904",
+        "registrationNumber": "1402575"
+      }
+    },
+    "version": "20251026020029",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CUBICURE"
+    }
+  },
+  "_uri": "/mark/wo/1506b4c6-f5ca-4177-8e71-7b817eb86c41",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.738Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

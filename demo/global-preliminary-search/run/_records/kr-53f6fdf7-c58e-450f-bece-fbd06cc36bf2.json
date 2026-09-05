@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/53f6fdf7-c58e-450f-bece-fbd06cc36bf2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "53f6fdf7-c58e-450f-bece-fbd06cc36bf2",
+  "applicationNumber": "40-2021-0185307",
+  "registrationNumber": null,
+  "applicationDate": "2021-09-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "도리",
+  "markTransliteration": "duty",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "교육 또는 연예오락에 관한 대회조직업, 교육 분야 정보제공업, 교육업, 내려받기 불가능한 온라인 전자서적 출판업, 대사자막처리업, 라디오 및 텔레비전프로그램 제작업, 문화적 및 교육적 목적의 전시회조직업, 번역업, 비디오테이프 편집업, 서적 출판업, 오락 또는 문화목적의 사용자 리뷰제공업, 오락 또는 문화목적의 사용자 등급제공업, 워크샵준비 및 진행업, 이동도서관업, 읽기전용 온라인 전자서적 및 잡지 출판업, 읽기전용 온라인 비디오 제공업, 입시 학원경영업, 컬리그라피 서비스업, 클럽서비스업(연예오락 및 교육), 학교교육업",
+      "translation_language": "en",
+      "translation": "Organizing competitions for education or entertainment, providing information in the field of education, training, publishing non-downloadable online electronic books, processing closed captioning, producing radio and television programs, organizing exhibitions for cultural and educational purposes, translation, editing video tapes, book publishing, providing user reviews for entertainment or cultural purposes, providing user ratings for entertainment or cultural purposes, preparing and conducting workshops, mobile libraries, reading-only online electronic books and magazines. Publishing business, reading-only online video provision business, entrance exam academy management business, calligraphy service business, club service business (entertainment and education), school education business"
+    }
+  ],
+  "owner": "Shenzhen Kele Culture Education Technology Development Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "윤여강 (YOON YUH GANG)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "중국, 선전, 푸티안 디스트릭트, 화치앙베이 스트리트, 리춘 커뮤니티, 전싱 로드, 넘버 에스이쥐 사이언스 앤드 테크놀로지 파크, 빌딩 *",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Kele Culture Education Technology Development Co., Ltd",
+        "applicantNativeName": "선전 케레 컬쳐 에듀케이션 테크놀로지 디벨롭먼트 컴퍼니., 리미티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organizing competitions for education or entertainment, providing information in the field of education, training, publishing non-downloadable online electronic books, processing closed captioning, producing radio and television programs, organizing exhibitions for cultural and educational purposes, translation, editing video tapes, book publishing, providing user reviews for entertainment or cultural purposes, providing user ratings for entertainment or cultural purposes, preparing and conducting workshops, mobile libraries, reading-only online electronic books and magazines. Publishing business, reading-only online video provision business, entrance exam academy management business, calligraphy service business, club service business (entertainment and education), school education business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교육 또는 연예오락에 관한 대회조직업, 교육 분야 정보제공업, 교육업, 내려받기 불가능한 온라인 전자서적 출판업, 대사자막처리업, 라디오 및 텔레비전프로그램 제작업, 문화적 및 교육적 목적의 전시회조직업, 번역업, 비디오테이프 편집업, 서적 출판업, 오락 또는 문화목적의 사용자 리뷰제공업, 오락 또는 문화목적의 사용자 등급제공업, 워크샵준비 및 진행업, 이동도서관업, 읽기전용 온라인 전자서적 및 잡지 출판업, 읽기전용 온라인 비디오 제공업, 입시 학원경영업, 컬리그라피 서비스업, 클럽서비스업(연예오락 및 교육), 학교교육업"
+        }
+      ]
+    },
+    "id": "53f6fdf7-c58e-450f-bece-fbd06cc36bf2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260811",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 관악구 남부순환로 *-* *층(여강특허기술사업화전문회사)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "윤여강 (YOON YUH GANG)"
+      },
+      {
+        "representativeAddress": "서울시 관악구 남부순환로 *-* *층(여강특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "안창우 (AHN, Chang Woo)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20210907",
+        "applicationNumber": "40-2021-0185307"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260811020736",
+    "wordMarkSpecification": {
+      "markTransliteration": "duty",
+      "markVerbalElementText": "도리"
+    }
+  },
+  "_uri": "/mark/kr/53f6fdf7-c58e-450f-bece-fbd06cc36bf2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

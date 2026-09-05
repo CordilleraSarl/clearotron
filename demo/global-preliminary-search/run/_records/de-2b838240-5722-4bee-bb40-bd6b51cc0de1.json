@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/de/2b838240-5722-4bee-bb40-bd6b51cc0de1",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "2b838240-5722-4bee-bb40-bd6b51cc0de1",
+  "applicationNumber": "302020248859.9",
+  "registrationNumber": "302020248859",
+  "applicationDate": "2020-12-04",
+  "registrationDate": "2021-02-23",
+  "expiryDate": "2030-12-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-03-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ÖPNV Digitalisierungsoffensive Nordrhein-Westfalen Verstehen. Verbinden. Verbessern.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    39,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung für Dienstleistungen; Datenverarbeitung [Büroarbeiten] im Bereich Transportwesen; Geschäftsführung; Werbung",
+      "translation_language": "en",
+      "translation": "Advertising for services; Data processing [office functions] in the field of transport; Managing directors; Advertisement"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "de",
+      "description": "Transportwesen; Bereitstellung von Tarifinformationen im Bereich Transportwesen; Check-in-Dienstleistungen im Transportwesen; Reservierungsdienste [Transportwesen]",
+      "translation_language": "en",
+      "translation": "Transportation; Providing tariff information in the field of transportation; Transport check-in services; Reservation services [transport]"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Technologische Dienstleistungen; Entwicklung von Computersoftware",
+      "translation_language": "en",
+      "translation": "Technological services; Computer software development"
+    }
+  ],
+  "owner": "Verkehrsverbund Rhein-Sieg Gesellschaft mit beschränkter Haftung",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "50667 Köln",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Verkehrsverbund Rhein-Sieg Gesellschaft mit beschränkter Haftung"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "25.07.02",
+      "26.03.23",
+      "26.11.12",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising for services; Data processing [office functions] in the field of transport; Managing directors; Advertisement",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung für Dienstleistungen; Datenverarbeitung [Büroarbeiten] im Bereich Transportwesen; Geschäftsführung; Werbung"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Transportation; Providing tariff information in the field of transportation; Transport check-in services; Reservation services [transport]",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Transportwesen; Bereitstellung von Tarifinformationen im Bereich Transportwesen; Check-in-Dienstleistungen im Transportwesen; Reservierungsdienste [Transportwesen]"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technological services; Computer software development",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Technologische Dienstleistungen; Entwicklung von Computersoftware"
+        }
+      ]
+    },
+    "id": "2b838240-5722-4bee-bb40-bd6b51cc0de1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.15.21",
+      "24.17.02",
+      "24.17.05",
+      "26.04.05",
+      "26.04.16",
+      "26.04.18",
+      "26.04.24",
+      "26.07.04",
+      "26.11.01",
+      "26.11.06",
+      "26.11.12",
+      "27.05.01",
+      "27.05.10",
+      "27.05.15",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "12"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Verkehrsverbund Rhein-Sieg GmbH, Glockengasse 37 - 39, 50667 Köln"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201204",
+        "applicationNumber": "302020248859.9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301204",
+      "lastPublicationDate": "20210326",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210223",
+        "registrationNumber": "302020248859"
+      }
+    },
+    "version": "20250627165829",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ÖPNV Digitalisierungsoffensive Nordrhein-Westfalen Verstehen. Verbinden. Verbessern."
+    }
+  },
+  "_uri": "/mark/de/2b838240-5722-4bee-bb40-bd6b51cc0de1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.813Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

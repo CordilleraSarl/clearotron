@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/tr/5c349d70-b792-43a3-8492-466e4c748791",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "5c349d70-b792-43a3-8492-466e4c748791",
+  "applicationNumber": "2011/24530",
+  "registrationNumber": "2011 24530",
+  "applicationDate": "2011-03-24",
+  "registrationDate": null,
+  "expiryDate": "2031-03-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-11-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "lori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    14,
+    35,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        14,
+        35,
+        40,
+        42
+      ],
+      "language": "tr",
+      "description": "Kuyumculuk eşyaları ( taklitleri dahil); altınlar, mücevherler, kıymetli taşlar ve bunlardan mamul takılar, kol düğmeleri, kravat iğneleri ve heykeller, biblolar. Saatler ve zaman ölçme cihazları,(kronometreler, metronomlar ve parçaları, saat kordonları dahil). Reklamcılık, pazarlama ve halkla ilişkiler ile ilgili hizmetler (Ticari ve reklam amaçlı sergi ve fuarların organizasyonu hizmetleri dahil). Büro hizmetleri. İş yönetimi, idaresi ve bu konular ile ilgili danışmanlık , muhasebe ve mali müşavirlik hizmetleri (ithalat-ihracat acente hizmetleri dahil). Ticari ve sınai ürünler için eksperlik hizmetleri. Açık artırmaların düzenlenmesi ve gerçekleştirilmesi hizmetleri. Müşterilerin malları elverişli bir şekilde görmesi ve satın alması için çeşitli malların bir araya getirilmesi hizmetleri ( belirtilen hizmetler perakende, toptan satış mağazaları, elektronik ortamlar, katalog ve benzeri diğer yöntemler ile sağlanabilir ). Adi metallerin işleme hizmetleri. Değerli metallerin işlenmesi hizmetleri. Fotografik ve sinematografik ürünlerin işlenmesi hizmetleri (Banyo, baskı ve foto gravür hizmetleri dahil). Gıdaların işlenmesi hizmetleri. Hayvan kesim hizmetleri. Deri ve kürk işleme hizmetleri. Saraçlık hizmetleri. Kumaş işleme hizmetleri, yün işleme hizmetleri. Terzilik hizmetleri, nakış işleme hizmetleri. Ahşap ve kereste işleme hizmetleri. Sanat eserlerinin çerçevelenmesi hizmetleri. Sıvı, kimyasal madde, gaz, hava işleme hizmetleri. Cam ve optik cam işleme hizmetleri. Malzemelerin montajı (üçüncü şahıslar adına) hizmetleri. Diş teknisyenliği (döküm) hizmetleri. Çömlekçilik hizmetleri. Enerji üretimi hizmetleri, jeneratörlerin kiralanması hizmetleri. Kağıdın işlenmesi. Baskı hizmetleri, ciltçilik hizmetleri. Plastik işleme hizmetleri. Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri. Bilgisayar hizmetleri. Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım hizmetleri. Sanat eserleri orijinallik onay hizmetleri.",
+      "translation_language": "en",
+      "translation": "Jewelry goods (including their imitation); gold, jewelery, precious stones and jewelry made of them, cufflinks, tie clips and statues, statuettes. Clocks and time measuring devices, (chronometers, metronomes and parts, including hours cords). Advertising, marketing and public relations services (including commercial and advertising purposes exhibitions and fairs organization of services). Office services. Business management, administration, and these issues are related consulting, accounting and financial advisory services (including import-export agency services). Services of an expert for trade and industrial products. Arranging and conducting of auction services. Customers a convenient way to see the goods and to bring together a variety of goods for the purchase of services (specified services to retail, wholesale stores, electronic media, provided with catalogs and other similar methods). Ordinary metals processing services. Processing of precious metals. Photographic and processing of cinematographic products (Bath, including gravure printing and photo services). Food processing services. Animal slaughtering services. Leather and fur processing services. Upholstery services. Fabric processing services, wool processing services. Tailoring services, embroidery services. Wood and timber processing services. Works of art framing services. Liquid chemicals, gases, air processing services. Glass and optical glass processing services. Installation of materials (for third parties) services. Dental technician (casting) services. Pottery services. Energy production services, generator hire services. Processing paper. Printing services, bookbinding services. Plastics processing services. Scientific and industrial examination, research services; engineering services. Computer services. Is included in this class engineering, architecture, computer services not covered by any kind of design services; graphic art design services. Works of art authenticity certification services."
+    }
+  ],
+  "owner": "LORİ SİNANOĞLU",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "MELEK ÖZTÜRK",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HARBİYE MAHALLESİ ATİYE SOKAK GENÇ APT. NO:1 D:6 NİŞANTAŞI ŞİŞLİ İSTANBUL",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "LORİ SİNANOĞLU"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Jewelry goods (including their imitation); gold, jewelery, precious stones and jewelry made of them, cufflinks, tie clips and statues, statuettes. Clocks and time measuring devices, (chronometers, metronomes and parts, including hours cords). Advertising, marketing and public relations services (including commercial and advertising purposes exhibitions and fairs organization of services). Office services. Business management, administration, and these issues are related consulting, accounting and financial advisory services (including import-export agency services). Services of an expert for trade and industrial products. Arranging and conducting of auction services. Customers a convenient way to see the goods and to bring together a variety of goods for the purchase of services (specified services to retail, wholesale stores, electronic media, provided with catalogs and other similar methods). Ordinary metals processing services. Processing of precious metals. Photographic and processing of cinematographic products (Bath, including gravure printing and photo services). Food processing services. Animal slaughtering services. Leather and fur processing services. Upholstery services. Fabric processing services, wool processing services. Tailoring services, embroidery services. Wood and timber processing services. Works of art framing services. Liquid chemicals, gases, air processing services. Glass and optical glass processing services. Installation of materials (for third parties) services. Dental technician (casting) services. Pottery services. Energy production services, generator hire services. Processing paper. Printing services, bookbinding services. Plastics processing services. Scientific and industrial examination, research services; engineering services. Computer services. Is included in this class engineering, architecture, computer services not covered by any kind of design services; graphic art design services. Works of art authenticity certification services.",
+          "intClassNumber": "14,35,40,42",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Kuyumculuk eşyaları ( taklitleri dahil); altınlar, mücevherler, kıymetli taşlar ve bunlardan mamul takılar, kol düğmeleri, kravat iğneleri ve heykeller, biblolar. Saatler ve zaman ölçme cihazları,(kronometreler, metronomlar ve parçaları, saat kordonları dahil). Reklamcılık, pazarlama ve halkla ilişkiler ile ilgili hizmetler (Ticari ve reklam amaçlı sergi ve fuarların organizasyonu hizmetleri dahil). Büro hizmetleri. İş yönetimi, idaresi ve bu konular ile ilgili danışmanlık , muhasebe ve mali müşavirlik hizmetleri (ithalat-ihracat acente hizmetleri dahil). Ticari ve sınai ürünler için eksperlik hizmetleri. Açık artırmaların düzenlenmesi ve gerçekleştirilmesi hizmetleri. Müşterilerin malları elverişli bir şekilde görmesi ve satın alması için çeşitli malların bir araya getirilmesi hizmetleri ( belirtilen hizmetler perakende, toptan satış mağazaları, elektronik ortamlar, katalog ve benzeri diğer yöntemler ile sağlanabilir ). Adi metallerin işleme hizmetleri. Değerli metallerin işlenmesi hizmetleri. Fotografik ve sinematografik ürünlerin işlenmesi hizmetleri (Banyo, baskı ve foto gravür hizmetleri dahil). Gıdaların işlenmesi hizmetleri. Hayvan kesim hizmetleri. Deri ve kürk işleme hizmetleri. Saraçlık hizmetleri. Kumaş işleme hizmetleri, yün işleme hizmetleri. Terzilik hizmetleri, nakış işleme hizmetleri. Ahşap ve kereste işleme hizmetleri. Sanat eserlerinin çerçevelenmesi hizmetleri. Sıvı, kimyasal madde, gaz, hava işleme hizmetleri. Cam ve optik cam işleme hizmetleri. Malzemelerin montajı (üçüncü şahıslar adına) hizmetleri. Diş teknisyenliği (döküm) hizmetleri. Çömlekçilik hizmetleri. Enerji üretimi hizmetleri, jeneratörlerin kiralanması hizmetleri. Kağıdın işlenmesi. Baskı hizmetleri, ciltçilik hizmetleri. Plastik işleme hizmetleri. Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri. Bilgisayar hizmetleri. Bu sınıfa dahil olup mühendislik, mimarlık, bilgisayar hizmetleri kapsamına girmeyen her türlü tasarım hizmetleri; grafik sanat tasarım hizmetleri. Sanat eserleri orijinallik onay hizmetleri."
+        }
+      ]
+    },
+    "id": "5c349d70-b792-43a3-8492-466e4c748791",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.18",
+      "26.04.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "420"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "ETİ MAH. BİRECİK SOK. GAZİ İŞ MRK. NO:1/13 K:2 MALTEPE/ ANKARA",
+        "representativeName": "MELEK ÖZTÜRK"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110324",
+        "applicationNumber": "2011/24530"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310324",
+      "lastPublicationDate": "20121130",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2011 24530"
+      },
+      "renewalPublishedDate": "20210129"
+    },
+    "version": "20250708165532",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "lori"
+    }
+  },
+  "_uri": "/mark/tr/5c349d70-b792-43a3-8492-466e4c748791",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

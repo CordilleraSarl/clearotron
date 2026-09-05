@@ -1,0 +1,263 @@
+{
+  "uri": "/mark/em/8559af13-16e1-430e-9767-5f17b7fb918d",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "8559af13-16e1-430e-9767-5f17b7fb918d",
+  "applicationNumber": "825638",
+  "registrationNumber": "825638",
+  "applicationDate": "1998-05-15",
+  "registrationDate": "1999-08-09",
+  "expiryDate": "2028-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": "1999-02-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR TECHNOLOGY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Elektriske apparater og instrumenter til opvarmning (ikke til brug i køretøjer); elektriske og mekaniske styreapparater til brug sammen med alarmapparater; telefonapparater og -instrumenter; apparater til kontrol; computere; apparater til elektronisk dataindlæsning og -udlæsning; dele og tilbehør til førnævnte varer, undtagen apparater til kontrol af køretøjer og hastighedsindikatorer til køretøjer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Elektrische waarschuwingsapparaten en -instrumenten (niet voor voertuigen); elektrische en mechanische controleapparaten voor gebruik met alarmapparatuur; telefoonapparaten en -instrumenten; controleapparaten (inspectie); computers; elektronische toestellen voor invoer en uitvoer van gegevens; onderdelen en accessoires voor alle voornoemde goederen met uitzondering van controleapparaten voor vervoermiddelen en snelheidsmeters voor vervoermiddelen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electrical warning apparatus and instruments (none for vehicles): electrical and mechanical control apparatus for use with alarm apparatus; telephone apparatus and instruments; checking (supervision) apparatus; computers; electronic data input and output apparatus; parts and fittings for all the aforesaid goods but not including vehicle checking apparatus and speed indicators for vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Sähköiset varoituslaitteet ja -kojeet (ei ajoneuvoihin); hälytyslaitteissa käytettävät sähköiset ja mekaaniset säätimet; puhelinlaitteet ja -välineet; tarkastus(valvonta)-laitteet; tietokoneet; elektroniset tiedon syöttö- ja tulostuslaitteet; edellä mainittujen tavaroiden osat ja tarvikkeet paitsi ajoneuvojen tarkastuslaitteet ja nopeusmittarit.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments d'avertissement électriques (non destinés aux véhicules); appareils de contrôle électriques et mécaniques destinés à des appareils d'alarme; appareils et instruments téléphoniques; appareils de contrôle (inspection); ordinateurs; appareils électroniques de saisie et de sortie de données; pièces et parties constitutives de tous les produits précités mais à l'exception des appareils de contrôle pour véhicules et des indicateurs de vitesses pour véhicules.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Elektrische Warngeräte und -instrumente, nicht für Fahrzeuge; elektrische und mechanische Steuerungsgeräte zur Verwendung mit Alarmgeräten; Telephonapparate und -instrumente; Kontrollapparate; Computer; elektronische Dateneingabe- und -ausgabegeräte; Teile und Bestandteile für alle vorstehend genannten Waren, ausgenommen Kontrollapparate für Fahrzeuge und Geschwindigkeitsanzeiger für Fahrzeuge.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchi e strumenti di avvertimento elettrici (esclusi quelli per veicoli); apparecchi di controllo elettrico e meccanico per impianti d'allarme; apparecchi e strumenti telefonici; apparecchi di verifica (supervisione); elaboratori elettronici; apparecchi elettronici per l'immissione e l'emissione di dati; parti ed accessori per i suddetti articoli, esclusi gli apparecchi di verifica per veicoli ed i tachimetri per veicoli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aparelhos e instrumentos eléctricos de aviso (nenhum para veículos); aparelhos de controlo eléctrico e mecânico para utilizar com sistemas de alarme; aparelhos e instrumentos telefónicos; aparelhos de controlo (inspecção); computadores; aparelhos de entrada e saída de dados electrónicos; peças e acessórios para todos os artigos atrás referidos, não incluindo, no entanto, aparelhos de controlo de veículos e indicadores de velocidade para veículos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos eléctricos de alarma (no para vehículos); aparatos eléctricos y electromecánicos de control para uso con aparatos de alarma; aparatos e instrumentos telefónicos; aparatos de comprobación (supervisión); ordenadores; aparatos electrónicos de entrada y salida de datos; partes y piezas para todos los productos anteriores pero sin incluir aparatos para comprobación de vehículos ni indicadores de velocidad para vehículos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Elektriska varningsapparater och -instrument (ej för fordon); elektriska och mekaniska kontrollapparater för användning med alarmapparater; telefonapparater och -instrument; kontroll- (övervaknings-) -apparater; datorer; elektroniska apparater och instrument för in- och utmatning av data; delar och komponenter till samtliga nämnda varor, ej inkluderande fordonskontrollapparater och hastighetsindikatorer för fordon.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Technology Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "REDDIE & GROSE B.V.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit S, The Fulcrum Centre Vantage Way Mannings Heath,Poole,Dorset, BH12 4NU",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Technology Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Elektriske apparater og instrumenter til opvarmning (ikke til brug i køretøjer); elektriske og mekaniske styreapparater til brug sammen med alarmapparater; telefonapparater og -instrumenter; apparater til kontrol; computere; apparater til elektronisk dataindlæsning og -udlæsning; dele og tilbehør til førnævnte varer, undtagen apparater til kontrol af køretøjer og hastighedsindikatorer til køretøjer."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Elektrische waarschuwingsapparaten en -instrumenten (niet voor voertuigen); elektrische en mechanische controleapparaten voor gebruik met alarmapparatuur; telefoonapparaten en -instrumenten; controleapparaten (inspectie); computers; elektronische toestellen voor invoer en uitvoer van gegevens; onderdelen en accessoires voor alle voornoemde goederen met uitzondering van controleapparaten voor vervoermiddelen en snelheidsmeters voor vervoermiddelen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electrical warning apparatus and instruments (none for vehicles): electrical and mechanical control apparatus for use with alarm apparatus; telephone apparatus and instruments; checking (supervision) apparatus; computers; electronic data input and output apparatus; parts and fittings for all the aforesaid goods but not including vehicle checking apparatus and speed indicators for vehicles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Sähköiset varoituslaitteet ja -kojeet (ei ajoneuvoihin); hälytyslaitteissa käytettävät sähköiset ja mekaaniset säätimet; puhelinlaitteet ja -välineet; tarkastus(valvonta)-laitteet; tietokoneet; elektroniset tiedon syöttö- ja tulostuslaitteet; edellä mainittujen tavaroiden osat ja tarvikkeet paitsi ajoneuvojen tarkastuslaitteet ja nopeusmittarit."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments d'avertissement électriques (non destinés aux véhicules); appareils de contrôle électriques et mécaniques destinés à des appareils d'alarme; appareils et instruments téléphoniques; appareils de contrôle (inspection); ordinateurs; appareils électroniques de saisie et de sortie de données; pièces et parties constitutives de tous les produits précités mais à l'exception des appareils de contrôle pour véhicules et des indicateurs de vitesses pour véhicules."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Elektrische Warngeräte und -instrumente, nicht für Fahrzeuge; elektrische und mechanische Steuerungsgeräte zur Verwendung mit Alarmgeräten; Telephonapparate und -instrumente; Kontrollapparate; Computer; elektronische Dateneingabe- und -ausgabegeräte; Teile und Bestandteile für alle vorstehend genannten Waren, ausgenommen Kontrollapparate für Fahrzeuge und Geschwindigkeitsanzeiger für Fahrzeuge."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi e strumenti di avvertimento elettrici (esclusi quelli per veicoli); apparecchi di controllo elettrico e meccanico per impianti d'allarme; apparecchi e strumenti telefonici; apparecchi di verifica (supervisione); elaboratori elettronici; apparecchi elettronici per l'immissione e l'emissione di dati; parti ed accessori per i suddetti articoli, esclusi gli apparecchi di verifica per veicoli ed i tachimetri per veicoli."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos e instrumentos eléctricos de aviso (nenhum para veículos); aparelhos de controlo eléctrico e mecânico para utilizar com sistemas de alarme; aparelhos e instrumentos telefónicos; aparelhos de controlo (inspecção); computadores; aparelhos de entrada e saída de dados electrónicos; peças e acessórios para todos os artigos atrás referidos, não incluindo, no entanto, aparelhos de controlo de veículos e indicadores de velocidade para veículos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos eléctricos de alarma (no para vehículos); aparatos eléctricos y electromecánicos de control para uso con aparatos de alarma; aparatos e instrumentos telefónicos; aparatos de comprobación (supervisión); ordenadores; aparatos electrónicos de entrada y salida de datos; partes y piezas para todos los productos anteriores pero sin incluir aparatos para comprobación de vehículos ni indicadores de velocidad para vehículos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Elektriska varningsapparater och -instrument (ej för fordon); elektriska och mekaniska kontrollapparater för användning med alarmapparater; telefonapparater och -instrument; kontroll- (övervaknings-) -apparater; datorer; elektroniska apparater och instrument för in- och utmatning av data; delar och komponenter till samtliga nämnda varor, ej inkluderande fordonskontrollapparater och hastighetsindikatorer för fordon."
+        }
+      ]
+    },
+    "id": "8559af13-16e1-430e-9767-5f17b7fb918d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00416",
+        "publicationVolume": "10"
+      }
+    ],
+    "recordLastUpdated": "20260721",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Kalvermarkt 53,Den Haag, 2511CB",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "REDDIE & GROSE B.V."
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19980515",
+        "applicationNumber": "825638"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280515",
+      "lastPublicationDate": "19990215",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19990809",
+        "registrationNumber": "825638"
+      }
+    },
+    "version": "20260721020031",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR TECHNOLOGY"
+    }
+  },
+  "_uri": "/mark/em/8559af13-16e1-430e-9767-5f17b7fb918d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

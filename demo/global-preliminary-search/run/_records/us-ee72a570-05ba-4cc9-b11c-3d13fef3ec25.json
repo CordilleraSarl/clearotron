@@ -1,0 +1,707 @@
+{
+  "uri": "/mark/us/ee72a570-05ba-4cc9-b11c-3d13fef3ec25",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ee72a570-05ba-4cc9-b11c-3d13fef3ec25",
+  "applicationNumber": "76545109",
+  "registrationNumber": "2956580",
+  "applicationDate": "2003-09-16",
+  "registrationDate": "2005-05-31",
+  "expiryDate": null,
+  "renewalDate": "2015-05-31",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2005-03-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2025-12-12",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer hardware and computer software, and manuals supplied therewith, for accelerating and optimizing the transmission, security, delivery and storage of data over wired and wireless computer networks",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Venturi Wireless, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Isaac M. Fine",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20150226",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "152 N 3rd St Suite 510, San Jose, CA, 95112",
+        "applicantAddressCity": "San Jose",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "95112",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "152 N 3rd St Suite 510",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Venturi Wireless, Inc."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "2010 NORTH FIRST STREET, SAN JOSE, CALIFORNIA, 95131",
+            "city": "SAN JOSE",
+            "jurisdictionOfIncorporation": "MARYLAND",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURE LENDING & LEASING V, INC.",
+            "postalCode": "95131",
+            "stateName": "CALIFORNIA",
+            "street": "2010 NORTH FIRST STREET"
+          },
+          {
+            "address": "2010 NORTH FIRST STREET, SAN JOSE, CALIFORNIA, 95131",
+            "city": "SAN JOSE",
+            "jurisdictionOfIncorporation": "MARYLAND",
+            "legalEntity": "CORPORATION",
+            "name": "VENTURE LENDING & LEASING IV, INC.",
+            "postalCode": "95131",
+            "stateName": "CALIFORNIA",
+            "street": "2010 NORTH FIRST STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "CORPORATION",
+            "name": "VENTURI WIRELESS, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "GREENE RADOVSKY MALONEY & SHARE LLP, FOUR EMBARCADERO CENTER, SUITE 4000, SAN FRANCISCO, CA 94111",
+            "addressLines": [
+              "RUSSELL D. POLLOCK, ESQ.",
+              "GREENE RADOVSKY MALONEY & SHARE LLP",
+              "FOUR EMBARCADERO CENTER, SUITE 4000",
+              "SAN FRANCISCO, CA 94111"
+            ],
+            "name": "RUSSELL D. POLLOCK, ESQ."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "20070420",
+        "recordedDate": "20070514",
+        "reelFrameNumber": "3545/0930"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer hardware and computer software, and manuals supplied therewith, for accelerating and optimizing the transmission, security, delivery and storage of data over wired and wireless computer networks"
+        }
+      ]
+    },
+    "id": "ee72a570-05ba-4cc9-b11c-3d13fef3ec25",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20251212",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20251212",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20251212",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20251212",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250421",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20240531",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20180607",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20150226",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20150226",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20150226",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20150226",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20150210",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20150204",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20150204",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20110331",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20110324",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20110322",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20070523",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20060216",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20050531",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20050308",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20050216",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20041112",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20041101",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20041030",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20041029",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20041028",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20040901",
+        "descriptionText": "AMENDMENT FROM APPLICANT ENTERED"
+      },
+      {
+        "date": "20040802",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20040802",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20040419",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20040405",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "555 N. Mathilda Ave., Suite 100, Sunnyvale, CA, 94086",
+        "city": "Sunnyvale",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi Wireless, Inc.",
+        "postalCode": "94086",
+        "stateName": "CALIFORNIA",
+        "street": "555 N. Mathilda Ave., Suite 100"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "152 N 3rd St Suite 510, San Jose, CA, 95112",
+        "city": "San Jose",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi Wireless, Inc.",
+        "postalCode": "95112",
+        "stateName": "CALIFORNIA",
+        "street": "152 N 3rd St Suite 510"
+      },
+      {
+        "address": "152 N 3rd St Suite 510, San Jose, CA, 95112",
+        "city": "San Jose",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi Wireless, Inc.",
+        "postalCode": "95112",
+        "stateName": "CALIFORNIA",
+        "street": "152 N 3rd St Suite 510"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "555 N. Mathilda Ave., Suite 100, Sunnyvale, CA, 94086",
+        "city": "Sunnyvale",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "CORPORATION",
+        "name": "Venturi Wireless, Inc.",
+        "postalCode": "94086",
+        "stateName": "CALIFORNIA",
+        "street": "555 N. Mathilda Ave., Suite 100"
+      }
+    ],
+    "recordLastUpdated": "20260108",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Abandoned",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937497",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI ANTARCTICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77937538",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "77982949",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79152582",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79975384",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GRAND PRIX",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85028551",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI AMERICA",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85515355",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURI GLOBAL CHALLENGES VENTURI V KILIMANJARO TO OKAVANGO MISSION NO 04",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "85975488",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURI FETISH BONNEVILLE",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Long Beach, CA 90802, United States",
+        "representativeCorrespondentAddressLines": [
+          "Long Beach, CA 90802",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Isaac M. Fine KPPB LLP, 180 E. Ocean Blvd., Suite 1030"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Long Beach, CA 90802, United States",
+        "representativeAddressLines": [
+          "Long Beach, CA 90802",
+          "United States"
+        ],
+        "representativeName": "Isaac M. Fine"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20030916",
+        "applicationNumber": "76545109"
+      },
+      "cancellationDate": "20251212",
+      "cancellationPublicationDate": "20260106",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19970723"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19970723"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20251212",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20050308"
+      ],
+      "registration": {
+        "registrationDate": "20050531",
+        "registrationNumber": "2956580"
+      },
+      "renewalDate": "20150531"
+    },
+    "version": "20260108024235",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/ee72a570-05ba-4cc9-b11c-3d13fef3ec25",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "uri": "/mark/eu/019169027",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "019169027",
+  "applicationNumber": "019169027",
+  "registrationNumber": "019169027",
+  "applicationDate": "2025-04-07",
+  "registrationDate": "2025-08-10",
+  "expiryDate": "2035-04-07",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2025-08-12",
+  "markText": "QORE",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "Yamaha Motor eBike Systems GmbH",
+  "ownerCountry": null,
+  "representative": "GRÜNECKER PATENT- UND RECHTSANWÄLTE PARTG MBB",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Mobile apps for controlling, monitoring and evaluating drive units for electric bicycles"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 12,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Drive units for electric bicycles, consisting of electric motors, rechargeable batteries and electric control units",
+            " Control apparatus for regulating electric bike drive systems",
+            " Sensors for recording pedal force, pedal frequency and speed, being components of electric bike drive systems"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019169027",
+  "_uri": "/mark/eu/019169027",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:35.482Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

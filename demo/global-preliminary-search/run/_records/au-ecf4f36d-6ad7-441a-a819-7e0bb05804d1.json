@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/au/ecf4f36d-6ad7-441a-a819-7e0bb05804d1",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "ecf4f36d-6ad7-441a-a819-7e0bb05804d1",
+  "applicationNumber": "2216464",
+  "registrationNumber": "2216464",
+  "applicationDate": "2021-10-06",
+  "registrationDate": "2021-10-06",
+  "expiryDate": "2031-10-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-03-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Audio equipment and accessories, namely, wired or wireless headsets, headphones, earphones, earbuds, speakers, microphones, amplifiers, radio phonographs, electric cables and chargers; sound recording and transmitting systems and apparatus; wireless communication devices; sound and vibration absorbing and damping fittings and feet; sound mixing apparatus; portable media players; sound adaptation apparatus for use with musical instruments; music recordings; downloadable music files",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MAX RYU",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "154-156 ADDERLEY STREET AUBURN 2144, NSW",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "MAX RYU"
+      },
+      {
+        "applicantAddress": "154-156 ADDERLEY STREET AUBURN 2144, NSW",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "ELIZABETH RYU"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Audio equipment and accessories, namely, wired or wireless headsets, headphones, earphones, earbuds, speakers, microphones, amplifiers, radio phonographs, electric cables and chargers; sound recording and transmitting systems and apparatus; wireless communication devices; sound and vibration absorbing and damping fittings and feet; sound mixing apparatus; portable media players; sound adaptation apparatus for use with musical instruments; music recordings; downloadable music files"
+        }
+      ]
+    },
+    "id": "ecf4f36d-6ad7-441a-a819-7e0bb05804d1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.09.01",
+      "04.05.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250930",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PO Box 1188 North Sydney 2059 NSW",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "LAMINAR IP PTY LTD"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211006",
+        "applicationNumber": "2216464"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311006",
+      "lastPublicationDate": "20220307",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20211006",
+        "registrationNumber": "2216464"
+      }
+    },
+    "version": "20250930020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/au/ecf4f36d-6ad7-441a-a819-7e0bb05804d1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/es/cc3c0b54-62a5-4e82-90d5-63343118cb62",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "cc3c0b54-62a5-4e82-90d5-63343118cb62",
+  "applicationNumber": "2127693 M5",
+  "registrationNumber": "2127693 M5",
+  "applicationDate": "1997-11-21",
+  "registrationDate": "1998-12-21",
+  "expiryDate": "2027-11-20",
+  "renewalDate": "2018-03-15",
+  "lastPublicationDate": "1998-01-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA DE CASTILLA-LA MANCHA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Una orquesta de musica.",
+      "translation_language": "en",
+      "translation": "AN ORCHESTRA OF MUSIC."
+    }
+  ],
+  "owner": "JUNTA DE COMUNIDADES DE CASTILLA-LA MANCHA. CONSEJERIA DE EDUCACION Y CULTURA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "JUNTA DE COMUNIDADES DE CASTILLA-LA MANCHA. CONSEJERIA DE EDUCACION Y CULTURA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "07.01.01",
+      "24.01.11",
+      "24.01.18",
+      "24.09.01",
+      "24.09.02",
+      "24.09.04"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "AN ORCHESTRA OF MUSIC.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Una orquesta de musica."
+        }
+      ]
+    },
+    "id": "cc3c0b54-62a5-4e82-90d5-63343118cb62",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.01.11",
+      "24.01.18",
+      "07.01.01",
+      "24.09.01",
+      "24.09.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2659"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19971121",
+        "applicationNumber": "2127693 M5"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271120",
+      "lastPublicationDate": "19980116",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19981221",
+        "registrationNumber": "2127693 M5"
+      },
+      "renewalDate": "20180315",
+      "renewalPublishedDate": "20180321"
+    },
+    "version": "20260427150825",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA DE CASTILLA-LA MANCHA"
+    }
+  },
+  "_uri": "/mark/es/cc3c0b54-62a5-4e82-90d5-63343118cb62",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

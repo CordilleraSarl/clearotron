@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/br/c8283bd9-2bf0-4721-b5c5-aac819ace11b",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "c8283bd9-2bf0-4721-b5c5-aac819ace11b",
+  "applicationNumber": "003881962",
+  "registrationNumber": "003881962",
+  "applicationDate": "1962-07-12",
+  "registrationDate": "1968-12-31",
+  "expiryDate": "2028-12-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENORUTON",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    10,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        10,
+        42
+      ],
+      "language": "pt",
+      "description": "Medicamentos que atuam no aparelho cardiovascular.",
+      "translation_language": "en",
+      "translation": "Medications that work in the cardiovascular system."
+    }
+  ],
+  "owner": "GSK CONSUMER HEALTHCARE S. A.",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "DANIEL ADVOGADOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "GSK CONSUMER HEALTHCARE S. A."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medications that work in the cardiovascular system.",
+          "intClassNumber": "05,10,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Medicamentos que atuam no aparelho cardiovascular."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "05.13"
+        }
+      ]
+    },
+    "id": "c8283bd9-2bf0-4721-b5c5-aac819ace11b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "DANIEL ADVOGADOS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19620712",
+        "applicationNumber": "003881962"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281231",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19681231",
+        "registrationNumber": "003881962"
+      }
+    },
+    "version": "20250630190013",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORUTON"
+    }
+  },
+  "_uri": "/mark/br/c8283bd9-2bf0-4721-b5c5-aac819ace11b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

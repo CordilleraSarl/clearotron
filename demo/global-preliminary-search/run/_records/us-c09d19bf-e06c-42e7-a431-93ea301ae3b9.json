@@ -1,0 +1,356 @@
+{
+  "uri": "/mark/us/c09d19bf-e06c-42e7-a431-93ea301ae3b9",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "c09d19bf-e06c-42e7-a431-93ea301ae3b9",
+  "applicationNumber": "86301240",
+  "registrationNumber": "4875207",
+  "applicationDate": "2014-06-05",
+  "registrationDate": "2015-12-22",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2014-11-11"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2022-07-08",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "(7) SEVEN QUESTIONS THAT RATTLE IN THE MINDS OF MOST MEN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electronic downloadable instructional and teaching materials and dramatic and non-dramatic pre-recorded DVDs, all featuring religious, moral, or ethical topics",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Printed instructional and teaching materials, all featuring religious, moral, or ethical topics",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "North Point Ministries, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Brian D. Flagler",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4350 North Point Parkway, Alpharetta, GA, 30022",
+        "applicantAddressCity": "Alpharetta",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "30022",
+        "applicantAddressStateName": "GEORGIA",
+        "applicantAddressStreet": "4350 North Point Parkway",
+        "applicantJurisdictionOfIncorporation": "GEORGIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "North Point Ministries, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electronic downloadable instructional and teaching materials and dramatic and non-dramatic pre-recorded DVDs, all featuring religious, moral, or ethical topics"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Printed instructional and teaching materials, all featuring religious, moral, or ethical topics"
+        }
+      ]
+    },
+    "id": "c09d19bf-e06c-42e7-a431-93ea301ae3b9",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20220708",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20210115",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20210115",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20210115",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20201222",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20151222",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20151114",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20151113",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20151113",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20151112",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20151112",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150514",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20150514",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150514",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150415",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20150408",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20150402",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20150226",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20150226",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20150106",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20141111",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20141111",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20141022",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20141004",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20140917",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140619",
+        "descriptionText": "NOTICE OF PSEUDO MARK E-MAILED"
+      },
+      {
+        "date": "20140618",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140609",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4350 North Point Parkway, Alpharetta, GA, 30022",
+        "city": "Alpharetta",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "North Point Ministries, Inc.",
+        "postalCode": "30022",
+        "stateName": "GEORGIA",
+        "street": "4350 North Point Parkway"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "4350 North Point Parkway, Alpharetta, GA, 30022",
+        "city": "Alpharetta",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "North Point Ministries, Inc.",
+        "postalCode": "30022",
+        "stateName": "GEORGIA",
+        "street": "4350 North Point Parkway"
+      },
+      {
+        "address": "4350 North Point Parkway, Alpharetta, GA, 30022",
+        "city": "Alpharetta",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "North Point Ministries, Inc.",
+        "postalCode": "30022",
+        "stateName": "GEORGIA",
+        "street": "4350 North Point Parkway"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4350 North Point Parkway, Alpharetta, GA, 30022",
+        "city": "Alpharetta",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "North Point Ministries, Inc.",
+        "postalCode": "30022",
+        "stateName": "GEORGIA",
+        "street": "4350 North Point Parkway"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Asheville, NC 28801, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Asheville, NC 28801",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Brian D. Flagler Flagler Law Group LLC, 1 N. Pack Square, Suite 418"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Asheville, NC 28801, UNITED STATES",
+        "representativeAddressLines": [
+          "Asheville, NC 28801",
+          "UNITED STATES"
+        ],
+        "representativeName": "Brian D. Flagler"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140605",
+        "applicationNumber": "86301240"
+      },
+      "cancellationDate": "20220708",
+      "cancellationPublicationDate": "20220816",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140731"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140731"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140731"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140731"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20220708",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20141111"
+      ],
+      "registration": {
+        "registrationDate": "20151222",
+        "registrationNumber": "4875207"
+      }
+    },
+    "version": "20260110204300",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "7 QUESTIONS THAT RATTLE IN THE MINDS OF MOST MEN",
+      "markVerbalElementText": "(7) SEVEN QUESTIONS THAT RATTLE IN THE MINDS OF MOST MEN"
+    }
+  },
+  "_uri": "/mark/us/c09d19bf-e06c-42e7-a431-93ea301ae3b9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

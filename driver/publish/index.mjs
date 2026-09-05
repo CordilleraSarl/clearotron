@@ -574,7 +574,7 @@ export async function regenSurfaces(poolRoot) {}
  * this call, so a registration the run genuinely FETCHED but which the model cited as an absolute vendor URL
  * used to MISS that map: the bind took its "cited, not fetched" branch, dropped the model's fields, and the
  * card rendered a bare "(register-index entry)". Reduced to its path, the same uri hits. Measured on a
- * clarivate republish of examples/sample-run with one registration rewritten onto a vendor host:
+ * clarivate republish of demo with one registration rewritten onto a vendor host:
  *   before  <li><b><a href="https://…/mark/eu/000692913">…</a></b> <i>(register-index entry)</i></li>
  *   after   <li><b>/mark/eu/000692913</b> · REGISTERED (app. …, reg. …; filed 1997, registered 1999) · EU
  *           · <i class="receipt">verified — Clarivate Compumark record fetched …</i></li>
@@ -588,7 +588,7 @@ export async function regenSurfaces(poolRoot) {}
  * a change here is most likely to hurt. `free-tier` is hasPublicRecordUrl:true with publicRecordOrigin:null
  * (two offices, no single host), so the `recordOrigin` derivation below hands render.mjs a null and its relative
  * registration uris have ALWAYS resolved through provOrigin — i.e. through whatever host the model happened
- * to write. Republishing examples/sample-run as a free-tier run: with the model's own EUIPO links, 27 record
+ * to write. Republishing demo as a free-tier run: with the model's own EUIPO links, 27 record
  * anchors before and 27 after, byte-identical. With a foreign link, 18 anchors on the wrong vendor before,
  * and after, the registration numbers as text. So the tier loses a link only in the case where the link it
  * had was wrong, and no link beats a link to the wrong registry. It is still a loss and it is stated here

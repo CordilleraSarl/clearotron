@@ -1,0 +1,161 @@
+{
+  "uri": "/mark/cn/cf6695a0-0880-42e5-a808-65be337e5c3c",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "cf6695a0-0880-42e5-a808-65be337e5c3c",
+  "applicationNumber": "13694744",
+  "registrationNumber": "13694744",
+  "applicationDate": "2013-12-09",
+  "registrationDate": "2015-08-21",
+  "expiryDate": "2035-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ZORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "中央处理器(CPU);网络通讯设备;导航仪器;扬声器音箱;照相机(摄影);电容器;电子芯片;电子防盗装置;防盗报警器;电池充电器",
+      "translation_language": "en",
+      "translation": "Central processing unit (CPU); network communication equipment; navigation instrument; speaker box; camera (photography); capacitor; electronic chip; electronic anti-theft device; anti-theft alarm; battery charger"
+    }
+  ],
+  "owner": "Shenzhen Liandong Communication Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙华区大浪街道新石社区华宁路42号611-613",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Liandong Communication Technology Co., Ltd.",
+        "applicantNativeName": "深圳联动通信技术有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Central processing unit (CPU); network communication equipment; navigation instrument; speaker box; camera (photography); capacitor; electronic chip; electronic anti-theft device; anti-theft alarm; battery charger",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "中央处理器(CPU);网络通讯设备;导航仪器;扬声器音箱;照相机(摄影);电容器;电子芯片;电子防盗装置;防盗报警器;电池充电器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Warning equipments, bells",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "cf6695a0-0880-42e5-a808-65be337e5c3c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1456"
+      }
+    ],
+    "recordLastUpdated": "20251209",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市蓝盾知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20131209",
+        "applicationNumber": "13694744"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350820",
+      "lastPublicationDate": "20150520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20150821",
+        "registrationNumber": "13694744"
+      },
+      "renewalPublishedDate": "20250927"
+    },
+    "version": "20251209020435",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ZORI"
+    }
+  },
+  "_uri": "/mark/cn/cf6695a0-0880-42e5-a808-65be337e5c3c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

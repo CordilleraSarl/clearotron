@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/gb/d7925d62-e65f-4881-9930-74ac3d508d34",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "d7925d62-e65f-4881-9930-74ac3d508d34",
+  "applicationNumber": "3387687",
+  "registrationNumber": "3387687",
+  "applicationDate": "2019-03-28",
+  "registrationDate": "2019-10-18",
+  "expiryDate": "2029-03-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software and apps; non-printed publications; recordings; computer software and apps relating to business, industry, construction, mining, personnel, human resources, information technology, business risk, financial risk, human rights, crime, fraud, and security; none of the aforesaid goods relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business information, intelligence, databases, research, analysis, consulting, advice and assistance, including in the fields of personnel, human resources, information technology, risk, finance, human rights, crime, fraud, and security; compilation and provision of databases for use by businesses; information, intelligence, research, analysis, consulting, advice and assistance relating to the aforesaid;   none of the aforesaid services relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computing services; software services; software development and creation services; SaaS; PaaS; IT services; database design services; software maintenance and upgrading; including all of the aforesaid in the fields of business, finance, personnel, human resources, information technology, business risk, financial risk, crime, fraud, and security; computer and information technology security services; software creation; advisory services in the field of product development and quality improvement of software; information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; none of the aforesaid services relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Security consultancy; crime and fraud detection and prevention services; investigation services; legal services; regulatory services; information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; none of the aforesaid services relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Quori Pte. Ltd",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "Beck Greener LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68 Circular Road, #02-01, 049422",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "Quori Pte. Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software and apps; non-printed publications; recordings; computer software and apps relating to business, industry, construction, mining, personnel, human resources, information technology, business risk, financial risk, human rights, crime, fraud, and security; none of the aforesaid goods relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business information, intelligence, databases, research, analysis, consulting, advice and assistance, including in the fields of personnel, human resources, information technology, risk, finance, human rights, crime, fraud, and security; compilation and provision of databases for use by businesses; information, intelligence, research, analysis, consulting, advice and assistance relating to the aforesaid;   none of the aforesaid services relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computing services; software services; software development and creation services; SaaS; PaaS; IT services; database design services; software maintenance and upgrading; including all of the aforesaid in the fields of business, finance, personnel, human resources, information technology, business risk, financial risk, crime, fraud, and security; computer and information technology security services; software creation; advisory services in the field of product development and quality improvement of software; information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; none of the aforesaid services relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Security consultancy; crime and fraud detection and prevention services; investigation services; legal services; regulatory services; information, intelligence, research, analysis, consulting, advice and assistance in relation to the aforesaid; none of the aforesaid services relating to goods or services that enable users to ask and answer questions on a variety of topics of general interest, participate in discussions, get feedback from their peers, form virtual communities and engage in social networking."
+        }
+      ]
+    },
+    "id": "d7925d62-e65f-4881-9930-74ac3d508d34",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2019/014"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Fulwood House, 12 Fulwood Place, Holburn, London WC1V 6HR",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Beck Greener LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190328",
+        "applicationNumber": "3387687"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290328",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20191018",
+        "registrationNumber": "3387687"
+      }
+    },
+    "version": "20250627195906",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/gb/d7925d62-e65f-4881-9930-74ac3d508d34",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.704Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

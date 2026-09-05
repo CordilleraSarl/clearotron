@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/f7253c3c-16e2-4240-b522-ce0ddd08d647",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f7253c3c-16e2-4240-b522-ce0ddd08d647",
+  "applicationNumber": "61611091",
+  "registrationNumber": "61611091",
+  "applicationDate": "2021-12-22",
+  "registrationDate": "2022-09-07",
+  "expiryDate": "2032-09-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-06-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "绘图机;衡器;低音喇叭;装饰磁铁;声呐装置",
+      "translation_language": "en",
+      "translation": "Plotting machines; weighing instruments; woofers; decorative magnets; sonar devices"
+    }
+  ],
+  "owner": "Isca (Dongguan) Electronic Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省东莞市虎门镇怀德大新路45号4栋801室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Isca (Dongguan) Electronic Technology Co., Ltd.",
+        "applicantNativeName": "依思佳(东莞)电子科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Plotting machines; weighing instruments; woofers; decorative magnets; sonar devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "绘图机;衡器;低音喇叭;装饰磁铁;声呐装置"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Scales",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Electrical equipments which are not listed in other classes"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0904",
+          "subNatGoodsServicesDescription": "Scales"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0924",
+          "subNatGoodsServicesDescription": "Electrical equipments which are not listed in other classes"
+        }
+      ]
+    },
+    "id": "f7253c3c-16e2-4240-b522-ce0ddd08d647",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1794"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "东莞市人众知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211222",
+        "applicationNumber": "61611091"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320906",
+      "lastPublicationDate": "20220606",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220907",
+        "registrationNumber": "61611091"
+      }
+    },
+    "version": "20251004181125",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/cn/f7253c3c-16e2-4240-b522-ce0ddd08d647",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

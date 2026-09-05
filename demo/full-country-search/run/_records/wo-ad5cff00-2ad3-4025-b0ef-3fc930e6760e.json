@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/wo/ad5cff00-2ad3-4025-b0ef-3fc930e6760e",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "ad5cff00-2ad3-4025-b0ef-3fc930e6760e",
+  "applicationNumber": null,
+  "registrationNumber": "1081712",
+  "applicationDate": null,
+  "registrationDate": "2011-05-27",
+  "expiryDate": "2031-05-27",
+  "renewalDate": "2021-05-27",
+  "lastPublicationDate": "2021-06-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MIFARE FLEX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules, parts and elements; data processing equipment, data storage apparatus; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; controlling apparatus for smart cards; controlling apparatus for RFID (radio frequency identification) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; near field communications (NFC) apparatus, instruments and equipment, including electronic, electro technical and electromagnetic modules, parts and elements and integrated circuits for NFC applications; electronic payment cards; data processing apparatus and software for determining the fare to be paid by passengers who book their trip electronically.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Parties, éléments et modules électroniques, électrotechniques et électromagnétiques; équipements de traitement de données, appareils de stockage de données; microprocesseurs; interfaces informatiques; circuits intégrés, puces (circuits intégrés); semi-conducteurs; cartes à mémoire; appareils de commande pour cartes à mémoire; appareils de commande pour étiquettes et puces d'identification par radiofréquence; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication par champ proche, y compris parties, éléments et modules électroniques, électrotechniques et électromagnétiques, ainsi que circuits intégrés pour applications de communication en champ proche; cartes de paiement électroniques; logiciels et appareils de traitement de données pour déterminer le tarif à payer par les passagers qui réservent leur voyage par un moyen électronique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos, partes y componentes electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces; circuitos integrados, chips (circuitos integrados); semiconductores; tarjetas de circuitos integrados; controladores para tarjetas inteligentes; aparatos de control para chips y etiquetas de identificación por radiofrecuencia (RFID); hardware y software para la creación, la programación, el control, la codificación, el escaneado, la lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia; antenas para el escaneado, la lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia; aparatos, instrumentos y equipos con tecnología NFC, incluidos módulos, partes y componentes electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones NFC; tarjetas de pago electrónicas; aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros que realicen reservas de viajes por medios electrónicos.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "GB",
+      "priorityCountryName": "United Kingdom",
+      "priorityDate": "20110114",
+      "priorityNumber": "2569104"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "GB",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20110114",
+          "basicRegistrationNumber": "UK00002569104"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "IL",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "TR",
+      "VN",
+      "RU",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "GB",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20110114",
+            "basicRegistrationNumber": "UK00002569104"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "IL",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "TR",
+      "VN",
+      "RU",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts and elements; data processing equipment, data storage apparatus; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; controlling apparatus for smart cards; controlling apparatus for RFID (radio frequency identification) chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; antennas for scanning, reading and interpreting RFID chips and tags; near field communications (NFC) apparatus, instruments and equipment, including electronic, electro technical and electromagnetic modules, parts and elements and integrated circuits for NFC applications; electronic payment cards; data processing apparatus and software for determining the fare to be paid by passengers who book their trip electronically."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Parties, éléments et modules électroniques, électrotechniques et électromagnétiques; équipements de traitement de données, appareils de stockage de données; microprocesseurs; interfaces informatiques; circuits intégrés, puces (circuits intégrés); semi-conducteurs; cartes à mémoire; appareils de commande pour cartes à mémoire; appareils de commande pour étiquettes et puces d'identification par radiofréquence; matériel informatique et logiciels pour créer, programmer, commander, coder, scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; antennes pour scanner, lire et interpréter des étiquettes et puces d'identification par radiofréquence; appareils, instruments et équipements de communication par champ proche, y compris parties, éléments et modules électroniques, électrotechniques et électromagnétiques, ainsi que circuits intégrés pour applications de communication en champ proche; cartes de paiement électroniques; logiciels et appareils de traitement de données pour déterminer le tarif à payer par les passagers qui réservent leur voyage par un moyen électronique."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos, partes y componentes electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces; circuitos integrados, chips (circuitos integrados); semiconductores; tarjetas de circuitos integrados; controladores para tarjetas inteligentes; aparatos de control para chips y etiquetas de identificación por radiofrecuencia (RFID); hardware y software para la creación, la programación, el control, la codificación, el escaneado, la lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia; antenas para el escaneado, la lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia; aparatos, instrumentos y equipos con tecnología NFC, incluidos módulos, partes y componentes electrónicos, electrotécnicos y electromagnéticos, así como circuitos integrados para aplicaciones NFC; tarjetas de pago electrónicas; aparatos de procesamiento de datos y software para determinar la tarifa que deben pagar los pasajeros que realicen reservas de viajes por medios electrónicos."
+        }
+      ]
+    },
+    "id": "ad5cff00-2ad3-4025-b0ef-3fc930e6760e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "GB",
+        "priorityCountryName": "United Kingdom",
+        "priorityDate": "20110114",
+        "priorityNumber": "2569104"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "22"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310527",
+      "lastPublicationDate": "20210617",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20110527",
+        "registrationNumber": "1081712"
+      },
+      "renewalDate": "20210527",
+      "renewalPublishedDate": "20210617"
+    },
+    "version": "20250620171633",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MIFARE FLEX"
+    }
+  },
+  "_uri": "/mark/wo/ad5cff00-2ad3-4025-b0ef-3fc930e6760e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.458Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

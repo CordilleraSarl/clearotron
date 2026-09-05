@@ -16,10 +16,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { childEnv, resolvePorts, BACKGROUND_UNITS } from "../../bin/start.mjs";
 import { clientDoorPort } from "../../shared/client-door.mjs";
+import { unitsToRestartOnRefresh, unitHealthVerdict } from "../../shared/server-units.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
-const START_SRC = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
 
 const BASE = {
   ports: resolvePorts({}),
@@ -173,4 +173,163 @@ test("2176-F26 the client door is in the background set, which is the parity thi
   // If the door ever left SERVER_INSTALL_SET, the arms above would be enforcing parity with nothing.
   assert.ok(BACKGROUND_UNITS.includes("clearotron-client-mcp.service"),
     "the door left the install set, so 'the same set as --background' no longer means what these arms assume");
+});
+
+// ── 2191 F15 + F11 · THE DOOR THAT WAS STARTED AND NEVER CHECKED ────────────────────────────────────
+//
+// `--background` ran `enable --now` over FOUR units and then verified a hardcoded pair. So a client door
+// crash-looping against a held port got no ✗, was never named, and the run printed its success block and
+// exited 0 over a product that was two-thirds up. On the foreground path the same input was worse: the
+// collision was found AFTER the other two doors had bound, so the run fatalled mid-flight, tore down
+// what it had started, and did not exit — rc=124 at 120s and at 300s.
+
+const START_SRC = readFileSync(join(REPO, "bin", "start.mjs"), "utf8");
+
+test("2191-F15 the background health check covers every unit the flag installs", () => {
+  // DERIVED, NOT LISTED. The defect was a list kept beside the set it was supposed to cover; an arm that
+  // names the four units here would be the same mistake one layer out, green until a fifth is added.
+  assert.ok(BACKGROUND_UNITS.length >= 3, `only ${BACKGROUND_UNITS.length} unit(s) — this arm would be free`);
+  const at = START_SRC.indexOf("STARTED IS NOT RUNNING");
+  assert.notEqual(at, -1, "anchor missing: the post-enable verification block moved — re-aim this arm");
+  // TO THE END OF THE BLOCK, not a byte count: a fixed slice measures how long the comments above the
+  // code are, which is not the property under test. An earlier draft of this arm used one and failed on
+  // a tree that satisfies the criterion.
+  const loop = START_SRC.slice(at, START_SRC.indexOf("── 5. start them", at));
+  assert.match(loop, /for \(const u of BACKGROUND_UNITS\)/,
+    "the check must iterate the install set itself. It iterated a hardcoded pair while `enable --now` "
+    + "started four, which is how a crash-looping client door read as a clean start");
+  // AND THE FAILURE NAMES THE UNIT, because the operator's next command is about one of them.
+  assert.match(loop, /sickUnits\.join/, "the refusal must name which units did not come up");
+});
+
+test("2191-F15 a oneshot is judged by being enabled, not by still running", () => {
+  // The old comment justified the gap with "the oneshot worker ... judged by being enabled". That was
+  // stale — clearotron-worker.service is `runner.mjs --watch`, Type=simple — but the DISTINCTION is real
+  // and must survive, or adding a genuine oneshot later would report it broken for exiting.
+  const at2 = START_SRC.indexOf("STARTED IS NOT RUNNING");
+  const loop = START_SRC.slice(at2, START_SRC.indexOf("── 5. start them", at2));
+  assert.match(loop, /type === "oneshot"/, "the Type distinction must be kept");
+  assert.match(loop, /UnitFileState/, "and a oneshot is judged by being enabled");
+
+  // THE CLAIM ABOUT TODAY'S UNITS, checked against the unit files rather than remembered: every unit in
+  // the install set is long-running right now, which is why all four are health-checked.
+  for (const u of BACKGROUND_UNITS) {
+    const text = readFileSync(join(REPO, "driver", "systemd", u), "utf8");
+    assert.match(text, /^Type=simple$/m, `${u} is no longer Type=simple — re-read the health check's assumptions`);
+  }
+});
+
+test("2191-F11 the foreground port pre-check covers ALL THREE doors, before anything binds", () => {
+  const probeLoop = START_SRC.slice(START_SRC.indexOf("for (const [what, port, portVar] of"));
+  const head = probeLoop.slice(0, 400);
+  for (const v of ["PORTAL_SERVICE_PORT", "TRADEMARK_MCP_HTTP_PORT", "CLIENT_MCP_HTTP_PORT"])
+    assert.ok(head.includes(v),
+      `${v} is not in the pre-bind probe. The client door's port is resolved beside the other two and was `
+      + "left out of the loop written for exactly this principle, so a held port was found only after the "
+      + "other doors had bound — a fatal mid-flight, a teardown, and no exit");
+
+  // BEFORE THE FIRST WRITE, which is the whole point of the check: `markStateWritten` is what divides
+  // "refuses with nothing to clean up" from "refuses over a changed box".
+  assert.ok(START_SRC.indexOf("for (const [what, port, portVar] of") < START_SRC.indexOf("markStateWritten()"),
+    "the probe must run before the run starts changing the box");
+});
+
+// ── 2191 · A REFRESH RESTARTS EVERY UNIT IT REPLACED ────────────────────────────────────────────────
+//
+// `enable --now` on an ALREADY-ACTIVE unit is a no-op, so a `--background` refresh over an updated
+// checkout leaves the old process running the old files. The restart loop that exists for exactly that
+// named a hardcoded PAIR — the same pair the health check named, three lines below it — with the same
+// stale justification about "the oneshot and its triggers". There is no oneshot in the set.
+//
+// So a refresh restarted the portal and the engine door onto new code and left the worker and the
+// client door on the old, while the health check reported all four up. Fixing the check without fixing
+// this made it worse: a more confident report over an unchanged restart. Measured by an operator on the
+// test box — `enable --now` left MainPID unchanged.
+
+test("2191 a refresh restarts every long-running unit in the install set", () => {
+  // DRIVEN, not source-matched: the decision is a pure function precisely so it can be, and a grep for
+  // the loop would go green on one that iterates the right list and restarts nothing.
+  const all = unitsToRestartOnRefresh(BACKGROUND_UNITS, () => "simple");
+  assert.deepEqual([...all].sort(), [...BACKGROUND_UNITS].sort(),
+    "every unit is Type=simple today, so a refresh must restart all of them — the pair this replaced "
+    + "left the worker and the client door running old code");
+});
+
+test("2191 a oneshot is still excluded, which is what the old comment was right about", () => {
+  // The justification was stale, not wrong in principle: restarting a oneshot re-runs it, and it picks
+  // up new files on its next activation anyway. Keeping the distinction means adding one later does not
+  // silently start getting restarted.
+  const withOneshot = unitsToRestartOnRefresh(BACKGROUND_UNITS, (u) => (u.includes("worker") ? "oneshot" : "simple"));
+  assert.ok(!withOneshot.includes("clearotron-worker.service"), "a oneshot must not be restarted");
+  assert.equal(withOneshot.length, BACKGROUND_UNITS.length - 1, "and nothing else is dropped with it");
+});
+
+test("2191 the restart loop uses that decision rather than a list of its own", () => {
+  const at = START_SRC.indexOf("if (backgroundRefresh) for (const u of");
+  assert.notEqual(at, -1, "anchor missing: the refresh restart loop moved — re-aim this arm");
+  assert.match(START_SRC.slice(at, at + 200), /unitsToRestartOnRefresh\(BACKGROUND_UNITS/,
+    "a second list here would drift from the set silently — each copy looks right on its own, which is "
+    + "how the pair this replaced survived beside a health check that had already been fixed");
+});
+
+// ── 2191 · NRestarts IS A LIFETIME COUNTER, NOT A VERDICT ───────────────────────────────────────────
+//
+// The health verdict required NRestarts === "0". That counter counts every restart since the unit was
+// loaded, and systemd's OWN auto-restart is what increments it — an explicit `systemctl restart` and
+// `reset-failed` both clear it (measured on systemd 255; an earlier note here said only the second did,
+// and that was wrong). So a unit that
+// crash-looped once, was fixed, and has served ever since carries a permanent non-zero count, and
+// `start --background` printed "✗ … is NOT running (active/running, restarts 15)" and exited 1 FOREVER
+// on a healthy box. Measured by an operator: door up, serving, MainPID unchanged, count 15.
+//
+// The condition predates the F15 change; that change extended it from two units to four and so doubled
+// what it could block. It would have shipped in the publish.
+
+test("2191 a RECOVERED unit is healthy — a lifetime restart count is history, not a fault", () => {
+  const v = unitHealthVerdict({ activeState: "active", subState: "running", nRestarts: "15" });
+  assert.equal(v.ok, true,
+    "active/running IS up. Requiring a zero lifetime counter fails a box that recovered, permanently, "
+    + "and no restart clears it");
+  assert.equal(v.restarts, 15, "the count still travels, because a unit that has restarted is worth an eye");
+});
+
+test("2191 and a unit actually looping is still caught, without the counter", () => {
+  // The counter was never what caught a real loop: a looping unit reads activating/auto-restart and
+  // never active/running. Without this arm the fix above could be satisfied by a verdict that passes
+  // everything.
+  assert.equal(unitHealthVerdict({ activeState: "activating", subState: "auto-restart", nRestarts: "40" }).ok, false);
+  assert.equal(unitHealthVerdict({ activeState: "inactive", subState: "dead", nRestarts: "0" }).ok, false,
+    "and a unit that never started is not up either, whatever its counter says");
+});
+
+test("2191 a oneshot is judged by being enabled, and its counter is irrelevant there too", () => {
+  assert.equal(unitHealthVerdict({ type: "oneshot", unitFileState: "enabled", nRestarts: "9" }).ok, true);
+  assert.equal(unitHealthVerdict({ type: "oneshot", unitFileState: "disabled", activeState: "active", subState: "running" }).ok, false,
+    "a oneshot that happens to be running is not the question — being enabled is");
+});
+
+// ── 2191 · ONE DENYLIST FOR BOTH DOORS ──────────────────────────────────────────────────────────────
+//
+// The client door was composed with the DEFAULT unconditionally, while every other child inherited the
+// operator's TRADEMARK_MCP_TOKEN_DENYLIST. So where an operator had placed the list themselves, the
+// staff door honoured it and the client door did not — and account keys live at the client door.
+
+test("2191 both doors get the operator's denylist when one is set", () => {
+  const base = { ports: { portal: 1, mcp: 2, client: 3 },
+    paths: { base: "/b", pool: "/b/pool", grants: "/b/g.json", configStore: "/b/c", audit: "/b/a", recipes: "/b/r" },
+    user: "a@b", staffDomains: "b", portalSecret: "s", tokenSecret: "t", opsToken: "o" };
+  const e = childEnv({ ...base, env: { TRADEMARK_MCP_TOKEN_DENYLIST: "/srv/operator-chosen" } });
+  assert.equal(e.client.TRADEMARK_MCP_TOKEN_DENYLIST, "/srv/operator-chosen",
+    "the client door ignored the operator's variable entirely, so revoking by the documented route "
+    + "revoked at the staff door and silently did nothing at the door account keys use");
+  // The staff door INHERITS rather than being composed, which is the same value by a different route —
+  // asserting it is not overridden is the property that matters.
+  assert.ok(!e.mcp?.TRADEMARK_MCP_TOKEN_DENYLIST || e.mcp.TRADEMARK_MCP_TOKEN_DENYLIST === "/srv/operator-chosen",
+    "the staff door must not be given a different one");
+
+  // AND UNSET: the fallback is the documented default, or this fix would have traded one mismatch for
+  // a door with no denylist at all. That half is what the previous arm was missing.
+  const none = childEnv({ ...base, env: {} });
+  assert.match(none.client.TRADEMARK_MCP_TOKEN_DENYLIST, /\.config\/clearotron\/token-denylist$/,
+    "with nothing set, the client door still gets the documented default");
 });

@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/5ab17f6c-ec58-4a60-bab3-cdba4c09ffd5",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5ab17f6c-ec58-4a60-bab3-cdba4c09ffd5",
+  "applicationNumber": "58674073",
+  "registrationNumber": "58674073",
+  "applicationDate": "2021-08-23",
+  "registrationDate": "2022-04-28",
+  "expiryDate": "2032-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "OORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术研究,质量控制,艺术品鉴定,平面美术设计",
+      "translation_language": "en",
+      "translation": "Technical research, quality control, art identification, graphic art design"
+    }
+  ],
+  "owner": "Shenzhen Jump Yaoguangnian Art Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市福田区福田街道福安社区福华一路138号国际商会大厦B栋508-509",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Jump Yaoguangnian Art Technology Co., Ltd.",
+        "applicantNativeName": "深圳跳耀光年艺术科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical research, quality control, art identification, graphic art design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术研究,质量控制,艺术品鉴定,平面美术设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Authenticating service for works of art",
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4224",
+          "subNatGoodsServicesDescription": "Authenticating service for works of art"
+        },
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "5ab17f6c-ec58-4a60-bab3-cdba4c09ffd5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1777"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市恒融知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210823",
+        "applicationNumber": "58674073"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320427",
+      "lastPublicationDate": "20220127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220428",
+        "registrationNumber": "58674073"
+      }
+    },
+    "version": "20251004153014",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "OORI"
+    }
+  },
+  "_uri": "/mark/cn/5ab17f6c-ec58-4a60-bab3-cdba4c09ffd5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:56.893Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

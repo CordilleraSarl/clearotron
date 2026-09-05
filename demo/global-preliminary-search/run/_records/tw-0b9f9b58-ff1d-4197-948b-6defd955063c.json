@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/tw/0b9f9b58-ff1d-4197-948b-6defd955063c",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "0b9f9b58-ff1d-4197-948b-6defd955063c",
+  "applicationNumber": "078014182",
+  "registrationNumber": "00456611",
+  "applicationDate": "1989-04-03",
+  "registrationDate": "1989-10-01",
+  "expiryDate": "2009-09-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "zh",
+      "description": "第073類:照相機，幻燈機（片），鏡頭，錄影機，電影機，三角架，閃光燈。",
+      "translation_language": "en",
+      "translation": "Class 073: Cameras, slide projectors (films), lenses, video recorders, movie cameras, tripods, flashlights."
+    }
+  ],
+  "owner": "shen zhao xiang qi cai you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantName": "shen zhao xiang qi cai you xian gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 073: Cameras, slide projectors (films), lenses, video recorders, movie cameras, tripods, flashlights.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第073類:照相機，幻燈機（片），鏡頭，錄影機，電影機，三角架，閃光燈。"
+        }
+      ]
+    },
+    "id": "0b9f9b58-ff1d-4197-948b-6defd955063c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260401",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19890403",
+        "applicationNumber": "078014182"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20090930",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19891001",
+        "registrationNumber": "00456611"
+      }
+    },
+    "version": "20260401101603",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/tw/0b9f9b58-ff1d-4197-948b-6defd955063c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -24,20 +24,20 @@ const MANIFEST = {
 const REAL = {
   ordinal: 1, mark: "VENZAL",
   owner: { name: "Muster Handels GmbH & Co. KG", country: "DE", registrations: [
-    { uri: "/mark/em/CTMSIC5519DF1094711DBBC5A00163538D23F", classes: ["5"], status: "Registered", filed: "1999-12-21", expiry: "2029-12-21", jurisdiction: "EM" },
-    { uri: "/mark/gb/GBRIIB53893C58D1711EBA826005056B74373", classes: ["5"], status: "Registered", filed: "1999-12-21", expiry: "2029-12-21", jurisdiction: "GB" },
+    { uri: "/mark/em/62b18466-be74-44b7-890a-6c50c5ff61af", classes: ["5"], status: "Registered", filed: "1999-12-21", expiry: "2029-12-21", jurisdiction: "EM" },
+    { uri: "/mark/gb/dfa7e9c2-f82c-413c-b3e3-b9c8bd6b9304", classes: ["5"], status: "Registered", filed: "1999-12-21", expiry: "2029-12-21", jurisdiction: "GB" },
   ] },
   band: "Moderate", disposition: "adversarial",
   legal_position: "The marks share VENZ, the whole distinctive root of a coined word.",
   practical_position: "The proprietor sits in the same corporate group as an active enforcer.",
   meters: {
-    mark_similarity: { token: "medium", basis: "verified-from-record", source: "/mark/em/CTMSIC5519DF1094711DBBC5A00163538D23F" },
-    goods_proximity: { token: "high", basis: "verified-from-record", source: "/mark/em/CTMSIC5519DF1094711DBBC5A00163538D23F" },
+    mark_similarity: { token: "medium", basis: "verified-from-record", source: "/mark/em/62b18466-be74-44b7-890a-6c50c5ff61af" },
+    goods_proximity: { token: "high", basis: "verified-from-record", source: "/mark/em/62b18466-be74-44b7-890a-6c50c5ff61af" },
     use: { token: "not-confirmed", basis: "inferred-from-signal", source: "" },
     enforcer: { token: "medium", basis: "inferred-from-signal", source: "" },
   },
   quadrant: { x: 0.95, y: 0.62 },
-  source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/em/CTMSIC5519DF1094711DBBC5A00163538D23F" },
+  source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/em/62b18466-be74-44b7-890a-6c50c5ff61af" },
 };
 
 const finding = (over = {}) => ({ ...REAL, ...over });

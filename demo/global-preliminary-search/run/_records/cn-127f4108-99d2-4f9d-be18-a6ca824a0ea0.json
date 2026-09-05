@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/127f4108-99d2-4f9d-be18-a6ca824a0ea0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "127f4108-99d2-4f9d-be18-a6ca824a0ea0",
+  "applicationNumber": "87935162",
+  "registrationNumber": "87935162",
+  "applicationDate": "2025-10-09",
+  "registrationDate": "2026-04-21",
+  "expiryDate": "2036-04-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-01-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "非医用温度计;计量仪表;计量仪器;气体和固体物质温度和湿度测量装置;湿度表;温度指示计",
+      "translation_language": "en",
+      "translation": "Non-medical thermometers; measuring instruments; measuring devices for measuring temperature and humidity of gases and solids; hygrometers; temperature indicators"
+    }
+  ],
+  "owner": "Shanghai Dingwei IOT Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "中国(上海)自由贸易试验区芳春路400号1幢3层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Dingwei IOT Technology Co., Ltd.",
+        "applicantNativeName": "上海鼎为物联技术有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Non-medical thermometers; measuring instruments; measuring devices for measuring temperature and humidity of gases and solids; hygrometers; temperature indicators",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "非医用温度计;计量仪表;计量仪器;气体和固体物质温度和湿度测量装置;湿度表;温度指示计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "127f4108-99d2-4f9d-be18-a6ca824a0ea0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1968"
+      }
+    ],
+    "recordLastUpdated": "20260605",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海方唯思知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251009",
+        "applicationNumber": "87935162"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360420",
+      "lastPublicationDate": "20260120",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260421",
+        "registrationNumber": "87935162"
+      }
+    },
+    "version": "20260605020333",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORK"
+    }
+  },
+  "_uri": "/mark/cn/127f4108-99d2-4f9d-be18-a6ca824a0ea0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:15.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

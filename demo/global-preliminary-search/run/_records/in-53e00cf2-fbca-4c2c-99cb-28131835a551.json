@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/in/53e00cf2-fbca-4c2c-99cb-28131835a551",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "53e00cf2-fbca-4c2c-99cb-28131835a551",
+  "applicationNumber": "1563328",
+  "registrationNumber": null,
+  "applicationDate": "2007-05-30",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Reatilers out let readymade garments & textile madeup",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MOHD. SHAMIN Trading As : DORI Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ROHIT JAIN, ADVOCATE[2705]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "330, HASANPURA, C-KAMLA NEHRU NAGAR, JAIPUR RAJASTHAN",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "MOHD. SHAMIN Trading As : DORI Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Reatilers out let readymade garments & textile madeup"
+        }
+      ]
+    },
+    "id": "53e00cf2-fbca-4c2c-99cb-28131835a551",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1399"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "F1/163, GANDHI PATH, CHITRAKOOT, VAISHALI NAGAR, JAIPUR - RAJASTHAN - 302021",
+        "representativeName": "ROHIT JAIN, ADVOCATE[2705]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20070530",
+        "applicationNumber": "1563328"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710103751",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/in/53e00cf2-fbca-4c2c-99cb-28131835a551",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.997Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

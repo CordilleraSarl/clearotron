@@ -1,0 +1,535 @@
+{
+  "uri": "/mark/us/86bcfc1f-b128-49b3-9abf-28426b7c1a09",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "86bcfc1f-b128-49b3-9abf-28426b7c1a09",
+  "applicationNumber": "77570875",
+  "registrationNumber": "3794051",
+  "applicationDate": "2008-09-16",
+  "registrationDate": "2010-05-25",
+  "expiryDate": null,
+  "renewalDate": "2020-05-25",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2009-05-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "THE SEVEN QUESTIONS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    28,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 [ electronic media, namely, audio/video discs and tapes, digital recording discs and tapes, series of pre-recorded compact sound recording discs, video discs and videotapes featuring instruction, speeches and sound effects in the field of growth development that include information regarding management, performance, productivity, strategic relationship building computer programs ]",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 [ paper and printed matter, namely, a series of articles for publication in booklets, brochures, catalogs, directories, magazines, manuals, newsletters, newspapers, pamphlets and periodicals in the field of growth development that include information regarding communication, management, performance, productivity, strategic relationship building business cards, bookmarks, calendars, printed greeting cards; printed educational, instructional and teaching materials in the field of growth development that includes information regarding leadership, management, performance, productivity, strategic relationship building promotional postcards and posters, series of books in the field of growth development that include information regarding management, performance, productivity, strategic relationship building workbooks in the field of growth development that includes information regarding leadership, management, performance, productivity, strategic relationship building stationery, namely, letterhead paper and envelopes, writing pads, stationery covers, folders and stickers; pens and pencils; paperweights ]",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "INT. CL. 28 [ cube games, card games and board games ]",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 business consultation and advisory services in the field of leadership, management, performance, productivity, strategic relationship building",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 [ educational and instructional services, namely, arranging and conducting educational conferences, retreats, seminars, personal coaching and workshops in the field of growth development, leadership, management, performance, productivity, strategic relationship building entertainment services, namely, live speaking performances and speaking engagements in the field of growth development, leadership, performance, productivity, strategic relationship building production of radio and television and film programs for transmission via broadcast, cable, digital and global computer network and publication of accompanying materials in the form of books, magazines and newsletters; providing coaching services in the field of growth development that includes information regarding leadership, management, performance, productivity, strategic relationship building ]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "STRATEGIC DEVELOPMENT CORPORATION",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20200727",
+      "descriptionText": "REGISTERED - PARTIAL SEC. 8 (10-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "Puyallup, WA, 98372",
+        "applicantAddressCity": "Puyallup",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "98372",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantJurisdictionOfIncorporation": "WASHINGTON",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "STRATEGIC DEVELOPMENT CORPORATION",
+        "applicantSecondaryAddressUnit": "1903 Cypress Drive"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 [ electronic media, namely, audio/video discs and tapes, digital recording discs and tapes, series of pre-recorded compact sound recording discs, video discs and videotapes featuring instruction, speeches and sound effects in the field of growth development that include information regarding management, performance, productivity, strategic relationship building computer programs ]"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 [ paper and printed matter, namely, a series of articles for publication in booklets, brochures, catalogs, directories, magazines, manuals, newsletters, newspapers, pamphlets and periodicals in the field of growth development that include information regarding communication, management, performance, productivity, strategic relationship building business cards, bookmarks, calendars, printed greeting cards; printed educational, instructional and teaching materials in the field of growth development that includes information regarding leadership, management, performance, productivity, strategic relationship building promotional postcards and posters, series of books in the field of growth development that include information regarding management, performance, productivity, strategic relationship building workbooks in the field of growth development that includes information regarding leadership, management, performance, productivity, strategic relationship building stationery, namely, letterhead paper and envelopes, writing pads, stationery covers, folders and stickers; pens and pencils; paperweights ]"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "INT. CL. 28 [ cube games, card games and board games ]"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 business consultation and advisory services in the field of leadership, management, performance, productivity, strategic relationship building"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 [ educational and instructional services, namely, arranging and conducting educational conferences, retreats, seminars, personal coaching and workshops in the field of growth development, leadership, management, performance, productivity, strategic relationship building entertainment services, namely, live speaking performances and speaking engagements in the field of growth development, leadership, performance, productivity, strategic relationship building production of radio and television and film programs for transmission via broadcast, cable, digital and global computer network and publication of accompanying materials in the form of books, magazines and newsletters; providing coaching services in the field of growth development that includes information regarding leadership, management, performance, productivity, strategic relationship building ]"
+        }
+      ]
+    },
+    "id": "86bcfc1f-b128-49b3-9abf-28426b7c1a09",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20201008",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED"
+      },
+      {
+        "date": "20201008",
+        "descriptionText": "WITHDRAWAL OF ATTORNEY GRANTED"
+      },
+      {
+        "date": "20200727",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20200727",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20200727",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 8 (10-YR) ACCEPTED"
+      },
+      {
+        "date": "20200727",
+        "descriptionText": "REGISTERED - SEC. 9 GRANTED/CHECK RECORD FOR SEC. 8"
+      },
+      {
+        "date": "20200727",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20200522",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20190525",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20160610",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20160610",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20160609",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20160525",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20100525",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100423",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20100422",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100422",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100408",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20100301",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20100226",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20100128",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20100128",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20100128",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20100128",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20090728",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20090505",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20090415",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20090330",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20090324",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090319",
+        "descriptionText": "EXAMINERS AMENDMENT MAILED"
+      },
+      {
+        "date": "20090319",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20090319",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20090319",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20090313",
+        "descriptionText": "FINAL REFUSAL MAILED"
+      },
+      {
+        "date": "20090312",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20090224",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20090224",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090224",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20081219",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20081219",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20081217",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20081108",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20081108",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20080919",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4815 LAKERIDGE DRIVE EAST, LAKE TAPPS, WA, 98391",
+        "city": "LAKE TAPPS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "CORPORATION",
+        "name": "STRATEGIC DEVELOPMENT CORPORATION",
+        "postalCode": "98391",
+        "stateName": "WASHINGTON",
+        "street": "4815 LAKERIDGE DRIVE EAST"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Puyallup, WA, 98372",
+        "city": "Puyallup",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "CORPORATION",
+        "name": "STRATEGIC DEVELOPMENT CORPORATION",
+        "postalCode": "98372",
+        "secondaryAddressUnit": "1903 Cypress Drive",
+        "stateName": "WASHINGTON"
+      },
+      {
+        "address": "Puyallup, WA, 98372",
+        "city": "Puyallup",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "CORPORATION",
+        "name": "STRATEGIC DEVELOPMENT CORPORATION",
+        "postalCode": "98372",
+        "secondaryAddressUnit": "1903 Cypress Drive",
+        "stateName": "WASHINGTON"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4815 LAKERIDGE DRIVE EAST, LAKE TAPPS, WA, 98391",
+        "city": "LAKE TAPPS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "WASHINGTON",
+        "legalEntity": "CORPORATION",
+        "name": "STRATEGIC DEVELOPMENT CORPORATION",
+        "postalCode": "98391",
+        "stateName": "WASHINGTON",
+        "street": "4815 LAKERIDGE DRIVE EAST"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "79314129",
+            "markCurrentStatus": "Pending",
+            "markVerbalElementText": "1 QUESTION",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79314129",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "1 QUESTION",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79314129",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "1 QUESTION",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79314129",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "1 QUESTION",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "79314129",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "1 QUESTION",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Puyallup, WA 98372, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Puyallup, WA 98372",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "STRATEGIC DEVELOPMENT CORPORATION, 1903 Cypress Drive"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Puyallup, WA 98372, UNITED STATES",
+        "representativeAddressLines": [
+          "Puyallup, WA 98372",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080916",
+        "applicationNumber": "77570875"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200910"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "198402"
+        },
+        {
+          "firstUsedClass": "28",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200502"
+        },
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "198402"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "198802"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200910"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "198402"
+        },
+        {
+          "firstUsedCommerceClass": "28",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200502"
+        },
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "198402"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "198802"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusComments": [
+          "CANCELLED SECTION 8 IN INT. CL. 9. JUN 10, 2016",
+          "CANCELLED SECTION 8 IN INT. CL. 16. JUN 10, 2016",
+          "CANCELLED SECTION 8 IN INT. CL. 28. JUN 10, 2016"
+        ],
+        "markOfficialStatusDate": "20200727",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20090505"
+      ],
+      "registration": {
+        "registrationDate": "20100525",
+        "registrationNumber": "3794051"
+      },
+      "renewalDate": "20200525"
+    },
+    "version": "20260109204435",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "THE 7 QUESTIONS",
+      "markVerbalElementText": "THE SEVEN QUESTIONS"
+    }
+  },
+  "_uri": "/mark/us/86bcfc1f-b128-49b3-9abf-28426b7c1a09",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

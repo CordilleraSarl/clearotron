@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/at/574611dc-1ba5-436a-b2a3-db129ecef7b1",
+  "provider": "clarivate",
+  "office": "at",
+  "guid": "574611dc-1ba5-436a-b2a3-db129ecef7b1",
+  "applicationNumber": "8243/2006",
+  "registrationNumber": "237796",
+  "applicationDate": "2006-12-06",
+  "registrationDate": "2007-04-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Lärmsanierung Kurvenquietschen RPÖ rail partner österreich",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "de",
+      "description": "Hydraulische Schienenschmiervorrichtungen,",
+      "translation_language": "en",
+      "translation": "Hydraulic rail lubrication devices,"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Montage, Installation, Einstellung und Wartung von Schienenschmiervorrichtungen, technische Beratung in Bezug auf den technischen Gebrauch von Schienenschmiervorrichtungen,",
+      "translation_language": "en",
+      "translation": "Assembly, installation, adjustment and maintenance of rail lubricating devices, technical advice regarding the technical use of rail lubricating devices,"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Wissenschaftliche und technologische Dienstleistungen, darunter Untersuchung von Schienenbogenlärm und Schienenverkehrslärm als Folge der Zugdurchfahrten, Entwicklung von Maschinen und Vorrichtungen zum Reduzieren von Schienenbogenlärm und Schienenverkehrslärm durch Schienenkonditionierung, Durchführung von Lärmpegelmessungen, technische Beratung über die Möglichkeiten zur Reduzierung und Sanierung von Schienenbogenlärm und Schienenverkehrslärm.",
+      "translation_language": "en",
+      "translation": "Scientific and technological services, including the study of rail arch noise and rail traffic noise as a result of train passage, development of machines and devices for reducing rail arch noise and rail traffic noise through rail conditioning, carrying out noise level measurements, technical advice on the possibilities for reducing and remediating rail arch noise and Rail traffic noise."
+    }
+  ],
+  "owner": "Rail Partner Schweiz AG",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "Beer & Partner Patentanwälte KG",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Laugweg 9, 8240 Thayngen",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Rail Partner Schweiz AG"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "18.01.11"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hydraulic rail lubrication devices,",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Hydraulische Schienenschmiervorrichtungen,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Assembly, installation, adjustment and maintenance of rail lubricating devices, technical advice regarding the technical use of rail lubricating devices,",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Montage, Installation, Einstellung und Wartung von Schienenschmiervorrichtungen, technische Beratung in Bezug auf den technischen Gebrauch von Schienenschmiervorrichtungen,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services, including the study of rail arch noise and rail traffic noise as a result of train passage, development of machines and devices for reducing rail arch noise and rail traffic noise through rail conditioning, carrying out noise level measurements, technical advice on the possibilities for reducing and remediating rail arch noise and Rail traffic noise.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftliche und technologische Dienstleistungen, darunter Untersuchung von Schienenbogenlärm und Schienenverkehrslärm als Folge der Zugdurchfahrten, Entwicklung von Maschinen und Vorrichtungen zum Reduzieren von Schienenbogenlärm und Schienenverkehrslärm durch Schienenkonditionierung, Durchführung von Lärmpegelmessungen, technische Beratung über die Möglichkeiten zur Reduzierung und Sanierung von Schienenbogenlärm und Schienenverkehrslärm."
+        }
+      ]
+    },
+    "id": "574611dc-1ba5-436a-b2a3-db129ecef7b1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "18.01.11",
+      "27.05.23",
+      "27.01.12",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250619",
+    "registrationOfficeCode": "AT",
+    "registrationOfficeName": "Austria",
+    "representatives": [
+      {
+        "representativeAddress": "Lindengasse 8, 1070 Wien",
+        "representativeName": "Beer & Partner Patentanwälte KG"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20061206",
+        "applicationNumber": "8243/2006"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070402",
+        "registrationNumber": "237796"
+      }
+    },
+    "version": "20250619152605",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Lärmsanierung Kurvenquietschen RPÖ rail partner österreich"
+    }
+  },
+  "_uri": "/mark/at/574611dc-1ba5-436a-b2a3-db129ecef7b1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

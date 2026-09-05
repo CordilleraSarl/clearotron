@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/fr/d4b8c873-eb4c-47d2-ace6-bc2404dbd9af",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "d4b8c873-eb4c-47d2-ace6-bc2404dbd9af",
+  "applicationNumber": "23 5008565",
+  "registrationNumber": "23 5008565",
+  "applicationDate": "2023-11-23",
+  "registrationDate": null,
+  "expiryDate": "2033-11-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-12-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RIVENORD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": divertissement ; production de films cinématographiques ; services de photographie ; organisation et conduite de conférences ; organisation d'expositions à buts culturels ou éducatifs ; activités sportives et culturelles ; organisation de concours (éducation ou divertissement) ; organisation et conduite de congrès ; publication de livres.",
+      "translation_language": "en",
+      "translation": "entertainment; production of cinematographic films; photography services; organization and conduct of conferences; organization of exhibitions for cultural or educational purposes; sporting and cultural activities; organization of competitions (education or entertainment); organization and conduct of congresses; publication of books."
+    }
+  ],
+  "owner": "Darius Michaud Agissant pour le compte de \"RIVENORD\", SAS en cours de formation",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "22 rue Notre Dame de Nazareth, 75003 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Darius Michaud Agissant pour le compte de \"RIVENORD\", SAS en cours de formation"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "entertainment; production of cinematographic films; photography services; organization and conduct of conferences; organization of exhibitions for cultural or educational purposes; sporting and cultural activities; organization of competitions (education or entertainment); organization and conduct of congresses; publication of books.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": divertissement ; production de films cinématographiques ; services de photographie ; organisation et conduite de conférences ; organisation d'expositions à buts culturels ou éducatifs ; activités sportives et culturelles ; organisation de concours (éducation ou divertissement) ; organisation et conduite de congrès ; publication de livres."
+        }
+      ]
+    },
+    "id": "d4b8c873-eb4c-47d2-ace6-bc2404dbd9af",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "01400",
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231123",
+        "applicationNumber": "23 5008565"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331123",
+      "lastPublicationDate": "20231215",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "23 5008565"
+      }
+    },
+    "version": "20250426165939",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RIVENORD"
+    }
+  },
+  "_uri": "/mark/fr/d4b8c873-eb4c-47d2-ace6-bc2404dbd9af",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

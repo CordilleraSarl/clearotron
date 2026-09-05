@@ -1,0 +1,241 @@
+{
+  "uri": "/mark/us/144e6ea3-13f1-4478-b519-e40a808c5b32",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "144e6ea3-13f1-4478-b519-e40a808c5b32",
+  "applicationNumber": "99281616",
+  "registrationNumber": null,
+  "applicationDate": "2025-07-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "EXECUTIVE NORTH STAR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"EXECUTIVE\""
+  ],
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Professional business consulting",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Education services, namely, providing classes and courses in the field of business leadership and development; Coaching in the field of business leadership and development; Entertainment services, namely, providing podcasts in the field of business leadership and development; On-line journals, namely, blogs featuring business leadership and development",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CSKM Enterprises LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Kayla Jane Gallagher",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5540 Centerview Dr Ste 204 #695816, Raleigh, NC, 27606, USAM",
+        "applicantAddressCity": "Raleigh",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "27606",
+        "applicantAddressStateName": "NORTH CAROLINA",
+        "applicantAddressStreet": "5540 Centerview Dr Ste 204 #695816",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "CSKM Enterprises LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Professional business consulting"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Education services, namely, providing classes and courses in the field of business leadership and development; Coaching in the field of business leadership and development; Entertainment services, namely, providing podcasts in the field of business leadership and development; On-line journals, namely, blogs featuring business leadership and development"
+        }
+      ]
+    },
+    "id": "144e6ea3-13f1-4478-b519-e40a808c5b32",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"EXECUTIVE\""
+    ],
+    "markEvents": [
+      {
+        "date": "20260729",
+        "descriptionText": "REPORT COMPLETED SUSPENSION CHECK CASE STILL SUSPENDED"
+      },
+      {
+        "date": "20260129",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20260129",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20260129",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20260123",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20260123",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20260123",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20251208",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20251208",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251208",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251202",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20251118",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250714",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250714",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5540 Centerview Dr Ste 204 #695816, Raleigh, NC, 27606, USAM",
+        "city": "Raleigh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "CSKM Enterprises LLC",
+        "postalCode": "27606",
+        "stateName": "NORTH CAROLINA",
+        "street": "5540 Centerview Dr Ste 204 #695816"
+      },
+      {
+        "address": "5540 Centerview Dr Ste 204 #695816, Raleigh, NC, 27606, USAM",
+        "city": "Raleigh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "CSKM Enterprises LLC",
+        "postalCode": "27606",
+        "stateName": "NORTH CAROLINA",
+        "street": "5540 Centerview Dr Ste 204 #695816"
+      }
+    ],
+    "recordLastUpdated": "20260730",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Phoenix, AZ 85004, United States",
+        "representativeCorrespondentAddressLines": [
+          "Phoenix, AZ 85004",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Kayla Jane Gallagher LZ Legal Services, LLC, 2828 N Central Ave, PMB #1510"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Phoenix, AZ 85004, United States",
+        "representativeAddressLines": [
+          "Phoenix, AZ 85004",
+          "United States"
+        ],
+        "representativeName": "Kayla Jane Gallagher"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250714",
+        "applicationNumber": "99281616"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "REPORT COMPLETED SUSPENSION CHECK - CASE STILL SUSPENDED",
+        "markOfficialStatusCode": "654",
+        "markOfficialStatusDate": "20260729",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260730104103",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EXECUTIVE NORTH STAR"
+    }
+  },
+  "_uri": "/mark/us/144e6ea3-13f1-4478-b519-e40a808c5b32",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

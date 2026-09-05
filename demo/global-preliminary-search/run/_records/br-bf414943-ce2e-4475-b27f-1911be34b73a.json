@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/br/bf414943-ce2e-4475-b27f-1911be34b73a",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "bf414943-ce2e-4475-b27f-1911be34b73a",
+  "applicationNumber": "830890068",
+  "registrationNumber": "830890068",
+  "applicationDate": "2010-12-20",
+  "registrationDate": "2014-06-10",
+  "expiryDate": "2034-06-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de arquitetura, serviços de arquitetura relacionados ao desenvolvimento de propriedades; desenvolvimento e planejamento de serviços; serviços para o planejamento de comunidades residenciais, shopping centers, estabelecimentos para alimentação, hotéis, edificações, construções em propriedades, escritórios, propriedades públicas; planejamento de espaços; planejamento de desenvolvimento urbano; inspeções prediais; serviços de pesquisa; serviços de avaliação de segurança; informação, aconselhamento e apuração dos serviços acima mencionados.",
+      "translation_language": "en",
+      "translation": "ARCHITECTURE SERVICES, ARCHITECTURE SERVICES RELATED TO PROPERTY DEVELOPMENT; SERVICE DEVELOPMENT AND PLANNING; SERVICES FOR THE PLANNING OF RESIDENTIAL COMMUNITIES, SHOPPING CENTERS, FOOD ESTABLISHMENTS, HOTELS, BUILDINGS, PROPERTY CONSTRUCTIONS, OFFICES, PUBLIC PROPERTY; SPACE PLANNING; URBAN DEVELOPMENT PLANNING; BUILDING INSPECTIONS; RESEARCH SERVICES; SECURITY ASSESSMENT SERVICES; INFORMATION, ADVICE AND ASSESSMENT OF THE SERVICES MENTIONED ABOVE."
+    }
+  ],
+  "owner": "GROSVENOR GROUP LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "MONTAURY PIMENTA, MACHADO & VIEIRA DE MELLO ADVOGADOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "GROSVENOR GROUP LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ARCHITECTURE SERVICES, ARCHITECTURE SERVICES RELATED TO PROPERTY DEVELOPMENT; SERVICE DEVELOPMENT AND PLANNING; SERVICES FOR THE PLANNING OF RESIDENTIAL COMMUNITIES, SHOPPING CENTERS, FOOD ESTABLISHMENTS, HOTELS, BUILDINGS, PROPERTY CONSTRUCTIONS, OFFICES, PUBLIC PROPERTY; SPACE PLANNING; URBAN DEVELOPMENT PLANNING; BUILDING INSPECTIONS; RESEARCH SERVICES; SECURITY ASSESSMENT SERVICES; INFORMATION, ADVICE AND ASSESSMENT OF THE SERVICES MENTIONED ABOVE.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de arquitetura, serviços de arquitetura relacionados ao desenvolvimento de propriedades; desenvolvimento e planejamento de serviços; serviços para o planejamento de comunidades residenciais, shopping centers, estabelecimentos para alimentação, hotéis, edificações, construções em propriedades, escritórios, propriedades públicas; planejamento de espaços; planejamento de desenvolvimento urbano; inspeções prediais; serviços de pesquisa; serviços de avaliação de segurança; informação, aconselhamento e apuração dos serviços acima mencionados."
+        }
+      ]
+    },
+    "id": "bf414943-ce2e-4475-b27f-1911be34b73a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MONTAURY PIMENTA, MACHADO & VIEIRA DE MELLO ADVOGADOS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101220",
+        "applicationNumber": "830890068"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340610",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140610",
+        "registrationNumber": "830890068"
+      }
+    },
+    "version": "20250630221535",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/br/bf414943-ce2e-4475-b27f-1911be34b73a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

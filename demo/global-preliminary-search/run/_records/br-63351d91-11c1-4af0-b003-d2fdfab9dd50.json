@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/br/63351d91-11c1-4af0-b003-d2fdfab9dd50",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "63351d91-11c1-4af0-b003-d2fdfab9dd50",
+  "applicationNumber": "840772700",
+  "registrationNumber": null,
+  "applicationDate": "2014-01-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aparelhos e instrumentos para fornecimento, para distribuição, para transformação, para acumulação. Para regulagem ou para controle de corrente elétrica; aparelhos para gravação. Para transmissão ou para reprodução de som ou de imagens, suportes de registros magnéticos, discos acústicos; programas de software: baterias/pilhas.",
+      "translation_language": "en",
+      "translation": "Apparatus and instruments for supply, distribution, transformation, storage. For regulation or control of electrical current; apparatus for recording. For transmission or reproduction of sound or images, magnetic recording carriers, acoustic discs; software programs: batteries/batteries."
+    }
+  ],
+  "owner": "VENTURI AUTOMOBILES",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "KASZNAR LEONARDOS PROPRIEDADE INTELECTUAL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "VENTURI AUTOMOBILES"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Apparatus and instruments for supply, distribution, transformation, storage. For regulation or control of electrical current; apparatus for recording. For transmission or reproduction of sound or images, magnetic recording carriers, acoustic discs; software programs: batteries/batteries.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos e instrumentos para fornecimento, para distribuição, para transformação, para acumulação. Para regulagem ou para controle de corrente elétrica; aparelhos para gravação. Para transmissão ou para reprodução de som ou de imagens, suportes de registros magnéticos, discos acústicos; programas de software: baterias/pilhas."
+        }
+      ]
+    },
+    "id": "63351d91-11c1-4af0-b003-d2fdfab9dd50",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20251113",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "KASZNAR LEONARDOS PROPRIEDADE INTELECTUAL"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140123",
+        "applicationNumber": "840772700"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20251113020435",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/br/63351d91-11c1-4af0-b003-d2fdfab9dd50",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

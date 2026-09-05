@@ -1,0 +1,211 @@
+{
+  "uri": "/mark/jp/3e3911f9-b432-4566-b90a-76b0cfcfd3fa",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "3e3911f9-b432-4566-b90a-76b0cfcfd3fa",
+  "applicationNumber": "S62-028684",
+  "registrationNumber": "2219347",
+  "applicationDate": "1987-03-17",
+  "registrationDate": "1990-03-27",
+  "expiryDate": "2000-03-27",
+  "renewalDate": null,
+  "lastPublicationDate": "1989-08-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "いおり",
+  "markTransliteration": "IORI",
+  "markTranslation": "IORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    11,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    24,
+    26,
+    27,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        26,
+        27,
+        31
+      ],
+      "language": null,
+      "description": "家具、その他本類に属する商品",
+      "translation_language": "en",
+      "translation": "Furniture, other items belonging to this category"
+    }
+  ],
+  "owner": "KOKUYO CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19870317"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OSAKA",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KOKUYO CO., LTD.",
+        "applicantNativeAddress": "大阪市東成区大今里南６丁目１番１号",
+        "applicantNativeName": "コクヨ株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furniture, other items belonging to this category",
+          "intClassNumber": "06,09,10,11,14,16,17,18,19,20,21,22,24,26,27,31",
+          "intGoodsServicesDescription": "家具、その他本類に属する商品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "20A01"
+        },
+        {
+          "natClassNumber": "20A02"
+        },
+        {
+          "natClassNumber": "20B01"
+        },
+        {
+          "natClassNumber": "20C01"
+        },
+        {
+          "natClassNumber": "20C02"
+        },
+        {
+          "natClassNumber": "20C03"
+        },
+        {
+          "natClassNumber": "20C04"
+        },
+        {
+          "natClassNumber": "20C50"
+        },
+        {
+          "natClassNumber": "20D01"
+        },
+        {
+          "natClassNumber": "20D02"
+        },
+        {
+          "natClassNumber": "20D03"
+        },
+        {
+          "natClassNumber": "20D04"
+        },
+        {
+          "natClassNumber": "20D05"
+        },
+        {
+          "natClassNumber": "20D06"
+        },
+        {
+          "natClassNumber": "20D07"
+        },
+        {
+          "natClassNumber": "20D08"
+        },
+        {
+          "natClassNumber": "20D50"
+        },
+        {
+          "natClassNumber": "20E01"
+        },
+        {
+          "natClassNumber": "20F01"
+        }
+      ]
+    },
+    "id": "3e3911f9-b432-4566-b90a-76b0cfcfd3fa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19870317"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19870317",
+        "applicationNumber": "S62-028684"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20000327",
+      "lastPublicationDate": "19890815",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19900327",
+        "registrationNumber": "2219347"
+      }
+    },
+    "version": "20240320185823",
+    "wordMarkSpecification": {
+      "markTranslation": "IORI",
+      "markTransliteration": "IORI",
+      "markVerbalElementText": "いおり"
+    }
+  },
+  "_uri": "/mark/jp/3e3911f9-b432-4566-b90a-76b0cfcfd3fa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/b129e536-684e-4e39-811e-daa1a7f0f16e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b129e536-684e-4e39-811e-daa1a7f0f16e",
+  "applicationNumber": "45-2001-0002510",
+  "registrationNumber": null,
+  "applicationDate": "2001-07-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "고리 (GORI)",
+  "markTransliteration": "GORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "0932005 기록된 컴퓨터 작동프로그램, 0932006 기록된 컴퓨터 프로그램",
+      "translation_language": "en",
+      "translation": "0932005 recorded computer operating programs, 0932006 recorded computer programs"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "4203008 컴퓨터 소프트웨어대여업, 4203014 컴퓨터 프로그램의 번역임대업",
+      "translation_language": "en",
+      "translation": "4203008 Computer software rental business, 4203014 Computer program translation rental business"
+    }
+  ],
+  "owner": "GAHNG MYOUNG DUCK",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강동구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "GAHNG MYOUNG DUCK",
+        "applicantNativeName": "강명덕"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "0932005 recorded computer operating programs, 0932006 recorded computer programs",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "0932005 기록된 컴퓨터 작동프로그램, 0932006 기록된 컴퓨터 프로그램"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "4203008 Computer software rental business, 4203014 Computer program translation rental business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "4203008 컴퓨터 소프트웨어대여업, 4203014 컴퓨터 프로그램의 번역임대업"
+        }
+      ]
+    },
+    "id": "b129e536-684e-4e39-811e-daa1a7f0f16e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20010713",
+        "applicationNumber": "45-2001-0002510"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260625021117",
+    "wordMarkSpecification": {
+      "markTransliteration": "GORI",
+      "markVerbalElementText": "고리 (GORI)"
+    }
+  },
+  "_uri": "/mark/kr/b129e536-684e-4e39-811e-daa1a7f0f16e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

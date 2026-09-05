@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/5797154b-26c9-431d-8289-79b0635c5583",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "5797154b-26c9-431d-8289-79b0635c5583",
+  "applicationNumber": "2185220",
+  "registrationNumber": "1363045",
+  "applicationDate": "2011-08-03",
+  "registrationDate": "2016-10-01",
+  "expiryDate": "2031-08-03",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits, signal processors, digital signal processors, vector processors, communications processors, application-specific accelerators, wireless basebands, base stations on a chip, including wireless base stations on a chip, systems on a chip (soc)",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, INC. Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "PARVINDER KAUR[29570]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1303 E. ALGONQUIN ROAD, SCHAUMBURG, IL 60196, U.S.A.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC. Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits, signal processors, digital signal processors, vector processors, communications processors, application-specific accelerators, wireless basebands, base stations on a chip, including wireless base stations on a chip, systems on a chip (soc)"
+        }
+      ]
+    },
+    "id": "5797154b-26c9-431d-8289-79b0635c5583",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1743"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "HL ARCDE-3RD FLOOR, PLOT NO. 14, ABOVE AXIS BANK, SEC-V (MLU), DWARKA, NEW DELHI-110075.",
+        "representativeName": "PARVINDER KAUR[29570]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110803",
+        "applicationNumber": "2185220"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310803",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20161001",
+        "registrationNumber": "1363045"
+      }
+    },
+    "version": "20250710121749",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/in/5797154b-26c9-431d-8289-79b0635c5583",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.394Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

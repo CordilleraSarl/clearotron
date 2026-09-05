@@ -1,0 +1,263 @@
+{
+  "uri": "/mark/wo/10b25a7e-caec-4454-922d-8d8f4d240f10",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "10b25a7e-caec-4454-922d-8d8f4d240f10",
+  "applicationNumber": null,
+  "registrationNumber": "1674418",
+  "applicationDate": null,
+  "registrationDate": "2022-05-27",
+  "expiryDate": "2032-05-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-07-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Coaching; demonstration instruction of practical exercises; education and teaching; gymnastics classes; publication of texts, other than promotional texts; arranging and conducting of cultural and/or sporting events; physical education classes; arranging and conducting of seminars; arranging and conducting of workshops [training].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Medical services; health advice; physiotherapeutic treatments; therapeutic and medical care and support.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Produits d'imprimerie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Accompagnement personnalisé (coaching); instruction par démonstration d'exercices pratiques; éducation et enseignement; cours de gymnastique; publication de textes, autres que textes promotionnels; mise en place et animation de manifestations sportives et/ou culturelles; cours d'éducation physique; services de mise en place et d'animation de séminaires; organisation et animation d'ateliers de formation.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "fr",
+      "description": "Services médicaux; prestation de conseils en matière de santé; services de traitement physiothérapeutique; assistance et soins médicaux et thérapeutiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Productos de imprenta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Formación personalizada; instrucción de demostración de ejercicios prácticos; educación y enseñanza; clases de gimnasia; publicación de textos que no sean publicitarios; organización y realización de actividades culturales o deportivas; clases de educación física; organización y realización de seminarios; organización y realización de talleres de formación.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "es",
+      "description": "Servicios médicos; asesoramiento sobre la salud; tratamientos fisioterapéuticos; atención y asistencia médicas y terapéuticas.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Werner Schmiedecke",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Hofstetter, Schurack & Partner Patent- und Rechtsanwaltskanzlei mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "DE",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20170303",
+          "basicRegistrationNumber": "30 2016 111 174"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CA",
+      "CH",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lerchenweg 11 84048 Mainburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Werner Schmiedecke"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "DE",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20170303",
+            "basicRegistrationNumber": "30 2016 111 174"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CA",
+      "CH",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Coaching; demonstration instruction of practical exercises; education and teaching; gymnastics classes; publication of texts, other than promotional texts; arranging and conducting of cultural and/or sporting events; physical education classes; arranging and conducting of seminars; arranging and conducting of workshops [training]."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical services; health advice; physiotherapeutic treatments; therapeutic and medical care and support."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits d'imprimerie."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Accompagnement personnalisé (coaching); instruction par démonstration d'exercices pratiques; éducation et enseignement; cours de gymnastique; publication de textes, autres que textes promotionnels; mise en place et animation de manifestations sportives et/ou culturelles; cours d'éducation physique; services de mise en place et d'animation de séminaires; organisation et animation d'ateliers de formation."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services médicaux; prestation de conseils en matière de santé; services de traitement physiothérapeutique; assistance et soins médicaux et thérapeutiques."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Productos de imprenta."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Formación personalizada; instrucción de demostración de ejercicios prácticos; educación y enseñanza; clases de gimnasia; publicación de textos que no sean publicitarios; organización y realización de actividades culturales o deportivas; clases de educación física; organización y realización de seminarios; organización y realización de talleres de formación."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios médicos; asesoramiento sobre la salud; tratamientos fisioterapéuticos; atención y asistencia médicas y terapéuticas."
+        }
+      ]
+    },
+    "id": "10b25a7e-caec-4454-922d-8d8f4d240f10",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "28"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Balanstraße 57 81541 München",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Hofstetter, Schurack & Partner Patent- und Rechtsanwaltskanzlei mbB"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320527",
+      "lastPublicationDate": "20220728",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220527",
+        "registrationNumber": "1674418"
+      }
+    },
+    "version": "20250620195152",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Wirbel- und Bandscheibenkorrektur nach Schmiedecke"
+    }
+  },
+  "_uri": "/mark/wo/10b25a7e-caec-4454-922d-8d8f4d240f10",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.070Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/kr/e3d190c8-96dc-4ebe-a1db-00cbbeea01d6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e3d190c8-96dc-4ebe-a1db-00cbbeea01d6",
+  "applicationNumber": "40-1979-0006682",
+  "registrationNumber": "4000740560000",
+  "applicationDate": "1979-07-05",
+  "registrationDate": "1981-01-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "LOLLI 로리",
+  "markTransliteration": "LOLLI LORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    10,
+    14,
+    16,
+    17,
+    21,
+    24,
+    25,
+    26,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        10,
+        14,
+        16,
+        17,
+        21,
+        24,
+        25,
+        26,
+        31
+      ],
+      "language": "ko",
+      "description": "귀이게,새창으로 열림,콤팩트,퍼프,화장용솔,화장품상자",
+      "translation_language": "en",
+      "translation": "Ear Ear, Opens in New Window, Compact, Puff, Cosmetic Brush, Cosmetic Box"
+    }
+  ],
+  "owner": "MOON, Sung Chae",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "이인주 (LEE, In Joo)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "부산진구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "MOON, Sung Chae",
+        "applicantNativeName": "문성채"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Ear Ear, Opens in New Window, Compact, Puff, Cosmetic Brush, Cosmetic Box",
+          "intClassNumber": "06,09,10,14,16,17,21,24,25,26,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "귀이게,새창으로 열림,콤팩트,퍼프,화장용솔,화장품상자"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "045"
+        }
+      ]
+    },
+    "id": "e3d190c8-96dc-4ebe-a1db-00cbbeea01d6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "-, Pujon-dong, Pusanjin-gu, Pusan Republic of KOREA",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이인주 (LEE, In Joo)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19790705",
+        "applicationNumber": "40-1979-0006682"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19810115",
+        "registrationNumber": "4000740560000"
+      }
+    },
+    "version": "20250625202545",
+    "wordMarkSpecification": {
+      "markTransliteration": "LOLLI LORI",
+      "markVerbalElementText": "LOLLI 로리"
+    }
+  },
+  "_uri": "/mark/kr/e3d190c8-96dc-4ebe-a1db-00cbbeea01d6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

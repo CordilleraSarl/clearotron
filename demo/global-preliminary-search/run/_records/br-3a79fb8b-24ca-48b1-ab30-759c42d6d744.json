@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/br/3a79fb8b-24ca-48b1-ab30-759c42d6d744",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "3a79fb8b-24ca-48b1-ab30-759c42d6d744",
+  "applicationNumber": "910402116",
+  "registrationNumber": null,
+  "applicationDate": "2015-12-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "T & L TOK & LOVE NO RITMO DO SEU CORAÇÃO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Banda de música [serviços de entretenimento].",
+      "translation_language": "en",
+      "translation": "Music band [entertainment services]."
+    }
+  ],
+  "owner": "uilson pereira",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "MÍRIAN BARRETO LELIS STRAUCH BATISTA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "uilson pereira"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Music band [entertainment services].",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Banda de música [serviços de entretenimento]."
+        }
+      ]
+    },
+    "id": "3a79fb8b-24ca-48b1-ab30-759c42d6d744",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260721",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MÍRIAN BARRETO LELIS STRAUCH BATISTA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20151211",
+        "applicationNumber": "910402116"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260721020052",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "T & L TOK & LOVE NO RITMO DO SEU CORAÇÃO"
+    }
+  },
+  "_uri": "/mark/br/3a79fb8b-24ca-48b1-ab30-759c42d6d744",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

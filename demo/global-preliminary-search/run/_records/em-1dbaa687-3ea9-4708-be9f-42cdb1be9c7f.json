@@ -1,0 +1,745 @@
+{
+  "uri": "/mark/em/1dbaa687-3ea9-4708-be9f-42cdb1be9c7f",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "1dbaa687-3ea9-4708-be9f-42cdb1be9c7f",
+  "applicationNumber": "19361588",
+  "registrationNumber": "19361588",
+  "applicationDate": "2026-05-09",
+  "registrationDate": "2026-08-20",
+  "expiryDate": "2036-05-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Aplikace ke stazení pro pouzití s mobilními zarízeními; Aplikacní software pro mobilní telefony.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "cs",
+      "description": "Astrologické sluzby; Poskytování informací o horoskopech prostrednictvím pocítacových sítí; Astrologické poradenství.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Applikationer, der kan downloades, til anvendelse med mobile apparater; Applikationssoftware til mobiltelefoner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "da",
+      "description": "Astrologiske tjenesteydelser; Tilvejebringelse af horoskopoplysninger via computernetværk; Astrologisk rådgivning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Downloadbare applicaties voor gebruik met mobiele apparaten; Applicatiesoftware voor mobiele telefoons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "nl",
+      "description": "Astrologische diensten; Verstrekking van horoscoopinformatie via computernetwerken; Advisering op het gebied van astrologie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable mobile applications; Mobile application software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Astrological services; Providing horoscope information via computer networks; Astrology consultancy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Allalaaditavad mobiilseadmerakendused; Mobiiltelefonide rakendustarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "et",
+      "description": "Astroloogiateenused; Horoskoobiteabe pakkumine arvutivõrkude kaudu; Astroloogiline nõustamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ladattavat sovellukset käytettäväksi kannettavissa laitteissa; Ohjelmistosovellukset matkapuhelimiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fi",
+      "description": "Astrologiset palvelut; Horoskooppitietojen tarjoaminen tietokoneverkkojen välityksellä; Eläinrataan liittyvä konsultointi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Applications téléchargeables pour dispositifs mobiles; Logiciels applicatifs pour téléphones mobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": "Services d'astrologie; Fourniture d'informations astrologiques via des réseaux informatiques; Conseils en astrologie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Herunterladbare Softwareapplikationen zur Verwendung mit mobilen Geräten; Anwendungssoftware für Mobiltelefone.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "de",
+      "description": "Astrologische Dienstleistungen; Auskünfte zu Horoskopen über Computernetze; Astrologische Beratung.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Aplikacije koje se mogu preuzeti za upotrebu s mobilnim uredajima; Aplikacijski softver za mobilne telefone.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hr",
+      "description": "Astroloske usluge; Pruzanje informacija o horoskopu putem racunalnih mreza; Horoskopske konzultacije.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Letöltheto alkalmazások mobil eszközökkel történo használatra; Mobiltelefonos szoftveralkalmazások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hu",
+      "description": "Asztrológiai szolgáltatások; Horoszkópinformációk szolgáltatása számítógépes hálózatokon keresztül; Horoszkópos tanácsadás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Applicazioni scaricabili per uso su dispositivi cellulari; Software applicativi per telefoni cellulari.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "it",
+      "description": "Servizi astrologici; Informazioni in materia d'oroscopo disponibili tramite reti informatiche; Consulenza astrologica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Parsisiunciamosios mobiliuju prietaisu taikomosios programos; Mobiliuju telefonu taikomoji programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lt",
+      "description": "Astrologijos paslaugos; Horoskopu informacijos teikimas kompiuteriu tinklais; Astrologines konsultacijos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Lejupieladejamas lietotnes mobilajam iekartam; Mobilo talrunu lietojumprogrammatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lv",
+      "description": "Astrologiskie pakalpojumi; Horoskopa informacijas nodrosinasana, izmantojot datortiklus; Konsultaciju sniegsana astrologija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Applikazzjonijiet li jistghu jitnizzlu ghall-uzu ma' taghmir mobbli; Sotwer tal-applikazzjonijiet ghal telefowns cellular.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "mt",
+      "description": "Servizzi astrologici; Provvista ta' informazzjoni dwar l-oroskopju permezz ta' netwerks tal-kompjuter; Konsultazzjoni dwar iz-zodjaku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Aplikacje do pobrania do uzytku z telefonami komórkowymi; Oprogramowanie uzytkowe do telefonów komórkowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pl",
+      "description": "Uslugi astrologiczne; Udostepnianie informacji w zakresie horoskopów za posrednictwem sieci komputerowych; Konsultacje w zakresie znaków zodiaku.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aplicações descarregáveis destinadas a dispositivos móveis; Software aplicativo para telemóveis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pt",
+      "description": "Serviços de astrologia; Prestação de informações sobre horóscopos através de redes informáticas; Consultoria astrológica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aplicatii descarcabile destinate utilizarii cu dispozitive mobile; Aplicatii software pentru telefoane mobile.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ro",
+      "description": "Servicii astrologice; Furnizare de informatii referitoare la horoscop prin intermediul retelelor informatice; Consultarea zodiacului.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Aplikácie s moznostou prevzatia pre mobilné zariadenia; Aplikacný softvér pre mobilné telefóny.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sk",
+      "description": "Astrologické sluzby; Poskytovanie horoskopov cez pocítacové siete; Astrologické poradenstvo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Prenosljive aplikacije za uporabo z mobilnimi napravami; Namenska programska oprema za mobilne telefone.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sl",
+      "description": "Astroloske storitve; Nudenje informacij o horoskopu prek racunalniskih omrezij; Svetovanje v zvezi s horoskopom.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aplicaciones descargables para su uso con dispositivos móviles; Aplicaciones de software para teléfonos móviles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "es",
+      "description": "Servicios astrológicos; Suministro de información sobre horóscopos a través de redes informáticas; Consultoría astrológica.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Nerladdningsbara applikationer för användning med mobila anordningar; Mjukvaror i form av appar för mobiltelefoner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sw",
+      "description": "Astrologiska tjänster; Tillhandahållande av horoskopinformation via datornät; Astrologiska konsultationer.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Eleventh Industries",
+  "ownerNative": null,
+  "ownerCountry": "BG",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ulitsa \"Marmarliyska\" 37,Veliko Tarnovo, 5000",
+        "applicantAddressCountryCode": "BG",
+        "applicantAddressCountryName": "Bulgaria",
+        "applicantName": "Eleventh Industries"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Aplikace ke stazení pro pouzití s mobilními zarízeními; Aplikacní software pro mobilní telefony."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Astrologické sluzby; Poskytování informací o horoskopech prostrednictvím pocítacových sítí; Astrologické poradenství."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Applikationer, der kan downloades, til anvendelse med mobile apparater; Applikationssoftware til mobiltelefoner."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Astrologiske tjenesteydelser; Tilvejebringelse af horoskopoplysninger via computernetværk; Astrologisk rådgivning."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Downloadbare applicaties voor gebruik met mobiele apparaten; Applicatiesoftware voor mobiele telefoons."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Astrologische diensten; Verstrekking van horoscoopinformatie via computernetwerken; Advisering op het gebied van astrologie."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable mobile applications; Mobile application software."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Astrological services; Providing horoscope information via computer networks; Astrology consultancy."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Allalaaditavad mobiilseadmerakendused; Mobiiltelefonide rakendustarkvara."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Astroloogiateenused; Horoskoobiteabe pakkumine arvutivõrkude kaudu; Astroloogiline nõustamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ladattavat sovellukset käytettäväksi kannettavissa laitteissa; Ohjelmistosovellukset matkapuhelimiin."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Astrologiset palvelut; Horoskooppitietojen tarjoaminen tietokoneverkkojen välityksellä; Eläinrataan liittyvä konsultointi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Applications téléchargeables pour dispositifs mobiles; Logiciels applicatifs pour téléphones mobiles."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'astrologie; Fourniture d'informations astrologiques via des réseaux informatiques; Conseils en astrologie."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Herunterladbare Softwareapplikationen zur Verwendung mit mobilen Geräten; Anwendungssoftware für Mobiltelefone."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Astrologische Dienstleistungen; Auskünfte zu Horoskopen über Computernetze; Astrologische Beratung."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Aplikacije koje se mogu preuzeti za upotrebu s mobilnim uredajima; Aplikacijski softver za mobilne telefone."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Astroloske usluge; Pruzanje informacija o horoskopu putem racunalnih mreza; Horoskopske konzultacije."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Letöltheto alkalmazások mobil eszközökkel történo használatra; Mobiltelefonos szoftveralkalmazások."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Asztrológiai szolgáltatások; Horoszkópinformációk szolgáltatása számítógépes hálózatokon keresztül; Horoszkópos tanácsadás."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Applicazioni scaricabili per uso su dispositivi cellulari; Software applicativi per telefoni cellulari."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi astrologici; Informazioni in materia d'oroscopo disponibili tramite reti informatiche; Consulenza astrologica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Parsisiunciamosios mobiliuju prietaisu taikomosios programos; Mobiliuju telefonu taikomoji programine iranga."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Astrologijos paslaugos; Horoskopu informacijos teikimas kompiuteriu tinklais; Astrologines konsultacijos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lejupieladejamas lietotnes mobilajam iekartam; Mobilo talrunu lietojumprogrammatura."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Astrologiskie pakalpojumi; Horoskopa informacijas nodrosinasana, izmantojot datortiklus; Konsultaciju sniegsana astrologija."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Applikazzjonijiet li jistghu jitnizzlu ghall-uzu ma' taghmir mobbli; Sotwer tal-applikazzjonijiet ghal telefowns cellular."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi astrologici; Provvista ta' informazzjoni dwar l-oroskopju permezz ta' netwerks tal-kompjuter; Konsultazzjoni dwar iz-zodjaku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Aplikacje do pobrania do uzytku z telefonami komórkowymi; Oprogramowanie uzytkowe do telefonów komórkowych."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi astrologiczne; Udostepnianie informacji w zakresie horoskopów za posrednictwem sieci komputerowych; Konsultacje w zakresie znaków zodiaku."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aplicações descarregáveis destinadas a dispositivos móveis; Software aplicativo para telemóveis."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de astrologia; Prestação de informações sobre horóscopos através de redes informáticas; Consultoria astrológica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aplicatii descarcabile destinate utilizarii cu dispozitive mobile; Aplicatii software pentru telefoane mobile."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii astrologice; Furnizare de informatii referitoare la horoscop prin intermediul retelelor informatice; Consultarea zodiacului."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Aplikácie s moznostou prevzatia pre mobilné zariadenia; Aplikacný softvér pre mobilné telefóny."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Astrologické sluzby; Poskytovanie horoskopov cez pocítacové siete; Astrologické poradenstvo."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Prenosljive aplikacije za uporabo z mobilnimi napravami; Namenska programska oprema za mobilne telefone."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Astroloske storitve; Nudenje informacij o horoskopu prek racunalniskih omrezij; Svetovanje v zvezi s horoskopom."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aplicaciones descargables para su uso con dispositivos móviles; Aplicaciones de software para teléfonos móviles."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios astrológicos; Suministro de información sobre horóscopos a través de redes informáticas; Consultoría astrológica."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Nerladdningsbara applikationer för användning med mobila anordningar; Mjukvaror i form av appar för mobiltelefoner."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Astrologiska tjänster; Tillhandahållande av horoskopinformation via datornät; Astrologiska konsultationer."
+        }
+      ]
+    },
+    "id": "1dbaa687-3ea9-4708-be9f-42cdb1be9c7f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "87"
+      }
+    ],
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "secondLanguageCode": "de",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260509",
+        "applicationNumber": "19361588"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360509",
+      "lastPublicationDate": "20260512",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260820",
+        "registrationNumber": "19361588"
+      }
+    },
+    "version": "20260901020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORA"
+    }
+  },
+  "_uri": "/mark/em/1dbaa687-3ea9-4708-be9f-42cdb1be9c7f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.822Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

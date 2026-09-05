@@ -1,0 +1,301 @@
+{
+  "uri": "/mark/us/590890b1-8515-4914-8233-bc826eab97cc",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "590890b1-8515-4914-8233-bc826eab97cc",
+  "applicationNumber": "87645949",
+  "registrationNumber": "5469498",
+  "applicationDate": "2017-10-15",
+  "registrationDate": "2018-05-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2018-02-27"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 [ Bar code readers; Battery cases; Cases for mobile phones; Dog whistles; Earphones and headphones; Electrical plugs and sockets; Hourglasses; Loudspeakers; Luminous or mechanical road signs; Monopods used to take photographs by positioning a smartphone or camera beyond the normal range of the arm; Neon signs; Panel meters, namely, an electronic instrument that displays an input signal in either a digital or analog form; Pedometers; Scales; ] Smart watches [ ; Telemeters; Weighing machines; Carbon dioxide detectors; Computer chips; Electronic chips for the manufacture of integrated circuits; Gas detectors for detecting the presence of gas; Infrared detectors; Magnetic object detectors; Metal detectors; Semiconductor chips; Smoke detectors; Tape measures ]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Lu Guangda",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "JOSEPH MILITELLO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20240507",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "1 Lane Number 35 Xixi Road Hushan Street, Wuyi County, Zhejiang, 321200, CHIN",
+        "applicantAddressCity": "Wuyi County, Zhejiang",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "321200",
+        "applicantAddressStreet": "1 Lane Number 35 Xixi Road Hushan Street",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Lu Guangda"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 [ Bar code readers; Battery cases; Cases for mobile phones; Dog whistles; Earphones and headphones; Electrical plugs and sockets; Hourglasses; Loudspeakers; Luminous or mechanical road signs; Monopods used to take photographs by positioning a smartphone or camera beyond the normal range of the arm; Neon signs; Panel meters, namely, an electronic instrument that displays an input signal in either a digital or analog form; Pedometers; Scales; ] Smart watches [ ; Telemeters; Weighing machines; Carbon dioxide detectors; Computer chips; Electronic chips for the manufacture of integrated circuits; Gas detectors for detecting the presence of gas; Infrared detectors; Magnetic object detectors; Metal detectors; Semiconductor chips; Smoke detectors; Tape measures ]"
+        }
+      ]
+    },
+    "id": "590890b1-8515-4914-8233-bc826eab97cc",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240507",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20240507",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20240506",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20240118",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20230515",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20230228",
+        "descriptionText": "AMENDMENT CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20220908",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20220908",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20220908",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20220908",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20220908",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20190911",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20190911",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20180515",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20180227",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20180227",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20180207",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20180124",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20180124",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20171024",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20171018",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1 Lane Number 35 Xixi Road Hushan Street, Wuyi County, Zhejiang, 321200, CHIN",
+        "city": "Wuyi County, Zhejiang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Lu Guangda",
+        "postalCode": "321200",
+        "street": "1 Lane Number 35 Xixi Road Hushan Street"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1 Lane Number 35 Xixi Road Hushan Street, Wuyi County, Zhejiang, 321200, CHIN",
+        "city": "Wuyi County, Zhejiang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Lu Guangda",
+        "postalCode": "321200",
+        "street": "1 Lane Number 35 Xixi Road Hushan Street"
+      },
+      {
+        "address": "1 Lane Number 35 Xixi Road Hushan Street, Wuyi County, Zhejiang, 321200, CHIN",
+        "city": "Wuyi County, Zhejiang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Lu Guangda",
+        "postalCode": "321200",
+        "street": "1 Lane Number 35 Xixi Road Hushan Street"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1 Lane Number 35 Xixi Road Hushan Street, Wuyi County, Zhejiang, 321200, CHIN",
+        "city": "Wuyi County, Zhejiang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Lu Guangda",
+        "postalCode": "321200",
+        "street": "1 Lane Number 35 Xixi Road Hushan Street"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Seattle, WA 98105, United States",
+        "representativeCorrespondentAddressLines": [
+          "Seattle, WA 98105",
+          "United States"
+        ],
+        "representativeCorrespondentName": "JOSEPH MILITELLO MarkingPost IP Law, PLLC, 1600 NE 47th Street, # 17"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Seattle, WA 98105, United States",
+        "representativeAddressLines": [
+          "Seattle, WA 98105",
+          "United States"
+        ],
+        "representativeName": "JOSEPH MILITELLO"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171015",
+        "applicationNumber": "87645949"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20171010"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20171010"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 8 - ACCEPTED",
+        "markOfficialStatusCode": "701",
+        "markOfficialStatusDate": "20240507",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20180227"
+      ],
+      "registration": {
+        "registrationDate": "20180515",
+        "registrationNumber": "5469498"
+      }
+    },
+    "version": "20260113070201",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"GORI\" has no meaning in a foreign language.",
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/us/590890b1-8515-4914-8233-bc826eab97cc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.047Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

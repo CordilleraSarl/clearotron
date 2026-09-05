@@ -1,0 +1,726 @@
+{
+  "uri": "/mark/em/be328591-bdaa-45f3-a74a-95a7479f3d79",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "be328591-bdaa-45f3-a74a-95a7479f3d79",
+  "applicationNumber": "10819589",
+  "registrationNumber": "10819589",
+  "applicationDate": "2012-04-19",
+  "registrationDate": "2012-09-18",
+  "expiryDate": "2032-04-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-06-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Ochranné odevy k prevenci pred úrazy, zárením, bezpecnostní obuv, ochranná obuv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Velkoobchodní a maloobchodní sluzby v oboru ochranné odevy k prevenci pred úrazy, zárením, bezpecnostní obuv, ochranná obuv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Beklædningsgenstande til beskyttelse mod ulykker, stråling, brandbeskyttelse, sikkerhedssko.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Engros- og detailhandel inden for beklædningsgenstande til beskyttelse mod ulykker, stråling, brandbeskyttelse, sikkerhedssko.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Schoeisel ter bescherming tegen ongevallen, straling en vuur, veiligheidsschoeisel, beschermend schoeisel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Groot- en detailhandelsdiensten op het gebied van schoeisel ter bescherming tegen ongevallen, straling en vuur, veiligheidsschoeisel, beschermend schoeisel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Kaitse-, kiirgus-, tulekaitsejalatsid, turvajalatsid, kaitsejalatsid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Hulgi- ja jaekaubandusteenused kaitse-, kiirgus-, tulekaitsejalatsite, turvajalatsite, kaitsejalatsite valdkonnas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Onnettomuuksilta, säteilyltä, tulelta suojaavat jalkineet, turvajalkineet, suojajalkineet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Tukku- ja vähittäiskauppapalvelut onnettomuuksilta, säteilyltä, tulelta suojaavien jalkineiden, turvajalkineiden, suojajalkineiden alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Vêtements de protection contre les accidents, chaussures de protection contre les irradiations, chaussures de protection contre le feu, chaussures de sécurité, chaussures de protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de commerce de détail et de gros dans le domaine des chaussures de protection contre les accidents, chaussures de protection contre les irradiations, chaussures de protection contre le feu, chaussures de sécurité, chaussures de protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Unfall-, Strahlen-, Feuerschutzschuhe, Sicherheitschuhe, Schutzschuhe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Groß- und Einzelhandelsdienstleistungen im Bereich Unfall-, Strahlen-, Feuerschutzschuhe, Sicherheitschuhe, Schutzschuhe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Baleset-, sugárzás-, tuzvédelmi kesztyuk, munkavédelmi lábbelik, védocipok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Nagy- és kiskereskedelmi szolgáltatások a baleset-, sugárzás-, tuzvédelmi kesztyuk, munkavédelmi lábbelik, védocipok területén.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Capi d'abbigliamento protettivi contro gli infortuni, le radiazioni, scarpe protettive contro il fuoco, scarpe di sicurezza, calzature protettive.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi di vendita all'ingrosso e al dettaglio nell'ambito di capi d'abbigliamento protettivi contro gli infortuni, le radiazioni, scarpe protettive contro il fuoco, scarpe di sicurezza, calzature protettive.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Apsauginiai batai nuo nelaimingu atsitikimu, spinduliu, ugnies, apsaugines pirstines, apsauginiai batai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Didmenines ir mazmenines prekybos paslaugos, susijusios su apsauginiais batais nuo nelaimingu atsitikimu, spinduliu, ugnies, apsauginemis pirstinemis, apsauginiais batais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Negadijumu, starojuma, ugunsaizsardzibas apavi, drosibas apavi, aizsargapavi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Vairumtirdzniecibas un mazumtirdzniecibas pakalpojumi negadijumu, starojuma, ugunsaizsardzibas apavu, drosibas apavu, aizsargapavu joma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Zraben protettivi kontra l-accidenti, raggi u nar, zraben ta' sigurezza, zraben protettivi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' negozju bl-ingrossa u bl-imnut fil-qasam ta' zraben protettivi kontra l-accidenti, raggi u nar, zraben tas-sigurtà, zraben protettivi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Obuwie chroniace przed wypadkami, promieniowaniem, ogniem, obuwie zabezpieczajace, obuwie ochronne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Uslugi handlu hurtowego i detalicznego z zakresu obuwia chroniacego przed wypadkami, promieniowaniem, ogniem, obuwia zabezpieczajacego, obuwia ochronnego.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Calçado de proteção contra acidentes, radiações e fogo, calçado de segurança, calçado de proteção.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de comércio grossista e retalhista de calçado de proteção contra acidentes, radiações e fogo, calçado de segurança, calçado de proteção.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Încaltaminte de protectie în caz de accident, radiatii, încaltaminte de protectie împotriva focului, încaltaminte de siguranta, încaltaminte de protectie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de comert cu ridicata si cu amanuntul în materie de încaltaminte de protectie împotriva accidentelor, radiatiilor, încaltaminte de protectie împotriva incendiilor, încaltaminte de siguranta, încaltaminte de protectie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Obuv na ochranu pred úrazmi, ziarením, protipoziarna obuv, bezpecnostná obuv, ochranná obuv.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Velkoobchodné a maloobchodné sluzby v oblastiach ochrany pred úrazmi, protipoziarnej obuvi, bezpecnostnej obuvi, ochrannej obuvi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Cevlji za zascito pred nesrecami, sevanjem, ognjem, varnostni cevlji, zascitni cevlji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Maloprodajne in veleprodajne storitve na podrocju cevljev za zascito pred nesrecami, sevanjem, ognjem, varnostnih cevljev, zascitnih cevljev.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Accidentes, radiación, calzado de protección contra incendios, calzado protector, calzado de seguridad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de comercio mayorista y minorista en el ámbito del calzado contra accidentes, contra radiaciones, contra incendios, calzado de seguridad, calzado protector.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Olycksfallsskor, strålningsskyddsskor, brandskyddsskor, säkerhetsskor, skyddsskor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Parti- och detaljhandel inom området olycksfalls-, strålningsskyddsskor, brandskyddsskor, säkerhetsskor, skyddsskor.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Elten GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "RÖSLER · RASCH · VAN DER HEIDE & PARTNER PATENT- UND RECHTSANWÄLTE PARTNERSCHAFTSGESELLSCHAFT MBB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ostwall 7-9,Uedem, 47589",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Elten GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Ochranné odevy k prevenci pred úrazy, zárením, bezpecnostní obuv, ochranná obuv."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Velkoobchodní a maloobchodní sluzby v oboru ochranné odevy k prevenci pred úrazy, zárením, bezpecnostní obuv, ochranná obuv."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Beklædningsgenstande til beskyttelse mod ulykker, stråling, brandbeskyttelse, sikkerhedssko."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Engros- og detailhandel inden for beklædningsgenstande til beskyttelse mod ulykker, stråling, brandbeskyttelse, sikkerhedssko."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Schoeisel ter bescherming tegen ongevallen, straling en vuur, veiligheidsschoeisel, beschermend schoeisel."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Groot- en detailhandelsdiensten op het gebied van schoeisel ter bescherming tegen ongevallen, straling en vuur, veiligheidsschoeisel, beschermend schoeisel."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wholesaling and retailing in the field of shoes for protection against accidents, irradiation and fire, safety shoes, protective shoes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kaitse-, kiirgus-, tulekaitsejalatsid, turvajalatsid, kaitsejalatsid."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Hulgi- ja jaekaubandusteenused kaitse-, kiirgus-, tulekaitsejalatsite, turvajalatsite, kaitsejalatsite valdkonnas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Onnettomuuksilta, säteilyltä, tulelta suojaavat jalkineet, turvajalkineet, suojajalkineet."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tukku- ja vähittäiskauppapalvelut onnettomuuksilta, säteilyltä, tulelta suojaavien jalkineiden, turvajalkineiden, suojajalkineiden alalla."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Vêtements de protection contre les accidents, chaussures de protection contre les irradiations, chaussures de protection contre le feu, chaussures de sécurité, chaussures de protection."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de commerce de détail et de gros dans le domaine des chaussures de protection contre les accidents, chaussures de protection contre les irradiations, chaussures de protection contre le feu, chaussures de sécurité, chaussures de protection."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Unfall-, Strahlen-, Feuerschutzschuhe, Sicherheitschuhe, Schutzschuhe."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Groß- und Einzelhandelsdienstleistungen im Bereich Unfall-, Strahlen-, Feuerschutzschuhe, Sicherheitschuhe, Schutzschuhe."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Baleset-, sugárzás-, tuzvédelmi kesztyuk, munkavédelmi lábbelik, védocipok."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Nagy- és kiskereskedelmi szolgáltatások a baleset-, sugárzás-, tuzvédelmi kesztyuk, munkavédelmi lábbelik, védocipok területén."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Capi d'abbigliamento protettivi contro gli infortuni, le radiazioni, scarpe protettive contro il fuoco, scarpe di sicurezza, calzature protettive."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di vendita all'ingrosso e al dettaglio nell'ambito di capi d'abbigliamento protettivi contro gli infortuni, le radiazioni, scarpe protettive contro il fuoco, scarpe di sicurezza, calzature protettive."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Apsauginiai batai nuo nelaimingu atsitikimu, spinduliu, ugnies, apsaugines pirstines, apsauginiai batai."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Didmenines ir mazmenines prekybos paslaugos, susijusios su apsauginiais batais nuo nelaimingu atsitikimu, spinduliu, ugnies, apsauginemis pirstinemis, apsauginiais batais."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Negadijumu, starojuma, ugunsaizsardzibas apavi, drosibas apavi, aizsargapavi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Vairumtirdzniecibas un mazumtirdzniecibas pakalpojumi negadijumu, starojuma, ugunsaizsardzibas apavu, drosibas apavu, aizsargapavu joma."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Zraben protettivi kontra l-accidenti, raggi u nar, zraben ta' sigurezza, zraben protettivi."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' negozju bl-ingrossa u bl-imnut fil-qasam ta' zraben protettivi kontra l-accidenti, raggi u nar, zraben tas-sigurtà, zraben protettivi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Obuwie chroniace przed wypadkami, promieniowaniem, ogniem, obuwie zabezpieczajace, obuwie ochronne."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi handlu hurtowego i detalicznego z zakresu obuwia chroniacego przed wypadkami, promieniowaniem, ogniem, obuwia zabezpieczajacego, obuwia ochronnego."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Calçado de proteção contra acidentes, radiações e fogo, calçado de segurança, calçado de proteção."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de comércio grossista e retalhista de calçado de proteção contra acidentes, radiações e fogo, calçado de segurança, calçado de proteção."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Încaltaminte de protectie în caz de accident, radiatii, încaltaminte de protectie împotriva focului, încaltaminte de siguranta, încaltaminte de protectie."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de comert cu ridicata si cu amanuntul în materie de încaltaminte de protectie împotriva accidentelor, radiatiilor, încaltaminte de protectie împotriva incendiilor, încaltaminte de siguranta, încaltaminte de protectie."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Obuv na ochranu pred úrazmi, ziarením, protipoziarna obuv, bezpecnostná obuv, ochranná obuv."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Velkoobchodné a maloobchodné sluzby v oblastiach ochrany pred úrazmi, protipoziarnej obuvi, bezpecnostnej obuvi, ochrannej obuvi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Cevlji za zascito pred nesrecami, sevanjem, ognjem, varnostni cevlji, zascitni cevlji."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Maloprodajne in veleprodajne storitve na podrocju cevljev za zascito pred nesrecami, sevanjem, ognjem, varnostnih cevljev, zascitnih cevljev."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Accidentes, radiación, calzado de protección contra incendios, calzado protector, calzado de seguridad."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de comercio mayorista y minorista en el ámbito del calzado contra accidentes, contra radiaciones, contra incendios, calzado de seguridad, calzado protector."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Olycksfallsskor, strålningsskyddsskor, brandskyddsskor, säkerhetsskor, skyddsskor."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Parti- och detaljhandel inom området olycksfalls-, strålningsskyddsskor, brandskyddsskor, säkerhetsskor, skyddsskor."
+        }
+      ]
+    },
+    "id": "be328591-bdaa-45f3-a74a-95a7479f3d79",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00411",
+        "publicationVolume": "108"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Bodenseestr. 18,München, 81241",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "RÖSLER · RASCH · VAN DER HEIDE & PARTNER PATENT- UND RECHTSANWÄLTE PARTNERSCHAFTSGESELLSCHAFT MBB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120419",
+        "applicationNumber": "10819589"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320419",
+      "lastPublicationDate": "20120611",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120918",
+        "registrationNumber": "10819589"
+      }
+    },
+    "version": "20260511155446",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JORI"
+    }
+  },
+  "_uri": "/mark/em/be328591-bdaa-45f3-a74a-95a7479f3d79",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:22.073Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

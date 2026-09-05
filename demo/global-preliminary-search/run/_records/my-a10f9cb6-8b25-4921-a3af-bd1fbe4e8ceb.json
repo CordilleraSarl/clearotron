@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/my/a10f9cb6-8b25-4921-a3af-bd1fbe4e8ceb",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "a10f9cb6-8b25-4921-a3af-bd1fbe4e8ceb",
+  "applicationNumber": "2010014536",
+  "registrationNumber": null,
+  "applicationDate": "2010-08-06",
+  "registrationDate": "2010-08-06",
+  "expiryDate": "2030-08-06",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Disney English",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Production, presentation, distribution, and rental of motion picture films; production, presentation, distribution, and rental of television and radio programs; production, presentation, distribution, and rental of sound and video recordings; entertainment information; on-line services; production of entertainment shows and interactive programs for distribution via television, cable, satellite, audio and video media, cartridges, laser discs, computer discs and electronic means; production and provision of entertainment, news, and information via communication and computer networks; amusement park and theme park services; educational and entertainment services rendered in or relating to theme parks; live stage shows; presentation of live performances; theater productions; entertainer services; all included in class 41.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Disney Enterprises, Inc (A Delaware Corporation)",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Pauline Khor Hong Ping",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "500 South Buena Vista Street Burbank, California 91521 SOUTH BUENA VISTA STREET, BURBANK, CALIFORNIA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Disney Enterprises, Inc (A Delaware Corporation)"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Production, presentation, distribution, and rental of motion picture films; production, presentation, distribution, and rental of television and radio programs; production, presentation, distribution, and rental of sound and video recordings; entertainment information; on-line services; production of entertainment shows and interactive programs for distribution via television, cable, satellite, audio and video media, cartridges, laser discs, computer discs and electronic means; production and provision of entertainment, news, and information via communication and computer networks; amusement park and theme park services; educational and entertainment services rendered in or relating to theme parks; live stage shows; presentation of live performances; theater productions; entertainer services; all included in class 41."
+        }
+      ]
+    },
+    "id": "a10f9cb6-8b25-4921-a3af-bd1fbe4e8ceb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.30"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260901",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Rahmat Lim & Partners Suite 33.01, Level 33, The Gardens North Tower Mid Valley City, Lingkaran Syed Putra Wilayah Persekutuan 59200 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Pauline Khor Hong Ping"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100806",
+        "applicationNumber": "2010014536"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300806",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20100806"
+      }
+    },
+    "version": "20260901050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Disney English"
+    }
+  },
+  "_uri": "/mark/my/a10f9cb6-8b25-4921-a3af-bd1fbe4e8ceb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

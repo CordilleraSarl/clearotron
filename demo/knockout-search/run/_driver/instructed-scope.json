@@ -1,0 +1,24 @@
+{
+  "marks": [
+    "VENQORI"
+  ],
+  "classes": [
+    9,
+    42,
+    41
+  ],
+  "jurisdictions": null,
+  "goods": "Downloadable software for water-quality monitoring with online training services attached",
+  "customer": null,
+  "marksDetailed": [
+    {
+      "name": "VENQORI",
+      "classes": [
+        9,
+        42,
+        41
+      ],
+      "ref": "project-ven-01"
+    }
+  ]
+}

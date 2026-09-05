@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+  "applicationNumber": "85898672",
+  "registrationNumber": null,
+  "applicationDate": "2025-06-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "万葵电气",
+  "markTransliteration": "VANCORE ELECTRICAL WAN KUI DIAN QI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "电路板设计;发电站设计服务;工程设计服务;工业设计;管道设计;集成电路设计;计算机辅助工业设计服务;建筑设计;结构工程设计服务;室内设计",
+      "translation_language": "en",
+      "translation": "Circuit board design; power station design services; engineering design services; industrial design; piping design; integrated circuit design; computer-aided industrial design services; architectural design; structural engineering design services; interior design"
+    }
+  ],
+  "owner": "Shenzhen Cape can Electric Technology Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市光明区公明街道李松蓢社区第二工业区城德轩科技园I栋厂房101",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Cape can Electric Technology Co., Ltd",
+        "applicantNativeName": "深圳市普能电气技术有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Circuit board design; power station design services; engineering design services; industrial design; piping design; integrated circuit design; computer-aided industrial design services; architectural design; structural engineering design services; interior design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电路板设计;发电站设计服务;工程设计服务;工业设计;管道设计;集成电路设计;计算机辅助工业设计服务;建筑设计;结构工程设计服务;室内设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Registered design service",
+        "Design and information service for architecture"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        }
+      ]
+    },
+    "id": "9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "郑州凯派尔知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250613",
+        "applicationNumber": "85898672"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005163551",
+    "wordMarkSpecification": {
+      "markTransliteration": "VANCORE ELECTRICAL WAN KUI DIAN QI",
+      "markVerbalElementText": "万葵电气"
+    }
+  },
+  "_uri": "/mark/cn/9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

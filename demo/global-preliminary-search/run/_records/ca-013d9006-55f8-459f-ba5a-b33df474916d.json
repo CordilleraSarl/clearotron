@@ -1,0 +1,267 @@
+{
+  "uri": "/mark/ca/013d9006-55f8-459f-ba5a-b33df474916d",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "013d9006-55f8-459f-ba5a-b33df474916d",
+  "applicationNumber": "1935397",
+  "registrationNumber": "TMA1158632",
+  "applicationDate": "2018-12-11",
+  "registrationDate": "2023-01-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-08-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Conseils en amélioration de la performance et en optimisation des coûts des entreprises; services de vente au détail en ligne de logiciels téléchargeables; services de vente au détail de logiciels. \n(2) Analyse de systèmes informatiques; conception de systèmes informatiques; recherche et développement de nouveaux produits pour des tiers; consultation en matière d'ordinateurs et de logiciels; location de logiciels informatiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Business performance improvement and cost optimization advice;downloadable software online retail services;software retail services. (2) Analysis of computer systems;computer systems design;research and development of new products for others;computer and software consulting;computer software rental.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AVENCORE, Société par actions simplifiée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "LJT LAWYERS, LLP / LJT AVOCATS, S.E.N.C.R.L.",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "20181205",
+      "priorityNumber": "184505765",
+      "priorityText": "Priority production date: December 05, 2018, country or office: FRANCE, request no. 184505765 in association with on services (1) (2)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "25 RUE JEAN GIRAUDOUX, 75116 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantAddressLines": [
+          "25 RUE JEAN GIRAUDOUX",
+          "75116 PARIS"
+        ],
+        "applicantName": "AVENCORE, Société par actions simplifiée"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as 2016 on services (1)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Priority production date: December 05, 2018, country or office: FRANCE, request no. 184505765 in association with on services (1) (2)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Proposed for use in CANADA on services (2)",
+        "typeDescription": "Proposed Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Conseils en amélioration de la performance et en optimisation des coûts des entreprises; services de vente au détail en ligne de logiciels téléchargeables; services de vente au détail de logiciels. \n(2) Analyse de systèmes informatiques; conception de systèmes informatiques; recherche et développement de nouveaux produits pour des tiers; consultation en matière d'ordinateurs et de logiciels; location de logiciels informatiques."
+        },
+        {
+          "intClassNumber": "35,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Business performance improvement and cost optimization advice;downloadable software online retail services;software retail services. (2) Analysis of computer systems;computer systems design;research and development of new products for others;computer and software consulting;computer software rental."
+        }
+      ]
+    },
+    "id": "013d9006-55f8-459f-ba5a-b33df474916d",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20230103",
+        "descriptionText": "Registered",
+        "responseDate": "20330103"
+      },
+      {
+        "date": "20221116",
+        "descriptionText": "Registration Fee Notice Sent",
+        "responseDate": "20230516"
+      },
+      {
+        "date": "20221116",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20220824",
+        "descriptionText": "Advertised",
+        "information": "Vol.69 Issue 3539"
+      },
+      {
+        "date": "20220721",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20220721",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20220111",
+        "descriptionText": "Agent changed",
+        "information": "From/De: 4779 To/A: 9150"
+      },
+      {
+        "date": "20211019",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20220419"
+      },
+      {
+        "date": "20210817",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20181214",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20181212",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20181211",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "25 RUE JEAN GIRAUDOUX, 75116 PARIS",
+        "addressLines": [
+          "25 RUE JEAN GIRAUDOUX",
+          "75116 PARIS"
+        ],
+        "countryName": "France",
+        "name": "AVENCORE, Société par actions simplifiée"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "20181205",
+        "priorityNumber": "184505765",
+        "priorityText": "Priority production date: December 05, 2018, country or office: FRANCE, request no. 184505765 in association with on services (1) (2)"
+      }
+    ],
+    "priorityDate": "20181205",
+    "publications": [
+      {
+        "publicationIssue": "3539",
+        "publicationVolume": "69"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "LJT LAWYERS, LLP / LJT AVOCATS, S.E.N.C.R.L.",
+          "7100-380 rue Saint-Antoine O",
+          "Montréal",
+          "QUÉBEC H2Y3X7"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "LJT LAWYERS, LLP / LJT AVOCATS, S.E.N.C.R.L."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181211",
+        "applicationNumber": "1935397"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20181205",
+          "firstUsedText": "Used in CANADA since at least as early as 2016 on services (1)"
+        }
+      ],
+      "formalisationDate": "20181214",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20330103",
+      "publicationDate": [
+        "20220824"
+      ],
+      "registration": {
+        "registrationDate": "20230103",
+        "registrationNumber": "TMA1158632"
+      }
+    },
+    "subjectHeadings": [
+      "AVENCORE",
+      "AVEN CORE"
+    ],
+    "version": "20250625110838",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE",
+      "markVerbalElementTextFormal": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/ca/013d9006-55f8-459f-ba5a-b33df474916d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

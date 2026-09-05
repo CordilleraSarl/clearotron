@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+  "applicationNumber": "3717066",
+  "registrationNumber": "3019713",
+  "applicationDate": "2018-06-14",
+  "registrationDate": "2019-09-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2018-09-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VINKARA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Clase 09 : Internacional Toda la clase",
+      "translation_language": "en",
+      "translation": "Class 09: International whole class"
+    }
+  ],
+  "owner": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": "KEARNEY, ROBERTO R.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 09: International whole class",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 09 : Internacional Toda la clase"
+        }
+      ]
+    },
+    "id": "47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250711",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "representatives": [
+      {
+        "representativeName": "KEARNEY, ROBERTO R."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180614",
+        "applicationNumber": "3717066"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "lastPublicationDate": "20180919",
+      "markCurrentStatus": "REGISTERED TRADEMARK",
+      "registration": {
+        "registrationDate": "20190923",
+        "registrationNumber": "3019713"
+      }
+    },
+    "version": "20250711192118",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VINKARA"
+    }
+  },
+  "_uri": "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

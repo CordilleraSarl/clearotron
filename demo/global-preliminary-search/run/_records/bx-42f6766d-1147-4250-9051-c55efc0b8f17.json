@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/bx/42f6766d-1147-4250-9051-c55efc0b8f17",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "42f6766d-1147-4250-9051-c55efc0b8f17",
+  "applicationNumber": "1434232",
+  "registrationNumber": "1434232",
+  "applicationDate": "2021-01-22",
+  "registrationDate": "2021-04-29",
+  "expiryDate": "2031-01-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-04-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "A AVENQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    8,
+    9,
+    28,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        8
+      ],
+      "language": "nl",
+      "description": "Scharen; Tondeuses; Handscharen; Pedicure-instrumenten; Manicure- en pedicure-instrumenten; Handgereedschappen voor gebruik bij schoonheidsverzorging; Tondeuses [handgereedschappen]; Pincetten; Tondeuses voor persoonlijk gebruik [elektrisch aangedreven en niet elektrische]; Pizzascharen; Kaasschaven; Pizzasnijders; Taartsnijders; Elektrische manicuresets; Elektrische manicure-sets; Etuis voor manicures; Etuis voor manicure-instrumenten; Nagelknippers; Nagelknippers, elektrisch of niet-elektrisch; Elektrische nagelvijlen voor dieren; Elektrische nagelvijlen; Nagelvijlen, niet-elektrisch; Tondeuses voor de dierenvacht; Elektrische tondeuses voor het haar; Haarscharen; Kappersscharen; Tondeuses voor de baard; Luchtpompen, handbediend; Handgereedschappen voor het verwijderen van verharde huid; Elektrische haarstijltangen; Niet-elektrische blikopeners; Vorken [bestek]; Groentemessen; Messenslijpinstrumenten; Pizzasnijders, niet-elektrisch; Elektrische strijkijzers; Bestekcassettes; Broodmessen [handgereedschappen]; Eiersnijders; Frietsnijders; Hakmessen; Messenhouders; Epileerapparaten; Epileerapparaten, elektrisch of niet-elektrisch",
+      "translation_language": "en",
+      "translation": "Scissors; clippers; hand scissors; pedicure instruments; manicure and pedicure instruments; hand tools for use in beauty care; hair clippers [hand tools]; tweezers; hair clippers for personal use [electrically powered and non-electric]; pizza scissors; cheese slicers; pizza cutters; cake cutters; electric manicure sets; Electric manicure sets; cases for manicures; cases for manicure instruments; nail clippers; nail clippers, electric or non-electric; electric nail files for animals; electric nail files; nail files, non-electric; animal fur clippers; electric hair clippers; hair scissors; hairdressing scissors; beard clippers; Air pumps, hand-operated; hand tools for removing hardened skin; electric hair straighteners; non-electric can openers; Forks [cutlery]; vegetable knives; knife sharpening instruments; Pizza cutters, non-electric; electric irons; cutlery cassettes; Bread knives [hand tools]; egg slicers; French fries cutters; chopping knives; knife holders; epilators; Epilators, electric or non-electric"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Camera's; Cameratassen; Brillen; Rookdetectors; Rookmelders; Reflecterende artikelen, door personen te dragen, ter voorkoming van ongevallen; Indicatoren [elektriciteit]; Meters (Digitale -); Klokken (tijdregistratieapparaten); Elektronische tijdregistratietoestellen; Weegschalen; E-readers; Filmcamera's; Videocamera's; Videomonitors; Filmopnametoestellen; Elektrische en elektronische videobewakingsinstallaties; Projectoren; Minibeamers; Oortjes voor smartphones; Lichtpennen; Hoesjes voor mobiele telefoons; Toetsenborden; Draagbare monitoren; Radioapparaten en -instrumenten; USB-dongels (draadloze netwerkadapters); Draadloze toetsenborden; Kabeladapters; Dockingstations voor laptops; Dockingstations voor computers; Standaards, aangepast voor laptops; Multipoortversterkers; Weegapparaten en -instrumenten; Gasmeters; Maatlepels; Maatbekers; Hygrometers; Digitale pH-meters; Keukenweegschalen; Keukenwekkers; Thermometers voor huishoudelijk gebruik; Driepoten voor verrekijkers; Elektronische kalenders; Elektronische beveiligingssystemen voor thuisnetwerken; Multimeters (Digitale -); Thermometers; Infrarood thermometers; Thermometers (Digitale -), niet voor medisch gebruik",
+      "translation_language": "en",
+      "translation": "Cameras; camera bags; glasses; smoke detectors; smoke detectors; Reflective articles, to be worn by persons, for the prevention of accidents; Indicators [electricity]; Gauges (Digital -); Clocks (time attendance devices); electronic time recording devices; scales; e-readers; film cameras; video cameras; video monitors; film recording apparatus; Electric and electronic video surveillance installations; projectors; mini beamers; earphones for smartphones; light pens; cases for mobile telephones; keyboards; portable monitors; radio apparatus and instruments; USB dongles (wireless network adapters); wireless keyboards; cable adapters; docking stations for laptops; docking stations for computers; Stands adapted for laptops; multiport amplifiers; Weighing apparatus and instruments; gas meters; measuring spoons; measuring cups; hygrometers; digital pH meters; kitchen scales; kitchen timers; thermometers for household use; tripods for binoculars; electronic calendars; electronic security systems for home networks; Multimeters (Digital -); thermometers; infrared thermometers; Thermometers (Digital -), not for medical use"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "nl",
+      "description": "Sportartikelen; Sportartikelen en -uitrustingen; Puzzels; Speelgoed in de vorm van puzzels; Speelgoed; Speelgoedsets",
+      "translation_language": "en",
+      "translation": "Sporting goods; sporting articles and equipment; puzzles; toys in the form of puzzles; Toys; toy sets"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Reclame; Plaatsen van advertenties; Aankopen van reclameruimte; Onlinereclame en -marketing; Opstellen van advertenties; Verkooppromotie en reclame; Uitgeven van reclameteksten; Verzamelen van advertenties; Schrijven van reclameteksten; Marketingdiensten via zoekmachines; Verspreiding van reclame- en promotiemateriaal; Promotie van goederen en diensten door sponsoring; Copywriting; Copywriting voor reclame- en promotiedoeleinden; Copywriting voor commerciële of reclamedoeleinden; Grafische reclame",
+      "translation_language": "en",
+      "translation": "Advertising; posting of advertisements; Purchase of advertising space; online advertising and marketing; Drafting of advertisements; sales promotion and advertising; publishing of advertising texts; Collection of advertisements; Writing advertising texts; Marketing services via search engines; dissemination of advertising and promotional material; promotion of goods and services through sponsorship; copy writing; Copywriting for advertising and promotional purposes; copywriting for commercial or advertising purposes; Graphic advertising"
+    }
+  ],
+  "owner": "Moniek van Riel h.o.d.n. MKT BY MO",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "H.M. Kraaijvangerstraat 21, 1064DA Amsterdam",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Moniek van Riel h.o.d.n. MKT BY MO"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "cmMarkImageEUclassification": [
+      "26.04.06",
+      "26.04.22",
+      "37.01.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scissors; clippers; hand scissors; pedicure instruments; manicure and pedicure instruments; hand tools for use in beauty care; hair clippers [hand tools]; tweezers; hair clippers for personal use [electrically powered and non-electric]; pizza scissors; cheese slicers; pizza cutters; cake cutters; electric manicure sets; Electric manicure sets; cases for manicures; cases for manicure instruments; nail clippers; nail clippers, electric or non-electric; electric nail files for animals; electric nail files; nail files, non-electric; animal fur clippers; electric hair clippers; hair scissors; hairdressing scissors; beard clippers; Air pumps, hand-operated; hand tools for removing hardened skin; electric hair straighteners; non-electric can openers; Forks [cutlery]; vegetable knives; knife sharpening instruments; Pizza cutters, non-electric; electric irons; cutlery cassettes; Bread knives [hand tools]; egg slicers; French fries cutters; chopping knives; knife holders; epilators; Epilators, electric or non-electric",
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Scharen; Tondeuses; Handscharen; Pedicure-instrumenten; Manicure- en pedicure-instrumenten; Handgereedschappen voor gebruik bij schoonheidsverzorging; Tondeuses [handgereedschappen]; Pincetten; Tondeuses voor persoonlijk gebruik [elektrisch aangedreven en niet elektrische]; Pizzascharen; Kaasschaven; Pizzasnijders; Taartsnijders; Elektrische manicuresets; Elektrische manicure-sets; Etuis voor manicures; Etuis voor manicure-instrumenten; Nagelknippers; Nagelknippers, elektrisch of niet-elektrisch; Elektrische nagelvijlen voor dieren; Elektrische nagelvijlen; Nagelvijlen, niet-elektrisch; Tondeuses voor de dierenvacht; Elektrische tondeuses voor het haar; Haarscharen; Kappersscharen; Tondeuses voor de baard; Luchtpompen, handbediend; Handgereedschappen voor het verwijderen van verharde huid; Elektrische haarstijltangen; Niet-elektrische blikopeners; Vorken [bestek]; Groentemessen; Messenslijpinstrumenten; Pizzasnijders, niet-elektrisch; Elektrische strijkijzers; Bestekcassettes; Broodmessen [handgereedschappen]; Eiersnijders; Frietsnijders; Hakmessen; Messenhouders; Epileerapparaten; Epileerapparaten, elektrisch of niet-elektrisch"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cameras; camera bags; glasses; smoke detectors; smoke detectors; Reflective articles, to be worn by persons, for the prevention of accidents; Indicators [electricity]; Gauges (Digital -); Clocks (time attendance devices); electronic time recording devices; scales; e-readers; film cameras; video cameras; video monitors; film recording apparatus; Electric and electronic video surveillance installations; projectors; mini beamers; earphones for smartphones; light pens; cases for mobile telephones; keyboards; portable monitors; radio apparatus and instruments; USB dongles (wireless network adapters); wireless keyboards; cable adapters; docking stations for laptops; docking stations for computers; Stands adapted for laptops; multiport amplifiers; Weighing apparatus and instruments; gas meters; measuring spoons; measuring cups; hygrometers; digital pH meters; kitchen scales; kitchen timers; thermometers for household use; tripods for binoculars; electronic calendars; electronic security systems for home networks; Multimeters (Digital -); thermometers; infrared thermometers; Thermometers (Digital -), not for medical use",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Camera's; Cameratassen; Brillen; Rookdetectors; Rookmelders; Reflecterende artikelen, door personen te dragen, ter voorkoming van ongevallen; Indicatoren [elektriciteit]; Meters (Digitale -); Klokken (tijdregistratieapparaten); Elektronische tijdregistratietoestellen; Weegschalen; E-readers; Filmcamera's; Videocamera's; Videomonitors; Filmopnametoestellen; Elektrische en elektronische videobewakingsinstallaties; Projectoren; Minibeamers; Oortjes voor smartphones; Lichtpennen; Hoesjes voor mobiele telefoons; Toetsenborden; Draagbare monitoren; Radioapparaten en -instrumenten; USB-dongels (draadloze netwerkadapters); Draadloze toetsenborden; Kabeladapters; Dockingstations voor laptops; Dockingstations voor computers; Standaards, aangepast voor laptops; Multipoortversterkers; Weegapparaten en -instrumenten; Gasmeters; Maatlepels; Maatbekers; Hygrometers; Digitale pH-meters; Keukenweegschalen; Keukenwekkers; Thermometers voor huishoudelijk gebruik; Driepoten voor verrekijkers; Elektronische kalenders; Elektronische beveiligingssystemen voor thuisnetwerken; Multimeters (Digitale -); Thermometers; Infrarood thermometers; Thermometers (Digitale -), niet voor medisch gebruik"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sporting goods; sporting articles and equipment; puzzles; toys in the form of puzzles; Toys; toy sets",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Sportartikelen; Sportartikelen en -uitrustingen; Puzzels; Speelgoed in de vorm van puzzels; Speelgoed; Speelgoedsets"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; posting of advertisements; Purchase of advertising space; online advertising and marketing; Drafting of advertisements; sales promotion and advertising; publishing of advertising texts; Collection of advertisements; Writing advertising texts; Marketing services via search engines; dissemination of advertising and promotional material; promotion of goods and services through sponsorship; copy writing; Copywriting for advertising and promotional purposes; copywriting for commercial or advertising purposes; Graphic advertising",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Reclame; Plaatsen van advertenties; Aankopen van reclameruimte; Onlinereclame en -marketing; Opstellen van advertenties; Verkooppromotie en reclame; Uitgeven van reclameteksten; Verzamelen van advertenties; Schrijven van reclameteksten; Marketingdiensten via zoekmachines; Verspreiding van reclame- en promotiemateriaal; Promotie van goederen en diensten door sponsoring; Copywriting; Copywriting voor reclame- en promotiedoeleinden; Copywriting voor commerciële of reclamedoeleinden; Grafische reclame"
+        }
+      ]
+    },
+    "id": "42f6766d-1147-4250-9051-c55efc0b8f17",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.01",
+      "26.04.06",
+      "26.04.18",
+      "27.05.21",
+      "27.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0429"
+      }
+    ],
+    "recordLastUpdated": "20260616",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210122",
+        "applicationNumber": "1434232"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310122",
+      "lastPublicationDate": "20210429",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210429",
+        "registrationNumber": "1434232"
+      }
+    },
+    "version": "20260616020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "A AVENQ"
+    }
+  },
+  "_uri": "/mark/bx/42f6766d-1147-4250-9051-c55efc0b8f17",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

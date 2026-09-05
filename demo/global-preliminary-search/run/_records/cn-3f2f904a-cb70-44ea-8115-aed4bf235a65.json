@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/3f2f904a-cb70-44ea-8115-aed4bf235a65",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "3f2f904a-cb70-44ea-8115-aed4bf235a65",
+  "applicationNumber": "60504739",
+  "registrationNumber": "60504739",
+  "applicationDate": "2021-11-11",
+  "registrationDate": "2022-07-21",
+  "expiryDate": "2032-07-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN OR NINE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "流动图书馆,健身俱乐部(健身和体能训练)",
+      "translation_language": "en",
+      "translation": "mobile library, fitness club (fitness and fitness training)"
+    }
+  ],
+  "owner": "Shenzhen Yuexing Hot Road Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市宝安区新安街道兴东社区宝城创业路北侧建设工业园J栋一层至七层104",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Yuexing Hot Road Technology Co., Ltd.",
+        "applicantNativeName": "深圳市悦行热路科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "mobile library, fitness club (fitness and fitness training)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "流动图书馆,健身俱乐部(健身和体能训练)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Library service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "3f2f904a-cb70-44ea-8115-aed4bf235a65",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1788"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳蓝邦知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211111",
+        "applicationNumber": "60504739"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320720",
+      "lastPublicationDate": "20220420",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220721",
+        "registrationNumber": "60504739"
+      }
+    },
+    "version": "20251004173649",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN OR NINE"
+    }
+  },
+  "_uri": "/mark/cn/3f2f904a-cb70-44ea-8115-aed4bf235a65",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

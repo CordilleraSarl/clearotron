@@ -1,0 +1,171 @@
+{
+  "uri": "/mark/cn/668a4b87-00e3-4732-acd4-145ecc79a532",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "668a4b87-00e3-4732-acd4-145ecc79a532",
+  "applicationNumber": "19987648",
+  "registrationNumber": "19987648",
+  "applicationDate": "2016-05-17",
+  "registrationDate": "2017-07-07",
+  "expiryDate": "2027-07-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七奇",
+  "markTransliteration": "SEVENQI qi qi",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机;智能手机用套;电子监控装置;放映设备;测量器械和仪器;电源材料(电线、电缆);集成电路;稳压电源;电子防盗装置;移动电源(可充电电池)",
+      "translation_language": "en",
+      "translation": "Computers; sets for smart phones; electronic monitoring devices; projection equipment; measuring instruments and instruments; power supply materials (wires, cables); integrated circuits; regulated power supplies; electronic anti-theft devices; mobile power supplies (rechargeable batteries)"
+    }
+  ],
+  "owner": "Shenzhen Arts and New Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市福田区华强北街道福强社区华发北路5号龙胜手机市场5层5D25",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Arts and New Technology Co., Ltd.",
+        "applicantNativeName": "深圳市金艺新科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computers; sets for smart phones; electronic monitoring devices; projection equipment; measuring instruments and instruments; power supply materials (wires, cables); integrated circuits; regulated power supplies; electronic anti-theft devices; mobile power supplies (rechargeable batteries)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机;智能手机用套;电子监控装置;放映设备;测量器械和仪器;电源材料(电线、电缆);集成电路;稳压电源;电子防盗装置;移动电源(可充电电池)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Warning equipments, bells",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0920",
+          "subNatGoodsServicesDescription": "Warning equipments, bells"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "668a4b87-00e3-4732-acd4-145ecc79a532",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1546"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳中为雅信知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160517",
+        "applicationNumber": "19987648"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270706",
+      "lastPublicationDate": "20170406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170707",
+        "registrationNumber": "19987648"
+      }
+    },
+    "version": "20251002145751",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVENQI qi qi",
+      "markVerbalElementText": "七奇"
+    }
+  },
+  "_uri": "/mark/cn/668a4b87-00e3-4732-acd4-145ecc79a532",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

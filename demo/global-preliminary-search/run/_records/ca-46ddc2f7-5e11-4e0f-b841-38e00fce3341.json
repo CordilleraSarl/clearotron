@@ -1,0 +1,285 @@
+{
+  "uri": "/mark/ca/46ddc2f7-5e11-4e0f-b841-38e00fce3341",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "46ddc2f7-5e11-4e0f-b841-38e00fce3341",
+  "applicationNumber": "1327052",
+  "registrationNumber": "TMA734775",
+  "applicationDate": "2006-12-06",
+  "registrationDate": "2009-02-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2008-09-03"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    4,
+    8,
+    9,
+    10,
+    11,
+    12,
+    18,
+    20,
+    21,
+    22,
+    25,
+    28,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        4,
+        8,
+        9,
+        10,
+        11,
+        12,
+        18,
+        20,
+        21,
+        22,
+        25,
+        28,
+        35
+      ],
+      "language": "en",
+      "description": "(1) Tents, hiking packs, backpacks, waist packs, thermal packs for first aid, sleeping bags, canoes, paddle floats, paddle leashes, throw bags, boat racks, absorbent and cleaning sponges, bailing pumps, deck bags, yokes, boat storage covers, sprayskirts, cockpit covers, rooftop carriers, flotation aids for recreational use, namely for kayaks and canoes, personal flotation aids, trekking poles, hiking helmets, skiing helmets, bicycle helmets, cross country skis, ski poles, fanny packs, candle lanterns, head lamps, tent footprints, stoves, cooking pots, cooking pans, cooking kettles, camping mugs, vacuum bottles and vacuum insulated drink containers, air mattresses, water bottles, fishing knives, hunting knives, pocket knives, sport knives, stuff sacks, navigational compasses, hiking poles, water filtering units for domestic use, socks, earmuffs, toques, baseball skull caps, bicycle gloves, driving gloves, ski gloves, swim gloves, water-ski gloves, outdoor winter clothing, undergarments, jackets worn as articles of clothing, rain wear clothing, snowshoes, gaiters, storage barrels, inflatable sleeping pads, camping chairs, bug jackets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4,
+        8,
+        9,
+        10,
+        11,
+        12,
+        18,
+        20,
+        21,
+        22,
+        25,
+        28,
+        35
+      ],
+      "language": "en",
+      "description": "(1) Operation of a retail store selling outdoor sporting goods and goods used in outdoor pursuits and activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SPORTS DISTRIBUTORS OF CANADA LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "SCARFONE HAWKINS LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1187 KING ROAD, BURLINGTON, ONTARIO, L7R3X5",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "1187 KING ROAD",
+          "BURLINGTON",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "L7R3X5",
+        "applicantName": "SPORTS DISTRIBUTORS OF CANADA LIMITED"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Declaration of Use filed January 26, 2009 on wares marked (1) on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "04,08,09,10,11,12,18,20,21,22,25,28,35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Tents, hiking packs, backpacks, waist packs, thermal packs for first aid, sleeping bags, canoes, paddle floats, paddle leashes, throw bags, boat racks, absorbent and cleaning sponges, bailing pumps, deck bags, yokes, boat storage covers, sprayskirts, cockpit covers, rooftop carriers, flotation aids for recreational use, namely for kayaks and canoes, personal flotation aids, trekking poles, hiking helmets, skiing helmets, bicycle helmets, cross country skis, ski poles, fanny packs, candle lanterns, head lamps, tent footprints, stoves, cooking pots, cooking pans, cooking kettles, camping mugs, vacuum bottles and vacuum insulated drink containers, air mattresses, water bottles, fishing knives, hunting knives, pocket knives, sport knives, stuff sacks, navigational compasses, hiking poles, water filtering units for domestic use, socks, earmuffs, toques, baseball skull caps, bicycle gloves, driving gloves, ski gloves, swim gloves, water-ski gloves, outdoor winter clothing, undergarments, jackets worn as articles of clothing, rain wear clothing, snowshoes, gaiters, storage barrels, inflatable sleeping pads, camping chairs, bug jackets."
+        },
+        {
+          "intClassNumber": "04,08,09,10,11,12,18,20,21,22,25,28,35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Operation of a retail store selling outdoor sporting goods and goods used in outdoor pursuits and activities."
+        }
+      ]
+    },
+    "id": "46ddc2f7-5e11-4e0f-b841-38e00fce3341",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20240905",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2024/09/05"
+      },
+      {
+        "date": "20240307",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20240819"
+      },
+      {
+        "date": "20090219",
+        "descriptionText": "Registered",
+        "responseDate": "20240219"
+      },
+      {
+        "date": "20081219",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20091206"
+      },
+      {
+        "date": "20081219",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20080903",
+        "descriptionText": "Advertised",
+        "information": "Vol.55 Issue 2810"
+      },
+      {
+        "date": "20080806",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "20070530",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20070930"
+      },
+      {
+        "date": "20070530",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20070307",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "20070122",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "20061208",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20061207",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20061206",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1187 KING ROAD, BURLINGTON, ONTARIO, L7R3X5",
+        "addressLines": [
+          "1187 KING ROAD",
+          "BURLINGTON",
+          "ONTARIO",
+          "L7R3X5"
+        ],
+        "countryName": "Canada",
+        "name": "SPORTS DISTRIBUTORS OF CANADA LIMITED",
+        "postalCode": "L7R3X5"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2810",
+        "publicationVolume": "55"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SCARFONE HAWKINS LLP",
+          "ONE JAMES ST. S. 14TH FLOOR",
+          "P.O. BOX 926, DEPOT #1",
+          "HAMILTON",
+          "ONTARIO L8N3P9"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SCARFONE HAWKINS LLP",
+        "representativeReferenceNumber": "05T32"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20081219"
+      ],
+      "application": {
+        "applicationDate": "20061206",
+        "applicationNumber": "1327052"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expungementDate": "20240905",
+      "formalisationDate": "20061208",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20240219",
+      "publicationDate": [
+        "20080903"
+      ],
+      "registration": {
+        "registrationDate": "20090219",
+        "registrationNumber": "TMA734775"
+      }
+    },
+    "subjectHeadings": [
+      "QOR"
+    ],
+    "version": "20250624150725",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR",
+      "markVerbalElementTextFormal": "QOR"
+    }
+  },
+  "_uri": "/mark/ca/46ddc2f7-5e11-4e0f-b841-38e00fce3341",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

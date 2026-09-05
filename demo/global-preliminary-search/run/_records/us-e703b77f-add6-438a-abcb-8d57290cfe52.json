@@ -1,0 +1,458 @@
+{
+  "uri": "/mark/us/e703b77f-add6-438a-abcb-8d57290cfe52",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "e703b77f-add6-438a-abcb-8d57290cfe52",
+  "applicationNumber": "77575585",
+  "registrationNumber": "3720282",
+  "applicationDate": "2008-09-22",
+  "registrationDate": "2009-12-01",
+  "expiryDate": null,
+  "renewalDate": "2019-12-01",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "A RELATIONSHIP DRIVEN ORGANIZATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"ORGANIZATION\""
+  ],
+  "niceClasses": [
+    35,
+    36,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Leasing of office equipment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "INT. CL. 36 Banking services; Lease-purchase financing",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "INT. CL. 37 Leasing of building machinery; Leasing of construction equipment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Leasing of computers",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QCR Holdings, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Wendi E. Sloane",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20190111",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "3551 7th Street, Suite 204, Moline, IL, 61265",
+        "applicantAddressCity": "Moline",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "61265",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "3551 7th Street, Suite 204",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "QCR Holdings, Inc."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "30 ST. VINCENT PLACE, GLASGOW, G1 2HL, B6AA",
+            "city": "GLASGOW",
+            "countryCode": "B6AA",
+            "countryName": "Scotland",
+            "jurisdictionOfIncorporation": "Scotland",
+            "legalEntity": "CORPORATION",
+            "name": "CLYDESDALE BANK PLC",
+            "postalCode": "G1 2HL",
+            "street": "30 ST. VINCENT PLACE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "England",
+            "legalEntity": "CORPORATION",
+            "name": "NEVERFAIL GROUP LIMITED"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "STE. R-12, 10601 FM 2222, AUSTIN, TX  78730",
+            "addressLines": [
+              "TAYLOR RUSSELL & RUSSELL, P.C.",
+              "STE. R-12",
+              "10601 FM 2222",
+              "AUSTIN, TX  78730"
+            ],
+            "name": "TAYLOR RUSSELL & RUSSELL, P.C."
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20120808",
+        "recordedDate": "20120830",
+        "reelFrameNumber": "4851/0117"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Leasing of office equipment"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "INT. CL. 36 Banking services; Lease-purchase financing"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "INT. CL. 37 Leasing of building machinery; Leasing of construction equipment"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Leasing of computers"
+        }
+      ]
+    },
+    "id": "e703b77f-add6-438a-abcb-8d57290cfe52",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"ORGANIZATION\""
+    ],
+    "markEvents": [
+      {
+        "date": "20190111",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20190111",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20190111",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20190110",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20181218",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20181201",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20150925",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20150925",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20150925",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20150915",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20091201",
+        "descriptionText": "REGISTERED-SUPPLEMENTAL REGISTER"
+      },
+      {
+        "date": "20091028",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20091028",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20091009",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20091009",
+        "descriptionText": "APPROVED FOR REGISTRATION SUPPLEMENTAL REGISTER"
+      },
+      {
+        "date": "20091009",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20091009",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20091009",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20090923",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20090923",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090923",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20090323",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20090323",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20090323",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20090226",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20090226",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090226",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20081220",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20081220",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20081220",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20081220",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20080925",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3551 7th Street, Suite 204, Moline, IL, 61265",
+        "city": "Moline",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "QCR Holdings, Inc.",
+        "postalCode": "61265",
+        "stateName": "ILLINOIS",
+        "street": "3551 7th Street, Suite 204"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "3551 7th Street, Suite 204, Moline, IL, 61265",
+        "city": "Moline",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "QCR Holdings, Inc.",
+        "postalCode": "61265",
+        "stateName": "ILLINOIS",
+        "street": "3551 7th Street, Suite 204"
+      },
+      {
+        "address": "3551 7th Street, Suite 204, Moline, IL, 61265",
+        "city": "Moline",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "QCR Holdings, Inc.",
+        "postalCode": "61265",
+        "stateName": "ILLINOIS",
+        "street": "3551 7th Street, Suite 204"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "registrationRecords": [
+      {
+        "effectiveDate": "20091201",
+        "recordInterestedOfficeCode": "US",
+        "registrationRecordType": "registration - US Supplemental"
+      }
+    ],
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "CHICAGO, IL 60606-3459, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "CHICAGO, IL 60606-3459",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "WENDI E. SLOANE BARACK FERRAZZANO KIRSCHBAUM & NAGELBERG LLP, 200 W MADISON ST STE 3900"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "CHICAGO, IL 60606-3459, UNITED STATES",
+        "representativeAddressLines": [
+          "CHICAGO, IL 60606-3459",
+          "UNITED STATES"
+        ],
+        "representativeName": "Wendi E. Sloane"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080922",
+        "applicationNumber": "77575585"
+      },
+      "applicationAmendmentDate": [
+        "20090226"
+      ],
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20080321"
+        },
+        {
+          "firstUsedClass": "36",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20080321"
+        },
+        {
+          "firstUsedClass": "37",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20080321"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20080321"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080321"
+        },
+        {
+          "firstUsedCommerceClass": "36",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080321"
+        },
+        {
+          "firstUsedCommerceClass": "37",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080321"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080321"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20190111",
+        "markOfficialStatusEvents": [
+          "Supplemental Register",
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20091201",
+        "registrationNumber": "3720282"
+      },
+      "renewalDate": "20191201"
+    },
+    "version": "20260109204231",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "A RELATIONSHIP DRIVEN ORGANIZATION"
+    }
+  },
+  "_uri": "/mark/us/e703b77f-add6-438a-abcb-8d57290cfe52",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/kr/ab2af7a2-55af-499f-b154-117e77924d8f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "ab2af7a2-55af-499f-b154-117e77924d8f",
+  "applicationNumber": "41-2006-0026256",
+  "registrationNumber": null,
+  "applicationDate": "2006-10-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "bori",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "나이트클럽업, 뉴스보도서비스업, 동물사육지도업, 동물훈련업, 마이크로필름기록업, 미술관경영업, 미용기술지도업, 미인선발대회개최업, 박물관시설제공업, 번역업, 비디오녹화촬영업, 사적명소관리경영업, 사진보도업, 사진촬영업, 수화통역업, 어업기술지도업, 영농기술지도업, 요리지도업, 제과제빵기술지도업, 조림기술지도업, 축산기술지도업, 파티계획업, 파티용역업, 패션쇼개최업, 학교기숙사업, 행사개최대행업",
+      "translation_language": "en",
+      "translation": "Nightclub business, news reporting service business, animal husbandry guidance business, animal training business, microfilm recording business, art gallery management business, beauty technique guidance business, beauty pageant holding business, museum facility provision business, translation business, video recording business, historic site management business, photo reporting business, photography business, sign language interpretation business, fishing technology guidance business, farming technology guidance business, cooking guidance business, confectionery and baking technique guidance business, afforestation technology guidance business, Livestock technology guidance business, party planning business, party service business, fashion show hosting business, school dormitory business, event hosting business"
+    }
+  ],
+  "owner": "JIN-DO COUNTY .",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "최석원 (CHOE SUK WON)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "전라남도 진도군",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "JIN-DO COUNTY .",
+        "applicantNativeName": "진도군"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Nightclub business, news reporting service business, animal husbandry guidance business, animal training business, microfilm recording business, art gallery management business, beauty technique guidance business, beauty pageant holding business, museum facility provision business, translation business, video recording business, historic site management business, photo reporting business, photography business, sign language interpretation business, fishing technology guidance business, farming technology guidance business, cooking guidance business, confectionery and baking technique guidance business, afforestation technology guidance business, Livestock technology guidance business, party planning business, party service business, fashion show hosting business, school dormitory business, event hosting business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "나이트클럽업, 뉴스보도서비스업, 동물사육지도업, 동물훈련업, 마이크로필름기록업, 미술관경영업, 미용기술지도업, 미인선발대회개최업, 박물관시설제공업, 번역업, 비디오녹화촬영업, 사적명소관리경영업, 사진보도업, 사진촬영업, 수화통역업, 어업기술지도업, 영농기술지도업, 요리지도업, 제과제빵기술지도업, 조림기술지도업, 축산기술지도업, 파티계획업, 파티용역업, 패션쇼개최업, 학교기숙사업, 행사개최대행업"
+        }
+      ]
+    },
+    "id": "ab2af7a2-55af-499f-b154-117e77924d8f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.01.08",
+      "03.01.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 금천구 디지털로*길 **, 호 (가산동, 이앤씨드림타워*차)(씨앤엘국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "최석원 (CHOE SUK WON)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20061024",
+        "applicationNumber": "41-2006-0026256"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260625021117",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "bori"
+    }
+  },
+  "_uri": "/mark/kr/ab2af7a2-55af-499f-b154-117e77924d8f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.212Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

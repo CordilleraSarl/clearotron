@@ -61,11 +61,12 @@ import { spawnSync, execFileSync } from "node:child_process";   // — the wizar
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { accessSync, constants, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync, chmodSync } from "node:fs";   // read the process table here; moved that to shared/process-table.mjs
-import { homedir } from "node:os";
+import { homedir, userInfo } from "node:os";
 import { invocationPrefix } from "../shared/invocation.mjs";   // — one rule for how the reader invokes us
 import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that form
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
+import { bracketAsciiCells } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
 import { join, dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
@@ -140,6 +141,94 @@ const info = (s) => say(`  ${style.dim("·")} ${style.dim(s)}`);
 const warn = (s) => say(`  ${style.warn("!")} ${s}`);
 const problems = [];
 const problem = (s) => { problems.push(s); say(`  ${style.err("✗")} ${style.err(s)}`); };
+// A THIRD STATE, because there were only two and the install that cannot run fell between them.
+// `--check` separates an ABSENCE (a fresh machine: reported, exit 0) from a MISCONFIGURATION (something
+// set wrongly: exit 1), and onboard-wizard.test.mjs holds that contract. But an absence that stops every
+// search was reported with `warn` and then summarised as "Nothing wrong with what is configured" — the
+// body honest, the verdict contradicting it. `blocking` prints as a warning and is counted by the
+// VERDICT only: the exit status keeps the contract, and the closing line stops claiming nothing is
+// wrong while something that stops the product stands above it.
+const blockers = [];
+const blocking = (s) => { blockers.push(s); say(`  ${style.warn("!")} ${s}`); };
+// EXPLANATORY PROSE, WRAPPED AT THE INDENT IT IS PRINTED AT ( — F17). Owner:
+// "the formatting is still quite bad — line after line". The specific bug is the wrap: paragraphs were
+// hand-broken at a fixed width and handed to the terminal, so on anything narrower than the author's
+// window a sentence wraps to COLUMN 0 and loses the indent that was carrying the structure. The
+// ✓/·/! lines never had this problem because they are one line each; the long paragraphs — the ones a
+// reader most needs to follow — are exactly the ones that lost their shape.
+//
+// Takes the text as words, not as pre-broken lines, because a helper that re-wraps someone else's line
+// breaks inherits their width. Callers pass sentences; this decides where they end.
+const PROSE_INDENT = "  ";
+/** The width to wrap to: the terminal's, capped so a very wide window does not produce unreadable
+ *  measure, and floored so a very narrow one degrades rather than breaking every word. */
+export const proseWidth = (columns = process.stdout.columns) =>
+  Math.max(40, Math.min(96, Number(columns) || 80)) - PROSE_INDENT.length;
+
+/** Pure, and exported for that reason: the wrapping is the thing under test, and driving it through a
+ *  pty to read it back would test the terminal as much as the code. Returns lines WITHOUT the indent so
+ *  the caller owns placement — a helper that both wraps and indents cannot be asked "how wide is this". */
+export function wrapProse(text, width) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const w = Math.max(1, Number(width) || proseWidth());
+  const out = [];
+  let line = "";
+  for (const word of words) {
+    if (line && line.length + 1 + word.length > w) { out.push(line); line = word; }
+    else line = line ? `${line} ${word}` : word;
+  }
+  if (line) out.push(line);
+  return out;
+}
+const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWidth())) say(`${PROSE_INDENT}${l}`); };
+
+/**
+ * The .env body: what setup collected, plus every key already in the file that setup does not manage.
+ *
+ * — F12. This composed the file from `candidate` alone and renamed over the
+ * target, so running `install` AFTER `start` DELETED the three values start had written —
+ * PORTAL_SECRET, PORTAL_LOCAL_USER and TRADEMARK_MCP_TOKEN_SECRET. The next start re-minted
+ * PORTAL_SECRET to a different value, and every signed-in session was invalidated with nothing said
+ * anywhere: no error, no warning, just everyone logged out and no reason on the screen.
+ *
+ * INSTALL.md states the rule for the other direction already — start "appends, never rewrites: that
+ * file also holds the credentials `npx clearotron install` collected". It binds both writers or it
+ * binds neither, and only one of them was obeying it.
+ *
+ * A .env.bak was taken, which is why nothing was lost forever — but a backup is a thing a reader has to
+ * know to look for, and the failure gives them no reason to look.
+ *
+ * Pure and exported so the carry can be asserted directly: the defect is what the FILE ends up holding,
+ * and driving a wizard through a pty to read a file back tests the pty as much as the rule.
+ *
+ * @param {Record<string,string>} candidate what setup collected — always wins
+ * @param {Record<string,string>} existing  the file as it stands
+ */
+export function composeEnvBody(candidate, existing = {}) {
+  // Setup's own answers win: the reader just typed them, and this run is the newer statement.
+  const carried = Object.entries(existing).filter(([k]) => !(k in candidate));
+  return [
+    "# Written by `npm run setup`. Environment variables always win over this file.",
+    "# It holds credentials: keep it at mode 600, and out of git (.gitignore already covers it).",
+    "",
+    // — VALIDATE under the names the engine reads, WRITE the names an installer should now see.
+    // Without this a fresh `npm run setup` emits a .env full of deprecated spellings and the very next
+    // run warns about the file the wizard just wrote. Safe as a straight key map because `candidate`
+    // never holds both halves of a collapsed pair: the engine section probes ONE engine and records
+    // only that engine's binary variable.
+    ...Object.entries(candidate).map(([k, v]) => `${k}=${v}`),
+    ...(carried.length ? [
+      "",
+      "# Kept from the existing file. Setup did not collect these and does not manage them —",
+      "# `clearotron start` writes its own secrets here, and rewriting the file without them",
+      "# signs every logged-in user out with no error anywhere.",
+      ...carried.map(([k, v]) => `${k}=${v}`),
+    ] : []),
+    "",
+  ].join("\n");
+}
+
 /** A stage of setup, so a reader knows where they are and how much is left. */
 const section = (title) => say(`\n${style.head(title)}`);
 
@@ -149,9 +238,14 @@ const section = (title) => say(`\n${style.head(title)}`);
 // item 11 — Signa had NO signup array while EUIPO had a five-step walkthrough, so a reader who
 // picked the recommended provider was asked for a key with no hint where to get one. Two steps is the
 // whole of it, and that it is self-serve is the reason ADR-0001 recommends it.
+// — F16. This said "the vendor's site" and never named it, for the register the
+// product RECOMMENDS. The owner picked it and had to go looking: "I should not have to google for signa
+// and find it (and they are hard to find)." The product knew the domain the whole time — it is in the
+// architecture docs and in the adapter's own source — just not in either place the person being asked
+// for a key would look. EUIPO's array opens with its URL and is the shape this now matches.
 const SIGNA_SIGNUP = [
-  "1. Create an account at the vendor's site and open the API section — it is self-serve: no sales call,",
-  "   no contract, no waiting.",
+  "1. Create an account at https://signa.so/ and open the API section — it is self-serve: no sales",
+  "   call, no contract, no waiting.",
   "2. Issue an API key and paste it here. See providers/README.md for the base-URL override.",
 ];
 const EUIPO_SIGNUP = [
@@ -1136,12 +1230,15 @@ export async function runCheck() {
 
   say("\n  Register provider");
   const prov = effective("CLEAROTRON_DATABASE");
-  // — `install` may now finish with no register (owner ruling), so this line is what tells a
-  // reader which state they are in and what it costs them. `warn` rather than `problem`: the install is
-  // not broken, it is unfinished, and a problem here would fail `doctor` on a posture setup deliberately
-  // allows. `info` was too quiet for a state in which NOTHING runs.
+  // `blocking`, not `warn` and not `problem`. The exit status is a CONTRACT — an absence reports and
+  // exits 0, a misconfiguration exits 1, and onboard-wizard.test.mjs holds it — so this cannot become a
+  // `problem` however much it stops the reader: an install that has not chosen a register yet is
+  // unfinished, not broken, and `install` is allowed to end that way. But plain `warn` was how the
+  // closing line came to say "Nothing wrong with what is configured" above a sentence reading "every
+  // search refuses until one is". `blocking` prints the same `!` and is named in the verdict, so the
+  // reader who reads only the last line is told what the reader who read every line was told.
   if (!prov) {
-    warn(`no register is selected — CLEAROTRON_DATABASE is not set and there is NO default, so every search refuses until one is`);
+    blocking(`no register is selected — CLEAROTRON_DATABASE is not set and there is NO default, so every search refuses until one is`);
     info(`  set it to one of: ${PROVIDERS.map((p) => p.id).join(", ")} — any one of them is enough, and none needs another`);
     info(`  re-run \`${invoke("install")}\`, or set it on the Global config page`);
   }
@@ -1239,6 +1336,25 @@ export async function runCheck() {
   // NAMES ONLY, NEVER VALUES. `proxyValues` carries presence, and the issuer's value — which this page
   // could print, and the portal's own config view does — is deliberately not printed here: `doctor` goes
   // to a terminal, into a paste, into an issue.
+  // THE ONE CONDITION THAT STOPS THE PORTAL RENDERING, and `doctor` said nothing about it at all
+  // (bb8, F2). `portal-ui/dist` is committed, so an absent bundle means a bad checkout on
+  // a deployment and an unbuilt tree on a source clone; the service already answers 503 and says so in
+  // its boot log, but a reader who runs `doctor` BEFORE `start` — which is the order every document
+  // gives — had no way to learn it. The product's OWN predicate decides rather than a second existence
+  // check written here: `makeStaticHandler(...).present()` is the question the service asks, so the two
+  // cannot drift into disagreeing about what "present" means.
+  say("\n  Portal bundle");
+  try {
+    const { makeStaticHandler } = await import("../driver/portal-static.mjs");
+    const distDir = join(REPO, "portal-ui", "dist");
+    if (makeStaticHandler({ distDir }).present()) ok(`portal-ui/dist is present — /portal has something to serve`);
+    else blocking(`no UI bundle at ${distDir} — /portal answers 503 until one is built. Build it: \`npm run build:ui\``);
+  } catch (e) {
+    // A could-not-look, and it is NOT a pass: the reader learns nothing about whether the portal can
+    // render, which is the same position they were in before this section existed.
+    blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
+  }
+
   say("\n  Portal door");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
@@ -1477,6 +1593,34 @@ export async function runCheck() {
         home: homedir() })
     : null;
 
+  // LINGERING, WHICH NOTHING ELSE CHECKS ( — F9). `--background` installs USER units,
+  // and a user manager without lingering is torn down at logout: the units stop with the session and
+  // NOTHING is written anywhere — no unit failure, no journal line, no port. The box reads healthy right
+  // up until nobody is logged in. `start --background` refuses when the manager is unreachable, but a
+  // manager reachable in THIS session says nothing about whether it survives the session, which is
+  // exactly the gap. Only asked when the units exist: on a foreground install there is nothing to
+  // outlive a logout, and the line would be noise on every fresh box.
+  if (hosted) {
+    const who = userInfo().username;
+    say("\n  Background units");
+    let linger = null, lingerWhy = null;
+    try {
+      // stderr captured, for the reason the client-door probe below carries in full.
+      const out = execFileSync("loginctl", ["show-user", who, "-p", "Linger"],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+      linger = /Linger=yes/i.test(out);
+    } catch (e) {
+      lingerWhy = String(e?.stderr ?? "").trim().split("\n")[0] || e?.message || "loginctl could not be run";
+    }
+    if (linger === true) ok(`lingering is on for ${who} — the units survive logout`);
+    else if (linger === false)
+      blocking(`the background units are installed but lingering is OFF for ${who}. systemd tears this `
+        + "account's user manager down at logout, so the units stop with nothing written anywhere — no "
+        + `unit failure and no journal line. As root:  loginctl enable-linger ${who}`);
+    else warn(`could not tell whether lingering is on for ${who} — ${lingerWhy}. That is this command `
+      + "failing to look, not a report that it is off.");
+  }
+
   say("\n  Submit lane");
   try {
     const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(join(REPO, "shared", "trigger-lane.mjs"));
@@ -1496,8 +1640,24 @@ export async function runCheck() {
       : { state: String(process.env.PORTAL_MCP_URL ?? "").trim() ? "set" : "unset",
           value: String(process.env.PORTAL_MCP_URL ?? "").trim() || null };
     const url = seen.value;
-    const opsToken = String(process.env.PORTAL_OPS_TOKEN ?? "").trim();
-    const hasToken = !!opsToken;
+    // THE SAME QUESTION AS THE LINE ABOVE, AND IT WAS ASKED OF THE WRONG PLACE.
+    // `PORTAL_MCP_URL` is read from the units when they exist; `PORTAL_OPS_TOKEN` was read from
+    // `process.env` unconditionally, three lines apart. On the hosted path `start --background` writes
+    // the token into the file the units load and does not export it into anybody's shell, so a reader
+    // running `doctor` afterwards was told the Start button fails at the door while the door answered
+    // 200 — the same shape as F34, which is what this module exists for.
+    //
+    // Three-valued on purpose: `unknown` is not `unset`. The VALUE is never printed and never leaves
+    // this scope — only its state does — because a unit Environment block carries live credentials.
+    const tokenSeen = hosted
+      ? unitValue(unitEnv, "PORTAL_OPS_TOKEN")
+      : { state: String(process.env.PORTAL_OPS_TOKEN ?? "").trim() ? "set" : "unset",
+          value: String(process.env.PORTAL_OPS_TOKEN ?? "").trim() || null, why: null };
+    const opsToken = tokenSeen.value ?? "";
+    const hasToken = tokenSeen.state === "set";
+    // A could-not-look is reported as one. Without this line the verdict below renders `unknown` as an
+    // absence and names a defect that may not exist.
+    if (tokenSeen.state === "unknown") blocking(couldNotDetermine("PORTAL_OPS_TOKEN", unitEnv));
     // BOTH DIRECTIONS (owner, 2026-09-02). A lane that starts and cannot stop is not a working lane.
     // The posture reader is the portal's own, so this cannot drift from what the portal decides the
     // Stop control's availability on — one reader, two surfaces.
@@ -1539,6 +1699,24 @@ export async function runCheck() {
   } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
 
   say("\n  Client connector");
+  // THE REVOCATION LIST, REPORTED ( — bb8's F14). `isRevoked` treats an unreadable
+  // denylist as "not revoked", so a named-but-absent file makes every revocation silently ineffective:
+  // measured on a default install, a revoked key completed a full handshake with nothing logged. Nothing
+  // surfaced that state anywhere, which is why it survived to be found by hand.
+  {
+    const { defaultDenylistPath } = await import(join(REPO, "shared", "client-door.mjs"));
+    const dl = effective("TRADEMARK_MCP_TOKEN_DENYLIST")?.v || defaultDenylistPath(homedir());
+    try {
+      const n = readFileSync(dl, "utf8").split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).length;
+      ok(`revocation list readable at ${dl} — ${n} revoked key id(s)`);
+    } catch (e) {
+      // NOT `warn`. A revocation that cannot land is a security control that is off, and the reader has
+      // no other surface that would tell them: the door answers 200 either way.
+      blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — a key check treats an `
+        + "unreadable list as NOT REVOKED, so revoking anything would silently do nothing. "
+        + `Run \`${invoke("start")}\` — it creates the list.`);
+    }
+  }
   try {
     const { clientDoorState: doorState, describeDoorState, connectKeyReport, CLIENT_DOOR_UNIT: doorUnit } = await import(join(REPO, "shared", "client-door.mjs"));
     const { loadGrants: readGrantsFile, isRevoked: revokedCheck } = await import(join(REPO, "shared", "scope.mjs"));
@@ -1556,16 +1734,53 @@ export async function runCheck() {
     // measured defect — throws and leaves the answer null. NULL IS NOT FALSE: reporting a door as down
     // because systemd could not be reached is the same lie in the other direction, and the four-state
     // description exists to say "nobody asked" out loud rather than pick a colour.
-    let doorActive = null;
+    let doorActive = null, doorActiveState = null, doorSubState = null, doorRestarts = 0;
+    let doorAskFailed = null;
     try {
-      const out = execFileSync("systemctl", ["--user", "show", doorUnit, "-p", "ActiveState", "-p", "SubState"],
-        { encoding: "utf8" });
+      // STDERR IS CAPTURED, NOT INHERITED. On a box with no user session bus — a fresh install, before
+      // anyone has logged in properly — systemctl writes "Failed to connect to bus: No medium found"
+      // to its own stderr, and with stderr inherited that sentence landed in the middle of this report
+      // in systemd's voice, under a heading, explaining nothing to the reader it reached. The null
+      // below was already the right answer; the leak was the whole defect.
+      const out = execFileSync("systemctl", ["--user", "show", doorUnit, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts"],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
       const f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
       // BOTH FIELDS, the same pair `clearotron status` and `connect`'s health probe read. `ActiveState`
       // alone calls a Type=simple unit active the instant it forks, so a door that exits on its first
       // line answers "active" for about a second.
       doorActive = f.ActiveState === "active" && f.SubState === "running";
-    } catch { /* stays null — nobody could ask, which is the third answer */ }
+      // THE PAIR TRAVELS TOO. Collapsed to a boolean, a crash loop and a
+      // never-started unit print the same sentence, and they have different next steps.
+      doorActiveState = f.ActiveState ?? null;
+      doorSubState = f.SubState ?? null;
+      doorRestarts = Number.isFinite(Number(f.NRestarts)) ? Number(f.NRestarts) : 0;
+    } catch (e) {
+      // Stays null — nobody could ask, which is the third answer. The reason is kept so it can be said
+      // in this command's voice where it matters, rather than printed raw where it does not.
+      doorAskFailed = String(e?.stderr ?? "").trim().split("\n")[0] || e?.message || "systemctl could not be run";
+    }
+    // ONLY WHEN THE ANSWER WOULD HAVE MATTERED. If the unit is not installed, its activity is not a
+    // question the reader has, and a could-not-look line about it would be noise on every fresh box.
+    if (doorAskFailed && existsSync(join(unitDir, doorUnit)))
+      warn(`could not ask systemd whether ${doorUnit} is running — ${doorAskFailed}. That is this command `
+        + "failing to look, not a report that the door is down.");
+    // THE RESTART COUNT IS HISTORY, AND THIS IS WHERE IT IS WORTH READING. It
+    // used to be printed by `start --background`, where it can only ever be zero: that path either
+    // installs the units fresh or refreshes them, and an explicit `systemctl restart` sets the counter
+    // to 0. MEASURED ON systemd 255.4-1ubuntu8.17, and the version travels with the claim on purpose:
+    // that reset is not documented contract, and the note which lived here first — "only `reset-failed`
+    // clears it" — was an unmeasured premise repeated until it was believed. Doctor is the command a
+    // reader runs on a box they did NOT just restart, so a
+    // count above zero here is real: the door has died at least once and systemd brought it back.
+    //
+    // `info`, NOT a problem and not a blocker. It decides nothing — a door failing NOW reads
+    // `activating/auto-restart` and is reported by the state description below. This is the line that
+    // stops a reader concluding "it is fine" from a green door that has been quietly restarting, and
+    // it names the command that clears the count WITHOUT touching the running process.
+    if (doorRestarts > 0 && doorActive)
+      info(`${doorUnit} has restarted ${doorRestarts} time(s) since it was loaded — history, not a fault: `
+        + `it is running now. \`journalctl --user -u ${doorUnit} -n 50\` shows why it went down; `
+        + `\`systemctl --user reset-failed ${doorUnit}\` clears the count without restarting it.`);
     // THE UNITS' ENVIRONMENT, NOT THIS SHELL'S (F34) — the second of the two false problems. On a
     // hosted box the door's fence flag lives in the file the units load; reading it here from
     // process.env reported a fully-configured door as half-configured, while the running service's own
@@ -1573,7 +1788,48 @@ export async function runCheck() {
     const doorEnvKnown = !hosted || unitEnv?.known === true;
     const doorEnv = hosted && unitEnv?.known === true ? unitEnv.env : process.env;
     if (!doorEnvKnown) warn(couldNotDetermine("CLIENT_MCP_ACCOUNT_ACCESS", unitEnv));
-    const door = doorState({ env: doorEnv, unitDir, exists: existsSync, active: doorActive });
+    // THE PORT AND ITS ALLOW-LIST ARE ONE SETTING, AND NOTHING SAID SO (, Hera's
+    // operator pass). `start` derives CLIENT_MCP_ALLOWED_HOSTS from the port it resolved, so moving the
+    // port THROUGH start works. Moving it in the env file the units load does not: the door binds the
+    // new port and then answers "403 Invalid Host header" on every request, because the allow-list still
+    // names the old one. A door that is up, listening, and refuses everything is the worst of the three
+    // states to debug, and nothing surfaced the mismatch.
+    {
+      const { clientDoorPort: portOf, allowedHosts: hostsFor } = await import(join(REPO, "shared", "client-door.mjs"));
+      const declared = String(effective("CLIENT_MCP_ALLOWED_HOSTS")?.v ?? "").trim();
+      if (declared) {
+        const port = portOf(doorEnv);
+        const wanted = hostsFor(port, doorEnv).split(",");
+        // ONE ENTRY IS ENOUGH: the list may legitimately carry a public hostname as well, so this asks
+        // whether the loopback pair for THIS port is in it, not whether the strings are equal.
+        const covers = wanted.filter((h) => h.startsWith("127.0.0.1:") || h.startsWith("localhost:"))
+          .some((h) => declared.split(",").map((x) => x.trim()).includes(h));
+        if (!covers)
+          blocking(`CLIENT_MCP_ALLOWED_HOSTS does not name port ${port}, which is where the client door binds. `
+            + "The door will start and answer 403 Invalid Host header on every request. These two are one "
+            + `setting: move the port and the list together — for this port it needs 127.0.0.1:${port} and localhost:${port}.`);
+      }
+    }
+
+    // IS ANYTHING ANSWERING? ( — bb8's F11.) The unit file is evidence about the
+    // background shape only. A foreground `clearotron start` runs the door as its own child with no unit
+    // at all, and this section then told a reader whose door was listening that it "is not set up here",
+    // pointing them at the command they had just run. One loopback connect settles it, and null stays
+    // null — a probe that could not be made is not a door that is absent.
+    let doorListening = null;
+    try {
+      const { clientDoorPort: portOf } = await import(join(REPO, "shared", "client-door.mjs"));
+      const { createConnection } = await import("node:net");
+      doorListening = await new Promise((resolve) => {
+        const sock = createConnection({ host: "127.0.0.1", port: portOf(doorEnv), timeout: 700 });
+        const done = (v) => { sock.destroy(); resolve(v); };
+        sock.once("connect", () => done(true));
+        sock.once("timeout", () => done(null));      // no answer in time is not proof of absence
+        sock.once("error", (e) => done(e.code === "ECONNREFUSED" ? false : null));
+      });
+    } catch { /* stays null — nobody could ask */ }
+    const door = doorState({ env: doorEnv, unitDir, exists: existsSync, active: doorActive,
+      listening: doorListening, activeState: doorActiveState, subState: doorSubState });
     // EVERY COMMAND THROUGH `invoke`. Doctor's own guard runs every command doctor
     // prints from a directory that is not the install; a literal `clearotron start` in that text is
     // `command not found` for a reader with no shim, and the guard caught exactly that the moment this
@@ -1628,9 +1884,25 @@ export async function runCheck() {
   } catch (e) { warn(`the client-connector state could not be read: ${e.message}`); }
 
   say("");
+  // NAMED, NOT COUNTED, AND NAMED FIRST — before the problem count and independently of it. Listing
+  // blockers only when `problems` is empty would reproduce this command's original defect one level up:
+  // an install with one misconfiguration AND no register would print the count, exit 1, and never
+  // mention that nothing can search. Both are true at once, so both are said.
+  if (blockers.length) {
+    say(`  This install cannot do everything yet:`);
+    for (const b of blockers) say(`    · ${b}`);
+    say("");
+  }
   if (problems.length) {
     say(`  ${problems.length} problem(s). Nothing was written — this command only reads.\n`);
     return 1;
+  }
+  // The exit status stays 0: an unfinished install is not a broken one, and `--check` separates an
+  // absence from a misconfiguration. What changed is that the closing line no longer says nothing is
+  // wrong while something that stops the product stands above it.
+  if (blockers.length) {
+    say("  Nothing is MISconfigured — fix those and nothing else here needs changing. Nothing was written.\n");
+    return 0;
   }
   say("  Nothing wrong with what is configured. Nothing was written.\n");
   return 0;
@@ -1705,7 +1977,11 @@ const confirm = async (q, def = true) => {
  */
 const askValue = async (q, { def = "", secret = false, skippable = false, skipped = null } = {}) => {
   for (;;) {
-    const hint = def ? ` [${def}]` : (skippable ? " [Enter to add it later]" : "");
+    // — F20, mechanical fix 2. "later" reads as a deferral the product will
+    // chase, and nothing does: there is no step that comes back for this. One place, so every skippable
+    // prompt in the wizard changes together — which is the point, since the finding was that four
+    // consecutive prompts each defensible alone taught the reader that the wording carries no signal.
+    const hint = def ? ` [${def}]` : (skippable ? " [Enter to skip]" : "");
     const prompt = `  ${q}${hint} `;
     const a = secret ? await askSecretRaw(prompt) : await askRaw(prompt);
     const v = a || def;
@@ -1758,7 +2034,8 @@ try {
   // rather than at the top of main() so that `--check`, which writes nothing and is run repeatedly,
   // does not wear it either.
   say("");
-  say(banner({ title: "Clearotron setup", subtitle: "one pass, and everything here is skippable", style }));
+  say(banner({ title: "Clearotron setup", subtitle: "one pass, and everything here is skippable", style,
+               mark: bracketAsciiCells(), columns: process.stdout.columns }));
   say("");
   say(`  ${style.bold("Before you start")} — what this setup can take, so nothing here surprises you:`);
   // `vendor`, not `label`: the labels are engineer sentences carrying flag names, and a question a
@@ -2029,8 +2306,17 @@ try {
           }
         }
       }
-      if (!await confirm("Fixed it? Run the turn again", true)) {
-        info("Not proven, so not written.");
+      // — bb8's F9, and the same trap closed one prompt over. The default
+      // was YES, so Enter re-ran a probe that CANNOT succeed until the reader has signed in somewhere
+      // else — and the wizard's own header tells them Enter is the safe key. Driven with Enter it went
+      // 19 attempts, no cap and no escape, in a wizard whose header says everything here is skippable.
+      //
+      // Enter now declines. The reader lands back on the engine menu, whose last row configures no
+      // engine at all, so the way out is the one that already exists rather than a second one invented
+      // here — and the line says what that costs before they take it.
+      if (!await confirm("Fixed it? Run the turn again", false)) {
+        info("Not proven, so not written. Back to the engine menu — its last row configures no engine: "
+          + "the demo and a replayed report still work, and a real clearance refuses by name until one is set.");
         continue engine;
       }
     }
@@ -2197,16 +2483,22 @@ try {
   //. No default ⇒ say so and say what unset costs them; a default ⇒ name the real one. Either way
   // the answer moves when driver.config.mjs moves, which is the only reason it was wrong before.
   const poolDefault = defaultWith("CLEAROTRON_REPORTS_DIR", () => config.poolRoot);
+  // — F20. This led with the RISK and explained its own missing default at
+  // length. Both halves were true and well written, and that was the trouble: it taught the reader to
+  // expect that much explanation everywhere, so two prompts later, where there was none, the owner
+  // stopped. Leads with what is being asked now; the safety point that made it long is kept, one line
+  // shorter, and still decided by the getter rather than by whoever last edited this text.
+  const baseDefault = join(homedir(), "trademark");
+  prose("Reports, run workspaces, queues and locks all live under one directory.");
   if (poolDefault.refusal) {
-    say(`  CLEAROTRON_REPORTS_DIR has NO built-in default: left unset, a run refuses and names it rather than`);
-    say("  guessing at a pool. Setup gives it a real path under your home directory, so this install");
-    say("  publishes only where you own the disk.");
+    prose(`Enter accepts ${baseDefault}. There is no built-in default for the pool — left unset a run`,
+          "refuses and names it rather than guessing — so setup gives it a real path under your home,",
+          "and this install publishes only where you own the disk.");
   } else {
-    say(`  Left unset, published reports would go to ${poolDefault.value} — on a deployed server that is`);
-    say("  somebody's real client archive. Setup never relies on that: your paths go under your home");
-    say("  directory.");
+    prose(`Enter accepts ${baseDefault}. Left to the built-in default, published reports would go to`,
+          `${poolDefault.value} — on a deployed server that is somebody's real client archive.`);
   }
-  const base = await askValue("Base directory:", { def: join(homedir(), "trademark") });
+  const base = await askValue("Base directory:", { def: baseDefault });
   candidate.CLEAROTRON_REPORTS_DIR = join(base, "pool");
   candidate.CLEAROTRON_WORK_DIR = join(base, "workspace");
   candidate.CLEAROTRON_QUEUE_DIR = join(base, "queue");
@@ -2224,10 +2516,16 @@ try {
   // ASKED, NOT REQUIRED. A local install with no web front is a real shape and must not be blocked by a
   // question about one — so empty is a legitimate answer, and the consequence of it is said out loud
   // rather than discovered later.
-  say("\n  How a delivered report is linked to");
-  say("  Reports are written to the pool above. If this install serves that pool over the web, the");
-  say("  notification links point at it through this address. Left EMPTY a run still delivers — the");
-  say("  report is produced either way — and the notification carries no link into it.");
+  // THE PROMPT THAT STOPPED THE OWNER ( — F19), rewritten to F20's template: what is
+  // being asked for in the reader's words, one line on what it is for, one line on the default or what
+  // skipping costs. Everything in the old text was true and none of it answered "what happens to me if
+  // I press Enter", which is the only question an installer has at a prompt. Its heading named an
+  // internal concept, its consequence sat mid-paragraph and in the negative, and it never answered the
+  // question he actually asked — why is there no default — whose honest answer is one clause.
+  say("\n  The link in delivery notifications");
+  prose("When a run finishes, whoever ordered it gets a notification. This is the web address the link",
+        "in it points to. No default — it is your public hostname, and only you know it.");
+  prose("Skip it and runs still deliver; the notification just carries no link.");
   // SKIPPABLE, because "(empty for none)" was a promise the prompt could not keep. `{ def: "" }` makes
   // Enter yield the empty string, `present("")` is false, and askValue loops with "A value is needed
   // here." — so a reader taking the header at its word ("Enter takes the default in brackets") on the
@@ -2268,12 +2566,16 @@ try {
   // connector from its maker's servers, even one whose app is running on the reader's own machine. That
   // is the fact the whole ruling turns on (§3), and it is why a loopback address is not offered here as
   // a convenience.
+  // — F20. Five lines that led with a networking concept and buried the
+  // consequence at the end. Its explanation of WHY an assistant reaches the box from a vendor's cloud is
+  // genuinely useful and is a document, not a prompt — it lives in mcp-server/CONNECT.md, and the prompt
+  // carries one line and a pointer.
   say("\n  The address clients' assistants reach this install at");
-  say("  An assistant connects from its maker's servers, not from the reader's device — so this needs");
-  say("  an address on the public internet, over https. The usual shape is the hostname the portal is");
-  say("  already served from with /mcp on the end, which needs one route rather than a second");
-  say("  certificate. Left EMPTY this is a local install: everything works on this machine, and the");
-  say("  Use-your-AI page says so honestly instead of handing out an address that fails.");
+  prose("An assistant connects from its maker's servers, not from your machine, so this has to be an",
+        "address on the public internet, over https.");
+  prose("No default — it is your hostname. Skip it and this stays a local install: everything works",
+        "here, and the Use-your-AI page says so rather than handing out an address that fails.");
+  prose("The usual shape, and why: mcp-server/CONNECT.md.");
   const { clientDoorReachability } = await import(join(REPO, "shared", "client-door.mjs"));
   for (;;) {
     const clientUrl = await askValue("Public connector address:", {
@@ -2312,11 +2614,15 @@ try {
   //
   // Defaulted BESIDE the data directory rather than under the repository. That is the entire fix: the
   // split the engine is designed for only holds if the default lands on the right side of it.
+  // — F20. This had a default and never said what accepting it MEANT, which is
+  // the one thing the template requires of a prompt that offers one. A reader pressing Enter here was
+  // making a decision about where their customer data lives without being told they had made it.
+  const cfgDefault = join(base, "config");
   say("\n  Where this install keeps its own configuration");
-  say("  Your customers and any doctrine you override live here — NOT in the checkout. Keeping them");
-  say("  outside it is what lets you take our updates with `git pull` instead of merging into files you");
-  say("  never meant to own.");
-  const cfg = await askValue("Configuration directory:", { def: join(base, "config") });
+  prose("Your customers and any doctrine you override live here, outside the checkout — which is what",
+        "lets you take updates with `git pull` instead of merging into files you never meant to own.");
+  prose(`Enter accepts ${cfgDefault}, and your customers are written there.`);
+  const cfg = await askValue("Configuration directory:", { def: cfgDefault });
 
   // A store inside the checkout is the exact defect this step exists to prevent, so it is refused here
   // rather than warned about later. resolve() on both sides, and a separator on the prefix, so
@@ -2335,9 +2641,28 @@ try {
   // that reader keeps. Written retired, it works today through the compat window and stops working the
   // day that window closes, on a machine nobody is watching.
   candidate["CLEAROTRON_CUSTOMERS_DIR"] = join(cfg, "profiles");
-  candidate["CLEAROTRON_INSTRUCTIONS_DIR"] = join(cfg, "skills");
   candidate.PROFILE_REPO_ROOT = cfg;   // no alias row — this name is current
-  for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_INSTRUCTIONS_DIR", "PROFILE_REPO_ROOT"]) ok(`${k}=${candidate[k]}`);
+  for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"]) ok(`${k}=${candidate[k]}`);
+
+  // CLEAROTRON_INSTRUCTIONS_DIR IS DELIBERATELY NOT WRITTEN ( — bb8's F25).
+  //
+  // Setup used to point it at `<cfg>/skills` and create that directory empty. `clearotron start` then
+  // makes `<cfg>` a git repository for saved searches — so the doctrine store ends up INSIDE a checkout
+  // that tracks no file under it, and `preflightSkillsStore` classifies exactly that as `blocked`:
+  // "doctrine store COULD NOT BE IDENTIFIED ... could-not-determine is not a pass". Every run on every
+  // install where the wizard had been run carried that line, for the whole life of the install.
+  //
+  // Measured on this tree rather than reasoned about: unset classifies `pass`, an empty directory
+  // outside a repository classifies `pass`, and an empty directory inside one classifies `blocked`. So
+  // the variable was the cause and unset is the cure — which is also the documented supported mode:
+  // doctrine resolves to the product's own files and doctor calls that "a normal, supported state".
+  //
+  // Note for whoever adds an overlay later: it needs this name set, which is why the line below says so
+  // rather than leaving a reader to discover that files they dropped in are being ignored.
+  info(`doctrine: this install overrides nothing, so CLEAROTRON_INSTRUCTIONS_DIR stays unset and the `
+    + `product's own files are used. To override a doctrine file later, put it in ${join(cfg, "skills")}, `
+    + `COMMIT it in ${cfg}, and set CLEAROTRON_INSTRUCTIONS_DIR to that directory — an uncommitted store `
+    + "cannot be identified, and a run says so rather than guessing.");
 
   // DELIBERATELY NOT SEEDED, and this reverses what the issue asked for. Copying the house `generic.json`
   // in would make the store a working install — but since an EMPTY store already is one: profiles
@@ -2387,18 +2712,7 @@ try {
     chmodSync(`${ENV_PATH}.bak`, 0o600);
     ok(`existing .env backed up to ${ENV_PATH}.bak`);
   }
-  const body = [
-    "# Written by `npm run setup`. Environment variables always win over this file.",
-    "# It holds credentials: keep it at mode 600, and out of git (.gitignore already covers it).",
-    "",
-    // — VALIDATE under the names the engine reads, WRITE the names an installer should now see.
-    // Without this a fresh `npm run setup` emits a .env full of deprecated spellings and the very next
-    // run warns about the file the wizard just wrote. Safe as a straight key map because `candidate`
-    // never holds both halves of a collapsed pair: the engine section probes ONE engine and records
-    // only that engine's binary variable.
-    ...Object.entries(candidate).map(([k, v]) => `${k}=${v}`),
-    "",
-  ].join("\n");
+  const body = composeEnvBody(candidate, existsSync(ENV_PATH) ? readEnvFile(ENV_PATH) : {});
   // Atomic: a half-written .env is a file the loader reads and the engine believes. Write beside the
   // target (same filesystem, so rename is atomic), fix the mode BEFORE it is visible under its real
   // name, then rename over.
@@ -2419,7 +2733,7 @@ try {
   // store is a hard error on both sides (driver/profiles.mjs and config.resolveSkillPath both throw
   // rather than fall back, so a permissions fault can never silently swap a customer's framework for the
   // Generic default). Nothing is written INTO them — see the note at step 7b.
-  for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_INSTRUCTIONS_DIR"]) mkdirSync(candidate[k], { recursive: true });
+  for (const k of ["CLEAROTRON_CUSTOMERS_DIR"]) mkdirSync(candidate[k], { recursive: true });
   ok(`configuration directories created under ${cfg} (empty — doctrine and the generic fallback show through; customers are yours to add)`);
 
   // 9a ── PUT THE VERB ON THIS OPERATOR'S PATH
@@ -2478,6 +2792,26 @@ try {
   // So the weight goes on the heading and on the dimming around it, and the command is the one
   // undimmed line in the block — which is the contrast that matters anyway. Styling the command itself
   // would have bought a shade of emphasis at the price of a guard that can read the screen.
+  // — F21. The wizard ended by handing the reader a next command and never said
+  // it had FINISHED, or what state it had left the box in. The header invites skipping — "everything
+  // here is skippable" — and the owner took it up, repeatedly; a reader who has skipped several answers
+  // then has no way to tell what they ended up with except by re-reading their own answers upward.
+  //
+  // NO COMMAND APPEARS IN THIS BLOCK, deliberately. The arm below this screen extracts say() literals
+  // and asserts which command LEADS; a command named here would lead instead, and the guard that has
+  // twice caught this screen regressing would start reporting the wrong thing.
+  const stateLine = (label, value, absent) => `${value ? "set" : "not set"} — ${label}: ${value || absent}`;
+  say(`\n  ${style.bold("Setup finished.")} Nothing here needs running again.\n`);
+  say("  What this box has now:");
+  for (const line of [
+    stateLine("register", candidate.CLEAROTRON_DATABASE, "no register, so every search refuses until one is chosen"),
+    stateLine("web research", present(candidate.PERPLEXITY_API_KEY) ? "a key" : "", "a clearance refuses at preflight; a knockout search runs and discloses the half it skipped"),
+    stateLine("data directory", candidate.CLEAROTRON_REPORTS_DIR, "unset"),
+    stateLine("configuration store", candidate.CLEAROTRON_CUSTOMERS_DIR, "the bundled demo roster"),
+    stateLine("notification links", candidate.CLEAROTRON_REPORTS_URL, "notifications carry no link into the report"),
+    stateLine("client connector", candidate.CLEAROTRON_CLIENT_MCP_URL, "local install; the Use-your-AI page shows its empty state"),
+  ]) say(`    ${line}`);
+
   say(`\n  ${style.bold("Start here:")}\n`);
   say(`    ${invocationPrefix()}clearotron start\n`);
   say("      Starts the portal and the engine door, prints one address, and opens it. That address is");

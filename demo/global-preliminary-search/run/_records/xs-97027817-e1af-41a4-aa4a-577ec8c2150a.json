@@ -1,0 +1,162 @@
+{
+  "uri": "/mark/xs/97027817-e1af-41a4-aa4a-577ec8c2150a",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "97027817-e1af-41a4-aa4a-577ec8c2150a",
+  "applicationNumber": null,
+  "registrationNumber": "461769",
+  "applicationDate": null,
+  "registrationDate": "2009-05-26",
+  "expiryDate": null,
+  "renewalDate": "2014-04-16",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "BLACK RAVEN QUAIL HUNTS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2
+      ],
+      "language": "en",
+      "description": "Guided quil hunts",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Guided quil hunts",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "F. JACK CASEY",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "64206 EAST MEUNDER DRIVE, TUCSON, AZ, 85739",
+        "applicantAddressCity": "TUCSON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "85739",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "64206 EAST MEUNDER DRIVE",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "F. JACK CASEY",
+        "applicantPhoneNumber": "520-825-2238"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Guided quil hunts"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Guided quil hunts"
+        }
+      ]
+    },
+    "id": "97027817-e1af-41a4-aa4a-577ec8c2150a",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "64206 EAST MEUNDER DRIVE, TUCSON, AZ, 85739",
+        "city": "TUCSON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "F. JACK CASEY",
+        "phoneNumber": "520-825-2238",
+        "postalCode": "85739",
+        "stateName": "ARIZONA",
+        "street": "64206 EAST MEUNDER DRIVE"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "64206 EAST MEUNDER DRIVE, TUCSON, AZ, 85739",
+        "city": "TUCSON",
+        "legalEntity": "INDIVIDUAL",
+        "name": "F. JACK CASEY",
+        "phoneNumber": "520-825-2238",
+        "postalCode": "85739",
+        "renewalDate": "20140416",
+        "stateName": "ARIZONA",
+        "street": "64206 EAST MEUNDER DRIVE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20060421"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20090526",
+        "registrationNumber": "461769"
+      },
+      "renewalDate": "20140416"
+    },
+    "usStateOfficeCode": "AZ",
+    "usStateOfficeName": "ARIZONA",
+    "version": "20241213181259",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "BLACK RAVEN QUAIL HUNTS"
+    }
+  },
+  "_uri": "/mark/xs/97027817-e1af-41a4-aa4a-577ec8c2150a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.568Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

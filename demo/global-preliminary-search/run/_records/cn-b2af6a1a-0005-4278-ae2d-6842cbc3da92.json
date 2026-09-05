@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/b2af6a1a-0005-4278-ae2d-6842cbc3da92",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b2af6a1a-0005-4278-ae2d-6842cbc3da92",
+  "applicationNumber": "50722642",
+  "registrationNumber": null,
+  "applicationDate": "2020-10-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七采",
+  "markTransliteration": "COLOUR SEVEN QI CAI 7",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "文档数字化(扫描),包装设计服务,计算机程序和数据的数据转换(非有形转换),与食品和膳食补充剂的研究有关的技术咨询,替他人研究和开发新产品,把有形的数据或文件转换成电子媒体,计算机系统设计,计算机软件维护,计算机软件设计,商品和服务的质量控制",
+      "translation_language": "en",
+      "translation": "Document digitization (scanning), packaging design services, data conversion of computer programs and data (non-tangible conversion), technical consultation related to the research of food and dietary supplements, research and development of new products for others, and use of tangible data or File conversion into electronic media, computer system design, computer software maintenance, computer software design, quality control of goods and services"
+    }
+  ],
+  "owner": "Henan Baiermai Trading Company",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "河南省郑州市金水区纬五路与花园路交叉口东北角金融广场1号楼3单元1002号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Henan Baiermai Trading Company",
+        "applicantNativeName": "河南拜尔麦商贸有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Document digitization (scanning), packaging design services, data conversion of computer programs and data (non-tangible conversion), technical consultation related to the research of food and dietary supplements, research and development of new products for others, and use of tangible data or File conversion into electronic media, computer system design, computer software maintenance, computer software design, quality control of goods and services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "文档数字化(扫描),包装设计服务,计算机程序和数据的数据转换(非有形转换),与食品和膳食补充剂的研究有关的技术咨询,替他人研究和开发新产品,把有形的数据或文件转换成电子媒体,计算机系统设计,计算机软件维护,计算机软件设计,商品和服务的质量控制"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "b2af6a1a-0005-4278-ae2d-6842cbc3da92",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "国家工商行政管理总局商标审查协作郑州中心"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201026",
+        "applicationNumber": "50722642"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004073720",
+    "wordMarkSpecification": {
+      "markTransliteration": "COLOUR SEVEN QI CAI 7",
+      "markVerbalElementText": "七采"
+    }
+  },
+  "_uri": "/mark/cn/b2af6a1a-0005-4278-ae2d-6842cbc3da92",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

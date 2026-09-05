@@ -1,0 +1,985 @@
+{
+  "schema_version": 7,
+  "rated_under_framework": "house-default",
+  "corrections": {
+    "applied": true,
+    "note": "Flag 1 (proceedings history, BLOCKING) — corrected: /mark/eu/013806948 re-read on this pass (fetched 2026-08-11T08:05:52Z, screen-gate refetch); five proceedings across the 27 fetched records, three of them 2015 oppositions against SCHÖFFEL Sportbekleidung's VENTURI in classes 23/24/25, all withdrawn; 24 other fetched records return empty lists; narrative Coverage and the opposition-history coverage row rewritten, and ordinal 3's practical_position corrected from 'no proceedings recorded' to 'no registry document obtained, history unknown'. | Flag 2 (three VENKO sheet-2 positions) — corrected in narrative: the ground on which they leave the rated set is now stated (a five-letter sign that stops where VENQORI's distinctive -QORI material begins; the pending Polish application's field unknown rather than off-field). No finding object added — the findings contract is closed. | Flag 3 (goods-amendment step) — corrected in narrative: 'The conditionality is not about that conflict' replaced by the class-9 narrowing step, which is what actions[0] already carries; findings.json actions[0] was already correct and is unchanged. | Flag 4 (fourteen annexed specifications) — corrected: the fetched specifications, QORD's remote-monitoring and computer-software class-9 wording with its read-before-you-settle instruction and QRI's bare class-9/41 wording, now carried in narrative Coverage and in the goods-and-services coverage row. | Flag 5 (finding 1 content model) — corrected in narrative: the legal read now stops at the unread class-9 specification and the payments-brand fact sits in the practical paragraph. Band, borderline_between, meters and quadrant unchanged — the demotion stands. findings.json ordinal 1 already stated the two positions apart and is unchanged. | Flag 6 (VENTURI in-lane count) — corrected to three unrelated proprietors inside the instructed classes, with SCHÖFFEL named as separate class-23/24/25 corroboration, in narrative finding 2, ordinal 2 legal_position, the VENTURI counter_registration note and four_answers.third_party_rights.basis. Band unchanged: three in-lane proprietors still carry the dilution read. | Flag 7 (applicant identity) — corrected: carried as a run-level open item in narrative Coverage, and the existing applicant-identity coverage note extended to state it applies to every position swept. | Placement ruling 'no official registry record was fetched into this run / band_record reports nothing on file for any URI / no specification for any of the 52 positions' — counter-reasoned, not adopted: its premise is false for 27 records, verified this pass by band_record on /mark/eu/013806948, which returned a fetched document with full class-23/24/25 goods and three oppositions. What survives of the ruling — no document for the headline candidate, for any sheet-2 entry or for findings 1 to 9 — is preserved in narrative Coverage and in the goods-and-services coverage row, which stays coverage-limited. Every other ruling in the tail is adopted unchanged; none is touched by these flags."
+  },
+  "mark_assessment": {
+    "distinctiveness": {
+      "read": "A strong name to own. VENQORI is coined, arbitrary for water-monitoring software and training, and the whole seven-letter word is the distinctive unit — there is no descriptive part to strip out.",
+      "spectrum": "Fanciful — an invented token with no dictionary meaning in any EU language.",
+      "per_class": [
+        {
+          "class": "9",
+          "note": "Arbitrary for downloadable water-quality monitoring software. No absolute-grounds flag: not descriptive, generic, laudatory, geographic or deceptive for these goods."
+        },
+        {
+          "class": "41",
+          "note": "Arbitrary for online training services. Same reading; nothing in the mark describes teaching or water compliance."
+        }
+      ],
+      "per_market": [
+        {
+          "market": "FR / DE / ES / IT / NL / PL / EL",
+          "note": "Reads the same in every relevant market language — nothing makes it descriptive of these goods in any of them."
+        },
+        {
+          "market": "BG (Cyrillic) / EL and CY (Greek)",
+          "note": "The transliterated forms Венкори and Βενκόρι are equally coined and equally distinctive; both returned nothing on the register."
+        }
+      ],
+      "counter_registrations": [
+        {
+          "mark": "qori",
+          "uri": "/mark/eu/018575624",
+          "note": "The mark's second element stands as a separate live class-9 registration, so rights in that element alone are not the company's to claim."
+        },
+        {
+          "mark": "VENTURI",
+          "uri": "/mark/eu/014636724",
+          "note": "The nearest whole-word neighbour on the register, and one of three unrelated proprietors of the term inside the instructed classes; a fourth holds it in classes 23, 24 and 25."
+        }
+      ],
+      "note": "The VEN- opening is a crowded brand fragment across the EU class-9 and class-41 register; the strength sits in the whole word, not in either half."
+    },
+    "connotation": {
+      "read": "QORI is Quechua for gold, and an Andean word for gold on a water-quality product sits beside a documented Andean gold-mining water-contamination controversy — inside this product's own subject area. Otherwise the meaning sweep came back benign across the languages and scripts searched, with one thin exception: a single community thread debates whether \"kori\" reads as condescending in Cypriot Greek.",
+      "per_market": [
+        {
+          "market": "Andean region (PE / BO / EC / CO)",
+          "note": "Andean Community Decision 486 bars registration of signs consisting of the names of indigenous, Afro-descendant or local communities. It does not bind EUIPO and is not a registrability question on the instructed register."
+        },
+        {
+          "market": "EL / CY",
+          "note": "Κόρι and Кори read in ordinary Greek as \"daughter/girl\"; one Reddit thread raises a condescending colloquial use. Thin evidence, and it attaches to the transliteration rather than to the Latin mark."
+        }
+      ]
+    }
+  },
+  "findings": [
+    {
+      "ordinal": 1,
+      "mark": "qori",
+      "owner": {
+        "name": "Firepay Merchant Services",
+        "country": "FR",
+        "registrations": [
+          {
+            "uri": "/mark/eu/018575624",
+            "classes": [
+              "9",
+              "35",
+              "36",
+              "42"
+            ],
+            "status": "Registered",
+            "filed": "2021-10-12",
+            "expiry": "2031-10-12",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "borderline_between": [
+        "Moderate",
+        "Manageable"
+      ],
+      "net": "Firepay Merchant Services' live EU registration of qori reaches the company's class-9 software but is unlikely to prevail against VENQORI as a whole.",
+      "disposition": "adversarial",
+      "legal_position": "QORI is reproduced identically inside VENQORI and the right is live in the company's core class 9, so an opposition is pleadable on whole-mark incorporation plus class identity. Compared as wholes the marks separate: VENQORI is a single coined seven-letter unit whose dominant opening is VEN-, not a composite of two signs, and the class-9 specification is unread so the reach of the overlap is unestablished.",
+      "practical_position": "The proprietor trades as Qori, a French merchant-payments brand offering pay-by-bank and crypto-to-fiat acceptance in France, Spain and the UK — a channel and customer set that meets EU water utilities and regulators nowhere. A French business-registry page records a liquidation judiciaire entry and an Estonian regulator's listing shows the cross-border activity licence expired, while the service terms remain published; no registry document for this right was obtained, so its proceedings history is unknown rather than clear.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.45,
+        "y": 0.5
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/018575624"
+      },
+      "use_check": {
+        "source": "https://qori.me/terms-and-conditions/",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 2,
+      "mark": "VENTURI",
+      "owner": {
+        "name": "Ridgemount Technologies Limited",
+        "country": "GB",
+        "registrations": [
+          {
+            "uri": "/mark/eu/014636724",
+            "classes": [
+              "9"
+            ],
+            "status": "Registered",
+            "filed": "2015-10-05",
+            "expiry": "2035-10-05",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "borderline_between": [
+        "Moderate",
+        "Manageable"
+      ],
+      "net": "Ridgemount Technologies' VENTURI, registered for bare class 9 in the EU, is unlikely to prevail against VENQORI.",
+      "disposition": "adversarial",
+      "legal_position": "This is the closest mark to VENQORI on the EU register — five of seven letters share position and only the medial pair differs — and it sits unrestricted in the company's core class 9, so the goods must be assumed wide until the specification is read. Against that, VENTURI carries an ordinary flow-measurement and surname meaning a coined VENQORI does not, the difference falls where a professional reader's eye rests, and the term is shared: the EU register carries 135 live VENTURI-formative rights, 67 of them in classes 9, 41 and 25, and the exact term inside the instructed classes narrows to three unrelated proprietors (findings 2, 3 and 4). A fourth proprietor, SCHÖFFEL Sportbekleidung, holds VENTURI for yarns, textiles and clothing in classes 23, 24 and 25 — corroboration from a different goods lane, which earns nothing in this one. The fetched document for that fourth right records three oppositions filed against it in 2015, all withdrawn and none naming its opponent: the term has drawn opposition once, in the textile classes, and no enforcer stands behind this right.",
+      "practical_position": "Ridgemount designs and manufactures fibre-optic connectors, and Venturi is its connector range — a business that meets water utilities and regulators nowhere. That bears on whether this owner would act; it does not read the registration down. No registry document was obtained for this right, so its proceedings history is unknown.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.5,
+        "y": 0.7
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/014636724"
+      },
+      "use_check": {
+        "source": "https://ridgemount.com/products/fibre-optic-connectors/",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 3,
+      "mark": "VENTURI",
+      "owner": {
+        "name": "Jörg Wollesen",
+        "country": "DE",
+        "registrations": [
+          {
+            "uri": "/mark/eu/009409392",
+            "classes": [
+              "7",
+              "41",
+              "42"
+            ],
+            "status": "Registered",
+            "filed": "2010-09-29",
+            "expiry": "2030-09-29",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Jörg Wollesen's VENTURI is unlikely to prevail against VENQORI in the EU, its class-41 services reading on a register mirror as combine-harvester training.",
+      "disposition": "adversarial",
+      "legal_position": "The only VENTURI right landing in instructed class 41 and in class 42, the closest adjacency to the company's own goods, and the mark reads as it does in finding 2. A register mirror reports the specification as agricultural machinery in class 7, workshops and training on the use and maintenance of combine harvesters in class 41, and machine engineering for agricultural equipment in class 42 — combine-harvester operator training and drinking-water compliance certification are different lanes inside one class, on different buyers and channels. The official registry document was not obtained, so that wording is reported rather than read.",
+      "practical_position": "An individual proprietor with no company, website or trading presence located under the mark; a register mirror is not evidence of use. The right has stood since 2011, and no registry document was obtained for it, so its proceedings history is unknown rather than clear.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.4,
+        "y": 0.7
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/009409392"
+      },
+      "use_check": {
+        "source": "https://tmdb.eu/marke/EU-009409392::venturi-joerg-wollesen.html",
+        "quality": "register-mirror"
+      }
+    },
+    {
+      "ordinal": 4,
+      "mark": "VENTURI",
+      "owner": {
+        "name": "Gildo-Pierre Pallanca-Pastor",
+        "country": "MC",
+        "registrations": [
+          {
+            "uri": "/mark/eu/019280435",
+            "classes": [
+              "9",
+              "12",
+              "42"
+            ],
+            "status": "Registered",
+            "filed": "2025-11-21",
+            "expiry": "2035-11-21",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Gildo-Pierre Pallanca-Pastor's VENTURI is a Monaco electric-vehicle marque and is unlikely to prevail against VENQORI in classes 9 and 42.",
+      "disposition": "adversarial",
+      "legal_position": "The mark reads as it does in finding 2 and the same shared-term dilution across the EU classes searched applies. Classes 9 and 42 are present and the specification is unread, so the goods cannot be excluded on the record; the class-12 anchor points the right at vehicles rather than at measurement software.",
+      "practical_position": "The proprietor owns Venturi, a Monaco electric-vehicle maker with a motorsport and speed-record history — no water-sector, instrumentation or training activity surfaced. The registration is recent, so a non-use challenge would not be open for some years.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.4,
+        "y": 0.7
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019280435"
+      },
+      "use_check": {
+        "source": "https://www.montecarlosbm.com/en/inspiration/interview-gildo-pallanca-pastor-venturi",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 5,
+      "mark": "QORIA",
+      "owner": {
+        "name": "Qoria Holdings Pty Ltd",
+        "country": "AU",
+        "registrations": [
+          {
+            "uri": "/mark/eu/W01779808",
+            "classes": [
+              "9",
+              "41",
+              "42"
+            ],
+            "status": "Accepted (IR designating EU)",
+            "expiry": "2033-09-28",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Qoria Holdings' QORIA covers the company's own classes 9, 41 and 42 in the EU but is unlikely to prevail against VENQORI as a whole.",
+      "disposition": "adversarial",
+      "legal_position": "The only QORI-family right live in both instructed classes plus class 42, so the class overlap is complete and the specification is unread. Compared as wholes, VENQORI does not contain QORIA: the shared material sits in the tail while the dominant openings VEN- and QOR- share nothing, leaving class overlap to carry confusion on its own, which it cannot for a tendered, technically-evaluated purchase.",
+      "practical_position": "Qoria is an operating group selling child online-safety and digital-wellbeing software to schools, with a Europe site, Spanish and UK operations and European school customers. Its class-41 activity is school safeguarding education, not professional operator certification, so its actual trade meets the company's nowhere.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.55,
+        "y": 0.5
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/W01779808"
+      },
+      "use_check": {
+        "source": "https://qoria.eu/",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 6,
+      "mark": "QUORI",
+      "owner": {
+        "name": "Quori Pte. Ltd",
+        "country": "SG",
+        "registrations": [
+          {
+            "uri": "/mark/eu/018042338",
+            "classes": [
+              "9",
+              "35",
+              "42",
+              "45"
+            ],
+            "status": "Registered",
+            "filed": "2019-03-28",
+            "expiry": "2029-03-28",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Quori Pte. Ltd's QUORI is a risk-analytics brand and is unlikely to prevail against VENQORI in class 9.",
+      "disposition": "adversarial",
+      "legal_position": "A straight homophone of the contained QORI element, live in the core class with an unread specification. As wholes the two diverge at the opening, the position a European reader weighs most, and class 41 is absent from the right entirely, leaving the company's training line untouched.",
+      "practical_position": "Quori sells AI-driven operational-intelligence and risk-management software, listed on Google Play and on a UK public-sector purchasing framework; no EU deployment, office or customer surfaced. Risk analytics and water-quality measurement are bought by different functions through different channels.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.45,
+        "y": 0.5
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/018042338"
+      },
+      "use_check": {
+        "source": "https://quori.io/",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 7,
+      "mark": "VENARI",
+      "owner": {
+        "name": "Asociación Interprofesional de la Carne de Caza (ASICCAZA)",
+        "country": "ES",
+        "registrations": [
+          {
+            "uri": "/mark/eu/019108107",
+            "classes": [
+              "41"
+            ],
+            "status": "Registered",
+            "filed": "2024-11-19",
+            "expiry": "2034-11-19",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "ASICCAZA's VENARI is the closest mark to VENQORI in the company's class 41 and is unlikely to prevail against it, its online courses teaching game-meat cookery.",
+      "disposition": "adversarial",
+      "legal_position": "By shape one of the closest positions in the band — VEN-A-RI against VEN-QO-RI shares the dominant opening and the ending — and it lands in instructed class 41 with an unread specification. The services separate them: VENARI is an international school of game gastronomy running online courses for chefs, a different shelf, buyer and subject from drinking-water operator certification, and the sign is figurative rather than a bare word.",
+      "practical_position": "A Spanish game-meat interprofessional association running a training centre at Almagro with an online platform in Spanish and English, certificates and in-person masterclasses. Its customers are chefs, hunters and food-sector professionals, and nothing places it near utilities, regulators or process-water operators.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.45,
+        "y": 0.65
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019108107"
+      },
+      "use_check": {
+        "source": "https://www.asiccaza.org/index.php/noticias-2/309-venari-lanza-la-primera-plataforma-online-del-mundo-especializada-en-gastronomia-cinegetica",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 8,
+      "mark": "VENTORIX",
+      "owner": {
+        "name": "Shenzhen Dongfang Qingsen Technology Co.",
+        "country": "CN",
+        "registrations": [
+          {
+            "uri": "/mark/eu/019371974",
+            "classes": [
+              "9",
+              "11"
+            ],
+            "status": "Application published",
+            "filed": "2026-05-28",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Shenzhen Dongfang Qingsen's pending VENTORIX confers no rights yet and is unlikely to prevail against VENQORI in classes 9 and 11.",
+      "disposition": "adversarial",
+      "legal_position": "The sign carries VENTORI, one substitution from the applied-for mark, and pairs class 9 with class 11 — treatment hardware extending into monitoring software is an ordinary line extension in this sector. The terminal -X and the differing medial letters break the whole-mark comparison, and a published application confers no right until registration.",
+      "practical_position": "No product, catalogue, trading presence or water-treatment offering under VENTORIX surfaced, and the proprietor's exact legal identity could not be confirmed among several similarly named Shenzhen companies. The application is in examination, so the specification may still narrow.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.45,
+        "y": 0.55
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019371974"
+      },
+      "use_check": {
+        "source": "perplexity_research — no result"
+      }
+    },
+    {
+      "ordinal": 9,
+      "mark": "EVENTORI",
+      "owner": {
+        "name": "WIREMIND SAS",
+        "country": "FR",
+        "registrations": [
+          {
+            "uri": "/mark/eu/019248381",
+            "classes": [
+              "9",
+              "35",
+              "36",
+              "41",
+              "42"
+            ],
+            "status": "Registered",
+            "filed": "2025-09-18",
+            "expiry": "2035-09-18",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "WIREMIND's EVENTORI is a sports-ticketing platform and is unlikely to prevail against VENQORI across the company's classes.",
+      "disposition": "adversarial",
+      "legal_position": "The broadest in-scope class profile in the band — both instructed classes plus 35 and 42 — and the sign contains VENTORI, with the specification unread. As wholes the initial E and the ordinary EVENT- reading give the mark a conceptual anchor VENQORI does not share, so the marks separate on the element a buyer actually reads.",
+      "practical_position": "EVENTORI is WIREMIND's ticketing and revenue-management SaaS for professional sports clubs and event organisers, in active use with growing club deployments. Stadium ticketing analytics and water-compliance measurement meet nowhere in the market.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.45,
+        "y": 0.5
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/019248381"
+      },
+      "use_check": {
+        "source": "https://www.wiremind.io/eventori",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 10,
+      "mark": "VENTURI (venturi.io)",
+      "owner": {
+        "name": "operating entity not confirmed",
+        "country": "",
+        "registrations": []
+      },
+      "band": "Manageable",
+      "net": "The unregistered VENTURI used at venturi.io for IoT asset monitoring has no established EU trade and is unlikely to prevail against VENQORI.",
+      "disposition": "adversarial",
+      "legal_position": "The one place a VENTURI-formative name is actually used for monitoring, and the manifest's named high-salience form neighbour, so mark similarity is high. An unregistered sign is enforceable only on its actual trade, and that trade is remote asset, fleet, facility and plant telematics — pumps, generators, HVAC, fluid levels and video — with no water-quality or environmental-compliance offering marketed anywhere on the site.",
+      "practical_position": "No EU trading presence, reseller or regional entity was established, and the operating company behind the domain could not be confirmed, so an EU claim would rest on goodwill this run did not find. Industrial IoT is a sector the matter frame flags as converging on utility telemetry, which is why the name is carried rather than dropped.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.5,
+        "y": 0.7
+      },
+      "source": {
+        "source_type": "common-law-web",
+        "resolved_link": "https://www.venturi.io/products-and-services/"
+      },
+      "use_check": {
+        "source": "https://www.venturi.io/products-and-services/",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 11,
+      "mark": "QORIQ",
+      "owner": {
+        "name": "NXP USA Inc.",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/eu/007215701",
+            "classes": [
+              "9"
+            ],
+            "status": "Registered",
+            "expiry": "2028",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "net": "NXP's QORIQ covers communications processors sold to hardware engineers and does not reach the company's water-monitoring software.",
+      "disposition": "off-field",
+      "off_field_ground": "different-field",
+      "legal_position": "The sign contains QORI but is a five-letter processor-family name, and QorIQ is NXP's communications-processor portfolio for networking, telecommunications and industrial equipment. Silicon sold to hardware and systems engineers and downloadable water-quality monitoring software are different goods bought by different people, so the class-9 number is all the two rights share.",
+      "practical_position": "NXP is a large class-9 proprietor with the portfolio and practice to watch and oppose filings, which is why the right is worth a lawyer's line. Nothing in the material read shows any assertion of QORIQ against an applications-software filer, and demand letters and settlements are private and reach no search.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.15,
+        "y": 0.45
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/007215701"
+      },
+      "use_check": {
+        "source": "https://www.nxp.com/products/T1024",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 12,
+      "mark": "ORI",
+      "owner": {
+        "name": "Siemens Healthineers AG",
+        "country": "DE",
+        "registrations": [
+          {
+            "uri": "/mark/eu/018003239",
+            "classes": [
+              "9",
+              "35",
+              "41"
+            ],
+            "status": "Registered",
+            "expiry": "2028",
+            "jurisdiction": "EU"
+          }
+        ]
+      },
+      "net": "Siemens Healthineers' ORI is a three-letter sign too remote from VENQORI as a whole to found a claim against it.",
+      "disposition": "off-field",
+      "off_field_ground": "no-material-risk",
+      "legal_position": "A bare three-letter sign against a seven-letter coined word shares only a terminal string and no dominant opening, so no confusion pathway arises whatever the class list says. The right is live in both instructed classes, which is the only reason it is mentioned at all.",
+      "practical_position": "The proprietor is a medical imaging and in-vitro diagnostics business selling to hospitals and clinical laboratories; a search could not establish what product, if any, is sold under ORI. It sits on this matter's own incumbent watchlist as a large proprietor, which is why it is worth knowing.",
+      "meters": {
+        "mark_similarity": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.4,
+        "y": 0.25
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/018003239"
+      },
+      "use_check": {
+        "source": "perplexity_research — no result"
+      }
+    }
+  ],
+  "context_notes": [
+    {
+      "type": "famous-neighbour-ungrounded",
+      "mark": "BENQ",
+      "owner": "BenQ Corporation",
+      "context": "Carried for diligence because BENQ is a well-known class-9 name sitting inside the manifest's phonetic variant BENQORI. No BENQ-family right entered the register band and no BENQORI listing surfaced on any searched platform; no record was fetched for it, so it is noted rather than treated as a conflict."
+    }
+  ],
+  "coverage": [
+    {
+      "area": "register / EU — classes 9 and 41",
+      "state": "confirmed-clean",
+      "note": "The mark itself, its root VENQOR, its spelling, sound and transposition variants, its digit-for-letter forms and its Cyrillic and Greek forms were all searched to completion and none exists."
+    },
+    {
+      "area": "register / EU — classes 42, 11, 40 and 35",
+      "state": "not-searched",
+      "note": "The mark and its variants were put to the register in classes 9 and 41 only. A close variant registered in class 42 alone — the same product sold as a service — could not have surfaced."
+    },
+    {
+      "area": "register / goods and services wording of the conflicts listed",
+      "state": "coverage-limited",
+      "note": "No official registry document was obtained for any conflict in this report, so what those registrations actually cover rests on class numbers and owner names. Documents were fetched for 27 records at other band positions: fourteen of those specifications recite unrestricted software, unrestricted measuring apparatus or bare class-41 training — QORD (/mark/eu/018900370) reciting remote monitoring and surveying apparatus and computer software in class 9 plus quality control and materials testing in class 42, and QRI (/mark/eu/011598695) reciting bare computer software and internet courses. Those are annexed on mark distance, not cleared on goods; QORD's specification should be read before the client's own class-9 and class-42 wording is settled."
+    },
+    {
+      "area": "register / national trade mark registers of the 27 member states",
+      "state": "not-searched",
+      "note": "\"EU register only\" was read as the EU-wide register at EUIPO including international registrations designating the EU. A national-only right would not have surfaced."
+    },
+    {
+      "area": "register / opposition and enforcement history",
+      "state": "coverage-limited",
+      "note": "Five proceedings appear in the registry documents this run holds, none against a conflict listed here and none naming its opponent: a withdrawn opposition against tori (/mark/eu/017969247), a closed opposition against QODI (/mark/eu/016384844) and three oppositions filed in 2015 against SCHÖFFEL Sportbekleidung's VENTURI registration in classes 23, 24 and 25, all three withdrawn. The other 24 fetched records return empty opposition, cancellation and appeal lists. For the positions with no document — findings 1 to 9 among them — the history is unknown rather than clear."
+    },
+    {
+      "area": "register / water-technology, instrument and testing companies",
+      "state": "confirmed-clean",
+      "note": "Each of the 23 named companies was searched by name against the mark and against its QORI element. None holds anything in the family."
+    },
+    {
+      "area": "common-law / marketplaces, software directories, water trade press, app stores and e-learning platforms",
+      "state": "confirmed-clean",
+      "note": "Searched across the mark and every variant — nothing trades under the name or anything close to it."
+    },
+    {
+      "area": "common-law / EU company and trade-name registers, domain records and public procurement",
+      "state": "confirmed-clean",
+      "note": "German, French, Italian, Dutch and Belgian registers, domain records and EU tender portals searched — no company, trade name or award notice under the mark."
+    },
+    {
+      "area": "common-law / Cyrillic and Greek forms on marketplaces and platforms",
+      "state": "not-searched",
+      "note": "The Bulgarian and Greek script forms were not put to any marketplace, trade-press or e-learning platform this run. They were searched on the register, where they returned nothing."
+    },
+    {
+      "area": "adjacent field — consumer and prosumer water-testing products",
+      "state": "not-searched",
+      "note": "Identified as a neighbouring product area but not searched as a field of its own; the classes it sits in were searched."
+    },
+    {
+      "area": "adjacent field — agriculture, irrigation, aquaculture and hydrology monitoring software",
+      "state": "not-searched",
+      "note": "Identified as a neighbouring product area but not searched as a field of its own; the classes it sits in were searched."
+    },
+    {
+      "area": "applicant identity",
+      "state": "open",
+      "note": "The request named no applicant, so no owner could be set aside as the applicant's own or an affiliate's. This runs across every position swept, not only the rights rated here. Confirm the applicant's legal name and affiliates before the report is finalised; any right listed that proves to be the applicant's must be dropped rather than reported as a conflict."
+    },
+    {
+      "area": "Follow-up / consumer and prosumer water testing (pool, spa, aquarium, ho",
+      "state": "open",
+      "note": "not completed this run — no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)"
+    },
+    {
+      "area": "Follow-up / agri-tech, irrigation, aquaculture and hydrology monitoring ",
+      "state": "open",
+      "note": "not completed this run — no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)"
+    }
+  ],
+  "coverage_judgment": {
+    "sufficient": false,
+    "reason": "The mark's spelling, sound and script variants were never put to classes 42, 11, 40 and 35 — class 42 is the same product delivered as a service, so a close variant registered there alone could not appear in this band; an all-class count probe answers the exact word VENQORI but not its variants.",
+    "rows": [
+      {
+        "area": "primary-sweep (entire axis)",
+        "note": "coverage-limited — Every call on this axis was pinned to classes 9 and 41, but the manifest's own exact-in-class-live floor dictates that each floor term run class-scoped across 9"
+      },
+      {
+        "area": "transliteration-numeric (entire axis)",
+        "note": "coverage-limited — All six slices — the Cyrillic and Greek forms of VENQORI and of the QORI element, and both digit-for-letter forms — ran as their own characters against EUIPO's "
+      },
+      {
+        "area": "primary-sweep / goods-and-services specifications",
+        "note": "coverage-limited — Narrowed on this pass, not closed. The driver fetched 26 official registry records at the screen gate and each was re-decided on its own specification — 14 move"
+      }
+    ]
+  },
+  "four_answers": {
+    "third_party_rights": {
+      "read": "No one owns VENQORI on the EU register in the searched classes. The rights that exist are neighbours of its parts — the contained element QORI and the VEN- opening — and none of them is strong.",
+      "token": "weak",
+      "basis": "The exact slice, the formative root and the full variant band enumerated to zero in classes 9 and 41; the rated conflicts are element neighbours, four of them sharing a term held by three unrelated proprietors in the instructed classes.",
+      "ordinals": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "objection_likelihood": {
+      "read": "An objection cannot be excluded but none looks likely. Firepay Merchant Services is the one owner with a straight ground to plead against a bare class-9 filing.",
+      "token": "possible",
+      "basis": "Owner-by-owner reads on the rated conflicts: every proprietor's actual business sits outside water compliance, and no assertion by any of them surfaced.",
+      "ordinals": [
+        1,
+        2,
+        5
+      ]
+    },
+    "registrability": {
+      "read": "VENQORI faces no absolute-grounds objection at EUIPO — it is coined and arbitrary for these goods. The exposure is the citation landscape, and the register carries unrestricted class-9 \"computer software\" and class-41 internet-course terms that the company's own wording has to live beside.",
+      "token": "registrable-with-conditions",
+      "obstacles": [
+        {
+          "class": "9",
+          "note": "A live registration of QORI, the mark's own second element, stands unrestricted in this class, alongside the closest whole-word neighbour VENTURI."
+        },
+        {
+          "class": "41",
+          "note": "VENTURI and VENARI are both live here, and third-party rights recite teaching and internet courses without restriction."
+        }
+      ],
+      "basis": "The absolute-grounds read on the applicant's own mark, plus the class-9 and class-41 rights carried as findings and the unrestricted specifications read at the screen gate.",
+      "ordinals": [
+        1,
+        2,
+        3,
+        7
+      ]
+    },
+    "client_enforceability": {
+      "read": "A coined seven-letter word with no register neighbour of the whole term should enforce well across classes 9 and 41. Rights in its parts would be narrow — QORI and VEN- are each shared with other owners.",
+      "token": "strong",
+      "basis": "The mark's fanciful placement on the distinctiveness spectrum against the element crowd: the VEN- opening is a heavily used brand fragment in the EU class-9 and class-41 register, and QORI stands separately registered.",
+      "ordinals": [
+        1,
+        2
+      ]
+    }
+  },
+  "actions": [
+    {
+      "id": 1,
+      "kind": "goods-amendment",
+      "text": "Narrow the class-9 wording to downloadable water-quality monitoring software rather than filing for computer software at large.",
+      "condition": "A live EU class-9 registration for QORI, the applied-for mark's second element, stands on the register searched.",
+      "ordinals": [
+        1
+      ]
+    },
+    {
+      "id": 2,
+      "kind": "client-fact",
+      "text": "Confirm the applicant's legal name and any affiliated companies, so that any right listed here that is the applicant's own can be set aside.",
+      "ordinals": []
+    },
+    {
+      "id": 3,
+      "kind": "client-fact",
+      "text": "Tell us whether the national trade mark registers of the 27 member states should be searched as well as the EU-wide register.",
+      "ordinals": []
+    },
+    {
+      "id": 4,
+      "kind": "client-fact",
+      "text": "Tell us whether the mark will be used or filed in Peru, Bolivia, Ecuador or Colombia, where a regional rule bars marks built on indigenous-community names.",
+      "ordinals": []
+    },
+    {
+      "id": 5,
+      "kind": "commercial-decision",
+      "text": "Decide with your communications team whether an Andean word for gold is the right name for a water-quality product.",
+      "ordinals": []
+    },
+    {
+      "id": 6,
+      "kind": "monitoring",
+      "text": "Keep a watch on the EU register for new class-9 and class-41 filings close to VENQORI, including the pending VENTORIX application.",
+      "ordinals": [
+        8
+      ]
+    }
+  ],
+  "ask_answers": [
+    {
+      "ask": "EU register only.",
+      "answer": "You asked: \"EU register only.\" → Satisfied. Every record in the band is an EUTM or an International registration designating the EU, every dictated slice ran against EUIPO in region EU, and no record from an excluded territory entered the band. One qualification: this was read as the EU-wide register at EUIPO including IRs designating the EU, so the 27 national member-state registers were not searched — a national-only right would not have surfaced."
+    },
+    {
+      "ask": "Nothing outside the EU is in scope for this example.",
+      "answer": "You asked: \"Nothing outside the EU is in scope for this example.\" → Honoured. Nothing outside the EU is cited as a conflict. Owner domicile abroad is not a foreign right: the Australian, Singaporean, Chinese and Monegasque proprietors listed hold EUTMs or IRs effective in the EU. Two non-EU items surfaced and are excluded — Vencore Inc., a US contractor, and a VENQOR keychain listing on an Indian marketplace. One item sits on the line and is disclosed rather than dropped: the unregistered VENTURI at venturi.io is a web presence reachable from the EU with no established EU trade, carried as finding 10 on that footing."
+    }
+  ]
+}

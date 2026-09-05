@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/jp/0bf56d74-eba2-4485-89ca-a65342f22709",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "0bf56d74-eba2-4485-89ca-a65342f22709",
+  "applicationNumber": "2026-024085",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ＱＯＲＥ　ＷＯＲＫＳ",
+  "markTransliteration": "KOAWAAKUSU KOREWAAKUSU KUOREWAAKUSU KYUUOOAARUII",
+  "markTranslation": "QORE WORKS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "マーケティング，販売を目的とした、各種通信媒体による商品の紹介，商業イベントの企画・運営，消費者のための商品及び役務の選択における助言と情報の提供，市場調査又は分析，経理事務の代行，事業の管理，商品・役務の買い手及び売り手のためのオンライン市場の提供，様々な専門家と顧客のマッチング（事業の仲介），広告業，事業に関する指導及び助言，求人情報の提供，人材募集，データ処理（事務処理），職業のあっせん，事業に関する情報の提供，文書情報及びデータの構築",
+      "translation_language": "en",
+      "translation": "Products introduced through various communication media for marketing and sales purposes; planning and managing commercial events; providing advice and information to consumers in selecting products and services; market research or analysis; accounting services; business management; providing online marketplaces for buyers and sellers of products and services; matching various professionals with customers (business intermediation); advertising; business guidance and advice; providing job postings; recruitment; data processing (administrative work); job placement; providing business-related information; document information and data creation."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "ウェブサイトの作成又は保守，ウェブサーバーの貸与，電子計算機の貸与，電子計算機用プログラムの提供，人工知能に関する助言，デザインの考案，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，デジタルトランスフォーメーションのための技術的助言，電子計算機のプログラムの設計・作成又は保守",
+      "translation_language": "en",
+      "translation": "Creation or maintenance of websites, web server rental, computer rental, provision of computer programs, advice on artificial intelligence, design ideas, provision of online application software (SaaS), introduction and explanation of the performance and operation methods of computers, automobiles, and other machinery that require highly specialized knowledge, skills, or experience to operate appropriately according to their intended use, technical advice for digital transformation, design, creation, or maintenance of computer programs"
+    }
+  ],
+  "owner": "Katano, Akira",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "Toreru Inc.",
+  "priorities": [
+    {
+      "priorityDate": "20260305"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ADACHI TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Katano, Akira",
+        "applicantNativeAddress": "東京都足立区",
+        "applicantNativeName": "片野　晶"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Products introduced through various communication media for marketing and sales purposes; planning and managing commercial events; providing advice and information to consumers in selecting products and services; market research or analysis; accounting services; business management; providing online marketplaces for buyers and sellers of products and services; matching various professionals with customers (business intermediation); advertising; business guidance and advice; providing job postings; recruitment; data processing (administrative work); job placement; providing business-related information; document information and data creation.",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "マーケティング，販売を目的とした、各種通信媒体による商品の紹介，商業イベントの企画・運営，消費者のための商品及び役務の選択における助言と情報の提供，市場調査又は分析，経理事務の代行，事業の管理，商品・役務の買い手及び売り手のためのオンライン市場の提供，様々な専門家と顧客のマッチング（事業の仲介），広告業，事業に関する指導及び助言，求人情報の提供，人材募集，データ処理（事務処理），職業のあっせん，事業に関する情報の提供，文書情報及びデータの構築"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Creation or maintenance of websites, web server rental, computer rental, provision of computer programs, advice on artificial intelligence, design ideas, provision of online application software (SaaS), introduction and explanation of the performance and operation methods of computers, automobiles, and other machinery that require highly specialized knowledge, skills, or experience to operate appropriately according to their intended use, technical advice for digital transformation, design, creation, or maintenance of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "ウェブサイトの作成又は保守，ウェブサーバーの貸与，電子計算機の貸与，電子計算機用プログラムの提供，人工知能に関する助言，デザインの考案，オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，デジタルトランスフォーメーションのための技術的助言，電子計算機のプログラムの設計・作成又は保守"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35A02",
+          "natGoodsServicesDescription": "Promoting the goods and services of others through the administration of sales and promotional incentive schemes involving trading stamps"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35C01",
+          "natGoodsServicesDescription": "Preparation, auditing or attesting of financial statements"
+        },
+        {
+          "natClassNumber": "35D01",
+          "natGoodsServicesDescription": "Employment agency services"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "35L01",
+          "natGoodsServicesDescription": "Providing commercial information and advice for consumers in the choice of products and services"
+        },
+        {
+          "natClassNumber": "42G02",
+          "natGoodsServicesDescription": "Providing employment information"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "0bf56d74-eba2-4485-89ca-a65342f22709",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20260305"
+      }
+    ],
+    "recordLastUpdated": "20260424",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Toreru Inc.",
+        "representativeNativeName": "弁理士法人Ｔｏｒｅｒｕ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260305",
+        "applicationNumber": "2026-024085"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260424084453",
+    "wordMarkSpecification": {
+      "markTranslation": "QORE WORKS",
+      "markTransliteration": "KOAWAAKUSU KOREWAAKUSU KUOREWAAKUSU KYUUOOAARUII",
+      "markVerbalElementText": "ＱＯＲＥ　ＷＯＲＫＳ"
+    }
+  },
+  "_uri": "/mark/jp/0bf56d74-eba2-4485-89ca-a65342f22709",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

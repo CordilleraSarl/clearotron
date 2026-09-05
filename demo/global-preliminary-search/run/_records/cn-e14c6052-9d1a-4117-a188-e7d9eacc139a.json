@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/e14c6052-9d1a-4117-a188-e7d9eacc139a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e14c6052-9d1a-4117-a188-e7d9eacc139a",
+  "applicationNumber": "9794274",
+  "registrationNumber": "9794274",
+  "applicationDate": "2011-08-02",
+  "registrationDate": "2012-10-14",
+  "expiryDate": "2032-10-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-07-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "半导体;集成电路;微处理器;可进行软件编程的微处理器;多芯信息处理机;定制的集成电路;信号处理器;数字信号处理器;集成电路(置于中央处理器或加速器内部的用于重复计算机任务用);集成电路(由中央处理器和加速器组成的用于多个协议方网络连接用的);集成电路(专用于处理和重复任务功能的);集成电路(无线传输数据处理用);集成电路(由数字信号处理器,带有矢量处理设备的中央处理器,和带有独立芯片的加速器组成);集成电路(由数字信号处理器,中央处理器,和带有独立芯片的加速器组成)",
+      "translation_language": "en",
+      "translation": "Semiconductors; integrated circuits; microprocessors; software-programmable microprocessors; multi-core information processors; customized integrated circuits; signal processors; digital signal processors; integrated circuits (inside central processing units or accelerators) used for repetitive computer tasks); integrated circuits (composed of central processing units and accelerators for network connection of multiple protocol parties); integrated circuits (dedicated to processing and repetitive task functions); integrated circuits (wireless transmission for data processing); integrated circuits (composed of digital signal processors, central processing units with vector processing equipment, and accelerators with independent chips); integrated circuits (composed of digital signal processors, central processing units, and Accelerator Composition of Independent Chips)"
+    }
+  ],
+  "owner": "NXP USA,INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20110203"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST,AUSTIN,TEXAS 78735,USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA,INC.",
+        "applicantNativeName": "恩智浦美国有限责任公司;NXP USA,INC."
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors; integrated circuits; microprocessors; software-programmable microprocessors; multi-core information processors; customized integrated circuits; signal processors; digital signal processors; integrated circuits (inside central processing units or accelerators) used for repetitive computer tasks); integrated circuits (composed of central processing units and accelerators for network connection of multiple protocol parties); integrated circuits (dedicated to processing and repetitive task functions); integrated circuits (wireless transmission for data processing); integrated circuits (composed of digital signal processors, central processing units with vector processing equipment, and accelerators with independent chips); integrated circuits (composed of digital signal processors, central processing units, and Accelerator Composition of Independent Chips)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "半导体;集成电路;微处理器;可进行软件编程的微处理器;多芯信息处理机;定制的集成电路;信号处理器;数字信号处理器;集成电路(置于中央处理器或加速器内部的用于重复计算机任务用);集成电路(由中央处理器和加速器组成的用于多个协议方网络连接用的);集成电路(专用于处理和重复任务功能的);集成电路(无线传输数据处理用);集成电路(由数字信号处理器,带有矢量处理设备的中央处理器,和带有独立芯片的加速器组成);集成电路(由数字信号处理器,中央处理器,和带有独立芯片的加速器组成)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "e14c6052-9d1a-4117-a188-e7d9eacc139a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityDate": "20110203"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "1319"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市柳沈律师事务所"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110802",
+        "applicationNumber": "9794274"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321013",
+      "lastPublicationDate": "20120713",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20121014",
+        "registrationNumber": "9794274"
+      },
+      "renewalPublishedDate": "20221027"
+    },
+    "version": "20251002031403",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/cn/e14c6052-9d1a-4117-a188-e7d9eacc139a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

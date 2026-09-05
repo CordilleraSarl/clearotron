@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/cn/1296518e-9dce-46a1-bd49-0f5c3b3bcd8e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "1296518e-9dce-46a1-bd49-0f5c3b3bcd8e",
+  "applicationNumber": "3262689",
+  "registrationNumber": "3262689",
+  "applicationDate": "2002-08-05",
+  "registrationDate": "2003-10-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2003-07-07",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-05-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机;计算机周边设备;电站自动化装置;测量器械和仪器;用于计算器操作仪器的机械装置;动画片;集成电路;视听教学仪器;计算机软件(已录制);晶片(锗片)",
+      "translation_language": "en",
+      "translation": "Computers; computer peripheral equipment; power station automation devices; measuring instruments and instruments; mechanical devices for calculator operating instruments; cartoons; integrated circuits; audio-visual teaching instruments; computer software (recorded); chips (germanium chips)"
+    }
+  ],
+  "owner": "Nanjing Guorui Technology (Group) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省南京软件园软件创业中心四号楼129室(中央路32号19层)",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Nanjing Guorui Technology (Group) Co., Ltd.",
+        "applicantNativeName": "南京国瑞科技(集团)有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computers; computer peripheral equipment; power station automation devices; measuring instruments and instruments; mechanical devices for calculator operating instruments; cartoons; integrated circuits; audio-visual teaching instruments; computer software (recorded); chips (germanium chips)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机;计算机周边设备;电站自动化装置;测量器械和仪器;用于计算器操作仪器的机械装置;动画片;集成电路;视听教学仪器;计算机软件(已录制);晶片(锗片)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Electrical controlling apparatus and equipments",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "1296518e-9dce-46a1-bd49-0f5c3b3bcd8e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "886"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "江苏省宁海商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20020805",
+        "applicationNumber": "3262689"
+      },
+      "cancellationDate": "20250527",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20030707",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20031007",
+        "registrationNumber": "3262689"
+      },
+      "renewalPublishedDate": "20140313"
+    },
+    "version": "20251001161111",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/cn/1296518e-9dce-46a1-bd49-0f5c3b3bcd8e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/ve/921ce54e-73b4-4f5a-b2ca-c2040f90e8d0",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "921ce54e-73b4-4f5a-b2ca-c2040f90e8d0",
+  "applicationNumber": "1976-004757",
+  "registrationNumber": "F088402",
+  "applicationDate": "1976-01-01",
+  "registrationDate": "1978-10-10",
+  "expiryDate": "1993-10-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        9,
+        11
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": "en",
+      "translation": "No goods available"
+    }
+  ],
+  "owner": "S. DYRUP & CO A/S",
+  "ownerNative": null,
+  "ownerCountry": "DK",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "GLADSA XEVY 300, DK - 2860 SOBORG, DINAMARCA",
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "S. DYRUP & CO A/S"
+      },
+      {
+        "applicantAddress": "GLADSA XEVY 300, DK - 2860 SOBORG, DINAMARCA - DINAMARCA",
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "S. DYRUP CO A/S"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "No goods available",
+          "intClassNumber": "07,09,11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "21"
+        }
+      ]
+    },
+    "id": "921ce54e-73b4-4f5a-b2ca-c2040f90e8d0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19760101",
+        "applicationNumber": "1976-004757"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19931010",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19781010",
+        "registrationNumber": "F088402"
+      }
+    },
+    "version": "20250630154126",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/ve/921ce54e-73b4-4f5a-b2ca-c2040f90e8d0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

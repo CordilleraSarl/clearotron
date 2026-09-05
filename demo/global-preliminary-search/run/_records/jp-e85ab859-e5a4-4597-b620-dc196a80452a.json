@@ -1,0 +1,174 @@
+{
+  "uri": "/mark/jp/e85ab859-e5a4-4597-b620-dc196a80452a",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "e85ab859-e5a4-4597-b620-dc196a80452a",
+  "applicationNumber": "2021-104955",
+  "registrationNumber": "6538688",
+  "applicationDate": "2021-08-24",
+  "registrationDate": "2022-03-31",
+  "expiryDate": "2032-03-31",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-04-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＱＯＬｉ",
+  "markTransliteration": "KORI KUORI",
+  "markTranslation": "QOLI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "スマートフォン用のカバー，スマートフォン用のケース，スマートフォン用保護フィルム，眼鏡，サングラス，蓄電池用充電器，コンピュータ用キーボード，ペン型データ入力具（コンピュータ画面用），コンピュータ用モニター，マウス（コンピュータ周辺機器），コンピュータの画面保護用フィルム，ノートブック型コンピュータ専用スタンド，スマートフォンの画面用保護フィルム，スピーカー用筐体，スピーカー，メガホン（拡声器），マイクロホン，ヘッドホーン，イヤホン，タブレットコンピューター用カバー",
+      "translation_language": "en",
+      "translation": "Cover for smartphone, case for smartphone, protective film for smartphone, glasses, sunglasses, charger for storage battery, keyboard for computer, pen-type data input tool (for computer screen), monitor for computer, mouse (computer peripheral device), Computer screen protection film, notebook computer stand, smartphone screen protection film, speaker housing, speaker, megaphone (loudspeaker), microphone, headphone, earphone, tablet computer cover"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "運動競技用ウエストプロテクター，運動競技用パームプロテクター，すね当て（運動用具），腕あて（運動用具），ひじ当て（運動用具），水泳訓練用身体支持ベルト，運動競技用フェイスガード，運動用胸当て，ひざ当て（運動用具），運動用固定式自転車，ボディートレーニング用器具，ボディビル用具，ウェストを引き締めるためのエクササイズ用ベルト，運動用グローブ又は手袋，エキスパンダー（運動用具），運動用固定式自転車のローラー，ダンベル，重量挙げ用ベルト，エクササイズ用ボール，人形用ベッド",
+      "translation_language": "en",
+      "translation": "Waist protector for athletics, palm protector for athletics, shin pad (exercise tool), arm pad (exercise tool), elbow pad (exercise tool), body support belt for swimming training, face guard for athletic competition, chest pad for exercise, knee Pads (exercise equipment), fixed exercise bicycles, body training equipment, bodybuilding equipment, exercise belts for tightening the waist, exercise gloves or gloves, expanders (exercise equipment), fixed exercise bicycle rollers, Dumbbells, weightlifting belts, exercise balls, doll beds"
+    }
+  ],
+  "owner": "YIWU SONGTENG TRADING CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "FUJII KENICHI",
+  "priorities": [
+    {
+      "priorityDate": "20210824"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "YIWU SONGTENG TRADING CO., LTD.",
+        "applicantNativeAddress": "中華人民共和国",
+        "applicantNativeName": "義烏市松騰貿易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cover for smartphone, case for smartphone, protective film for smartphone, glasses, sunglasses, charger for storage battery, keyboard for computer, pen-type data input tool (for computer screen), monitor for computer, mouse (computer peripheral device), Computer screen protection film, notebook computer stand, smartphone screen protection film, speaker housing, speaker, megaphone (loudspeaker), microphone, headphone, earphone, tablet computer cover",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "スマートフォン用のカバー，スマートフォン用のケース，スマートフォン用保護フィルム，眼鏡，サングラス，蓄電池用充電器，コンピュータ用キーボード，ペン型データ入力具（コンピュータ画面用），コンピュータ用モニター，マウス（コンピュータ周辺機器），コンピュータの画面保護用フィルム，ノートブック型コンピュータ専用スタンド，スマートフォンの画面用保護フィルム，スピーカー用筐体，スピーカー，メガホン（拡声器），マイクロホン，ヘッドホーン，イヤホン，タブレットコンピューター用カバー"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Waist protector for athletics, palm protector for athletics, shin pad (exercise tool), arm pad (exercise tool), elbow pad (exercise tool), body support belt for swimming training, face guard for athletic competition, chest pad for exercise, knee Pads (exercise equipment), fixed exercise bicycles, body training equipment, bodybuilding equipment, exercise belts for tightening the waist, exercise gloves or gloves, expanders (exercise equipment), fixed exercise bicycle rollers, Dumbbells, weightlifting belts, exercise balls, doll beds",
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "運動競技用ウエストプロテクター，運動競技用パームプロテクター，すね当て（運動用具），腕あて（運動用具），ひじ当て（運動用具），水泳訓練用身体支持ベルト，運動競技用フェイスガード，運動用胸当て，ひざ当て（運動用具），運動用固定式自転車，ボディートレーニング用器具，ボディビル用具，ウェストを引き締めるためのエクササイズ用ベルト，運動用グローブ又は手袋，エキスパンダー（運動用具），運動用固定式自転車のローラー，ダンベル，重量挙げ用ベルト，エクササイズ用ボール，人形用ベッド"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Power distribution or control machines and apparatus; Rotary converters; Phase modifiers; Solar batteries"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "23B01",
+          "natGoodsServicesDescription": "Spectacles [eyeglasses and goggles]"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Toys*; Dolls"
+        },
+        {
+          "natClassNumber": "24C01",
+          "natGoodsServicesDescription": "Sports equipment, other than for climbing, surfing, water-skiing and scuba diving"
+        },
+        {
+          "natClassNumber": "24C04",
+          "natGoodsServicesDescription": "Sports equipment for surfing, water-skiing and scuba diving"
+        }
+      ]
+    },
+    "id": "e85ab859-e5a4-4597-b620-dc196a80452a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20210824"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "FUJII KENICHI",
+        "representativeNativeName": "藤井　健一"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210824",
+        "applicationNumber": "2021-104955"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320331",
+      "lastPublicationDate": "20220408",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220331",
+        "registrationNumber": "6538688"
+      }
+    },
+    "version": "20230427111738",
+    "wordMarkSpecification": {
+      "markTranslation": "QOLI",
+      "markTransliteration": "KORI KUORI",
+      "markVerbalElementText": "ＱＯＬｉ"
+    }
+  },
+  "_uri": "/mark/jp/e85ab859-e5a4-4597-b620-dc196a80452a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:02.690Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

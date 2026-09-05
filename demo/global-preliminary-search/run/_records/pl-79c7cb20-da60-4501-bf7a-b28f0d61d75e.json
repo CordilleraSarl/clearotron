@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/pl/79c7cb20-da60-4501-bf7a-b28f0d61d75e",
+  "provider": "clarivate",
+  "office": "pl",
+  "guid": "79c7cb20-da60-4501-bf7a-b28f0d61d75e",
+  "applicationNumber": "318335",
+  "registrationNumber": "205888",
+  "applicationDate": "2006-11-27",
+  "registrationDate": "2008-05-23",
+  "expiryDate": "2026-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    17,
+    25
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "odzież chroniąca przed wypadkami, napromieniowaniem i ogniem, rękawice do ochrony przed wypadkami, ubrania zabezpieczające przed wypadkami, napromieniowaniem i ogniem",
+      "translation_language": "en",
+      "translation": "clothing for protection against accidents, radiation and fire, gloves for protection against accidents, clothing for protection against accidents, radiation and fire"
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "pl",
+      "description": "kauczuk surowy lub półprzetworzony, kauczuk syntetyczny, rękawice izolacyjne",
+      "translation_language": "en",
+      "translation": "raw or semi-processed rubber, synthetic rubber, insulating gloves"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "pl",
+      "description": "barbety jako element ubrania, berety, bielizna osobista, bielizna wchłaniająca pot, bluzy, cholewki do botów, buty sznurowane, chodaki jako rodzaj butów, cholewki do obuwia, czapki, czapki bez daszka jako nakrycia głowy, czapki z daszkiem, fartuchy jako odzież, kamizelki, kaptury do ubrań, kieszenie do odzieży, kombinezony jako odzież, konfekcja odzieżowa, koszule męskie, gorsy do koszul męskich, karczki do koszul męskich, koszulki jako bielizna, marynarki, nakrycia głowy, nakrycia głowy jako produkty kapelusznicze, nauszniki jako odzież, obuwie, cholewki do obuwia, czubki do obuwia, obcasy do obuwia, okucia do obuwia, paski do obuwia, środki antypoślizgowe do obuwia, obuwie sportowe, odzież, artykuły odzieżowe, kieszenie do odzieży, odzież wodoodporna, odzież z imitacji skóry, odzież ze skóry, okrycia wierzchnie jako odzież, opaski na głowę jako elementy ubrania, paski jako odzież, paski do butów, rękawice jako element odzieży, rękawiczki z jednym palcem, ubrania dla kierowców samochodów, spodnie, szaliki, szelki, t-shirty, ubrania, ubrania wierzchnie, kostiumy jako element ubrania, wkładki do obuwia, wkładki wewnętrzne do odzieży",
+      "translation_language": "en",
+      "translation": "barbets as an element of clothing, berets, underwear, sweat-absorbing underwear, sweatshirts, boot uppers, lace-up shoes, clogs as a kind of shoes, shoe uppers, caps, caps without a visor as headgear, caps with visors, aprons as clothing, vests, hoods for clothes, pockets for clothes, overalls as clothing, ready-made clothing, men's shirts, busts for men's shirts, yokes for men's shirts, t-shirts as underwear, jackets, headgear, headgear as hat products, ear muffs as clothing, footwear, shoe uppers, toe caps, shoe heels, shoe fittings, shoe belts, anti-slip agents for shoes, sports shoes, clothing, apparel, garment pockets, waterproof clothing, imitation leather clothing, leather clothing, coats outerwear as clothing, headbands as elements of clothing, belts as clothing, shoe belts, gloves as an element of clothing, mitts, clothes for car drivers garments, trousers, scarves, suspenders, t-shirts, clothes, outerwear, costumes as part of clothing, insoles for shoes, inner liners for clothing"
+    }
+  ],
+  "owner": "Polstar Holding Sp. z o.o. Sp. komandytowa",
+  "ownerNative": null,
+  "ownerCountry": "PL",
+  "representative": "Polstar Holding Sp. z o.o. Sp. komandytowa",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Koszalin",
+        "applicantAddressCountryCode": "PL",
+        "applicantAddressCountryName": "Poland",
+        "applicantName": "Polstar Holding Sp. z o.o. Sp. komandytowa"
+      }
+    ],
+    "applicationLanguageCode": "pl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "clothing for protection against accidents, radiation and fire, gloves for protection against accidents, clothing for protection against accidents, radiation and fire",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "odzież chroniąca przed wypadkami, napromieniowaniem i ogniem, rękawice do ochrony przed wypadkami, ubrania zabezpieczające przed wypadkami, napromieniowaniem i ogniem"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "raw or semi-processed rubber, synthetic rubber, insulating gloves",
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "kauczuk surowy lub półprzetworzony, kauczuk syntetyczny, rękawice izolacyjne"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "barbets as an element of clothing, berets, underwear, sweat-absorbing underwear, sweatshirts, boot uppers, lace-up shoes, clogs as a kind of shoes, shoe uppers, caps, caps without a visor as headgear, caps with visors, aprons as clothing, vests, hoods for clothes, pockets for clothes, overalls as clothing, ready-made clothing, men's shirts, busts for men's shirts, yokes for men's shirts, t-shirts as underwear, jackets, headgear, headgear as hat products, ear muffs as clothing, footwear, shoe uppers, toe caps, shoe heels, shoe fittings, shoe belts, anti-slip agents for shoes, sports shoes, clothing, apparel, garment pockets, waterproof clothing, imitation leather clothing, leather clothing, coats outerwear as clothing, headbands as elements of clothing, belts as clothing, shoe belts, gloves as an element of clothing, mitts, clothes for car drivers garments, trousers, scarves, suspenders, t-shirts, clothes, outerwear, costumes as part of clothing, insoles for shoes, inner liners for clothing",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "barbety jako element ubrania, berety, bielizna osobista, bielizna wchłaniająca pot, bluzy, cholewki do botów, buty sznurowane, chodaki jako rodzaj butów, cholewki do obuwia, czapki, czapki bez daszka jako nakrycia głowy, czapki z daszkiem, fartuchy jako odzież, kamizelki, kaptury do ubrań, kieszenie do odzieży, kombinezony jako odzież, konfekcja odzieżowa, koszule męskie, gorsy do koszul męskich, karczki do koszul męskich, koszulki jako bielizna, marynarki, nakrycia głowy, nakrycia głowy jako produkty kapelusznicze, nauszniki jako odzież, obuwie, cholewki do obuwia, czubki do obuwia, obcasy do obuwia, okucia do obuwia, paski do obuwia, środki antypoślizgowe do obuwia, obuwie sportowe, odzież, artykuły odzieżowe, kieszenie do odzieży, odzież wodoodporna, odzież z imitacji skóry, odzież ze skóry, okrycia wierzchnie jako odzież, opaski na głowę jako elementy ubrania, paski jako odzież, paski do butów, rękawice jako element odzieży, rękawiczki z jednym palcem, ubrania dla kierowców samochodów, spodnie, szaliki, szelki, t-shirty, ubrania, ubrania wierzchnie, kostiumy jako element ubrania, wkładki do obuwia, wkładki wewnętrzne do odzieży"
+        }
+      ]
+    },
+    "id": "79c7cb20-da60-4501-bf7a-b28f0d61d75e",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "WUP 11",
+        "publicationYear": "2008"
+      }
+    ],
+    "recordLastUpdated": "20260520",
+    "registrationOfficeCode": "PL",
+    "registrationOfficeName": "Poland",
+    "representatives": [
+      {
+        "representativeAddress": "Koszalin",
+        "representativeAddressCountryCode": "PL",
+        "representativeAddressCountryName": "Poland",
+        "representativeName": "Polstar Holding Sp. z o.o. Sp. komandytowa"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20061127",
+        "applicationNumber": "318335"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20080523",
+        "registrationNumber": "205888"
+      }
+    },
+    "version": "20260520104817",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/pl/79c7cb20-da60-4501-bf7a-b28f0d61d75e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

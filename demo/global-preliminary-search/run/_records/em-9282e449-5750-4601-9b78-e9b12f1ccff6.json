@@ -1,0 +1,432 @@
+{
+  "uri": "/mark/em/9282e449-5750-4601-9b78-e9b12f1ccff6",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "9282e449-5750-4601-9b78-e9b12f1ccff6",
+  "applicationNumber": "10155951",
+  "registrationNumber": "10155951",
+  "applicationDate": "2011-07-27",
+  "registrationDate": "2011-12-29",
+  "expiryDate": "2031-07-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-09-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Polovodice, Integrované obvody, Mikroprocesory, Softwarove programovatelné mikroprocesory,Vícejádrové procesory, Soustavy specifických integracních obvodu, Procesory signálu, Digitální signální procesory,Vektorové procesory, Komunikacní procesory,Specificky zákaznické akcelerátory, bezdrátová základní pásma, základnové stanice na cip, vcetne bezdrátových základnových stanic na cip, cipové systémy (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Halvledere, Integrerede kredsløb, Mikroprocessorer, Software og programmerbare mikroprocessorer,Flerkerneprocessorer, Applikationsspecifikke integrerede kredsløb, Signalprocessorer, Digitale signalprocessorer,Vektorprocessorer, Meddelelsesprocesorer,Applikationsspecifikke acceleratorer, trådløse basisbånd, chipbaserede basisstationer, inklusive trådløse chipbaserede basisstationer, chipbaseret system (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Halfgeleiders, Geïntegreerde schakelingen, Microprocessors, Met software programmeerbare microprocessoren,Processors met meerdere kerngeheugens, Toepassingsspecifieke geïntegreerde schakelingen, Signaalverwerkers, Digitale signaalprocessors,Vectorprocessors, Communicatieprocessors,Toepassing-specifieke versnellers, draadloze basisbanden, basisstations op chips, waaronder draadloze basisstations op chips, systemen op chips (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits, signal processors, digital signal processors, vector processors, communications processors, application-specific accelerators, wireless basebands, base stations on a chip, including wireless base stations on a chip, systems on a chip (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Pooljuhid, Integraallülitused, mikroskeemid, Mikroprotsessorid, Tarkvaraprogrammeeritavad mikroprotsessorid,Mitme südamikuga protsessorid, Teatud integraallülituste rakendused, Signaaliprotsessorid, Digitaalsed signaaliprotsessorid,Vektorprotsessorid, Sideprotsessorid,Rakendusspetsiifilised kiirendid, juhtmeta põhiribad, tugijaamad kiibil, sh juhtmeta tugijaamad kiibil, süsteemid kiibil (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Puolijohteet, Integroidut piirit, Mikroprosessorit, Ohjelmistot, ohjelmoitavat mikroprosessorit,Moniytimiset suorittimet, Sovelluskohtaiset integroidut piirit, Signaaliprosessorit, Digitaaliset signaaliprosessorit,Vektorisuorittimet, Viestintäprosessorit,Sovelluskohtaiset kiihdyttimet, langattomat peruskaistat, tukiasemat, jotka ovat mikrosirulla, mukaan lukien langattomat tukiasemat, jotka ovat mikrosirulla, mikrosiruilla olevat järjestelmät (SoC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Semi-conducteurs, Circuits intégrés, Microprocesseurs, Microprocesseurs programmables de logiciels,Processeurs multicoeurs, Circuits intégrés pour application spécifique, Processeurs de signaux, Processeurs de signaux numériques,Processeurs vectoriels, Processeurs de communications,Accélérateurs spécifiques à des applications, bades de base sans fil, stations de base sur puce, y compris stations de base sans fil sur puce, systèmes sur puce (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Halbleiter, Integrierte Schaltkreise, Mikroprozessoren, Softwareprogrammierbare Mikroprozessoren,Mehrkernprozessoren, Anwendungsspezifische integrierte Schaltkreise, Signalprozessoren, Geräte zur Verarbeitung digitaler Signale,Vektorrechner, Kommunikationsprozessoren,Anwendungsspezifische Beschleuniger, drahtlose Basisbänder, Ein-Chip-Basisstationen einschließlich drahtlose Ein-Chip-Basisstationen, Ein-Chip-Systeme (SoCs).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Félvezetok, Integrált áramkörök, Mikroprocesszorok, Szoftverrel programozható mikroprocesszorok,Többmagos processzorok, Specifikus alkalmazású integrált láncok, Jelprocesszorok, Digitális jelzés processzorok,Vektorprocesszorok, Kommunikációs processzorok,Alkalmazás-specifikus gyorsítók, vezeték nélküli alapsávok, bázisállomások chipen, többek között vezeték nélküli bázisállomások chipen, rendszerek chipen (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Semiconduttori, Circuiti integrati, Microprocessori, Microprocessori programmabili per software,Processori multinucleo, Circuiti integrati per applicazioni specifiche, Elaboratori di segnali, Processori di segnali digitali,Processori di vettori, Tecnologia digitale (hardware e software) utilizzata per creare reti sociali,Acceleratori per applicazioni specifiche, supporti di base senza fili, stazioni di base su un chip, comprese stazioni di base senza fili su chip, sistemi su chip.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Puslaidininkiai, Integriniai grandynai, Mikroprocesoriai, Mikroprocesoriai su programine iranga,Keliu branduoliu procesoriai, Specialios paskirties integriniai grandynai, Signalo procesoriai, Skaitmeninio signalo procesoriai,Vektoriniai procesoriai, Rysiu procesoriai,Specialiuju greitikliu, bevieliu juostu, baziniu stociu luste, iskaitant bevieles bazines stotis luste, sistemu luste pritaikymas (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Pusvaditaji, Integretas shemas, Mikroprocesori, Programmaturas programmejami mikroprocesori,Daudzkodolu procesori, Integretas shemas specialam lietojumam, Signalu procesori, Ciparsignalu procesori,Vektoru procesori, Sakaru procesori,Lietotnu akseleratori, bezvadu pamatjoslas, bazes stacijas shemas, tostarp bezvadu bazes stacijas shemas, shemas ietvertas sistemas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Semikondutturi, Cirkwiti integrati, Mikroprocessuri, Mikroprocessuri tas-softwer li jistghu jkunu pprogrammati,Processuri multipolari, Cirkwiti integrati specifici ghall-applikazzjonijiet, Taghmir li jipprocessa s-sinjali, Processaturi tas-sinjali digitali,Processuri vettorjali, Processuri ghall-komunikazzjonijiet,Accelleraturi specifici ghall-applikazzjoni, base-bands minghajr fili, stazzjonijiet bazi fuq cippa, inkluzi stazzjonijiet bazi minghajr fili fuq cippa, sistemi fuq cippa (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Pólprzewodniki, Obwody scalone, Mikroprocesory, Mikroprocesory mozliwe do zaprogramowania za pomoca aplikacji komputerowych,Procesory wielordzeniowe, Obwody scalone, specyficzne dla danych aplikacji, Procesory sygnalów, Procesory sygnalów cyfrowych,Procesory wektorowe, Procesory komunikacyjne,Dedykowane przyspieszacze aplikacji, bezprzewodowe elementy pelnozakresowe, stacje bazowe z ukladem scalonym, w tym bezprzewodowe stacje bazowe z ukladem scalonym, systemy z ukladem scalonym (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Semicondutores, Circuitos integrados, Microprocessadores, Microprocessadores programáveis por software,Processadores com múltiplos núcleos, Circuitos integrados de aplicação específica, Processadores de sinais, Processadores de sinais digitais,Processadores de vector, Processadores de comunicações,Aceleradores de aplicação específica, bandas base sem fios, estações base num chip, incluindo estações base sem fios num chip, sistemas num chip (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Semiconductoare, Circuite integrate, Microprocesoare, Microprocesoare programabile de software,Procesoare cu nuclee multiple, Circuite integrate specifice aplicatiilor, Procesoare de semnal, Procesoare de semnal digital,Procesoare de vectori, Procesoare de comunicatii,Acceleratori de aplicatii stiintifice, benzi fundamentale fara fir, statii de baza pe cip, inclusiv statii de baza pe cip fara fir, sisteme pe cip (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Polovodice, Integrované obvody, Mikroprocesory, Softvérové programovatelné mikroprocesory,Viacjadrové procesory, Aplikácie specifických integracných obvodov, Signálne procesory, Digitálne signálne procesory,Vektorové procesory, Komunikacné procesory,Aplikacné urýchlovace, bezdrôtové základné pásma, základnové stanice na cipe, vrátane bezdrôtových základnových staníc na cipe, systémy na cipe (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Polprevodniki, Integrirana vezja, Mikroprocesorji, Programljivi mikroprocesorji za programsko opremo,Vecjedrni procesorji, Aplikacijska specificna integrirana omrezja, Signalni procesorji, Digitalni procesorji signalov,Vektorski procesorji, Komunikacijski procesorji,Pospesevalniki za programe, osnovnopasovna vezja za brezzicna omrezja, bazne postaje na cipu, vkljucno z brezzicnimi baznimi postajami na cipu, sistemi na cipu (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores, Circuitos integrados, Microprocesadores, Microprocesadores programables de software,Procesadores múltiples, Circuitos integrados para aplicaciones específicas, Procesadores de señales, Procesadores de señales digitales,Procesadores de vectores, Procesadores de comunicaciones,Aceleradores específicos de aplicaciones, bandas de base inalámbricas, estaciones base en un chip, incluyendo estaciones base inalámbricas en un chip, sistemas en un chip (SOC).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Halvledare, Integrerade kretsar, Mikroprocessorer, Programvaruprogrammerbara mikroprocessorer,Multikärnprocessorer, Tillämpningsspecifika integrerade kretsar, Signalprocessorer, Digitala signalprocessorer,Vektorprocessorer, Kommunikationsprocessorer,Applikationsspecifika accelleratorer, trådlösa basband, basstationer på ett chip, även trådlösa basstationer på ett chip, system på ett chip (SOC).",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20110203",
+      "priorityNumber": "85233451"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West,Austin,Texas, 78735",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Polovodice, Integrované obvody, Mikroprocesory, Softwarove programovatelné mikroprocesory,Vícejádrové procesory, Soustavy specifických integracních obvodu, Procesory signálu, Digitální signální procesory,Vektorové procesory, Komunikacní procesory,Specificky zákaznické akcelerátory, bezdrátová základní pásma, základnové stanice na cip, vcetne bezdrátových základnových stanic na cip, cipové systémy (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Halvledere, Integrerede kredsløb, Mikroprocessorer, Software og programmerbare mikroprocessorer,Flerkerneprocessorer, Applikationsspecifikke integrerede kredsløb, Signalprocessorer, Digitale signalprocessorer,Vektorprocessorer, Meddelelsesprocesorer,Applikationsspecifikke acceleratorer, trådløse basisbånd, chipbaserede basisstationer, inklusive trådløse chipbaserede basisstationer, chipbaseret system (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Halfgeleiders, Geïntegreerde schakelingen, Microprocessors, Met software programmeerbare microprocessoren,Processors met meerdere kerngeheugens, Toepassingsspecifieke geïntegreerde schakelingen, Signaalverwerkers, Digitale signaalprocessors,Vectorprocessors, Communicatieprocessors,Toepassing-specifieke versnellers, draadloze basisbanden, basisstations op chips, waaronder draadloze basisstations op chips, systemen op chips (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits, signal processors, digital signal processors, vector processors, communications processors, application-specific accelerators, wireless basebands, base stations on a chip, including wireless base stations on a chip, systems on a chip (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Pooljuhid, Integraallülitused, mikroskeemid, Mikroprotsessorid, Tarkvaraprogrammeeritavad mikroprotsessorid,Mitme südamikuga protsessorid, Teatud integraallülituste rakendused, Signaaliprotsessorid, Digitaalsed signaaliprotsessorid,Vektorprotsessorid, Sideprotsessorid,Rakendusspetsiifilised kiirendid, juhtmeta põhiribad, tugijaamad kiibil, sh juhtmeta tugijaamad kiibil, süsteemid kiibil (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Puolijohteet, Integroidut piirit, Mikroprosessorit, Ohjelmistot, ohjelmoitavat mikroprosessorit,Moniytimiset suorittimet, Sovelluskohtaiset integroidut piirit, Signaaliprosessorit, Digitaaliset signaaliprosessorit,Vektorisuorittimet, Viestintäprosessorit,Sovelluskohtaiset kiihdyttimet, langattomat peruskaistat, tukiasemat, jotka ovat mikrosirulla, mukaan lukien langattomat tukiasemat, jotka ovat mikrosirulla, mikrosiruilla olevat järjestelmät (SoC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Semi-conducteurs, Circuits intégrés, Microprocesseurs, Microprocesseurs programmables de logiciels,Processeurs multicoeurs, Circuits intégrés pour application spécifique, Processeurs de signaux, Processeurs de signaux numériques,Processeurs vectoriels, Processeurs de communications,Accélérateurs spécifiques à des applications, bades de base sans fil, stations de base sur puce, y compris stations de base sans fil sur puce, systèmes sur puce (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Halbleiter, Integrierte Schaltkreise, Mikroprozessoren, Softwareprogrammierbare Mikroprozessoren,Mehrkernprozessoren, Anwendungsspezifische integrierte Schaltkreise, Signalprozessoren, Geräte zur Verarbeitung digitaler Signale,Vektorrechner, Kommunikationsprozessoren,Anwendungsspezifische Beschleuniger, drahtlose Basisbänder, Ein-Chip-Basisstationen einschließlich drahtlose Ein-Chip-Basisstationen, Ein-Chip-Systeme (SoCs)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Félvezetok, Integrált áramkörök, Mikroprocesszorok, Szoftverrel programozható mikroprocesszorok,Többmagos processzorok, Specifikus alkalmazású integrált láncok, Jelprocesszorok, Digitális jelzés processzorok,Vektorprocesszorok, Kommunikációs processzorok,Alkalmazás-specifikus gyorsítók, vezeték nélküli alapsávok, bázisállomások chipen, többek között vezeték nélküli bázisállomások chipen, rendszerek chipen (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Semiconduttori, Circuiti integrati, Microprocessori, Microprocessori programmabili per software,Processori multinucleo, Circuiti integrati per applicazioni specifiche, Elaboratori di segnali, Processori di segnali digitali,Processori di vettori, Tecnologia digitale (hardware e software) utilizzata per creare reti sociali,Acceleratori per applicazioni specifiche, supporti di base senza fili, stazioni di base su un chip, comprese stazioni di base senza fili su chip, sistemi su chip."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Puslaidininkiai, Integriniai grandynai, Mikroprocesoriai, Mikroprocesoriai su programine iranga,Keliu branduoliu procesoriai, Specialios paskirties integriniai grandynai, Signalo procesoriai, Skaitmeninio signalo procesoriai,Vektoriniai procesoriai, Rysiu procesoriai,Specialiuju greitikliu, bevieliu juostu, baziniu stociu luste, iskaitant bevieles bazines stotis luste, sistemu luste pritaikymas (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Pusvaditaji, Integretas shemas, Mikroprocesori, Programmaturas programmejami mikroprocesori,Daudzkodolu procesori, Integretas shemas specialam lietojumam, Signalu procesori, Ciparsignalu procesori,Vektoru procesori, Sakaru procesori,Lietotnu akseleratori, bezvadu pamatjoslas, bazes stacijas shemas, tostarp bezvadu bazes stacijas shemas, shemas ietvertas sistemas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Semikondutturi, Cirkwiti integrati, Mikroprocessuri, Mikroprocessuri tas-softwer li jistghu jkunu pprogrammati,Processuri multipolari, Cirkwiti integrati specifici ghall-applikazzjonijiet, Taghmir li jipprocessa s-sinjali, Processaturi tas-sinjali digitali,Processuri vettorjali, Processuri ghall-komunikazzjonijiet,Accelleraturi specifici ghall-applikazzjoni, base-bands minghajr fili, stazzjonijiet bazi fuq cippa, inkluzi stazzjonijiet bazi minghajr fili fuq cippa, sistemi fuq cippa (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Pólprzewodniki, Obwody scalone, Mikroprocesory, Mikroprocesory mozliwe do zaprogramowania za pomoca aplikacji komputerowych,Procesory wielordzeniowe, Obwody scalone, specyficzne dla danych aplikacji, Procesory sygnalów, Procesory sygnalów cyfrowych,Procesory wektorowe, Procesory komunikacyjne,Dedykowane przyspieszacze aplikacji, bezprzewodowe elementy pelnozakresowe, stacje bazowe z ukladem scalonym, w tym bezprzewodowe stacje bazowe z ukladem scalonym, systemy z ukladem scalonym (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Semicondutores, Circuitos integrados, Microprocessadores, Microprocessadores programáveis por software,Processadores com múltiplos núcleos, Circuitos integrados de aplicação específica, Processadores de sinais, Processadores de sinais digitais,Processadores de vector, Processadores de comunicações,Aceleradores de aplicação específica, bandas base sem fios, estações base num chip, incluindo estações base sem fios num chip, sistemas num chip (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Semiconductoare, Circuite integrate, Microprocesoare, Microprocesoare programabile de software,Procesoare cu nuclee multiple, Circuite integrate specifice aplicatiilor, Procesoare de semnal, Procesoare de semnal digital,Procesoare de vectori, Procesoare de comunicatii,Acceleratori de aplicatii stiintifice, benzi fundamentale fara fir, statii de baza pe cip, inclusiv statii de baza pe cip fara fir, sisteme pe cip (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Polovodice, Integrované obvody, Mikroprocesory, Softvérové programovatelné mikroprocesory,Viacjadrové procesory, Aplikácie specifických integracných obvodov, Signálne procesory, Digitálne signálne procesory,Vektorové procesory, Komunikacné procesory,Aplikacné urýchlovace, bezdrôtové základné pásma, základnové stanice na cipe, vrátane bezdrôtových základnových staníc na cipe, systémy na cipe (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Polprevodniki, Integrirana vezja, Mikroprocesorji, Programljivi mikroprocesorji za programsko opremo,Vecjedrni procesorji, Aplikacijska specificna integrirana omrezja, Signalni procesorji, Digitalni procesorji signalov,Vektorski procesorji, Komunikacijski procesorji,Pospesevalniki za programe, osnovnopasovna vezja za brezzicna omrezja, bazne postaje na cipu, vkljucno z brezzicnimi baznimi postajami na cipu, sistemi na cipu (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores, Circuitos integrados, Microprocesadores, Microprocesadores programables de software,Procesadores múltiples, Circuitos integrados para aplicaciones específicas, Procesadores de señales, Procesadores de señales digitales,Procesadores de vectores, Procesadores de comunicaciones,Aceleradores específicos de aplicaciones, bandas de base inalámbricas, estaciones base en un chip, incluyendo estaciones base inalámbricas en un chip, sistemas en un chip (SOC)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Halvledare, Integrerade kretsar, Mikroprocessorer, Programvaruprogrammerbara mikroprocessorer,Multikärnprocessorer, Tillämpningsspecifika integrerade kretsar, Signalprocessorer, Digitala signalprocessorer,Vektorprocessorer, Kommunikationsprocessorer,Applikationsspecifika accelleratorer, trådlösa basband, basstationer på ett chip, även trådlösa basstationer på ett chip, system på ett chip (SOC)."
+        }
+      ]
+    },
+    "id": "9282e449-5750-4601-9b78-e9b12f1ccff6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20110203",
+        "priorityNumber": "85233451"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "00145",
+        "publicationVolume": "179"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices. 2e étage Anna van Buerenplein 21A,Den Haag, 2595DA",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110727",
+        "applicationNumber": "10155951"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310727",
+      "lastPublicationDate": "20110921",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20111229",
+        "registrationNumber": "10155951"
+      }
+    },
+    "version": "20260511151817",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/em/9282e449-5750-4601-9b78-e9b12f1ccff6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

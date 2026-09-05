@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/81d9c343-8265-433d-96e0-7834fc085821",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "81d9c343-8265-433d-96e0-7834fc085821",
+  "applicationNumber": "2011-040130",
+  "registrationNumber": "5448079",
+  "applicationDate": "2011-06-10",
+  "registrationDate": "2011-11-04",
+  "expiryDate": "2021-11-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＲＥＡＤＹ　ＰＬＡＹ",
+  "markTransliteration": "REDIIPUREE REDIPUREE",
+  "markTranslation": "READY PLAY",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，特定用途向け集積回路，コンピュータソフトウェアを記憶させた集積回路，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Semiconductor, application specific integrated circuit, integrated circuit storing computer software, other electronic applied appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAGAOKA AI",
+  "priorities": [
+    {
+      "priorityDate": "20110610"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor, application specific integrated circuit, integrated circuit storing computer software, other electronic applied appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，特定用途向け集積回路，コンピュータソフトウェアを記憶させた集積回路，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "81d9c343-8265-433d-96e0-7834fc085821",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20110610"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAGAOKA AI",
+        "representativeNativeName": "永岡　愛"
+      },
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20110610",
+        "applicationNumber": "2011-040130"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20211104",
+      "lastPublicationDate": "20111206",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20111104",
+        "registrationNumber": "5448079"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "READY PLAY",
+      "markTransliteration": "REDIIPUREE REDIPUREE",
+      "markVerbalElementText": "ＲＥＡＤＹ　ＰＬＡＹ"
+    }
+  },
+  "_uri": "/mark/jp/81d9c343-8265-433d-96e0-7834fc085821",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

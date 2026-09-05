@@ -1,0 +1,458 @@
+{
+  "uri": "/mark/us/953e64c9-0710-4143-ae04-f0b4bff35c00",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "953e64c9-0710-4143-ae04-f0b4bff35c00",
+  "applicationNumber": "90397174",
+  "registrationNumber": "7197952",
+  "applicationDate": "2020-12-21",
+  "registrationDate": "2023-10-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-09-13"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HEAVEN OR HELL WRITTEN BY JEROME WRIGHT INSPIRED BY TRUE EVENTS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"WRITTEN\" \"INSPIRED BY TRUE EVENTS\" AND THE REPRESENTATION OF THE LATIN CROSS"
+  ],
+  "niceClasses": [
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Audio books in the nature of novels; Downloadable music files; Downloadable musical sound recordings; Musical sound recordings; Sound recordings featuring music; Downloadable non-fiction e-books on a variety of topics",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Novels; Non-fiction books on a variety of topics; Printed novels in the field of nonfiction and fiction; Series of fiction works, namely, novels and books",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Wright, Jerome",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Krystle I. Myers",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "applicantAddressCity": "Baltimore",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "21214",
+        "applicantAddressStateName": "MARYLAND",
+        "applicantAddressStreet": "3019 Montebello Terrace",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Wright, Jerome"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "01.15.06",
+      "01.15.25",
+      "02.07.74",
+      "02.11.08",
+      "07.15.01",
+      "23.03.03",
+      "24.13.01",
+      "26.09.37"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Audio books in the nature of novels; Downloadable music files; Downloadable musical sound recordings; Musical sound recordings; Sound recordings featuring music; Downloadable non-fiction e-books on a variety of topics"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Novels; Non-fiction books on a variety of topics; Printed novels in the field of nonfiction and fiction; Series of fiction works, namely, novels and books"
+        }
+      ]
+    },
+    "id": "953e64c9-0710-4143-ae04-f0b4bff35c00",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"WRITTEN\" \"INSPIRED BY TRUE EVENTS\" AND THE REPRESENTATION OF THE LATIN CROSS"
+    ],
+    "markEvents": [
+      {
+        "date": "20231017",
+        "descriptionText": "REGISTERED-SUPPLEMENTAL REGISTER"
+      },
+      {
+        "date": "20231017",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20230915",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20230914",
+        "descriptionText": "ALLOWED SUPPLEMENTAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20230913",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20230913",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20230913",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20230613",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20230613",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230613",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230605",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20230530",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20230530",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20221108",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20220824",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20220806",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20220803",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "REMOVED FROM TEAS PLUS"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20220203",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20220125",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20211211",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20211210",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20211210",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20210622",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20210615",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20210309",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20210308",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20201224",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) black, white, gray, brown, yellow, red, pink, and gold is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a white Latin cross with white beams of light emitting from it on a blue sky surrounded by gray and white clouds above a faded brown and gray image of a brick and concrete sidewalk with a portion of a white chalk outline next to yellow caution tape with black lettering on it, a brown, black, and gray pistol, and three yellow rectangular number tags with black numbers on them. A pink hand with a black dot in the palm and a gray sleeve appears in the top left corner and a red hand appears in the bottom right corner. The wording \"HEAVEN OR HELL\" appears in the center in gold above the wording \"WRITTEN BY JEROME WRIGHT\" in white above the wording \"INSPIRED BY TRUE EVENTS\" in gold.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      },
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3019 Montebello Terrace, Baltimore, MD, 21214",
+        "city": "Baltimore",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Wright, Jerome",
+        "postalCode": "21214",
+        "stateName": "MARYLAND",
+        "street": "3019 Montebello Terrace"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "76694944",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "HEAVEN & HELL",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "registrationRecords": [
+      {
+        "effectiveDate": "20231017",
+        "recordInterestedOfficeCode": "US",
+        "registrationRecordType": "registration - US Supplemental"
+      }
+    ],
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "MIDDLE RIVER, MD 21220, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "MIDDLE RIVER, MD 21220",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Krystle I. Myers Eleven Law Firm, 6419 TOTTERIDGE STREET"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "MIDDLE RIVER, MD 21220, UNITED STATES",
+        "representativeAddressLines": [
+          "MIDDLE RIVER, MD 21220",
+          "UNITED STATES"
+        ],
+        "representativeName": "Krystle I. Myers"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201221",
+        "applicationNumber": "90397174"
+      },
+      "applicationAmendmentDate": [
+        "20230913"
+      ],
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20201002"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20201002"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20230501"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20230501"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20231017",
+        "markOfficialStatusEvents": [
+          "Supplemental Register",
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20220913"
+      ],
+      "registration": {
+        "registrationDate": "20231017",
+        "registrationNumber": "7197952"
+      }
+    },
+    "version": "20260113074330",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR HELL WRITTEN BY JEROME WRIGHT INSPIRED BY TRUE EVENTS"
+    }
+  },
+  "_uri": "/mark/us/953e64c9-0710-4143-ae04-f0b4bff35c00",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

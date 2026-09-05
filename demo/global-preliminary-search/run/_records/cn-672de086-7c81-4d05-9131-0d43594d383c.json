@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/672de086-7c81-4d05-9131-0d43594d383c",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "672de086-7c81-4d05-9131-0d43594d383c",
+  "applicationNumber": "77588761",
+  "registrationNumber": null,
+  "applicationDate": "2024-03-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七智慧心",
+  "markTransliteration": "ZENSEVEN QI ZHI HUI XIN",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "多媒体产品的设计和开发;计算机软件更新;计算机软件设计;计算机硬件设计和开发咨询;临床试验;设计和开发互联网网页;药物研究服务;医疗方面的计算机编程;医学研究服务;以医疗为目的的科学调查",
+      "translation_language": "en",
+      "translation": "Design and development of multimedia products; computer software updating; computer software design; computer hardware design and development consultancy; clinical trials; design and development of Internet pages; pharmaceutical research services; medical computer programming; medical research services; scientific investigations for medical purposes"
+    }
+  ],
+  "owner": "Hangzhou Qizhixin Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省杭州市西湖区紫宣路18号浙谷深蓝中心7号楼312室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Qizhixin Technology Co., Ltd.",
+        "applicantNativeName": "杭州七智慧心科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design and development of multimedia products; computer software updating; computer software design; computer hardware design and development consultancy; clinical trials; design and development of Internet pages; pharmaceutical research services; medical computer programming; medical research services; scientific investigations for medical purposes",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "多媒体产品的设计和开发;计算机软件更新;计算机软件设计;计算机硬件设计和开发咨询;临床试验;设计和开发互联网网页;药物研究服务;医疗方面的计算机编程;医学研究服务;以医疗为目的的科学调查"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Biological research service",
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4212",
+          "subNatGoodsServicesDescription": "Biological research service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "672de086-7c81-4d05-9131-0d43594d383c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "合肥北极牛科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240327",
+        "applicationNumber": "77588761"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005091502",
+    "wordMarkSpecification": {
+      "markTransliteration": "ZENSEVEN QI ZHI HUI XIN",
+      "markVerbalElementText": "七智慧心"
+    }
+  },
+  "_uri": "/mark/cn/672de086-7c81-4d05-9131-0d43594d383c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

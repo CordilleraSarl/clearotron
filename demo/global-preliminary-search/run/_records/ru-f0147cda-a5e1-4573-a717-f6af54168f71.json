@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/ru/f0147cda-a5e1-4573-a717-f6af54168f71",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "f0147cda-a5e1-4573-a717-f6af54168f71",
+  "applicationNumber": "2008730663",
+  "registrationNumber": "396421",
+  "applicationDate": "2008-09-24",
+  "registrationDate": "2009-12-15",
+  "expiryDate": "2028-09-24",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Turbo Start HIGH-PERFORMANCE BATTERIES RACE PROVEN QUALITY",
+  "markTransliteration": "Turbo Start HIGH-PERFORMANCE BATTERIES RACE PROVEN QUALITY",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "20100112 Все слова, кроме \"Turbo start\"."
+  ],
+  "niceClasses": [
+    9,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ru",
+      "description": "- аккумуляторы электрические; аккумуляторы электрические для транспортных средств; ацидометры для аккумуляторных батарей; батареи гальванических элементов; батареи для систем зажигания; батареи электрические; корпуса аккумуляторов электрических; пластины аккумуляторные; решетки для пластин электрических аккумуляторов; устройства зарядные для электрических аккумуляторов.",
+      "translation_language": "en",
+      "translation": "- electric accumulators; batteries for electric vehicles; atsidometry for batteries; a battery of electrochemical cells; battery ignition systems; electric batteries; body electric accumulators; battery plate; lattice plates for electric batteries; Chargers for electric batteries."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "- демонстрация товаров; представление товаров на всех медиасредствах с целью розничной продажи; продвижение товаров; распространение образцов; распространение рекламных материалов; реклама; реклама интерактивная в компьютерной сети; реклама телевизионная; услуги снабженческие для третьих лиц.",
+      "translation_language": "en",
+      "translation": "- Demonstration of goods; presentation of goods on all of media for the purpose of retail sale; promotion of goods; distribution of samples; distribution of promotional materials; advertising; interactive advertising on a computer network; television advertising; supplying services to third parties."
+    }
+  ],
+  "owner": "AVTOMASJRESURS",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "129075, Москва, ул.Цандера, 1",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "AVTOMASJRESURS",
+        "applicantNativeName": "Общество с ограниченной ответственностью \"АВТОМАШРЕСУРС\""
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- electric accumulators; batteries for electric vehicles; atsidometry for batteries; a battery of electrochemical cells; battery ignition systems; electric batteries; body electric accumulators; battery plate; lattice plates for electric batteries; Chargers for electric batteries.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- аккумуляторы электрические; аккумуляторы электрические для транспортных средств; ацидометры для аккумуляторных батарей; батареи гальванических элементов; батареи для систем зажигания; батареи электрические; корпуса аккумуляторов электрических; пластины аккумуляторные; решетки для пластин электрических аккумуляторов; устройства зарядные для электрических аккумуляторов."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- Demonstration of goods; presentation of goods on all of media for the purpose of retail sale; promotion of goods; distribution of samples; distribution of promotional materials; advertising; interactive advertising on a computer network; television advertising; supplying services to third parties.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- демонстрация товаров; представление товаров на всех медиасредствах с целью розничной продажи; продвижение товаров; распространение образцов; распространение рекламных материалов; реклама; реклама интерактивная в компьютерной сети; реклама телевизионная; услуги снабженческие для третьих лиц."
+        }
+      ]
+    },
+    "id": "f0147cda-a5e1-4573-a717-f6af54168f71",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "20100112 Все слова, кроме \"Turbo start\"."
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.07.01",
+      "24.07.11",
+      "24.07.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "representatives": [
+      {
+        "representativeNativeName": "129343, Москва, ул.Уржумская, 4, ООО \"АВТОМАШРЕСУРС\", генеральному директору Ю.Л.Гальченко"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080924",
+        "applicationNumber": "2008730663"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280924",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20091215",
+        "registrationNumber": "396421"
+      }
+    },
+    "version": "20250705074429",
+    "wordMarkSpecification": {
+      "markTransliteration": "Turbo Start HIGH-PERFORMANCE BATTERIES RACE PROVEN QUALITY",
+      "markVerbalElementText": "Turbo Start HIGH-PERFORMANCE BATTERIES RACE PROVEN QUALITY"
+    }
+  },
+  "_uri": "/mark/ru/f0147cda-a5e1-4573-a717-f6af54168f71",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.559Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

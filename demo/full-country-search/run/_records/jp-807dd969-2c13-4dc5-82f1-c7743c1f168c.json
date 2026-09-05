@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/807dd969-2c13-4dc5-82f1-c7743c1f168c",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "807dd969-2c13-4dc5-82f1-c7743c1f168c",
+  "applicationNumber": "2003-030358",
+  "registrationNumber": "4715528",
+  "applicationDate": "2003-04-15",
+  "registrationDate": "2003-10-03",
+  "expiryDate": "2013-10-03",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-11-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＮＩＱＯＲ",
+  "markTransliteration": "NIKKAA NIKORU NIKUORU",
+  "markTranslation": "NIQOR",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンバーター，その他の配電用・制御用機械器具",
+      "translation_language": "en",
+      "translation": "Converter, other distribution equipment · control equipment"
+    }
+  ],
+  "owner": "SYNQOR INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KURAUCHI MOTOHIRO",
+  "priorities": [
+    {
+      "priorityDate": "20030415"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HUDSON MASSACHUSETTS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "SYNQOR INC.",
+        "applicantNativeAddress": "アメリカ合衆国０１７４９－１３２０マサチューセッツ州ハドソン、セントラル・ストリート１８８",
+        "applicantNativeName": "シンカー・インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Converter, other distribution equipment · control equipment",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンバーター，その他の配電用・制御用機械器具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        }
+      ]
+    },
+    "id": "807dd969-2c13-4dc5-82f1-c7743c1f168c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20030415"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KURAUCHI MOTOHIRO",
+        "representativeNativeName": "倉内　基弘"
+      },
+      {
+        "representativeName": "KAZAMA HIROSHI",
+        "representativeNativeName": "風間　弘志"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20030415",
+        "applicationNumber": "2003-030358"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20131003",
+      "lastPublicationDate": "20031105",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20031003",
+        "registrationNumber": "4715528"
+      }
+    },
+    "version": "20240213112926",
+    "wordMarkSpecification": {
+      "markTranslation": "NIQOR",
+      "markTransliteration": "NIKKAA NIKORU NIKUORU",
+      "markVerbalElementText": "ＮＩＱＯＲ"
+    }
+  },
+  "_uri": "/mark/jp/807dd969-2c13-4dc5-82f1-c7743c1f168c",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

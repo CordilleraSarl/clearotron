@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/jp/a791b401-6918-42b6-b60f-603a05144ccc",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "a791b401-6918-42b6-b60f-603a05144ccc",
+  "applicationNumber": "2023-052543",
+  "registrationNumber": "6764544",
+  "applicationDate": "2023-05-16",
+  "registrationDate": "2023-12-21",
+  "expiryDate": "2033-12-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-01-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＱＯＬＩ",
+  "markTransliteration": "KORI KUORI",
+  "markTranslation": "QOLI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，通信網を介した映像又は動画の提供，電子計算機又は移動体電話による通信を用いて行なう画像の提供（動画を含む。），興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。），動画の撮影",
+      "translation_language": "en",
+      "translation": "Teaching arts, sports or knowledge, planning, managing or holding seminars, providing images or videos via communication networks, providing images (including videos) using communication via computer or mobile phone, entertainment planning, management, or holding (excluding those related to movies, entertainment, plays, music performances, and sports, horse racing, bicycle races, boat races, and small car races), filming videos."
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "あん摩・マッサージ及び指圧，きゅう，はり，医療情報の提供，健康診断，医療・医薬品及び調剤に関する助言，調剤に関する情報の提供，栄養の指導，健康管理の助言",
+      "translation_language": "en",
+      "translation": "Anma/massage and shiatsu, massage, acupuncture, provision of medical information, health examination, advice on medical care, pharmaceuticals, and dispensing, provision of information on dispensing, nutritional guidance, health management advice"
+    }
+  ],
+  "owner": "KK LYL",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "NONAKA TSUYOSHI",
+  "priorities": [
+    {
+      "priorityDate": "20230516"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHIBUYA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KK LYL",
+        "applicantNativeAddress": "東京都渋谷区",
+        "applicantNativeName": "株式会社ＬＹＬ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Teaching arts, sports or knowledge, planning, managing or holding seminars, providing images or videos via communication networks, providing images (including videos) using communication via computer or mobile phone, entertainment planning, management, or holding (excluding those related to movies, entertainment, plays, music performances, and sports, horse racing, bicycle races, boat races, and small car races), filming videos.",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，通信網を介した映像又は動画の提供，電子計算機又は移動体電話による通信を用いて行なう画像の提供（動画を含む。），興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。），動画の撮影"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Anma/massage and shiatsu, massage, acupuncture, provision of medical information, health examination, advice on medical care, pharmaceuticals, and dispensing, provision of information on dispensing, nutritional guidance, health management advice",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "あん摩・マッサージ及び指圧，きゅう，はり，医療情報の提供，健康診断，医療・医薬品及び調剤に関する助言，調剤に関する情報の提供，栄養の指導，健康管理の助言"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        },
+        {
+          "natClassNumber": "42E01",
+          "natGoodsServicesDescription": "Photography"
+        },
+        {
+          "natClassNumber": "42V01",
+          "natGoodsServicesDescription": "Massage and therapeutic Shiatsu massage; Chiropractic; Moxibustion; Treatment for dislocated joints, sprain, bone fractures [judo-seifuku]; Bodywork therapy; Acupuncture"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        },
+        {
+          "natClassNumber": "42V03",
+          "natGoodsServicesDescription": "Dietary and nutritional guidance"
+        }
+      ]
+    },
+    "id": "a791b401-6918-42b6-b60f-603a05144ccc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20230516"
+      }
+    ],
+    "recordLastUpdated": "20240212",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NONAKA TSUYOSHI",
+        "representativeNativeName": "野中　剛"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230516",
+        "applicationNumber": "2023-052543"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331221",
+      "lastPublicationDate": "20240104",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20231221",
+        "registrationNumber": "6764544"
+      }
+    },
+    "version": "20240212161812",
+    "wordMarkSpecification": {
+      "markTranslation": "QOLI",
+      "markTransliteration": "KORI KUORI",
+      "markVerbalElementText": "ＱＯＬＩ"
+    }
+  },
+  "_uri": "/mark/jp/a791b401-6918-42b6-b60f-603a05144ccc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:02.690Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

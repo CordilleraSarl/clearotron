@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "7ccd0bb4-b371-4bd1-9085-a088c468b3fc",
+  "applicationNumber": "41-1992-0000396",
+  "registrationNumber": "4100213390000",
+  "applicationDate": "1992-01-31",
+  "registrationDate": "1993-08-31",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "7 ELEVEN KOREA-SEVEN",
+  "markTransliteration": "7 ELEVEN KOREA SEVEN",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "ko",
+      "description": "간이식당업,서양음식점경영업,부페식당업에한함,식당업,식당업(레스토랑업,셀프서비스식당업,식료잡화체인점관리업,주유소체인점관리업,편의점경영업,편의점관리업",
+      "translation_language": "en",
+      "translation": "(Restaurant business, self-service restaurant business, grocery store chain management business, gas station chain store management business, convenience store management business, convenience store management business), restaurant business, restaurant business, restaurant business"
+    }
+  ],
+  "owner": "7-ELEVEN, lnc",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "백덕열 (BAEK, Duk Yeul)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국텍사스달라",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "7-ELEVEN, lnc",
+        "applicantNativeName": "세븐-일레븐 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Restaurant business, self-service restaurant business, grocery store chain management business, gas station chain store management business, convenience store management business, convenience store management business), restaurant business, restaurant business, restaurant business",
+          "intClassNumber": "35,36,37,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "간이식당업,서양음식점경영업,부페식당업에한함,식당업,식당업(레스토랑업,셀프서비스식당업,식료잡화체인점관리업,주유소체인점관리업,편의점경영업,편의점관리업"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "112"
+        }
+      ]
+    },
+    "id": "7ccd0bb4-b371-4bd1-9085-a088c468b3fc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.18"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Daelim Acrotel, Eonju-ro -gil, Gangnam-gu, Seoul(Patent SIPPT)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "백덕열 (BAEK, Duk Yeul)"
+      },
+      {
+        "representativeAddress": "th Fl., Marine Center Main Bldg., -ga, Namdaemun-ro, Chung-gu, Seoul Republic of KOREA",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이태희 (LEE, Tae Hee)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19920131",
+        "applicationNumber": "41-1992-0000396"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19930831",
+        "registrationNumber": "4100213390000"
+      }
+    },
+    "version": "20250625144249",
+    "wordMarkSpecification": {
+      "markTransliteration": "7 ELEVEN KOREA SEVEN",
+      "markVerbalElementText": "7 ELEVEN KOREA-SEVEN"
+    }
+  },
+  "_uri": "/mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.777Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

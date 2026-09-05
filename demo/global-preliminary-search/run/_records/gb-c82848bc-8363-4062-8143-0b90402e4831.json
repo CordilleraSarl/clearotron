@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/gb/c82848bc-8363-4062-8143-0b90402e4831",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "c82848bc-8363-4062-8143-0b90402e4831",
+  "applicationNumber": "UK00916384844",
+  "registrationNumber": "UK00916384844",
+  "applicationDate": "2017-02-18",
+  "registrationDate": "2018-09-27",
+  "expiryDate": "2027-02-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QODI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Aerials; Antennas; Radios; Acoustic couplers; Megaphones; Stereoscopes; Electricity mains, namely, electric cables and wires; Protection devices for personal use against accidents, namely, shoes for protection against accidents and fire, clothing for protection against accidents, irradiation and fire, face-protection shields; Batteries, electric; Chargers for electric batteries; Sound alarms; Semi-conductors; Optical lanterns; Electro-dynamic apparatus for the remote control of signals.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HK ZUOYOU INFORMATION LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "HK",
+  "representative": "Katarzyna Binder-Sony",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "12 / F, SanTai Building, 137-139 Connaught Road Central, Hong Kong",
+        "applicantAddressCountryCode": "HK",
+        "applicantAddressCountryName": "Hong Kong",
+        "applicantName": "HK ZUOYOU INFORMATION LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.05.05",
+      "26.04.03",
+      "26.04.12"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Aerials; Antennas; Radios; Acoustic couplers; Megaphones; Stereoscopes; Electricity mains, namely, electric cables and wires; Protection devices for personal use against accidents, namely, shoes for protection against accidents and fire, clothing for protection against accidents, irradiation and fire, face-protection shields; Batteries, electric; Chargers for electric batteries; Sound alarms; Semi-conductors; Optical lanterns; Electro-dynamic apparatus for the remote control of signals."
+        }
+      ]
+    },
+    "id": "c82848bc-8363-4062-8143-0b90402e4831",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Colour Claimed : Blue; Black."
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.03",
+      "26.04.09",
+      "26.04.98",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "First Floor 3 More London Riverside, London SE1 2RE",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Katarzyna Binder-Sony"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170218",
+        "applicationNumber": "UK00916384844"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270218",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180927",
+        "registrationNumber": "UK00916384844"
+      }
+    },
+    "version": "20260827020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QODI"
+    }
+  },
+  "_uri": "/mark/gb/c82848bc-8363-4062-8143-0b90402e4831",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:59.113Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

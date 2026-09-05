@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/br/89ec822a-1baa-4bbe-933b-4c9b3ee5fb13",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "89ec822a-1baa-4bbe-933b-4c9b3ee5fb13",
+  "applicationNumber": "800037235",
+  "registrationNumber": "800037235",
+  "applicationDate": "1980-02-21",
+  "registrationDate": "1984-09-18",
+  "expiryDate": "2034-09-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        42
+      ],
+      "language": "pt",
+      "description": "Doces e pós para fabricação de doces em geral.",
+      "translation_language": "en",
+      "translation": "Sweets and powders for making sweets in general."
+    }
+  ],
+  "owner": "DORI ALIMENTOS S. A",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "TINOCO SOARES & FILHO LTDA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "DORI ALIMENTOS S. A"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sweets and powders for making sweets in general.",
+          "intClassNumber": "05,29,30,31,32,33,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Doces e pós para fabricação de doces em geral."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "33.10"
+        }
+      ]
+    },
+    "id": "89ec822a-1baa-4bbe-933b-4c9b3ee5fb13",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "TINOCO SOARES & FILHO LTDA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19800221",
+        "applicationNumber": "800037235"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340918",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19840918",
+        "registrationNumber": "800037235"
+      }
+    },
+    "version": "20250630191051",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/br/89ec822a-1baa-4bbe-933b-4c9b3ee5fb13",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

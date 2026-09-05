@@ -184,7 +184,13 @@ function tokenExemptionCovers(line, span) {
 // What is done is the cheap half — the hit says what kind of file it landed in, so the reader is not
 // diagnosing a mystery, and `scripts/check-capture.mjs` lets whoever captures a fixture check it
 // against the current roster before writing rather than finding out from CI.
-const CAPTURED_REGISTER_RE = /(?:^|\/)providers\/[^/]+\/test\/fixtures\//;
+// TWO CORPORA, ONE KIND OF FILE. `demo/<product>/run/_records/` joined this on 2026-09-05: the frozen
+// demo runs carry the register records the engine actually retrieved, which is the same thing a
+// provider fixture is and arrived by the same route. It was not here because the demo tranche landed
+// after this predicate was written, and the omission was found the way says these are found —
+// a hit on a tree nobody had touched, reported BY VALUE into a scan report, which is precisely what
+// the entry-number format above exists to prevent.
+const CAPTURED_REGISTER_RE = /(?:^|\/)(?:providers\/[^/]+\/test\/fixtures|demo\/[^/]+\/run\/_records)\//;
 
 /** Is this path captured vendor data — full of third-party names by construction? */
 export const isCapturedRegisterData = (file) => CAPTURED_REGISTER_RE.test(String(file ?? ""));

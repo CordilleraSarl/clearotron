@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/jp/44a56d0a-98b6-4d2d-b52b-4119957ab186",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "44a56d0a-98b6-4d2d-b52b-4119957ab186",
+  "applicationNumber": "2010-045300",
+  "registrationNumber": "5376771",
+  "applicationDate": "2010-06-08",
+  "registrationDate": "2010-12-17",
+  "expiryDate": "2030-12-17",
+  "renewalDate": null,
+  "lastPublicationDate": "2011-01-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＣＯＬＤＦＩＲＥ＋",
+  "markTransliteration": "KOORUDOFAIAPURASU KOORUDOFAIYAAPURASU KOORUDOFAIYAPURASU",
+  "markTranslation": "COLDFIRE+",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，集積回路，マイクロコントローラ，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Semiconductors, integrated circuits, microcontrollers, electronic appliances appliances and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20100607"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, integrated circuits, microcontrollers, electronic appliances appliances and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，集積回路，マイクロコントローラ，電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "44a56d0a-98b6-4d2d-b52b-4119957ab186",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20100607"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100608",
+        "applicationNumber": "2010-045300"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301217",
+      "lastPublicationDate": "20110125",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20101217",
+        "registrationNumber": "5376771"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "COLDFIRE+",
+      "markTransliteration": "KOORUDOFAIAPURASU KOORUDOFAIYAAPURASU KOORUDOFAIYAPURASU",
+      "markVerbalElementText": "ＣＯＬＤＦＩＲＥ＋"
+    }
+  },
+  "_uri": "/mark/jp/44a56d0a-98b6-4d2d-b52b-4119957ab186",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

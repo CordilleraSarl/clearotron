@@ -1,0 +1,182 @@
+{
+  "uri": "/mark/jp/cfcbe723-7812-4ba2-8a9e-fe7d23d56466",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "cfcbe723-7812-4ba2-8a9e-fe7d23d56466",
+  "applicationNumber": "2007-114369",
+  "registrationNumber": "5188485",
+  "applicationDate": "2007-11-09",
+  "registrationDate": "2008-12-12",
+  "expiryDate": "2018-12-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2009-01-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＣＬＩＮＡＳＳＩＳＴ",
+  "markTransliteration": "KURINASHISUTO",
+  "markTranslation": "CLINASSIST",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "歯科及び歯列矯正の分野において使用されるコンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Computer software used in the field of dentistry and orthodontics"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": "歯科矯正用器具，その他の歯科用機械器具",
+      "translation_language": "en",
+      "translation": "Orthodontic appliances, other dental machinery tools"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "矯正歯科医業，歯科医業，歯科医業及び矯正歯科医業に関する指導・助言，歯科医業及び矯正歯科医業に関する情報の提供",
+      "translation_language": "en",
+      "translation": "Providing information on orthodontic dentistry, dentistry, dentistry and orthodontics related guidance and advice, dental practice and orthodontic medicine"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YASUMURA TAKAAKI",
+  "priorities": [
+    {
+      "priorityDate": "20070515"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software used in the field of dentistry and orthodontics",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "歯科及び歯列矯正の分野において使用されるコンピュータソフトウェア"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Orthodontic appliances, other dental machinery tools",
+          "intClassNumber": "10",
+          "intGoodsServicesDescription": "歯科矯正用器具，その他の歯科用機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing information on orthodontic dentistry, dentistry, dentistry and orthodontics related guidance and advice, dental practice and orthodontic medicine",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "矯正歯科医業，歯科医業，歯科医業及び矯正歯科医業に関する指導・助言，歯科医業及び矯正歯科医業に関する情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "10D01",
+          "natGoodsServicesDescription": "Medical machines and apparatus"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical services, Providing medical information, Physical examination, Dentistry, Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "cfcbe723-7812-4ba2-8a9e-fe7d23d56466",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20070515"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YASUMURA TAKAAKI",
+        "representativeNativeName": "安村　高明"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20071109",
+        "applicationNumber": "2007-114369"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20181212",
+      "lastPublicationDate": "20090120",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20081212",
+        "registrationNumber": "5188485"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "CLINASSIST",
+      "markTransliteration": "KURINASHISUTO",
+      "markVerbalElementText": "ＣＬＩＮＡＳＳＩＳＴ"
+    }
+  },
+  "_uri": "/mark/jp/cfcbe723-7812-4ba2-8a9e-fe7d23d56466",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.740Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

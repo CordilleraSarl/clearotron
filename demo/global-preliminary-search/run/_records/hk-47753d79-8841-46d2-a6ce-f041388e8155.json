@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/hk/47753d79-8841-46d2-a6ce-f041388e8155",
+  "provider": "clarivate",
+  "office": "hk",
+  "guid": "47753d79-8841-46d2-a6ce-f041388e8155",
+  "applicationNumber": "306005682",
+  "registrationNumber": "306005682",
+  "applicationDate": "2022-07-08",
+  "registrationDate": "2022-07-08",
+  "expiryDate": "2032-07-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "商業知識和技能的傳授（培訓）；就業指導（教育或培訓顧問）；安排和組織學術討論會；安排和組織會議；提供培訓和教育考試（教育認證服務）；流動圖書館；書籍出版；提供不可下載的在線視頻；動物訓練；為藝術家提供模特服務。",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "wu han qiang yan ke ji zi xun you xian ze ren gong si",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "中國 湖北省武漢市洪山區黃家湖西路3號 武漢工商學院弘德科教樓312室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "wu han qiang yan ke ji zi xun you xian ze ren gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "商業知識和技能的傳授（培訓）；就業指導（教育或培訓顧問）；安排和組織學術討論會；安排和組織會議；提供培訓和教育考試（教育認證服務）；流動圖書館；書籍出版；提供不可下載的在線視頻；動物訓練；為藝術家提供模特服務。"
+        }
+      ]
+    },
+    "id": "47753d79-8841-46d2-a6ce-f041388e8155",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "HK",
+    "registrationOfficeName": "Hong Kong",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220708",
+        "applicationNumber": "306005682"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320707",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220708",
+        "registrationNumber": "306005682"
+      }
+    },
+    "version": "20230427180058",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/hk/47753d79-8841-46d2-a6ce-f041388e8155",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

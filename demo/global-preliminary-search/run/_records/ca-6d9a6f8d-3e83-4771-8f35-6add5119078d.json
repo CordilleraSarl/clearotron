@@ -1,0 +1,302 @@
+{
+  "uri": "/mark/ca/6d9a6f8d-3e83-4771-8f35-6add5119078d",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "6d9a6f8d-3e83-4771-8f35-6add5119078d",
+  "applicationNumber": "811427",
+  "registrationNumber": "TMA532843",
+  "applicationDate": "1996-04-29",
+  "registrationDate": "2000-09-18",
+  "expiryDate": null,
+  "renewalDate": "2015-09-18",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2000-03-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "THE SEVEN CORNERSTONES OF TEAMWORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16,
+        28,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Educational and developmental experiential training games and programs, namely kits containing games which simulate real life situations and assist in teaching business management and organizational skills and related training materials, namely workbooks, debriefing materials and training aids to assist participants in evaluating their experiences after playing the above noted games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16,
+        28,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Facilitating and presenting by means of training lectures, group sessions, seminars and workshops, educational and developmental experiential training games and programs, namely kits containing games which simulate real life situations and assist in teaching business management and organizational skills and related training materials namely workbooks, debriefing materials and training aids to assist participants in evaluating their experiences after playing the above noted games.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "EAGLES FLIGHT, CREATIVE TRAINING EXCELLENCE INC.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "116 FOUNTAIN STREET EAST, SUITE 201, GUELPH, ONTARIO, N1H3N6",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "116 FOUNTAIN STREET EAST",
+          "SUITE 201",
+          "GUELPH",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "N1H3N6",
+        "applicantName": "EAGLES FLIGHT, CREATIVE TRAINING EXCELLENCE INC."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as June 21, 1995 on wares marked (1) on services (1)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16,28,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Educational and developmental experiential training games and programs, namely kits containing games which simulate real life situations and assist in teaching business management and organizational skills and related training materials, namely workbooks, debriefing materials and training aids to assist participants in evaluating their experiences after playing the above noted games."
+        },
+        {
+          "intClassNumber": "16,28,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Facilitating and presenting by means of training lectures, group sessions, seminars and workshops, educational and developmental experiential training games and programs, namely kits containing games which simulate real life situations and assist in teaching business management and organizational skills and related training materials namely workbooks, debriefing materials and training aids to assist participants in evaluating their experiences after playing the above noted games."
+        }
+      ]
+    },
+    "id": "6d9a6f8d-3e83-4771-8f35-6add5119078d",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260421",
+        "descriptionText": "Agent changed",
+        "information": "Transferred From: 2502 To: 59"
+      },
+      {
+        "date": "20150918",
+        "descriptionText": "Renewed",
+        "information": "DP:2015/05/06 RD:2015/05/06 RR:(2502) BERESKIN & PARR LLP/S.E.N.C.R.L., S.R.L.",
+        "responseDate": "20300918"
+      },
+      {
+        "date": "20091125",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20090309",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20000918",
+        "descriptionText": "Registered",
+        "responseDate": "20150918"
+      },
+      {
+        "date": "20000525",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20001125"
+      },
+      {
+        "date": "20000525",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20000308",
+        "descriptionText": "Advertised",
+        "information": "Vol.47 Issue 2367"
+      },
+      {
+        "date": "20000202",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "19990302",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 1999/02/11",
+        "responseDate": "19990811"
+      },
+      {
+        "date": "19980908",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 1998/08/11",
+        "responseDate": "19990211"
+      },
+      {
+        "date": "19980323",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 1998/02/11",
+        "responseDate": "19980811"
+      },
+      {
+        "date": "19970826",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 1997/08/11",
+        "responseDate": "19980211"
+      },
+      {
+        "date": "19970307",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 1997/02/10",
+        "responseDate": "19970811"
+      },
+      {
+        "date": "19961011",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "19970211"
+      },
+      {
+        "date": "19960828",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "19960515",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "19960507",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "19960429",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "116 FOUNTAIN STREET EAST, SUITE 201, GUELPH, ONTARIO, N1H3N6",
+        "addressLines": [
+          "116 FOUNTAIN STREET EAST",
+          "SUITE 201",
+          "GUELPH",
+          "ONTARIO",
+          "N1H3N6"
+        ],
+        "countryName": "Canada",
+        "name": "EAGLES FLIGHT, CREATIVE TRAINING EXCELLENCE INC.",
+        "postalCode": "N1H3N6"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2367",
+        "publicationVolume": "47"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "Scotia Plaza, 40 King Street West",
+          "40th Floor",
+          "Toronto",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP",
+        "representativeReferenceNumber": "10100-20"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20000525"
+      ],
+      "application": {
+        "applicationDate": "19960429",
+        "applicationNumber": "811427"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "extension": {
+        "approvalDate": [
+          "19990302"
+        ],
+        "dueDate": "19990811"
+      },
+      "firstUsed": [
+        {
+          "firstUsedDate": "19950621",
+          "firstUsedText": "Used in CANADA since at least as early as June 21, 1995 on wares marked (1) on services (1)"
+        }
+      ],
+      "formalisationDate": "19960515",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20300918",
+      "publicationDate": [
+        "20000308"
+      ],
+      "registration": {
+        "registrationDate": "20000918",
+        "registrationNumber": "TMA532843"
+      },
+      "renewalDate": "20150918"
+    },
+    "subjectHeadings": [
+      "THE SEVEN CORNERSTONES OF TEAMWORK",
+      "7"
+    ],
+    "version": "20260429130313",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "THE 7 CORNERSTONE OF TEAM WORK, THE 7 CORNER STONE OF TEAM WORK",
+      "markVerbalElementText": "THE SEVEN CORNERSTONES OF TEAMWORK",
+      "markVerbalElementTextFormal": "THE SEVEN CORNERSTONES OF TEAMWORK"
+    }
+  },
+  "_uri": "/mark/ca/6d9a6f8d-3e83-4771-8f35-6add5119078d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

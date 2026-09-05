@@ -1,0 +1,228 @@
+{
+  "uri": "/mark/th/cb413a81-8ac3-4832-b8bf-3c2ea1d4b60f",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "cb413a81-8ac3-4832-b8bf-3c2ea1d4b60f",
+  "applicationNumber": "63945",
+  "registrationNumber": "43097",
+  "applicationDate": "1968-12-06",
+  "registrationDate": "1968-12-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENORUTON",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "th",
+      "description": "ทั้งจำพวก.",
+      "translation_language": "en",
+      "translation": "Both species."
+    }
+  ],
+  "owner": "Novartis Consumer Health S.A.",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Novartis Consumer Health S.A.",
+        "applicantNativeAddress": "ซีเอช - 1260 นีออง ประเทศสวิตเซอร์แลนด์ ประเทศสวิตเซอร์แลนด์",
+        "applicantNativeName": "โนวาร์ทิส คอนซูเมอร์ เฮลธ์ เอส. เอ."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Both species.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "ทั้งจำพวก."
+        }
+      ]
+    },
+    "id": "cb413a81-8ac3-4832-b8bf-3c2ea1d4b60f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20241115",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานกฎหมายดำเนิน สมเกียรติ และบุญมา จำกัด เลขที่ 719 ถนนสี่พระยา แขวงสี่พระยา เขตบางรัก กรุงเทพมหานคร 10500",
+        "representativeNativeName": "นางเนตยา วาร์งเค"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานกฎหมายดำเนิน สมเกียรติ และบุญมา จำกัด เลขที่ 719 ถนนสี่พระยา แขวงสี่พระยา เขตบางรัก กรุงเทพมหานคร 10500",
+        "representativeNativeName": "นายเกียรติ พูนสมบัติเลิศ"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานกฎหมายดำเนิน สมเกียรติ และบุญมา จำกัด เลขที่ 719 ถนนสี่พระยา แขวงสี่พระยา เขตบางรัก กรุงเทพมหานคร 10500",
+        "representativeNativeName": "นายบุญมา เตชะวณิช"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานกฎหมายดำเนิน สมเกียรติ และบุญมา จำกัด เลขที่ 719 ถนนสี่พระยา แขวงสี่พระยา เขตบางรัก กรุงเทพมหานคร 10500",
+        "representativeNativeName": "นายรุทร นพคุณ"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "แห่งสำนักงานกฎหมายดำเนิน สมเกียรติ และบุญมา จำกัด เลขที่ 719 ถนนสี่พระยา แขวงสี่พระยา เขตบางรัก กรุงเทพมหานคร 10500",
+        "representativeNativeName": "นายวิรัช ศรีเอนกราธา"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19681206",
+        "applicationNumber": "63945"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19681206",
+        "registrationNumber": "43097"
+      }
+    },
+    "version": "20241115162228",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORUTON"
+    }
+  },
+  "_uri": "/mark/th/cb413a81-8ac3-4832-b8bf-3c2ea1d4b60f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

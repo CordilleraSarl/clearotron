@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/jp/10ba51ef-bf04-41b0-8a93-cbe9cf60015b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "10ba51ef-bf04-41b0-8a93-cbe9cf60015b",
+  "applicationNumber": "H11-059733",
+  "registrationNumber": "4418190",
+  "applicationDate": "1999-07-02",
+  "registrationDate": "2000-09-22",
+  "expiryDate": "2010-09-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2000-10-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＩＯＲＩ",
+  "markTransliteration": "AIORI",
+  "markTranslation": "IORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "デザインの考案",
+      "translation_language": "en",
+      "translation": "Design devised"
+    }
+  ],
+  "owner": "SUN JING DONG",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19990702"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KYOTO KYOTO FU",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "SUN JING DONG",
+        "applicantNativeAddress": "京都府京都市伏見区深草西浦町７丁目３９番地",
+        "applicantNativeName": "孫　景東"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design devised",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "デザインの考案"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design planning"
+        }
+      ]
+    },
+    "id": "10ba51ef-bf04-41b0-8a93-cbe9cf60015b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19990702"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990702",
+        "applicationNumber": "H11-059733"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20100922",
+      "lastPublicationDate": "20001024",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20000922",
+        "registrationNumber": "4418190"
+      }
+    },
+    "version": "20230427183618",
+    "wordMarkSpecification": {
+      "markTranslation": "IORI",
+      "markTransliteration": "AIORI",
+      "markVerbalElementText": "ＩＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/10ba51ef-bf04-41b0-8a93-cbe9cf60015b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/a906d917-22bc-4bd4-8e70-4ab2b95735fe",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "a906d917-22bc-4bd4-8e70-4ab2b95735fe",
+  "applicationNumber": "6052484",
+  "registrationNumber": "3477929",
+  "applicationDate": "2023-08-04",
+  "registrationDate": "2024-05-03",
+  "expiryDate": "2033-08-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electrical Wires & Cables, Electrical Switches, Chokes, Fittings For Electrical Lamps & Tubes, Mcb Boxs, Main Switches, Kitkats, Switch Fuses, Changeover Switches, Distribution Switch Boards, Metal Clad Switches, Switchgears,  Electrical Accessories And Electrical Goods In Class-9.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RAHUL BANSAL Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "LALJI ADVOCATES[11712]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "D-150, PUSHPANJALI ENCLAVE, PITAMPURA, NEW DELHI-110034",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "RAHUL BANSAL Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electrical Wires & Cables, Electrical Switches, Chokes, Fittings For Electrical Lamps & Tubes, Mcb Boxs, Main Switches, Kitkats, Switch Fuses, Changeover Switches, Distribution Switch Boards, Metal Clad Switches, Switchgears,  Electrical Accessories And Electrical Goods In Class-9."
+        }
+      ]
+    },
+    "id": "a906d917-22bc-4bd4-8e70-4ab2b95735fe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2128"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "A-48, Yojna Vihar, Delhi-110092",
+        "representativeName": "LALJI ADVOCATES[11712]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230804",
+        "applicationNumber": "6052484"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330804",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240503",
+        "registrationNumber": "3477929"
+      }
+    },
+    "version": "20250710164944",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORA"
+    }
+  },
+  "_uri": "/mark/in/a906d917-22bc-4bd4-8e70-4ab2b95735fe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.683Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/cn/a01a616b-89f0-4b2e-a6c8-cb8a13c816dd",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "a01a616b-89f0-4b2e-a6c8-cb8a13c816dd",
+  "applicationNumber": "26194920",
+  "registrationNumber": "26194920",
+  "applicationDate": "2017-09-01",
+  "registrationDate": "2018-09-28",
+  "expiryDate": "2028-09-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-06-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电脑专用包;智能手机用套;手机屏幕专用保护膜;拾音器;双筒望远镜;平板电脑用套;个人用防事故装置;太阳能电池;移动电源（可充电电池）",
+      "translation_language": "en",
+      "translation": "Computer-specific bag; smart phone case; mobile phone screen special protective film; pickup; binoculars; tablet set; personal anti-accident device; solar battery; mobile power (rechargeable battery)"
+    }
+  ],
+  "owner": "Hubei Zhiheng Hengda Landscape Engineering Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省襄阳市枣阳市东园小区联中街79号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hubei Zhiheng Hengda Landscape Engineering Co., Ltd.",
+        "applicantNativeName": "湖北智恒达园林工程有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer-specific bag; smart phone case; mobile phone screen special protective film; pickup; binoculars; tablet set; personal anti-accident device; solar battery; mobile power (rechargeable battery)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电脑专用包;智能手机用套;手机屏幕专用保护膜;拾音器;双筒望远镜;平板电脑用套;个人用防事故装置;太阳能电池;移动电源（可充电电池）"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Optical instruments",
+        "Life-saving instruments",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0911",
+          "subNatGoodsServicesDescription": "Optical instruments"
+        },
+        {
+          "subNatClassNumber": "0919",
+          "subNatGoodsServicesDescription": "Life-saving instruments"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "a01a616b-89f0-4b2e-a6c8-cb8a13c816dd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1605"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州积特企业管理咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170901",
+        "applicationNumber": "26194920"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280927",
+      "lastPublicationDate": "20180627",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180928",
+        "registrationNumber": "26194920"
+      }
+    },
+    "version": "20251002232339",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VORI"
+    }
+  },
+  "_uri": "/mark/cn/a01a616b-89f0-4b2e-a6c8-cb8a13c816dd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:11.871Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "uri": "/mark/ro/c44caba1-b439-483f-b279-ae8dcbd083d2",
+  "provider": "clarivate",
+  "office": "ro",
+  "guid": "c44caba1-b439-483f-b279-ae8dcbd083d2",
+  "applicationNumber": "M 2021 02551",
+  "registrationNumber": "178485",
+  "applicationDate": "2021-03-29",
+  "registrationDate": "2022-01-19",
+  "expiryDate": "2031-03-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DEQORIA partenerul tau in finisaje",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "ro",
+      "description": "Produse chimice pentru utilizare în industrie, ştiinţe şi fotografie, precum şi în agricultură, horticultură şi silvicultură; răşini artificiale neprelucrate, materiale plastice neprelucrate; compoziţii pentru stingerea şi prevenirea incendiilor; preparate pentru călirea şi lipirea metalelor; substanţe pentru tăbăcirea pieilor şi a blănurilor de animale; adezivi pentru utilizare în industrie; chituri şi alte materiale de umplere; compost, bălegar, îngrăşăminte; preparate biologice pentru utilizare în industrie şi ştiinţe.",
+      "translation_language": "en",
+      "translation": "Chemicals for use in industry, science and photography, as well as in agriculture, horticulture and forestry; unprocessed artificial resins, unprocessed plastics; compositions for extinguishing and preventing fires; preparations for the hardening and bonding of metals; substances for the tanning of hides and skins of animals; adhesives for use in industry; putties and other fillers; compost, manure, fertilizer; biological preparations for use in industry and science."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Regruparea in avantajul tertilor, a unei varietăți de produse si servicii, in special produsele din clasa 01 si serviciile din clasa 42 (exceptând transportul lor), permițând clienților să vizualizeze și să cumpere în mod convenabil; servicii de depozitare (stocare); publicitate; servicii de informare, consultanță și consiliere referitoare la cele menționate mai sus.",
+      "translation_language": "en",
+      "translation": "Consolidation for the benefit of third parties of a variety of products and services, in particular Class 01 products and Class 42 services (excluding their transportation), enabling customers to conveniently view and purchase; storage services; advertising; information, consultancy and advisory services relating to the aforesaid."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii ştiinţifice şi tehnologice, precum şi de cercetare şi proiectare în legătură cu acestea; analize industriale, servicii de cercetare industrială şi design industrial; servicii de control și autentificare a calității; proiectarea şi dezvoltarea de componente hardware şi software ale calculatorului; servicii de arhitectură sau design interior.",
+      "translation_language": "en",
+      "translation": "Scientific and technological services and research and design relating thereto; industrial analysis, industrial research and industrial design services; quality control and authentication services; design and development of computer hardware and software components; architectural or interior design services."
+    }
+  ],
+  "owner": "SP HOUSE WORLD SRL",
+  "ownerNative": null,
+  "ownerCountry": "RO",
+  "representative": "CABINET ENPORA INTELECTUAL PROPERTY SRL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Str. Horea nr. 4, ap. 6-7, Jud. Cluj, CLUJ-NAPOCA",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "SP HOUSE WORLD SRL"
+      }
+    ],
+    "applicationLanguageCode": "ro",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chemicals for use in industry, science and photography, as well as in agriculture, horticulture and forestry; unprocessed artificial resins, unprocessed plastics; compositions for extinguishing and preventing fires; preparations for the hardening and bonding of metals; substances for the tanning of hides and skins of animals; adhesives for use in industry; putties and other fillers; compost, manure, fertilizer; biological preparations for use in industry and science.",
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Produse chimice pentru utilizare în industrie, ştiinţe şi fotografie, precum şi în agricultură, horticultură şi silvicultură; răşini artificiale neprelucrate, materiale plastice neprelucrate; compoziţii pentru stingerea şi prevenirea incendiilor; preparate pentru călirea şi lipirea metalelor; substanţe pentru tăbăcirea pieilor şi a blănurilor de animale; adezivi pentru utilizare în industrie; chituri şi alte materiale de umplere; compost, bălegar, îngrăşăminte; preparate biologice pentru utilizare în industrie şi ştiinţe."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Consolidation for the benefit of third parties of a variety of products and services, in particular Class 01 products and Class 42 services (excluding their transportation), enabling customers to conveniently view and purchase; storage services; advertising; information, consultancy and advisory services relating to the aforesaid.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Regruparea in avantajul tertilor, a unei varietăți de produse si servicii, in special produsele din clasa 01 si serviciile din clasa 42 (exceptând transportul lor), permițând clienților să vizualizeze și să cumpere în mod convenabil; servicii de depozitare (stocare); publicitate; servicii de informare, consultanță și consiliere referitoare la cele menționate mai sus."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; industrial analysis, industrial research and industrial design services; quality control and authentication services; design and development of computer hardware and software components; architectural or interior design services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii ştiinţifice şi tehnologice, precum şi de cercetare şi proiectare în legătură cu acestea; analize industriale, servicii de cercetare industrială şi design industrial; servicii de control și autentificare a calității; proiectarea şi dezvoltarea de componente hardware şi software ale calculatorului; servicii de arhitectură sau design interior."
+        }
+      ]
+    },
+    "id": "c44caba1-b439-483f-b279-ae8dcbd083d2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "galben,negru"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.09",
+      "27.05.10"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "RO",
+    "registrationOfficeName": "Romania",
+    "representatives": [
+      {
+        "representativeAddress": "Str. George Calinescu nr. 52A, ap. 1, Sector 1, BUCUREŞTI",
+        "representativeAddressCountryCode": "RO",
+        "representativeAddressCountryName": "Romania",
+        "representativeName": "CABINET ENPORA INTELECTUAL PROPERTY SRL"
+      },
+      {
+        "representativeAddress": "STR. GEORGE CALINESCU NR. 52A, AP. 1, SECTOR 1, BUCUREŞTI",
+        "representativeAddressCountryCode": "RO",
+        "representativeAddressCountryName": "Romania",
+        "representativeName": "CABINET ENPORA INTELECTUAL PROPERTY SRL"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210329",
+        "applicationNumber": "M 2021 02551"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310329",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220119",
+        "registrationNumber": "178485"
+      }
+    },
+    "version": "20250626162619",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DEQORIA partenerul tau in finisaje"
+    }
+  },
+  "_uri": "/mark/ro/c44caba1-b439-483f-b279-ae8dcbd083d2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/my/a3e8795a-77d6-4602-ac07-d9056dbc3665",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "a3e8795a-77d6-4602-ac07-d9056dbc3665",
+  "applicationNumber": "02013027",
+  "registrationNumber": null,
+  "applicationDate": "2002-10-18",
+  "registrationDate": "2006-01-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FPR/ PETRONAS RACING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; entertainment; sporting and cultural activities; publication of books; providing recreation facilities, organisation of competitions, displays and exhibitions all for educational and entertainment purposes, management training services; training services relating to oil spill prevention and/or containment; arranging and conducting motor vehicles races, motor vehicle entertainment, motor vehicle entertainment information, motor vehicle exhibitions; organization of motor vehicle races; providing facilities for motor vehicles races; timing of motor vehicle events; all included in class 41.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PETROLIAM NASIONAL BERHAD (PETRONAS)",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": "TAI FOONG LAM",
+  "priorities": [
+    {
+      "priorityCountryCode": "EM",
+      "priorityCountryName": "EU trade marks",
+      "priorityDate": "20020513",
+      "priorityNumber": "00000"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOWER 1, PETRONAS TWIN S, KUALA LUMPUR CITY CENTRE, 50088 WILAYAH PERSEKUTUAN 50088 Kuala Lumpur",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "PETROLIAM NASIONAL BERHAD (PETRONAS)"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; entertainment; sporting and cultural activities; publication of books; providing recreation facilities, organisation of competitions, displays and exhibitions all for educational and entertainment purposes, management training services; training services relating to oil spill prevention and/or containment; arranging and conducting motor vehicles races, motor vehicle entertainment, motor vehicle entertainment information, motor vehicle exhibitions; organization of motor vehicle races; providing facilities for motor vehicles races; timing of motor vehicle events; all included in class 41."
+        }
+      ]
+    },
+    "id": "a3e8795a-77d6-4602-ac07-d9056dbc3665",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.17",
+      "27.05.23",
+      "27.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "EM",
+        "priorityCountryName": "EU trade marks",
+        "priorityDate": "20020513",
+        "priorityNumber": "00000"
+      }
+    ],
+    "recordLastUpdated": "20250909",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "LEE HISHAMMUDDIN ALLEN & GLEDHILL, LEVEL 16, MENARA TM ASIA LIFE, 189, JALAN TUN RAZAK, KUALA LUMPUR 50400",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "TAI FOONG LAM"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20021018",
+        "applicationNumber": "02013027"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20060118"
+      }
+    },
+    "version": "20250909050053",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FPR/ PETRONAS RACING"
+    }
+  },
+  "_uri": "/mark/my/a3e8795a-77d6-4602-ac07-d9056dbc3665",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

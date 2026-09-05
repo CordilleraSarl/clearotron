@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/93e4892f-5232-4687-b715-badb7a7661b6",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "93e4892f-5232-4687-b715-badb7a7661b6",
+  "applicationNumber": "4630754",
+  "registrationNumber": null,
+  "applicationDate": "2020-08-28",
+  "registrationDate": null,
+  "expiryDate": "2030-08-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ZENQORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Designing, building and developing software and hardware particularly platforms; designing, building and developing business applications, either on own platform or integrating with third party platforms, by leveraging artificial intelligence and machine learning to analyse data; bespoke customisations, enhancement and value adds for business-oriented platforms and business applications; maintenance of platform and business applications thereof; research and development, creating workflows, templates, prototypes, simulations and custom use cases for industries; to provide platform or product to third party developers to host applications; consultancy services relating to information and technology.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GIGAFLOW TECHNOLOGIES LLP Limited Liability Partnership(LLP)",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ANIL KUMAR.H.[2266]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10 M-227, 3RD FLOOR, HRBR LAYOUT, 1ST BLOCK, BANASWADI VILLAGE, KRISHNARAJAPURA, HOBLI, BANGALORE, KARNATAKA – 560043",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "GIGAFLOW TECHNOLOGIES LLP Limited Liability Partnership(LLP)"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Designing, building and developing software and hardware particularly platforms; designing, building and developing business applications, either on own platform or integrating with third party platforms, by leveraging artificial intelligence and machine learning to analyse data; bespoke customisations, enhancement and value adds for business-oriented platforms and business applications; maintenance of platform and business applications thereof; research and development, creating workflows, templates, prototypes, simulations and custom use cases for industries; to provide platform or product to third party developers to host applications; consultancy services relating to information and technology."
+        }
+      ]
+    },
+    "id": "93e4892f-5232-4687-b715-badb7a7661b6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1967"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "ALEXION, 2ND CROSS, 2ND MAIN, HANUMANTHAPURA, TUMKUR - 572103, KARNATAKA",
+        "representativeName": "ANIL KUMAR.H.[2266]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200828",
+        "applicationNumber": "4630754"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300828",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710151420",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ZENQORE"
+    }
+  },
+  "_uri": "/mark/in/93e4892f-5232-4687-b715-badb7a7661b6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

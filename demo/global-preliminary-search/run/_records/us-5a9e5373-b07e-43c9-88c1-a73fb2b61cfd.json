@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+  "applicationNumber": "79454076",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Technology consulting services in the field of design and development of data management systems and facility information management for sports and entertainment venues; consulting services in the field of facility information management and data strategy; integration of computer systems and networks.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Symetri AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Forskargatan 3, SWED",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressStreet": "Forskargatan 3",
+        "applicantJurisdictionOfIncorporation": "SWEDEN",
+        "applicantLegalEntity": "UNKNOWN",
+        "applicantName": "Symetri AB",
+        "applicantSecondaryAddressUnit": "SE-781 70 Borlänge"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Technology consulting services in the field of design and development of data management systems and facility information management for sports and entertainment venues; consulting services in the field of facility information management and data strategy; integration of computer systems and networks."
+        }
+      ]
+    },
+    "id": "5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1927485",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20260709",
+        "priorityClaimDate": "20260522",
+        "protectionGrantedDate": "20280109",
+        "publicationDate": "20260709",
+        "registrationDate": "20260525",
+        "renewalDate": "20360525"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260717",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260717",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20260709",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "legalEntity": "UNKNOWN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      },
+      {
+        "address": "Forskargatan 3, SWED",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "legalEntity": "UNKNOWN",
+        "name": "Symetri AB",
+        "secondaryAddressUnit": "SE-781 70 Borlänge",
+        "street": "Forskargatan 3"
+      }
+    ],
+    "recordLastUpdated": "20260720",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260525",
+        "applicationNumber": "79454076"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260709",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260720061100",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "VEN CORE",
+      "markVerbalElementText": "VENCORE"
+    }
+  },
+  "_uri": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

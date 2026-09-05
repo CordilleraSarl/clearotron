@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/wo/b6d1e9da-3689-41af-9184-46c525d19b69",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "b6d1e9da-3689-41af-9184-46c525d19b69",
+  "applicationNumber": null,
+  "registrationNumber": "1703963",
+  "applicationDate": null,
+  "registrationDate": "2022-11-22",
+  "expiryDate": "2032-11-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-12-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ORITAIN VERIFIED PROVEN ORIGIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific research, testing and analysis services relating to the verification of origin of agricultural products, aquaculture products, horticultural products, food and beverage products, fibre and yarn products, textiles and clothing products, pharmaceuticals, nutraceutical and cosmeceutical products, biological and genetic materials, mineral and timber materials.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de recherche, d'essai et d'analyse scientifiques en lien avec la vérification d'origine de produits agricoles, produits d'aquaculture, produits horticoles, produits alimentaires et produits à boire, produits en fibres et fils, produits textiles et vêtements, produits pharmaceutiques, produits nutraceutiques et cosméceutiques, matériaux biologiques et génétiques, minéraux et matériaux en bois.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de investigación, pruebas y análisis científicos en relación con la verificación del origen de productos agrícolas, productos acuícolas productos hortícolas, productos alimenticios y bebidas, productos de fibras e hilados, tejidos y prendas de vestir, productos farmacéuticos, nutracéuticos y cosmecéuticos, materiales biológicos y genéticos, materiales minerales y de madera.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ORITAIN GLOBAL LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": "Marks & Worth Lawyers",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20220718",
+          "basicApplicationNumber": "1215068"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "NZ"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "GB",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "167 High Street, Otago Dunedin 9016",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "ORITAIN GLOBAL LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20220718",
+            "basicApplicationNumber": "1215068"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "NZ"
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "02.09.14",
+      "26.03.23",
+      "27.01.02",
+      "29.02.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "GB",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific research, testing and analysis services relating to the verification of origin of agricultural products, aquaculture products, horticultural products, food and beverage products, fibre and yarn products, textiles and clothing products, pharmaceuticals, nutraceutical and cosmeceutical products, biological and genetic materials, mineral and timber materials."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de recherche, d'essai et d'analyse scientifiques en lien avec la vérification d'origine de produits agricoles, produits d'aquaculture, produits horticoles, produits alimentaires et produits à boire, produits en fibres et fils, produits textiles et vêtements, produits pharmaceutiques, produits nutraceutiques et cosméceutiques, matériaux biologiques et génétiques, minéraux et matériaux en bois."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de investigación, pruebas y análisis científicos en relación con la verificación del origen de productos agrícolas, productos acuícolas productos hortícolas, productos alimenticios y bebidas, productos de fibras e hilados, tejidos y prendas de vestir, productos farmacéuticos, nutracéuticos y cosmecéuticos, materiales biológicos y genéticos, materiales minerales y de madera."
+        }
+      ]
+    },
+    "id": "b6d1e9da-3689-41af-9184-46c525d19b69",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.09",
+      "24.17",
+      "26.11",
+      "27.01",
+      "27.05",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20251124",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Level 2, 115 Lower Stuart Street Dunedin 9016",
+        "representativeAddressCountryCode": "NZ",
+        "representativeAddressCountryName": "New Zealand",
+        "representativeName": "Marks & Worth Lawyers"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321122",
+      "lastPublicationDate": "20221229",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20221122",
+        "registrationNumber": "1703963"
+      }
+    },
+    "version": "20251124110000",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ORITAIN VERIFIED PROVEN ORIGIN"
+    }
+  },
+  "_uri": "/mark/wo/b6d1e9da-3689-41af-9184-46c525d19b69",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

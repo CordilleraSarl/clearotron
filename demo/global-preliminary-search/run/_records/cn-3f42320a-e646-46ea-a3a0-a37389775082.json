@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/cn/3f42320a-e646-46ea-a3a0-a37389775082",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "3f42320a-e646-46ea-a3a0-a37389775082",
+  "applicationNumber": "48354184",
+  "registrationNumber": "48354184",
+  "applicationDate": "2020-07-23",
+  "registrationDate": "2021-03-07",
+  "expiryDate": "2031-03-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-12-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "拨日",
+  "markTransliteration": "BO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "组织教育或娱乐竞赛,视频制作,音乐制作,摄影,文稿撰写,新闻记者服务,广播和电视节目制作,无线电文娱节目,录像带发行,书籍出版,文字出版(广告宣传文本除外),安排和组织现场教育论坛,安排和组织培训班,组织文化或教育展览,安排和组织会议,培训,教育",
+      "translation_language": "en",
+      "translation": "Organization of educational or entertainment competitions, video production, music production, photography, manuscript writing, news reporter services, radio and television program production, radio entertainment programs, video tape distribution, book publishing, text publishing (except advertising text), arrangement and organization On-site educational forums, arrange and organize training courses, organize cultural or educational exhibitions, arrange and organize meetings, training, and education"
+    }
+  ],
+  "owner": "Shanghai Farri Internet Information Service Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市普陀区真南路708 号5 层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Farri Internet Information Service Co., Ltd.",
+        "applicantNativeName": "上海拨日互联网信息服务有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organization of educational or entertainment competitions, video production, music production, photography, manuscript writing, news reporter services, radio and television program production, radio entertainment programs, video tape distribution, book publishing, text publishing (except advertising text), arrangement and organization On-site educational forums, arrange and organize training courses, organize cultural or educational exhibitions, arrange and organize meetings, training, and education",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "组织教育或娱乐竞赛,视频制作,音乐制作,摄影,文稿撰写,新闻记者服务,广播和电视节目制作,无线电文娱节目,录像带发行,书籍出版,文字出版(广告宣传文本除外),安排和组织现场教育论坛,安排和组织培训班,组织文化或教育展览,安排和组织会议,培训,教育"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "3f42320a-e646-46ea-a3a0-a37389775082",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1722"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海凯创知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200723",
+        "applicationNumber": "48354184"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310306",
+      "lastPublicationDate": "20201206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210307",
+        "registrationNumber": "48354184"
+      }
+    },
+    "version": "20251004050547",
+    "wordMarkSpecification": {
+      "markTransliteration": "BO RI",
+      "markVerbalElementText": "拨日"
+    }
+  },
+  "_uri": "/mark/cn/3f42320a-e646-46ea-a3a0-a37389775082",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.210Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

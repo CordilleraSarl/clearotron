@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/cn/41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+  "applicationNumber": "90167197",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-10",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VANCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "光学玻璃;光学镜头;光学仪器;光学装置用滤光器;滤光镜(摄影);摄影器具包;摄影用滤光镜;摄影用闪光灯;摄影用紫外线滤光镜;照相机(摄影);照相机快门线(摄影)",
+      "translation_language": "en",
+      "translation": "Optical glass; optical lens; optical instrument; filter for optical device; filter (photography); camera bag; camera filter; camera flash; ultraviolet filter; camera shutter release cable (photography)"
+    }
+  ],
+  "owner": "Qiqi Cultural Creative Media (Shenzhen) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市坪山区坪山街道和平社区坪山和平路2号601",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Qiqi Cultural Creative Media (Shenzhen) Co., Ltd.",
+        "applicantNativeName": "柒柒文化创意传媒(深圳)有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Optical glass; optical lens; optical instrument; filter for optical device; filter (photography); camera bag; camera filter; camera flash; ultraviolet filter; camera shutter release cable (photography)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "光学玻璃;光学镜头;光学仪器;光学装置用滤光器;滤光镜(摄影);摄影器具包;摄影用滤光镜;摄影用闪光灯;摄影用紫外线滤光镜;照相机(摄影);照相机快门线(摄影)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Apparatus and instruments for photographic and cinematographic",
+        "Optical instruments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0911",
+          "subNatGoodsServicesDescription": "Optical instruments"
+        }
+      ]
+    },
+    "id": "41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260506",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "郑州凯派尔知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260210",
+        "applicationNumber": "90167197"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260506020303",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCORE"
+    }
+  },
+  "_uri": "/mark/cn/41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

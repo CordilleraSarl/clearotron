@@ -1,0 +1,51 @@
+{
+  "uri": "/mark/eu/000944850",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "000944850",
+  "applicationNumber": "000944850",
+  "registrationNumber": "000944850",
+  "applicationDate": "1998-10-01",
+  "registrationDate": "1999-11-16",
+  "expiryDate": "2028-10-01",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2000-01-11",
+  "markText": "HORI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "horizont group gmbh",
+  "ownerCountry": null,
+  "representative": "FUCHS PATENTANWÄLTE PARTNERSCHAFT MBB",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Optical, measuring, signalling, checking (supervision), life-saving apparatus and instruments, electric apparatus and instruments for traffic guidance technology, as well as electronic components and parts (included in class 9)",
+            " electric fencing devices and installations, as well as electric cables, wires, conductors and connecting apparatus as parts of these devices and installations",
+            " electric fencing wires, electric fencing stakes, insulators for electric fences",
+            " modular electric fencing systems consisting of electric fencing devices, electric fencing wire, electric fencing stakes and insulators"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/000944850",
+  "_uri": "/mark/eu/000944850",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:27.937Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

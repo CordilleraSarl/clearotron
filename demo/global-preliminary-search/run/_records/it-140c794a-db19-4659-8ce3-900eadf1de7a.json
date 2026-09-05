@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/it/140c794a-db19-4659-8ce3-900eadf1de7a",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "140c794a-db19-4659-8ce3-900eadf1de7a",
+  "applicationNumber": "302018000020770",
+  "registrationNumber": "302018000020770",
+  "applicationDate": "2018-06-14",
+  "registrationDate": "2019-05-13",
+  "expiryDate": "2028-06-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-05-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CIRO DELLE 5 TORRI ROCCAVERANO VENGORE MONASTERO S. GIORGIO SCARAMPI OLMO GENTILE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione nizza: pubblicità",
+      "translation_language": "en",
+      "translation": "protected services included in the Nice classification: advertising"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): attività sportive; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: divertimenti",
+      "translation_language": "en",
+      "translation": "services subject to protection included in the mgs classification (net of Nice): sports activities; protected services not included in the nizza-mgs classification: entertainment"
+    }
+  ],
+  "owner": "Club Alpino italiano sezione\"Nanni Zunino\" di Acqui Terme",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "Club Alpino Italiano Sezione \" Nanni Zunino\" di Acqui Terme",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Acqui Terme 15011, Alessandria",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "Club Alpino italiano sezione\"Nanni Zunino\" di Acqui Terme"
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "07.01.01",
+      "07.01.06",
+      "07.01.25",
+      "25.01.05",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "protected services included in the Nice classification: advertising",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione nizza: pubblicità"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services subject to protection included in the mgs classification (net of Nice): sports activities; protected services not included in the nizza-mgs classification: entertainment",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi oggetto di protezione inclusi nella classificazione mgs (al netto nizza): attività sportive; servizi oggetto di protezione non inclusi nella classificazione nizza-mgs: divertimenti"
+        }
+      ]
+    },
+    "id": "140c794a-db19-4659-8ce3-900eadf1de7a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "IN UNA ELLISSE NELLA PARTE SUPERIORE IL DISEGNO DI 5 TORRI"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "Via Monteverde 44 15011 Acqui Terme (Alessandria)",
+        "representativeName": "Club Alpino Italiano Sezione \" Nanni Zunino\" di Acqui Terme"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180614",
+        "applicationNumber": "302018000020770"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280614",
+      "lastPublicationDate": "20190524",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190513",
+        "registrationNumber": "302018000020770"
+      }
+    },
+    "version": "20250403190447",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CIRO DELLE 5 TORRI ROCCAVERANO VENGORE MONASTERO S. GIORGIO SCARAMPI OLMO GENTILE"
+    }
+  },
+  "_uri": "/mark/it/140c794a-db19-4659-8ce3-900eadf1de7a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:51.306Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/de/5bf81d54-5571-4d5e-8a26-4299b651dd1c",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "5bf81d54-5571-4d5e-8a26-4299b651dd1c",
+  "applicationNumber": "302022015239.4",
+  "registrationNumber": "302022015239",
+  "applicationDate": "2022-09-17",
+  "registrationDate": "2023-01-04",
+  "expiryDate": "2032-09-17",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-02-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qort",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    12
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "de",
+      "description": "Maschinen in Verwendung mit flugrobotischen Systemen [Flugrobotik]; Industrieroboter; Förderanlagen; Bandförderer; Vertikalförderer; Bandmaschinen; Elevatoren; Förderbänder; Fördermaschinen; Sortiermaschinen für industrielle Zwecke; Steuergeräte für Maschinen; Transportbänder; Transportgeräte [Förderer]; Transportgeräte [Maschinen]; unbemannte Transportförderbänder; Transportroboter; Automatische Steuergeräte für Maschinen; Sortiermaschinen für Pakete; Transportmaschinen; fahrerlose Transportfördergeräte als Maschinen für den Frachtumschlag",
+      "translation_language": "en",
+      "translation": "Machines used with airborne robotic systems [airborne robotics]; industrial robots; conveyor systems; belt conveyor; vertical conveyor; tape machines; elevators; conveyor belts; conveyors; Sorting machines for industrial use; control devices for machines; conveyor belts; Transport devices [conveyors]; Transport devices [machines]; unmanned transport conveyor belts; transport robots; automatic control devices for machines; parcel sorting machines; transport machines; Driverless transport conveyors as machines for cargo handling"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Elektronik [Hardware] für Computer [z. B. PC, Smartphone, Mikrokontroller etc.] zur Verwendung in oder in Kombination mit Luftfahrzeugen; Elektronik [Hardware] für Roboter zur Verwendung in oder in Kombination mit Luftfahrzeugen; Elektronik [Hardware] für robotische Systeme aller Art zur Verwendung in oder in Kombination mit Luftfahrzeugen, insbesondere fahrende Roboter, flugrobotische Systeme, Drohnen, Flugroboter, Flugtaxis und Flugapparate; Elektronik [Hardware] für ein System, das mit Drohnen, Robotern und Automatisierungstechnik aller Art [z. B. einem Fließband] interagieren bzw. kommunizieren kann; Software für Computer [z. B. PC, Smartphone, Mikrokontroller etc.] zur Verwendung in oder in Kombination mit Luftfahrzeugen; Software für Roboter zur Verwendung in oder in Kombination mit Luftfahrzeugen; Software für robotische Systeme aller Art, insbesondere fahrende Roboter, flugrobotische Systeme, Drohnen, Flugroboter, Flugtaxis und Flugapparate; Industrielle Automatisierungssteuerungen und deren Teile [z. B. Module, Zubehör], insbesondere für den Einsatz in Verbindung mit anderen Robotern und robotischen Systemen aller Art wie z. B. fahrenden Robotern, flugrobotischen Systemen, Drohnen, Flugrobotern, Flugtaxis und/oder Flugapparaten; Steuerungsgeräte für das Landen von Flugrobotern; automatische Drohnenerkennungsanlagen; Drohnenortungssysteme",
+      "translation_language": "en",
+      "translation": "Electronics [hardware] for computers [e.g. B. PC, smartphone, microcontroller etc.] for use in or in combination with aircraft; Electronics [hardware] for robots for use in or in combination with aircraft; Electronics (hardware) for robotic systems of all kinds for use in or in combination with aircraft, in particular moving robots, aerial robotic systems, drones, aerial robots, aerial taxis and aerial apparatus; Electronics [hardware] for a system that works with drones, robots and automation technology of all kinds [e.g. B. an assembly line] can interact or communicate; software for computers [e.g. B. PC, smartphone, microcontroller etc.] for use in or in combination with aircraft; software for robots for use on or in combination with aircraft; Software for robotic systems of all kinds, in particular moving robots, aerial robotic systems, drones, aerial robots, aerial taxis and flying apparatus; Industrial automation controls and parts thereof [e.g. B. modules, accessories], especially for use in connection with other robots and robotic systems of all kinds such. B. moving robots, flight robotic systems, drones, flight robots, air taxis and / or flying machines; Controllers for landing flying robots; automatic drone detection systems; drone location systems"
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "de",
+      "description": "Fahrzeuge, insbesondere Luftfahrzeuge und Drohnen; Flugtaxis; Roboterautos; Flugroboter aller Art sowie deren Teile [z. B. Module, Zubehör], insbesondere für den Einsatz in Verbindung mit anderen Robotern und robotischen Systeme aller Art wie z. B. fahrenden Robotern, flugrobotischen Systemen, Drohnen, Flugrobotern, Flugtaxis und/oder Flugapparaten",
+      "translation_language": "en",
+      "translation": "vehicles, in particular aircraft and drones; air taxis; robot cars; Flying robots of all kinds and parts therefor [e.g. B. modules, accessories], especially for use in connection with other robots and robotic systems of all kinds such. B. moving robots, flight robotic systems, drones, flight robots, air taxis and / or flying machines"
+    }
+  ],
+  "owner": "Emqopter GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "97080 Würzburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Emqopter GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Machines used with airborne robotic systems [airborne robotics]; industrial robots; conveyor systems; belt conveyor; vertical conveyor; tape machines; elevators; conveyor belts; conveyors; Sorting machines for industrial use; control devices for machines; conveyor belts; Transport devices [conveyors]; Transport devices [machines]; unmanned transport conveyor belts; transport robots; automatic control devices for machines; parcel sorting machines; transport machines; Driverless transport conveyors as machines for cargo handling",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Maschinen in Verwendung mit flugrobotischen Systemen [Flugrobotik]; Industrieroboter; Förderanlagen; Bandförderer; Vertikalförderer; Bandmaschinen; Elevatoren; Förderbänder; Fördermaschinen; Sortiermaschinen für industrielle Zwecke; Steuergeräte für Maschinen; Transportbänder; Transportgeräte [Förderer]; Transportgeräte [Maschinen]; unbemannte Transportförderbänder; Transportroboter; Automatische Steuergeräte für Maschinen; Sortiermaschinen für Pakete; Transportmaschinen; fahrerlose Transportfördergeräte als Maschinen für den Frachtumschlag"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronics [hardware] for computers [e.g. B. PC, smartphone, microcontroller etc.] for use in or in combination with aircraft; Electronics [hardware] for robots for use in or in combination with aircraft; Electronics (hardware) for robotic systems of all kinds for use in or in combination with aircraft, in particular moving robots, aerial robotic systems, drones, aerial robots, aerial taxis and aerial apparatus; Electronics [hardware] for a system that works with drones, robots and automation technology of all kinds [e.g. B. an assembly line] can interact or communicate; software for computers [e.g. B. PC, smartphone, microcontroller etc.] for use in or in combination with aircraft; software for robots for use on or in combination with aircraft; Software for robotic systems of all kinds, in particular moving robots, aerial robotic systems, drones, aerial robots, aerial taxis and flying apparatus; Industrial automation controls and parts thereof [e.g. B. modules, accessories], especially for use in connection with other robots and robotic systems of all kinds such. B. moving robots, flight robotic systems, drones, flight robots, air taxis and / or flying machines; Controllers for landing flying robots; automatic drone detection systems; drone location systems",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Elektronik [Hardware] für Computer [z. B. PC, Smartphone, Mikrokontroller etc.] zur Verwendung in oder in Kombination mit Luftfahrzeugen; Elektronik [Hardware] für Roboter zur Verwendung in oder in Kombination mit Luftfahrzeugen; Elektronik [Hardware] für robotische Systeme aller Art zur Verwendung in oder in Kombination mit Luftfahrzeugen, insbesondere fahrende Roboter, flugrobotische Systeme, Drohnen, Flugroboter, Flugtaxis und Flugapparate; Elektronik [Hardware] für ein System, das mit Drohnen, Robotern und Automatisierungstechnik aller Art [z. B. einem Fließband] interagieren bzw. kommunizieren kann; Software für Computer [z. B. PC, Smartphone, Mikrokontroller etc.] zur Verwendung in oder in Kombination mit Luftfahrzeugen; Software für Roboter zur Verwendung in oder in Kombination mit Luftfahrzeugen; Software für robotische Systeme aller Art, insbesondere fahrende Roboter, flugrobotische Systeme, Drohnen, Flugroboter, Flugtaxis und Flugapparate; Industrielle Automatisierungssteuerungen und deren Teile [z. B. Module, Zubehör], insbesondere für den Einsatz in Verbindung mit anderen Robotern und robotischen Systemen aller Art wie z. B. fahrenden Robotern, flugrobotischen Systemen, Drohnen, Flugrobotern, Flugtaxis und/oder Flugapparaten; Steuerungsgeräte für das Landen von Flugrobotern; automatische Drohnenerkennungsanlagen; Drohnenortungssysteme"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "vehicles, in particular aircraft and drones; air taxis; robot cars; Flying robots of all kinds and parts therefor [e.g. B. modules, accessories], especially for use in connection with other robots and robotic systems of all kinds such. B. moving robots, flight robotic systems, drones, flight robots, air taxis and / or flying machines",
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Fahrzeuge, insbesondere Luftfahrzeuge und Drohnen; Flugtaxis; Roboterautos; Flugroboter aller Art sowie deren Teile [z. B. Module, Zubehör], insbesondere für den Einsatz in Verbindung mit anderen Robotern und robotischen Systeme aller Art wie z. B. fahrenden Robotern, flugrobotischen Systemen, Drohnen, Flugrobotern, Flugtaxis und/oder Flugapparaten"
+        }
+      ]
+    },
+    "id": "5bf81d54-5571-4d5e-8a26-4299b651dd1c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "05"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Emqopter GmbH, Otto-Hahn-Str. 7, 97080 Würzburg"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220917",
+        "applicationNumber": "302022015239.4"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320917",
+      "lastPublicationDate": "20230203",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230104",
+        "registrationNumber": "302022015239"
+      }
+    },
+    "version": "20250627171137",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qort"
+    }
+  },
+  "_uri": "/mark/de/5bf81d54-5571-4d5e-8a26-4299b651dd1c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:06.252Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

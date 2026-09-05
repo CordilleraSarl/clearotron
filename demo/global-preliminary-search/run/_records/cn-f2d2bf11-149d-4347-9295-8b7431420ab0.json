@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/cn/f2d2bf11-149d-4347-9295-8b7431420ab0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f2d2bf11-149d-4347-9295-8b7431420ab0",
+  "applicationNumber": "67178712",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "STEVEN ORIGINAL LCD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "视频显示屏;显示数字用电子显示屏;荧光屏",
+      "translation_language": "en",
+      "translation": "video display; electronic display for digital display; fluorescent screen"
+    }
+  ],
+  "owner": "Laisi Industrial Group Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "HK",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "香港新界葵涌大连排道42-46号贵盛工业大厦2期9楼G室(023房)",
+        "applicantAddressCountryCode": "HK",
+        "applicantAddressCountryName": "Hong Kong",
+        "applicantName": "Laisi Industrial Group Co., Ltd.",
+        "applicantNativeName": "莱思实业集团有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "video display; electronic display for digital display; fluorescent screen",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "视频显示屏;显示数字用电子显示屏;荧光屏"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "f2d2bf11-149d-4347-9295-8b7431420ab0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市添源创鑫知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220914",
+        "applicationNumber": "67178712"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005003000",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "STEVEN ORIGINAL LCD"
+    }
+  },
+  "_uri": "/mark/cn/f2d2bf11-149d-4347-9295-8b7431420ab0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

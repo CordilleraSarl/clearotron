@@ -1,0 +1,102 @@
+{
+  "uri": "/mark/sv/e0b74f05-4b05-4c47-b993-259b6c53fe7c",
+  "provider": "clarivate",
+  "office": "sv",
+  "guid": "e0b74f05-4b05-4c47-b993-259b6c53fe7c",
+  "applicationNumber": "2015147538",
+  "registrationNumber": null,
+  "applicationDate": "2015-10-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "JOES Joven Orquesta de El Salvador",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Eventos musicales culturales, recitales, talleres de formación orquestal, conciertos.",
+      "translation_language": "en",
+      "translation": "CULTURAL, RECYCLING MUSICAL EVENTS, ORCHESTRA TRAINING WORKSHOPS, CONCERTS."
+    }
+  ],
+  "owner": "JUAN CARLOS RODRIGUEZ PAZ",
+  "ownerNative": null,
+  "ownerCountry": "SV",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "SV",
+        "applicantAddressCountryName": "El Salvador",
+        "applicantName": "JUAN CARLOS RODRIGUEZ PAZ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CULTURAL, RECYCLING MUSICAL EVENTS, ORCHESTRA TRAINING WORKSHOPS, CONCERTS.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Eventos musicales culturales, recitales, talleres de formación orquestal, conciertos."
+        }
+      ]
+    },
+    "id": "e0b74f05-4b05-4c47-b993-259b6c53fe7c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "SV",
+    "registrationOfficeName": "El Salvador",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151022",
+        "applicationNumber": "2015147538"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427194436",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOES Joven Orquesta de El Salvador"
+    }
+  },
+  "_uri": "/mark/sv/e0b74f05-4b05-4c47-b993-259b6c53fe7c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

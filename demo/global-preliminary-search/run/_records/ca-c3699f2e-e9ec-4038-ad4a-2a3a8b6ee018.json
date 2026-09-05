@@ -1,0 +1,222 @@
+{
+  "uri": "/mark/ca/c3699f2e-e9ec-4038-ad4a-2a3a8b6ee018",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "c3699f2e-e9ec-4038-ad4a-2a3a8b6ee018",
+  "applicationNumber": "1786109",
+  "registrationNumber": "TMA982277",
+  "applicationDate": "2016-06-08",
+  "registrationDate": "2017-10-05",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2017-06-14"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "G GROSVENOR MONTESSORI SCHOOL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41,
+        43
+      ],
+      "language": "en",
+      "description": "(1) Educational services, namely the operation of schools at the toddler, pre-school, kindergarten, primary and secondary levels of instruction; providing before and after school care for children; providing teaching services to children at the toddler, pre-school, kindergarten, primary and secondary level of instruction; recreational camp, day camp, and holiday camp services for children; providing extra-curricular activities for children at the toddler, pre-school, kindergarten, primary and secondary education levels.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Montessori Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "33 Arnold Crescent, Richmond Hill, ONTARIO, L4C3R6",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "33 Arnold Crescent",
+          "Richmond Hill",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "L4C3R6",
+        "applicantName": "Grosvenor Montessori Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Declaration of Use filed October 05, 2017 on services (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41,43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Educational services, namely the operation of schools at the toddler, pre-school, kindergarten, primary and secondary levels of instruction; providing before and after school care for children; providing teaching services to children at the toddler, pre-school, kindergarten, primary and secondary level of instruction; recreational camp, day camp, and holiday camp services for children; providing extra-curricular activities for children at the toddler, pre-school, kindergarten, primary and secondary education levels."
+        }
+      ]
+    },
+    "id": "c3699f2e-e9ec-4038-ad4a-2a3a8b6ee018",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20171005",
+        "descriptionText": "Registered",
+        "responseDate": "20321005"
+      },
+      {
+        "date": "20170929",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20190608"
+      },
+      {
+        "date": "20170929",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20170614",
+        "descriptionText": "Advertised",
+        "information": "Vol.64 Issue 3268"
+      },
+      {
+        "date": "20170525",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20170406",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20170504"
+      },
+      {
+        "date": "20170406",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20160614",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20160609",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20160608",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "24.01.05",
+      "24.01.15",
+      "24.01.17",
+      "24.01.18",
+      "24.01.19",
+      "04.03.05",
+      "24.09.01",
+      "24.09.05",
+      "09.01.10",
+      "25.01.25",
+      "24.11.07",
+      "22.01.15",
+      "22.01.16",
+      "26.11.01",
+      "26.11.05",
+      "26.11.08",
+      "26.11.10"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "33 Arnold Crescent, Richmond Hill, ONTARIO, L4C3R6",
+        "addressLines": [
+          "33 Arnold Crescent",
+          "Richmond Hill",
+          "ONTARIO",
+          "L4C3R6"
+        ],
+        "countryName": "Canada",
+        "name": "Grosvenor Montessori Inc.",
+        "postalCode": "L4C3R6"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3268",
+        "publicationVolume": "64"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20170929"
+      ],
+      "application": {
+        "applicationDate": "20160608",
+        "applicationNumber": "1786109"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "formalisationDate": "20160614",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20321005",
+      "publicationDate": [
+        "20170614"
+      ],
+      "registration": {
+        "registrationDate": "20171005",
+        "registrationNumber": "TMA982277"
+      }
+    },
+    "subjectHeadings": [
+      "G GROSVENOR MONTESSORI SCHOOL"
+    ],
+    "version": "20250625110414",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "G GROSVENOR MONTESSORI SCHOOL",
+      "markVerbalElementTextFormal": "Grosvenor Montessori School & Design"
+    }
+  },
+  "_uri": "/mark/ca/c3699f2e-e9ec-4038-ad4a-2a3a8b6ee018",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/0f5c14a3-69d6-4f4a-84a6-0cb3bcfb23d3",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "0f5c14a3-69d6-4f4a-84a6-0cb3bcfb23d3",
+  "applicationNumber": "41-2004-0012866",
+  "registrationNumber": null,
+  "applicationDate": "2004-06-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "NORI",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "교과서출판업, 교육정보제공업, 교육지도업, 미술학원경영업, 방문교육업, 보육원업, 서적출판업, 영어학원경영업, 온라인 전자서적 및 잡지출판업, 온라인 전자출판물 제공업(읽기전용), 유치원경영업, 음악학원경영업, 체육학원경영업",
+      "translation_language": "en",
+      "translation": "Textbook publishing business, educational information provision business, educational guidance business, art academy management business, visiting education business, daycare center business, book publishing business, English academy management business, online electronic book and magazine publishing business, online electronic publication provision business (read-only), kindergarten management business, music academy management business, physical education academy management business."
+    }
+  ],
+  "owner": "NORIEDUCATION CO.,LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "임훈빈 (YIM, Hoon Bin)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NORIEDUCATION CO.,LTD",
+        "applicantNativeName": "주식회사 노리에듀케이션"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Textbook publishing business, educational information provision business, educational guidance business, art academy management business, visiting education business, daycare center business, book publishing business, English academy management business, online electronic book and magazine publishing business, online electronic publication provision business (read-only), kindergarten management business, music academy management business, physical education academy management business.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "교과서출판업, 교육정보제공업, 교육지도업, 미술학원경영업, 방문교육업, 보육원업, 서적출판업, 영어학원경영업, 온라인 전자서적 및 잡지출판업, 온라인 전자출판물 제공업(읽기전용), 유치원경영업, 음악학원경영업, 체육학원경영업"
+        }
+      ]
+    },
+    "id": "0f5c14a3-69d6-4f4a-84a6-0cb3bcfb23d3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260816",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 논현로 *호 (역삼동, 성지하이츠*)(와이아이엠인터내셔널)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "임훈빈 (YIM, Hoon Bin)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040609",
+        "applicationNumber": "41-2004-0012866"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260816020414",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "NORI"
+    }
+  },
+  "_uri": "/mark/kr/0f5c14a3-69d6-4f4a-84a6-0cb3bcfb23d3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

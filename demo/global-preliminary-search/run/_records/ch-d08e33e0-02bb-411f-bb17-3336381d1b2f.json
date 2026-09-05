@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/ch/d08e33e0-02bb-411f-bb17-3336381d1b2f",
+  "provider": "clarivate",
+  "office": "ch",
+  "guid": "d08e33e0-02bb-411f-bb17-3336381d1b2f",
+  "applicationNumber": "61114/2006",
+  "registrationNumber": "558937",
+  "applicationDate": "2006-12-06",
+  "registrationDate": "2007-05-31",
+  "expiryDate": "2026-12-06",
+  "renewalDate": "2016-12-06",
+  "lastPublicationDate": "2007-06-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RPS rail partner schweiz Lärmsanierung Kurvenquietschen",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        37,
+        42
+      ],
+      "language": "de",
+      "description": "7 Hydraulische Schienenschmiersysteme (Maschinen oder Teile von Maschinen). 37 Montage, Installation, Einstellung und Wartung von Schienenschmiersystemen; Beratung in Bezug auf den technischen Gebrauch von Schienenschmiersystemen. 42 Wissenschaftliche und technologische Dienstleistungen, darunter Untersuchung von Schienenbogenlärm und Schienenverkehrslärm als Folge der Zugdurchfahrten; auf die Reduzierung von Schienenbogenlärm und Schienenverkehrslärm gerichtete Produktentwicklung mittels Schienenkonditionierung; Durchführung von Lärmpegelmessungen; Beratung über die Möglichkeiten zur Reduzierung und Sanierung von Schienenbogenlärm und Schienenverkehrslärm.",
+      "translation_language": "en",
+      "translation": "7 Hydraulic rail lubrication systems (machines or parts of machines). 37 Assembly, installation, adjustment and maintenance of rail lubrication systems; Advice on the technical use of rail lubrication systems. 42 Scientific and technological services, including studying rail curve noise and rail traffic noise as a result of trains passing; product development aimed at reducing rail curve noise and rail traffic noise using rail conditioning; Carrying out noise level measurements; Advice on the possibilities for reducing and remediating rail curve noise and rail traffic noise."
+    }
+  ],
+  "owner": "Rail Partner Schweiz AG",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "WEINMANN ZIMMERLI",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Laugweg 9, 8240 Thayngen",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Rail Partner Schweiz AG"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "07.11.15",
+      "18.01.11"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "7 Hydraulic rail lubrication systems (machines or parts of machines). 37 Assembly, installation, adjustment and maintenance of rail lubrication systems; Advice on the technical use of rail lubrication systems. 42 Scientific and technological services, including studying rail curve noise and rail traffic noise as a result of trains passing; product development aimed at reducing rail curve noise and rail traffic noise using rail conditioning; Carrying out noise level measurements; Advice on the possibilities for reducing and remediating rail curve noise and rail traffic noise.",
+          "intClassNumber": "07,37,42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "7 Hydraulische Schienenschmiersysteme (Maschinen oder Teile von Maschinen). 37 Montage, Installation, Einstellung und Wartung von Schienenschmiersystemen; Beratung in Bezug auf den technischen Gebrauch von Schienenschmiersystemen. 42 Wissenschaftliche und technologische Dienstleistungen, darunter Untersuchung von Schienenbogenlärm und Schienenverkehrslärm als Folge der Zugdurchfahrten; auf die Reduzierung von Schienenbogenlärm und Schienenverkehrslärm gerichtete Produktentwicklung mittels Schienenkonditionierung; Durchführung von Lärmpegelmessungen; Beratung über die Möglichkeiten zur Reduzierung und Sanierung von Schienenbogenlärm und Schienenverkehrslärm."
+        }
+      ]
+    },
+    "id": "d08e33e0-02bb-411f-bb17-3336381d1b2f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Orange (PMS 1635),  lila (PMS 271), grau (PMS 430)."
+      }
+    ],
+    "markImageViennaClassification": [
+      "07.11.15",
+      "18.01.11",
+      "18.01.12",
+      "18.01.23",
+      "27.01.01",
+      "27.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00038",
+        "publicationVolume": "113"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CH",
+    "registrationOfficeName": "Switzerland",
+    "representatives": [
+      {
+        "representativeAddress": "Carmenstrasse 28 8032 Zürich",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "WEINMANN ZIMMERLI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20061206",
+        "applicationNumber": "61114/2006"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261206",
+      "lastPublicationDate": "20070614",
+      "registration": {
+        "registrationDate": "20070531",
+        "registrationNumber": "558937"
+      },
+      "renewalDate": "20161206",
+      "renewalPublishedDate": "20160621"
+    },
+    "version": "20250624173518",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RPS rail partner schweiz Lärmsanierung Kurvenquietschen"
+    }
+  },
+  "_uri": "/mark/ch/d08e33e0-02bb-411f-bb17-3336381d1b2f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

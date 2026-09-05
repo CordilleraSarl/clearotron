@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/wo/1e1087e3-7974-460c-82a9-a5eef5dd134a",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "1e1087e3-7974-460c-82a9-a5eef5dd134a",
+  "applicationNumber": null,
+  "registrationNumber": "1541842",
+  "applicationDate": null,
+  "registrationDate": "2020-06-08",
+  "expiryDate": "2030-06-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-07-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORTEX",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable and recorded software for use with electric, lidar, electronic, proximity, and optical sensors and for the purpose of detecting, identifying and tracking the location and movement of physical objects.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels enregistrés et téléchargeables à utiliser avec des capteurs électriques, lidar, électroniques, de proximité et optiques et à des fins de détection, d'identification et de suivi d'emplacements et de mouvements d'objets physiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software descargable y grabado utilizado con sensores eléctricos, lidar, electrónicos, de proximidad y ópticos, a fin de de detectar, identificar y rastrear la localización y el movimiento de objetos físicos.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Quanergy, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Anne H. Peck Cooley LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20191206",
+      "priorityNumber": "88718432"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20191206",
+          "basicApplicationNumber": "88718432"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CN",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "SG",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "482 Mercury Drive Sunnyvale CA 94085",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Quanergy, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20191206",
+            "basicApplicationNumber": "88718432"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CN",
+      "IL",
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "SG",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable and recorded software for use with electric, lidar, electronic, proximity, and optical sensors and for the purpose of detecting, identifying and tracking the location and movement of physical objects."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels enregistrés et téléchargeables à utiliser avec des capteurs électriques, lidar, électroniques, de proximité et optiques et à des fins de détection, d'identification et de suivi d'emplacements et de mouvements d'objets physiques."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software descargable y grabado utilizado con sensores eléctricos, lidar, electrónicos, de proximidad y ópticos, a fin de de detectar, identificar y rastrear la localización y el movimiento de objetos físicos."
+        }
+      ]
+    },
+    "id": "1e1087e3-7974-460c-82a9-a5eef5dd134a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20191206",
+        "priorityNumber": "88718432"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "28"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "1299 Pennsylvania Avenue, Suite 700 Washington DC 20004",
+        "representativeAddressCountryCode": "US",
+        "representativeAddressCountryName": "United States of America",
+        "representativeName": "Anne H. Peck Cooley LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300608",
+      "lastPublicationDate": "20200723",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200608",
+        "registrationNumber": "1541842"
+      }
+    },
+    "version": "20250620192710",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORTEX"
+    }
+  },
+  "_uri": "/mark/wo/1e1087e3-7974-460c-82a9-a5eef5dd134a",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.707Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

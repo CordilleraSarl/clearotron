@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/au/c095c5cf-03f8-45d2-84e9-acc2d7e58d1a",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "c095c5cf-03f8-45d2-84e9-acc2d7e58d1a",
+  "applicationNumber": "2310966",
+  "registrationNumber": "2310966",
+  "applicationDate": "2022-10-27",
+  "registrationDate": "2022-10-27",
+  "expiryDate": "2032-10-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-03-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20221025",
+      "priorityNumber": "97646208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Lincoln Street Boston 02111, Massachusetts",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another"
+        }
+      ]
+    },
+    "id": "c095c5cf-03f8-45d2-84e9-acc2d7e58d1a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20221025",
+        "priorityNumber": "97646208"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Level 15 376-390 Collins St Melbourne 3000 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Griffith Hack"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221027",
+        "applicationNumber": "2310966"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321027",
+      "lastPublicationDate": "20230326",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20221027",
+        "registrationNumber": "2310966"
+      }
+    },
+    "version": "20250625165247",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/au/c095c5cf-03f8-45d2-84e9-acc2d7e58d1a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

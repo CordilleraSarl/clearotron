@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/br/f223e075-be26-4336-bcaa-48fafdca2701",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "f223e075-be26-4336-bcaa-48fafdca2701",
+  "applicationNumber": "906260850",
+  "registrationNumber": null,
+  "applicationDate": "2013-05-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORI EVENT MANAGEMENT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Fotografia.",
+      "translation_language": "en",
+      "translation": "Photography."
+    }
+  ],
+  "owner": "MHERRERO EVENTOS LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "WILSON SILVEIRA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "MHERRERO EVENTOS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Photography.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Fotografia."
+        }
+      ]
+    },
+    "id": "f223e075-be26-4336-bcaa-48fafdca2701",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260705",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "WILSON SILVEIRA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130520",
+        "applicationNumber": "906260850"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260705020130",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI EVENT MANAGEMENT"
+    }
+  },
+  "_uri": "/mark/br/f223e075-be26-4336-bcaa-48fafdca2701",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

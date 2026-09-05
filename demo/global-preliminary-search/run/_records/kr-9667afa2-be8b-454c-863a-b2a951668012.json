@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/9667afa2-be8b-454c-863a-b2a951668012",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "9667afa2-be8b-454c-863a-b2a951668012",
+  "applicationNumber": "40-2017-0157632",
+  "registrationNumber": null,
+  "applicationDate": "2017-12-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "노리 (NORI)",
+  "markTransliteration": "NORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "공부방경영업, 문화센터 내 유치원 운영업, 방과후 환경학교운영업, 보육원 프랜차이즈업, 보육원업, 어린이 놀이학교 운영업, 어린이집운 영업, 유치원운영업",
+      "translation_language": "en",
+      "translation": "Study room management business, kindergarten operation business in a cultural center, after-school environmental school operation business, nursery school franchise business, daycare center business, children's play school operation business, daycare business business, kindergarten operation business"
+    }
+  ],
+  "owner": "KIM, YOUNG HO",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 고양시 덕양구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM, YOUNG HO",
+        "applicantNativeName": "김영호"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Study room management business, kindergarten operation business in a cultural center, after-school environmental school operation business, nursery school franchise business, daycare center business, children's play school operation business, daycare business business, kindergarten operation business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "공부방경영업, 문화센터 내 유치원 운영업, 방과후 환경학교운영업, 보육원 프랜차이즈업, 보육원업, 어린이 놀이학교 운영업, 어린이집운 영업, 유치원운영업"
+        }
+      ]
+    },
+    "id": "9667afa2-be8b-454c-863a-b2a951668012",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260414",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20171208",
+        "applicationNumber": "40-2017-0157632"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260414020733",
+    "wordMarkSpecification": {
+      "markTransliteration": "NORI",
+      "markVerbalElementText": "노리 (NORI)"
+    }
+  },
+  "_uri": "/mark/kr/9667afa2-be8b-454c-863a-b2a951668012",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:09.693Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

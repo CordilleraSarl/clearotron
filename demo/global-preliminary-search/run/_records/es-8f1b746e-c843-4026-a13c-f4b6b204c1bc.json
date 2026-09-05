@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/es/8f1b746e-c843-4026-a13c-f4b6b204c1bc",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "8f1b746e-c843-4026-a13c-f4b6b204c1bc",
+  "applicationNumber": "3685291 M0",
+  "registrationNumber": "3685291 M0",
+  "applicationDate": "2017-10-03",
+  "registrationDate": "2018-03-12",
+  "expiryDate": "2027-10-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-10-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JUVENCORTO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion;formacion;servicios de entretenimiento;actividades deportivas y culturales",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES"
+    }
+  ],
+  "owner": "Ramos Quintanilla Daniel",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Ramos Quintanilla Daniel"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion;formacion;servicios de entretenimiento;actividades deportivas y culturales"
+        }
+      ]
+    },
+    "id": "8f1b746e-c843-4026-a13c-f4b6b204c1bc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "5042"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171003",
+        "applicationNumber": "3685291 M0"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271002",
+      "lastPublicationDate": "20171031",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180312",
+        "registrationNumber": "3685291 M0"
+      }
+    },
+    "version": "20260427164715",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JUVENCORTO"
+    }
+  },
+  "_uri": "/mark/es/8f1b746e-c843-4026-a13c-f4b6b204c1bc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

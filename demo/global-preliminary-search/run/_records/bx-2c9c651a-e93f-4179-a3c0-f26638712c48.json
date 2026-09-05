@@ -1,0 +1,396 @@
+{
+  "uri": "/mark/bx/2c9c651a-e93f-4179-a3c0-f26638712c48",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "2c9c651a-e93f-4179-a3c0-f26638712c48",
+  "applicationNumber": "910334",
+  "registrationNumber": "R 636214",
+  "applicationDate": "1998-02-13",
+  "registrationDate": null,
+  "expiryDate": "2028-02-13",
+  "renewalDate": "2007-09-26",
+  "lastPublicationDate": "2017-09-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DE WERELD VAN CORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    3,
+    5,
+    8,
+    9,
+    11,
+    16,
+    20,
+    21,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2
+      ],
+      "language": "fr",
+      "description": "Couleurs, vernis, laques; préservatifs contre la rouille et contre la détérioration du bois; matières tinctoriales; mordants; résines naturelles à l'état brut; métaux en feuilles et en poudre pour peintres, décorateurs, imprimeurs et artistes.",
+      "translation_language": "en",
+      "translation": "Paints, varnishes, lacquers; preservatives against rust and against the deterioration of wood; dyes; mordants; raw natural resins; sheet and powder metals for painters, decorators, printers and artists."
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "fr",
+      "description": "Préparations pour blanchir et autres substances pour lessiver; préparations pour nettoyer, polir, dégraisser et abraser; savons; parfumerie, huiles essentielles, cosmétiques, lotions pour les cheveux; dentifrices.",
+      "translation_language": "en",
+      "translation": "Bleaching preparations and other substances for laundry use; cleaning, polishing, scouring and abrasive preparations; soaps; perfumery, essential oils, cosmetics, hair lotions; toothpastes."
+    },
+    {
+      "classes": [
+        5
+      ],
+      "language": "fr",
+      "description": "Produits pharmaceutiques, vétérinaires et hygiéniques; substances diététiques à usage médical, aliments pour bébés; emplâtres, matériel pour pansements; matières pour plomber les dents et pour empreintes dentaires; désinfectants; produits pour la destruction des animaux nuisibles; fongicides, herbicides.",
+      "translation_language": "en",
+      "translation": "Pharmaceutical, veterinary and sanitary preparations; dietetic substances adapted for medical use, food for babies; plasters, materials for dressings; materials for filling teeth and for dental impressions; disinfectants; preparations for destroying vermin; fungicides, herbicides."
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "fr",
+      "description": "Outils et instruments à main entraînés manuellement; coutellerie, fourchettes et cuillers; armes blanches; rasoirs.",
+      "translation_language": "en",
+      "translation": "Hand tools and implements (hand-operated); cutlery, forks and spoons; cold steel; razors."
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments scientifiques, nautiques, géodésiques, électriques non compris dans d'autres classes, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et ordinateurs; extincteurs.",
+      "translation_language": "en",
+      "translation": "Scientific, nautical, surveying, electric not included in other classes, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments ; apparatus for recording, transmission, reproduction of sound or images; magnetic data carriers, recording discs; vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire extinguishers."
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "fr",
+      "description": "Appareils d'éclairage, de chauffage, de production de vapeur, de cuisson, de réfrigération, de séchage, de ventilation, de distribution d'eau et installations sanitaires.",
+      "translation_language": "en",
+      "translation": "Apparatus for lighting, heating, steam generating, cooking, refrigerating, drying, ventilating, water supply and sanitary installations."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Papier, carton et produits en ces matières, non compris dans d'autres classes; produits de l'imprimerie; articles pour reliures; photographies; papeterie; adhésifs (matières collantes) pour la papeterie ou le ménage; matériel pour les artistes; pinceaux; machines à écrire et articles de bureau (à l'exception des meubles); matériel d'instruction ou d'enseignement (à l'exception des appareils); matières plastiques pour l'emballage (non comprises dans d'autres classes); caractères d'imprimerie; clichés.",
+      "translation_language": "en",
+      "translation": "Paper, cardboard and goods made from these materials, not included in other classes; printing products; bookbinding materials; photographs; stationery store; adhesives (sticky materials) for stationery or household purposes; materials for artists; paint brushes; typewriters and office requisites (except furniture); instructional or teaching material (except apparatus); plastic materials for packaging (not included in other classes); printing characters; cliches."
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "fr",
+      "description": "Meubles, glaces (miroirs), cadres; produits, non compris dans d'autres classes, en bois, liège, roseau, jonc, osier, corne, os, ivoire, baleine, écaille, ambre, nacre, écume de mer, succédanés de toutes ces matières ou en matières plastiques.",
+      "translation_language": "en",
+      "translation": "Furniture, looking glass (mirrors), picture frames; goods, not included in other classes, of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, shell, amber, mother-of-pearl, meerschaum, substitutes for all these materials or of plastics."
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "fr",
+      "description": "Ustensiles et récipients pour le ménage ou la cuisine (ni en métaux précieux, ni en plaqué); peignes et éponges; brosses (à l'exception des pinceaux); matériaux pour la brosserie; matériel de nettoyage; paille de fer; verre brut ou mi-ouvré (à l'exception du verre de construction); verrerie, porcelaine et faïence non comprises dans d'autres classes.",
+      "translation_language": "en",
+      "translation": "Household or kitchen utensils and containers (not of precious metal or coated therewith); combs and sponges; brushes (except paintbrushes); brush-making materials; cleaning equipment; iron straw; unworked or semi-worked glass (except building glass); glassware, porcelain and earthenware not included in other classes."
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Jeux, jouets; articles de gymnastique et de sport non compris dans d'autres classes; décorations pour arbres de Noël; cartes à jouer.",
+      "translation_language": "en",
+      "translation": "Games, playthings; gymnastic and sporting articles not included in other classes; decorations for Christmas trees; playing cards."
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": "fr",
+      "description": "Viande, poisson, volaille et gibier; extraits de viande; fruits et légumes conservés, séchés et cuits; gelées, confitures, compotes; oeufs, lait et produits laitiers; huiles et graisses comestibles.",
+      "translation_language": "en",
+      "translation": "Meat, fish, poultry and game; meat extracts; preserved, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs, milk and milk products; edible oils and fats."
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "fr",
+      "description": "Café, thé, cacao, sucre, riz, tapioca, sagou, succédanés du café; farines et préparations faites de céréales, pain, pâtisserie et confiserie, glaces comestibles; miel, sirop de mélasse; levure, poudre pour faire lever; sel, moutarde; vinaigre, sauces (condiments); épices; glace à rafraîchir.",
+      "translation_language": "en",
+      "translation": "Coffee, tea, cocoa, sugar, rice, tapioca, sago, artificial coffee; flour and preparations made from cereals, bread, pastry and confectionery, edible ices; honey, molasses syrup; yeast, baking powder; salt, mustard; vinegar, sauces (condiments); spices; ice to cool."
+    },
+    {
+      "classes": [
+        31
+      ],
+      "language": "fr",
+      "description": "Produits agricoles, horticoles, forestiers et graines, non compris dans d'autres classes; animaux vivants; fruits et légumes frais; semences, plantes et fleurs naturelles; aliments pour les animaux, malt.",
+      "translation_language": "en",
+      "translation": "Agricultural, horticultural, forestry products and seeds, not included in other classes; living animals; fresh fruits and vegetables; seeds, natural plants and flowers; animal feed, malt."
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": "fr",
+      "description": "Bières; eaux minérales et gazeuses et autres boissons non alcooliques; boissons de fruits et jus de fruits; sirops et autres préparations pour faire des boissons.",
+      "translation_language": "en",
+      "translation": "Beers; mineral and aerated waters and other non-alcoholic beverages; fruit drinks and fruit juices; syrups and other preparations for making beverages."
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": "fr",
+      "description": "Boissons alcooliques (à l'exception des bières).",
+      "translation_language": "en",
+      "translation": "Alcoholic beverages (except beers)."
+    },
+    {
+      "classes": [
+        34
+      ],
+      "language": "fr",
+      "description": "Tabac; articles pour fumeurs; allumettes.",
+      "translation_language": "en",
+      "translation": "Tobacco; smokers&#39; articles; matches."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Aide à la direction et à l'organisation des affaires, y compris conseils et informations s'y rapportant, également à l'intention de commerces de détail et de grands magasins; informations et conseils d'ordre administratif, commercial et publicitaire permettant la gestion de commerces de vente au détail; aide et conseils à l'organisation administrative et commerciale d'entreprises, également en rapport avec la vente en gros et au détail.",
+      "translation_language": "en",
+      "translation": "Business management and organization assistance, including advice and information relating thereto, also for retail businesses and department stores; administrative, commercial and advertising information and advice enabling the management of retail businesses; assistance and advice in the administrative and commercial organization of companies, also in connection with wholesale and retail."
+    }
+  ],
+  "owner": "Shopping Cora Chatelineau SA",
+  "ownerNative": null,
+  "ownerCountry": "BE",
+  "representative": "GEVERS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Chaussée de Nivelles 83, 1420 Braine-l'Alleud",
+        "applicantAddressCountryCode": "BE",
+        "applicantAddressCountryName": "Belgium",
+        "applicantName": "Shopping Cora Chatelineau SA"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paints, varnishes, lacquers; preservatives against rust and against the deterioration of wood; dyes; mordants; raw natural resins; sheet and powder metals for painters, decorators, printers and artists.",
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Couleurs, vernis, laques; préservatifs contre la rouille et contre la détérioration du bois; matières tinctoriales; mordants; résines naturelles à l'état brut; métaux en feuilles et en poudre pour peintres, décorateurs, imprimeurs et artistes."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Bleaching preparations and other substances for laundry use; cleaning, polishing, scouring and abrasive preparations; soaps; perfumery, essential oils, cosmetics, hair lotions; toothpastes.",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Préparations pour blanchir et autres substances pour lessiver; préparations pour nettoyer, polir, dégraisser et abraser; savons; parfumerie, huiles essentielles, cosmétiques, lotions pour les cheveux; dentifrices."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pharmaceutical, veterinary and sanitary preparations; dietetic substances adapted for medical use, food for babies; plasters, materials for dressings; materials for filling teeth and for dental impressions; disinfectants; preparations for destroying vermin; fungicides, herbicides.",
+          "intClassNumber": "05",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits pharmaceutiques, vétérinaires et hygiéniques; substances diététiques à usage médical, aliments pour bébés; emplâtres, matériel pour pansements; matières pour plomber les dents et pour empreintes dentaires; désinfectants; produits pour la destruction des animaux nuisibles; fongicides, herbicides."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hand tools and implements (hand-operated); cutlery, forks and spoons; cold steel; razors.",
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Outils et instruments à main entraînés manuellement; coutellerie, fourchettes et cuillers; armes blanches; rasoirs."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific, nautical, surveying, electric not included in other classes, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments ; apparatus for recording, transmission, reproduction of sound or images; magnetic data carriers, recording discs; vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire extinguishers.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments scientifiques, nautiques, géodésiques, électriques non compris dans d'autres classes, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et ordinateurs; extincteurs."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Apparatus for lighting, heating, steam generating, cooking, refrigerating, drying, ventilating, water supply and sanitary installations.",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils d'éclairage, de chauffage, de production de vapeur, de cuisson, de réfrigération, de séchage, de ventilation, de distribution d'eau et installations sanitaires."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper, cardboard and goods made from these materials, not included in other classes; printing products; bookbinding materials; photographs; stationery store; adhesives (sticky materials) for stationery or household purposes; materials for artists; paint brushes; typewriters and office requisites (except furniture); instructional or teaching material (except apparatus); plastic materials for packaging (not included in other classes); printing characters; cliches.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Papier, carton et produits en ces matières, non compris dans d'autres classes; produits de l'imprimerie; articles pour reliures; photographies; papeterie; adhésifs (matières collantes) pour la papeterie ou le ménage; matériel pour les artistes; pinceaux; machines à écrire et articles de bureau (à l'exception des meubles); matériel d'instruction ou d'enseignement (à l'exception des appareils); matières plastiques pour l'emballage (non comprises dans d'autres classes); caractères d'imprimerie; clichés."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Furniture, looking glass (mirrors), picture frames; goods, not included in other classes, of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, shell, amber, mother-of-pearl, meerschaum, substitutes for all these materials or of plastics.",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Meubles, glaces (miroirs), cadres; produits, non compris dans d'autres classes, en bois, liège, roseau, jonc, osier, corne, os, ivoire, baleine, écaille, ambre, nacre, écume de mer, succédanés de toutes ces matières ou en matières plastiques."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Household or kitchen utensils and containers (not of precious metal or coated therewith); combs and sponges; brushes (except paintbrushes); brush-making materials; cleaning equipment; iron straw; unworked or semi-worked glass (except building glass); glassware, porcelain and earthenware not included in other classes.",
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Ustensiles et récipients pour le ménage ou la cuisine (ni en métaux précieux, ni en plaqué); peignes et éponges; brosses (à l'exception des pinceaux); matériaux pour la brosserie; matériel de nettoyage; paille de fer; verre brut ou mi-ouvré (à l'exception du verre de construction); verrerie, porcelaine et faïence non comprises dans d'autres classes."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Games, playthings; gymnastic and sporting articles not included in other classes; decorations for Christmas trees; playing cards.",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux, jouets; articles de gymnastique et de sport non compris dans d'autres classes; décorations pour arbres de Noël; cartes à jouer."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Meat, fish, poultry and game; meat extracts; preserved, dried and cooked fruits and vegetables; jellies, jams, compotes; eggs, milk and milk products; edible oils and fats.",
+          "intClassNumber": "29",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Viande, poisson, volaille et gibier; extraits de viande; fruits et légumes conservés, séchés et cuits; gelées, confitures, compotes; oeufs, lait et produits laitiers; huiles et graisses comestibles."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Coffee, tea, cocoa, sugar, rice, tapioca, sago, artificial coffee; flour and preparations made from cereals, bread, pastry and confectionery, edible ices; honey, molasses syrup; yeast, baking powder; salt, mustard; vinegar, sauces (condiments); spices; ice to cool.",
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Café, thé, cacao, sucre, riz, tapioca, sagou, succédanés du café; farines et préparations faites de céréales, pain, pâtisserie et confiserie, glaces comestibles; miel, sirop de mélasse; levure, poudre pour faire lever; sel, moutarde; vinaigre, sauces (condiments); épices; glace à rafraîchir."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Agricultural, horticultural, forestry products and seeds, not included in other classes; living animals; fresh fruits and vegetables; seeds, natural plants and flowers; animal feed, malt.",
+          "intClassNumber": "31",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits agricoles, horticoles, forestiers et graines, non compris dans d'autres classes; animaux vivants; fruits et légumes frais; semences, plantes et fleurs naturelles; aliments pour les animaux, malt."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Beers; mineral and aerated waters and other non-alcoholic beverages; fruit drinks and fruit juices; syrups and other preparations for making beverages.",
+          "intClassNumber": "32",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Bières; eaux minérales et gazeuses et autres boissons non alcooliques; boissons de fruits et jus de fruits; sirops et autres préparations pour faire des boissons."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Alcoholic beverages (except beers).",
+          "intClassNumber": "33",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Boissons alcooliques (à l'exception des bières)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Tobacco; smokers&#39; articles; matches.",
+          "intClassNumber": "34",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Tabac; articles pour fumeurs; allumettes."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Business management and organization assistance, including advice and information relating thereto, also for retail businesses and department stores; administrative, commercial and advertising information and advice enabling the management of retail businesses; assistance and advice in the administrative and commercial organization of companies, also in connection with wholesale and retail.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Aide à la direction et à l'organisation des affaires, y compris conseils et informations s'y rapportant, également à l'intention de commerces de détail et de grands magasins; informations et conseils d'ordre administratif, commercial et publicitaire permettant la gestion de commerces de vente au détail; aide et conseils à l'organisation administrative et commerciale d'entreprises, également en rapport avec la vente en gros et au détail."
+        }
+      ]
+    },
+    "id": "2c9c651a-e93f-4179-a3c0-f26638712c48",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0906"
+      }
+    ],
+    "recordLastUpdated": "20260118",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "representatives": [
+      {
+        "representativeAddress": "De Kleetlaan 7 A (4de verdieping), Pegasus Park, 1831 Diegem",
+        "representativeAddressCountryCode": "BE",
+        "representativeAddressCountryName": "Belgium",
+        "representativeName": "GEVERS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19980213",
+        "applicationNumber": "910334"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280213",
+      "lastPublicationDate": "20170906",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "R 636214"
+      },
+      "renewalDate": "20070926",
+      "renewalPublishedDate": "20170906"
+    },
+    "version": "20260118020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DE WERELD VAN CORA"
+    }
+  },
+  "_uri": "/mark/bx/2c9c651a-e93f-4179-a3c0-f26638712c48",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

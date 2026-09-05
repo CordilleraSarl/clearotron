@@ -1,0 +1,3380 @@
+{
+  "schema_version": 1,
+  "plan_version": 4,
+  "derived_from": {
+    "job_key": "tmp0001-venqori",
+    "variants_fingerprint": "fnv1a:95106443:1829",
+    "skill_version": "prelim-register@spec48"
+  },
+  "nice_classes": [
+    "9",
+    "41"
+  ],
+  "regions": [
+    "EU"
+  ],
+  "provider": "euipo",
+  "entries": [
+    {
+      "qid": "saturation-probe:default:ven",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "saturation-probe",
+      "predicate": "default",
+      "term": "VEN",
+      "expected_kind": "count",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "mark"
+    },
+    {
+      "qid": "primary-sweep:exact:qori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "QORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venkori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENKORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:vencori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENCORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venquori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQUORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqory",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORY",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venkory",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENKORY",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:vanqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VANQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:vinqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VINQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venquri",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQURI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqora",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORA",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venri",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENRI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:benqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "BENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:wenqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "WENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:fenqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "FENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:vengori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENGORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:vencore",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENCORE",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqorl",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORl",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venq0ri",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQ0RI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venoori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENOORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:vennqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENNQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqorri",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORRI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venoqri",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENOQRI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqoir",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQOIR",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-water",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI WATER",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-aqua",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI AQUA",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-labs",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI LABS",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-analytics",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI ANALYTICS",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-systems",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI SYSTEMS",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-sense",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI SENSE",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-monitoring",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI MONITORING",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-academy",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI ACADEMY",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-training",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI TRAINING",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-group",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI GROUP",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:aqua-venqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "AQUA VENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqor-labs",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQOR LABS",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venqor",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQOR",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:exact:venturi",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENTURI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "primary-sweep:default:venqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "mark"
+    },
+    {
+      "qid": "primary-sweep:exact:aenqori+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "aenqori",
+        "avenqori",
+        "benqori",
+        "bvenqori",
+        "cenqori",
+        "cvenqori",
+        "denqori",
+        "dvenqori",
+        "eenqori",
+        "enqori",
+        "evenqori",
+        "evnqori",
+        "fenqori",
+        "fvenqori",
+        "genqori",
+        "gvenqori",
+        "henqori",
+        "hvenqori",
+        "ienqori",
+        "ivenqori",
+        "jenqori",
+        "jvenqori",
+        "kenqori",
+        "kvenqori",
+        "lenqori",
+        "lvenqori",
+        "menqori",
+        "mvenqori",
+        "nenqori",
+        "nvenqori",
+        "oenqori",
+        "ovenqori",
+        "penqori",
+        "pvenqori",
+        "qenqori",
+        "qvenqori",
+        "renqori",
+        "rvenqori",
+        "senqori",
+        "svenqori",
+        "tenqori",
+        "tvenqori",
+        "uenqori",
+        "uvenqori",
+        "v3nqori",
+        "vaenqori",
+        "vanqori",
+        "vbenqori",
+        "vbnqori",
+        "vcenqori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:vcnqori+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "vcnqori",
+        "vdenqori",
+        "vdnqori",
+        "veanqori",
+        "veaqori",
+        "vebnqori",
+        "vebqori",
+        "vecnqori",
+        "vecqori",
+        "vednqori",
+        "vedqori",
+        "veenqori",
+        "veeqori",
+        "vefnqori",
+        "vefqori",
+        "vegnqori",
+        "vegqori",
+        "vehnqori",
+        "vehqori",
+        "veinqori",
+        "veiqori",
+        "vejnqori",
+        "vejqori",
+        "veknqori",
+        "vekqori",
+        "velnqori",
+        "velqori",
+        "vemnqori",
+        "vemqori",
+        "venaori",
+        "venaqori",
+        "venbori",
+        "venbqori",
+        "vencori",
+        "vencqori",
+        "vendori",
+        "vendqori",
+        "veneori",
+        "veneqori",
+        "venfori",
+        "venfqori",
+        "vengori",
+        "vengqori",
+        "venhori",
+        "venhqori",
+        "veniori",
+        "veniqori",
+        "venjori",
+        "venjqori",
+        "venkori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:venkqori+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "venkqori",
+        "venlori",
+        "venlqori",
+        "venmori",
+        "venmqori",
+        "vennori",
+        "vennqori",
+        "venoori",
+        "venoqori",
+        "venoqri",
+        "venori",
+        "venpori",
+        "venpqori",
+        "venq0ri",
+        "venqaori",
+        "venqari",
+        "venqbori",
+        "venqbri",
+        "venqcori",
+        "venqcri",
+        "venqdori",
+        "venqdri",
+        "venqeori",
+        "venqeri",
+        "venqfori",
+        "venqfri",
+        "venqgori",
+        "venqgri",
+        "venqhori",
+        "venqhri",
+        "venqiori",
+        "venqiri",
+        "venqjori",
+        "venqjri",
+        "venqkori",
+        "venqkri",
+        "venqlori",
+        "venqlri",
+        "venqmori",
+        "venqmri",
+        "venqnori",
+        "venqnri",
+        "venqoai",
+        "venqoari",
+        "venqobi",
+        "venqobri",
+        "venqoci",
+        "venqocri",
+        "venqodi",
+        "venqodri"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:venqoei+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "venqoei",
+        "venqoeri",
+        "venqofi",
+        "venqofri",
+        "venqogi",
+        "venqogri",
+        "venqohi",
+        "venqohri",
+        "venqoi",
+        "venqoii",
+        "venqoir",
+        "venqoiri",
+        "venqoji",
+        "venqojri",
+        "venqoki",
+        "venqokri",
+        "venqoli",
+        "venqolri",
+        "venqomi",
+        "venqomri",
+        "venqoni",
+        "venqonri",
+        "venqooi",
+        "venqoori",
+        "venqopi",
+        "venqopri",
+        "venqoqi",
+        "venqoqri",
+        "venqor",
+        "venqor1",
+        "venqora",
+        "venqorai",
+        "venqorb",
+        "venqorbi",
+        "venqorc",
+        "venqorci",
+        "venqord",
+        "venqordi",
+        "venqore",
+        "venqorei",
+        "venqorf",
+        "venqorfi",
+        "venqorg",
+        "venqorgi",
+        "venqorh",
+        "venqorhi",
+        "venqoria",
+        "venqorib",
+        "venqoric",
+        "venqorid"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:venqorie+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "venqorie",
+        "venqorif",
+        "venqorig",
+        "venqorih",
+        "venqorii",
+        "venqorij",
+        "venqorik",
+        "venqoril",
+        "venqorim",
+        "venqorin",
+        "venqorio",
+        "venqorip",
+        "venqoriq",
+        "venqorir",
+        "venqoris",
+        "venqorit",
+        "venqoriu",
+        "venqoriv",
+        "venqoriw",
+        "venqorix",
+        "venqoriy",
+        "venqoriz",
+        "venqorj",
+        "venqorji",
+        "venqork",
+        "venqorki",
+        "venqorl",
+        "venqorli",
+        "venqorm",
+        "venqormi",
+        "venqorn",
+        "venqorni",
+        "venqoro",
+        "venqoroi",
+        "venqorp",
+        "venqorpi",
+        "venqorq",
+        "venqorqi",
+        "venqorr",
+        "venqorri",
+        "venqors",
+        "venqorsi",
+        "venqort",
+        "venqorti",
+        "venqoru",
+        "venqorui",
+        "venqorv",
+        "venqorvi",
+        "venqorw",
+        "venqorwi"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:venqorx+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "venqorx",
+        "venqorxi",
+        "venqory",
+        "venqoryi",
+        "venqorz",
+        "venqorzi",
+        "venqosi",
+        "venqosri",
+        "venqoti",
+        "venqotri",
+        "venqoui",
+        "venqouri",
+        "venqovi",
+        "venqovri",
+        "venqowi",
+        "venqowri",
+        "venqoxi",
+        "venqoxri",
+        "venqoyi",
+        "venqoyri",
+        "venqozi",
+        "venqozri",
+        "venqpori",
+        "venqpri",
+        "venqqori",
+        "venqqri",
+        "venqri",
+        "venqroi",
+        "venqrori",
+        "venqrri",
+        "venqsori",
+        "venqsri",
+        "venqtori",
+        "venqtri",
+        "venquori",
+        "venquri",
+        "venqvori",
+        "venqvri",
+        "venqwori",
+        "venqwri",
+        "venqxori",
+        "venqxri",
+        "venqyori",
+        "venqyri",
+        "venqzori",
+        "venqzri",
+        "venrori",
+        "venrqori",
+        "vensori",
+        "vensqori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:ventori+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "ventori",
+        "ventqori",
+        "venuori",
+        "venuqori",
+        "venvori",
+        "venvqori",
+        "venwori",
+        "venwqori",
+        "venxori",
+        "venxqori",
+        "venyori",
+        "venyqori",
+        "venzori",
+        "venzqori",
+        "veonqori",
+        "veoqori",
+        "vepnqori",
+        "vepqori",
+        "veqnori",
+        "veqnqori",
+        "veqori",
+        "veqqori",
+        "vernqori",
+        "verqori",
+        "vesnqori",
+        "vesqori",
+        "vetnqori",
+        "vetqori",
+        "veunqori",
+        "veuqori",
+        "vevnqori",
+        "vevqori",
+        "vewnqori",
+        "vewqori",
+        "vexnqori",
+        "vexqori",
+        "veynqori",
+        "veyqori",
+        "veznqori",
+        "vezqori",
+        "vfenqori",
+        "vfnqori",
+        "vgenqori",
+        "vgnqori",
+        "vhenqori",
+        "vhnqori",
+        "vienqori",
+        "vinqori",
+        "vjenqori",
+        "vjnqori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:vkenqori+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "vkenqori",
+        "vknqori",
+        "vlenqori",
+        "vlnqori",
+        "vmenqori",
+        "vmnqori",
+        "vnenqori",
+        "vneqori",
+        "vnnqori",
+        "vnqori",
+        "voenqori",
+        "vonqori",
+        "vpenqori",
+        "vpnqori",
+        "vqenqori",
+        "vqnqori",
+        "vrenqori",
+        "vrnqori",
+        "vsenqori",
+        "vsnqori",
+        "vtenqori",
+        "vtnqori",
+        "vuenqori",
+        "vunqori",
+        "vvenqori",
+        "vvnqori",
+        "vwenqori",
+        "vwnqori",
+        "vxenqori",
+        "vxnqori",
+        "vyenqori",
+        "vynqori",
+        "vzenqori",
+        "vznqori",
+        "wenqori",
+        "wvenqori",
+        "xenqori",
+        "xvenqori",
+        "yenqori",
+        "yvenqori",
+        "zenqori",
+        "zvenqori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:v-q-r+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "vεηqοrι",
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:v-nq-ri+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "vеnqоri",
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:aori+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "aori",
+        "aqori",
+        "bori",
+        "bqori",
+        "cori",
+        "cqori",
+        "dori",
+        "dqori",
+        "eori",
+        "eqori",
+        "fori",
+        "fqori",
+        "gori",
+        "gqori",
+        "hori",
+        "hqori",
+        "iori",
+        "iqori",
+        "jori",
+        "jqori",
+        "kori",
+        "kqori",
+        "lori",
+        "lqori",
+        "mori",
+        "mqori",
+        "nori",
+        "nqori",
+        "oori",
+        "oqori",
+        "oqri",
+        "ori",
+        "pori",
+        "pqori",
+        "q0ri",
+        "qaori",
+        "qari",
+        "qbori",
+        "qbri",
+        "qcori",
+        "qcri",
+        "qdori",
+        "qdri",
+        "qeori",
+        "qeri",
+        "qfori",
+        "qfri",
+        "qgori",
+        "qgri",
+        "qhori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:qhri+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "qhri",
+        "qiori",
+        "qiri",
+        "qjori",
+        "qjri",
+        "qkori",
+        "qkri",
+        "qlori",
+        "qlri",
+        "qmori",
+        "qmri",
+        "qnori",
+        "qnri",
+        "qoai",
+        "qoari",
+        "qobi",
+        "qobri",
+        "qoci",
+        "qocri",
+        "qodi",
+        "qodri",
+        "qoei",
+        "qoeri",
+        "qofi",
+        "qofri",
+        "qogi",
+        "qogri",
+        "qohi",
+        "qohri",
+        "qoi",
+        "qoii",
+        "qoir",
+        "qoiri",
+        "qoji",
+        "qojri",
+        "qoki",
+        "qokri",
+        "qoli",
+        "qolri",
+        "qomi",
+        "qomri",
+        "qoni",
+        "qonri",
+        "qooi",
+        "qoori",
+        "qopi",
+        "qopri",
+        "qoqi",
+        "qoqri",
+        "qor"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:qor1+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "qor1",
+        "qora",
+        "qorai",
+        "qorb",
+        "qorbi",
+        "qorc",
+        "qorci",
+        "qord",
+        "qordi",
+        "qore",
+        "qorei",
+        "qorf",
+        "qorfi",
+        "qorg",
+        "qorgi",
+        "qorh",
+        "qorhi",
+        "qoria",
+        "qorib",
+        "qoric",
+        "qorid",
+        "qorie",
+        "qorif",
+        "qorig",
+        "qorih",
+        "qorii",
+        "qorij",
+        "qorik",
+        "qoril",
+        "qorim",
+        "qorin",
+        "qorio",
+        "qorip",
+        "qoriq",
+        "qorir",
+        "qoris",
+        "qorit",
+        "qoriu",
+        "qoriv",
+        "qoriw",
+        "qorix",
+        "qoriy",
+        "qoriz",
+        "qorj",
+        "qorji",
+        "qork",
+        "qorki",
+        "qorl",
+        "qorli",
+        "qorm"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:qormi+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "qormi",
+        "qorn",
+        "qorni",
+        "qoro",
+        "qoroi",
+        "qorp",
+        "qorpi",
+        "qorq",
+        "qorqi",
+        "qorr",
+        "qorri",
+        "qors",
+        "qorsi",
+        "qort",
+        "qorti",
+        "qoru",
+        "qorui",
+        "qorv",
+        "qorvi",
+        "qorw",
+        "qorwi",
+        "qorx",
+        "qorxi",
+        "qory",
+        "qoryi",
+        "qorz",
+        "qorzi",
+        "qosi",
+        "qosri",
+        "qoti",
+        "qotri",
+        "qoui",
+        "qouri",
+        "qovi",
+        "qovri",
+        "qowi",
+        "qowri",
+        "qoxi",
+        "qoxri",
+        "qoyi",
+        "qoyri",
+        "qozi",
+        "qozri",
+        "qpori",
+        "qpri",
+        "qqori",
+        "qqri",
+        "qri",
+        "qroi",
+        "qrori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:qrri+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "qrri",
+        "qsori",
+        "qsri",
+        "qtori",
+        "qtri",
+        "quori",
+        "quri",
+        "qvori",
+        "qvri",
+        "qwori",
+        "qwri",
+        "qxori",
+        "qxri",
+        "qyori",
+        "qyri",
+        "qzori",
+        "qzri",
+        "rori",
+        "rqori",
+        "sori",
+        "sqori",
+        "tori",
+        "tqori",
+        "uori",
+        "uqori",
+        "vori",
+        "vqori",
+        "wori",
+        "wqori",
+        "xori",
+        "xqori",
+        "yori",
+        "yqori",
+        "zori",
+        "zqori"
+      ],
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:q-r+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "qοrι",
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:exact:q-ri+form",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "qоri",
+      "expected_kind": "enumerate",
+      "provenance": "floor"
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-nq-r",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "wildcard",
+      "term": "v?nq?r?",
+      "expected_kind": "enumerate",
+      "provenance": "floor",
+      "when": {
+        "runs_if_enumerated": "primary-sweep:default:venqori"
+      }
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-r",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "wildcard",
+      "term": "v*r",
+      "expected_kind": "enumerate",
+      "provenance": "floor",
+      "when": {
+        "runs_if_enumerated": "primary-sweep:default:venqori"
+      }
+    },
+    {
+      "qid": "primary-sweep:exact:venqori+merch",
+      "nice_classes": [
+        "25"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI",
+      "expected_kind": "enumerate",
+      "provenance": "mark"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "romanizedTerms": [
+        "VEN KO RI",
+        "VENKORI"
+      ],
+      "axis": "transliteration-numeric",
+      "predicate": "exact",
+      "term": "Венкори",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q#2",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "romanizedTerms": [
+        "VEN KO RI",
+        "VENKORI"
+      ],
+      "axis": "transliteration-numeric",
+      "predicate": "exact",
+      "term": "Βενκόρι",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q#3",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "romanizedTerms": [
+        "KO RI",
+        "KORI"
+      ],
+      "axis": "transliteration-numeric",
+      "predicate": "exact",
+      "term": "Кори",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q#4",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "romanizedTerms": [
+        "KO RI",
+        "KORI"
+      ],
+      "axis": "transliteration-numeric",
+      "predicate": "exact",
+      "term": "Κόρι",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "transliteration-numeric:exact:v3nqori",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "transliteration-numeric",
+      "predicate": "exact",
+      "term": "V3NQORI",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "transliteration-numeric:exact:venq0r1",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "transliteration-numeric",
+      "predicate": "exact",
+      "term": "VENQ0R1",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-xylem-inc",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Xylem Inc.",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-xylem-inc",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Xylem Inc.",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:xylem-inc+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Xylem Inc.",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-xylem-inc",
+        "incumbent-class:default:qori+owner-xylem-inc"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-veolia-environnement-sa",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Veolia Environnement SA",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-veolia-environnement-sa",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Veolia Environnement SA",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:veolia-environnement-sa+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Veolia Environnement SA",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-veolia-environnement-sa",
+        "incumbent-class:default:qori+owner-veolia-environnement-sa"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-endress-hauser",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Endress+Hauser",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-endress-hauser",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Endress+Hauser",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:endress-hauser+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Endress+Hauser",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-endress-hauser",
+        "incumbent-class:default:qori+owner-endress-hauser"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-hach",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Hach",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-hach",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Hach",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:hach+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Hach",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-hach",
+        "incumbent-class:default:qori+owner-hach"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-danaher",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Danaher",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-danaher",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Danaher",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:danaher+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Danaher",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-danaher",
+        "incumbent-class:default:qori+owner-danaher"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-s-can",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "s::can",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-s-can",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "s::can",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:s-can+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "s::can",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-s-can",
+        "incumbent-class:default:qori+owner-s-can"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-badger-meter",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Badger Meter",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-badger-meter",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Badger Meter",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:badger-meter+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Badger Meter",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-badger-meter",
+        "incumbent-class:default:qori+owner-badger-meter"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-tuv-sud",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "TÜV SÜD",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-tuv-sud",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "TÜV SÜD",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:tuv-sud+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "TÜV SÜD",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-tuv-sud",
+        "incumbent-class:default:qori+owner-tuv-sud"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-tuv-rheinland",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "TÜV Rheinland",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-tuv-rheinland",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "TÜV Rheinland",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:tuv-rheinland+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "TÜV Rheinland",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-tuv-rheinland",
+        "incumbent-class:default:qori+owner-tuv-rheinland"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-suez",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "SUEZ",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-suez",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "SUEZ",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:suez+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "SUEZ",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-suez",
+        "incumbent-class:default:qori+owner-suez"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-siemens",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Siemens",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-siemens",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Siemens",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:siemens+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Siemens",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-siemens",
+        "incumbent-class:default:qori+owner-siemens"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-schneider-electric",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Schneider Electric",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-schneider-electric",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Schneider Electric",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:schneider-electric+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Schneider Electric",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-schneider-electric",
+        "incumbent-class:default:qori+owner-schneider-electric"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-abb",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "ABB",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-abb",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "ABB",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:abb+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "ABB",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-abb",
+        "incumbent-class:default:qori+owner-abb"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-grundfos",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Grundfos",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-grundfos",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Grundfos",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:grundfos+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Grundfos",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-grundfos",
+        "incumbent-class:default:qori+owner-grundfos"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-kamstrup",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Kamstrup",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-kamstrup",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Kamstrup",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:kamstrup+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Kamstrup",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-kamstrup",
+        "incumbent-class:default:qori+owner-kamstrup"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-yokogawa",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Yokogawa",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-yokogawa",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Yokogawa",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:yokogawa+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Yokogawa",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-yokogawa",
+        "incumbent-class:default:qori+owner-yokogawa"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-thermo-fisher-scientific",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Thermo Fisher Scientific",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-thermo-fisher-scientific",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Thermo Fisher Scientific",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:thermo-fisher-scientific+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Thermo Fisher Scientific",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-thermo-fisher-scientific",
+        "incumbent-class:default:qori+owner-thermo-fisher-scientific"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-metrohm",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Metrohm",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-metrohm",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Metrohm",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:metrohm+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Metrohm",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-metrohm",
+        "incumbent-class:default:qori+owner-metrohm"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-idexx-laboratories",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "IDEXX Laboratories",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-idexx-laboratories",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "IDEXX Laboratories",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:idexx-laboratories+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "IDEXX Laboratories",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-idexx-laboratories",
+        "incumbent-class:default:qori+owner-idexx-laboratories"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-hanna-instruments",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Hanna Instruments",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-hanna-instruments",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Hanna Instruments",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:hanna-instruments+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Hanna Instruments",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-hanna-instruments",
+        "incumbent-class:default:qori+owner-hanna-instruments"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-krohne",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "KROHNE",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-krohne",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "KROHNE",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:krohne+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "KROHNE",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-krohne",
+        "incumbent-class:default:qori+owner-krohne"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-sgs",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "SGS",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-sgs",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "SGS",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:sgs+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "SGS",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-sgs",
+        "incumbent-class:default:qori+owner-sgs"
+      ]
+    },
+    {
+      "qid": "incumbent-class:default:venqori+owner-bureau-veritas",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "VENQORI",
+      "owner": "Bureau Veritas",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:default:qori+owner-bureau-veritas",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "QORI",
+      "owner": "Bureau Veritas",
+      "expected_kind": "enumerate",
+      "provenance": "model"
+    },
+    {
+      "qid": "incumbent-class:owner:bureau-veritas+watch",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "EU"
+      ],
+      "axis": "incumbent-class",
+      "predicate": "owner",
+      "term": "Bureau Veritas",
+      "expected_kind": "count",
+      "provenance": "model",
+      "covered_by": [
+        "incumbent-class:default:venqori+owner-bureau-veritas",
+        "incumbent-class:default:qori+owner-bureau-veritas"
+      ]
+    },
+    {
+      "qid": "xcheck-mark-venqori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENQORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-ven-qori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VEN QORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-venkori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENKORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-venquori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENQUORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-venkory",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENKORY",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-vinqori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VINQORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-venqora",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENQORA",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-benqori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "BENQORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "xcheck-mark-aqua-venqori",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "AQUA VENQORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venori:dff53f1d",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model names the Q as the single unusual character in the mark, most likely to be dropped, mistyped or normalis"
+    },
+    {
+      "qid": "supp:primary-sweep:default:venori:9aac735f",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENORI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model names the Q as the single unusual character in the mark, most likely to be dropped, mistyped or normalis"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venari:9a4db2d7",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENARI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model names the Q as the single unusual character in the mark, most likely to be dropped, mistyped or normalis"
+    },
+    {
+      "qid": "supp:primary-sweep:default:venari:382b7fd5",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENARI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model names the Q as the single unusual character in the mark, most likely to be dropped, mistyped or normalis"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venuri:7e5f060b",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENURI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model names the Q as the single unusual character in the mark, most likely to be dropped, mistyped or normalis"
+    },
+    {
+      "qid": "supp:primary-sweep:default:venuri:23bbe631",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENURI",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model names the Q as the single unusual character in the mark, most likely to be dropped, mistyped or normalis"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:vensori:6190de2c",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENSORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:default:vensori:31be05fe",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENSORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venzori:f0dd0a77",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENZORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:default:venzori:cb4063f1",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENZORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:ventori:fc975aa9",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENTORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:default:ventori:fc9d79cf",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENTORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:vendori:f1f11199",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENDORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:default:vendori:69cab4ff",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "VENDORI",
+      "nice_classes": [
+        "9",
+        "41",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model singles out VENSORI as the one to weight: one keystroke away, and in a sensing/monitoring context it rea"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqo:8d91c04d",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQO",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model calls VENQ- its own crowded field requiring enumeration under the saturation principle. The run's satura"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venq:a2c4c784",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQ",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model calls VENQ- its own crowded field requiring enumeration under the saturation principle. The run's satura"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqu:57372b3b",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQU",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model calls VENQ- its own crowded field requiring enumeration under the saturation principle. The run's satura"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venco:514538eb",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENCO",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model calls VENQ- its own crowded field requiring enumeration under the saturation principle. The run's satura"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venko:89d361e3",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENKO",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model calls VENQ- its own crowded field requiring enumeration under the saturation principle. The run's satura"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqoria:06a8f7d1",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORIA",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model flags added terminal syllables as the standard EU brand-extension pattern that a searcher stopping at ex"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqoris:60167737",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORIS",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model flags added terminal syllables as the standard EU brand-extension pattern that a searcher stopping at ex"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqorio:70955fb3",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORIO",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model flags added terminal syllables as the standard EU brand-extension pattern that a searcher stopping at ex"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqorix:01de4f44",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORIX",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model flags added terminal syllables as the standard EU brand-extension pattern that a searcher stopping at ex"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqorium:f3e15cd4",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORIUM",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: The blind model flags added terminal syllables as the standard EU brand-extension pattern that a searcher stopping at ex"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori:978b0b3b",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQORI",
+      "nice_classes": [
+        "9",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen field: The scope ledger drops this field as off-field today on customer base, flagging it only as a future convergence to watch"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqor:d0af0058",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENQOR",
+      "nice_classes": [
+        "9",
+        "42"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen field: The scope ledger drops this field as off-field today on customer base, flagging it only as a future convergence to watch"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori-form-neighbourhood:97fee0b6",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "venqori form-neighbourhood",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: 392 of the deterministic form near-forms of \"venqori\" were never dispatched (the machine form band was not searched) — e"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:q-r:d37a542f",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "qοrι",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "frame-reopen variant: mechanical form near-form of \"qori\" (deterministically generated) was not dispatched — search it."
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venturi:fe28a4a4",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "VENTURI",
+      "nice_classes": [
+        "25"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "Skeptic escalation: class-25 merch check ran VENQORI exact only; VENTURI (3 registered marks carried forward in this unit, incl. manifest's own highest-salience neighbour Jörg Wollesen) was never chec"
+    },
+    {
+      "qid": "supp:primary-sweep:exact:qori:333d9676",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "QORI",
+      "nice_classes": [
+        "25"
+      ],
+      "regions": [],
+      "expected_kind": "enumerate",
+      "origin": "supplemental",
+      "rationale": "Skeptic escalation: class-25 merch check ran VENQORI exact only; QORI (Firepay Merchant Services, the headline candidate carried forward in this unit) was never checked at class 25."
+    }
+  ],
+  "contract": {
+    "supplemental_lane": 1
+  }
+}

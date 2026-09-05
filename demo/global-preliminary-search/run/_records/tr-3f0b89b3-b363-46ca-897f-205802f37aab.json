@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/tr/3f0b89b3-b363-46ca-897f-205802f37aab",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "3f0b89b3-b363-46ca-897f-205802f37aab",
+  "applicationNumber": "2020/05059",
+  "registrationNumber": null,
+  "applicationDate": "2020-01-14",
+  "registrationDate": null,
+  "expiryDate": "2030-01-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-05-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "güven organizasyon",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri.",
+      "translation_language": "en",
+      "translation": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services."
+    }
+  ],
+  "owner": "GÜVEN MÜZİK PRODÜKSİYON ANONİM ŞİRKETİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "DEMET ŞENBİÇER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CEVİZLİ MAH. ZUHAL CAD. 44/137 Maltepe İstanbul",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "GÜVEN MÜZİK PRODÜKSİYON ANONİM ŞİRKETİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training services. Symposium, conference, congress and seminar organization, administration services. Sports, cultural and entertainment services (including ticketing services for cultural and entertainment events such as cinema, sports events, theatre, museums, concerts). Services related to the preparation of publications such as magazines, books, newspapers, etc., and their delivery to the reader (including the provision of the aforementioned services through global communication networks). Film, television and radio program production services. News reporting services, photojournalism services. Photography services. Translation services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri."
+        }
+      ]
+    },
+    "id": "3f0b89b3-b363-46ca-897f-205802f37aab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "348"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "CUMHURİYET MAH. AKTAŞ SOK. NO:10/2 NİLÜFER/BURSA",
+        "representativeName": "DEMET ŞENBİÇER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200114",
+        "applicationNumber": "2020/05059"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20300114",
+      "lastPublicationDate": "20200512",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250708181919",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "güven organizasyon"
+    }
+  },
+  "_uri": "/mark/tr/3f0b89b3-b363-46ca-897f-205802f37aab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

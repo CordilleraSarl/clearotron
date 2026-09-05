@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/d85f076f-8630-4cab-bea7-ba679b4cf092",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "d85f076f-8630-4cab-bea7-ba679b4cf092",
+  "applicationNumber": "UK00911598695",
+  "registrationNumber": "UK00911598695",
+  "applicationDate": "2013-02-22",
+  "registrationDate": "2013-07-22",
+  "expiryDate": "2033-02-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Magnetic recording carriers, Including audio and video cassettes; CDs, CD-ROMs, DVDs; Computer software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; Instructional and teaching material except for the apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Teaching, including correspondence courses, telephone courses and courses via the Internet; Organisation of courses and seminars.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CERAN",
+  "ownerNative": null,
+  "ownerCountry": "BE",
+  "representative": "Baron Warren Redfern",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Avenue des Petits Sapins 27, SPA 4900",
+        "applicantAddressCountryCode": "BE",
+        "applicantAddressCountryName": "Belgium",
+        "applicantName": "CERAN"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Magnetic recording carriers, Including audio and video cassettes; CDs, CD-ROMs, DVDs; Computer software."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; Instructional and teaching material except for the apparatus."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Teaching, including correspondence courses, telephone courses and courses via the Internet; Organisation of courses and seminars."
+        }
+      ]
+    },
+    "id": "d85f076f-8630-4cab-bea7-ba679b4cf092",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "1000 Great West Road, Brentford, Middlesex TW8 9DW",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Baron Warren Redfern"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130222",
+        "applicationNumber": "UK00911598695"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330222",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130722",
+        "registrationNumber": "UK00911598695"
+      }
+    },
+    "version": "20250627210012",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/gb/d85f076f-8630-4cab-bea7-ba679b4cf092",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.200Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

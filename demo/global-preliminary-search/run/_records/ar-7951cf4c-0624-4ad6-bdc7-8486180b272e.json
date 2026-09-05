@@ -1,0 +1,103 @@
+{
+  "uri": "/mark/ar/7951cf4c-0624-4ad6-bdc7-8486180b272e",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "7951cf4c-0624-4ad6-bdc7-8486180b272e",
+  "applicationNumber": "4761840",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Clase 09 : Internacional Limitada SOLAMENTE:ALTAVOCES DE MONITOR ;ALTAVOCES EMPAREJABLES CON TECNOLOGIA INALAMBRICA ;ALTAVOCES PARA MONITORES DE ESTUDIO ;APARATOS DE AUDIO ELECTRONICOS ;AURICULARES INALAMBRICOS CON MICROFONO PARA TABLETAS ;CAMARAS DE MONITORIZACION DE RED PARA VIGILANCIA ;CARCASAS PARA TABLETAS ELECTRONICAS ;COMPUTADORAS NOTEBOOK ;CUADERNOS ELECTRONICOS NOTEBOOKS ;DISPOSITIVOS DE MONTAJE PARA MONITORES ;EQUIPOS AUDIOVISUALES Y DE INFORMACION TECNOLOGICA ;MONITORES DE ORDENADOR ;MONITORES DE PANTALLA ;MONITORES DE PANTALLA TACTIL ;ORDENADORES NOTEBOOK ;VIDEOCAMARAS ADAPTADAS PARA LA MONITORIZACION ;",
+      "translation_language": "en",
+      "translation": "Class 09: International Limited ONLY: MONITOR SPEAKERS; WIRELESS PAIRABLE SPEAKERS; STUDIO MONITOR SPEAKERS; ELECTRONIC AUDIO DEVICES; WIRELESS HEADSETS WITH MICROPHONE FOR TABLETS; NETWORK MONITORING CAMERAS FOR SURVEILLANCE; TABLET CASES; NOTEBOOK COMPUTERS; NOTEBOOK ELECTRONIC NOTEBOOKS; MONITOR MOUNTING DEVICES; AUDIOVISUAL AND INFORMATION TECHNOLOGY EQUIPMENT; COMPUTER MONITORS; SCREEN MONITORS; TOUCHSCREEN MONITORS; NOTEBOOK COMPUTERS; VIDEO CAMERAS ADAPTED FOR MONITORING;"
+    }
+  ],
+  "owner": "RUBINSTEIN URIEL",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "RUBINSTEIN URIEL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 09: International Limited ONLY: MONITOR SPEAKERS; WIRELESS PAIRABLE SPEAKERS; STUDIO MONITOR SPEAKERS; ELECTRONIC AUDIO DEVICES; WIRELESS HEADSETS WITH MICROPHONE FOR TABLETS; NETWORK MONITORING CAMERAS FOR SURVEILLANCE; TABLET CASES; NOTEBOOK COMPUTERS; NOTEBOOK ELECTRONIC NOTEBOOKS; MONITOR MOUNTING DEVICES; AUDIOVISUAL AND INFORMATION TECHNOLOGY EQUIPMENT; COMPUTER MONITORS; SCREEN MONITORS; TOUCHSCREEN MONITORS; NOTEBOOK COMPUTERS; VIDEO CAMERAS ADAPTED FOR MONITORING;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 09 : Internacional Limitada SOLAMENTE:ALTAVOCES DE MONITOR ;ALTAVOCES EMPAREJABLES CON TECNOLOGIA INALAMBRICA ;ALTAVOCES PARA MONITORES DE ESTUDIO ;APARATOS DE AUDIO ELECTRONICOS ;AURICULARES INALAMBRICOS CON MICROFONO PARA TABLETAS ;CAMARAS DE MONITORIZACION DE RED PARA VIGILANCIA ;CARCASAS PARA TABLETAS ELECTRONICAS ;COMPUTADORAS NOTEBOOK ;CUADERNOS ELECTRONICOS NOTEBOOKS ;DISPOSITIVOS DE MONTAJE PARA MONITORES ;EQUIPOS AUDIOVISUALES Y DE INFORMACION TECNOLOGICA ;MONITORES DE ORDENADOR ;MONITORES DE PANTALLA ;MONITORES DE PANTALLA TACTIL ;ORDENADORES NOTEBOOK ;VIDEOCAMARAS ADAPTADAS PARA LA MONITORIZACION ;"
+        }
+      ]
+    },
+    "id": "7951cf4c-0624-4ad6-bdc7-8486180b272e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260820",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260806",
+        "applicationNumber": "4761840"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "NEW APPLICATION"
+    },
+    "version": "20260820020120",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORA"
+    }
+  },
+  "_uri": "/mark/ar/7951cf4c-0624-4ad6-bdc7-8486180b272e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.679Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

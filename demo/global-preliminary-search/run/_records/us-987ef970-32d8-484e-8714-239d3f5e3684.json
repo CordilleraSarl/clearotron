@@ -1,0 +1,271 @@
+{
+  "uri": "/mark/us/987ef970-32d8-484e-8714-239d3f5e3684",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "987ef970-32d8-484e-8714-239d3f5e3684",
+  "applicationNumber": "98781859",
+  "registrationNumber": null,
+  "applicationDate": "2024-10-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-08-26"
+  ],
+  "abandonmentDate": "2026-05-25",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "LOCKIN VENORIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Camcorders; Cameras; Access control and alarm monitoring systems; Alarm monitoring systems; Anti-theft alarms, other than for vehicles; Biometric fingerprint door locks; Biometric identity cards; Biometric locks; Burglar alarms; Computer networking hardware; Computer programs, downloadable, for use with electric locks, burglar alarms, and anti-theft alarms, other than for vehicles, for verifying identity, granting access, enabling communication, and monitoring activity; Computer software applications, downloadable, for use with electric locks, burglar alarms, and anti-theft alarms, other than for vehicles, for verifying identity, granting access, enabling communication, and monitoring activity; Day and night vision systems primarily comprised of day and night sensors, day and night cameras, and monitors; Digital door locks; Downloadable computer operating programs; Downloadable computer software for accessing, reading, and tracking information in the field of electric locks, burglar alarms, and anti-theft alarms, other than for vehicles on a blockchain; Downloadable computer software for programming, sharing, and revoking virtual keys for electronic locks; Downloadable computer software for permitting users to identify and communicate with persons at their door; Downloadable computer software for permitting users to monitor their home, office and other facilities; Downloadable computer software for communicating audio, video and data between communications devices via global computer networks and local area networks; Electric and electronic video surveillance installations; Electric door bells; Electric meters; Electronic access control systems for interlocking doors; Electronic key cards; Electronic key fobs being remote control apparatus; Electronic lock assemblies; Electronic locks; Gateway routers; Identity cards, magnetic; Locks, electric; Magnifying peepholes for doors; Motion sensors; Programmable locking systems, consisting of electronic cylindrical locksets and keypads; Recorded computer software for programming, sharing, and revoking virtual keys for electronic locks; Recorded computer software for communicating audio, video and data between communications devices via global computer networks and local area networks; Recorded computer software for accessing, reading, and tracking information in the field of electric locks, burglar alarms, and anti-theft alarms, other than for vehicles, on a blockchain; Remote video monitoring system consisting primarily of a camera and video monitor for recording and transmitting images to a remote location; Security and fire alarms; Smoke alarms; Telecommunication base stations; Theft alarms; Video cameras; Video monitors; Video recorders; Water meters; Encoded key cards",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LOCKIN INTERNATIONAL PTE. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "Matthew Dresden",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "applicantAddressCity": "Singapore",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantAddressPostalCode": "608526",
+        "applicantAddressStreet": "#11-31 Vision Exchange",
+        "applicantJurisdictionOfIncorporation": "SINGAPORE",
+        "applicantName": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "applicantSecondaryAddressUnit": "2 Venture Drive"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "6584395",
+          "6631171"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Camcorders; Cameras; Access control and alarm monitoring systems; Alarm monitoring systems; Anti-theft alarms, other than for vehicles; Biometric fingerprint door locks; Biometric identity cards; Biometric locks; Burglar alarms; Computer networking hardware; Computer programs, downloadable, for use with electric locks, burglar alarms, and anti-theft alarms, other than for vehicles, for verifying identity, granting access, enabling communication, and monitoring activity; Computer software applications, downloadable, for use with electric locks, burglar alarms, and anti-theft alarms, other than for vehicles, for verifying identity, granting access, enabling communication, and monitoring activity; Day and night vision systems primarily comprised of day and night sensors, day and night cameras, and monitors; Digital door locks; Downloadable computer operating programs; Downloadable computer software for accessing, reading, and tracking information in the field of electric locks, burglar alarms, and anti-theft alarms, other than for vehicles on a blockchain; Downloadable computer software for programming, sharing, and revoking virtual keys for electronic locks; Downloadable computer software for permitting users to identify and communicate with persons at their door; Downloadable computer software for permitting users to monitor their home, office and other facilities; Downloadable computer software for communicating audio, video and data between communications devices via global computer networks and local area networks; Electric and electronic video surveillance installations; Electric door bells; Electric meters; Electronic access control systems for interlocking doors; Electronic key cards; Electronic key fobs being remote control apparatus; Electronic lock assemblies; Electronic locks; Gateway routers; Identity cards, magnetic; Locks, electric; Magnifying peepholes for doors; Motion sensors; Programmable locking systems, consisting of electronic cylindrical locksets and keypads; Recorded computer software for programming, sharing, and revoking virtual keys for electronic locks; Recorded computer software for communicating audio, video and data between communications devices via global computer networks and local area networks; Recorded computer software for accessing, reading, and tracking information in the field of electric locks, burglar alarms, and anti-theft alarms, other than for vehicles, on a blockchain; Remote video monitoring system consisting primarily of a camera and video monitor for recording and transmitting images to a remote location; Security and fire alarms; Smoke alarms; Telecommunication base stations; Theft alarms; Video cameras; Video monitors; Video recorders; Water meters; Encoded key cards"
+        }
+      ]
+    },
+    "id": "987ef970-32d8-484e-8714-239d3f5e3684",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260525",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20260525",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20251021",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250820",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250725",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20250725",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250725",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20250725",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20250725",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250709",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250709",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250709",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250409",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20250409",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250409",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20250407",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250406",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20241002",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      },
+      {
+        "address": "#11-31 Vision Exchange, Singapore, 608526, SING",
+        "city": "Singapore",
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "jurisdictionOfIncorporation": "SINGAPORE",
+        "name": "LOCKIN INTERNATIONAL PTE. LTD.",
+        "postalCode": "608526",
+        "secondaryAddressUnit": "2 Venture Drive",
+        "street": "#11-31 Vision Exchange"
+      }
+    ],
+    "recordLastUpdated": "20260528",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Seattle, WA 98117, United States",
+        "representativeCorrespondentAddressLines": [
+          "Seattle, WA 98117",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Matthew Dresden Dresden Law PLLC, 2400 NW 80th St., Suite 211"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Seattle, WA 98117, United States",
+        "representativeAddressLines": [
+          "Seattle, WA 98117",
+          "United States"
+        ],
+        "representativeName": "Matthew Dresden"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20260525",
+      "active": false,
+      "application": {
+        "applicationDate": "20241002",
+        "applicationNumber": "98781859"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20260525",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20250826"
+      ]
+    },
+    "version": "20260528130608",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "LOCKING VENORIS",
+      "markVerbalElementText": "LOCKIN VENORIS"
+    }
+  },
+  "_uri": "/mark/us/987ef970-32d8-484e-8714-239d3f5e3684",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "uri": "/mark/us/cf6a8d2a-f72d-4f73-be90-3c27d1ebe67b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "cf6a8d2a-f72d-4f73-be90-3c27d1ebe67b",
+  "applicationNumber": "87571485",
+  "registrationNumber": null,
+  "applicationDate": "2017-08-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2018-05-25",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "SOHEAVEN QI YE HUN",
+  "markTransliteration": null,
+  "markTranslation": "SOHEAVEN THE SOUL OF ENTERPRISE",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Publication of books; multi-media publishing of books, journals, electronic publication; videotaping; vocational guidance; education in the field of personal and professional development, rendered through correspondence courses; arranging professional workshop and training courses",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Soheaven International Group, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "WS",
+  "representative": "Joseph E. Sutton",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ground Floor NPF Building, Beach Road, Apia, SAMO",
+        "applicantAddressCity": "Apia",
+        "applicantAddressCountryCode": "WS",
+        "applicantAddressCountryName": "Samoa",
+        "applicantAddressStreet": "Ground Floor NPF Building, Beach Road",
+        "applicantJurisdictionOfIncorporation": "SAMOA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Soheaven International Group, Inc.",
+        "applicantSecondaryAddressUnit": "Vistra Corporate Services Centre"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "24.17.01",
+      "28.01.03",
+      "29.05.03",
+      "29.05.08",
+      "30.01.19",
+      "30.05.03"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Publication of books; multi-media publishing of books, journals, electronic publication; videotaping; vocational guidance; education in the field of personal and professional development, rendered through correspondence courses; arranging professional workshop and training courses"
+        }
+      ]
+    },
+    "id": "cf6a8d2a-f72d-4f73-be90-3c27d1ebe67b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20180608",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20180608",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20171124",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20171124",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20171124",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20171118",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170823",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20170822",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) blue and gold is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the word \"SOHEAVEN\", with foreign language letters appearing above the word \"SOHEAVEN\", which translate to \"THE SOUL OF ENTERPRISE.\" The color blue appears throughout the letters that comprise the word \"SOHEAVEN. The color gold is shown in a design element appearing above the letter \"S.\" The color gold also appears in the three Asian letters shown above the word \"SOHEAVEN\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Ground Floor NPF Building, Beach Road, Apia, SAMO",
+        "city": "Apia",
+        "countryCode": "WS",
+        "countryName": "Samoa",
+        "jurisdictionOfIncorporation": "SAMOA",
+        "legalEntity": "CORPORATION",
+        "name": "Soheaven International Group, Inc.",
+        "secondaryAddressUnit": "Vistra Corporate Services Centre",
+        "street": "Ground Floor NPF Building, Beach Road"
+      },
+      {
+        "address": "Ground Floor NPF Building, Beach Road, Apia, SAMO",
+        "city": "Apia",
+        "countryCode": "WS",
+        "countryName": "Samoa",
+        "jurisdictionOfIncorporation": "SAMOA",
+        "legalEntity": "CORPORATION",
+        "name": "Soheaven International Group, Inc.",
+        "secondaryAddressUnit": "Vistra Corporate Services Centre",
+        "street": "Ground Floor NPF Building, Beach Road"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SUITE 201, WOODBRIDGE, NJ 07095, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SUITE 201",
+          "WOODBRIDGE, NJ 07095",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JOSEPH E. SUTTON LAW OFFICES, EZRA SUTTON, P.A., 900 US HIGHWAY 9"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SUITE 201, WOODBRIDGE, NJ 07095, UNITED STATES",
+        "representativeAddressLines": [
+          "SUITE 201",
+          "WOODBRIDGE, NJ 07095",
+          "UNITED STATES"
+        ],
+        "representativeName": "Joseph E. Sutton"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20180525",
+      "active": false,
+      "application": {
+        "applicationDate": "20170816",
+        "applicationNumber": "87571485"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20180608",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use",
+          "Color Drawing Filed",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260113070352",
+    "wordMarkSpecification": {
+      "markTranslation": "SOHEAVEN THE SOUL OF ENTERPRISE",
+      "markTranslationDescription": "The non-Latin characters in the mark transliterate to \"QI YE HUN\" and this means \"SOUL OF ENTERPRISE\" in English.The English translation of the foreign wording in the mark is \"THE SOUL OF ENTERPRISE\".",
+      "markVerbalElementCrossReferences": "SO HEAVEN QI YE HUN",
+      "markVerbalElementText": "SOHEAVEN QI YE HUN"
+    }
+  },
+  "_uri": "/mark/us/cf6a8d2a-f72d-4f73-be90-3c27d1ebe67b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

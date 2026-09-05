@@ -1,0 +1,290 @@
+{
+  "uri": "/mark/wo/df442737-643e-42ae-bfc5-783bd7b49eea",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "df442737-643e-42ae-bfc5-783bd7b49eea",
+  "applicationNumber": null,
+  "registrationNumber": "770686",
+  "applicationDate": null,
+  "registrationDate": "2001-12-06",
+  "expiryDate": "2031-12-06",
+  "renewalDate": "2021-12-06",
+  "lastPublicationDate": "2021-12-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VONCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    36
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, electric, photographic, cinematographic, optical, weighing, measuring, signaling, monitoring (supervision), emergency (life-saving) and teaching apparatus and instruments, apparatus for recording, transmitting and reproducing sound or images; magnetic recording media, sound recording disks; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing and computer equipment; fire extinguishers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Paper, cardboard and goods made thereof (included in this class); printers' products; bookbinding material; photographs; stationery; adhesives for stationery or household purposes; artists' supplies; paintbrushes; typewriters and office requisites (except furniture); instructional or teaching equipment (excluding appliances); plastic materials for packaging (not included in other classes); playing cards; printers' type; printing blocks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Insurance; financial affairs; monetary affairs; real estate business.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments scientifiques, nautiques, géodésiques, électriques, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement, appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et les ordinateurs; extincteurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Papier, carton et produits en ces matières compris dans cette classe; produits de l'imprimerie; articles pour reliures; photographies; papeterie; adhésifs (matières collantes) pour la papeterie ou le ménage; matériel pour les artistes; pinceaux; machines à écrire et articles de bureau (à l'exception des meubles); matériel d'instruction ou d'enseignement (à l'exception des appareils); matières plastiques pour l'emballage (comprises dans cette classe); cartes à jouer; caractères d'imprimerie; clichés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Assurances; affaires financières; affaires monétaires; affaires immobilières.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos científicos, náuticos, geodésicos, eléctricos, fotográficos, cinematográficos, ópticos, de pesar, de medida, de señalización, de control (inspección), de socorro (salvamento) y de enseñanza, aparatos para la grabación, la transmisión y la reproducción de sonido o imágenes; soportes de grabación magnéticos, discos acústicos; distribuidores automáticos y mecanismos para aparatos de previo pago; cajas registradoras, máquinas calculadoras, equipo para el tratamiento de la información y ordenadores; extintores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Papel, cartón y artículos de estas materias comprendidos en esta clase; productos de imprenta; artículos de encuadernación; fotografías; artículos de papelería; adhesivos (pegamentos) para la papelería o el hogar; material para artistas; pinceles; máquinas de escribir y artículos de oficina (excepto muebles); material de instrucción o de enseñanza (excepto aparatos); materias plásticas para embalaje (comprendidas en esta clase); naipes; caracteres de imprenta; clichés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Seguros; negocios financieros; negocios monetarios; negocios inmobiliarios.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Bank Vontobel AG",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "Wild Schnyder AG",
+  "priorities": [
+    {
+      "priorityCountryCode": "CH",
+      "priorityCountryName": "Switzerland",
+      "priorityDate": "20010919",
+      "priorityNumber": "490062"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "CH",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20010919",
+          "basicRegistrationNumber": "490062"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AT",
+      "DE",
+      "ES",
+      "FR",
+      "GB",
+      "IT",
+      "LI",
+      "SG",
+      "BX"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Gotthardstrasse 43 CH-8002 Zürich",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Bank Vontobel AG"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "CH",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20010919",
+            "basicRegistrationNumber": "490062"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AT",
+      "DE",
+      "ES",
+      "FR",
+      "GB",
+      "IT",
+      "LI",
+      "SG",
+      "BX"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, electric, photographic, cinematographic, optical, weighing, measuring, signaling, monitoring (supervision), emergency (life-saving) and teaching apparatus and instruments, apparatus for recording, transmitting and reproducing sound or images; magnetic recording media, sound recording disks; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing and computer equipment; fire extinguishers."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Paper, cardboard and goods made thereof (included in this class); printers' products; bookbinding material; photographs; stationery; adhesives for stationery or household purposes; artists' supplies; paintbrushes; typewriters and office requisites (except furniture); instructional or teaching equipment (excluding appliances); plastic materials for packaging (not included in other classes); playing cards; printers' type; printing blocks."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Insurance; financial affairs; monetary affairs; real estate business."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments scientifiques, nautiques, géodésiques, électriques, photographiques, cinématographiques, optiques, de pesage, de mesurage, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement, appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques, disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et les ordinateurs; extincteurs."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Papier, carton et produits en ces matières compris dans cette classe; produits de l'imprimerie; articles pour reliures; photographies; papeterie; adhésifs (matières collantes) pour la papeterie ou le ménage; matériel pour les artistes; pinceaux; machines à écrire et articles de bureau (à l'exception des meubles); matériel d'instruction ou d'enseignement (à l'exception des appareils); matières plastiques pour l'emballage (comprises dans cette classe); cartes à jouer; caractères d'imprimerie; clichés."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Assurances; affaires financières; affaires monétaires; affaires immobilières."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos científicos, náuticos, geodésicos, eléctricos, fotográficos, cinematográficos, ópticos, de pesar, de medida, de señalización, de control (inspección), de socorro (salvamento) y de enseñanza, aparatos para la grabación, la transmisión y la reproducción de sonido o imágenes; soportes de grabación magnéticos, discos acústicos; distribuidores automáticos y mecanismos para aparatos de previo pago; cajas registradoras, máquinas calculadoras, equipo para el tratamiento de la información y ordenadores; extintores."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Papel, cartón y artículos de estas materias comprendidos en esta clase; productos de imprenta; artículos de encuadernación; fotografías; artículos de papelería; adhesivos (pegamentos) para la papelería o el hogar; material para artistas; pinceles; máquinas de escribir y artículos de oficina (excepto muebles); material de instrucción o de enseñanza (excepto aparatos); materias plásticas para embalaje (comprendidas en esta clase); naipes; caracteres de imprenta; clichés."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Seguros; negocios financieros; negocios monetarios; negocios inmobiliarios."
+        }
+      ]
+    },
+    "id": "df442737-643e-42ae-bfc5-783bd7b49eea",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "CH",
+        "priorityCountryName": "Switzerland",
+        "priorityDate": "20010919",
+        "priorityNumber": "490062"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "49"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Forchstrasse 30, Postfach CH-8032 Zürich",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "Wild Schnyder AG"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311206",
+      "lastPublicationDate": "20211223",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20011206",
+        "registrationNumber": "770686"
+      },
+      "renewalDate": "20211206",
+      "renewalPublishedDate": "20211223"
+    },
+    "version": "20250620160913",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VONCORE"
+    }
+  },
+  "_uri": "/mark/wo/df442737-643e-42ae-bfc5-783bd7b49eea",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

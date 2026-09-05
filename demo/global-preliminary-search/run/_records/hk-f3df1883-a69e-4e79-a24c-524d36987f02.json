@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/hk/f3df1883-a69e-4e79-a24c-524d36987f02",
+  "provider": "clarivate",
+  "office": "hk",
+  "guid": "f3df1883-a69e-4e79-a24c-524d36987f02",
+  "applicationNumber": "301795375",
+  "registrationNumber": "301795375",
+  "applicationDate": "2010-12-22",
+  "registrationDate": "2010-12-22",
+  "expiryDate": "2030-12-21",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating of buildings during construction; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating of the exterior parts of properties, buildings, houses and offices, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment and decoration of the exterior parts of properties, buildings, houses and offices; maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto; none of the aforesaid relating to interior decorating or interior refurbishment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Architectural services; architectural services relating to the development of land; design services relating to the exterior parts of residential properties; planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to the exterior parts of residential properties; space planning relating to the exterior parts of residential properties, buildings, houses and offices; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services; none of the aforesaid relating to interior design.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street, London, W1K 3JP, UNITED KINGDOM",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating of buildings during construction; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating of the exterior parts of properties, buildings, houses and offices, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment and decoration of the exterior parts of properties, buildings, houses and offices; maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto; none of the aforesaid relating to interior decorating or interior refurbishment."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Architectural services; architectural services relating to the development of land; design services relating to the exterior parts of residential properties; planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to the exterior parts of residential properties; space planning relating to the exterior parts of residential properties, buildings, houses and offices; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services; none of the aforesaid relating to interior design."
+        }
+      ]
+    },
+    "id": "f3df1883-a69e-4e79-a24c-524d36987f02",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "HK",
+    "registrationOfficeName": "Hong Kong",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101222",
+        "applicationNumber": "301795375"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301221",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20101222",
+        "registrationNumber": "301795375"
+      }
+    },
+    "version": "20240213114309",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/hk/f3df1883-a69e-4e79-a24c-524d36987f02",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

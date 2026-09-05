@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/kr/4a4b891f-846e-45ef-ab3d-e8d2c161847f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "4a4b891f-846e-45ef-ab3d-e8d2c161847f",
+  "applicationNumber": "40-2001-0017457",
+  "registrationNumber": null,
+  "applicationDate": "2001-04-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Fori",
+  "markTransliteration": "For i",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "광학렌즈, 광학용보정렌즈, 보안용, 보통안경, 선글라스, 안경집, 안경태, 접안렌즈, 콘택트렌즈",
+      "translation_language": "en",
+      "translation": "Optical lenses, optical correction lenses, safety glasses, regular glasses, sunglasses, glasses cases, glasses cases, eyepiece lenses, contact lenses"
+    }
+  ],
+  "owner": "KIM HONG GYU",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 의정부시 신",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM HONG GYU",
+        "applicantNativeName": "김홍규"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Optical lenses, optical correction lenses, safety glasses, regular glasses, sunglasses, glasses cases, glasses cases, eyepiece lenses, contact lenses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광학렌즈, 광학용보정렌즈, 보안용, 보통안경, 선글라스, 안경집, 안경태, 접안렌즈, 콘택트렌즈"
+        }
+      ]
+    },
+    "id": "4a4b891f-846e-45ef-ab3d-e8d2c161847f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260506",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20010423",
+        "applicationNumber": "40-2001-0017457"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260506020325",
+    "wordMarkSpecification": {
+      "markTransliteration": "For i",
+      "markVerbalElementText": "Fori"
+    }
+  },
+  "_uri": "/mark/kr/4a4b891f-846e-45ef-ab3d-e8d2c161847f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "uri": "/mark/us/e30f0a21-7584-43e7-a2ad-3c72de2f13cf",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "e30f0a21-7584-43e7-a2ad-3c72de2f13cf",
+  "applicationNumber": "79441773",
+  "registrationNumber": "8200508",
+  "applicationDate": "2025-11-21",
+  "registrationDate": "2026-04-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-02-17"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Scientific research in the field of prevention and treatment of kidney diseases and inflammatory diseases; providing medical and scientific research information in the field of kidney diseases and inflammatory diseases.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Boehringer Ingelheim International GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "55218 Ingelheim, GERM",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantAddressStreet": "55218 Ingelheim",
+        "applicantJurisdictionOfIncorporation": "GERMANY",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Boehringer Ingelheim International GmbH"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Scientific research in the field of prevention and treatment of kidney diseases and inflammatory diseases; providing medical and scientific research information in the field of kidney diseases and inflammatory diseases."
+        }
+      ]
+    },
+    "id": "e30f0a21-7584-43e7-a2ad-3c72de2f13cf",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1897668",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20260122",
+        "priorityClaimDate": "20250522",
+        "protectionGrantedDate": "20270722",
+        "publicationDate": "20260122",
+        "registrationDate": "20251121",
+        "renewalDate": "20351121"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260507",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20260407",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260217",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260211",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20260126",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260124",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260123",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260123",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20260122",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "55218 Ingelheim, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "CORPORATION",
+        "name": "Boehringer Ingelheim International GmbH",
+        "street": "55218 Ingelheim"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "55218 Ingelheim, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "CORPORATION",
+        "name": "Boehringer Ingelheim International GmbH",
+        "street": "55218 Ingelheim"
+      },
+      {
+        "address": "55218 Ingelheim, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "CORPORATION",
+        "name": "Boehringer Ingelheim International GmbH",
+        "street": "55218 Ingelheim"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "55218 Ingelheim, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "CORPORATION",
+        "name": "Boehringer Ingelheim International GmbH",
+        "street": "55218 Ingelheim"
+      }
+    ],
+    "recordLastUpdated": "20260513",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251121",
+        "applicationNumber": "79441773"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20260407",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20260217"
+      ],
+      "registration": {
+        "registrationDate": "20260407",
+        "registrationNumber": "8200508"
+      }
+    },
+    "version": "20260513044011",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORA"
+    }
+  },
+  "_uri": "/mark/us/e30f0a21-7584-43e7-a2ad-3c72de2f13cf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

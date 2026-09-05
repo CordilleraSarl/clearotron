@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/za/de8747f7-ca1d-42d1-baaf-becc063b29ca",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "de8747f7-ca1d-42d1-baaf-becc063b29ca",
+  "applicationNumber": "2006/23060",
+  "registrationNumber": "2006/23060",
+  "applicationDate": "2006-09-28",
+  "registrationDate": "2010-07-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "H E M C OF AFRICA, HOLY ETHIOPIAN METHODIST CHURCH OF AFRICA (THE)~REGISTRATION OF THIS TRADE MARK SHALL GIVE NO RIGHT TO THE EXCLUSIVE USE OF THE WORDS \"AFRICA\" AND \"CROSS DEVICE IN GENERAL\" SEPARATELY AND APART FROM THE MARK.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Church.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HOLY ETHIOPIAN METHODIST CHURCH OF AFRICA (THE)",
+  "ownerNative": null,
+  "ownerCountry": "ZA",
+  "representative": "HOLY ETHIOPIAN METHODIST CHURCH OF AFRICA (THE)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "267 LEKALAKALA STREET BOTLENG DELMAS 2210, South Africa",
+        "applicantAddressCountryCode": "ZA",
+        "applicantAddressCountryName": "South Africa",
+        "applicantName": "HOLY ETHIOPIAN METHODIST CHURCH OF AFRICA (THE)"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Church."
+        }
+      ]
+    },
+    "id": "de8747f7-ca1d-42d1-baaf-becc063b29ca",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "P.O. Box 1324 Heielberg 1438",
+        "representativeAddressCountryCode": "ZA",
+        "representativeAddressCountryName": "South Africa",
+        "representativeName": "HOLY ETHIOPIAN METHODIST CHURCH OF AFRICA (THE)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20060928",
+        "applicationNumber": "2006/23060"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20100726",
+        "registrationNumber": "2006/23060"
+      }
+    },
+    "version": "20240320154728",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "H E M C OF AFRICA, HOLY ETHIOPIAN METHODIST CHURCH OF AFRICA (THE)~REGISTRATION OF THIS TRADE MARK SHALL GIVE NO RIGHT TO THE EXCLUSIVE USE OF THE WORDS \"AFRICA\" AND \"CROSS DEVICE IN GENERAL\" SEPARATELY AND APART FROM THE MARK."
+    }
+  },
+  "_uri": "/mark/za/de8747f7-ca1d-42d1-baaf-becc063b29ca",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

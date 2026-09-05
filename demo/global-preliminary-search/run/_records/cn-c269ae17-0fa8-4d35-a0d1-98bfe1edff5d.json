@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/c269ae17-0fa8-4d35-a0d1-98bfe1edff5d",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c269ae17-0fa8-4d35-a0d1-98bfe1edff5d",
+  "applicationNumber": "41865935",
+  "registrationNumber": "41865935",
+  "applicationDate": "2019-10-24",
+  "registrationDate": "2020-11-21",
+  "expiryDate": "2030-11-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-08-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "本源量子",
+  "markTransliteration": "OQ ORIGIN QUANTUM BEN YUAN LIANG ZI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "互联网服务器;计算机;计算机程序(可下载软件);计算机软件(已录制);计算机硬件;可下载的计算机应用软件;数据处理设备用存储器;网络服务器;物理学设备和仪器;已录制的或可下载的计算机软件平台",
+      "translation_language": "en",
+      "translation": "Internet servers; computers; computer programs (downloadable software); computer software (recorded); computer hardware; downloadable computer application software; memory for data processing equipment; network servers; physical equipment and instruments; recorded or Downloadable computer software platform"
+    }
+  ],
+  "owner": "Benyuan Quantum Computing Technology (Hefei) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "安徽省合肥市高新区城西桥社区服务中心望江西路900号中安创谷科技园一期D8幢",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Benyuan Quantum Computing Technology (Hefei) Co., Ltd.",
+        "applicantNativeName": "本源量子计算科技(合肥)股份有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Internet servers; computers; computer programs (downloadable software); computer software (recorded); computer hardware; downloadable computer application software; memory for data processing equipment; network servers; physical equipment and instruments; recorded or Downloadable computer software platform",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "互联网服务器;计算机;计算机程序(可下载软件);计算机软件(已录制);计算机硬件;可下载的计算机应用软件;数据处理设备用存储器;网络服务器;物理学设备和仪器;已录制的或可下载的计算机软件平台"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "c269ae17-0fa8-4d35-a0d1-98bfe1edff5d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1708"
+      }
+    ],
+    "recordLastUpdated": "20260312",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "邮寄办理"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191024",
+        "applicationNumber": "41865935"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301120",
+      "lastPublicationDate": "20200820",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201121",
+        "registrationNumber": "41865935"
+      }
+    },
+    "version": "20260312020141",
+    "wordMarkSpecification": {
+      "markTransliteration": "OQ ORIGIN QUANTUM BEN YUAN LIANG ZI",
+      "markVerbalElementText": "本源量子"
+    }
+  },
+  "_uri": "/mark/cn/c269ae17-0fa8-4d35-a0d1-98bfe1edff5d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "uri": "/mark/jp/fbff9222-bf88-481b-973a-1945dcf63721",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "fbff9222-bf88-481b-973a-1945dcf63721",
+  "applicationNumber": "2004-055692",
+  "registrationNumber": "4911094",
+  "applicationDate": "2004-06-16",
+  "registrationDate": "2005-12-02",
+  "expiryDate": "2025-12-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2006-01-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＦＲＥＥＳＣＡＬＥ",
+  "markTransliteration": "FURIISUKEERU",
+  "markTranslation": "FREESCALE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，半導体プロセッサ，半導体プロセッサチップ，集積回路，集積回路チップ，プリント回路基板，マイクロコンピュータ，マイクロコントローラ，マイクロプロセッサ，コンピュータ周辺機器，コンピュータメモリ，半導体素子，コンピュータ用ファームウェア，ビデオ映像用アクセラレータ，セットとして販売されるチップ搭載のプリント回路基板・ソフトウェア開発用のコンピュータプログラム・プログラムコードのサンプルを読み込んだコンピュータプログラム，電子計算機用プログラム，コンピュータ及びデータアルゴリズムに関するユーザーマニュアル及び説明書を内容とする電子出版物，半導体検査装置，集積回路及び半導体メモリ検査装置，集積回路及び半導体メモリのプログラム記録装置，アプリケーションソフトウェア統合・接続用のコンピュータソフトウェア，コンピューターユーティリティソフトウェア，ネットワーク管理用のコンピュータプログラム，コンピュータネットワークへのアクセス用コンピュータソフトウェア，コンピュータ操作システム用コンピュータソフトウェア，コンピュータ操作用コンピュータプログラム，第三者のソフトウェアアプリケーションとの疎通のためのコンピュータソフトウェア，その他のコンピュータソフトウェア，その他の電子応用機械器具及び部品，電気通信機械器具",
+      "translation_language": "en",
+      "translation": "Semiconductor, semiconductor processor, semiconductor processor chip, integrated circuit, integrated circuit chip, printed circuit board, microcomputer, microcontroller, microprocessor, computer peripheral, computer memory, semiconductor element, computer firmware, video image accelerator, as a set A printed circuit board on which a chip is sold, a computer program for software development, a computer program which reads a sample of program code, a program for electronic computer, an electronic publication including user's manual and instructions concerning computer and data algorithm, SEMICONDUCTOR INSPECTION APPARATUS, INTEGRATED CIRCUIT AND SEMICONDUCTOR MEMORY INSPECTION DEVICE A Computer software for integration / connection, computer utility software, computer program for network management, computer software for access to computer network, computer software for computer operating system, computer operating computer program, third party software application Computer software for communication, other computer software, other electronic applied equipment and parts, telecommunication equipment"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "半導体及び半導体の製造に関する技術移転の仲介・斡旋，半導体製品・集積回路・回路板・マイクロコンピュータ・マイクロコントローラ・マイクロプロセッサ・コンピュータ周辺機器・コンピュータメモリ・半導体材料・データ変換回路・コンピュータファームウェア・コンピュータ及びビデオ回路板と共に使用する電子電気機械器具・ビデオ回路板・ビデオシステム製品・音響映像データ記録再生変換用の機械器具・コンピュータプログラムに関する技術移転の仲介・斡旋，その他の技術移転の仲介・斡旋，半導体の製造及び使用に関する特許・商標・著作権・トレードドレス・ノウハウのライセンス許諾に関する契約の代理又は媒介，半導体に関するライセンス許諾に関する契約の代理又は媒介，半導体製造及び使用に関するソフトウェアのライセンス許諾に関する契約の代理又は媒介，データの圧縮解凍のためのコンピュータ及びデータアルゴリズムに関するライセンスの許諾又はノウハウの許諾に関する契約の代理又は媒介，コンピュータ及び電気通信機械器具に関するデザインの考案，コンピュータ・電気通信・コンピュータソフトウェアのデザインのための技術あるいは技術開発に関する指導又は助言",
+      "translation_language": "en",
+      "translation": "Intermediary / mediation of technology transfer relating to semiconductor and semiconductor manufacturing · semiconductor products · integrated circuits · circuit board · microcomputer · microcontroller · microprocessor · computer peripheral equipment · computer memory · semiconductor material · data conversion circuit · computer firmware · computer and Electronic electrical machines, video circuit boards, video system products used with video circuit boards, audio equipment · machinery and equipment for recording / reproduction of audio data · mediation / mediation of technology transfer relating to computer programs, mediation / mediation of other technology transfer, semiconductors Representative or intermediary for contracts relating to licensing of patents, trademarks, copyrights, trademarks and know-how relating to the manufacture and use of products, agency or intermediary for agreement concerning licensing on semiconductors, software on semiconductor manufacturing and use A substitute or intermediary for a license relating to computer and data algorithms for decompression and decompression of data, permission for licensing of know-how, design of a design relating to computers and telecommunications machinery and equipment, computer Instruction or advice on technology or technology development for the design of telecommunications and computer software"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KANBAYASHI EMIKO",
+  "priorities": [
+    {
+      "priorityDate": "20031230"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductor, semiconductor processor, semiconductor processor chip, integrated circuit, integrated circuit chip, printed circuit board, microcomputer, microcontroller, microprocessor, computer peripheral, computer memory, semiconductor element, computer firmware, video image accelerator, as a set A printed circuit board on which a chip is sold, a computer program for software development, a computer program which reads a sample of program code, a program for electronic computer, an electronic publication including user's manual and instructions concerning computer and data algorithm, SEMICONDUCTOR INSPECTION APPARATUS, INTEGRATED CIRCUIT AND SEMICONDUCTOR MEMORY INSPECTION DEVICE A Computer software for integration / connection, computer utility software, computer program for network management, computer software for access to computer network, computer software for computer operating system, computer operating computer program, third party software application Computer software for communication, other computer software, other electronic applied equipment and parts, telecommunication equipment",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，半導体プロセッサ，半導体プロセッサチップ，集積回路，集積回路チップ，プリント回路基板，マイクロコンピュータ，マイクロコントローラ，マイクロプロセッサ，コンピュータ周辺機器，コンピュータメモリ，半導体素子，コンピュータ用ファームウェア，ビデオ映像用アクセラレータ，セットとして販売されるチップ搭載のプリント回路基板・ソフトウェア開発用のコンピュータプログラム・プログラムコードのサンプルを読み込んだコンピュータプログラム，電子計算機用プログラム，コンピュータ及びデータアルゴリズムに関するユーザーマニュアル及び説明書を内容とする電子出版物，半導体検査装置，集積回路及び半導体メモリ検査装置，集積回路及び半導体メモリのプログラム記録装置，アプリケーションソフトウェア統合・接続用のコンピュータソフトウェア，コンピューターユーティリティソフトウェア，ネットワーク管理用のコンピュータプログラム，コンピュータネットワークへのアクセス用コンピュータソフトウェア，コンピュータ操作システム用コンピュータソフトウェア，コンピュータ操作用コンピュータプログラム，第三者のソフトウェアアプリケーションとの疎通のためのコンピュータソフトウェア，その他のコンピュータソフトウェア，その他の電子応用機械器具及び部品，電気通信機械器具"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Intermediary / mediation of technology transfer relating to semiconductor and semiconductor manufacturing · semiconductor products · integrated circuits · circuit board · microcomputer · microcontroller · microprocessor · computer peripheral equipment · computer memory · semiconductor material · data conversion circuit · computer firmware · computer and Electronic electrical machines, video circuit boards, video system products used with video circuit boards, audio equipment · machinery and equipment for recording / reproduction of audio data · mediation / mediation of technology transfer relating to computer programs, mediation / mediation of other technology transfer, semiconductors Representative or intermediary for contracts relating to licensing of patents, trademarks, copyrights, trademarks and know-how relating to the manufacture and use of products, agency or intermediary for agreement concerning licensing on semiconductors, software on semiconductor manufacturing and use A substitute or intermediary for a license relating to computer and data algorithms for decompression and decompression of data, permission for licensing of know-how, design of a design relating to computers and telecommunications machinery and equipment, computer Instruction or advice on technology or technology development for the design of telecommunications and computer software",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "半導体及び半導体の製造に関する技術移転の仲介・斡旋，半導体製品・集積回路・回路板・マイクロコンピュータ・マイクロコントローラ・マイクロプロセッサ・コンピュータ周辺機器・コンピュータメモリ・半導体材料・データ変換回路・コンピュータファームウェア・コンピュータ及びビデオ回路板と共に使用する電子電気機械器具・ビデオ回路板・ビデオシステム製品・音響映像データ記録再生変換用の機械器具・コンピュータプログラムに関する技術移転の仲介・斡旋，その他の技術移転の仲介・斡旋，半導体の製造及び使用に関する特許・商標・著作権・トレードドレス・ノウハウのライセンス許諾に関する契約の代理又は媒介，半導体に関するライセンス許諾に関する契約の代理又は媒介，半導体製造及び使用に関するソフトウェアのライセンス許諾に関する契約の代理又は媒介，データの圧縮解凍のためのコンピュータ及びデータアルゴリズムに関するライセンスの許諾又はノウハウの許諾に関する契約の代理又は媒介，コンピュータ及び電気通信機械器具に関するデザインの考案，コンピュータ・電気通信・コンピュータソフトウェアのデザインのための技術あるいは技術開発に関する指導又は助言"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Electrical communication apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, instruments and parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "26A01",
+          "natGoodsServicesDescription": "Electronic Publications"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Cinematographic films, Slide films, Transparencies, Prerecorded videodiscs or tapes, Electronic Publishments"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design planning"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer programming, Maintenance of computer software. Designing / maintenance of website"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Construction, city planning, prevention of pollution, electrical, civil engineering research and testing"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Machine, instrument, apparatus research and testing"
+        },
+        {
+          "natClassNumber": "42R01",
+          "natGoodsServicesDescription": "Agencies for industrial property procedures, preparation of expert opinions and other business.  Litigation & other legal services and advice.  Agencies for registration, deposits (services by judicial scriveners)"
+        },
+        {
+          "natClassNumber": "42R02",
+          "natGoodsServicesDescription": "Copyright management services"
+        }
+      ]
+    },
+    "id": "fbff9222-bf88-481b-973a-1945dcf63721",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20031230"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KANBAYASHI EMIKO",
+        "representativeNativeName": "神林　恵美子"
+      },
+      {
+        "representativeName": "NAKANO KENICHI",
+        "representativeNativeName": "中野　憲一"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040616",
+        "applicationNumber": "2004-055692"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20251202",
+      "lastPublicationDate": "20060110",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20051202",
+        "registrationNumber": "4911094"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "FREESCALE",
+      "markTransliteration": "FURIISUKEERU",
+      "markVerbalElementText": "ＦＲＥＥＳＣＡＬＥ"
+    }
+  },
+  "_uri": "/mark/jp/fbff9222-bf88-481b-973a-1945dcf63721",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

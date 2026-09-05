@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/kr/d3d7c46f-627f-4bb2-b9e8-9874bf35a839",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "d3d7c46f-627f-4bb2-b9e8-9874bf35a839",
+  "applicationNumber": "40-2005-0048189",
+  "registrationNumber": "4006705300000",
+  "applicationDate": "2005-10-17",
+  "registrationDate": "2006-07-14",
+  "expiryDate": "2036-07-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "도서출판 보리",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "cd-rom, dvd, 기록된 컴퓨터소프트웨어, 기록된 컴퓨터프로그램, 내려받기 가능한 전자서적, 내려받기 가능한 전자신문, 내려받기 가능한 전자음악, 내려받기 가능한 전자학습지, 노광된 필름, 노광된영화필름, 녹음된 테이프(음악이 녹음된 것은제외한다), 녹음된 테이프(음악이 녹음된 것을말한다), 녹화된 테이프(음악이 녹음된 것은 제외한다), 녹화된 테이프(음악이 녹화된 것을 말한다), 만화영화, 슬라이드필름, 영사된 필름, 음악이 녹음된컴팩트디스크",
+      "translation_language": "en",
+      "translation": "cd-rom, dvd, recorded computer software, recorded computer program, downloadable electronic book, downloadable electronic newspaper, downloadable electronic music, downloadable electronic study material, exposed film, exposed motion picture film, recorded tape (excluding those with recorded music), recorded tapes (referring to those with recorded music), recorded tapes (excluding those with recorded music), recorded tapes (referring to those with recorded music), cartoon movies, Slide film, projected film, compact disc with music recorded"
+    }
+  ],
+  "owner": "BORI PUBLISHING CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "채윤 (Chae yun)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 파주시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "BORI PUBLISHING CO., LTD",
+        "applicantNativeName": "주식회사 도서출판보리"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "cd-rom, dvd, recorded computer software, recorded computer program, downloadable electronic book, downloadable electronic newspaper, downloadable electronic music, downloadable electronic study material, exposed film, exposed motion picture film, recorded tape (excluding those with recorded music), recorded tapes (referring to those with recorded music), recorded tapes (excluding those with recorded music), recorded tapes (referring to those with recorded music), cartoon movies, Slide film, projected film, compact disc with music recorded",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "cd-rom, dvd, 기록된 컴퓨터소프트웨어, 기록된 컴퓨터프로그램, 내려받기 가능한 전자서적, 내려받기 가능한 전자신문, 내려받기 가능한 전자음악, 내려받기 가능한 전자학습지, 노광된 필름, 노광된영화필름, 녹음된 테이프(음악이 녹음된 것은제외한다), 녹음된 테이프(음악이 녹음된 것을말한다), 녹화된 테이프(음악이 녹음된 것은 제외한다), 녹화된 테이프(음악이 녹화된 것을 말한다), 만화영화, 슬라이드필름, 영사된 필름, 음악이 녹음된컴팩트디스크"
+        }
+      ]
+    },
+    "id": "d3d7c46f-627f-4bb2-b9e8-9874bf35a839",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeName": "채윤 (Chae yun)"
+      },
+      {
+        "representativeAddress": "(HOCHAN SONG Patent & Trademark Law Office)",
+        "representativeAddressCountryCode": "UNKN",
+        "representativeAddressCountryName": "Unknown Applicant Country/Region",
+        "representativeName": "송호찬 (SONG, Ho Chan)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20051017",
+        "applicationNumber": "40-2005-0048189"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360714",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20060714",
+        "registrationNumber": "4006705300000"
+      }
+    },
+    "version": "20260812020724",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "도서출판 보리"
+    }
+  },
+  "_uri": "/mark/kr/d3d7c46f-627f-4bb2-b9e8-9874bf35a839",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

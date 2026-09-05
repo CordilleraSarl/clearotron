@@ -1446,7 +1446,7 @@ export const RESEARCH_PROVIDERS = {
     // DERIVE their prompts from this table instead of keeping a second hand list — the second list is
     // how SERPAPI_API_KEY went unprompted while the code said "required for live grid cells".
     absentMeans: "the three clearance searches refuse before spending anything; a Knockout still runs and discloses the open-web half it skipped",
-    obtain: "perplexity.ai → Settings → API — self-serve, the key is shown once",
+    obtain: "https://www.perplexity.ai/settings/api — self-serve, the key is shown once",
     async research(task, { preset = "pro-search" } = {}) {
       if (!process.env.PERPLEXITY_API_KEY) return { ok: false, cause: "PERPLEXITY_API_KEY absent from driver env" };
       let core;
@@ -1569,7 +1569,7 @@ export const SERP_PROVIDERS = {
     // As above — the field pair setup derives its prompt from (: this key was never
     // prompted for, and a reader who finished setup as designed had every marketplace grid cell gap).
     absentMeans: "every marketplace grid cell comes back as a disclosed gap instead of a result",
-    obtain: "serpapi.com → Dashboard → API key — self-serve, free tier exists",
+    obtain: "https://serpapi.com/manage-api-key — self-serve, free tier exists",
     async search({ engine, term, site, count }) {
       if (!process.env.SERPAPI_API_KEY) return { ok: false, cause: "SERPAPI_API_KEY absent from driver env" };
       let core;
@@ -1945,7 +1945,7 @@ export function preflightDeploymentUrls(env = process.env) {
 // clearance run's footprint is three orders of magnitude smaller, and borrowing that number would
 // refuse every run on every laptop the product is meant to run on.
 //
-// Measured 2026-08-12, on the UNFROZEN source of examples/sample-run — one real delivered run on the
+// Measured 2026-08-12, on the UNFROZEN source of demo — one real delivered run on the
 // fictional mark VENQORI (Nice 9 + 41, EU, 174 register-plan entries, nine stages, verdict
 // CONDITIONAL). The run's codename is deliberately not written here: this repo is de-identified by
 // design and `driver/test/no-client-identifiers.test.mjs` fails the build on a real one.
@@ -1954,7 +1954,7 @@ export function preflightDeploymentUrls(env = process.env) {
 //   its archived copy      5.72 MB — both exist at once through delivery, so ~11.6 MB is the peak
 //   of which _driver/      2.95 MB, half the total: the dispatch prompts, per-stage telemetry, the
 //                          run event log. THIS is the half that scales.
-//   examples/sample-run    1.15 MB / 43 files — the frozen publish-subset, a floor and not a footprint
+//   demo    1.15 MB / 43 files — the frozen publish-subset, a floor and not a footprint
 //
 // The scaling term is axes × classes × attempts, and the engine records its own worst case:
 // engine/anthropic-agent.mjs notes a register-unit primary-sweep prompt at "150 KB+ on a 4-class mark",

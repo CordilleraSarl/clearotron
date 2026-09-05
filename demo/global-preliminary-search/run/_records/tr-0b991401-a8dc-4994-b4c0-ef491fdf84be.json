@@ -1,0 +1,251 @@
+{
+  "uri": "/mark/tr/0b991401-a8dc-4994-b4c0-ef491fdf84be",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "0b991401-a8dc-4994-b4c0-ef491fdf84be",
+  "applicationNumber": "2007/64991",
+  "registrationNumber": "2007 64991",
+  "applicationDate": "2007-12-06",
+  "registrationDate": null,
+  "expiryDate": "2027-12-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2009-03-31",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "pnd 2006 psikofizyoloji ve nöropsikoloji derneği",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    9,
+    10,
+    16,
+    35,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5
+      ],
+      "language": "tr",
+      "description": "İnsan ve hayvan sağlığı için ilaçlar, tıbbi amaçlı kimyasal ürünler ve elementler. Tıbbi amaçlı diyet maddeleri; zayıflatıcı ürünler; bebek mamaları; tıbbi amaçlı bitkiler ve bitkisel içecekler. Diş hekimliği için ürünler (aletler/cihazlar hariç). Hijyen sağlayıcı ürünler (pedler, tamponlar, tıbbi amaçlı yakılar, pansuman malzemeleri dahil). Zararlı bitkileri, hayvanları ve mantarları imha edici maddeler. Mekanlar için koku gidericiler, koku vericiler (kişisel kullanım amaçlı olanlar hariç). Dezenfektanlar, antiseptikler (mikrop öldürücüler), tıbbi amaçlı deterjanlar.",
+      "translation_language": "en",
+      "translation": "medicines for human and animal health, medical chemicals and elements. Dietary substances for medical purposes; slimming products; baby food; medical herbs and herbal drinks. Products for dentistry (except appliances / devices). Sanitizing products (pads, tampons, medical patches, including dressings). Harmful plants, animals and fungi destruction agents. Deodorizer for places, flavorings (other than for personal use). Disinfectants, antiseptics (germ killers), detergents for medical purposes."
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "tr",
+      "description": "Bilimsel amaçlı ve laboratuarda kullanım amaçlı olanlar dahil ölçme aletleri, cihazları, göstergeler ve laboratuarlarda kullanılan malzemeler. Ana fonksiyonu uyarı ve alarm olan cihazlar (taşıt alarmları hariç), elektrikli ziller.",
+      "translation_language": "en",
+      "translation": "Measuring instruments, devices, indicators and materials used in laboratories, including those intended for scientific and laboratory use. The main functions are warning and alarm devices (except for vehicle alarms), electric buzzer."
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "tr",
+      "description": "Cerrahi, tıbbi, diş hekimliği ve veterinerlik için alet, cihaz ve mobilyalar. Yapay organlar ve protezler. Tıbbi ortopedik malzemeler. Ameliyathane giysileri ve steril örtüler.",
+      "translation_language": "en",
+      "translation": "Surgical, medical, dental and veterinary tools, equipment and furniture. Artificial organs and prostheses. Medical orthopedic materials. Sterile theater gowns and drapes."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "tr",
+      "description": "Basılı evraklar; basılı yayınlar, takvimler, posterler, fotoğraflar, afişler, tablolar, çıkartmalar, (pullar). Kırtasiye, büro, eğitim ve öğretim malzemeleri (mobilyalar ve cihazlar hariç).",
+      "translation_language": "en",
+      "translation": "Printed documents; printed publications, calendars, posters, photographs, posters, charts, stickers (stamps). Stationery, office, education materials (except for furniture and devices)."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "tr",
+      "description": "Reklamcılık, pazarlama ve halkla ilişkiler ile ilgili hizmetler (Ticari ve reklam amaçlı sergi ve fuarların organizasyonu hizmetleri dahil). Büro hizmetleri. İş yönetimi, idaresi ve bu konular ile ilgili danışmanlık hizmetleri (Muhasebecilik hizmetleri dahil). Müşterilerin malları elverişli bir şekilde görmesi ve satın alması için çeşitli malların bir araya getirilmesi hizmetleri (belirtilen hizmetler perakende, toptan satış mağazaları, elektronik ortamlar, kataloglar ve benzeri diğer yöntemler ile sağlanabilir).",
+      "translation_language": "en",
+      "translation": "Advertising, marketing and public relations services (including commercial and advertising purposes exhibitions and fairs organization of services). Office services. Business management, administration, and these issues are related consultancy services (including accounting services). Customer goods conveniently in sight and bringing together a variety of goods for the purchase of services (specified services, retail, wholesale stores, electronic media, provided with catalogs and other similar methods)."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri. Dergi, kitap, gazete v.b. yayımlama hizmetleri. Film, televizyon ve radyo programları yapım hizmetleri.",
+      "translation_language": "en",
+      "translation": "education and training services. Symposiums, conferences, congresses and seminar organization and administration services. Sports, cultural and leisure services. Magazines, books, newspapers, etc. Publishing Services. Film, television and radio program production services."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "tr",
+      "description": "Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri. Bilgisayar hizmetleri.",
+      "translation_language": "en",
+      "translation": "Scientific and industrial examination, research services; engineering services. Computer services."
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "tr",
+      "description": "Tıbbi hizmetler.",
+      "translation_language": "en",
+      "translation": "Medical services."
+    }
+  ],
+  "owner": "PSİKOFİZYOLOJİ VE NÖROPSİKOLOJİ DERNEĞİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "ADİL CİNOĞLU",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Abay Kunanbay Cad. No:7/4 Çankaya,ANKARA",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "PSİKOFİZYOLOJİ VE NÖROPSİKOLOJİ DERNEĞİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "medicines for human and animal health, medical chemicals and elements. Dietary substances for medical purposes; slimming products; baby food; medical herbs and herbal drinks. Products for dentistry (except appliances / devices). Sanitizing products (pads, tampons, medical patches, including dressings). Harmful plants, animals and fungi destruction agents. Deodorizer for places, flavorings (other than for personal use). Disinfectants, antiseptics (germ killers), detergents for medical purposes.",
+          "intClassNumber": "05",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "İnsan ve hayvan sağlığı için ilaçlar, tıbbi amaçlı kimyasal ürünler ve elementler. Tıbbi amaçlı diyet maddeleri; zayıflatıcı ürünler; bebek mamaları; tıbbi amaçlı bitkiler ve bitkisel içecekler. Diş hekimliği için ürünler (aletler/cihazlar hariç). Hijyen sağlayıcı ürünler (pedler, tamponlar, tıbbi amaçlı yakılar, pansuman malzemeleri dahil). Zararlı bitkileri, hayvanları ve mantarları imha edici maddeler. Mekanlar için koku gidericiler, koku vericiler (kişisel kullanım amaçlı olanlar hariç). Dezenfektanlar, antiseptikler (mikrop öldürücüler), tıbbi amaçlı deterjanlar."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Measuring instruments, devices, indicators and materials used in laboratories, including those intended for scientific and laboratory use. The main functions are warning and alarm devices (except for vehicle alarms), electric buzzer.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Bilimsel amaçlı ve laboratuarda kullanım amaçlı olanlar dahil ölçme aletleri, cihazları, göstergeler ve laboratuarlarda kullanılan malzemeler. Ana fonksiyonu uyarı ve alarm olan cihazlar (taşıt alarmları hariç), elektrikli ziller."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Surgical, medical, dental and veterinary tools, equipment and furniture. Artificial organs and prostheses. Medical orthopedic materials. Sterile theater gowns and drapes.",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Cerrahi, tıbbi, diş hekimliği ve veterinerlik için alet, cihaz ve mobilyalar. Yapay organlar ve protezler. Tıbbi ortopedik malzemeler. Ameliyathane giysileri ve steril örtüler."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed documents; printed publications, calendars, posters, photographs, posters, charts, stickers (stamps). Stationery, office, education materials (except for furniture and devices).",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Basılı evraklar; basılı yayınlar, takvimler, posterler, fotoğraflar, afişler, tablolar, çıkartmalar, (pullar). Kırtasiye, büro, eğitim ve öğretim malzemeleri (mobilyalar ve cihazlar hariç)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, marketing and public relations services (including commercial and advertising purposes exhibitions and fairs organization of services). Office services. Business management, administration, and these issues are related consultancy services (including accounting services). Customer goods conveniently in sight and bringing together a variety of goods for the purchase of services (specified services, retail, wholesale stores, electronic media, provided with catalogs and other similar methods).",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Reklamcılık, pazarlama ve halkla ilişkiler ile ilgili hizmetler (Ticari ve reklam amaçlı sergi ve fuarların organizasyonu hizmetleri dahil). Büro hizmetleri. İş yönetimi, idaresi ve bu konular ile ilgili danışmanlık hizmetleri (Muhasebecilik hizmetleri dahil). Müşterilerin malları elverişli bir şekilde görmesi ve satın alması için çeşitli malların bir araya getirilmesi hizmetleri (belirtilen hizmetler perakende, toptan satış mağazaları, elektronik ortamlar, kataloglar ve benzeri diğer yöntemler ile sağlanabilir)."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "education and training services. Symposiums, conferences, congresses and seminar organization and administration services. Sports, cultural and leisure services. Magazines, books, newspapers, etc. Publishing Services. Film, television and radio program production services.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri. Dergi, kitap, gazete v.b. yayımlama hizmetleri. Film, televizyon ve radyo programları yapım hizmetleri."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and industrial examination, research services; engineering services. Computer services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Bilimsel ve sınai inceleme, araştırma hizmetleri; mühendislik hizmetleri. Bilgisayar hizmetleri."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical services.",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Tıbbi hizmetler."
+        }
+      ]
+    },
+    "id": "0b991401-a8dc-4994-b4c0-ef491fdf84be",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.11.25",
+      "27.07.01",
+      "27.07.11",
+      "29.01.04"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "398"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "CİHAN SOK. NO:21/7 SIHHIYE, ANKARA",
+        "representativeName": "ADİL CİNOĞLU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20071206",
+        "applicationNumber": "2007/64991"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271206",
+      "lastPublicationDate": "20090331",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "2007 64991"
+      },
+      "renewalPublishedDate": "20171130"
+    },
+    "version": "20250708163542",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "pnd 2006 psikofizyoloji ve nöropsikoloji derneği"
+    }
+  },
+  "_uri": "/mark/tr/0b991401-a8dc-4994-b4c0-ef491fdf84be",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

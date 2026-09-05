@@ -1,0 +1,108 @@
+{
+  "uri": "/mark/br/eb77ac6c-25f4-4bfb-b26d-8e390f3372d1",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "eb77ac6c-25f4-4bfb-b26d-8e390f3372d1",
+  "applicationNumber": "927393123",
+  "registrationNumber": null,
+  "applicationDate": "2022-07-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Desenvolvimento de programas de computador sob encomenda; Desenvolvimento de programas de computador customizáveis; Desenvolvimento de programas de computador customizáveis; Portais, provedores de conteúdo e outros serviços de informação na internet [serviços de hospedagem de websites]. ; [EXCLUÍDA]: Licenciamento de programas de computador customizáveis.",
+      "translation_language": "en",
+      "translation": "Development of custom computer programs; Development of customizable computer programs; Development of customizable computer programs; Portals, content providers and other information services on the internet [website hosting services]. ; [EXCLUDED]: Licensing of customizable computer programs."
+    }
+  ],
+  "owner": "PERFECTDREAMS CONTEUDOS E DESENVOLVIMENTO DE SOFTWARE SOCIEDADE UNIPESSOAL LTDA",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "MERCOSUL ASSESSORIA CONSULTORIA EMPRESARIAL PARA AMÉRICA DO SUL S/C LTDA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "PERFECTDREAMS CONTEUDOS E DESENVOLVIMENTO DE SOFTWARE SOCIEDADE UNIPESSOAL LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Development of custom computer programs; Development of customizable computer programs; Development of customizable computer programs; Portals, content providers and other information services on the internet [website hosting services]. ; [EXCLUDED]: Licensing of customizable computer programs.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Desenvolvimento de programas de computador sob encomenda; Desenvolvimento de programas de computador customizáveis; Desenvolvimento de programas de computador customizáveis; Portais, provedores de conteúdo e outros serviços de informação na internet [serviços de hospedagem de websites]. ; [EXCLUÍDA]: Licenciamento de programas de computador customizáveis."
+        }
+      ]
+    },
+    "id": "eb77ac6c-25f4-4bfb-b26d-8e390f3372d1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250701",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MERCOSUL ASSESSORIA CONSULTORIA EMPRESARIAL PARA AMÉRICA DO SUL S/C LTDA."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220722",
+        "applicationNumber": "927393123"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250701010951",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/br/eb77ac6c-25f4-4bfb-b26d-8e390f3372d1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

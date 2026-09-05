@@ -47,7 +47,7 @@ test("#1226 a code-side dispatch is filed as what it says it is, NOT as unknown"
 });
 
 test("#1226 a row predating the modelUsed stamp is code-side too — `model: \"code\"` alone is enough", () => {
-  // examples/sample-run's frozen status.json keys this row as byModel `code`, not `code:execute-plan`,
+  // demo's frozen status.json keys this row as byModel `code`, not `code:execute-plan`,
   // so this shape is not hypothetical: it is what the shipped example actually contains.
   const runDir = mkRun({ "execute-plan": [CODE_ROW_UNSTAMPED] });
   try {

@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/fr/586d453b-4a6a-4daa-985d-01d81d812dd8",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "586d453b-4a6a-4daa-985d-01d81d812dd8",
+  "applicationNumber": "04 3296919",
+  "registrationNumber": null,
+  "applicationDate": "2004-06-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": "2014-03-24",
+  "lastPublicationDate": "2004-07-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Casques, vêtements de protection contre les accidents, dispositifs de protection contre les accidents, extincteurs, logiciels de jeux, distributeurs automatiques, logiciels.",
+      "translation_language": "en",
+      "translation": "Helmets, protective clothing against accidents, protective devices against accidents, fire extinguishers, game software, vending machines, computer software."
+    }
+  ],
+  "owner": "VENTURI, Société Anonyme Monégasque",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Myriam ANGELIER, SCP BBLM",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "VENTURI, Société Anonyme Monégasque"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Helmets, protective clothing against accidents, protective devices against accidents, fire extinguishers, game software, vending machines, computer software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Casques, vêtements de protection contre les accidents, dispositifs de protection contre les accidents, extincteurs, logiciels de jeux, distributeurs automatiques, logiciels."
+        }
+      ]
+    },
+    "id": "586d453b-4a6a-4daa-985d-01d81d812dd8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00294",
+        "publicationVolume": "29"
+      }
+    ],
+    "recordLastUpdated": "20250429",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "Myriam ANGELIER, SCP BBLM"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040611",
+        "applicationNumber": "04 3296919"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20040716",
+      "markCurrentStatus": "EXPIRED MARK",
+      "renewalDate": "20140324",
+      "renewalPublishedDate": "20140516"
+    },
+    "version": "20250429020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/fr/586d453b-4a6a-4daa-985d-01d81d812dd8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

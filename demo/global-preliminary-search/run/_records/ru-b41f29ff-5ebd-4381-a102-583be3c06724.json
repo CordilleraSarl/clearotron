@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/ru/b41f29ff-5ebd-4381-a102-583be3c06724",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "b41f29ff-5ebd-4381-a102-583be3c06724",
+  "applicationNumber": "2016748400",
+  "registrationNumber": null,
+  "applicationDate": "2016-12-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Avenor Development",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "анализ себестоимости; аренда площадей для размещения рекламы; аудит; демонстрация товаров; изучение общественного мнения; изучение рынка; информация деловая; информация и советы коммерческие потребителям; исследования в области бизнеса; исследования в области маркетинга; консультации по управлению бизнесом; консультации профессиональные в области бизнеса; оценка коммерческой деятельности; поиск информации в компьютерных файлах [для третьих лиц]; представление товаров на всех медиа средствах с целью розничной продажи; прогнозирование экономическое; продажа аукционная; продвижение товаров [для третьих лиц]; реклама; сбор и предоставление статистических данных; сбор информации по компьютерным базам данных; сведения о деловых операциях; систематизация информации в компьютерных базах данных; управление гостиничными делами; управление процессами обработки заказов на покупки; услуги в области общественных отношений; услуги снабженческие для третьих лиц [закупка и обеспечение предпринимателей товарами]; услуги субподрядчика [управление коммерческое]; экспертиза деловая; реклама интерактивная в компьютерной сети.",
+      "translation_language": "en",
+      "translation": "cost analysis; rental of advertising space; audit; demonstration of goods; public opinion; market research; business information; commercial information and advice to consumers; research in the field of business; research in the field of marketing; advice on business management; professional consultation in the field of business; assessment of business; searching for information in computer files [for third parties]; presentation of goods on all media vehicles with the purpose of retail sale; economic forecasting; sale by auction; product promotion [for third parties]; advertising; collection and provision of statistical data; the collection of information in computer databases; information on business operations; systematization of information in computer databases; hotel management affairs; process management processing purchase orders; services in the field of public relations; supplying services for others [purchasing goods and provision of business]; services of a subcontractor [commercial management]; business expertise; interactive advertising on a computer network."
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ru",
+      "description": "инвестиции; управление инвестициями; управление объектами недвижимости; операции с недвижимостью; посредничество при операциях с недвижимостью; консультации и информация по вопросам совершения сделок с объектами недвижимости; предоставление объектов недвижимости в аренду; оценка недвижимости; информация в области страхования; страхование; информация в области финансов.",
+      "translation_language": "en",
+      "translation": "investments; investment management; real estate management; real estate transactions; mediation in real estate transactions; advice and information on transactions with real estate; provision of real estate for rent; property valuation; information in the field of insurance; insurance; in finance information."
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ru",
+      "description": "герметизация сооружений [строительство]; информация по вопросам ремонта; информация по вопросам строительства; кладка кирпича; консультации по вопросам строительства; надзор [контрольно-управляющий] за строительными работами; работы газо-слесарно-технические и водопроводные; работы каменно-строительные; работы кровельные; работы малярные; работы штукатурные; снос строительных сооружений; станции технического обслуживания транспортных средств [заправка топливом и обслуживание]; строительство; установка дверей и окон; установка и ремонт лифтов; установка и ремонт ирригационных устройств; установка и ремонт отопительного оборудования; установка и ремонт охранной сигнализации; установка, ремонт и техническое машинного оборудования.",
+      "translation_language": "en",
+      "translation": "sealing buildings [building]; information on repairs; Information on the construction; bricklaying; advice on construction; supervision [control manager] the construction work; working gas fitter engineering and water; masonry work; roofing work; painting work; plastering work; demolition of building structures; station maintenance vehicles [refueling and maintenance]; construction; installation of doors and windows; installation and repair of lifts; installation and repair of irrigation devices; installation and repair of heating equipment; installation and repair of burglar alarms; installation, repair and maintenance of machinery."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ru",
+      "description": "анализ воды; анализ химический; архитектура; дизайн промышленный; изучение технических проектов; экспертиза геологическая; инжиниринг; испытания материалов; исследования в области геологии; исследования в области защиты окружающей среды; исследования и разработка новых товаров для третьих лиц; исследования технические; калибровка [измерения]; консультации по вопросам архитектуры; контроль качества; межевание; оформление интерьера; планирование городское; разведка геологическая; экспертиза инженерно-техническая.",
+      "translation_language": "en",
+      "translation": "analysis of water; Chemical analysis; architecture; industrial design; study of technical projects; geological expertise; engineering; material testing; research in the field of geology; research in the field of environmental protection; research and development of new products for third parties; technical research; Calibration [measuring]; consultations on issues of architecture; quality control; surveying; interior design; urban planning; geological prospecting; Expertise Engineering."
+    }
+  ],
+  "owner": "OZERKOVKA INVEST",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MOSCOW",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "OZERKOVKA INVEST"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "cost analysis; rental of advertising space; audit; demonstration of goods; public opinion; market research; business information; commercial information and advice to consumers; research in the field of business; research in the field of marketing; advice on business management; professional consultation in the field of business; assessment of business; searching for information in computer files [for third parties]; presentation of goods on all media vehicles with the purpose of retail sale; economic forecasting; sale by auction; product promotion [for third parties]; advertising; collection and provision of statistical data; the collection of information in computer databases; information on business operations; systematization of information in computer databases; hotel management affairs; process management processing purchase orders; services in the field of public relations; supplying services for others [purchasing goods and provision of business]; services of a subcontractor [commercial management]; business expertise; interactive advertising on a computer network.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "анализ себестоимости; аренда площадей для размещения рекламы; аудит; демонстрация товаров; изучение общественного мнения; изучение рынка; информация деловая; информация и советы коммерческие потребителям; исследования в области бизнеса; исследования в области маркетинга; консультации по управлению бизнесом; консультации профессиональные в области бизнеса; оценка коммерческой деятельности; поиск информации в компьютерных файлах [для третьих лиц]; представление товаров на всех медиа средствах с целью розничной продажи; прогнозирование экономическое; продажа аукционная; продвижение товаров [для третьих лиц]; реклама; сбор и предоставление статистических данных; сбор информации по компьютерным базам данных; сведения о деловых операциях; систематизация информации в компьютерных базах данных; управление гостиничными делами; управление процессами обработки заказов на покупки; услуги в области общественных отношений; услуги снабженческие для третьих лиц [закупка и обеспечение предпринимателей товарами]; услуги субподрядчика [управление коммерческое]; экспертиза деловая; реклама интерактивная в компьютерной сети."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "investments; investment management; real estate management; real estate transactions; mediation in real estate transactions; advice and information on transactions with real estate; provision of real estate for rent; property valuation; information in the field of insurance; insurance; in finance information.",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "инвестиции; управление инвестициями; управление объектами недвижимости; операции с недвижимостью; посредничество при операциях с недвижимостью; консультации и информация по вопросам совершения сделок с объектами недвижимости; предоставление объектов недвижимости в аренду; оценка недвижимости; информация в области страхования; страхование; информация в области финансов."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "sealing buildings [building]; information on repairs; Information on the construction; bricklaying; advice on construction; supervision [control manager] the construction work; working gas fitter engineering and water; masonry work; roofing work; painting work; plastering work; demolition of building structures; station maintenance vehicles [refueling and maintenance]; construction; installation of doors and windows; installation and repair of lifts; installation and repair of irrigation devices; installation and repair of heating equipment; installation and repair of burglar alarms; installation, repair and maintenance of machinery.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "герметизация сооружений [строительство]; информация по вопросам ремонта; информация по вопросам строительства; кладка кирпича; консультации по вопросам строительства; надзор [контрольно-управляющий] за строительными работами; работы газо-слесарно-технические и водопроводные; работы каменно-строительные; работы кровельные; работы малярные; работы штукатурные; снос строительных сооружений; станции технического обслуживания транспортных средств [заправка топливом и обслуживание]; строительство; установка дверей и окон; установка и ремонт лифтов; установка и ремонт ирригационных устройств; установка и ремонт отопительного оборудования; установка и ремонт охранной сигнализации; установка, ремонт и техническое машинного оборудования."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "analysis of water; Chemical analysis; architecture; industrial design; study of technical projects; geological expertise; engineering; material testing; research in the field of geology; research in the field of environmental protection; research and development of new products for third parties; technical research; Calibration [measuring]; consultations on issues of architecture; quality control; surveying; interior design; urban planning; geological prospecting; Expertise Engineering.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "анализ воды; анализ химический; архитектура; дизайн промышленный; изучение технических проектов; экспертиза геологическая; инжиниринг; испытания материалов; исследования в области геологии; исследования в области защиты окружающей среды; исследования и разработка новых товаров для третьих лиц; исследования технические; калибровка [измерения]; консультации по вопросам архитектуры; контроль качества; межевание; оформление интерьера; планирование городское; разведка геологическая; экспертиза инженерно-техническая."
+        }
+      ]
+    },
+    "id": "b41f29ff-5ebd-4381-a102-583be3c06724",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161220",
+        "applicationNumber": "2016748400"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250705081011",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Avenor Development"
+    }
+  },
+  "_uri": "/mark/ru/b41f29ff-5ebd-4381-a102-583be3c06724",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.827Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

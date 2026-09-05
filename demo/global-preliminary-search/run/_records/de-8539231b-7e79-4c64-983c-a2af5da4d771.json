@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/de/8539231b-7e79-4c64-983c-a2af5da4d771",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "8539231b-7e79-4c64-983c-a2af5da4d771",
+  "applicationNumber": "302026231220.9",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VINKORY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    25,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "TRCT Medien GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "20355 Hamburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "TRCT Medien GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "16"
+        },
+        {
+          "intClassNumber": "25"
+        },
+        {
+          "intClassNumber": "28"
+        },
+        {
+          "intClassNumber": "41"
+        }
+      ]
+    },
+    "id": "8539231b-7e79-4c64-983c-a2af5da4d771",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260628",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "TRCT Medien GmbH, Kohlhöfen 14, 20355 Hamburg"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260608",
+        "applicationNumber": "302026231220.9"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260628020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VINKORY"
+    }
+  },
+  "_uri": "/mark/de/8539231b-7e79-4c64-983c-a2af5da4d771",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

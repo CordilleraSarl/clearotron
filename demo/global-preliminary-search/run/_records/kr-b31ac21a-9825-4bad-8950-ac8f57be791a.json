@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/kr/b31ac21a-9825-4bad-8950-ac8f57be791a",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "b31ac21a-9825-4bad-8950-ac8f57be791a",
+  "applicationNumber": "40-2016-0027899",
+  "registrationNumber": "4012194610000",
+  "applicationDate": "2016-04-15",
+  "registrationDate": "2016-12-05",
+  "expiryDate": "2026-12-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-12-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Q ROI",
+  "markTransliteration": "Q ROI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "gps 네비게이션 장치,mp3 플레이어용 오디오/비디오 수신기,가정용 오디오 스피커,네비게이션 소프트웨어,네비게이션용 디스플레이 장치,디지털 오디오 및 비디오 레코더,디지털 오디오 신디사이저,디지털 오디오 인터페이스 장치,디지털 오디오레코더,디지털 오디오플레이어,자동차용 네비게이션",
+      "translation_language": "en",
+      "translation": "gps navigation device, audio/video receiver for mp3 player, home audio speaker, navigation software, display device for navigation, digital audio and video recorder, digital audio synthesizer, digital audio interface device, digital audio recorder, digital audio player, car navigation"
+    }
+  ],
+  "owner": "QDS CO., LTD",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "오위환 (OH, Wihwan)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 금천구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "QDS CO., LTD",
+        "applicantNativeName": "(주)큐디스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "gps navigation device, audio/video receiver for mp3 player, home audio speaker, navigation software, display device for navigation, digital audio and video recorder, digital audio synthesizer, digital audio interface device, digital audio recorder, digital audio player, car navigation",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "gps 네비게이션 장치,mp3 플레이어용 오디오/비디오 수신기,가정용 오디오 스피커,네비게이션 소프트웨어,네비게이션용 디스플레이 장치,디지털 오디오 및 비디오 레코더,디지털 오디오 신디사이저,디지털 오디오 인터페이스 장치,디지털 오디오레코더,디지털 오디오플레이어,자동차용 네비게이션"
+        }
+      ]
+    },
+    "id": "b31ac21a-9825-4bad-8950-ac8f57be791a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, , Gangnam-daero -gil, Seocho-gu, Seoul Korea(SKY PATENT LAW FIRM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "오위환 (OH, Wihwan)"
+      },
+      {
+        "representativeAddress": "F, , Gangnam-daero -gil, Seocho-gu, Seoul Korea(SKY PATENT LAW FIRM)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "정기택 (JUNG,KI TAEK)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160415",
+        "applicationNumber": "40-2016-0027899"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261205",
+      "lastPublicationDate": "20161209",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20161205",
+        "registrationNumber": "4012194610000"
+      }
+    },
+    "version": "20250625181125",
+    "wordMarkSpecification": {
+      "markTransliteration": "Q ROI",
+      "markVerbalElementText": "Q ROI"
+    }
+  },
+  "_uri": "/mark/kr/b31ac21a-9825-4bad-8950-ac8f57be791a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:46.880Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

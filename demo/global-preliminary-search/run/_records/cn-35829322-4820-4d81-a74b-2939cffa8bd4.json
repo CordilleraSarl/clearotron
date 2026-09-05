@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/35829322-4820-4d81-a74b-2939cffa8bd4",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "35829322-4820-4d81-a74b-2939cffa8bd4",
+  "applicationNumber": "7401503",
+  "registrationNumber": "7401503",
+  "applicationDate": "2009-05-18",
+  "registrationDate": "2010-12-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2010-09-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-12-27",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机;便携计算机;计算机键盘;计算机外围设备;监视器(计算机硬件);笔记本电脑;鼠标(数据处理设备);计算机机箱;计算机电源;计算机摄像头",
+      "translation_language": "en",
+      "translation": "Computer; Portable computer; Computer keyboard; Computer peripheral equipment; Monitor (computer hardware); Notebook computer; Mouse (data processing equipment); Computer case; Computer power supply; Computer camera"
+    }
+  ],
+  "owner": "Shenzhen New Technology Exhibition Electronics Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市坪山新区坑梓龙田村同富裕工业区莹展工业园内A1栋3楼",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen New Technology Exhibition Electronics Co., Ltd.",
+        "applicantNativeName": "深圳市新技展电子有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer; Portable computer; Computer keyboard; Computer peripheral equipment; Monitor (computer hardware); Notebook computer; Mouse (data processing equipment); Computer case; Computer power supply; Computer camera",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机;便携计算机;计算机键盘;计算机外围设备;监视器(计算机硬件);笔记本电脑;鼠标(数据处理设备);计算机机箱;计算机电源;计算机摄像头"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        }
+      ]
+    },
+    "id": "35829322-4820-4d81-a74b-2939cffa8bd4",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1232"
+      }
+    ],
+    "recordLastUpdated": "20251001",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市中知专利商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090518",
+        "applicationNumber": "7401503"
+      },
+      "cancellationDate": "20231227",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20100920",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20101221",
+        "registrationNumber": "7401503"
+      }
+    },
+    "version": "20251001235012",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORI"
+    }
+  },
+  "_uri": "/mark/cn/35829322-4820-4d81-a74b-2939cffa8bd4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

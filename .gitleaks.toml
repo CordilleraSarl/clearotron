@@ -10,7 +10,7 @@ description = """The frozen example run's register plan carries computed FNV-1 f
 published demo run — verified to hold no credential material (the engine never writes credentials
 into run artifacts; the freeze tool prunes telemetry and its scrub greps run on every freeze)."""
 paths = [
-  '''examples/sample-run/run/_driver/register-plan\.json''',
+  '''demo/multi-country-focus-search/run/_driver/register-plan\.json''',
 ]
 
 # A RESERVED SYNTHETIC MATTER KEY IS NOT A CREDENTIAL, and generic-api-key cannot tell the difference

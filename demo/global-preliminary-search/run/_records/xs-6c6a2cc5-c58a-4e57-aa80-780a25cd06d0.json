@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/xs/6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+  "applicationNumber": null,
+  "registrationNumber": "2200916",
+  "applicationDate": null,
+  "registrationDate": "2013-05-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2018-05-28",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "UNIVERSAL DERMATOLOGY AND VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "UNIVERSAL VEIN CLINICS, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "425 METROPLACE NORTH,SUITE 195, DUBLIN, OH, 43017",
+        "applicantAddressCity": "DUBLIN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "43017",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "425 METROPLACE NORTH,SUITE 195",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "UNIVERSAL VEIN CLINICS, LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "425 METROPLACE NORTH,SUITE 195, DUBLIN, OH, 43017",
+        "city": "DUBLIN",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "UNIVERSAL VEIN CLINICS, LLC",
+        "postalCode": "43017",
+        "stateName": "OHIO",
+        "street": "425 METROPLACE NORTH,SUITE 195"
+      }
+    ],
+    "recordLastUpdated": "20241214",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cancellationDate": "20180528",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "CANCELLED"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "registration": {
+        "registrationDate": "20130520",
+        "registrationNumber": "2200916"
+      }
+    },
+    "usStateOfficeCode": "OH",
+    "usStateOfficeName": "OHIO",
+    "version": "20241214113333",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "UNIVERSAL DERMATOLOGY AND VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

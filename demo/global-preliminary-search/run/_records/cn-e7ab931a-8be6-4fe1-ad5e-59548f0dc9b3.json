@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/cn/e7ab931a-8be6-4fe1-ad5e-59548f0dc9b3",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e7ab931a-8be6-4fe1-ad5e-59548f0dc9b3",
+  "applicationNumber": "48326310",
+  "registrationNumber": "48326310",
+  "applicationDate": "2020-07-23",
+  "registrationDate": "2021-03-14",
+  "expiryDate": "2031-03-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "拨日",
+  "markTransliteration": "BO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "可下载的手机应用软件,已录制的或可下载的计算机软件平台,可下载的计算机应用软件,可下载的影像文件,可下载的音乐文件,电子出版物(可下载),计算机软件(已录制),已录制的计算机操作程序,已录制的计算机程序",
+      "translation_language": "en",
+      "translation": "Downloadable mobile phone application software, recorded or downloadable computer software platform, downloadable computer application software, downloadable image files, downloadable music files, electronic publications (downloadable), computer software (downloadable) Recording), recorded computer operating program, recorded computer program"
+    }
+  ],
+  "owner": "Shanghai Farri Internet Information Service Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市普陀区真南路708 号5 层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Farri Internet Information Service Co., Ltd.",
+        "applicantNativeName": "上海拨日互联网信息服务有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable mobile phone application software, recorded or downloadable computer software platform, downloadable computer application software, downloadable image files, downloadable music files, electronic publications (downloadable), computer software (downloadable) Recording), recorded computer operating program, recorded computer program",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "可下载的手机应用软件,已录制的或可下载的计算机软件平台,可下载的计算机应用软件,可下载的影像文件,可下载的音乐文件,电子出版物(可下载),计算机软件(已录制),已录制的计算机操作程序,已录制的计算机程序"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        }
+      ]
+    },
+    "id": "e7ab931a-8be6-4fe1-ad5e-59548f0dc9b3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1723"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海凯创知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200723",
+        "applicationNumber": "48326310"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310313",
+      "lastPublicationDate": "20201213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210314",
+        "registrationNumber": "48326310"
+      }
+    },
+    "version": "20251004050547",
+    "wordMarkSpecification": {
+      "markTransliteration": "BO RI",
+      "markVerbalElementText": "拨日"
+    }
+  },
+  "_uri": "/mark/cn/e7ab931a-8be6-4fe1-ad5e-59548f0dc9b3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

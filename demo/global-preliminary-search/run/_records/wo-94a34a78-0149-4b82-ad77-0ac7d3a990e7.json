@@ -1,0 +1,306 @@
+{
+  "uri": "/mark/wo/94a34a78-0149-4b82-ad77-0ac7d3a990e7",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "94a34a78-0149-4b82-ad77-0ac7d3a990e7",
+  "applicationNumber": null,
+  "registrationNumber": "1651651",
+  "applicationDate": null,
+  "registrationDate": "2021-10-14",
+  "expiryDate": "2031-10-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-03-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Woven Core",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    39,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Simulators for the steering and control of vehicles; telecommunication machines and apparatus; radio communication machines and apparatus; portable radio communication machines and apparatus; vehicular radio communication machines and apparatus; radio machines and apparatus; navigation apparatus for vehicles [on-board computers]; parts and accessories for telecommunication machines and apparatus; personal digital assistants; electronic machines, apparatus and their parts; computers and their peripherals; computer programs; computer programs for operating control of autonomous cars; computer programs for autonomous cars; computer operating programs, recorded; computer operating programs, recorded in computers installed with automobiles; computer software, recorded; computer software, recorded in computers installed with automobiles; computer software applications, downloadable; computer hardware; computer hardware installed with automobiles; dashboard cameras; motion sensors; motion recognizing sensors; wireless warning devices by detecting abnormal signals from various sensors and giving warnings; sensors for speed measurements; navigational instruments; navigation map information receiving apparatus; computer programs for map information; computer database programs for creating and developing map information; computers and computer programs for providing map information; computer software for map information; simulators for autonomous cars; computer programs for simulators of autonomous cars; computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Automobiles; autonomous automobiles; trucks; autonomous trucks; automobiles and their parts and fittings; unmanned aerial vehicles (UAVs); autonomous buses; buses and their parts and fittings; trucks and their parts and fittings; autonomous cars.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Providing road and traffic information; providing traffic information via the Internet or other communication network; GPS car navigation services; providing location information of vehicles on maps; providing information relating to operation control and grasping moving condition of vehicles; providing and managing information relating to vehicular traffic flow; providing information relating to traffic congestion prediction; providing information relating to traffic and traffic congestion; traffic information.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer software design, computer programming, or maintenance of computer software; computer software design, computer programming, or maintenance of computer software used for autonomous cars; providing computer programs for traffic control of autonomous cars via the Internet; providing computer programs for autonomous cars via the Internet; off-site data backup; development of computer platforms; updating of computer software; technological advice relating to computers, automobiles and industrial machines; providing computer programs on data networks; cloud computing; computer software and hardware testing services; calibration of computer software; rental of computers; testing, research, design and development in the field of autonomous driving technology, autonomous cars and computer software for autonomous cars and consultancy relating thereto; providing search engines for the Internet; providing search engines used for exploring map information; design, development and maintenance of computer database programs for creating and developing map information; mapping services; map designing; scientific and technological research and development relating to autonomous driving technology and autonomous cars; development and providing of software for autonomous cars; development and providing of simulators for autonomous cars and software for simulator of autonomous cars; providing computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Simulateurs pour le pilotage ou la commande de véhicules; appareils et machines de télécommunication; appareils et machines de radiocommunication; machines et appareils de radiocommunication portatifs; machines et appareils de radiocommunication véhiculaire; machines et appareils radiophoniques; appareils de navigation pour véhicules sous forme d'ordinateurs de bord; parties et accessoires pour machines et appareils de télécommunication; assistants numériques personnels; appareils et machines électroniques, ainsi que leurs parties; ordinateurs et leurs périphériques; programmes informatiques; programmes informatiques pour la commande du fonctionnement de voitures autonomes; programmes informatiques pour voitures autonomes; programmes d'exploitation pour ordinateurs enregistrés; programmes d'exploitation informatique, enregistrés dans des ordinateurs installés avec des automobiles; logiciels informatiques enregistrés; logiciels informatiques, enregistrés dans des ordinateurs installés avec des automobiles; applications logicielles informatiques téléchargeables; matériel informatique; matériels informatiques installés avec des automobiles; caméras de tableaux de bord; détecteurs de mouvements; capteurs de reconnaissance de mouvements; dispositifs d'alerte sans fil détectant des signaux anormaux de divers capteurs et donnant des avertissements; capteurs pour mesures de vitesse; instruments pour la navigation; appareils de réception d'informations cartographiques de navigation; programmes informatiques pour informations cartographiques; programmes de bases de données informatiques pour la création et le développement d'informations cartographiques; ordinateurs et programmes informatiques pour la mise à disposition d'informations cartographiques; logiciels informatiques pour informations cartographiques; simulateurs pour voitures autonomes; programmes informatiques pour simulateurs de voitures autonomes; programmes informatiques pour la commande du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour l'alimentation en électricité, gaz, eau et autre énergie vitale dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la simulation du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la simulation de la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la simulation de la gestion et de l'alimentation en électricité, gaz, eau et autre énergie vitale dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": "Automobiles; automobiles autonomes; camions; camions autonomes; automobiles, ainsi que leurs parties et garnitures; véhicules aériens sans pilote (UAV); bus autonomes; bus, ainsi que leurs parties et garnitures; camions et leurs parties et garnitures; voitures autonomes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "fr",
+      "description": "Mise à disposition d'informations routières et en matière de trafic; fourniture d'informations sur la circulation par le biais d'Internet ou d'autres réseaux de communication; services de navigation par GPS pour voitures; fourniture d'informations de localisation de véhicules sur des cartes; fourniture d'informations en lien avec la commande du fonctionnement et la compréhension de l'état de déplacement de véhicules; fourniture et gestion d'informations en lien avec le flux de circulation de véhicules; fourniture d'informations en lien avec la prévision de congestion routière; fourniture d'information en matière de circulation routière et d'embouteillages; informations en matière de trafic.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception de logiciels informatiques, programmation informatique ou maintenance de logiciels informatiques; conception de logiciels informatiques, programmation informatique ou maintenance de logiciels informatiques utilisés pour des voitures autonomes; mise à disposition de programmes informatiques pour la régulation de la circulation de voitures autonomes par le biais d'Internet; mise à disposition de programmes informatiques pour voitures autonomes par le biais d'Internet; sauvegarde de données hors site; développement de plateformes informatiques; mise à jour de logiciels informatiques; conseils technologiques en matière d'ordinateurs, automobiles et machines industrielles; mise à disposition de programmes informatiques sur des réseaux de données; informatique en nuage; services d'essai de matériel informatique et logiciels; étalonnage de logiciels informatiques; location d'ordinateurs; essai, recherche, conception et développement dans le domaine des technologies de conduite autonome, des voitures autonomes et des logiciels informatiques pour voitures autonomes, ainsi que services de conseillers s'y rapportant; fourniture de moteurs de recherche pour Internet; mise à disposition de moteurs de recherche utilisés pour l'exploration d'informations cartographiques; conception, développement et maintenance de programmes de bases de données informatiques pour la création et le développement d'informations cartographiques; services de cartographie; conception de cartes; recherche et développement scientifiques et technologiques en lien avec la technologie de conduite autonome et les voitures autonomes; développement et mise à disposition de logiciels pour voitures autonomes; développement et mise à disposition de simulateurs pour voitures autonomes et logiciels pour simulateurs de voitures autonomes; mise à disposition de programmes informatiques pour la commande du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour l'alimentation en électricité, gaz, eau et autre énergie vitale dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la simulation du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la simulation de la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la simulation de l'approvisionnement et de la gestion d'électricité, de gaz, d'eau et d'autres énergie essentielles dans des villes respectueuses de l'environnement et économes en énergie (villes Intelligentes).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Simuladores de conducción y control de vehículos; máquinas y aparatos de telecomunicación; máquinas y aparatos de radiocomunicación; máquinas y aparatos de radiocomunicación portátiles; aparatos y máquinas de radiocomunicación móvil; máquinas y aparatos de radio; aparatos de navegación para vehículos [ordenadores de a bordo]; partes y accesorios de máquinas y aparatos de telecomunicación; asistentes personales digitales (PDA); máquinas y aparatos electrónicos, así como sus partes; ordenadores y sus periféricos; programas informáticos; programas informáticos para el control del funcionamiento de coches autónomos; programas informáticos para coches autónomos; programas de sistemas operativos informáticos grabados; programas operativos informáticos, grabados en ordenadores instalados en automóviles; software [programas grabados]; software informático, grabado en ordenadores instalados en automóviles; aplicaciones de software descargables; hardware informático; hardware informático instalado en automóviles; cámaras para tableros de mando; detectores de movimiento; sensores de reconocimiento de movimiento; dispositivos de alarma inalámbricos mediante la detección de señales anormales de varios sensores y dando advertencias; sensores para la medición de la velocidad; instrumentos de navegación; aparatos de recepción de información sobre mapas de navegación; programas informáticos de información cartográfica; programas de bases de datos informáticas para la creación y el desarrollo de información cartográfica; Ordenadores y programas informáticos de suministro de información cartográfica; software informático de información cartográfica; simuladores para coches autónomos; programas informáticos para simuladores de coches autónomos; programas informáticos para controlar el movimiento de coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para la gestión del funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para el suministro y la gestión de la electricidad, el gas, el agua y otros tipos de energía de por vida para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos de simulación de movimiento para coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para la simulación de la gestión, el funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para la simulación de suplementos y la gestión de la electricidad, el gas, el agua y otros tipos de energía de por vida para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "es",
+      "description": "Automóviles; automóviles autónomos; camiones; camiones autónomos; automóviles, sus partes y piezas accesorias; aeronaves no tripuladas (UAV); autobuses autónomos; autobuses y sus partes y piezas accesorias; camiones, así como sus partes y piezas accesorias; coches autónomos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "es",
+      "description": "Suministro de información sobre el estado de las carreteras y el tráfico; suministro de información sobre el tráfico por Internet u otras redes de comunicación; Servicios de navegación GPS; suministro de información sobre la ubicación de vehículos en mapas; suministro de información relativa al control del funcionamiento y las condiciones de movimiento de vehículos; suministro y gestión de información relativa al flujo del tráfico vehicular; suministro de información relativa a la predicción de atascos de tráfico; suministro de información sobre tráfico y embotellamientos; información sobre el tráfico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño de software, programación informática o mantenimiento de software; diseño de software informático, programación informática o mantenimiento de software informático para coches autónomos; suministro de programas informáticos para el control del tráfico de coches autónomos por Internet; suministro de programas informáticos para coches autónomos por Internet; copia de seguridad de datos fuera del sitio; desarrollo de plataformas informáticas; actualización de software informático; asesoramiento tecnológico sobre ordenadores, automóviles y máquinas industriales; puesta a disposición de programas informáticos en redes de datos; informática en la nube; servicios de pruebas de software y hardware; calibración de software; alquiler de ordenadores; pruebas, investigación, diseño y desarrollo en el ámbito de la tecnología de conducción autónoma, coches autónomos y software informático para coches autónomos, así como consultoría conexa; puesta a disposición de motores de búsqueda para Internet; suministro de motores de búsqueda utilizados para explorar información cartográfica; diseño, desarrollo y mantenimiento de programas de bases de datos informáticas para la creación y el desarrollo de información cartográfica; servicios de cartografía; diseño de mapas; investigación y desarrollo científicos y tecnológicos relativos a la tecnología de conducción autónoma y los coches autónomos; desarrollo y suministro de software para coches autónomos; desarrollo y suministro de simuladores para coches autónomos y software para simuladores de coches autónomos; suministro de programas informáticos para controlar el movimiento de coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para la gestión del funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para el suministro y la gestión de la electricidad, el gas, el agua y otros tipos de energía de por vida para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos de simulación de movimiento para coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para la simulación de la gestión, el funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para la simulación del suministro y la gestión de la electricidad, el gas, el agua y otras energías esenciales en ciudades respetuosas con el medio ambiente y energéticamente eficientes (Ciudades Inteligentes).",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Woven Planet Holdings, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "NAKAMURA Tomohiro",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20201222",
+          "basicApplicationNumber": "2020-157729"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "JP"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "GB",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3-2-1 Nihonbashi-Muromachi, Chuo-ku Tokyo 103-0022",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Woven Planet Holdings, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20201222",
+            "basicApplicationNumber": "2020-157729"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "JP"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "GB",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Simulators for the steering and control of vehicles; telecommunication machines and apparatus; radio communication machines and apparatus; portable radio communication machines and apparatus; vehicular radio communication machines and apparatus; radio machines and apparatus; navigation apparatus for vehicles [on-board computers]; parts and accessories for telecommunication machines and apparatus; personal digital assistants; electronic machines, apparatus and their parts; computers and their peripherals; computer programs; computer programs for operating control of autonomous cars; computer programs for autonomous cars; computer operating programs, recorded; computer operating programs, recorded in computers installed with automobiles; computer software, recorded; computer software, recorded in computers installed with automobiles; computer software applications, downloadable; computer hardware; computer hardware installed with automobiles; dashboard cameras; motion sensors; motion recognizing sensors; wireless warning devices by detecting abnormal signals from various sensors and giving warnings; sensors for speed measurements; navigational instruments; navigation map information receiving apparatus; computer programs for map information; computer database programs for creating and developing map information; computers and computer programs for providing map information; computer software for map information; simulators for autonomous cars; computer programs for simulators of autonomous cars; computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Automobiles; autonomous automobiles; trucks; autonomous trucks; automobiles and their parts and fittings; unmanned aerial vehicles (UAVs); autonomous buses; buses and their parts and fittings; trucks and their parts and fittings; autonomous cars."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing road and traffic information; providing traffic information via the Internet or other communication network; GPS car navigation services; providing location information of vehicles on maps; providing information relating to operation control and grasping moving condition of vehicles; providing and managing information relating to vehicular traffic flow; providing information relating to traffic congestion prediction; providing information relating to traffic and traffic congestion; traffic information."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software; computer software design, computer programming, or maintenance of computer software used for autonomous cars; providing computer programs for traffic control of autonomous cars via the Internet; providing computer programs for autonomous cars via the Internet; off-site data backup; development of computer platforms; updating of computer software; technological advice relating to computers, automobiles and industrial machines; providing computer programs on data networks; cloud computing; computer software and hardware testing services; calibration of computer software; rental of computers; testing, research, design and development in the field of autonomous driving technology, autonomous cars and computer software for autonomous cars and consultancy relating thereto; providing search engines for the Internet; providing search engines used for exploring map information; design, development and maintenance of computer database programs for creating and developing map information; mapping services; map designing; scientific and technological research and development relating to autonomous driving technology and autonomous cars; development and providing of software for autonomous cars; development and providing of simulators for autonomous cars and software for simulator of autonomous cars; providing computer programs for controlling movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for managing operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for supplying and managing electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating movement for autonomous cars in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating management, operation and operational status for commercial facilities in resource-saving environmentally conscious city (Smart City); providing computer programs for simulating supplement and management electricity, gas, water and other lifeline energy in resource-saving environmentally conscious city (Smart City)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Simulateurs pour le pilotage ou la commande de véhicules; appareils et machines de télécommunication; appareils et machines de radiocommunication; machines et appareils de radiocommunication portatifs; machines et appareils de radiocommunication véhiculaire; machines et appareils radiophoniques; appareils de navigation pour véhicules sous forme d'ordinateurs de bord; parties et accessoires pour machines et appareils de télécommunication; assistants numériques personnels; appareils et machines électroniques, ainsi que leurs parties; ordinateurs et leurs périphériques; programmes informatiques; programmes informatiques pour la commande du fonctionnement de voitures autonomes; programmes informatiques pour voitures autonomes; programmes d'exploitation pour ordinateurs enregistrés; programmes d'exploitation informatique, enregistrés dans des ordinateurs installés avec des automobiles; logiciels informatiques enregistrés; logiciels informatiques, enregistrés dans des ordinateurs installés avec des automobiles; applications logicielles informatiques téléchargeables; matériel informatique; matériels informatiques installés avec des automobiles; caméras de tableaux de bord; détecteurs de mouvements; capteurs de reconnaissance de mouvements; dispositifs d'alerte sans fil détectant des signaux anormaux de divers capteurs et donnant des avertissements; capteurs pour mesures de vitesse; instruments pour la navigation; appareils de réception d'informations cartographiques de navigation; programmes informatiques pour informations cartographiques; programmes de bases de données informatiques pour la création et le développement d'informations cartographiques; ordinateurs et programmes informatiques pour la mise à disposition d'informations cartographiques; logiciels informatiques pour informations cartographiques; simulateurs pour voitures autonomes; programmes informatiques pour simulateurs de voitures autonomes; programmes informatiques pour la commande du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour l'alimentation en électricité, gaz, eau et autre énergie vitale dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la simulation du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la simulation de la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); programmes informatiques pour la simulation de la gestion et de l'alimentation en électricité, gaz, eau et autre énergie vitale dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Automobiles; automobiles autonomes; camions; camions autonomes; automobiles, ainsi que leurs parties et garnitures; véhicules aériens sans pilote (UAV); bus autonomes; bus, ainsi que leurs parties et garnitures; camions et leurs parties et garnitures; voitures autonomes."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Mise à disposition d'informations routières et en matière de trafic; fourniture d'informations sur la circulation par le biais d'Internet ou d'autres réseaux de communication; services de navigation par GPS pour voitures; fourniture d'informations de localisation de véhicules sur des cartes; fourniture d'informations en lien avec la commande du fonctionnement et la compréhension de l'état de déplacement de véhicules; fourniture et gestion d'informations en lien avec le flux de circulation de véhicules; fourniture d'informations en lien avec la prévision de congestion routière; fourniture d'information en matière de circulation routière et d'embouteillages; informations en matière de trafic."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception de logiciels informatiques, programmation informatique ou maintenance de logiciels informatiques; conception de logiciels informatiques, programmation informatique ou maintenance de logiciels informatiques utilisés pour des voitures autonomes; mise à disposition de programmes informatiques pour la régulation de la circulation de voitures autonomes par le biais d'Internet; mise à disposition de programmes informatiques pour voitures autonomes par le biais d'Internet; sauvegarde de données hors site; développement de plateformes informatiques; mise à jour de logiciels informatiques; conseils technologiques en matière d'ordinateurs, automobiles et machines industrielles; mise à disposition de programmes informatiques sur des réseaux de données; informatique en nuage; services d'essai de matériel informatique et logiciels; étalonnage de logiciels informatiques; location d'ordinateurs; essai, recherche, conception et développement dans le domaine des technologies de conduite autonome, des voitures autonomes et des logiciels informatiques pour voitures autonomes, ainsi que services de conseillers s'y rapportant; fourniture de moteurs de recherche pour Internet; mise à disposition de moteurs de recherche utilisés pour l'exploration d'informations cartographiques; conception, développement et maintenance de programmes de bases de données informatiques pour la création et le développement d'informations cartographiques; services de cartographie; conception de cartes; recherche et développement scientifiques et technologiques en lien avec la technologie de conduite autonome et les voitures autonomes; développement et mise à disposition de logiciels pour voitures autonomes; développement et mise à disposition de simulateurs pour voitures autonomes et logiciels pour simulateurs de voitures autonomes; mise à disposition de programmes informatiques pour la commande du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour l'alimentation en électricité, gaz, eau et autre énergie vitale dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la simulation du déplacement de voitures autonomes dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la simulation de la gestion du fonctionnement et de l'état de fonctionnement d'installations commerciales dans une ville soucieuse de l'environnement et économe en ressources (ville intelligente); mise à disposition de programmes informatiques pour la simulation de l'approvisionnement et de la gestion d'électricité, de gaz, d'eau et d'autres énergie essentielles dans des villes respectueuses de l'environnement et économes en énergie (villes Intelligentes)."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Simuladores de conducción y control de vehículos; máquinas y aparatos de telecomunicación; máquinas y aparatos de radiocomunicación; máquinas y aparatos de radiocomunicación portátiles; aparatos y máquinas de radiocomunicación móvil; máquinas y aparatos de radio; aparatos de navegación para vehículos [ordenadores de a bordo]; partes y accesorios de máquinas y aparatos de telecomunicación; asistentes personales digitales (PDA); máquinas y aparatos electrónicos, así como sus partes; ordenadores y sus periféricos; programas informáticos; programas informáticos para el control del funcionamiento de coches autónomos; programas informáticos para coches autónomos; programas de sistemas operativos informáticos grabados; programas operativos informáticos, grabados en ordenadores instalados en automóviles; software [programas grabados]; software informático, grabado en ordenadores instalados en automóviles; aplicaciones de software descargables; hardware informático; hardware informático instalado en automóviles; cámaras para tableros de mando; detectores de movimiento; sensores de reconocimiento de movimiento; dispositivos de alarma inalámbricos mediante la detección de señales anormales de varios sensores y dando advertencias; sensores para la medición de la velocidad; instrumentos de navegación; aparatos de recepción de información sobre mapas de navegación; programas informáticos de información cartográfica; programas de bases de datos informáticas para la creación y el desarrollo de información cartográfica; Ordenadores y programas informáticos de suministro de información cartográfica; software informático de información cartográfica; simuladores para coches autónomos; programas informáticos para simuladores de coches autónomos; programas informáticos para controlar el movimiento de coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para la gestión del funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para el suministro y la gestión de la electricidad, el gas, el agua y otros tipos de energía de por vida para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos de simulación de movimiento para coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para la simulación de la gestión, el funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); programas informáticos para la simulación de suplementos y la gestión de la electricidad, el gas, el agua y otros tipos de energía de por vida para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Automóviles; automóviles autónomos; camiones; camiones autónomos; automóviles, sus partes y piezas accesorias; aeronaves no tripuladas (UAV); autobuses autónomos; autobuses y sus partes y piezas accesorias; camiones, así como sus partes y piezas accesorias; coches autónomos."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Suministro de información sobre el estado de las carreteras y el tráfico; suministro de información sobre el tráfico por Internet u otras redes de comunicación; Servicios de navegación GPS; suministro de información sobre la ubicación de vehículos en mapas; suministro de información relativa al control del funcionamiento y las condiciones de movimiento de vehículos; suministro y gestión de información relativa al flujo del tráfico vehicular; suministro de información relativa a la predicción de atascos de tráfico; suministro de información sobre tráfico y embotellamientos; información sobre el tráfico."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño de software, programación informática o mantenimiento de software; diseño de software informático, programación informática o mantenimiento de software informático para coches autónomos; suministro de programas informáticos para el control del tráfico de coches autónomos por Internet; suministro de programas informáticos para coches autónomos por Internet; copia de seguridad de datos fuera del sitio; desarrollo de plataformas informáticas; actualización de software informático; asesoramiento tecnológico sobre ordenadores, automóviles y máquinas industriales; puesta a disposición de programas informáticos en redes de datos; informática en la nube; servicios de pruebas de software y hardware; calibración de software; alquiler de ordenadores; pruebas, investigación, diseño y desarrollo en el ámbito de la tecnología de conducción autónoma, coches autónomos y software informático para coches autónomos, así como consultoría conexa; puesta a disposición de motores de búsqueda para Internet; suministro de motores de búsqueda utilizados para explorar información cartográfica; diseño, desarrollo y mantenimiento de programas de bases de datos informáticas para la creación y el desarrollo de información cartográfica; servicios de cartografía; diseño de mapas; investigación y desarrollo científicos y tecnológicos relativos a la tecnología de conducción autónoma y los coches autónomos; desarrollo y suministro de software para coches autónomos; desarrollo y suministro de simuladores para coches autónomos y software para simuladores de coches autónomos; suministro de programas informáticos para controlar el movimiento de coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para la gestión del funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para el suministro y la gestión de la electricidad, el gas, el agua y otros tipos de energía de por vida para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos de simulación de movimiento para coches autónomos para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para la simulación de la gestión, el funcionamiento y el estado de funcionamiento de instalaciones comerciales para el ahorro de recursos en ciudades respetuosas con el medio ambiente (ciudades inteligentes); suministro de programas informáticos para la simulación del suministro y la gestión de la electricidad, el gas, el agua y otras energías esenciales en ciudades respetuosas con el medio ambiente y energéticamente eficientes (Ciudades Inteligentes)."
+        }
+      ]
+    },
+    "id": "94a34a78-0149-4b82-ad77-0ac7d3a990e7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "10"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "c/o KONISHI & NAKAMURA, Marunouchi Estate Bldg., 17-12, Marunouchi 2-chome, Naka-ku, Nagoya-shi Aichi 460-0002",
+        "representativeAddressCountryCode": "JP",
+        "representativeAddressCountryName": "Japan",
+        "representativeName": "NAKAMURA Tomohiro"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311014",
+      "lastPublicationDate": "20220324",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211014",
+        "registrationNumber": "1651651"
+      }
+    },
+    "version": "20250620193622",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Woven Core"
+    }
+  },
+  "_uri": "/mark/wo/94a34a78-0149-4b82-ad77-0ac7d3a990e7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

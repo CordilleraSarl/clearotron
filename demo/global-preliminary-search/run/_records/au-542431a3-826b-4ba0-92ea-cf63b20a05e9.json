@@ -1,0 +1,215 @@
+{
+  "uri": "/mark/au/542431a3-826b-4ba0-92ea-cf63b20a05e9",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "542431a3-826b-4ba0-92ea-cf63b20a05e9",
+  "applicationNumber": "2682678",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "RIVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11,
+    35,
+    37,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Optical guidance and landing aid systems comprising computer hardware and software, electronic controllers, and lighting fixtures, for aircraft and aerial vehicles; Lighting controls; Lighting control apparatus; Lighting control panels; LED lighting controls for maritime vessel deck lighting, aircraft landing aid systems, and general illumination purposes in military and extreme environmental settings; Safety equipment, namely, beacon lights; Emergency warning lights; Signalling lights; Luminous beacons; Environmental monitoring system comprised of meters and sensors that measure pressure, humidity, temperature and includes alarm and reporting functions; Temperature sensors; Pressure sensors; Ultrasonic sensors; Electronic proximity sensors and switches; Sensors for determining position, velocity, acceleration and temperature; Electric or electronic sensors for measuring marine vessel speed; Speed measuring instruments; Meteorological instruments; Anodes; Electronic displays and computer displays specially adapted for use in military and extreme environmental settings; Cabinets, enclosures, cases for electronic communications systems, electronic and computer displays, weapons control systems, and computer hardware, specially adapted for use in military and extreme environmental settings; Electronic control and communication consoles for maritime vessels; Electronic system composed of computer hardware, computer software, anodes, controllers and/or meters for managing and minimizing maritime vessel hull signatures and for corrosion protection.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "Lighting fixtures; Lighting installations; deck lighting for maritime vessels; Portable lights for use as aircraft landing aids; Portable lights for use as aircraft landing aids at airfields and airports in military and commercial environments; Emergency lighting apparatus and devices designed to maintain continuous visibility during power loss for use at military and commercial airfields and airports; Lighting fixtures, Lighting installations, and deck lighting for maritime vessels compatible with night vision goggles (NVG); Lighting apparatus for use in hazardous, military and extreme environmental conditions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising, marketing and promotional services; brand strategy and development services; business consultancy relating to branding, marketing and advertising; social media marketing and management services; preparation and dissemination of advertising and promotional materials; consultancy, advisory and support services relating to the foregoing; Organisation, management and conducting of trade shows, exhibitions and events for commercial, promotional and marketing purposes; organisation of exhibitions for business and commercial purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Installation, maintenance and repair of lighting apparatus, aircraft landing aid systems, and maritime vessel lighting; Installation, maintenance and repair of meteorological sensors and monitoring equipment; Installation, maintenance and repair of electronic systems for managing and minimizing maritime vessel hull signatures and for corrosion protection; Installation, maintenance and repair of electronic cabinets, enclosures and cases for electronic, computer and communications systems for use in military and extreme environmental settings.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom manufacture of electronic cabinets, enclosures, control systems and electronic assemblies to customer specification for use in military and extreme environmental settings.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Providing technical training and instruction in the installation, operation and maintenance of aircraft landing aid systems, maritime vessel lighting, electronic enclosures, and systems for managing and minimizing maritime vessel hull signatures; Video production services; film production; multimedia production; audio and visual content creation; production of digital content; photography services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Engineering; Marine engineering; Custom design and engineering of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Product testing; Testing, analysis, and evaluation of the goods and electronic systems of others to determine conformity with certification standards; Environmental testing of the goods and electronic systems of others to evaluate durability and reliability; Technical consultation in the fields of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Graphic design services; branding and visual identity design services; design and development of websites; consultancy, support and advisory services relating to graphic design, branding, visual identity and website design and development; all provided in-house and externally; Research and development of new products and technologies in the fields of aerospace, maritime and defence systems.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RIVENCORE GLOBAL SOLUTIONS LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20260429",
+      "priorityNumber": "99793843"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Fleets Point, Willis Way, Poole BH15 3SS, Dorset",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "RIVENCORE GLOBAL SOLUTIONS LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Optical guidance and landing aid systems comprising computer hardware and software, electronic controllers, and lighting fixtures, for aircraft and aerial vehicles; Lighting controls; Lighting control apparatus; Lighting control panels; LED lighting controls for maritime vessel deck lighting, aircraft landing aid systems, and general illumination purposes in military and extreme environmental settings; Safety equipment, namely, beacon lights; Emergency warning lights; Signalling lights; Luminous beacons; Environmental monitoring system comprised of meters and sensors that measure pressure, humidity, temperature and includes alarm and reporting functions; Temperature sensors; Pressure sensors; Ultrasonic sensors; Electronic proximity sensors and switches; Sensors for determining position, velocity, acceleration and temperature; Electric or electronic sensors for measuring marine vessel speed; Speed measuring instruments; Meteorological instruments; Anodes; Electronic displays and computer displays specially adapted for use in military and extreme environmental settings; Cabinets, enclosures, cases for electronic communications systems, electronic and computer displays, weapons control systems, and computer hardware, specially adapted for use in military and extreme environmental settings; Electronic control and communication consoles for maritime vessels; Electronic system composed of computer hardware, computer software, anodes, controllers and/or meters for managing and minimizing maritime vessel hull signatures and for corrosion protection."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Lighting fixtures; Lighting installations; deck lighting for maritime vessels; Portable lights for use as aircraft landing aids; Portable lights for use as aircraft landing aids at airfields and airports in military and commercial environments; Emergency lighting apparatus and devices designed to maintain continuous visibility during power loss for use at military and commercial airfields and airports; Lighting fixtures, Lighting installations, and deck lighting for maritime vessels compatible with night vision goggles (NVG); Lighting apparatus for use in hazardous, military and extreme environmental conditions."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising, marketing and promotional services; brand strategy and development services; business consultancy relating to branding, marketing and advertising; social media marketing and management services; preparation and dissemination of advertising and promotional materials; consultancy, advisory and support services relating to the foregoing; Organisation, management and conducting of trade shows, exhibitions and events for commercial, promotional and marketing purposes; organisation of exhibitions for business and commercial purposes."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Installation, maintenance and repair of lighting apparatus, aircraft landing aid systems, and maritime vessel lighting; Installation, maintenance and repair of meteorological sensors and monitoring equipment; Installation, maintenance and repair of electronic systems for managing and minimizing maritime vessel hull signatures and for corrosion protection; Installation, maintenance and repair of electronic cabinets, enclosures and cases for electronic, computer and communications systems for use in military and extreme environmental settings."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom manufacture of electronic cabinets, enclosures, control systems and electronic assemblies to customer specification for use in military and extreme environmental settings."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing technical training and instruction in the installation, operation and maintenance of aircraft landing aid systems, maritime vessel lighting, electronic enclosures, and systems for managing and minimizing maritime vessel hull signatures; Video production services; film production; multimedia production; audio and visual content creation; production of digital content; photography services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Engineering; Marine engineering; Custom design and engineering of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Product testing; Testing, analysis, and evaluation of the goods and electronic systems of others to determine conformity with certification standards; Environmental testing of the goods and electronic systems of others to evaluate durability and reliability; Technical consultation in the fields of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Graphic design services; branding and visual identity design services; design and development of websites; consultancy, support and advisory services relating to graphic design, branding, visual identity and website design and development; all provided in-house and externally; Research and development of new products and technologies in the fields of aerospace, maritime and defence systems."
+        }
+      ]
+    },
+    "id": "542431a3-826b-4ba0-92ea-cf63b20a05e9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20260429",
+        "priorityNumber": "99793843"
+      }
+    ],
+    "recordLastUpdated": "20260825",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "PO Box 949 Wellington 6140",
+        "representativeCorrespondentAddressCountryCode": "NZ",
+        "representativeCorrespondentAddressCountryName": "New Zealand",
+        "representativeCorrespondentName": "AJ Park"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260803",
+        "applicationNumber": "2682678"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "ACCEPTED: AWAITING ADVERTISEMENT"
+    },
+    "version": "20260825020017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RIVENCORE"
+    }
+  },
+  "_uri": "/mark/au/542431a3-826b-4ba0-92ea-cf63b20a05e9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,427 @@
+{
+  "ts": "2026-08-11T09:04:24.980Z",
+  "checks": [
+    {
+      "id": "registry-arithmetic",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "registry-record-match",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "registry-record-coverage",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "finding-provenance",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "reference-integrity",
+      "family": "reference",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "actions-reachability",
+      "family": "actions",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "action-fits-bound-line",
+      "family": "actions",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "self-comparison",
+      "family": "reference",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "reference-integrity:email",
+      "family": "reference",
+      "surface": "email",
+      "pass": false,
+      "detail": "the action items in this email mention Firepay Merchant Services without explaining who or what they are — open the full report for their identities before acting on those items (a summary-drafting gap, not a gap in the search)",
+      "structural": true
+    },
+    {
+      "id": "record-verification-claim",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "competitor-claim-verification",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose",
+      "family": "coverage",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose:narrative",
+      "family": "coverage",
+      "surface": "narrative",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "permission-prose:findings",
+      "family": "coverage",
+      "surface": "findings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "names-cell-populated",
+      "family": "template",
+      "surface": "email",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "assessment-row:venqori",
+      "family": "template",
+      "surface": "email",
+      "pass": true,
+      "detail": "searched name \"venqori\" has no per-name assessment row in the summary table"
+    },
+    {
+      "id": "rating-position:venqori",
+      "family": "template",
+      "surface": "email",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "senior-right-coverage",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "mark-assessment-present",
+      "family": "mark-assessment",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "manageable-category",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "legal-practical-split",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "one-clause-net",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "net-conclusion-form",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "off-field-ground",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "off-field-goods-distance",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-present",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "findings-schema-current",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-ordinals",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-rights-vs-findings",
+      "family": "content-model",
+      "surface": "report",
+      "pass": false,
+      "detail": "four_answers.third_party_rights reads \"weak\", but this run rated 10 finding(s) ADVERSARIAL (ordinal 1, 2, 3, 4, 5, 6, 7, 8, 9, 10) — the hero answer contradicts the cards under it; either the answer is wrong or those dispositions are",
+      "structural": true
+    },
+    {
+      "id": "four-answers-objection-vs-verdict",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "four-answers-registrability-obstacles",
+      "family": "content-model",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "placements-empty",
+      "family": "content-model",
+      "surface": "placement",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "record-carry-unreasoned",
+      "family": "content-model",
+      "surface": "register-digest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "record-carry-upstream-absent",
+      "family": "content-model",
+      "surface": "register-digest",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "counting-consistency",
+      "family": "counting",
+      "surface": "all",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "scope-numbers-in-prose",
+      "family": "counting",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "counting-vs-findings",
+      "family": "counting",
+      "surface": "all",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "overall-tier",
+      "family": "client",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "verdict-actions-coherence",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "verdict-actions-stale",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-tier",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-unconditional",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-stance",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "statement-conditional-form",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "conditional-text-coherence",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "prescription-prose",
+      "family": "voice",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "prescription-prose",
+      "family": "voice",
+      "surface": "content-model",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "only-you-register",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "actions-register-present",
+      "family": "verdict",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "intake-ask:1:register",
+      "family": "intake",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "intake-ask:2:register",
+      "family": "intake",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "wipo-designation-language",
+      "family": "registry",
+      "surface": "report",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "failures": [
+    "reference-integrity:email",
+    "four-answers-rights-vs-findings"
+  ],
+  "staleStages": [],
+  "staleRepaired": [],
+  "initialFailures": [
+    "reference-integrity:email",
+    "four-answers-rights-vs-findings"
+  ],
+  "repaired": [],
+  "registryCorrections": [],
+  "artifactSet": {
+    "surfaces": [
+      {
+        "name": "report.md",
+        "sha": "9708ef2a0e55",
+        "size": 20533
+      }
+    ],
+    "recordUris": [
+      "/mark/eu/000692913",
+      "/mark/eu/000944850",
+      "/mark/eu/002757615",
+      "/mark/eu/010819589",
+      "/mark/eu/011598695",
+      "/mark/eu/013806948",
+      "/mark/eu/016384844",
+      "/mark/eu/017969247",
+      "/mark/eu/018449633",
+      "/mark/eu/018850013",
+      "/mark/eu/018854038",
+      "/mark/eu/018900370",
+      "/mark/eu/018904840",
+      "/mark/eu/018907233",
+      "/mark/eu/018948193",
+      "/mark/eu/018985046",
+      "/mark/eu/019012764",
+      "/mark/eu/019012860",
+      "/mark/eu/019169027",
+      "/mark/eu/019193407",
+      "/mark/eu/019251304",
+      "/mark/eu/019258653",
+      "/mark/eu/019341901",
+      "/mark/eu/019396298",
+      "/mark/eu/w00904887",
+      "/mark/eu/w01703908",
+      "/mark/eu/w01931398"
+    ],
+    "recordSources": {
+      "fromRunDir": 27,
+      "fromLedgerThisSession": 27
+    },
+    "recordFetchFailures": [],
+    "skippedStages": []
+  }
+}

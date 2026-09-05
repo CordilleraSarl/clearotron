@@ -1,0 +1,377 @@
+{
+  "uri": "/mark/us/0c7c7c00-333b-4676-a7ac-c8992a6b01fd",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0c7c7c00-333b-4676-a7ac-c8992a6b01fd",
+  "applicationNumber": "75598525",
+  "registrationNumber": "2463185",
+  "applicationDate": "1998-12-03",
+  "registrationDate": "2001-06-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2000-10-17"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2012-01-27",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "INT. CL. 40 Environmental remediation services, namely, soil, waste and/or water treatment services",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 reviewing standards and practices to assure compliance with environmental laws and regulations; pertinent to property providing geological information pertinent to property; environmental consulting services, namely, exploring properties for the presence of environmental contaminants or environmentally protected conditions, analyzing test data and information, developing plans to remediate contamination, providing quality assurance and quality control services during remediation processes, obtaining proper environmental permits, and coordinating with regulatory agencies; evaluation and testing of real estate, facilities and products for the presence and identity of hazardous material; materials testing, namely determining the physical properties of man-made and natural materials; engineering services, namely, measuring characteristics of materials, analyzing test data and information, providing design criteria and engineering recommendations, and providing quality assurance and quality control services during construction or renovation processes; building construction and repair services, namely measuring characteristics of materials, analyzing test data and information, providing design criteria and engineering recommendations, and providing quality assurance and quality control services during construction or renovation processes",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORE, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Michael D. Hobbs Jr",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20061109",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "4201 PLEASANT HILL RD. NW, Duluth, GA, 30096",
+        "applicantAddressCity": "Duluth",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "30096",
+        "applicantAddressStateName": "GEORGIA",
+        "applicantAddressStreet": "4201 PLEASANT HILL RD. NW",
+        "applicantJurisdictionOfIncorporation": "GEORGIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "QORE, INC.",
+        "applicantSecondaryAddressUnit": "STE A"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "SUITE B, DULUTH, GEORGIA, 30096",
+            "city": "DULUTH",
+            "jurisdictionOfIncorporation": "Georgia",
+            "legalEntity": "CORPORATION",
+            "name": "QORE, INC.",
+            "postalCode": "30096",
+            "secondaryAddressUnit": "3648 HIGHWAY 120",
+            "stateName": "GEORGIA",
+            "street": "SUITE B"
+          }
+        ],
+        "assignors": [
+          {
+            "name": "ATLANTA TESTING & ENGINEERING, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "MICHAEL D. HOBBS, JR., NATIONSBANK PLAZA, 600 PEACHTREE STREET, N.E.",
+            "addressLines": [
+              "TROUTMAN SANDERS LLP",
+              "MICHAEL D. HOBBS, JR.",
+              "NATIONSBANK PLAZA",
+              "600 PEACHTREE STREET, N.E.",
+              "ATLANTA, GA  30308"
+            ],
+            "name": "TROUTMAN SANDERS LLP"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "19990304",
+        "recordedDate": "19990312",
+        "reelFrameNumber": "1871/0765"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "INT. CL. 40 Environmental remediation services, namely, soil, waste and/or water treatment services"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 reviewing standards and practices to assure compliance with environmental laws and regulations; pertinent to property providing geological information pertinent to property; environmental consulting services, namely, exploring properties for the presence of environmental contaminants or environmentally protected conditions, analyzing test data and information, developing plans to remediate contamination, providing quality assurance and quality control services during remediation processes, obtaining proper environmental permits, and coordinating with regulatory agencies; evaluation and testing of real estate, facilities and products for the presence and identity of hazardous material; materials testing, namely determining the physical properties of man-made and natural materials; engineering services, namely, measuring characteristics of materials, analyzing test data and information, providing design criteria and engineering recommendations, and providing quality assurance and quality control services during construction or renovation processes; building construction and repair services, namely measuring characteristics of materials, analyzing test data and information, providing design criteria and engineering recommendations, and providing quality assurance and quality control services during construction or renovation processes"
+        }
+      ]
+    },
+    "id": "0c7c7c00-333b-4676-a7ac-c8992a6b01fd",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20120127",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20061109",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20061013",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20060913",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20060913",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "20010626",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20001017",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20000915",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20000818",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20000627",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20000119",
+        "descriptionText": "FINAL REFUSAL MAILED"
+      },
+      {
+        "date": "20000104",
+        "descriptionText": "AMENDMENT TO USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20000104",
+        "descriptionText": "USE AMENDMENT ACCEPTED"
+      },
+      {
+        "date": "19991201",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "19991201",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "19990601",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19990528",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "3468 Highway 120, Duluth, GA, 30096",
+        "city": "Duluth",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "Atlanta Testing & Engineering, Inc.",
+        "postalCode": "30096",
+        "secondaryAddressUnit": "Suite B",
+        "stateName": "GEORGIA",
+        "street": "3468 Highway 120"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "4201 PLEASANT HILL RD. NW, Duluth, GA, 30096",
+        "city": "Duluth",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "QORE, INC.",
+        "postalCode": "30096",
+        "secondaryAddressUnit": "STE A",
+        "stateName": "GEORGIA",
+        "street": "4201 PLEASANT HILL RD. NW"
+      },
+      {
+        "address": "4201 PLEASANT HILL RD. NW, Duluth, GA, 30096",
+        "city": "Duluth",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "QORE, INC.",
+        "postalCode": "30096",
+        "secondaryAddressUnit": "STE A",
+        "stateName": "GEORGIA",
+        "street": "4201 PLEASANT HILL RD. NW"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "3648 Highway 120, Duluth, GA, 30096",
+        "city": "Duluth",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "QORE, INC.",
+        "postalCode": "30096",
+        "secondaryAddressUnit": "Suite B",
+        "stateName": "GEORGIA",
+        "street": "3648 Highway 120"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "3648 Highway 120, Duluth, GA, 30096",
+        "city": "Duluth",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "CORPORATION",
+        "name": "QORE, INC.",
+        "postalCode": "30096",
+        "secondaryAddressUnit": "Suite B",
+        "stateName": "GEORGIA",
+        "street": "3648 Highway 120"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "600 PEACHTREE ST NE STE 5200, ATLANTA, GA 30308-2216, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "600 PEACHTREE ST NE STE 5200",
+          "ATLANTA, GA 30308-2216",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "MICHAEL D HOBBS JR BANK OF AMERICA, TROUTMAN SANDERS LLP"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "600 PEACHTREE ST NE STE 5200, ATLANTA, GA 30308-2216, UNITED STATES",
+        "representativeAddressLines": [
+          "600 PEACHTREE ST NE STE 5200",
+          "ATLANTA, GA 30308-2216",
+          "UNITED STATES"
+        ],
+        "representativeName": "Michael D. Hobbs Jr"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20010403"
+      ],
+      "application": {
+        "applicationDate": "19981203",
+        "applicationNumber": "75598525"
+      },
+      "cancellationDate": "20120127",
+      "cancellationPublicationDate": "20120306",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "40",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19990301"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19990301"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "40",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19990301"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19990301"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20120127",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20001017"
+      ],
+      "registration": {
+        "registrationDate": "20010626",
+        "registrationNumber": "2463185"
+      }
+    },
+    "version": "20260109051632",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CORE",
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/us/0c7c7c00-333b-4676-a7ac-c8992a6b01fd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

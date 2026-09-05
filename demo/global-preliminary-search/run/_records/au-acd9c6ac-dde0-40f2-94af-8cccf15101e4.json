@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/au/acd9c6ac-dde0-40f2-94af-8cccf15101e4",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "acd9c6ac-dde0-40f2-94af-8cccf15101e4",
+  "applicationNumber": "926317",
+  "registrationNumber": "926317",
+  "applicationDate": "2002-09-06",
+  "registrationDate": "2002-09-06",
+  "expiryDate": "2032-09-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-01-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Real estate services including selling, leasing, managing and valuing real estate; real estate and property management services including managing residential, industrial, commercial and retail property; real estate brokerage; real estate investment services, including investment services relating to residential, industrial, commercial, and retail property; real estate and property development services in this class including selling and leasing real estate subdivisions and developments; advisory and consultancy services in relation to real estate, real estate investment and property management; financial services including funds management services, trust management services, investment services, brokerage services; advisory and consultancy services in relation to finance, investment, funds management and trust management",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Real estate and property development services in this class including designing and planning real estate subdivisions and developments; advisory and consultancy services in relation to designing and planning real estate subdivisions and developments",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street W1K 3JP, London",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Real estate services including selling, leasing, managing and valuing real estate; real estate and property management services including managing residential, industrial, commercial and retail property; real estate brokerage; real estate investment services, including investment services relating to residential, industrial, commercial, and retail property; real estate and property development services in this class including selling and leasing real estate subdivisions and developments; advisory and consultancy services in relation to real estate, real estate investment and property management; financial services including funds management services, trust management services, investment services, brokerage services; advisory and consultancy services in relation to finance, investment, funds management and trust management"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Real estate and property development services in this class including designing and planning real estate subdivisions and developments; advisory and consultancy services in relation to designing and planning real estate subdivisions and developments"
+        }
+      ]
+    },
+    "id": "acd9c6ac-dde0-40f2-94af-8cccf15101e4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "3 GRAIN,EAR,CURLED FORM IMPELLER-3,BLADE"
+      }
+    ],
+    "markImageViennaClassification": [
+      "01.15.23",
+      "15.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Level 33 477 Collins Street Melbourne 3000 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "FB Rice Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20020906",
+        "applicationNumber": "926317"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320906",
+      "lastPublicationDate": "20030123",
+      "markCurrentStatus": "REGISTERED: REGISTERED/PROTECTED",
+      "registration": {
+        "registrationDate": "20020906",
+        "registrationNumber": "926317"
+      }
+    },
+    "version": "20250625145723",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/au/acd9c6ac-dde0-40f2-94af-8cccf15101e4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

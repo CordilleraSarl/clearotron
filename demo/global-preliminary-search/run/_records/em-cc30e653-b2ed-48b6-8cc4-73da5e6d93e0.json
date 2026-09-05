@@ -1,0 +1,1125 @@
+{
+  "uri": "/mark/em/cc30e653-b2ed-48b6-8cc4-73da5e6d93e0",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "cc30e653-b2ed-48b6-8cc4-73da5e6d93e0",
+  "applicationNumber": "6463781",
+  "registrationNumber": "6463781",
+  "applicationDate": "2007-11-26",
+  "registrationDate": "2008-09-18",
+  "expiryDate": "2027-11-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2008-04-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "cs",
+      "description": "Financní sluzby; správa majetku a fondu; investování kapitálu; sluzby spojené se správou nemovitostí; pronájem nemovitostí, obytných, maloobchodních, komercních a prumyslových budov a kancelárí; krytí cenných papíru.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "cs",
+      "description": "Developerské (stavební) sluzby; rozvoj pozemku, budov, majetku, bytové výstavby a nemovitostí; výstavba a demolice budov; stavební dozor behem výstavby a demolic; správa stavebních projektu na stavenisti; stavebnictví; protipozární, impregnacní a izolacní sluzby; pokládání kabelu, truhlárství, elektroinstalace, glazurovaní, zednictví, malírské práce a dekorace, zabudovávání a pokládání potrubí, stukování, sádrování, instalatérství, nýtování, pokrývacské práce a montáze lesení; opravy, renovace, restaurování, renovace, výzdoba, údrzba a servis majetku, budov, domu a kancelárí; úklid nemovitostí a budov; poskytování, instalace a údrzba ulicního osvetlení a osvetlení pro podniky a obytné oblasti; výstavba, údrzba, cistení a opravy silnic, kanalizacních systému, výtahu, potrubí, telekomunikacních, vytápecích a osvetlovacích systému a systému pro kontrolu zivotního prostredí; instalace a opravy poplasných systému, vcetne protipozárních a bezpecnostních poplasných zarízení; verejné práce; informacní a poradenské sluzby týkající se výse uvedených sluzeb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Architektonické sluzby; architektonické sluzby vztahující se k rozvoji pozemku; návrhárské sluzby; plánování obytných komunit, nákupních stredisek, stravovacích zarízení, hotelu, budov, stavebních parcel, kancelárí, verejných zarízení a parkovist; návrh vztahující se k obytným nemovitostem; prostorové plánování; urbanistické návrhy a plánování; stavební inspekce (sluzby); monitorovací sluzby; hodnocení bezpecnosti; informacní, konzultacní a poradenské sluzby týkající se výse uvedeného.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "da",
+      "description": "Finansielle tjenesteydelser; formue- og fondsforvaltning; kapitalinvestering; tjenesteydelser vedrørende forvaltning af fast ejendom; leasing af fast ejendom, boliger, detailforretninger, kommercielle og industrielle bygninger og kontorer; fondsbørsmægling.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "da",
+      "description": "Udvikling af fast ejendom; udstykning i forbindelse med jord, bygninger, ejendomme, boliger og fast ejendom; byggevirksomhed og nedrivning; overvågning af bygninger under konstruktion og nedrivning; byggeprojektledelse på stedet; civilingeniørvirksomhed; brandsikring, vandtætning og isolering; kabellægning, tømrerarbejde, el-arbejde, glasarbejde, murerarbejde, malerarbejde og dekoration, tilpasning og lægning af rør, pudsning, blikkenslagerarbejde, nitning, tagdækning og rejsning af stilladser; reparation, renovering, restaurering, istandsættelse, dekoration, vedligeholdelse og service i forbindelse med ejendomme, bygninger, huse og kontorer; rengøring af ejendomme og bygninger; levering, installation og vedligeholdelse af gadebelysning og belysning til erhvervs- og beboelsesområder; konstruktion, vedligeholdelse, rengøring og reparation af veje, afløbssystemer, lifte, rørledninger og apparater til telekommunikation, opvarmning og belysning samt miljøkontrolsystemer; installation og reparation af alarmsystemer, inklusive brand- og sikkerhedsalarmer; offentlige arbejder; information, rådgivning og konsulentvirksomhed vedrørende ovennævnte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Arkitektvirksomhed; arkitektvirksomhed vedrørende udvikling af land; design og planlægning; projektering af boligområder, indkøbscentre, cateringvirksomheder, hoteller, bygninger, ejendomme, kontorer, offentlige faciliteter og parkeringspladser; design i forbindelse med beboelsesejendomme; rumplanlægning; bydesign og -planlægning; virksomhed vedrørende byggeinspektion; landmålingsvirksomhed; sikkerhedsvurdering; informations-, konsulent- og rådgivningsvirksomhed vedrørende ovennævnte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "nl",
+      "description": "Financiële diensten; vermogens- en fondsbeheer; kapitaalinvesteringen; diensten op het gebied van beheer van onroerende goederen; verpachting van onroerende goederen, woningen, detailhandelszaken, commerciële en industriële gebouwen en kantoren; dekking van effecten en obligaties.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "nl",
+      "description": "Vastgoedontwikkeling; ontwikkeling van grond, gebouwen, huizen en onroerend goed; bouw en sloopwerkzaamheden; toezicht op gebouwen tijdens bouw en sloopwerkzaamheden; beheer van bouwprojecten ter plekke; weg- en waterbouw; het vuurvast maken, het waterdicht maken en het isoleren; het leggen van kabels, timmerwerk, het aanleggen van elektrische bedrading, beglazing, metselwerk, schilderwerk en binnendecoraties, het aansluiten en leggen van buizen, stucwerk, loodgieterswerk, klinkwerkzaamheden, dakbedekking en steigerbouw; reparatie, renovatie, herstel, verfraaiing, decoratie, onderhoud en onderhoudsbeurten voor onroerend goed, gebouwen, huizen en kantoren; reiniging van onroerende goederen en gebouwen; verschaffing, installatie en onderhoud van straatverlichting en verlichting voor bedrijfsterreinen en woongebieden; bouw, onderhoud, reiniging en reparatie van wegen, afwateringssystemen, liften, pijpleidingen, telecommunicatie-, verwarmings- en verlichtings- en klimaatbeheersingssystemen; installatie en reparatie van alarmsystemen, waaronder brand- en beveiligingsalarmen; openbare werken; informatie, raadgeving en advisering op dit gebied.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Diensten op het gebied van architectuur; architectuurdiensten met betrekking tot ontwikkeling van terreinen; ontwerp en planning; het plannen van woongemeenschappen, winkelcentra, cateringetablissementen, hotels, gebouwen, bouwterreinen, kantoren, openbare faciliteiten en parkeerterreinen voor auto's; ontwerp met betrekking tot woningen; ruimtevaartuigen; ontwerp en planning van steden; diensten op het gebied van inspectie van gebouwen; grondopmetingsdiensten; evaluatie op het gebied van veiligheid; diensten op het gebied van informatie, consultancy en advisering met betrekking tot het voornoemde.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial services; asset and fund management; capital investment; real estate management services; leasing of real estate, residential, retail, commercial and industrial buildings and offices; stocks and bonds coverage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Architectural services; architectural services relating to the development of land; design and planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to residential properties; space planning; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "et",
+      "description": "Finantsteenused; omandi- ja fondihaldus; kapitaliinvesteeringud; kinnisvarahaldamisteenused; kinnisvara, elamu-, jaemüügi-, kommerts- ja tööstushoonete ning kontorite liisimine; väärtpaberite ja obligatsioonide kindlustus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "et",
+      "description": "Varaarendus; maa, ehitiste, maaomandite, elamuehituse ja kinnisvara arendamine; hoonete ehitus- ja lammutusteenused; hoonete järelevalve ehitamise ja lammutamise ajal; kohapealsed ehitusprojekti juhtimisteenused; tsiviilehitusteenused; tulekindluse tõstmise, veekindluse tõstmise ja isoleerimise teenused; kaabli paigaldamise, tisleritöö, elektrijuhtmeste paigaldamise teenused, klaasimine, müürsepatöö, värvimine ja dekoreerimine, toru sobitamine ja paigaldamine, krohvimine, veevärgitöö, neetimine, katusetegemine ja tellingute püstitamine; kinnisvarade, hoonete, majade ja kontorite remontimine, renoveerimine, restaureerimine, taastamine, kaunistamine, hooldamine ning teenindamine; kinnisvara ja hoonete puhastamine; tänavavalgustuse ja äri- ning elamupiirkondade valgustuse pakkumine, paigaldamine ja hooldamine; teede, ärvoolusüsteemide, liftide, torustike, side, kütte ja valgustuse ning keskkonnakaitse süsteemide ehitamine, hooldamine, puhastamine ja remontimine; häiresüsteemide, sh tulekahju- ja turvaalarmide paigaldamine ning remontimine; avalikud tööd; info- ja nõustamisteenused eelmainitud teenuste kohta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Arhitektiteenused; maa-arendusega seotud arhitektuuriteenused; projekteerimisteenused; elamuühistute, ostukeskuste, toitlustusasutuste, hotellide, hoonete, hooneomandite, kontorite, ühiskondlike hoonete ja autoparklate planeerimise teenused; projekteerimisteenused seoses elamuomanditega; kosmoseaparaadid, kosmoselennuaparaadid; linnakujundus ja planeerimine; ehitusjärelevalve teenused; seireteenused; turvalisuse hinnangud; info- ja nõustamisteenused ning konsultatsioonid eelmainitute kohta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fi",
+      "description": "Rahataloudelliset palvelut; omaisuuden- ja rahastonhoitopalvelut; pääomasijoitukset; kiinteistönhoitopalvelut; kiinteistöjen, asuin-, vähittäiskauppa-, kaupallisten ja teollisten rakennusten ja toimistojen liisaus; osakkeiden ja velkakirjojen käsittely.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fi",
+      "description": "Omaisuuden kehittäminen; maan, rakennusten, kiinteän omaisuuden, asumisen ja kiinteistöjen kehittäminen; rakennusten rakennus- ja purkupalvelut; rakennusten valvonta rakennus- ja purkuvaiheessa; paikan päällä tapahtuvat rakennusprojektien hallintapalvelut; tie- ja vesirakennus; palosuojaus-, vesieristys- ja eristyspalvelut; kaapelointi-, puusepäntyö-, sähköjohdotuspalvelut, lasitus, muuraus, maalaus ja koristelu, putkien kokoonpano ja asennus, rappaus, putkityö, niittaus, kattaminen ja rakennustelineiden pystytys; kiinteistöjen, rakennusten, talojen ja toimistojen korjaus, peruskorjaus, entisöiminen, kunnostus, sisustaminen, kunnossapito ja huolto; kiinteistöjen ja rakennusten siivous; liiketoiminta- ja asuinalueiden katuvalaistuksen ja valaistuksen tarjoaminen, asentaminen ja huolto; teiden, kuivatusjärjestelmien, hissien, putkistojen, tietoliikenne-, lämmitys- ja valaistus- ja ympäristönsuojelujärjestelmien rakentaminen, huolto, puhdistus ja korjaus; hälytysjärjestelmien asennus ja korjaus, mukaan lukien palo- ja turvahälytykset; julkiset työt; niihin liittyvät tiedotus-, neuvonta- ja konsultointipalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Arkkitehtuuripalvelut; maa-alueen kehittämiseen liittyvät arkkitehtoniset palvelut; suunnittelupalvelut; asuinyhteisöjen, ostoskeskusten, ateriapalveluyritysten, hotellien, rakennusten, rakennuskiinteistöjen, toimistojen, julkisten tilojen ja pysäköintialueiden suunnitteluun liittyvät palvelut; asuinkiinteistöihin liittyvät suunnittelupalvelut; tilankäytön suunnittelu; kaupunkipiirustukset ja -suunnittelu; rakennustarkastuspalvelut; maanmittauspalvelut; turvallisuusarvioinnit; edellä mainittuun liittyvät tiedotus-, konsultointi- ja neuvontapalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services financiers; gestion d'actifs et de fonds; investissements de capitaux; services de gestion immobilière; crédit-bail de biens immobiliers, de bâtiments et bureaux résidentiels, de vente au détail, commerciaux et industriels; couverture d'actions et d'obligations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Promotion immobilière; développement foncier, d'immeubles, de propriétés, de maisons et de biens immobiliers; services de construction et de démolition de bâtiments; supervision de bâtiments durant leur construction et leur démolition; services de gestion de projets de construction sur place; génie civil; services d'ignifugation, d'étanchéisation et d'isolation; services de pose de câbles, menuiserie, câblage électrique, vitrage, maçonnerie, peinture et décoration, raccordement et pose de tuyaux, plâtrage, plomberie, rivetage, couverture et montage d'échafaudages; réparation, rénovation, restauration, remise à neuf, décoration, entretien et révision de propriétés, bâtiments, maisons et bureaux; nettoyage de propriétés et de bâtiments; fourniture, installation et entretien de l'éclairage public et de l'éclairage de zones commerciales et résidentielles; construction, entretien, nettoyage et réparation de routes, systèmes d'évacuation de l'eau, ascenseurs, oléoducs, systèmes de télécommunication, de chauffage et d'éclairage et de la protection de l'environnement; installation et réparation de systèmes d'alarme y compris d'alarme incendie et de sécurité; travaux publics; informations, conseils et services de consultation concernant les services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services d'architecte; services d'architecture liés à l'aménagement de terrains; services de planification et de conception; services de planification de communautés résidentielles, centres commerciaux, établissements de restauration, hôtels, bâtiments, biens immobiliers, bureaux, équipements publics et parcs de stationnement de voitures; services de conception liés à des propriétés résidentielles; planification de l'espace; conception et planification urbaines; services d'inspection de bâtiments; services d'arpentage de terrain; évaluations de la sécurité; services d'information, de conseils et d'assistance concernant les services précités.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "de",
+      "description": "Finanzdienstleistungen; Vermögens- und Fondsmanagement; Investmentgeschäfte; Immobilienverwaltungsdienste; Verpachten von Immobilien, Wohn-, Einzelhandels-, kommerziellen und Industriegebäuden sowie Büros; Effektengeschäfte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "de",
+      "description": "Erschließung von Immobilien; Erschließung von Land, Gebäuden, Grundstücken, Wohnhäusern und Immobilien; Bau- und Abrissarbeiten; Aufsicht während Bau- und Abrissarbeiten; Bauprojektmanagement vor Ort; bauingenieurtechnische Dienstleistungen; Brandschutz-, Wasserschutz- und Isolierarbeiten; Kabelverlegung, Zimmermannsarbeiten, elektrische Verkabelung, Verglasungen, Maurerarbeiten, Maler- und Dekorationsarbeiten, Rohrverlegungen, Gipserarbeiten, Klempnerarbeiten, Vernietungen, Dacheindeckung und Gerüstbau; Reparatur, Renovierung, Instandsetzung, Sanierung, Dekoration, Instandhaltung und Pflege von Grundstücken, Gebäuden, Häusern und Büros; Reinigung von Immobilien und Gebäuden; Bereitstellung, Installation und Wartung von Straßenbeleuchtungen und Beleuchtungen für Gewerbe- und Wohngebiete; Bau, Wartung, Reinigung und Reparatur von Straßen, Abwassersystemen, Aufzügen, Rohrleitungen, Telekommunikations-, Heizungs- und Beleuchtungs- und Umweltschutzsystemen; Installation und Reparatur von Alarmanlagen, einschließlich Brand- und Sicherheitsmelder; Bauarbeiten der öffentlichen Hand; Information und Beratung in Bezug auf die vorstehend genannten Leistungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Dienstleistungen im Bereich der Architektur; Architekturleistungen in Bezug auf die Erschließung von Bauland; Gestaltung und Planung; Planung von Wohnvierteln, Einkaufszentren, Catering-Einrichtungen, Hotels, Gebäuden, Baugrundstücken, Büros, öffentlichen Einrichtungen und Parkplätzen; Gestaltung von Wohneigentum; Raumplanung; Stadtgestaltung und -planung; Bauinspektionsdienste; Landvermessungsleistungen; Sicherheitsbewertung; Information und Beratung in Bezug auf alles vorstehend Genannte.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "hu",
+      "description": "Pénzügyi szolgáltatások; vagyon- és alapkezelés; tokebefektetés; ingatlanmenedzsment szolgáltatások; ingatlanok, lakó-, kiskereskedelmi, kereskedelmi és ipari épületek és irodák lízingje; részvény- és kötvényfedezet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "hu",
+      "description": "Ingatlan fejlesztés; telekingatlanok, épületek, tulajdonok, házak és ingatlanok fejlesztése; épületépítési és -bontási szolgáltatások; épületek felügyelete építés és bontás alatt; helyszíni építési tervirányítási szolgáltatások; polgári mérnöki szolgáltatások; tuzállóvá tételi, vízállóvá tételi és szigetelési szolgáltatások; kábelfektetés, famegmunkálás, elektromos huzalozási szolgáltatások, üvegesmunkák, komuvesmunkák, festési és díszítési munkák, csoszerelési és -fektetési munkák, vakolási munkák, vízvezeték-szerelés, szegecselés, tetofedo munkák és állványozás; ingatlanok, épületek, házak és irodák javítása, felújítása, helyreállítása, modernizálása, díszítése, karbantartása és szervizelése; ingatlanok és épületek takarítása; utcai világítás valamint kereskedelmi és lakóterületek világításának biztosítása, szerelése és karbantartása; utak, csatornarendszerek, liftek, csovezetékek, távközlési vonalak, futés és világítás valamint környezetvédelmi rendszerek építése, karbantartása, tisztítása és javítása; riasztórendszerek, köztük tuzjelzok és biztonsági riasztók szerelése és javítása; társadalmi munkálatok; fent említett szolgáltatásokkal kapcsolatos tájékoztatás és tanácsadás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Építészeti szolgáltatás; az ingatlanfejlesztéssel kapcsolatos építészeti szolgáltatások; tervezo szolgáltatás; lakóközösségi épületek, bevásárlóközpontok, vendéglátóipari létesítmények, szállodák, épületek, lakótelepek, irodák, közösségi létesítmények és autóparkolók tervezéséhez kapcsolódó szolgáltatások; lakóingatlanokhoz kapcsolódó tervezési szolgáltatások; tér tervezése; városépítészeti és -tervezési szolgáltatások; építkezés muszaki ellenorzése (mint szolgáltatás); (tér)figyelo szolgáltatások; biztonsági/balesetvédelmi értékelés; fentiekkel kapcsolatos tájékoztató és tanácsadó szolgáltatás.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "it",
+      "description": "Servizi finanziari; gestione di patrimoni e di fondi; investimento di capitali; servizi di gestione di beni immobiliari; leasing di beni immobili, edifici residenziali, per vendita al dettaglio, commerciali ed industriali ed uffici; mediazione in borsa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "it",
+      "description": "Sviluppo edilizio; sviluppo di terreni, edifici, proprietà, alloggiamenti e beni immobili; costruzione e demolizione d'edifici; supervisione d'edifici durante la costruzione e la demolizione; gestione di progetti edili in loco; servizi d'ingegneria civile; ignifugazione, impermeabilizzazione ed isolamento; posa di cavi, carpenteria, impianti elettrici, vetratura, muratura, pittura e decorazione, installazione e posa di tubi, intonacatura, impianti idraulici, chiodatura, montaggio di tetti e impalcature; riparazione, rinnovo, ripristino, restauro, decorazione, manutenzione ed assistenza in materia di proprietà, edifici, abitazioni ed uffici; pulizia di proprietà ed edifici; fornitura, installazione e manutenzione d'illuminazione stradale ed illuminazione per aree aziendali e residenziali; costruzione, manutenzione, pulizia e riparazione in materia di strade, sistemi di drenaggio, ascensori, tubature, telecomunicazioni, riscaldamento ed illuminazione, nonché sistemi di controllo ambientale; installazione e riparazione di sistemi d'allarme, compresi allarmi antincendio e di sicurezza; opere pubbliche; informazione e consulenza relative ai suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi architettonici; servizi d'architetti in materia di sviluppo del territorio; servizi di progettazione e di programmazione; servizi per pianificazione di comunità residenziali, centri commerciali, strutture per catering, alberghi, edifici, proprietà immobiliari, uffici, strutture pubbliche e parcheggi; progettazione in materia di proprietà residenziali; progettazione di spazi; progettazione e pianificazione urbanistica; servizi di ispezione di edifici; misurazioni di terreni; valutazioni di sicurezza; servizi di informazione e di consulenza relativi ai suddetti servizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lt",
+      "description": "Finansines paslaugos; turto ir vertybiu valdymas; kapitalo investavimas; nekilnojamojo turto valdymo paslaugos; nekilnojamojo turto, gyvenamuju, mazmenines prekybos, komerciniu ir pramoniniu pastatu ir biuru isperkamoji nuoma; akciju ir obligaciju draudimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lt",
+      "description": "Turto didinimas; zemes, pastatu, nuosavybes, namu ir nekilnojamojo turto pletra; pastatu statybos ir griovimo paslaugos; pastatu prieziura vykstant statyboms ir griovimui; vietoje teikiamos statybos projektu valdymo paslaugos; civilines inzinerijos paslaugos; atsparumo ugniai, atsparumo vandeniui suteikimas ir izoliavimo paslaugos; kabeliu tiesimas, staliaus darbai, elektros laidu isvedziojimo paslaugos, istiklinimas, murijimo darbai, dazymo darbai ir dekoravimo paslaugos, vamzdziu pritaikymo ir tiesimo paslaugos, tinkavimo darbai, santechnikos darbai, kniedijimo darbai, stogo dengimas ir pastoliu montavimas; nuosavybes, pastatu, namu ir biuru remontas, renovacija, atstatymas, atnaujinimas, apdaila, technine prieziura ir aptarnavimo paslaugos; nuosavybes ir pastatu valymas; gatves apsvietimo bei verslo ir gyvenamuju teritoriju apsvietimo teikimas, irengimas ir prieziura; keliu, drenazo sistemu, liftu, vamzdynu, telekomunikaciju, sildymo ir apsvietimo bei aplinkosaugos kontroles sistemu montavimas, technine prieziura, valymas ir taisymas; signalizacijos sistemu, iskaitant gaisrines ir apsaugos signalizacijas, irengimas ir taisymas; viesieji darbai; informacija ir konsultacines paslaugos, susijusios su auksciau nurodytosiomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Architekturines paslaugos; architekto paslaugos, susijusios su zemes nuosavybes pletra; projektavimo paslaugos; gyvenamuju namu bendruomeniu, prekybos centru, viesojo maitinimo istaigu, viesbuciu, pastatu, statiniu, biuru, viesosios infrastrukturos ir automobiliu parku planavimo paslaugos; projektavimo paslaugos, susijusios su gyvenamaja nuosavybe; erdves planavimas; miestu statybos projektavimas ir planavimas; pastatu apziuros paslaugos; stebejimo paslaugos; saugumo vertinimas; informacijos, konsultaciju ir patarimu paslaugos, susijusios su anksciau nurodytomis paslaugomis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "lv",
+      "description": "Finansu pakalpojumi; Ipasumu un fondu vadiba; kapitala investesana; nekustama ipasuma vadibas pakalpojumi; nekustama ipasuma, dzivojamo, mazumtirdzniecibas un rupniecisko eku un biroju noma; akciju un saistibu nodrosinajums.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "lv",
+      "description": "Ipasuma apbuve; zemes, eku, ipasumu, maju un nekustama ipasuma attistisana; eku celtniecibas un nojauksanas pakalpojumi; eku buvuzraudziba celtniecibas un sagrausanas laika; buvprojektu vadiba uz vietas; civilas celtniecibas pakalpojumi; ugunsdrosibas, udensdrosibas un izolesanas pakalpojumi; kabelu ievilksanas, galdniecibas, elektriska vadojuma pakalpojumi, iestiklosana, murnieciba, krasosana darbi un dekoresana, caurulu pielagosana un ievilksana, apmetumu darbi, caurulvadu liksana, kniedesana, jumtu segumu un sastatnu uzliesana; ipasumu, eku, maju un biroju remonts, atjaunosana, rekonstrukcija, labiekartosana, dekoresana, apkope un apkalposana; ipasumu un eku tirisana; ielu apgaismojuma un uznemejdarbibas un dzivojamo teritoriju apgaismosanas nodrosinasana, uzstadisana un apkope; celu, kanalizacijas sistemu, liftu, caurulvadu, telekomunikaciju, apkures un apgaismosanas un vides kontroles sistemu buvnieciba, apkope, tirisana un remonts; trauksmes sistemu, tostarp ugunsgreka un drosibas trauksmju, uzstadisana un remonts; sabiedriskie darbi; informacijas un padomdeveju pakalpojumi, kas saistiti ar ieprieksminetajiem pakalpojumiem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Arhitekturas pakalpojumi; arhitekturas pakalpojumi saistiba ar zemes attistisanu; projektesanas pakalpojumi; pakalpojumi dzivojamo mikrorajonu, tirdzniecibas centru, edinasanas uznemumu, viesnicu, eku, eku ipasumu, biroju, sabiedrisko telpu un automasinu stavvietu planosanai; projektesanas pakalpojumi saistiba ar dzivojamajiem ipasumiem; telpas planosana; pilsetplanosana un projektesana; eku parbaudes pakalpojumi; uzraudzisanas pakalpojumi; drosibas novertesana; informacijas, konsultaciju un padomu sniegsana saistiba ar ieprieks mineto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "mt",
+      "description": "Servizzi finanzjarji; gestjoni ta' assi u l-gestjoni ta' fondi; investimenti ta' fondi; servizzi ta' gestjoni ta' proprjetà immobbli; il-kiri ta' proprjetà immobbli bini residenzjali, ghall-bejgh bl-imnut, kummercjali u industrijali u ufficcji; kopertura ta' stokks u bonds.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "mt",
+      "description": "L-izvilupp tal-proprjetà; zvilupp ta' l-art, bini, proprjetajiet, djar u proprjetà immobbli; twaqqif ta' bini u servizzi tat-twaqqigh ta' bini; supervizjoni ta' binjiet waqt il-bini u xoghlijiet ta' twaqqigh; servizzi ta' gestjoni ta' progetti tal-bini fuq is-sit; servizzi ta' inginier tal-bini; servizzi ta' rezistenza ghan-nar, rezistenza ghall-ilma u ta' insulazzjoni; tqeghid ta' kejbils, karpenterija, servizzi ghall-moghdija tal-wajers ta' l-elettriku, l-igglejzjar, xoghol tal-gebel, xoghol ta' zebgha u servizzi ta' dekorazzjoni, tqeghid ta' pajpijiet, xoghol ta' kisi bil-gibs, xoghol ta' plàming, xoghlijiet ta' sigillar ghall-irbit, materjal ghas-soqfa u twaqqif tal-pontijiet tal-bennejja; tiswija, rinovazzjoni, restawr, zvilupp mill-gdid, dekorazjoni, manutenzjoni u arrangament ta' proprjetà, bini, djar u ufficcji; it-tindif ta' proprjetà u bini; il-provvista, installazzjoni u manutenzjoni ta' dawl ghat-toroq u dawl ghal skopijiet ta' negozju u postijiet residenzjali; bini, manutenzjoni, tindif u tiswija ta' toroq, sistemi ta' drenagg, liftijiet, pajpijiet, sistemi tal-kontroll tat-telekomunikazzjoni, tishin u dawl u ta' l-ambjent; installazzjoni u tiswija ta' sistemi ta' l-allarm inkluz alalrms tan-nar u ghas-sigurtà; xogholijiet pubblici; servizzi ta' informazzjoni u pariri dwar is-servizzi hawn fuq imsemmija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' arkitettura; servizzi ta' l-arkitettura dwar l-izvilupp ta' l-art; servizzi ta' disinn; servizzi ghall-ippjanar ta' komunitajiet residenzjali centri kummercjali, stabbilimenti ta' l-ikel u x-xorb, lukandi, bini, medda ta' bini, ufficcji, facilitajiet pubblici u postijiet ghall-ipparkjar ta' karrozzi; servizzi tad-disinn relatati ma' proprjetà residenzjali; l-ippjanar ta' l-ispazju; id-disinn u l-ippjanar ta' belt; servizzi ta' spezzjoni ta' bini; servizzi ta' sorveljanza; l-evalwazzjoni tas-sigurtà; servizzi ta' informazzjoni, pariri u konsulenza dwar l-hawn fuq imsemmi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pl",
+      "description": "Uslugi finansowe; zarzadzanie majatkiem i funduszami; inwestycje kapitalowe; uslugi zarzadzania nieruchomosciami; dzierzawa nieruchomosci, obiektów mieszkalnych, detalicznych, komercyjnych, przemyslowych i biurowych; zabezpieczenia akcji i obligacji.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pl",
+      "description": "Budowa nieruchomosci; zagospodarowywanie terenu, budynków, nieruchomosci, budownictwa mieszkaniowego i nieruchomosci; uslugi budowy i rozbiórki budynków; nadzór bydowlany nad pracami budowlanymi i rozbiórka; zarzadzanie projektami budowlanymi na terenie budowy; uslugi inzynierii wodno-ladowej; uslugi w zakresie zabezpieczania przeciwpozarowego, wodoodpornego i izolacji budynków; kladzenie kabli, naprawy stolarskie, uslugi instalacji przewodów elektrycznych, wstawianie szyb, kamieniarstwo, prace malarskie i dekoratorskie, instalacja i kladzenie rur, tynkowanie, uslugi hydrauliczne, nitowanie, uslugi dekarskie i stawianie rusztowan; uslugi w zakresie napraw, renowacji, restauracji, odnawiania, dekoracji, konserwacji i serwisowania nieruchomosci, budynków, domów i biur; sprzatanie nieruchomosci i budynków; udostepnianie, instalacja i konserwacja oswietlenia ulicznego, oswietlenia w budynkach i na terenach mieszkalnych; konstrukcja, konserwacja, sprzatanie i naprawa dróg, systemów drenazowych, wind, rurociagów, systemów telekomunikacyjnych, grzewczych, oswietleniowych i systemów kontroli srodowiskowej; uslugi instalacyjne i naprawcze w zakresie systemów alarmowych, w tym alarmów przeciwpozarowych i przeciwwlamaniowych; roboty publiczne; informacja i poradnictwo w zakresie uprzednio wymienionych uslug.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi architektoniczne; uslugi architektoniczne dotyczace zagospodarowania terenu; uslugi w zakresie projektowania; uslugi w zakresie planowania spóldzielni mieszkaniowych, centrów handlowych, przedsiebiorstw kateringowych, hoteli, budynków, posiadlosci budowlanych, biur, obiektów uzytecznosci publicznej i parkingów; uslugi projektowe dotyczace nieruchomosci mieszkalnych; planowanie przestrzeni; projekty i planowanie urbanistyczne; uslugi w zakresie inspekcji budowlanych; uslugi w zakresie kontroli; ocena bezpieczenstwa; uslugi informacyjne, konsultacyjne i doradcze, dotyczace uprzednio wymienionych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "pt",
+      "description": "Serviços financeiros; gestão de patrimónios e gestão de fundos; investimento de capitais; serviços de gestão imobiliária; arrendamento (leasing) de imóveis, edifícios residenciais, de lojas de venda a retalho, comerciais e industriais e de escritórios; cobertura de acções e obrigações.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "pt",
+      "description": "Urbanização de propriedades; urbanização de terrenos, construções, propriedades, habitação e bens imobiliários; serviços de construção e de demolição de edifícios; supervisão de edifícios durante a construção e a demolição; serviços de gestão de projectos de construção no local; engenharia civil; serviços de ignifugação, impermeabilização e de isolamento; assentamento de cabos, carpintaria, serviços de ligações eléctricas, envidraçamento, alvenaria, pintura e decoração, montagem e colocação de canos/tubagens, reboco, canalização, rebitagem, colocação de telhados e instalação de andaimes; reparação, renovação, restauro, modernização, decoração, manutenção e assistência em relação com propriedades, edifícios, habitações e escritórios; limpeza de propriedades e edifícios; fornecimento, instalação e manutenção de iluminação pública e de iluminação para zonas comerciais e residenciais; construção, manutenção, limpeza e reparação de estradas, sistemas de esgotos, ascensores, condutas, sistemas de telecomunicação, aquecimento e iluminação e de controlo ambiental; instalação e reparação de sistemas de alarme, incluindo alarmes de incêndio e de segurança; obras públicas; informações, assessoria e consultadoria relacionados com os mesmos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de arquitectura; serviços de arquitectura relacionados com a urbanização de terrenos; serviços de concepção e planeamento; serviços de planeamento de comunidades residenciais, centros comerciais, estabelecimentos de fornecimento de comida e bebida, hotéis, edifícios, terrenos para construção, escritórios, instalações públicas e parques de estacionamento; serviços de concepção relacionados com imóveis residenciais; planeamento do espaço; serviços de concepção e planeamento urbanos; serviços de inspecção de construções; serviços de agrimensura; avaliação da segurança; serviços de informação, consultadoria e assessoria relacionados com os serviços atrás referidos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ro",
+      "description": "Servicii de finantare; administrare de fonduri si active; plasare de fonduri; servicii de administrare de bunuri imobiliare; leasing de bunuri imobiliare, cladiri si birouri rezidentiale, pentru spatii de vanzare, comerciale si industriale; acoperire de actiuni si obligatiuni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ro",
+      "description": "Promovarea imobiliara; amenajare de terenuri, cladiri, proprietati, case si bunuri imobiliare; servicii de constructie si demolare de cladiri; supervizarea cladirilor pe perioada constructiei si demolarii; servicii de project management in constructii la fata locului; constructii civile; servicii de ignifugare, impermeabilizare si izolare; instalare de cabluri, lucrari de dulgherie, servicii de montare de fire electrice, lucrari de tamplarie, lucrari de zugravire si decorare, montare si amplasare de tevi, tencuire, lucrari de instalare, nituire, aplicarea acoperisului si ridicare de schele; reparare, renovare, restaurare, remobilare, decorare, intretinere si deservire de proprietati, cladiri, case si birouri; curatare de proprietati si cladiri; furnizarea, instalarea si intretinerea iluminatului stradal si pentru zonele comerciale si rezidentiale; constructii, intretinere, curatare si reparare de drumuri, sisteme de canalizare, lifturi, conducte, sisteme de telecomunicatii, de sisteme de incalzire si de iluminare si de sisteme de controlare a mediului; instalare si reparare de sisteme de alarma, inclusiv de alarme de incendiu si alarme de siguranta; lucrari publice; activitate de informare, consultanta privind toate serviciile de mai sus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii arhitecturale; servicii de arhitectura legate de dezvoltarea terenurilor; servicii de proiectare si sistematizare; servicii de planificare pentru comunitati rezidentiale, centre comerciale, firme de catering, hoteluri, cladiri, bunuri imobiliare, birouri, institutii publice si parcuri de masini; servicii de proiectare pentru proprietati rezidentiale; planificarea spatiilor; proiectare si planificare urbana; servicii de control al cladirilor; servicii de expertiza; evaluarea gradului de siguranta; servicii de informatii, consultanta si consiliere în domeniul celor mentionate anterior.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sk",
+      "description": "Financné sluzby; manazment kapitálu a fondov; kapitálové investície; sluzby v oblasti správy nehnutelností; lízing nehnutelností, obytných, maloobchodných, komercných a priemyselných budov a kancelárií; sprostredkovanie cenných papierov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sk",
+      "description": "Rozvoj/zveladenie majetku; rozvoj pozemkov, budov, nehnutelností a domov; stavebné a demolicné sluzby; dozor nad výstavbou a búraním budov; sluzby v oblasti riadenia stavebných projektov na mieste; stavebnícke sluzby; sluzby v oblasti predchádzania poziarom, utesnovania pred úcinkami vody a izolovania; pokladanie káblov, stolárske práce, sluzby rozvodu elektrických káblov, zasklievanie okien, murárske práce, maliarske práce, pokladanie potrubí, stukovanie, sadrovanie, instalatérstvo, nitovanie, pokrývacské práce na strechách budov a montáz lesenia; oprava, renovácia, obnova, vybavovanie interiérov, údrzba a servis nehnutelností, budov a kancelárií; cistenie pozemkov a budov; poskytovanie, instalácia a údrzba poulicného osvetlenia a osvetlenia pre obchodné a obytné plochy; výstavba, údrzba, cistenie a oprava ciest, odtokových systémov, výtahov, potrubí, telekomunikacných, vykurovacích a osvetlovacích systémov a systémov na riadenie prostredia v budovách; instalácia a oprava poplasných systémov, vrátane poziarnych a bezpecnostných poplasných systémov; verejné práce; informacné a poradenské sluzby týkajúce sa vyssie uvedených sluzieb.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Architektonické sluzby; architektonické sluzby v oblasti rozvoja pozemkov; dizajnové sluzby; sluzby v oblasti plánovania obytných komunít, nákupných stredísk, stravovacích zariadení, hotelov, budov, kancelárií, verejných zariadení a parkovísk; návrhárske sluzby v oblasti obytných nehnutelností; kozmické dopravné prostriedky; mestské plánovanie; sluzby stavebnej inspekcie; monitorovacie sluzby; hodnotenie bezpecnosti; informacné, konzultacné a poradenské sluzby týkajúce sa vyssie uvedeného.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sl",
+      "description": "Financne storitve; upravljanje s premozenjem in kapitalom; kapitalske investicije; storitve upravljanja nepremicnin; dajanje v zakup nepremicnin, stanovanjskih, maloprodajnih, komercialnih in industrijskih zgradb in pisarn; kritje delnic in obveznic.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sl",
+      "description": "Razvoj objektov; razvoj zemljisc, zgradb, lastnine, stanovanjskih objektov in nepremicnin; storitve gradnje in rusenja zgradb; nadzor zgradb med gradnjo in rusenjem; storitve terenskega gradbenega projektnega upravljanja; storitve gradnje objektov nizke gradnje; ognjevarne, vodoodporne in izolacijske storitve; polaganje kablov, tesarska dela, storitve elektricnega ozicenja, steklarska dela, zidarska dela, slikopleskarska dela in storitve notranje opreme, pritrjevanje in polaganje cevi, stukaterstvo, kleparstvo, kovicenje, storitve krovcev in gradnja zidarskih odrov; popravilo, obnova, restavracija, prenova, pleskanje, vzdrzevanje in servisiranje nepremicnin, zgradb, his in pisarn; ciscenje nepremicnin in zgradb; nudenje, montaza in vzdrzevanje ulicne razsvetljave in osvetljave na poslovnih in stanovanjskih obmocjih; gradnja, vzdrzevanje, ciscenje in popravilo cest, drenaznih sistemov, dvigal, cevovodov, telekomunikacij, ogrevanja in osvetljevanje in sistemov za nadzor okolja; montaza in popravilo alarmnih sistemov, vkljucno s pozarnimi in varnostnimi alarmi; javna dela; informacijske in svetovalne storitve v zvezi z omenjenimi storitvami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Arhitekturne storitve; arhitekturne storitve v zvezi z razvojem zemljisc; oblikovalske storitve; storitve za nacrtovanje stanovanjskih skupnosti, nakupovalnih sredisc, kateringa, hotelov, zgradb, naselij, pisarn, javnih zgradb in parkirisc; storitve oblikovanja v zvezi z stanovanjskimi nepremicninami; prostorsko nacrtovanje; urbanisticni razvoj in nacrtovanje; storitve gradbene inspekcije; nadzorne storitve; ocena varnosti; informacijske, posvetovalne in svetovalne storitve v zvezi z omenjenim.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios financieros; administración de patrimonios y de fondos; inversión de capitales; servicios de administración de bienes inmuebles; arrendamiento de bienes inmuebles, edificios y oficinas residenciales, al por menor, comerciales e industriales; cobertura de acciones y bonos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Desarrollo de propiedades inmobiliarias; urbanización de terrenos, edificios, propiedades, viviendas y bienes inmobiliarios; servicios de construcción y derribo de edificios; supervisión de edificios durante la construcción y el derribo; servicios de gestión de proyectos para la construcción in situ; ingeniería civil; servicios de ignifugación, impermeabilización y aislamiento; colocación de cables, carpintería, cableado eléctrico, acristalamiento, albañilería, pintura y decoración, instalación y tendido de tubos, enlucido, fontanería, remachado, techado y montaje de andamios; reparación, renovación, restauración, reacondicionamiento, decoración, mantenimiento y revisión de propiedades, edificios, casas y oficinas; limpieza de propiedad y edificios; suministro, instalación y mantenimiento de iluminación de calles y alumbrado para zonas de empresas y residenciales; construcción, mantenimiento, limpieza y reparación de carreteras, sistemas de drenaje, montacargas, oleoductos, telecomunicaciones, sistemas de control de alumbrado y ambiental; instalación y reparación de sistemas de alarma incluyendo alarmas de incendios y seguridad; obras públicas; servicios de información, asesoría y consultoría relativos a los mismos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios arquitectónicos; servicios arquitectónicos relacionados con el desarrollo del suelo; servicios de diseño y de planificación; servicios para planificar comunidades residenciales, centros para hacer compras, establecimientos de catering, hoteles, construcciones, fincas de construcción, oficinas, instalaciones públicas y aparcamientos de coches; servicios de diseño relacionados con propiedades residenciales; planificación de espacios; diseño y planificación urbanísticos; servicios de inspección de construcciones; servicios de agrimensura; evaluaciones de la seguridad; servicios de información, consultoría y asesoría relacionados con los servicios mencionados.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "sw",
+      "description": "Finansiella tjänster; förmögenhets- och fondförvaltningstjänster; kapitalinvestering; fastighetsförvaltningstjänster; leasing av fastigheter, bostads-, detaljhandels-, kommersiella och industriella byggnader och kontor; täckning av aktier och obligationer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "sw",
+      "description": "Fastighetsexploatering; exploatering av mark, byggnader, egendomar, bostäder och fastigheter; tjänster avseende uppförande/anläggande och rivning av byggnationer; övervakning av byggnader under byggnation och rivning; tjänster avseende ledning av byggnadsprojekt på plats; väg- och vattenbyggnad; brandsäkerhets-, vattensäkerhets- och isoleringstjänster; kabeldragning, snickeri, elektrisk ledningsdragning, glasning, murning, målning och dekorering, rörmontering och -läggning, gipsning, rörmokeri, nitning, takläggning och resande av byggnadsställningar; reparation, renovering, restaurering, upprustning, dekoration, underhåll och service av fastigheter, byggnader, hus och kontor; städning av fastigheter och byggnader; tillhandahållande, installation och underhåll av gatubelysning och belysning av affärs- och bostadsområden; konstruktion, underhåll, rengöring och reparation av vägar, dräneringssystem, lyftar, rörledningar, telekommunikation, uppvärmning och belysning och kontrollsystem avseende miljön; installation och reparation av larmsystem inklusive brand- och säkerhetsalarm; offentliga arbeten; information, rådgivning och konsulttjänster med avseende därpå.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Arkitekttjänster; arkitekttjänster avseende landutveckling; formgivnings- och planeringstjänster; tjänster avseende planeringen av bostadscentra, köpcentra, catering-verksamheter, hotell, byggnader, bostadsområden, kontor, offentliga anläggningar och bilparkeringar; designtjänster avseende bostadshus; planering av utrymmen; stadsutformning och -planering; byggnadsbesiktning; mätning av mark; säkerhetsutvärdering; information, konsulttjänster och rådgivning med avseende på ovannämnda tjänster.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Marks & Clerk LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street,London, W1K 3JP",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Financní sluzby; správa majetku a fondu; investování kapitálu; sluzby spojené se správou nemovitostí; pronájem nemovitostí, obytných, maloobchodních, komercních a prumyslových budov a kancelárí; krytí cenných papíru."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Developerské (stavební) sluzby; rozvoj pozemku, budov, majetku, bytové výstavby a nemovitostí; výstavba a demolice budov; stavební dozor behem výstavby a demolic; správa stavebních projektu na stavenisti; stavebnictví; protipozární, impregnacní a izolacní sluzby; pokládání kabelu, truhlárství, elektroinstalace, glazurovaní, zednictví, malírské práce a dekorace, zabudovávání a pokládání potrubí, stukování, sádrování, instalatérství, nýtování, pokrývacské práce a montáze lesení; opravy, renovace, restaurování, renovace, výzdoba, údrzba a servis majetku, budov, domu a kancelárí; úklid nemovitostí a budov; poskytování, instalace a údrzba ulicního osvetlení a osvetlení pro podniky a obytné oblasti; výstavba, údrzba, cistení a opravy silnic, kanalizacních systému, výtahu, potrubí, telekomunikacních, vytápecích a osvetlovacích systému a systému pro kontrolu zivotního prostredí; instalace a opravy poplasných systému, vcetne protipozárních a bezpecnostních poplasných zarízení; verejné práce; informacní a poradenské sluzby týkající se výse uvedených sluzeb."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Architektonické sluzby; architektonické sluzby vztahující se k rozvoji pozemku; návrhárské sluzby; plánování obytných komunit, nákupních stredisek, stravovacích zarízení, hotelu, budov, stavebních parcel, kancelárí, verejných zarízení a parkovist; návrh vztahující se k obytným nemovitostem; prostorové plánování; urbanistické návrhy a plánování; stavební inspekce (sluzby); monitorovací sluzby; hodnocení bezpecnosti; informacní, konzultacní a poradenské sluzby týkající se výse uvedeného."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Finansielle tjenesteydelser; formue- og fondsforvaltning; kapitalinvestering; tjenesteydelser vedrørende forvaltning af fast ejendom; leasing af fast ejendom, boliger, detailforretninger, kommercielle og industrielle bygninger og kontorer; fondsbørsmægling."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Udvikling af fast ejendom; udstykning i forbindelse med jord, bygninger, ejendomme, boliger og fast ejendom; byggevirksomhed og nedrivning; overvågning af bygninger under konstruktion og nedrivning; byggeprojektledelse på stedet; civilingeniørvirksomhed; brandsikring, vandtætning og isolering; kabellægning, tømrerarbejde, el-arbejde, glasarbejde, murerarbejde, malerarbejde og dekoration, tilpasning og lægning af rør, pudsning, blikkenslagerarbejde, nitning, tagdækning og rejsning af stilladser; reparation, renovering, restaurering, istandsættelse, dekoration, vedligeholdelse og service i forbindelse med ejendomme, bygninger, huse og kontorer; rengøring af ejendomme og bygninger; levering, installation og vedligeholdelse af gadebelysning og belysning til erhvervs- og beboelsesområder; konstruktion, vedligeholdelse, rengøring og reparation af veje, afløbssystemer, lifte, rørledninger og apparater til telekommunikation, opvarmning og belysning samt miljøkontrolsystemer; installation og reparation af alarmsystemer, inklusive brand- og sikkerhedsalarmer; offentlige arbejder; information, rådgivning og konsulentvirksomhed vedrørende ovennævnte."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Arkitektvirksomhed; arkitektvirksomhed vedrørende udvikling af land; design og planlægning; projektering af boligområder, indkøbscentre, cateringvirksomheder, hoteller, bygninger, ejendomme, kontorer, offentlige faciliteter og parkeringspladser; design i forbindelse med beboelsesejendomme; rumplanlægning; bydesign og -planlægning; virksomhed vedrørende byggeinspektion; landmålingsvirksomhed; sikkerhedsvurdering; informations-, konsulent- og rådgivningsvirksomhed vedrørende ovennævnte."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Financiële diensten; vermogens- en fondsbeheer; kapitaalinvesteringen; diensten op het gebied van beheer van onroerende goederen; verpachting van onroerende goederen, woningen, detailhandelszaken, commerciële en industriële gebouwen en kantoren; dekking van effecten en obligaties."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Vastgoedontwikkeling; ontwikkeling van grond, gebouwen, huizen en onroerend goed; bouw en sloopwerkzaamheden; toezicht op gebouwen tijdens bouw en sloopwerkzaamheden; beheer van bouwprojecten ter plekke; weg- en waterbouw; het vuurvast maken, het waterdicht maken en het isoleren; het leggen van kabels, timmerwerk, het aanleggen van elektrische bedrading, beglazing, metselwerk, schilderwerk en binnendecoraties, het aansluiten en leggen van buizen, stucwerk, loodgieterswerk, klinkwerkzaamheden, dakbedekking en steigerbouw; reparatie, renovatie, herstel, verfraaiing, decoratie, onderhoud en onderhoudsbeurten voor onroerend goed, gebouwen, huizen en kantoren; reiniging van onroerende goederen en gebouwen; verschaffing, installatie en onderhoud van straatverlichting en verlichting voor bedrijfsterreinen en woongebieden; bouw, onderhoud, reiniging en reparatie van wegen, afwateringssystemen, liften, pijpleidingen, telecommunicatie-, verwarmings- en verlichtings- en klimaatbeheersingssystemen; installatie en reparatie van alarmsystemen, waaronder brand- en beveiligingsalarmen; openbare werken; informatie, raadgeving en advisering op dit gebied."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Diensten op het gebied van architectuur; architectuurdiensten met betrekking tot ontwikkeling van terreinen; ontwerp en planning; het plannen van woongemeenschappen, winkelcentra, cateringetablissementen, hotels, gebouwen, bouwterreinen, kantoren, openbare faciliteiten en parkeerterreinen voor auto's; ontwerp met betrekking tot woningen; ruimtevaartuigen; ontwerp en planning van steden; diensten op het gebied van inspectie van gebouwen; grondopmetingsdiensten; evaluatie op het gebied van veiligheid; diensten op het gebied van informatie, consultancy en advisering met betrekking tot het voornoemde."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial services; asset and fund management; capital investment; real estate management services; leasing of real estate, residential, retail, commercial and industrial buildings and offices; stocks and bonds coverage."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; civil engineering; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Architectural services; architectural services relating to the development of land; design and planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to residential properties; space planning; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Finantsteenused; omandi- ja fondihaldus; kapitaliinvesteeringud; kinnisvarahaldamisteenused; kinnisvara, elamu-, jaemüügi-, kommerts- ja tööstushoonete ning kontorite liisimine; väärtpaberite ja obligatsioonide kindlustus."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Varaarendus; maa, ehitiste, maaomandite, elamuehituse ja kinnisvara arendamine; hoonete ehitus- ja lammutusteenused; hoonete järelevalve ehitamise ja lammutamise ajal; kohapealsed ehitusprojekti juhtimisteenused; tsiviilehitusteenused; tulekindluse tõstmise, veekindluse tõstmise ja isoleerimise teenused; kaabli paigaldamise, tisleritöö, elektrijuhtmeste paigaldamise teenused, klaasimine, müürsepatöö, värvimine ja dekoreerimine, toru sobitamine ja paigaldamine, krohvimine, veevärgitöö, neetimine, katusetegemine ja tellingute püstitamine; kinnisvarade, hoonete, majade ja kontorite remontimine, renoveerimine, restaureerimine, taastamine, kaunistamine, hooldamine ning teenindamine; kinnisvara ja hoonete puhastamine; tänavavalgustuse ja äri- ning elamupiirkondade valgustuse pakkumine, paigaldamine ja hooldamine; teede, ärvoolusüsteemide, liftide, torustike, side, kütte ja valgustuse ning keskkonnakaitse süsteemide ehitamine, hooldamine, puhastamine ja remontimine; häiresüsteemide, sh tulekahju- ja turvaalarmide paigaldamine ning remontimine; avalikud tööd; info- ja nõustamisteenused eelmainitud teenuste kohta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Arhitektiteenused; maa-arendusega seotud arhitektuuriteenused; projekteerimisteenused; elamuühistute, ostukeskuste, toitlustusasutuste, hotellide, hoonete, hooneomandite, kontorite, ühiskondlike hoonete ja autoparklate planeerimise teenused; projekteerimisteenused seoses elamuomanditega; kosmoseaparaadid, kosmoselennuaparaadid; linnakujundus ja planeerimine; ehitusjärelevalve teenused; seireteenused; turvalisuse hinnangud; info- ja nõustamisteenused ning konsultatsioonid eelmainitute kohta."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Rahataloudelliset palvelut; omaisuuden- ja rahastonhoitopalvelut; pääomasijoitukset; kiinteistönhoitopalvelut; kiinteistöjen, asuin-, vähittäiskauppa-, kaupallisten ja teollisten rakennusten ja toimistojen liisaus; osakkeiden ja velkakirjojen käsittely."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Omaisuuden kehittäminen; maan, rakennusten, kiinteän omaisuuden, asumisen ja kiinteistöjen kehittäminen; rakennusten rakennus- ja purkupalvelut; rakennusten valvonta rakennus- ja purkuvaiheessa; paikan päällä tapahtuvat rakennusprojektien hallintapalvelut; tie- ja vesirakennus; palosuojaus-, vesieristys- ja eristyspalvelut; kaapelointi-, puusepäntyö-, sähköjohdotuspalvelut, lasitus, muuraus, maalaus ja koristelu, putkien kokoonpano ja asennus, rappaus, putkityö, niittaus, kattaminen ja rakennustelineiden pystytys; kiinteistöjen, rakennusten, talojen ja toimistojen korjaus, peruskorjaus, entisöiminen, kunnostus, sisustaminen, kunnossapito ja huolto; kiinteistöjen ja rakennusten siivous; liiketoiminta- ja asuinalueiden katuvalaistuksen ja valaistuksen tarjoaminen, asentaminen ja huolto; teiden, kuivatusjärjestelmien, hissien, putkistojen, tietoliikenne-, lämmitys- ja valaistus- ja ympäristönsuojelujärjestelmien rakentaminen, huolto, puhdistus ja korjaus; hälytysjärjestelmien asennus ja korjaus, mukaan lukien palo- ja turvahälytykset; julkiset työt; niihin liittyvät tiedotus-, neuvonta- ja konsultointipalvelut."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Arkkitehtuuripalvelut; maa-alueen kehittämiseen liittyvät arkkitehtoniset palvelut; suunnittelupalvelut; asuinyhteisöjen, ostoskeskusten, ateriapalveluyritysten, hotellien, rakennusten, rakennuskiinteistöjen, toimistojen, julkisten tilojen ja pysäköintialueiden suunnitteluun liittyvät palvelut; asuinkiinteistöihin liittyvät suunnittelupalvelut; tilankäytön suunnittelu; kaupunkipiirustukset ja -suunnittelu; rakennustarkastuspalvelut; maanmittauspalvelut; turvallisuusarvioinnit; edellä mainittuun liittyvät tiedotus-, konsultointi- ja neuvontapalvelut."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services financiers; gestion d'actifs et de fonds; investissements de capitaux; services de gestion immobilière; crédit-bail de biens immobiliers, de bâtiments et bureaux résidentiels, de vente au détail, commerciaux et industriels; couverture d'actions et d'obligations."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Promotion immobilière; développement foncier, d'immeubles, de propriétés, de maisons et de biens immobiliers; services de construction et de démolition de bâtiments; supervision de bâtiments durant leur construction et leur démolition; services de gestion de projets de construction sur place; génie civil; services d'ignifugation, d'étanchéisation et d'isolation; services de pose de câbles, menuiserie, câblage électrique, vitrage, maçonnerie, peinture et décoration, raccordement et pose de tuyaux, plâtrage, plomberie, rivetage, couverture et montage d'échafaudages; réparation, rénovation, restauration, remise à neuf, décoration, entretien et révision de propriétés, bâtiments, maisons et bureaux; nettoyage de propriétés et de bâtiments; fourniture, installation et entretien de l'éclairage public et de l'éclairage de zones commerciales et résidentielles; construction, entretien, nettoyage et réparation de routes, systèmes d'évacuation de l'eau, ascenseurs, oléoducs, systèmes de télécommunication, de chauffage et d'éclairage et de la protection de l'environnement; installation et réparation de systèmes d'alarme y compris d'alarme incendie et de sécurité; travaux publics; informations, conseils et services de consultation concernant les services précités."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'architecte; services d'architecture liés à l'aménagement de terrains; services de planification et de conception; services de planification de communautés résidentielles, centres commerciaux, établissements de restauration, hôtels, bâtiments, biens immobiliers, bureaux, équipements publics et parcs de stationnement de voitures; services de conception liés à des propriétés résidentielles; planification de l'espace; conception et planification urbaines; services d'inspection de bâtiments; services d'arpentage de terrain; évaluations de la sécurité; services d'information, de conseils et d'assistance concernant les services précités."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Finanzdienstleistungen; Vermögens- und Fondsmanagement; Investmentgeschäfte; Immobilienverwaltungsdienste; Verpachten von Immobilien, Wohn-, Einzelhandels-, kommerziellen und Industriegebäuden sowie Büros; Effektengeschäfte."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Erschließung von Immobilien; Erschließung von Land, Gebäuden, Grundstücken, Wohnhäusern und Immobilien; Bau- und Abrissarbeiten; Aufsicht während Bau- und Abrissarbeiten; Bauprojektmanagement vor Ort; bauingenieurtechnische Dienstleistungen; Brandschutz-, Wasserschutz- und Isolierarbeiten; Kabelverlegung, Zimmermannsarbeiten, elektrische Verkabelung, Verglasungen, Maurerarbeiten, Maler- und Dekorationsarbeiten, Rohrverlegungen, Gipserarbeiten, Klempnerarbeiten, Vernietungen, Dacheindeckung und Gerüstbau; Reparatur, Renovierung, Instandsetzung, Sanierung, Dekoration, Instandhaltung und Pflege von Grundstücken, Gebäuden, Häusern und Büros; Reinigung von Immobilien und Gebäuden; Bereitstellung, Installation und Wartung von Straßenbeleuchtungen und Beleuchtungen für Gewerbe- und Wohngebiete; Bau, Wartung, Reinigung und Reparatur von Straßen, Abwassersystemen, Aufzügen, Rohrleitungen, Telekommunikations-, Heizungs- und Beleuchtungs- und Umweltschutzsystemen; Installation und Reparatur von Alarmanlagen, einschließlich Brand- und Sicherheitsmelder; Bauarbeiten der öffentlichen Hand; Information und Beratung in Bezug auf die vorstehend genannten Leistungen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Dienstleistungen im Bereich der Architektur; Architekturleistungen in Bezug auf die Erschließung von Bauland; Gestaltung und Planung; Planung von Wohnvierteln, Einkaufszentren, Catering-Einrichtungen, Hotels, Gebäuden, Baugrundstücken, Büros, öffentlichen Einrichtungen und Parkplätzen; Gestaltung von Wohneigentum; Raumplanung; Stadtgestaltung und -planung; Bauinspektionsdienste; Landvermessungsleistungen; Sicherheitsbewertung; Information und Beratung in Bezug auf alles vorstehend Genannte."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Pénzügyi szolgáltatások; vagyon- és alapkezelés; tokebefektetés; ingatlanmenedzsment szolgáltatások; ingatlanok, lakó-, kiskereskedelmi, kereskedelmi és ipari épületek és irodák lízingje; részvény- és kötvényfedezet."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Ingatlan fejlesztés; telekingatlanok, épületek, tulajdonok, házak és ingatlanok fejlesztése; épületépítési és -bontási szolgáltatások; épületek felügyelete építés és bontás alatt; helyszíni építési tervirányítási szolgáltatások; polgári mérnöki szolgáltatások; tuzállóvá tételi, vízállóvá tételi és szigetelési szolgáltatások; kábelfektetés, famegmunkálás, elektromos huzalozási szolgáltatások, üvegesmunkák, komuvesmunkák, festési és díszítési munkák, csoszerelési és -fektetési munkák, vakolási munkák, vízvezeték-szerelés, szegecselés, tetofedo munkák és állványozás; ingatlanok, épületek, házak és irodák javítása, felújítása, helyreállítása, modernizálása, díszítése, karbantartása és szervizelése; ingatlanok és épületek takarítása; utcai világítás valamint kereskedelmi és lakóterületek világításának biztosítása, szerelése és karbantartása; utak, csatornarendszerek, liftek, csovezetékek, távközlési vonalak, futés és világítás valamint környezetvédelmi rendszerek építése, karbantartása, tisztítása és javítása; riasztórendszerek, köztük tuzjelzok és biztonsági riasztók szerelése és javítása; társadalmi munkálatok; fent említett szolgáltatásokkal kapcsolatos tájékoztatás és tanácsadás."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Építészeti szolgáltatás; az ingatlanfejlesztéssel kapcsolatos építészeti szolgáltatások; tervezo szolgáltatás; lakóközösségi épületek, bevásárlóközpontok, vendéglátóipari létesítmények, szállodák, épületek, lakótelepek, irodák, közösségi létesítmények és autóparkolók tervezéséhez kapcsolódó szolgáltatások; lakóingatlanokhoz kapcsolódó tervezési szolgáltatások; tér tervezése; városépítészeti és -tervezési szolgáltatások; építkezés muszaki ellenorzése (mint szolgáltatás); (tér)figyelo szolgáltatások; biztonsági/balesetvédelmi értékelés; fentiekkel kapcsolatos tájékoztató és tanácsadó szolgáltatás."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi finanziari; gestione di patrimoni e di fondi; investimento di capitali; servizi di gestione di beni immobiliari; leasing di beni immobili, edifici residenziali, per vendita al dettaglio, commerciali ed industriali ed uffici; mediazione in borsa."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Sviluppo edilizio; sviluppo di terreni, edifici, proprietà, alloggiamenti e beni immobili; costruzione e demolizione d'edifici; supervisione d'edifici durante la costruzione e la demolizione; gestione di progetti edili in loco; servizi d'ingegneria civile; ignifugazione, impermeabilizzazione ed isolamento; posa di cavi, carpenteria, impianti elettrici, vetratura, muratura, pittura e decorazione, installazione e posa di tubi, intonacatura, impianti idraulici, chiodatura, montaggio di tetti e impalcature; riparazione, rinnovo, ripristino, restauro, decorazione, manutenzione ed assistenza in materia di proprietà, edifici, abitazioni ed uffici; pulizia di proprietà ed edifici; fornitura, installazione e manutenzione d'illuminazione stradale ed illuminazione per aree aziendali e residenziali; costruzione, manutenzione, pulizia e riparazione in materia di strade, sistemi di drenaggio, ascensori, tubature, telecomunicazioni, riscaldamento ed illuminazione, nonché sistemi di controllo ambientale; installazione e riparazione di sistemi d'allarme, compresi allarmi antincendio e di sicurezza; opere pubbliche; informazione e consulenza relative ai suddetti servizi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi architettonici; servizi d'architetti in materia di sviluppo del territorio; servizi di progettazione e di programmazione; servizi per pianificazione di comunità residenziali, centri commerciali, strutture per catering, alberghi, edifici, proprietà immobiliari, uffici, strutture pubbliche e parcheggi; progettazione in materia di proprietà residenziali; progettazione di spazi; progettazione e pianificazione urbanistica; servizi di ispezione di edifici; misurazioni di terreni; valutazioni di sicurezza; servizi di informazione e di consulenza relativi ai suddetti servizi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Finansines paslaugos; turto ir vertybiu valdymas; kapitalo investavimas; nekilnojamojo turto valdymo paslaugos; nekilnojamojo turto, gyvenamuju, mazmenines prekybos, komerciniu ir pramoniniu pastatu ir biuru isperkamoji nuoma; akciju ir obligaciju draudimas."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Turto didinimas; zemes, pastatu, nuosavybes, namu ir nekilnojamojo turto pletra; pastatu statybos ir griovimo paslaugos; pastatu prieziura vykstant statyboms ir griovimui; vietoje teikiamos statybos projektu valdymo paslaugos; civilines inzinerijos paslaugos; atsparumo ugniai, atsparumo vandeniui suteikimas ir izoliavimo paslaugos; kabeliu tiesimas, staliaus darbai, elektros laidu isvedziojimo paslaugos, istiklinimas, murijimo darbai, dazymo darbai ir dekoravimo paslaugos, vamzdziu pritaikymo ir tiesimo paslaugos, tinkavimo darbai, santechnikos darbai, kniedijimo darbai, stogo dengimas ir pastoliu montavimas; nuosavybes, pastatu, namu ir biuru remontas, renovacija, atstatymas, atnaujinimas, apdaila, technine prieziura ir aptarnavimo paslaugos; nuosavybes ir pastatu valymas; gatves apsvietimo bei verslo ir gyvenamuju teritoriju apsvietimo teikimas, irengimas ir prieziura; keliu, drenazo sistemu, liftu, vamzdynu, telekomunikaciju, sildymo ir apsvietimo bei aplinkosaugos kontroles sistemu montavimas, technine prieziura, valymas ir taisymas; signalizacijos sistemu, iskaitant gaisrines ir apsaugos signalizacijas, irengimas ir taisymas; viesieji darbai; informacija ir konsultacines paslaugos, susijusios su auksciau nurodytosiomis paslaugomis."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Architekturines paslaugos; architekto paslaugos, susijusios su zemes nuosavybes pletra; projektavimo paslaugos; gyvenamuju namu bendruomeniu, prekybos centru, viesojo maitinimo istaigu, viesbuciu, pastatu, statiniu, biuru, viesosios infrastrukturos ir automobiliu parku planavimo paslaugos; projektavimo paslaugos, susijusios su gyvenamaja nuosavybe; erdves planavimas; miestu statybos projektavimas ir planavimas; pastatu apziuros paslaugos; stebejimo paslaugos; saugumo vertinimas; informacijos, konsultaciju ir patarimu paslaugos, susijusios su anksciau nurodytomis paslaugomis."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Finansu pakalpojumi; Ipasumu un fondu vadiba; kapitala investesana; nekustama ipasuma vadibas pakalpojumi; nekustama ipasuma, dzivojamo, mazumtirdzniecibas un rupniecisko eku un biroju noma; akciju un saistibu nodrosinajums."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Ipasuma apbuve; zemes, eku, ipasumu, maju un nekustama ipasuma attistisana; eku celtniecibas un nojauksanas pakalpojumi; eku buvuzraudziba celtniecibas un sagrausanas laika; buvprojektu vadiba uz vietas; civilas celtniecibas pakalpojumi; ugunsdrosibas, udensdrosibas un izolesanas pakalpojumi; kabelu ievilksanas, galdniecibas, elektriska vadojuma pakalpojumi, iestiklosana, murnieciba, krasosana darbi un dekoresana, caurulu pielagosana un ievilksana, apmetumu darbi, caurulvadu liksana, kniedesana, jumtu segumu un sastatnu uzliesana; ipasumu, eku, maju un biroju remonts, atjaunosana, rekonstrukcija, labiekartosana, dekoresana, apkope un apkalposana; ipasumu un eku tirisana; ielu apgaismojuma un uznemejdarbibas un dzivojamo teritoriju apgaismosanas nodrosinasana, uzstadisana un apkope; celu, kanalizacijas sistemu, liftu, caurulvadu, telekomunikaciju, apkures un apgaismosanas un vides kontroles sistemu buvnieciba, apkope, tirisana un remonts; trauksmes sistemu, tostarp ugunsgreka un drosibas trauksmju, uzstadisana un remonts; sabiedriskie darbi; informacijas un padomdeveju pakalpojumi, kas saistiti ar ieprieksminetajiem pakalpojumiem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Arhitekturas pakalpojumi; arhitekturas pakalpojumi saistiba ar zemes attistisanu; projektesanas pakalpojumi; pakalpojumi dzivojamo mikrorajonu, tirdzniecibas centru, edinasanas uznemumu, viesnicu, eku, eku ipasumu, biroju, sabiedrisko telpu un automasinu stavvietu planosanai; projektesanas pakalpojumi saistiba ar dzivojamajiem ipasumiem; telpas planosana; pilsetplanosana un projektesana; eku parbaudes pakalpojumi; uzraudzisanas pakalpojumi; drosibas novertesana; informacijas, konsultaciju un padomu sniegsana saistiba ar ieprieks mineto."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi finanzjarji; gestjoni ta' assi u l-gestjoni ta' fondi; investimenti ta' fondi; servizzi ta' gestjoni ta' proprjetà immobbli; il-kiri ta' proprjetà immobbli bini residenzjali, ghall-bejgh bl-imnut, kummercjali u industrijali u ufficcji; kopertura ta' stokks u bonds."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "L-izvilupp tal-proprjetà; zvilupp ta' l-art, bini, proprjetajiet, djar u proprjetà immobbli; twaqqif ta' bini u servizzi tat-twaqqigh ta' bini; supervizjoni ta' binjiet waqt il-bini u xoghlijiet ta' twaqqigh; servizzi ta' gestjoni ta' progetti tal-bini fuq is-sit; servizzi ta' inginier tal-bini; servizzi ta' rezistenza ghan-nar, rezistenza ghall-ilma u ta' insulazzjoni; tqeghid ta' kejbils, karpenterija, servizzi ghall-moghdija tal-wajers ta' l-elettriku, l-igglejzjar, xoghol tal-gebel, xoghol ta' zebgha u servizzi ta' dekorazzjoni, tqeghid ta' pajpijiet, xoghol ta' kisi bil-gibs, xoghol ta' plàming, xoghlijiet ta' sigillar ghall-irbit, materjal ghas-soqfa u twaqqif tal-pontijiet tal-bennejja; tiswija, rinovazzjoni, restawr, zvilupp mill-gdid, dekorazjoni, manutenzjoni u arrangament ta' proprjetà, bini, djar u ufficcji; it-tindif ta' proprjetà u bini; il-provvista, installazzjoni u manutenzjoni ta' dawl ghat-toroq u dawl ghal skopijiet ta' negozju u postijiet residenzjali; bini, manutenzjoni, tindif u tiswija ta' toroq, sistemi ta' drenagg, liftijiet, pajpijiet, sistemi tal-kontroll tat-telekomunikazzjoni, tishin u dawl u ta' l-ambjent; installazzjoni u tiswija ta' sistemi ta' l-allarm inkluz alalrms tan-nar u ghas-sigurtà; xogholijiet pubblici; servizzi ta' informazzjoni u pariri dwar is-servizzi hawn fuq imsemmija."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' arkitettura; servizzi ta' l-arkitettura dwar l-izvilupp ta' l-art; servizzi ta' disinn; servizzi ghall-ippjanar ta' komunitajiet residenzjali centri kummercjali, stabbilimenti ta' l-ikel u x-xorb, lukandi, bini, medda ta' bini, ufficcji, facilitajiet pubblici u postijiet ghall-ipparkjar ta' karrozzi; servizzi tad-disinn relatati ma' proprjetà residenzjali; l-ippjanar ta' l-ispazju; id-disinn u l-ippjanar ta' belt; servizzi ta' spezzjoni ta' bini; servizzi ta' sorveljanza; l-evalwazzjoni tas-sigurtà; servizzi ta' informazzjoni, pariri u konsulenza dwar l-hawn fuq imsemmi."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi finansowe; zarzadzanie majatkiem i funduszami; inwestycje kapitalowe; uslugi zarzadzania nieruchomosciami; dzierzawa nieruchomosci, obiektów mieszkalnych, detalicznych, komercyjnych, przemyslowych i biurowych; zabezpieczenia akcji i obligacji."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Budowa nieruchomosci; zagospodarowywanie terenu, budynków, nieruchomosci, budownictwa mieszkaniowego i nieruchomosci; uslugi budowy i rozbiórki budynków; nadzór bydowlany nad pracami budowlanymi i rozbiórka; zarzadzanie projektami budowlanymi na terenie budowy; uslugi inzynierii wodno-ladowej; uslugi w zakresie zabezpieczania przeciwpozarowego, wodoodpornego i izolacji budynków; kladzenie kabli, naprawy stolarskie, uslugi instalacji przewodów elektrycznych, wstawianie szyb, kamieniarstwo, prace malarskie i dekoratorskie, instalacja i kladzenie rur, tynkowanie, uslugi hydrauliczne, nitowanie, uslugi dekarskie i stawianie rusztowan; uslugi w zakresie napraw, renowacji, restauracji, odnawiania, dekoracji, konserwacji i serwisowania nieruchomosci, budynków, domów i biur; sprzatanie nieruchomosci i budynków; udostepnianie, instalacja i konserwacja oswietlenia ulicznego, oswietlenia w budynkach i na terenach mieszkalnych; konstrukcja, konserwacja, sprzatanie i naprawa dróg, systemów drenazowych, wind, rurociagów, systemów telekomunikacyjnych, grzewczych, oswietleniowych i systemów kontroli srodowiskowej; uslugi instalacyjne i naprawcze w zakresie systemów alarmowych, w tym alarmów przeciwpozarowych i przeciwwlamaniowych; roboty publiczne; informacja i poradnictwo w zakresie uprzednio wymienionych uslug."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi architektoniczne; uslugi architektoniczne dotyczace zagospodarowania terenu; uslugi w zakresie projektowania; uslugi w zakresie planowania spóldzielni mieszkaniowych, centrów handlowych, przedsiebiorstw kateringowych, hoteli, budynków, posiadlosci budowlanych, biur, obiektów uzytecznosci publicznej i parkingów; uslugi projektowe dotyczace nieruchomosci mieszkalnych; planowanie przestrzeni; projekty i planowanie urbanistyczne; uslugi w zakresie inspekcji budowlanych; uslugi w zakresie kontroli; ocena bezpieczenstwa; uslugi informacyjne, konsultacyjne i doradcze, dotyczace uprzednio wymienionych."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços financeiros; gestão de patrimónios e gestão de fundos; investimento de capitais; serviços de gestão imobiliária; arrendamento (leasing) de imóveis, edifícios residenciais, de lojas de venda a retalho, comerciais e industriais e de escritórios; cobertura de acções e obrigações."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Urbanização de propriedades; urbanização de terrenos, construções, propriedades, habitação e bens imobiliários; serviços de construção e de demolição de edifícios; supervisão de edifícios durante a construção e a demolição; serviços de gestão de projectos de construção no local; engenharia civil; serviços de ignifugação, impermeabilização e de isolamento; assentamento de cabos, carpintaria, serviços de ligações eléctricas, envidraçamento, alvenaria, pintura e decoração, montagem e colocação de canos/tubagens, reboco, canalização, rebitagem, colocação de telhados e instalação de andaimes; reparação, renovação, restauro, modernização, decoração, manutenção e assistência em relação com propriedades, edifícios, habitações e escritórios; limpeza de propriedades e edifícios; fornecimento, instalação e manutenção de iluminação pública e de iluminação para zonas comerciais e residenciais; construção, manutenção, limpeza e reparação de estradas, sistemas de esgotos, ascensores, condutas, sistemas de telecomunicação, aquecimento e iluminação e de controlo ambiental; instalação e reparação de sistemas de alarme, incluindo alarmes de incêndio e de segurança; obras públicas; informações, assessoria e consultadoria relacionados com os mesmos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de arquitectura; serviços de arquitectura relacionados com a urbanização de terrenos; serviços de concepção e planeamento; serviços de planeamento de comunidades residenciais, centros comerciais, estabelecimentos de fornecimento de comida e bebida, hotéis, edifícios, terrenos para construção, escritórios, instalações públicas e parques de estacionamento; serviços de concepção relacionados com imóveis residenciais; planeamento do espaço; serviços de concepção e planeamento urbanos; serviços de inspecção de construções; serviços de agrimensura; avaliação da segurança; serviços de informação, consultadoria e assessoria relacionados com os serviços atrás referidos."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de finantare; administrare de fonduri si active; plasare de fonduri; servicii de administrare de bunuri imobiliare; leasing de bunuri imobiliare, cladiri si birouri rezidentiale, pentru spatii de vanzare, comerciale si industriale; acoperire de actiuni si obligatiuni."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Promovarea imobiliara; amenajare de terenuri, cladiri, proprietati, case si bunuri imobiliare; servicii de constructie si demolare de cladiri; supervizarea cladirilor pe perioada constructiei si demolarii; servicii de project management in constructii la fata locului; constructii civile; servicii de ignifugare, impermeabilizare si izolare; instalare de cabluri, lucrari de dulgherie, servicii de montare de fire electrice, lucrari de tamplarie, lucrari de zugravire si decorare, montare si amplasare de tevi, tencuire, lucrari de instalare, nituire, aplicarea acoperisului si ridicare de schele; reparare, renovare, restaurare, remobilare, decorare, intretinere si deservire de proprietati, cladiri, case si birouri; curatare de proprietati si cladiri; furnizarea, instalarea si intretinerea iluminatului stradal si pentru zonele comerciale si rezidentiale; constructii, intretinere, curatare si reparare de drumuri, sisteme de canalizare, lifturi, conducte, sisteme de telecomunicatii, de sisteme de incalzire si de iluminare si de sisteme de controlare a mediului; instalare si reparare de sisteme de alarma, inclusiv de alarme de incendiu si alarme de siguranta; lucrari publice; activitate de informare, consultanta privind toate serviciile de mai sus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii arhitecturale; servicii de arhitectura legate de dezvoltarea terenurilor; servicii de proiectare si sistematizare; servicii de planificare pentru comunitati rezidentiale, centre comerciale, firme de catering, hoteluri, cladiri, bunuri imobiliare, birouri, institutii publice si parcuri de masini; servicii de proiectare pentru proprietati rezidentiale; planificarea spatiilor; proiectare si planificare urbana; servicii de control al cladirilor; servicii de expertiza; evaluarea gradului de siguranta; servicii de informatii, consultanta si consiliere în domeniul celor mentionate anterior."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Financné sluzby; manazment kapitálu a fondov; kapitálové investície; sluzby v oblasti správy nehnutelností; lízing nehnutelností, obytných, maloobchodných, komercných a priemyselných budov a kancelárií; sprostredkovanie cenných papierov."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Rozvoj/zveladenie majetku; rozvoj pozemkov, budov, nehnutelností a domov; stavebné a demolicné sluzby; dozor nad výstavbou a búraním budov; sluzby v oblasti riadenia stavebných projektov na mieste; stavebnícke sluzby; sluzby v oblasti predchádzania poziarom, utesnovania pred úcinkami vody a izolovania; pokladanie káblov, stolárske práce, sluzby rozvodu elektrických káblov, zasklievanie okien, murárske práce, maliarske práce, pokladanie potrubí, stukovanie, sadrovanie, instalatérstvo, nitovanie, pokrývacské práce na strechách budov a montáz lesenia; oprava, renovácia, obnova, vybavovanie interiérov, údrzba a servis nehnutelností, budov a kancelárií; cistenie pozemkov a budov; poskytovanie, instalácia a údrzba poulicného osvetlenia a osvetlenia pre obchodné a obytné plochy; výstavba, údrzba, cistenie a oprava ciest, odtokových systémov, výtahov, potrubí, telekomunikacných, vykurovacích a osvetlovacích systémov a systémov na riadenie prostredia v budovách; instalácia a oprava poplasných systémov, vrátane poziarnych a bezpecnostných poplasných systémov; verejné práce; informacné a poradenské sluzby týkajúce sa vyssie uvedených sluzieb."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Architektonické sluzby; architektonické sluzby v oblasti rozvoja pozemkov; dizajnové sluzby; sluzby v oblasti plánovania obytných komunít, nákupných stredísk, stravovacích zariadení, hotelov, budov, kancelárií, verejných zariadení a parkovísk; návrhárske sluzby v oblasti obytných nehnutelností; kozmické dopravné prostriedky; mestské plánovanie; sluzby stavebnej inspekcie; monitorovacie sluzby; hodnotenie bezpecnosti; informacné, konzultacné a poradenské sluzby týkajúce sa vyssie uvedeného."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Financne storitve; upravljanje s premozenjem in kapitalom; kapitalske investicije; storitve upravljanja nepremicnin; dajanje v zakup nepremicnin, stanovanjskih, maloprodajnih, komercialnih in industrijskih zgradb in pisarn; kritje delnic in obveznic."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Razvoj objektov; razvoj zemljisc, zgradb, lastnine, stanovanjskih objektov in nepremicnin; storitve gradnje in rusenja zgradb; nadzor zgradb med gradnjo in rusenjem; storitve terenskega gradbenega projektnega upravljanja; storitve gradnje objektov nizke gradnje; ognjevarne, vodoodporne in izolacijske storitve; polaganje kablov, tesarska dela, storitve elektricnega ozicenja, steklarska dela, zidarska dela, slikopleskarska dela in storitve notranje opreme, pritrjevanje in polaganje cevi, stukaterstvo, kleparstvo, kovicenje, storitve krovcev in gradnja zidarskih odrov; popravilo, obnova, restavracija, prenova, pleskanje, vzdrzevanje in servisiranje nepremicnin, zgradb, his in pisarn; ciscenje nepremicnin in zgradb; nudenje, montaza in vzdrzevanje ulicne razsvetljave in osvetljave na poslovnih in stanovanjskih obmocjih; gradnja, vzdrzevanje, ciscenje in popravilo cest, drenaznih sistemov, dvigal, cevovodov, telekomunikacij, ogrevanja in osvetljevanje in sistemov za nadzor okolja; montaza in popravilo alarmnih sistemov, vkljucno s pozarnimi in varnostnimi alarmi; javna dela; informacijske in svetovalne storitve v zvezi z omenjenimi storitvami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Arhitekturne storitve; arhitekturne storitve v zvezi z razvojem zemljisc; oblikovalske storitve; storitve za nacrtovanje stanovanjskih skupnosti, nakupovalnih sredisc, kateringa, hotelov, zgradb, naselij, pisarn, javnih zgradb in parkirisc; storitve oblikovanja v zvezi z stanovanjskimi nepremicninami; prostorsko nacrtovanje; urbanisticni razvoj in nacrtovanje; storitve gradbene inspekcije; nadzorne storitve; ocena varnosti; informacijske, posvetovalne in svetovalne storitve v zvezi z omenjenim."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios financieros; administración de patrimonios y de fondos; inversión de capitales; servicios de administración de bienes inmuebles; arrendamiento de bienes inmuebles, edificios y oficinas residenciales, al por menor, comerciales e industriales; cobertura de acciones y bonos."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Desarrollo de propiedades inmobiliarias; urbanización de terrenos, edificios, propiedades, viviendas y bienes inmobiliarios; servicios de construcción y derribo de edificios; supervisión de edificios durante la construcción y el derribo; servicios de gestión de proyectos para la construcción in situ; ingeniería civil; servicios de ignifugación, impermeabilización y aislamiento; colocación de cables, carpintería, cableado eléctrico, acristalamiento, albañilería, pintura y decoración, instalación y tendido de tubos, enlucido, fontanería, remachado, techado y montaje de andamios; reparación, renovación, restauración, reacondicionamiento, decoración, mantenimiento y revisión de propiedades, edificios, casas y oficinas; limpieza de propiedad y edificios; suministro, instalación y mantenimiento de iluminación de calles y alumbrado para zonas de empresas y residenciales; construcción, mantenimiento, limpieza y reparación de carreteras, sistemas de drenaje, montacargas, oleoductos, telecomunicaciones, sistemas de control de alumbrado y ambiental; instalación y reparación de sistemas de alarma incluyendo alarmas de incendios y seguridad; obras públicas; servicios de información, asesoría y consultoría relativos a los mismos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios arquitectónicos; servicios arquitectónicos relacionados con el desarrollo del suelo; servicios de diseño y de planificación; servicios para planificar comunidades residenciales, centros para hacer compras, establecimientos de catering, hoteles, construcciones, fincas de construcción, oficinas, instalaciones públicas y aparcamientos de coches; servicios de diseño relacionados con propiedades residenciales; planificación de espacios; diseño y planificación urbanísticos; servicios de inspección de construcciones; servicios de agrimensura; evaluaciones de la seguridad; servicios de información, consultoría y asesoría relacionados con los servicios mencionados."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Finansiella tjänster; förmögenhets- och fondförvaltningstjänster; kapitalinvestering; fastighetsförvaltningstjänster; leasing av fastigheter, bostads-, detaljhandels-, kommersiella och industriella byggnader och kontor; täckning av aktier och obligationer."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Fastighetsexploatering; exploatering av mark, byggnader, egendomar, bostäder och fastigheter; tjänster avseende uppförande/anläggande och rivning av byggnationer; övervakning av byggnader under byggnation och rivning; tjänster avseende ledning av byggnadsprojekt på plats; väg- och vattenbyggnad; brandsäkerhets-, vattensäkerhets- och isoleringstjänster; kabeldragning, snickeri, elektrisk ledningsdragning, glasning, murning, målning och dekorering, rörmontering och -läggning, gipsning, rörmokeri, nitning, takläggning och resande av byggnadsställningar; reparation, renovering, restaurering, upprustning, dekoration, underhåll och service av fastigheter, byggnader, hus och kontor; städning av fastigheter och byggnader; tillhandahållande, installation och underhåll av gatubelysning och belysning av affärs- och bostadsområden; konstruktion, underhåll, rengöring och reparation av vägar, dräneringssystem, lyftar, rörledningar, telekommunikation, uppvärmning och belysning och kontrollsystem avseende miljön; installation och reparation av larmsystem inklusive brand- och säkerhetsalarm; offentliga arbeten; information, rådgivning och konsulttjänster med avseende därpå."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Arkitekttjänster; arkitekttjänster avseende landutveckling; formgivnings- och planeringstjänster; tjänster avseende planeringen av bostadscentra, köpcentra, catering-verksamheter, hotell, byggnader, bostadsområden, kontor, offentliga anläggningar och bilparkeringar; designtjänster avseende bostadshus; planering av utrymmen; stadsutformning och -planering; byggnadsbesiktning; mätning av mark; säkerhetsutvärdering; information, konsulttjänster och rådgivning med avseende på ovannämnda tjänster."
+        }
+      ]
+    },
+    "id": "cc30e653-b2ed-48b6-8cc4-73da5e6d93e0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "NO BULGARIAN SUPPORTED",
+        "markImageDescriptionLanguageCode": "bg"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "cs"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "da"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "de"
+      },
+      {
+        "markImageDescription": "NO GREEK SUPPORTED",
+        "markImageDescriptionLanguageCode": "el"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "en"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "es"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "et"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "fi"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "fr"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "hu"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "it"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "lt"
+      },
+      {
+        "markImageDescription": "\"GROSVENOR\"",
+        "markImageDescriptionLanguageCode": "lv"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "mt"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "nl"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "pl"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "pt"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "ro"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "sk"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "sl"
+      },
+      {
+        "markImageDescription": "GROSVENOR",
+        "markImageDescriptionLanguageCode": "sw"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "04748",
+        "publicationVolume": "16"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Spaces Boulevard Royal - Zenit, 53 Boulevard Royal,Luxembourg, 2449",
+        "representativeAddressCountryCode": "LU",
+        "representativeAddressCountryName": "Luxembourg",
+        "representativeName": "Marks & Clerk LLP"
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20071126",
+        "applicationNumber": "6463781"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271126",
+      "lastPublicationDate": "20080421",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20080918",
+        "registrationNumber": "6463781"
+      }
+    },
+    "version": "20260511133424",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/em/cc30e653-b2ed-48b6-8cc4-73da5e6d93e0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.827Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

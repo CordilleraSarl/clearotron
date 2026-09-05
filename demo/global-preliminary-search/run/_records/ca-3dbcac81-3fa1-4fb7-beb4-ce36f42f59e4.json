@@ -1,0 +1,305 @@
+{
+  "uri": "/mark/ca/3dbcac81-3fa1-4fb7-beb4-ce36f42f59e4",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "3dbcac81-3fa1-4fb7-beb4-ce36f42f59e4",
+  "applicationNumber": "1500372",
+  "registrationNumber": null,
+  "applicationDate": "2010-10-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-10-30"
+  ],
+  "abandonmentDate": "2014-11-26",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    8,
+    9,
+    16,
+    20,
+    21,
+    24
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        8,
+        9,
+        16,
+        20,
+        21,
+        24
+      ],
+      "language": "en",
+      "description": "(1) Hand tools; razors; cutlery; cutlery sets; cutlery sets with stands; domestic knives; kitchen knives; table cutlery; forks and spoons; scissors, kitchen shears; pocket knives, utility knives, pruning knives; scabbards, canteens and sharpeners for cutlery; knife blocks; hand held cooking implements; tongs, spatulas; food preparation, processing and serving tools and implements; can openers, hand food slicers, hand operated fruit and vegetable peelers, hand operated fruit and vegetable corers, citrus zesters, butter curlers, pizza cutters, planes for food; skewers, nutcrackers, meat tenderizing hammers, potato mashers, spaghetti servers, cake servers and salad servers, serving spoons, ladles; hand-operated garden tools, garden shears, edge trimmers, hedge cutters being hand tools, secateurs. \n(2) Drinking glassware, jugs, carafes; cups; earthenware articles; tableware; mills,namely salt and pepper mills; crockery, namely plates, bowls, cups, mugs, saucers, dishes, platters, serving dishes; measuring cups and spoons for kitchen use; vials, shot glasses, soda siphons, shakers namely salt and pepper shakers, pitchers,jugs, hip-flasks, ice buckets and pails; bakeware, bakeware storage racks, food cooling racks, food moulds, food and baking pans, food trays, food containers, spoons for kitchen use, rolling pins, food skewers, sifters, scrapers, scoops, shakers, spatulas, measuring cups, measuring spoons, brushes, dishes, dish stands, and dish covers, not being goods made of precious metal; corkscrews, bottle openers, drink strainers, drink pourers and dispensers, stirrers, graters, toothpicks, skewers; toothpick containers; ice-cube moulds; portable coolers and bags namely portable coolers for bottles and cans; coasters; bottles, jars, heat-resistant glassware; caps; closures and covers for bottles, jars and other containers; cleaning brushes; cleaning cloths; serving trays and baking trays.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "McPherson's Limited",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "PERRY + CURRIER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Dunlop Road, Mulgrave, Victoria, 3170",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantAddressLines": [
+          "5 Dunlop Road",
+          "Mulgrave, Victoria, 3170"
+        ],
+        "applicantName": "McPherson's Limited"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in AUSTRALIA on wares marked (1) (2)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for AUSTRALIA on May 05, 2011, under No. 1371646 on wares marked (1)",
+        "typeDescription": "Foreign Registration"
+      },
+      {
+        "text": "Registered in or for AUSTRALIA on May 24, 2007, under No. 1138779 on wares marked (2)",
+        "typeDescription": "Foreign Registration"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "06,07,08,09,16,20,21,24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Hand tools; razors; cutlery; cutlery sets; cutlery sets with stands; domestic knives; kitchen knives; table cutlery; forks and spoons; scissors, kitchen shears; pocket knives, utility knives, pruning knives; scabbards, canteens and sharpeners for cutlery; knife blocks; hand held cooking implements; tongs, spatulas; food preparation, processing and serving tools and implements; can openers, hand food slicers, hand operated fruit and vegetable peelers, hand operated fruit and vegetable corers, citrus zesters, butter curlers, pizza cutters, planes for food; skewers, nutcrackers, meat tenderizing hammers, potato mashers, spaghetti servers, cake servers and salad servers, serving spoons, ladles; hand-operated garden tools, garden shears, edge trimmers, hedge cutters being hand tools, secateurs. \n(2) Drinking glassware, jugs, carafes; cups; earthenware articles; tableware; mills,namely salt and pepper mills; crockery, namely plates, bowls, cups, mugs, saucers, dishes, platters, serving dishes; measuring cups and spoons for kitchen use; vials, shot glasses, soda siphons, shakers namely salt and pepper shakers, pitchers,jugs, hip-flasks, ice buckets and pails; bakeware, bakeware storage racks, food cooling racks, food moulds, food and baking pans, food trays, food containers, spoons for kitchen use, rolling pins, food skewers, sifters, scrapers, scoops, shakers, spatulas, measuring cups, measuring spoons, brushes, dishes, dish stands, and dish covers, not being goods made of precious metal; corkscrews, bottle openers, drink strainers, drink pourers and dispensers, stirrers, graters, toothpicks, skewers; toothpick containers; ice-cube moulds; portable coolers and bags namely portable coolers for bottles and cans; coasters; bottles, jars, heat-resistant glassware; caps; closures and covers for bottles, jars and other containers; cleaning brushes; cleaning cloths; serving trays and baking trays."
+        }
+      ]
+    },
+    "id": "3dbcac81-3fa1-4fb7-beb4-ce36f42f59e4",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20141126",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20140903",
+        "descriptionText": "Cancelled - Subsection 16(3)"
+      },
+      {
+        "date": "20140903",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20141103"
+      },
+      {
+        "date": "20140214",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20140214",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20140814"
+      },
+      {
+        "date": "20131030",
+        "descriptionText": "Advertised",
+        "information": "Vol.60 Issue 3079"
+      },
+      {
+        "date": "20131010",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20130926",
+        "descriptionText": "Note to file",
+        "information": "Correction to wares (2)."
+      },
+      {
+        "date": "20130917",
+        "descriptionText": "Note to file",
+        "information": "Correction to claims."
+      },
+      {
+        "date": "20130820",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20130917"
+      },
+      {
+        "date": "20130301",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 14092 To: 14930 / Voir Preuve au dossier/See evidence on File No. 1478226"
+      },
+      {
+        "date": "20130301",
+        "descriptionText": "Agent changed",
+        "information": "From: 14092 To: 14930 / Voir Preuve au dossier/See evidence on File No. 1478226"
+      },
+      {
+        "date": "20121119",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20130519"
+      },
+      {
+        "date": "20121119",
+        "descriptionText": "Remove Default"
+      },
+      {
+        "date": "20120501",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20120701"
+      },
+      {
+        "date": "20111123",
+        "descriptionText": "Remove Default"
+      },
+      {
+        "date": "20111123",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2011/11/21",
+        "responseDate": "20120411"
+      },
+      {
+        "date": "20111101",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20120101"
+      },
+      {
+        "date": "20110411",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20111011"
+      },
+      {
+        "date": "20110221",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20101027",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20101020",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20101020",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "5 Dunlop Road, Mulgrave, Victoria, 3170",
+        "addressLines": [
+          "5 Dunlop Road",
+          "Mulgrave, Victoria, 3170"
+        ],
+        "countryName": "Australia",
+        "name": "McPherson's Limited"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3079",
+        "publicationVolume": "60"
+      }
+    ],
+    "recordLastUpdated": "20260527",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "PERRY + CURRIER",
+          "2345 Yonge Street, Suite 405",
+          "Toronto",
+          "ONTARIO M4P2E5"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "PERRY + CURRIER"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20141126",
+      "active": false,
+      "allowanceDate": [
+        "20140214"
+      ],
+      "application": {
+        "applicationDate": "20101020",
+        "applicationNumber": "1500372"
+      },
+      "approvalDate": "20131010",
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20141103",
+        "sentDate": "20140903"
+      },
+      "extension": {
+        "approvalDate": [
+          "20111123"
+        ],
+        "dueDate": "20120411"
+      },
+      "formalisationDate": "20101027",
+      "markCurrentStatus": "Abandoned - Section 36",
+      "publicationDate": [
+        "20131030"
+      ],
+      "registrationFee": {
+        "dueDate": "20140814",
+        "requestDate": "20140214"
+      }
+    },
+    "subjectHeadings": [
+      "GROSVENOR"
+    ],
+    "version": "20260527090102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR",
+      "markVerbalElementTextFormal": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/ca/3dbcac81-3fa1-4fb7-beb4-ce36f42f59e4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

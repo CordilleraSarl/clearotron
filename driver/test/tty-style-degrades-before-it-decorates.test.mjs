@@ -62,7 +62,12 @@ test("2065 with colour off every style is IDENTITY, so a caller needs no second 
   // is the one that ships escapes into a log. Identity functions make the off path the same path.
   const s = styleFor({ stream: PIPE, env: {} });
   assert.equal(s.enabled, false);
-  for (const k of ["bold", "dim", "ok", "warn", "err", "head"]) {
+  // Every key the module actually exposes, not a list written down beside it. A literal list is how a
+  // key added later — the mark's accent was one — inherits the claim without ever being checked
+  // against it, and the off path is the path nobody looks at until a log is full of escapes.
+  const keys = Object.keys(s).filter((k) => k !== "enabled");
+  assert.ok(keys.length >= 6, `styleFor exposed ${keys.length} styles; the table has shrunk`);
+  for (const k of keys) {
     assert.equal(s[k]("the passphrase"), "the passphrase", `${k} must not decorate off a terminal`);
     assert.doesNotMatch(s[k]("x"), ESC, `${k} emitted an escape code with colour off`);
   }
@@ -72,14 +77,16 @@ test("2065 with colour ON the styles really do differ — or the arms above prov
   // A module that never coloured anything would pass every arm above. This is the control.
   const s = styleFor({ stream: TTY, env: {} });
   assert.equal(s.enabled, true);
-  const seen = new Set();
-  for (const k of ["bold", "dim", "ok", "warn", "err", "head"]) {
+  const seen = new Map();
+  const keys = Object.keys(s).filter((k) => k !== "enabled");
+  for (const k of keys) {
     const out = s[k]("x");
     assert.match(out, ESC, `${k} did not colour on a terminal`);
     assert.match(out, /x/, `${k} lost the text it was wrapping`);
-    seen.add(out);
+    assert.ok(!seen.has(out), `${k} and ${seen.get(out)} are the same code — the weight carries no meaning`);
+    seen.set(out, k);
   }
-  assert.equal(seen.size, 6, "six kinds of line must be six different codes, or the weight carries no meaning");
+  assert.equal(seen.size, keys.length, "every kind must be its own code");
 });
 
 test("2065 the banner is a rectangle whatever the styling does to it", () => {

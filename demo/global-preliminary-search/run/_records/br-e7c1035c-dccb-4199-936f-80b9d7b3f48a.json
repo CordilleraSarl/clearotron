@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/br/e7c1035c-dccb-4199-936f-80b9d7b3f48a",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "e7c1035c-dccb-4199-936f-80b9d7b3f48a",
+  "applicationNumber": "816454779",
+  "registrationNumber": null,
+  "applicationDate": "1991-10-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    17,
+    21,
+    31,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        17,
+        21,
+        31,
+        35,
+        42
+      ],
+      "language": "pt",
+      "description": "[CLASS 01. 35]: : Substâncias e produtos químicos abrasivos, adesivos e aglutinantes destinados ao uso industrial. [CLASS 01. 55]: : Substâncias e produtos químicos destinados às atividades agropecuárias. [CLASS 01. 90]: : Substâncias e produtos químicos destinados à indústria e à ciência.",
+      "translation_language": "en",
+      "translation": "[CLASS 01. 35]: : Abrasive substances and chemical products, adhesives and binders intended for industrial use. [CLASS 01. 55]: : Chemical substances and products intended for agricultural activities. [CLASS 01. 90]: : Substances and chemical products intended for industry and science."
+    }
+  ],
+  "owner": "GORI ALL - WOOD INTERNATIONAL AS.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "GORI ALL - WOOD INTERNATIONAL AS."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "[CLASS 01. 35]: : Abrasive substances and chemical products, adhesives and binders intended for industrial use. [CLASS 01. 55]: : Chemical substances and products intended for agricultural activities. [CLASS 01. 90]: : Substances and chemical products intended for industry and science.",
+          "intClassNumber": "01,02,03,04,05,08,17,21,31,35,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "[CLASS 01. 35]: : Substâncias e produtos químicos abrasivos, adesivos e aglutinantes destinados ao uso industrial. [CLASS 01. 55]: : Substâncias e produtos químicos destinados às atividades agropecuárias. [CLASS 01. 90]: : Substâncias e produtos químicos destinados à indústria e à ciência."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "01.35"
+        },
+        {
+          "natClassNumber": "01.55"
+        },
+        {
+          "natClassNumber": "01.90"
+        }
+      ]
+    },
+    "id": "e7c1035c-dccb-4199-936f-80b9d7b3f48a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19911017",
+        "applicationNumber": "816454779"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630192905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/e7c1035c-dccb-4199-936f-80b9d7b3f48a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

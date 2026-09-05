@@ -1,0 +1,169 @@
+{
+  "uri": "/mark/es/f6335d25-b83a-46b1-8793-97de587e73fb",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "f6335d25-b83a-46b1-8793-97de587e73fb",
+  "applicationNumber": "3622652 M1",
+  "registrationNumber": "3622652 M1",
+  "applicationDate": "2016-07-13",
+  "registrationDate": "2017-01-05",
+  "expiryDate": "2026-07-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-07-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA SINFONICA \"CIUDAD DE SALAMANCA\"",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Discos compactos, dvd y otros soportes de grabacion digitales; musica digital descargable, grabaciones de sonido y video musicales descargables.",
+      "translation_language": "en",
+      "translation": "CDs, DVDs and other recording media DIGITAL; DOWNLOADABLE DIGITAL MUSIC, SOUND RECORDINGS AND MUSIC DOWNLOAD VIDEO."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Cuadernos; cuadernos de musica; libros de musica; manuales de instruccion musical; musica en partituras; partituras musicales; revistas musicales; productos de papeleria y material educativo; musica impresa; publicaciones educativas; material impreso; papel y carton.",
+      "translation_language": "en",
+      "translation": "CUADERNOS; Music books; Music books; MUSICAL INSTRUCTION MANUAL; SHEET MUSIC; MUSICAL SCORES; MUSICAL MAGAZINES; Stationery products and educational material; Printed music; EDUCATIONAL PUBLICATIONS; PRINTED MATERIAL; PAPER AND PAPERBOARD."
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "es",
+      "description": "Prendas de vestir, calzado, articulos de sombrereria.",
+      "translation_language": "en",
+      "translation": "GARMENTS, FOOTWEAR, HEADLINERS."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de orquestas; actuaciones musicales; conciertos de musica; clases de musica; direccion de espectaculos musicales; enseñanza de la apreciacion de la musica; facilitacion de musica digital desde internet; gestion artistica de espectaculos musicales; grupo musical (entretenimiento); instruccion musical; organizacion de concursos de musica; organizacion de entretenimiento musical; organizacion de eventos musicales; servicios de biblioteca musical; publicaciones musicales; servicios de entretenimiento; servicios de edicion de libros de musica; servicios de compositores y autores de musica; suministro de publicaciones electronicas en linea no descargables en el ambito musical; suministro en linea de musica no descargable; servicios de ocio; servicios de composicion musical; alquiler de cintas de audio con musica grabada; alquiler de instrumentos musicales; preparacion, celebracion y organizacion de conciertos; servicios de reservas para conciertos; edicion o grabacion de sonidos e imagenes; estudios de grabacion; produccion de grabaciones de sonido y musica; servicios de registro de sonido; instruccion en canto; academias [educacion]; programas de entretenimiento por radio; servicios de reserva de entradas para espectaculos.",
+      "translation_language": "en",
+      "translation": "SERVICES ORCHESTRA; MUSICAL PERFORMANCES; MUSIC CONCERTS; MUSIC CLASSES; ADDRESS musical performances; TEACHING MUSIC APPRECIATION; FACILITACION DIGITAL MUSIC FROM INTERNET; MANAGEMENT ARTISTIC MUSICAL SHOWS; MUSICAL GROUP (entertainment); MUSICAL TRAINING; ORGANIZATION OF COMPETITIONS MUSIC; ORGANIZATION OF MUSICAL ENTERTAINMENT; Organization of musical events; MUSICAL LIBRARY SERVICES; MUSICAL PUBLICATIONS; Entertainment; EDITING SERVICES BOOKS MUSIC; SERVICES AUTHORS COMPOSERS AND MUSIC; SUPPLY ELECTRONIC PUBLICATIONS ONLINE NO DOWNLOAD MUSIC IN THE FIELD; SUPPLY LINE MUSIC NOT DOWNLOADABLE; LEISURE SERVICES; MUSICAL COMPOSITION SERVICES; RENTAL WITH AUDIO TAPES RECORDED MUSIC; RENTAL OF MUSICAL INSTRUMENTS; PREPARATION, ORGANIZATION AND CELEBRATION CONCERT; BOOKING SERVICES FOR CONCERTS; Editing or recording of sounds and images; RECORDING STUDIOS; PRODUCTION SOUND RECORDINGS AND MUSIC; REGISTRATION SERVICES SOUND; INSTRUCTION CANTO; ACADEMIAS [education]; ENTERTAINMENT PROGRAMS FOR RADIO; Reservation services for shows."
+    }
+  ],
+  "owner": "AYUNTAMIENTO DE SALAMANCA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "JORGE GARCIA DOMINGUEZ",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "AYUNTAMIENTO DE SALAMANCA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CDs, DVDs and other recording media DIGITAL; DOWNLOADABLE DIGITAL MUSIC, SOUND RECORDINGS AND MUSIC DOWNLOAD VIDEO.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Discos compactos, dvd y otros soportes de grabacion digitales; musica digital descargable, grabaciones de sonido y video musicales descargables."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CUADERNOS; Music books; Music books; MUSICAL INSTRUCTION MANUAL; SHEET MUSIC; MUSICAL SCORES; MUSICAL MAGAZINES; Stationery products and educational material; Printed music; EDUCATIONAL PUBLICATIONS; PRINTED MATERIAL; PAPER AND PAPERBOARD.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Cuadernos; cuadernos de musica; libros de musica; manuales de instruccion musical; musica en partituras; partituras musicales; revistas musicales; productos de papeleria y material educativo; musica impresa; publicaciones educativas; material impreso; papel y carton."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "GARMENTS, FOOTWEAR, HEADLINERS.",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prendas de vestir, calzado, articulos de sombrereria."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES ORCHESTRA; MUSICAL PERFORMANCES; MUSIC CONCERTS; MUSIC CLASSES; ADDRESS musical performances; TEACHING MUSIC APPRECIATION; FACILITACION DIGITAL MUSIC FROM INTERNET; MANAGEMENT ARTISTIC MUSICAL SHOWS; MUSICAL GROUP (entertainment); MUSICAL TRAINING; ORGANIZATION OF COMPETITIONS MUSIC; ORGANIZATION OF MUSICAL ENTERTAINMENT; Organization of musical events; MUSICAL LIBRARY SERVICES; MUSICAL PUBLICATIONS; Entertainment; EDITING SERVICES BOOKS MUSIC; SERVICES AUTHORS COMPOSERS AND MUSIC; SUPPLY ELECTRONIC PUBLICATIONS ONLINE NO DOWNLOAD MUSIC IN THE FIELD; SUPPLY LINE MUSIC NOT DOWNLOADABLE; LEISURE SERVICES; MUSICAL COMPOSITION SERVICES; RENTAL WITH AUDIO TAPES RECORDED MUSIC; RENTAL OF MUSICAL INSTRUMENTS; PREPARATION, ORGANIZATION AND CELEBRATION CONCERT; BOOKING SERVICES FOR CONCERTS; Editing or recording of sounds and images; RECORDING STUDIOS; PRODUCTION SOUND RECORDINGS AND MUSIC; REGISTRATION SERVICES SOUND; INSTRUCTION CANTO; ACADEMIAS [education]; ENTERTAINMENT PROGRAMS FOR RADIO; Reservation services for shows.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de orquestas; actuaciones musicales; conciertos de musica; clases de musica; direccion de espectaculos musicales; enseñanza de la apreciacion de la musica; facilitacion de musica digital desde internet; gestion artistica de espectaculos musicales; grupo musical (entretenimiento); instruccion musical; organizacion de concursos de musica; organizacion de entretenimiento musical; organizacion de eventos musicales; servicios de biblioteca musical; publicaciones musicales; servicios de entretenimiento; servicios de edicion de libros de musica; servicios de compositores y autores de musica; suministro de publicaciones electronicas en linea no descargables en el ambito musical; suministro en linea de musica no descargable; servicios de ocio; servicios de composicion musical; alquiler de cintas de audio con musica grabada; alquiler de instrumentos musicales; preparacion, celebracion y organizacion de conciertos; servicios de reservas para conciertos; edicion o grabacion de sonidos e imagenes; estudios de grabacion; produccion de grabaciones de sonido y musica; servicios de registro de sonido; instruccion en canto; academias [educacion]; programas de entretenimiento por radio; servicios de reserva de entradas para espectaculos."
+        }
+      ]
+    },
+    "id": "f6335d25-b83a-46b1-8793-97de587e73fb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "4718"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "PLAZA DEL CORRILLO, 19 - 3º 2ª 37002 SALAMANCA",
+        "representativeName": "JORGE GARCIA DOMINGUEZ"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160713",
+        "applicationNumber": "3622652 M1"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260712",
+      "lastPublicationDate": "20160722",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170105",
+        "registrationNumber": "3622652 M1"
+      }
+    },
+    "version": "20260427164134",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA SINFONICA \"CIUDAD DE SALAMANCA\""
+    }
+  },
+  "_uri": "/mark/es/f6335d25-b83a-46b1-8793-97de587e73fb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

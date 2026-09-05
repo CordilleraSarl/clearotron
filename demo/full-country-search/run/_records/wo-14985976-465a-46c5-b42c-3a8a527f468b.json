@@ -1,0 +1,236 @@
+{
+  "uri": "/mark/wo/14985976-465a-46c5-b42c-3a8a527f468b",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "14985976-465a-46c5-b42c-3a8a527f468b",
+  "applicationNumber": null,
+  "registrationNumber": "1188735",
+  "applicationDate": null,
+  "registrationDate": "2013-10-11",
+  "expiryDate": "2033-10-11",
+  "renewalDate": "2023-10-11",
+  "lastPublicationDate": "2024-04-04",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Integrated circuits (IC's), semiconductors and components for semiconductors; chips (integrated circuits); RFID chips; smart cards; microprocessors; microcontrollers; digital signal processors and digital signal processor cores; print boards for integrated circuits; electronic circuits; micro circuits; CPU cards; microprocessor cards; electronic payment cards, tags and readers; software for use in operating Integrated circuits, semiconductors, microprocessors and electronic circuits; software for computers and telecommunication wireless networking peripherals and components, mobile telecommunication devices, hubs, switches, routers, and bridges; data processing apparatus and software for use in combination with mobile phones and other mobile communication apparatus; radio frequency identification (RFID) credentials, namely, cards and tags, and readers for radio frequency identification credentials.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Circuits intégrés, semi-conducteurs et composants pour semi-conducteurs; puces (circuits intégrés); puces d'identification par radiofréquence (RFID); cartes à puce; microprocesseurs; microcontrôleurs; processeurs de signaux numériques et coeurs de processeurs de signaux numériques; cartes imprmées pour circuits intégrés; circuits électroniques; micro-circuits; cartes d'unité centrale de traitement; cartes à microprocesseur; cartes, étiquettes et lecteurs de paiement électronique; logiciels pour le fonctionnement de circuits intégrés, semi-conducteurs, microprocesseurs et circuits électroniques; logiciels pour périphériques et composants de réseaux de télécommunication sans fil et pour ordinateurs, dispositifs mobiles de télécommunication, concentrateurs, commutateurs, routeurs et ponts; appareils de traitement de données et logiciels à utiliser avec des téléphones portables et autres appareils mobiles de communication; titres (références) d'identification par radiofréquence (IRF), à savoir cartes et étiquettes, ainsi que lecteurs de titres (références) d'identification par radiofréquence.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Circuitos integrados (CI), semiconductores y componentes de semiconductores; chips (circuitos integrados); chips de identificación por radiofrecuencia; tarjetas inteligentes; microprocesadores; microcontroladores; procesadores de señales digitales y núcleos de procesadores de señales digitales; obleas para circuitos integrados; circuitos electrónicos; microcircuitos; tarjetas de unidades centrales de proceso; tarjetas con microprocesador; etiquetas, lectores y tarjetas de pago electrónico; software para el funcionamiento de circuitos integrados, semiconductores, microprocesadores y circuitos electrónicos; software para ordenadores y periféricos y componentes de redes informáticas y de telecomunicación inalámbrica, dispositivos de telecomunicación móvil, concentradores, conmutadores, enrutadores y puentes; aparatos de procesamiento de datos y software para utilizar con teléfonos móviles y otros aparatos de comunicación móvil; credenciales de identificación por radiofrecuencia (RFID), a saber, tarjetas y placas, y lectores de credenciales de identificación por radiofrecuencia.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20130415",
+      "priorityNumber": "1266764"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20130415",
+          "basicApplicationNumber": "1266764"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20130710",
+          "basicRegistrationNumber": "937100"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20130415",
+            "basicApplicationNumber": "1266764"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20130710",
+            "basicRegistrationNumber": "937100"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "18.01.21",
+      "26.11.22",
+      "29.02.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Integrated circuits (IC's), semiconductors and components for semiconductors; chips (integrated circuits); RFID chips; smart cards; microprocessors; microcontrollers; digital signal processors and digital signal processor cores; print boards for integrated circuits; electronic circuits; micro circuits; CPU cards; microprocessor cards; electronic payment cards, tags and readers; software for use in operating Integrated circuits, semiconductors, microprocessors and electronic circuits; software for computers and telecommunication wireless networking peripherals and components, mobile telecommunication devices, hubs, switches, routers, and bridges; data processing apparatus and software for use in combination with mobile phones and other mobile communication apparatus; radio frequency identification (RFID) credentials, namely, cards and tags, and readers for radio frequency identification credentials."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Circuits intégrés, semi-conducteurs et composants pour semi-conducteurs; puces (circuits intégrés); puces d'identification par radiofréquence (RFID); cartes à puce; microprocesseurs; microcontrôleurs; processeurs de signaux numériques et coeurs de processeurs de signaux numériques; cartes imprmées pour circuits intégrés; circuits électroniques; micro-circuits; cartes d'unité centrale de traitement; cartes à microprocesseur; cartes, étiquettes et lecteurs de paiement électronique; logiciels pour le fonctionnement de circuits intégrés, semi-conducteurs, microprocesseurs et circuits électroniques; logiciels pour périphériques et composants de réseaux de télécommunication sans fil et pour ordinateurs, dispositifs mobiles de télécommunication, concentrateurs, commutateurs, routeurs et ponts; appareils de traitement de données et logiciels à utiliser avec des téléphones portables et autres appareils mobiles de communication; titres (références) d'identification par radiofréquence (IRF), à savoir cartes et étiquettes, ainsi que lecteurs de titres (références) d'identification par radiofréquence."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Circuitos integrados (CI), semiconductores y componentes de semiconductores; chips (circuitos integrados); chips de identificación por radiofrecuencia; tarjetas inteligentes; microprocesadores; microcontroladores; procesadores de señales digitales y núcleos de procesadores de señales digitales; obleas para circuitos integrados; circuitos electrónicos; microcircuitos; tarjetas de unidades centrales de proceso; tarjetas con microprocesador; etiquetas, lectores y tarjetas de pago electrónico; software para el funcionamiento de circuitos integrados, semiconductores, microprocesadores y circuitos electrónicos; software para ordenadores y periféricos y componentes de redes informáticas y de telecomunicación inalámbrica, dispositivos de telecomunicación móvil, concentradores, conmutadores, enrutadores y puentes; aparatos de procesamiento de datos y software para utilizar con teléfonos móviles y otros aparatos de comunicación móvil; credenciales de identificación por radiofrecuencia (RFID), a saber, tarjetas y placas, y lectores de credenciales de identificación por radiofrecuencia."
+        }
+      ]
+    },
+    "id": "14985976-465a-46c5-b42c-3a8a527f468b",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Blue, grey and white. The top of the steering wheel is blue, the rest of the steering wheel is grey, the background of the steering wheel is white.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Bleu, gris et blanc. Le haut du volant de direction est en bleu, le reste du volant est en gris, et le fond du volant est en blanc.",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Azul, gris y blanco. La parte superior del volante es de color azul, el resto del volantes es de color gris, el fondo del volante es de color blanco.",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "18.01",
+      "26.11",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20130415",
+        "priorityNumber": "1266764"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "12"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331011",
+      "lastPublicationDate": "20240404",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20131011",
+        "registrationNumber": "1188735"
+      },
+      "renewalDate": "20231011",
+      "renewalPublishedDate": "20240404"
+    },
+    "version": "20250620175537"
+  },
+  "_uri": "/mark/wo/14985976-465a-46c5-b42c-3a8a527f468b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.458Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "uri": "/mark/gb/03e68d8b-3b7d-4bd9-947d-cdf274f22f94",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "03e68d8b-3b7d-4bd9-947d-cdf274f22f94",
+  "applicationNumber": "2614001",
+  "registrationNumber": "2614001",
+  "applicationDate": "2012-03-14",
+  "registrationDate": "2012-11-30",
+  "expiryDate": "2032-03-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    21,
+    29,
+    30,
+    31,
+    32,
+    35,
+    41,
+    43,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Garden furniture, furniture, hampers [baskets], mirrors, picture frames; non-metallic containers in the form of bins, including compost bins; hanging baskets for plants; goods (not included in other classes) of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, shell, amber, mother-of-pearl, meerschaum and substitutes for all these materials, or of plastics.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Earthenware, porcelain, china; domestic utensils and containers, none being of precious metals or coated therewith; statuettes of porcelain, terracotta or glass; pots; flower and plant pots; flower and plant pot holders; planters for flowers and plants; sprinklers for watering flowers or plants; gardening gloves; watering devices, watering cans; crockery, plates, cups, mugs, water bottles; household and kitchen containers; articles for cleaning purposes; flower vases; bird feeders.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": "en",
+      "description": "Prepared foods; jams; fruit preserves; jellies; compotes; dried and cooked fruits and vegetables; edible oils and fats; cheese; pickles; truffles; snack foods; meat, fish, poultry and game; delicatessen meat products; preserved, dried and cooked fruit, vegetables and herbs; marmalade; dairy products, eggs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": "en",
+      "description": "Coffee; tea; cocoa; drinking chocolate; preparations made from flour; breads; confectionery; biscuits; cakes; pastries; pies; pasta; cereals and cereal preparations; ice creams; ices; frozen confections; chocolates, non-medicated confectionery; sandwiches; sauces, salad dressings, spices; honey; treacle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        31
+      ],
+      "language": "en",
+      "description": "Agricultural, horticultural and forestry products; grains, seeds, bulbs, trees and shrubs; live plants, natural plants and flowers; fresh herbs and spices; dried plants and dried flowers; fresh fruit and vegetables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": "en",
+      "description": "Mineral and aerated waters and other non-alcoholic drinks; fruit drinks and fruit juices; syrups and other preparations for making beverages; shandies.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Retail services connected with the sale of garden and gardening goods, gardening tools and accesories, chemicals and fertilisers, gardening equipment and machinery, conservatories and garden sheds, fencing, water features, garden and outdoor furniture, barbecue sets, wind chimes, agricultural and horticultural and forestry products, grains, seeds, bulbs, trees and shrubs, live plants, natural plants and flowers, fresh herbs and spices, dried plants and flowers, fresh fruit and vegetables, live animals and aquatic creatures, foods, drinks and confectionery, non-medicated toiletry preparations, diffusers, fragrance oils, candles, craft model kits and playthings, clothing, bags, sporting articles, bicycles, earthenware, porcelain, china, household utensils and containers, flower and plant holders, planters for flowers and plants, hanging baskets for plants, sprinklers for watering flowers or plants, watering devices, watering cans, flower vases, bird feeders, storage bins, mirrors, picture frames, goods of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, shell, amber, mother-of-pearl, meerschaum and substitutes for all these materials or of plastics; the bringing together, for the benefit of others, of a variety of garden and gardening goods, gardening tools and accessories, chemicals and fertilisers, gardening equipment and machinery, conservatories and garden sheds, fencing, water features, garden and outdoor furniture, barbecue sets, wind chimes, agricultural and horticultural and forestry products, grains, seeds, bulbs, trees and shrubs, live plants, natural plants and flowers, fresh herbs and spices, dried plants and flowers, fresh fruit and vegetables, live animals and aquatic creatures, foods, drinks and confectionery, non-medicated toiletry preparations, diffusers, fragrance oils, candles, craft model kits and playthings, clothing, bags, sporting articles, bicycles, earthenware, porcelain, china, household utensils and containers, flower and plant holders, planters for flowers and plants, hanging baskets for plants, sprinklers for watering flowers or plants, watering devices, watering cans, flower vases, bird feeders, storage bins, mirrors, picture frames, goods of wood, cork, reed, cane, wicker, horn, bone,ivory, whalebone, shell, amber, mother-of-pearl, meerschaum and substitutes forall these materials or of plastics enabling customers to conveniently view and purchase those goods from a retail store, mail order catalogue, direct marketing or by means of telecommunications, namely by means of the telephone or by means of an Internet website; organisation and operation of incentive programs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Educational services; organisation and provision of leisure, cultural and recreational services; arranging and organising of exhibitions, events, seminars, meetings and workshops; none of the aforesaid relating to gaming, gambling, casinos, corporated hospitality services and live entertainment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Provision of food and drink; catering, restaurant and café services; take away services; all of the aforesaid provided in a retail environment and none relating to gaming, gambling, casinos, corporate hospitality services and live entertainment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Garden services, namely, gardening advice and advisory services including information services relating relating to gardening; garden design services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "FDNC LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Brabners LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Eaton Estate Office, Eccleston, Chester, CH4 9ET",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "FDNC LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Garden furniture, furniture, hampers [baskets], mirrors, picture frames; non-metallic containers in the form of bins, including compost bins; hanging baskets for plants; goods (not included in other classes) of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, shell, amber, mother-of-pearl, meerschaum and substitutes for all these materials, or of plastics."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Earthenware, porcelain, china; domestic utensils and containers, none being of precious metals or coated therewith; statuettes of porcelain, terracotta or glass; pots; flower and plant pots; flower and plant pot holders; planters for flowers and plants; sprinklers for watering flowers or plants; gardening gloves; watering devices, watering cans; crockery, plates, cups, mugs, water bottles; household and kitchen containers; articles for cleaning purposes; flower vases; bird feeders."
+        },
+        {
+          "intClassNumber": "29",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Prepared foods; jams; fruit preserves; jellies; compotes; dried and cooked fruits and vegetables; edible oils and fats; cheese; pickles; truffles; snack foods; meat, fish, poultry and game; delicatessen meat products; preserved, dried and cooked fruit, vegetables and herbs; marmalade; dairy products, eggs."
+        },
+        {
+          "intClassNumber": "30",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Coffee; tea; cocoa; drinking chocolate; preparations made from flour; breads; confectionery; biscuits; cakes; pastries; pies; pasta; cereals and cereal preparations; ice creams; ices; frozen confections; chocolates, non-medicated confectionery; sandwiches; sauces, salad dressings, spices; honey; treacle."
+        },
+        {
+          "intClassNumber": "31",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Agricultural, horticultural and forestry products; grains, seeds, bulbs, trees and shrubs; live plants, natural plants and flowers; fresh herbs and spices; dried plants and dried flowers; fresh fruit and vegetables."
+        },
+        {
+          "intClassNumber": "32",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mineral and aerated waters and other non-alcoholic drinks; fruit drinks and fruit juices; syrups and other preparations for making beverages; shandies."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Retail services connected with the sale of garden and gardening goods, gardening tools and accesories, chemicals and fertilisers, gardening equipment and machinery, conservatories and garden sheds, fencing, water features, garden and outdoor furniture, barbecue sets, wind chimes, agricultural and horticultural and forestry products, grains, seeds, bulbs, trees and shrubs, live plants, natural plants and flowers, fresh herbs and spices, dried plants and flowers, fresh fruit and vegetables, live animals and aquatic creatures, foods, drinks and confectionery, non-medicated toiletry preparations, diffusers, fragrance oils, candles, craft model kits and playthings, clothing, bags, sporting articles, bicycles, earthenware, porcelain, china, household utensils and containers, flower and plant holders, planters for flowers and plants, hanging baskets for plants, sprinklers for watering flowers or plants, watering devices, watering cans, flower vases, bird feeders, storage bins, mirrors, picture frames, goods of wood, cork, reed, cane, wicker, horn, bone, ivory, whalebone, shell, amber, mother-of-pearl, meerschaum and substitutes for all these materials or of plastics; the bringing together, for the benefit of others, of a variety of garden and gardening goods, gardening tools and accessories, chemicals and fertilisers, gardening equipment and machinery, conservatories and garden sheds, fencing, water features, garden and outdoor furniture, barbecue sets, wind chimes, agricultural and horticultural and forestry products, grains, seeds, bulbs, trees and shrubs, live plants, natural plants and flowers, fresh herbs and spices, dried plants and flowers, fresh fruit and vegetables, live animals and aquatic creatures, foods, drinks and confectionery, non-medicated toiletry preparations, diffusers, fragrance oils, candles, craft model kits and playthings, clothing, bags, sporting articles, bicycles, earthenware, porcelain, china, household utensils and containers, flower and plant holders, planters for flowers and plants, hanging baskets for plants, sprinklers for watering flowers or plants, watering devices, watering cans, flower vases, bird feeders, storage bins, mirrors, picture frames, goods of wood, cork, reed, cane, wicker, horn, bone,ivory, whalebone, shell, amber, mother-of-pearl, meerschaum and substitutes forall these materials or of plastics enabling customers to conveniently view and purchase those goods from a retail store, mail order catalogue, direct marketing or by means of telecommunications, namely by means of the telephone or by means of an Internet website; organisation and operation of incentive programs."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Educational services; organisation and provision of leisure, cultural and recreational services; arranging and organising of exhibitions, events, seminars, meetings and workshops; none of the aforesaid relating to gaming, gambling, casinos, corporated hospitality services and live entertainment."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of food and drink; catering, restaurant and café services; take away services; all of the aforesaid provided in a retail environment and none relating to gaming, gambling, casinos, corporate hospitality services and live entertainment."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Garden services, namely, gardening advice and advisory services including information services relating relating to gardening; garden design services."
+        }
+      ]
+    },
+    "id": "03e68d8b-3b7d-4bd9-947d-cdf274f22f94",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6951"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Horton House, Exchange Flags, Liverpool L2 3YL",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Brabners LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120314",
+        "applicationNumber": "2614001"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320314",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20121130",
+        "registrationNumber": "2614001"
+      }
+    },
+    "version": "20250627192947",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/gb/03e68d8b-3b7d-4bd9-947d-cdf274f22f94",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

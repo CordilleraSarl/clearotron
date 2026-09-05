@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/153192d0-3156-463a-af88-d6cea5f2d259",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "153192d0-3156-463a-af88-d6cea5f2d259",
+  "applicationNumber": "7373962",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-01",
+  "registrationDate": null,
+  "expiryDate": "2035-12-01",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, electric, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life saving and teaching apparatus and instruments; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; Software, fire extinguishing apparatus. Mobile phone covers, Protective covers for smartphones, Flip covers for smart phones, In-ear headphones, Ear pads for headphones.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PAWAN Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "DELKASH ASSOCIATES[13451]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Rz-B-321, Nihal Vihar, Nangloi, New Delhi-110041",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "PAWAN Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, electric, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life saving and teaching apparatus and instruments; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; Software, fire extinguishing apparatus. Mobile phone covers, Protective covers for smartphones, Flip covers for smart phones, In-ear headphones, Ear pads for headphones."
+        }
+      ]
+    },
+    "id": "153192d0-3156-463a-af88-d6cea5f2d259",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251209",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "Rahimullah Ansari Advocate F-12/9, G.F, Sir Syed Road, Joga Bai Jamia Nagar, New Delhi 110025 India.",
+        "representativeName": "DELKASH ASSOCIATES[13451]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251201",
+        "applicationNumber": "7373962"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20351201",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20251209020106",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORA"
+    }
+  },
+  "_uri": "/mark/in/153192d0-3156-463a-af88-d6cea5f2d259",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

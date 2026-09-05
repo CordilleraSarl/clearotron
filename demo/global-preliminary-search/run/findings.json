@@ -1,0 +1,1067 @@
+{
+  "schema_version": 7,
+  "rated_under_framework": "house-default",
+  "mark_assessment": {
+    "distinctiveness": {
+      "read": "A strong name to own. VENQORI is invented, means nothing in any market in scope, and nothing in it describes water, testing, training or software.",
+      "spectrum": "Coined and arbitrary in the applicant's field. The distinctive element is the whole seven-letter string, not either half of it.",
+      "per_class": [
+        {
+          "class": "9",
+          "note": "No descriptive, laudatory or geographic content for downloadable software. No absolute-grounds flag."
+        },
+        {
+          "class": "41",
+          "note": "The training layer takes the name unchanged; nothing in it describes instruction."
+        },
+        {
+          "class": "42",
+          "note": "Nothing in it describes hosting or analysis of readings."
+        }
+      ],
+      "per_market": [
+        {
+          "market": "JP",
+          "note": "Renders as ベンコリ or ヴェンコリ in katakana and reads as a coined foreign word with no local sense."
+        },
+        {
+          "market": "KR",
+          "note": "Renders as 벤코리 or 벤쿼리 in hangul, again a coined foreign word."
+        },
+        {
+          "market": "CN",
+          "note": "The phonetic character sets 温可瑞 and 文科利 carry no adverse sense. There is no translation because there is no meaning to translate."
+        },
+        {
+          "market": "EU",
+          "note": "The QORI half sits in a class 9 and 42 zone held by roughly thirty unconnected owners, so exclusivity will rest on the whole word rather than on QORI."
+        }
+      ],
+      "counter_registrations": [
+        {
+          "mark": "QORIA",
+          "uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b",
+          "note": "Opens class 9 with the bare word \"Software\" and takes all three core classes — the broadest third-party specification found."
+        },
+        {
+          "mark": "VENCORA",
+          "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+          "note": "Unrestricted software development and training cover in the applicant's two service classes."
+        }
+      ],
+      "note": "Quechua speakers read QORI as \"gold\", but Quechua is not a language of any market in scope."
+    },
+    "connotation": {
+      "read": "No adverse reading surfaced. The meaning sweep across English, Japanese, Korean, Chinese, Cyrillic and Greek came back clean, and the only meanings behind the name's parts are benign.",
+      "note": "QORI is Quechua for gold and a Somali word for a woodworking tool; VEN is the Spanish imperative \"come\". None attaches to the mark read as a whole."
+    }
+  },
+  "findings": [
+    {
+      "ordinal": 1,
+      "mark": "enqor",
+      "owner": {
+        "name": "Align Networks Inc.",
+        "country": "KR",
+        "registrations": [
+          {
+            "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
+          },
+          {
+            "uri": "/mark/kr/439284fa-ff3f-48dd-b691-7bec09f9a550"
+          },
+          {
+            "uri": "/mark/kr/3e4b74e8-712d-49b8-9502-5c00cf951a41"
+          }
+        ]
+      },
+      "band": "Moderate",
+      "borderline_between": [
+        "Moderate",
+        "Manageable"
+      ],
+      "net": "Align Networks is more likely than not to prevail against VENQORI in South Korea on downloadable smartphone application software (among broad goods).",
+      "disposition": "adversarial",
+      "legal_position": "The three Korean applications name downloadable computer software and application software for smartphones, tablets and mobile phones — the applicant's exact class 9 good — and take all three core classes with April 2026 priority the applicant cannot now beat. ENQOR sits inside VENQORI in full, and on identical goods before a low-attention app-store buyer that is a real likelihood of confusion, though VENQORI is a unitary three-syllable coined word whose VEN- onset and terminal -I are genuine points of difference and the Korean filings are figurative rather than bare word marks.",
+      "practical_position": "All three applications are pending and unexamined. A search for ENQOR use by this proprietor found none: the Enqor app on the Apple App Store is published by Sutra Fitness, Inc., a US fitness-booking business, not by Align Networks, and a Korean company listing describes Align Networks as the developer of a video-based friend-making app.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
+        },
+        "goods_proximity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "https://apps.apple.com/il/app/enqor/id6758401584"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.92,
+        "y": 0.6
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://apps.apple.com/il/app/enqor/id6758401584",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 2,
+      "mark": "VENCORA",
+      "owner": {
+        "name": "Vencora UK Limited",
+        "country": "GB",
+        "registrations": [
+          {
+            "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f"
+          },
+          {
+            "uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274"
+          }
+        ]
+      },
+      "band": "Moderate",
+      "net": "Vencora UK Limited is more likely than not to prevail against VENQORI in the United Kingdom for online training and software services (among broad goods).",
+      "disposition": "adversarial",
+      "legal_position": "VENCORA and VENQORI run seven letters against seven on the same VEN-COR- skeleton, parting only at the fourth character, where C and Q both sound /k/, and at the final vowel. The UK registration covers design, development and maintenance of software, electronic data storage and provision of non-downloadable software in class 42, and education, training and the conducting of courses in class 41, each without any field limit, so both of the applicant's service classes are met on the specification as registered.",
+      "practical_position": "Vencora is an active software group operating acquired banking, insurance and financial-services businesses, with the UK entity registered at the Halifax address on the mark and instructed counsel on the file. Its published portfolio shows no consumer application and no environmental or water-monitoring product, and the UK registration was granted in May 2026, so no non-use route is open. The EU leg of the same position is application 19321316, filed 24 February 2026, and is still pending with no registration number or registration date on the record.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f"
+        },
+        "goods_proximity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.vencora.com/portfolio"
+        },
+        "enforcer": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.85,
+        "y": 0.82
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://www.vencora.com/portfolio",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 3,
+      "mark": "Ｖｅｎｋｕｒｉ",
+      "owner": {
+        "name": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "country": "CN",
+        "registrations": [
+          {
+            "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+          },
+          {
+            "uri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Yiwu Tengding Umbrella's VENKURI registrations in Japan and China cover consumer-electronics hardware rather than software, so the applicant's downloadable app falls outside them.",
+      "disposition": "adversarial",
+      "legal_position": "In katakana the two names part on one medial vowel, so the marks are close in the form a Japanese examiner and a Japanese consumer actually compare. The class 9 specification, however, reads rechargeable batteries, tachographs, video cameras, projection devices, earphones, headphones, speaker cases, electric plugs, monitoring apparatus and battery chargers, and contains no software of any kind, so on the goods as registered these rights do not reach a downloadable water-testing app.",
+      "practical_position": "A search for VENKURI use by this proprietor found none. The only Japanese-market use located is an Amazon Japan listing for a VENKURI-branded USB conference microphone whose seller is not identified and is not shown to be the registrant. The Japanese registration has stood since March 2020 and the Chinese since January 2020, so both sit outside their three-year non-use windows and appear revocable for non-use.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ"
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.16,
+        "y": 0.86
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 4,
+      "mark": "VENCORE",
+      "owner": {
+        "name": "Symetri AB",
+        "country": "SE",
+        "registrations": [
+          {
+            "uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13"
+          },
+          {
+            "uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140"
+          },
+          {
+            "uri": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Symetri AB is unlikely to prevail against VENQORI, because its registered VENCORE services are venue data management rather than consumer software, and its international registration does not presently reach Japan or Korea.",
+      "disposition": "adversarial",
+      "legal_position": "VENCORE and VENQORI share the VEN-COR- skeleton and differ at two interior characters, so the marks are close as wholes. The registered class 42 services are technology consulting for data management and facility information management for sports and entertainment venues, plus systems and network integration — a different lane inside class 42 from a consumer app's cloud back-end, though the unrestricted integration wording leaves the edge of that lane open.",
+      "practical_position": "Symetri uses VenCore in the United States as a venue data-strategy service delivered by consultants, and the international registration is designated to the United States alone, with the EU application it rests on still pending. The same business does supply water, wastewater and stormwater software in the United States, but under third-party product names rather than under VENCORE.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.symetri.us/buildings-infrastructure/sports-entertainment/"
+        },
+        "enforcer": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.45,
+        "y": 0.82
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://www.symetri.us/buildings-infrastructure/sports-entertainment/",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 5,
+      "mark": "QORIA",
+      "owner": {
+        "name": "Qoria Holdings Pty Ltd",
+        "country": "AU",
+        "registrations": [
+          {
+            "uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b"
+          },
+          {
+            "uri": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7"
+          },
+          {
+            "uri": "/mark/us/7eef08b1-676c-48ed-9520-92dde1da3ae1"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Qoria Holdings is unlikely to prevail against VENQORI, because the two names part at the opening syllable a store listing shows first.",
+      "disposition": "distinguished",
+      "legal_position": "The international registration opens class 9 with the bare word \"Software\", class 41 with unqualified education and training services and class 42 with hosting, software as a service and software development, so on the specification as registered the goods meet the applicant's in all three core classes. Taken as wholes the marks do not meet: QORIA begins on Q, VENQORI on VEN, and the shared QORI string carries no independent role inside a unitary portmanteau that breaks between VEN and QORI.",
+      "practical_position": "Qoria is an active publisher of school filtering and family parental-control software and lists a Qoria Filter app on Google Play under its own name, so it trades in the applicant's storefront channel though not in its subject matter. The international registration is designated to Australia, New Zealand, the United States and the EU rather than to Japan or Korea, and a second, unconnected French proprietor holds QORIA in class 42.",
+      "manageable": {
+        "category": "large-competitor",
+        "reason": "A substantial software publisher whose registered rights span all three core classes, but whose products govern children's device use in schools and homes rather than anything the applicant sells, and whose international registration does not presently reach the applicant's two named markets."
+      },
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b"
+        },
+        "goods_proximity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://play.google.com/store/apps/details?id=com.qoria.uc.android.edu&hl=en_US"
+        },
+        "enforcer": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.9,
+        "y": 0.48
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://play.google.com/store/apps/details?id=com.qoria.uc.android.edu&hl=en_US",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 6,
+      "mark": "qori",
+      "owner": {
+        "name": "Firepay Merchant Services",
+        "country": "FR",
+        "registrations": [
+          {
+            "uri": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Firepay Merchant Services is unlikely to prevail against VENQORI in the European Union, because its QORI registration is limited on its face to payment, loyalty and incentive software.",
+      "disposition": "adversarial",
+      "legal_position": "QORI is the applicant's second morpheme, and an earlier EU word mark wholly contained in a later mark in classes 9 and 42 is the ordinary shape of an opposition. The specification defeats it: every class closes with \"all the aforesaid relating to financial transfers and transactions, and payment services, loyalty, incentive and bonus programs\", so the registered goods are field-limited and do not cover software for water-quality monitoring.",
+      "practical_position": "QORI was used by this proprietor for merchant pay-by-bank and crypto-to-fiat payments in France, and its own site now states that the service has become Sylq. The Estonian regulator's register records the proprietor's electronic-money activity licence as expired, and the five-year non-use grace period on the April 2022 registration runs to April 2027.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/em/539c21aa-9d8f-438b-b140-23a16d4b4660"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://qori.me/"
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.2,
+        "y": 0.55
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://qori.me/",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 7,
+      "mark": "QORI",
+      "owner": {
+        "name": "InCert",
+        "country": "LU",
+        "registrations": [
+          {
+            "uri": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "InCert is unlikely to prevail against VENQORI in the European Union, though its pending QORI application claims cloud computing and platform hosting without any field limit.",
+      "disposition": "adversarial",
+      "legal_position": "The class 9 claim is confined to public-key-infrastructure, digital-certificate, authentication and cryptographic security software and does not reach a consumer testing app, but the class 42 claim includes unqualified cloud computing services and hosting of computer platforms, which does reach the applicant's back-end. Against that, VENQORI reads as one coined word and the shared QORI element has no independent role within it.",
+      "practical_position": "InCert is INCERT GIE, a Luxembourg public-sector grouping that presents QORI as its European public-key-infrastructure solution and resells it through named distribution partners. The application was filed in August 2026 and remains in examination, so its scope may still narrow.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/em/7a0fb9c1-6534-4467-8838-23a937da8e53"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.incert.lu/partnership"
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://www.incert.lu/partnership",
+        "quality": "owner-site"
+      }
+    },
+    {
+      "ordinal": 8,
+      "mark": "VenQ",
+      "owner": {
+        "name": "LRG CONSULTANTS LIMITED",
+        "country": "GB",
+        "registrations": [
+          {
+            "uri": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "LRG Consultants is unlikely to prevail against VENQORI in the United Kingdom, because every class of its VenQ registration is confined to retail, property and business consultancy.",
+      "disposition": "adversarial",
+      "legal_position": "VenQ takes the applicant's first four letters, but VENQORI breaks between VEN and QORI, so the shared string straddles the morpheme break and carries no independent role, and a four-letter stem is distinguishable as a whole from a seven-letter three-syllable coined word. The specification confirms the distance on the goods: class 9 is downloadable publications and software for lease negotiation, retail planning and business development, class 41 is training in retail, property, business development and artificial intelligence, and class 42 is business-support software as a service.",
+      "practical_position": "A search found no VenQ business run by this proprietor. The UK trader using VenQ is an unconnected Coventry smart-vending operator, and a further unconnected VENQ platform trades in India. The registration dates from October 2025, so the five-year non-use period has barely begun and no revocation route is open yet.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/8cbb976f-cfe1-4cf1-bbd7-4d3d1a211b28"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "https://find-and-update.company-information.service.gov.uk/company/12781420"
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.2,
+        "y": 0.45
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "use_check": {
+        "source": "https://find-and-update.company-information.service.gov.uk/company/12781420",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 9,
+      "mark": "QORIQ",
+      "owner": {
+        "name": "NXP USA, Inc.",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93"
+          }
+        ]
+      },
+      "net": "NXP's QORIQ registration in Korea covers microprocessors and integrated circuits, which the applicant's downloadable app does not touch.",
+      "disposition": "off-field",
+      "off_field_ground": "different-field",
+      "legal_position": "The Korean class 9 specification is microprocessors, customised microprocessors, multi-core processors, semiconductors, integrated circuits and special-purpose integrated circuits — silicon parts specified by design engineers after qualification, not software bought by consumers from a storefront. QORIQ is also framed on its doubled Q and shares no opening with VENQORI.",
+      "practical_position": "NXP holds the same mark across seven territories including Korea, so it has the means to police it. Nothing on the record shows it asserting QORIQ outside its own family of QOR- processor brands.",
+      "meters": {
+        "mark_similarity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/c673cf6c-053f-4df7-8d2a-eec13d790f93"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.1,
+        "y": 0.3
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      }
+    },
+    {
+      "ordinal": 10,
+      "mark": "VENTURI",
+      "owner": {
+        "name": "State Street Bank and Trust Company",
+        "country": "US",
+        "registrations": [
+          {
+            "uri": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca"
+          },
+          {
+            "uri": "/mark/em/0d26b878-e587-4338-9236-1b49ed67f113"
+          },
+          {
+            "uri": "/mark/gb/e0fbde90-93fe-4d6f-8aea-009e07e6577e"
+          }
+        ]
+      },
+      "net": "State Street's VENTURI covers a peer-to-peer platform for trading repo securities, a field the applicant's water-testing app does not enter.",
+      "disposition": "off-field",
+      "off_field_ground": "different-field",
+      "legal_position": "The class 42 claim is software as a service featuring a peer-to-peer platform to facilitate bilateral trading of repo securities — an institutional financial service with no consumer channel. VENTURI is also an ordinary fluid-dynamics word with a settled meaning, which gives it a conceptual anchor the applicant's coined mark does not share.",
+      "practical_position": "This is the largest third-party footprint in the searched material on a VEN- mark in class 42, held across ten territories by a global bank. The US application is intent-to-use with the statement of use still outstanding after one granted extension, and the record shows the same owner running a TTAB cancellation against a VENTURIS registration — a vendor-record lead rather than an independently verified authority, and directed at its own mark rather than at a different element.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "/mark/us/6500c73f-7f2e-41df-9a5b-a59256a128ca"
+        },
+        "enforcer": {
+          "token": "medium",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.15,
+        "y": 0.55
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      }
+    },
+    {
+      "ordinal": 11,
+      "mark": "VENTORI",
+      "owner": {
+        "name": "VENTORI ACESSORIOS LTDA - ME.",
+        "country": "BR",
+        "registrations": [
+          {
+            "uri": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c"
+          }
+        ]
+      },
+      "net": "VENTORI is the closest string to VENQORI anywhere on the record, but it claims phone and electrical accessories rather than software and sits outside every market in scope.",
+      "disposition": "off-field",
+      "off_field_ground": "different-field",
+      "legal_position": "VENTORI is one letter from VENQORI and was the only record the mechanical ranking matched against the applicant's mark itself rather than against a fragment of it. Its class 9 list is consumer-electronics and electrical accessories — adapters, chargers, cases, cables, headphones, smartwatches, scales, detectors and laboratory water-purification apparatus — and carries no monitoring software and no downloadable software beyond image files, so the goods do not meet.",
+      "practical_position": "The applicant is a Brazilian auto-accessories micro-enterprise and the filing is pending as a word-and-design mark. Brazil is outside the instructed and searched territories, and no Madrid designation off this filing appears on the record, so it has no present route into Japan, Korea or any reach market. The laboratory water-purification wording is its one point of contact with the applicant's field.",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "/mark/br/1ac5cfcf-0d54-4c62-bbbb-96803a302f9c"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal",
+          "source": ""
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.15,
+        "y": 0.9
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      }
+    },
+    {
+      "ordinal": 12,
+      "mark": "Venqo",
+      "owner": {
+        "name": "Auxano Global Services Pvt Ltd",
+        "country": "IN",
+        "registrations": []
+      },
+      "net": "The Venqo listing on Google Play is a business-card scanner for sales teams published by an Indian developer, not a trade that meets a consumer water-testing app.",
+      "disposition": "off-field",
+      "off_field_ground": "different-field",
+      "legal_position": "Venqo takes the applicant's first five letters and stops there, giving two syllables against three. Its actual trade is event lead capture — scanning business cards and visitor badges, grading leads and exporting contacts for sales teams — and an unregistered right reaches only the trade actually carried on, which is a different commercial field from consumer water testing.",
+      "practical_position": "The app is published by Auxano Global Services Pvt Ltd of Ahmedabad and priced in Indian rupees through a companion site at venqo.io, and no Apple App Store listing was located. Separate and unconnected VENQO names trade in the United Kingdom in smart vending, so the name is not held by a single proprietor.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "https://play.google.com/store/apps/details?id=com.app.venqo"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "https://play.google.com/store/apps/details?id=com.app.venqo"
+        },
+        "use": {
+          "token": "confirmed",
+          "basis": "verified-from-record",
+          "source": "https://play.google.com/store/apps/details?id=com.app.venqo"
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.2,
+        "y": 0.6
+      },
+      "source": {
+        "source_type": "common-law-marketplace",
+        "resolved_link": "https://play.google.com/store/apps/details?id=com.app.venqo"
+      },
+      "use_check": {
+        "source": "https://play.google.com/store/apps/details?id=com.app.venqo",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 13,
+      "mark": "VANQOR",
+      "owner": {
+        "name": "VANQOR LIMITED",
+        "country": "GB",
+        "registrations": []
+      },
+      "net": "Neither VANQOR LIMITED, dissolved in January 2025, nor the separately named Vanqor enterprise ERP and CRM business is a source of rights against VENQORI for a water-testing app in the United Kingdom.",
+      "disposition": "off-field",
+      "off_field_ground": "different-field",
+      "legal_position": "A UK company name can found a passing-off or company-names-tribunal claim without any trade mark registration, which is why this was left open upstream rather than dismissed. The company was dissolved on 7 January 2025 and its only registered activity was business and domestic software development, so it has no continuing goodwill in water testing or environmental monitoring for such a claim to rest on.",
+      "practical_position": "Companies House records VANQOR LIMITED, company number 10027497, as dissolved. A separately named Vanqor software profile describes enterprise ERP and CRM products with no water or environmental line.",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "https://find-and-update.company-information.service.gov.uk/company/10027497"
+        },
+        "goods_proximity": {
+          "token": "low",
+          "basis": "verified-from-record",
+          "source": "https://find-and-update.company-information.service.gov.uk/company/10027497"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "https://find-and-update.company-information.service.gov.uk/company/10027497"
+        },
+        "enforcer": {
+          "token": "low",
+          "basis": "inferred-from-signal",
+          "source": ""
+        }
+      },
+      "quadrant": {
+        "x": 0.1,
+        "y": 0.6
+      },
+      "source": {
+        "source_type": "common-law-web",
+        "resolved_link": "https://find-and-update.company-information.service.gov.uk/company/10027497"
+      },
+      "use_check": {
+        "source": "https://find-and-update.company-information.service.gov.uk/company/10027497",
+        "quality": "independent"
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "area": "register / the mark and its neighbouring spellings across the six searched territories",
+      "state": "coverage-limited",
+      "note": "The mark itself was searched to completion everywhere and found free. Five single-letter spellings around its closing element were left unfinished when the search budget ran out."
+    },
+    {
+      "area": "register / transliteration and numeric forms of the mark",
+      "state": "confirmed-clean",
+      "note": "All eight foreign-script forms — two Japanese, two Korean, two Chinese, Cyrillic and Greek — and the digit-substitution spellings were searched to completion. Every hit read as an unrelated word in its own language."
+    },
+    {
+      "area": "register / Japan and Korea citation core",
+      "state": "confirmed-clean",
+      "note": "Both markets were searched in Latin and local script for the mark, its sound-alikes and its component parts. The mark itself is free in both."
+    },
+    {
+      "area": "register / clothing and merchandise, class 25",
+      "state": "confirmed-clean",
+      "note": "No one holds this name identically in any class anywhere, so there is no branded-merchandise conflict to find."
+    },
+    {
+      "area": "register / look-alike spellings built from Greek and Cyrillic letters",
+      "state": "not-searched",
+      "note": "The register used holds foreign-script filings only under their romanised spelling, so these four spellings could not be put to it at all. The romanised forms were searched and came back empty."
+    },
+    {
+      "area": "register / Xylem Inc.",
+      "state": "not-searched",
+      "note": "Every route to this proprietor failed on the register's own servers, so no count was ever returned. Xylem is a leading water-monitoring business filing in the applicant's classes, and nothing can be read from the silence."
+    },
+    {
+      "area": "register / the other nine named water-sector companies",
+      "state": "confirmed-clean",
+      "note": "Hach, Danaher, YSI, Coway, LaMotte, Brita, Clorox, Toray and Mitsubishi Chemical Aqua Solutions were each searched by name against the mark and its closing element in the applicant's classes, and hold nothing resembling it."
+    },
+    {
+      "area": "register / the applicant's own earlier rights",
+      "state": "not-searched",
+      "note": "The request does not name the applying company, so its own filings could neither be excluded from the results nor looked for. No further searching closes this — it needs the name."
+    },
+    {
+      "area": "register / general-purpose data analytics and dashboarding software",
+      "state": "not-searched",
+      "note": "Named as a field worth sweeping, but no search was dispatched for it this run."
+    },
+    {
+      "area": "register / environmental monitoring software generally — air, emissions, soil, hydrology and compliance platforms",
+      "state": "not-searched",
+      "note": "Named as a field worth sweeping and not dispatched. The named water-sector owners themselves were searched separately and came back empty."
+    },
+    {
+      "area": "common-law / Apple App Store and Google Play",
+      "state": "coverage-limited",
+      "note": "The storefront sweep could not be made exhaustive for the exact titles VENQORI and VENQO. These are the applicant's primary channel, so absence there is not a confirmed clean."
+    },
+    {
+      "area": "common-law / Japanese and Korean marketplaces and portals",
+      "state": "coverage-limited",
+      "note": "Rakuten, Coupang and Naver filter what they return by region, and searching consumer platforms in non-Latin script is thin, so absence there is not confirmed."
+    },
+    {
+      "area": "common-law / water-industry trade directories and integrator networks",
+      "state": "note",
+      "note": "The marketplace sweep reports the WEFTEC, AWWA, IFAT and Aquatech exhibitor lists and the OPC, Modbus and vendor partner directories searched with no entry in this name. We have not independently verified that result."
+    },
+    {
+      "area": "Follow-up / general-purpose data analytics, dashboarding…",
+      "state": "open",
+      "note": "general-purpose data analytics, dashboarding and alerting software (downloadable or saas) — not completed this run — nothing in the run's own record confirms it was searched, so it is left open rather than assumed done"
+    },
+    {
+      "area": "Follow-up / environmental monitoring software generally…",
+      "state": "open",
+      "note": "environmental monitoring software generally — air quality, emissions, soil, hydrology, weather and compliance-reporting platforms — not completed this run — nothing in the run's own record confirms it was searched, so it is left open rather than assumed done"
+    },
+    {
+      "area": "Japanese-script register equivalents (JP)",
+      "state": "coverage-limited",
+      "note": "Japanese-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
+    },
+    {
+      "area": "Korean-script register equivalents (KR)",
+      "state": "coverage-limited",
+      "note": "Korean-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
+    }
+  ],
+  "coverage_judgment": {
+    "sufficient": false,
+    "reason": "Xylem Inc.'s own holdings in classes 9, 42 and 41 were never searched — every route to that owner failed on the provider's servers — and a right in this name held by one of the two largest water-quality monitoring businesses is precisely the conflict this search exists to find.",
+    "rows": [
+      {
+        "area": "primary-sweep (entire axis)",
+        "areaLabel": "main register sweep (all of it)",
+        "note": "coverage-limited — The main sweep ran and is the backbone of this report: the mark itself was searched across all six territories and returned nothing, and the neighbourhood aroun"
+      },
+      {
+        "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: vεηqοrι [cl 9, 42, 41]",
+        "note": "deferred — This was a look-alike spelling of the mark built from Greek and Cyrillic letters that imitate Latin ones. The register we searched does not hold filings by thei"
+      },
+      {
+        "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: vеnqоri [cl 9, 42, 41]",
+        "note": "deferred — A second look-alike spelling of the mark mixing Cyrillic characters with Latin ones. The register indexes foreign-script filings only by their romanised spellin"
+      },
+      {
+        "area": "primary-sweep / exact: qοrι [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: qοrι [cl 9, 42, 41]",
+        "note": "deferred — A Greek-character imitation of the mark's closing element. The register cannot be searched on those characters — it stores foreign filings under their romanised"
+      },
+      {
+        "area": "primary-sweep / exact: qоri [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: qоri [cl 9, 42, 41]",
+        "note": "deferred — A Cyrillic-character imitation of the mark's closing element, which the register cannot be searched on for the same reason as the others. The search never ran, "
+      },
+      {
+        "area": "incumbent-class (entire axis)",
+        "areaLabel": "owner portfolio sweep (all of it)",
+        "note": "coverage-limited — Nine of the ten named water-sector companies were searched by name against both the full mark and its closing element, and every one of those searches ran to co"
+      },
+      {
+        "area": "incumbent-class / default: VENQORI [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / default: VENQORI [cl 9, 42, 41]",
+        "note": "deferred — The search for the full mark held in Xylem's name failed on the register's own servers, twice, and was never answered. No count was ever returned, so there is n"
+      },
+      {
+        "area": "incumbent-class / default: QORI [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / default: QORI [cl 9, 42, 41]",
+        "note": "deferred — The companion search for the mark's closing element held in Xylem's name failed on the register's servers in the same way and returned no result. It is unsearch"
+      },
+      {
+        "area": "incumbent-class / owner: Xylem Inc. [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / owner: Xylem Inc. [cl 9, 42, 41]",
+        "note": "deferred — The attempt to list Xylem's own portfolio in the client's classes also failed on the register's servers, so we could not even establish the size or shape of tha"
+      },
+      {
+        "area": "incumbent-class / default: VENQORI [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / default: VENQORI [cl 9, 42, 41]",
+        "note": "deferred — A repeat attempt at the full-mark search under Xylem's name, made after the first failure, failed again for the same reason. The recovery attempt is recorded so"
+      },
+      {
+        "area": "incumbent-class / default: QORI [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / default: QORI [cl 9, 42, 41]",
+        "note": "deferred — The repeat attempt at the closing-element search under Xylem's name failed identically. This slice was never answered and cannot be treated as a clean."
+      },
+      {
+        "area": "incumbent-class / owner: Xylem [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / owner: Xylem [cl 9, 42, 41]",
+        "note": "deferred — The final fallback attempt, searching the shortened company name to sidestep the failure, also produced no answer from the register. Every route to this owner w"
+      },
+      {
+        "area": "incumbent-class / default: VENQORI [cl 9, 42, 41, 11, 1, 40, 44]",
+        "areaLabel": "owner portfolio sweep / default: VENQORI [cl 9, 42, 41, 11, 1, 40, 44]",
+        "note": "deferred — A search for the mark VENQORI limited to filings owned by Xylem Inc., across the client's core classes and the wider hardware, treatment and services classes, w"
+      },
+      {
+        "area": "incumbent-class / default: QORI [cl 9, 42, 41, 11, 1, 40, 44]",
+        "areaLabel": "owner portfolio sweep / default: QORI [cl 9, 42, 41, 11, 1, 40, 44]",
+        "note": "deferred — The matching search for the element QORI within Xylem Inc.'s portfolio, across the core and wider classes, also failed on a register server error after every re"
+      },
+      {
+        "area": "incumbent-class / owner: Xylem Inc. [cl 9, 42, 41, 11, 1, 40, 44]",
+        "areaLabel": "owner portfolio sweep / owner: Xylem Inc. [cl 9, 42, 41, 11, 1, 40, 44]",
+        "note": "deferred — The sweep of Xylem Inc.'s own filings by owner name, across the core and wider classes, was likewise refused by the register with a repeated server error and ne"
+      },
+      {
+        "area": "incumbent-class / exact: VENQORI [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / exact: VENQORI [cl 9, 42, 41]",
+        "note": "deferred — A narrowed, exact-match retry for VENQORI within Xylem Inc.'s holdings was attempted to work around the earlier failures; it too was rejected by the register wi"
+      },
+      {
+        "area": "incumbent-class / exact: QORI [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / exact: QORI [cl 9, 42, 41]",
+        "note": "deferred — The equivalent exact-match retry for QORI within Xylem Inc.'s holdings failed on the same unrecoverable register error and never ran. No conclusion about Xylem'"
+      },
+      {
+        "area": "incumbent-class / the applicant's own earlier rights",
+        "areaLabel": "owner portfolio sweep / the applicant's own earlier rights",
+        "note": "deferred — The request does not name the applicant. That means two things could not be done: the client's own filings could not be excluded from the results, and the clien"
+      }
+    ]
+  },
+  "four_answers": {
+    "third_party_rights": {
+      "read": "The blocking rights are real but narrow. Almost every one of them turned out, on its own specification, to be confined to a field the company does not enter.",
+      "token": "moderate",
+      "basis": "The fetched specifications behind findings 1 to 8, read against a downloadable water-testing app and its online training layer.",
+      "ordinals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "objection_likelihood": {
+      "read": "An objection from one of the identified owners is possible rather than expected. Korea and the United Kingdom are where it would come from.",
+      "token": "possible",
+      "basis": "Align Networks' earlier Korean priority across all three core classes, and Vencora's unrestricted UK software and training cover.",
+      "ordinals": [
+        1,
+        2
+      ]
+    },
+    "registrability": {
+      "read": "The name is registrable, but not everywhere as drafted. An unrestricted class 9 claim is what brings the field-limited earlier rights into collision with it.",
+      "token": "registrable-with-conditions",
+      "obstacles": [
+        {
+          "class": "9",
+          "note": "Korea — Align Networks' pending application names downloadable smartphone application software with April 2026 priority."
+        },
+        {
+          "class": "41",
+          "note": "United Kingdom — Vencora's education, training and courses cover carries no field limit."
+        },
+        {
+          "class": "42",
+          "note": "United Kingdom and the EU — Vencora, plus the two QORI word marks whose cloud and hosting legs are unrestricted."
+        }
+      ],
+      "basis": "The examined specifications behind findings 1, 2, 6 and 7.",
+      "ordinals": [
+        1,
+        2,
+        6,
+        7
+      ]
+    },
+    "client_enforceability": {
+      "read": "The company could enforce the whole word comfortably. It could not expect to stop other QORI- names, which are numerous in the EU and UK class 9 and 42 registers.",
+      "token": "moderate",
+      "basis": "The mark's coined character against the QOR-/QORI- holdings counted in the EU and UK class 9 and 42 registers.",
+      "ordinals": [
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  "actions": [
+    {
+      "id": 1,
+      "kind": "client-fact",
+      "text": "Tell us the legal name of the company that will own the mark.",
+      "ordinals": []
+    },
+    {
+      "id": 2,
+      "kind": "senior-clearance",
+      "text": "Search the US, EU, UK, Japanese, Korean and Chinese registers directly for any Xylem Inc. mark resembling VENQORI.",
+      "condition": "No search of Xylem Inc.'s holdings could be completed on the register used this run.",
+      "ordinals": []
+    },
+    {
+      "id": 3,
+      "kind": "goods-amendment",
+      "text": "Limit the class 9 and 42 wording to water-quality monitoring so it does not read across payment, security and business software.",
+      "condition": "The intended class 9 and 42 wording is unrestricted, so it covers the fields the nearest earlier rights are confined to.",
+      "ordinals": [
+        1,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "kind": "monitoring",
+      "text": "Watch Align Networks' three Korean ENQOR applications to publication and decide then whether to oppose.",
+      "ordinals": [
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "kind": "counsel-opinion-required",
+      "text": "Ask EU counsel whether the earlier QORI word marks could be raised against VENQORI read as one word.",
+      "condition": "Two unconnected owners hold the bare word QORI in the applicant's principal EU classes.",
+      "ordinals": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": 6,
+      "kind": "client-fact",
+      "text": "Confirm whether a paired sensor or test kit will ship under the name.",
+      "ordinals": [
+        11
+      ]
+    },
+    {
+      "id": 7,
+      "kind": "monitoring",
+      "text": "Watch the Vencora EU application and the Vencore international registration for any Japanese or Korean designation.",
+      "ordinals": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 8,
+      "kind": "client-fact",
+      "text": "Confirm whether Japan and Korea are the only markets of interest, or the US, EU, UK and China remain in scope.",
+      "ordinals": []
+    }
+  ]
+}

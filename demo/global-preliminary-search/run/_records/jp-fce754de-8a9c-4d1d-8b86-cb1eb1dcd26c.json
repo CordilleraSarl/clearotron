@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/jp/fce754de-8a9c-4d1d-8b86-cb1eb1dcd26c",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "fce754de-8a9c-4d1d-8b86-cb1eb1dcd26c",
+  "applicationNumber": "H04-143573",
+  "registrationNumber": null,
+  "applicationDate": "1992-07-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＫＯＲＩ",
+  "markTransliteration": "KORI",
+  "markTranslation": "KORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "回転計，照度計，速度計，角度割り出し機，長さゲージ，比較測長機，ゴム試験機，繊維材料試験機，検出器",
+      "translation_language": "en",
+      "translation": "Tachometer, luminometer, speed meter, angle indexer, length gauge, comparative measuring machine, rubber testing machine, textile material testing machine, detector"
+    }
+  ],
+  "owner": "K.K. FURUSATO PRECISION MACHINE FACTORY",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "AMANO IZUMI",
+  "priorities": [
+    {
+      "priorityDate": "19920722"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "NISHITAMA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. FURUSATO PRECISION MACHINE FACTORY",
+        "applicantNativeAddress": "東京都西多摩郡奥多摩町小丹波３７",
+        "applicantNativeName": "株式会社古里精機製作所"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Tachometer, luminometer, speed meter, angle indexer, length gauge, comparative measuring machine, rubber testing machine, textile material testing machine, detector",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "回転計，照度計，速度計，角度割り出し機，長さゲージ，比較測長機，ゴム試験機，繊維材料試験機，検出器"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "10C01",
+          "natGoodsServicesDescription": "Measuring apparatus and instruments"
+        },
+        {
+          "natClassNumber": "11A04",
+          "natGoodsServicesDescription": "Electric or magnetic measuring machines and instruments"
+        }
+      ]
+    },
+    "id": "fce754de-8a9c-4d1d-8b86-cb1eb1dcd26c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19920722"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "AMANO IZUMI",
+        "representativeNativeName": "天野　泉"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19920722",
+        "applicationNumber": "H04-143573"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427112837",
+    "wordMarkSpecification": {
+      "markTranslation": "KORI",
+      "markTransliteration": "KORI",
+      "markVerbalElementText": "ＫＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/fce754de-8a9c-4d1d-8b86-cb1eb1dcd26c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

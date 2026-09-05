@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/cn/74e98469-29f7-476b-b8fb-0b31be263484",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "74e98469-29f7-476b-b8fb-0b31be263484",
+  "applicationNumber": "91623986",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VANCORE SPACE HOME",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "包装设计;工程设计服务;工业品外观设计;技术项目研究;技术研究;建筑设计;科学研究;平面设计;室内设计;室内装饰设计",
+      "translation_language": "en",
+      "translation": "Packaging design; engineering design services; industrial product appearance design; technical project research; technical research; architectural design; scientific research; graphic design; interior design; interior decoration design"
+    }
+  ],
+  "owner": "Guangzhou Wange Space Home Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市花都区茶园路13号201室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Wange Space Home Technology Co., Ltd.",
+        "applicantNativeName": "广州万格空间家居科技有限责任公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Packaging design; engineering design services; industrial product appearance design; technical project research; technical research; architectural design; scientific research; graphic design; interior design; interior decoration design",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "包装设计;工程设计服务;工业品外观设计;技术项目研究;技术研究;建筑设计;科学研究;平面设计;室内设计;室内装饰设计"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Registered design service",
+        "Design and information service for architecture",
+        "Other services included in this class"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4227",
+          "subNatGoodsServicesDescription": "Other services included in this class"
+        }
+      ]
+    },
+    "id": "74e98469-29f7-476b-b8fb-0b31be263484",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260731",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260507",
+        "applicationNumber": "91623986"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260731020217",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCORE SPACE HOME"
+    }
+  },
+  "_uri": "/mark/cn/74e98469-29f7-476b-b8fb-0b31be263484",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

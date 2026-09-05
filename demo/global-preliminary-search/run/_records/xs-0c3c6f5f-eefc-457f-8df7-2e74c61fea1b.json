@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/xs/0c3c6f5f-eefc-457f-8df7-2e74c61fea1b",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "0c3c6f5f-eefc-457f-8df7-2e74c61fea1b",
+  "applicationNumber": null,
+  "registrationNumber": "4240318",
+  "applicationDate": null,
+  "registrationDate": "2020-04-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "STEVEN O'ROURKE TRANSPORTATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consultant for domestics transport of commerce ...",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "STEVEN O'ROURKE",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "15-2786 OPIHI ST, PAHOA, HI, 96778",
+        "applicantAddressCity": "PAHOA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "96778",
+        "applicantAddressStateName": "HAWAII",
+        "applicantAddressStreet": "15-2786 OPIHI ST",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "STEVEN O'ROURKE"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consultant for domestics transport of commerce ..."
+        }
+      ]
+    },
+    "id": "0c3c6f5f-eefc-457f-8df7-2e74c61fea1b",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "15-2786 OPIHI ST, PAHOA, HI, 96778",
+        "city": "PAHOA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "STEVEN O'ROURKE",
+        "postalCode": "96778",
+        "stateName": "HAWAII",
+        "street": "15-2786 OPIHI ST"
+      }
+    ],
+    "recordLastUpdated": "20241207",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200424",
+        "registrationNumber": "4240318"
+      }
+    },
+    "usStateOfficeCode": "HI",
+    "usStateOfficeName": "HAWAII",
+    "version": "20241207072257",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "STEVEN OROURKE TRANSPORTATION",
+      "markVerbalElementText": "STEVEN O'ROURKE TRANSPORTATION"
+    }
+  },
+  "_uri": "/mark/xs/0c3c6f5f-eefc-457f-8df7-2e74c61fea1b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

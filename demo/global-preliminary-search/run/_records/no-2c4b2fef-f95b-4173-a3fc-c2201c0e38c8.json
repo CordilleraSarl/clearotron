@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/no/2c4b2fef-f95b-4173-a3fc-c2201c0e38c8",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "2c4b2fef-f95b-4173-a3fc-c2201c0e38c8",
+  "applicationNumber": "202508296",
+  "registrationNumber": null,
+  "applicationDate": "2025-07-17",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Drive Norway",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    39,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "no",
+      "description": "Nedlastbare veikart; Nedlastbare kart; Nedlastbare digitale bøker; Nedlastbare digitale bilder; Nedlastbare podkaster; Nedlastbare videofiler.",
+      "translation_language": "en",
+      "translation": "Downloadable road maps; Downloadable maps; Downloadable digital books; Downloadable digital images; Downloadable podcasts; Downloadable video files."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Markedsføring.",
+      "translation_language": "en",
+      "translation": "Marketing."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Lyd-, video- og multimediaproduksjon, og fotografering.",
+      "translation_language": "en",
+      "translation": "Audio, video and multimedia production, and photography."
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "da",
+      "description": "Reiseplanleggingstjenester; Transportinformasjon.",
+      "translation_language": "en",
+      "translation": "Travel planning services; Transport information."
+    }
+  ],
+  "owner": "DRIVE NORWAY TETLOW",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4022 STAVANGER",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "DRIVE NORWAY TETLOW"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable road maps; Downloadable maps; Downloadable digital books; Downloadable digital images; Downloadable podcasts; Downloadable video files.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Nedlastbare veikart; Nedlastbare kart; Nedlastbare digitale bøker; Nedlastbare digitale bilder; Nedlastbare podkaster; Nedlastbare videofiler."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Marketing.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Markedsføring."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Audio, video and multimedia production, and photography.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Lyd-, video- og multimediaproduksjon, og fotografering."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Travel planning services; Transport information.",
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Reiseplanleggingstjenester; Transportinformasjon."
+        }
+      ]
+    },
+    "id": "2c4b2fef-f95b-4173-a3fc-c2201c0e38c8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260203",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20250717",
+        "applicationNumber": "202508296"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "FINALLY SHELVED"
+    },
+    "version": "20260203020548",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Drive Norway"
+    }
+  },
+  "_uri": "/mark/no/2c4b2fef-f95b-4173-a3fc-c2201c0e38c8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

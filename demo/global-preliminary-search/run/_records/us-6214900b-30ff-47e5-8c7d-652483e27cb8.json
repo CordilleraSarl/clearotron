@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/us/6214900b-30ff-47e5-8c7d-652483e27cb8",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6214900b-30ff-47e5-8c7d-652483e27cb8",
+  "applicationNumber": "99731186",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Protective industrial respirators; Protective industrial respirators for filtering air",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Elizbar Lominadze",
+  "ownerNative": null,
+  "ownerCountry": "GE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lvovi 63 Floor 4, Apartment 13, Tbilisi, 0160, GEOR",
+        "applicantAddressCity": "Tbilisi",
+        "applicantAddressCountryCode": "GE",
+        "applicantAddressCountryName": "Georgia",
+        "applicantAddressPostalCode": "0160",
+        "applicantAddressStreet": "Lvovi 63 Floor 4, Apartment 13",
+        "applicantJurisdictionOfIncorporation": "GEORGIA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Elizbar Lominadze"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Protective industrial respirators; Protective industrial respirators for filtering air"
+        }
+      ]
+    },
+    "id": "6214900b-30ff-47e5-8c7d-652483e27cb8",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260810",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260810",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260810",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260808",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260730",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260329",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260329",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Lvovi 63 Floor 4, Apartment 13, Tbilisi, 0160, GEOR",
+        "city": "Tbilisi",
+        "countryCode": "GE",
+        "countryName": "Georgia",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Elizbar Lominadze",
+        "postalCode": "0160",
+        "street": "Lvovi 63 Floor 4, Apartment 13"
+      },
+      {
+        "address": "Lvovi 63 Floor 4, Apartment 13, Tbilisi, 0160, GEOR",
+        "city": "Tbilisi",
+        "countryCode": "GE",
+        "countryName": "Georgia",
+        "jurisdictionOfIncorporation": "GEORGIA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Elizbar Lominadze",
+        "postalCode": "0160",
+        "street": "Lvovi 63 Floor 4, Apartment 13"
+      }
+    ],
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Tbilisi, 0160, Georgia",
+        "representativeCorrespondentAddressLines": [
+          "Tbilisi, 0160",
+          "Georgia"
+        ],
+        "representativeCorrespondentName": "Elizbar Lominadze, Lvovi 63 Floor 4, Apartment 13"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Tbilisi, 0160, Georgia",
+        "representativeAddressLines": [
+          "Tbilisi, 0160",
+          "Georgia"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260329",
+        "applicationNumber": "99731186"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20250310"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20250310"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "NON-FINAL ACTION - MAILED",
+        "markOfficialStatusCode": "641",
+        "markOfficialStatusDate": "20260810",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260812051239",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENOR"
+    }
+  },
+  "_uri": "/mark/us/6214900b-30ff-47e5-8c7d-652483e27cb8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

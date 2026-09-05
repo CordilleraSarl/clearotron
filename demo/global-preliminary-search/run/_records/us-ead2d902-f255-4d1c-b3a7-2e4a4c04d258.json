@@ -1,0 +1,694 @@
+{
+  "uri": "/mark/us/ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+  "applicationNumber": "86337765",
+  "registrationNumber": "4989191",
+  "applicationDate": "2014-07-15",
+  "registrationDate": "2016-06-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-03-01"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2023-01-13",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": "INT. CL. 38 Communications consulting services; providing consulting services in the field of telecommunications; providing technical support services regarding the usage of telecommunications equipment and telecommunications network equipment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Systems engineering and system integration services, namely, integration of computer systems and networks; computer software, hardware, and network design and development services, and design and consulting services related thereto; design and development of telecommunications apparatus and equipment; computer network security services, namely, providing network vulnerability testing and risk assessment services, network penetration and penetration mitigation services, and network monitoring and management; software development services; research and development services in the field of telecommunications and consultation services related thereto; data analysis of visual, textual, audio, video and geospatial data, namely, providing data mining and predictive analysis; modeling, simulation and analysis services, namely, modeling and simulating the performance of computer-based systems, computer networks and data collection systems in response to conditions or effects that affect system or network performance; providing consulting, analysis, and technical support services in the field of telecommunications, namely, analyzing telecommunications network performance and providing network architecture design, implementation and management of wireless networks for others; providing network monitoring and security services in the field of telecommunications, namely, providing network vulnerability testing and risk assessment services, and network penetration testing and network penetration mitigation services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VENCORE, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "David P. Miranda,",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "720 VANDENBURG ROAD, KING OF PRUSSIA, PA, 19406",
+        "applicantAddressCity": "KING OF PRUSSIA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "19406",
+        "applicantAddressStateName": "PENNSYLVANIA",
+        "applicantAddressStreet": "720 VANDENBURG ROAD",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "VENCORE, INC."
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "15050 CONFERENCE CENTER DRIVE, CHANTILLY, VIRGINIA, 20151",
+            "city": "CHANTILLY",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA ENGINEERING INC. (FORMERLY KNOWN AS VENCORE, INC.)",
+            "postalCode": "20151",
+            "stateName": "VIRGINIA",
+            "street": "15050 CONFERENCE CENTER DRIVE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "MUFG UNION BANK, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20210506",
+        "recordedDate": "20210507",
+        "reelFrameNumber": "7283/0826"
+      },
+      {
+        "assignees": [
+          {
+            "address": "4 CMC, CIB DMO WLO, BROOKLYN, NEW YORK, 11245-0001",
+            "city": "BROOKLYN",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A.",
+            "postalCode": "11245-0001",
+            "secondaryAddressUnit": "MAIL CODE NY1-C413",
+            "stateName": "NEW YORK",
+            "street": "4 CMC, CIB DMO WLO"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "PERSPECTA ENTERPRISE SOLUTIONS LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA ENGINEERING INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "COLORADO",
+            "legalEntity": "CORPORATION",
+            "name": "SIMAUTHOR, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA SERVICES & SOLUTIONS INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "VIRGINIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "KNIGHT POINT SYSTEMS, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA RISK DECISION INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "FIRST LIEN SECURITY AGREEMENT",
+        "executedDate": "20210506",
+        "recordedDate": "20210506",
+        "reelFrameNumber": "7283/0040"
+      },
+      {
+        "assignees": [
+          {
+            "address": "225 W. WASHINGTON ST., 9TH FLOOR, CHICAGO, ILLINOIS, 60606",
+            "city": "CHICAGO",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "ALTER DOMUS (US) LLC",
+            "postalCode": "60606",
+            "stateName": "ILLINOIS",
+            "street": "225 W. WASHINGTON ST., 9TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "PERSPECTA ENTERPRISE SOLUTIONS LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA ENGINEERING INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "COLORADO",
+            "legalEntity": "CORPORATION",
+            "name": "SIMAUTHOR, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA SERVICES & SOLUTIONS INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "VIRGINIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "KNIGHT POINT SYSTEMS, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "PERSPECTA RISK DECISION INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "SECOND LIEN SECURITY AGREEMENT",
+        "executedDate": "20210506",
+        "recordedDate": "20210506",
+        "reelFrameNumber": "7283/0048"
+      },
+      {
+        "assignees": [
+          {
+            "address": "1251 AVENUE OF THE AMERICAS, NEW YORK, NEW YORK, 10020",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "Japan",
+            "legalEntity": "BANK",
+            "name": "MUFG UNION BANK, N.A.",
+            "postalCode": "10020",
+            "stateName": "NEW YORK",
+            "street": "1251 AVENUE OF THE AMERICAS"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCORE, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 VERMONT AVE NW, SUITE 1130, COGENCY GLOBAL INC., WASHINGTON, DC 20005",
+            "addressLines": [
+              "JAY DASILVA",
+              "1025 VERMONT AVE NW, SUITE 1130",
+              "COGENCY GLOBAL INC.",
+              "WASHINGTON, DC 20005"
+            ],
+            "name": "JAY DASILVA"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20180531",
+        "recordedDate": "20180606",
+        "reelFrameNumber": "6347/0302"
+      },
+      {
+        "assignees": [
+          {
+            "address": "720 VANDENBURG ROAD, KING OF PRUSSIA, PENNSYLVANIA, 19406",
+            "city": "KING OF PRUSSIA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCORE, INC.",
+            "postalCode": "19406",
+            "stateName": "PENNSYLVANIA",
+            "street": "720 VANDENBURG ROAD"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "THE SI ORGANIZATION, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "5 COLUMBIA CIRCLE, HESLIN ROTHENBERG FARLEY & MESITI P.C., ALBANY, NY 12203",
+            "addressLines": [
+              "DAVID P.  MIRANDA, ESQ.",
+              "5 COLUMBIA CIRCLE",
+              "HESLIN ROTHENBERG FARLEY & MESITI P.C.",
+              "ALBANY, NY 12203"
+            ],
+            "name": "DAVID P.  MIRANDA, ESQ."
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20140915",
+        "recordedDate": "20150107",
+        "reelFrameNumber": "5435/0960"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "38",
+          "intGoodsServicesDescription": "INT. CL. 38 Communications consulting services; providing consulting services in the field of telecommunications; providing technical support services regarding the usage of telecommunications equipment and telecommunications network equipment"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Systems engineering and system integration services, namely, integration of computer systems and networks; computer software, hardware, and network design and development services, and design and consulting services related thereto; design and development of telecommunications apparatus and equipment; computer network security services, namely, providing network vulnerability testing and risk assessment services, network penetration and penetration mitigation services, and network monitoring and management; software development services; research and development services in the field of telecommunications and consultation services related thereto; data analysis of visual, textual, audio, video and geospatial data, namely, providing data mining and predictive analysis; modeling, simulation and analysis services, namely, modeling and simulating the performance of computer-based systems, computer networks and data collection systems in response to conditions or effects that affect system or network performance; providing consulting, analysis, and technical support services in the field of telecommunications, namely, analyzing telecommunications network performance and providing network architecture design, implementation and management of wireless networks for others; providing network monitoring and security services in the field of telecommunications, namely, providing network vulnerability testing and risk assessment services, and network penetration testing and network penetration mitigation services"
+        }
+      ]
+    },
+    "id": "ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20230113",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20210519",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20160628",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160527",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE MAILED"
+      },
+      {
+        "date": "20160526",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20160525",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20160524",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20160429",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20160429",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20160426",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20160301",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20160210",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20160123",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20160114",
+        "descriptionText": "EXAMINERS AMENDMENT MAILED"
+      },
+      {
+        "date": "20160114",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20160114",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160114",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20160107",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20151222",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20151207",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20151130",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20151120",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20151120",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20151120",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150522",
+        "descriptionText": "FINAL REFUSAL MAILED"
+      },
+      {
+        "date": "20150522",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20150504",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20150504",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20150504",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150114",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20141103",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20141103",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20141027",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140827",
+        "descriptionText": "PRELIMINARY/VOLUNTARY AMENDMENT - ENTERED"
+      },
+      {
+        "date": "20140820",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20140814",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20140721",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140718",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "720 Vandenburg Road, King of Prussia, PA, 19406",
+        "city": "King of Prussia",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "The SI Organization, Inc.",
+        "postalCode": "19406",
+        "stateName": "PENNSYLVANIA",
+        "street": "720 Vandenburg Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "720 VANDENBURG ROAD, KING OF PRUSSIA, PA, 19406",
+        "city": "KING OF PRUSSIA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCORE, INC.",
+        "postalCode": "19406",
+        "stateName": "PENNSYLVANIA",
+        "street": "720 VANDENBURG ROAD"
+      },
+      {
+        "address": "720 VANDENBURG ROAD, KING OF PRUSSIA, PA, 19406",
+        "city": "KING OF PRUSSIA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCORE, INC.",
+        "postalCode": "19406",
+        "stateName": "PENNSYLVANIA",
+        "street": "720 VANDENBURG ROAD"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "720 VANDENBURG ROAD, KING OF PRUSSIA, PA, 19406",
+        "city": "KING OF PRUSSIA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCORE, INC.",
+        "postalCode": "19406",
+        "stateName": "PENNSYLVANIA",
+        "street": "720 VANDENBURG ROAD"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "720 VANDENBURG ROAD, KING OF PRUSSIA, PA, 19406",
+        "city": "KING OF PRUSSIA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCORE, INC.",
+        "postalCode": "19406",
+        "stateName": "PENNSYLVANIA",
+        "street": "720 VANDENBURG ROAD"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "79071705",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "AVENCORE",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ALBANY, NY 12203-5180, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "ALBANY, NY 12203-5180",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "DAVID P. MIRANDA, ESQ. HESLIN ROTHENBERG FARLEY & MESITI P.C., 5 COLUMBIA CIR"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ALBANY, NY 12203-5180, UNITED STATES",
+        "representativeAddressLines": [
+          "ALBANY, NY 12203-5180",
+          "UNITED STATES"
+        ],
+        "representativeName": "David P. Miranda,"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140715",
+        "applicationNumber": "86337765"
+      },
+      "cancellationDate": "20230113",
+      "cancellationPublicationDate": "20230221",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "38",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140701"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140701"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "38",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140901"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140901"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20230113",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20160301"
+      ],
+      "registration": {
+        "registrationDate": "20160628",
+        "registrationNumber": "4989191"
+      },
+      "withdrawalDate": [
+        "20151222"
+      ]
+    },
+    "version": "20260110204241",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"VENCORE\" has no meaning in a foreign language.",
+      "markVerbalElementText": "VENCORE"
+    }
+  },
+  "_uri": "/mark/us/ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

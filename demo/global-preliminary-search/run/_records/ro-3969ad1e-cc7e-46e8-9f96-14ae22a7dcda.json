@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/ro/3969ad1e-cc7e-46e8-9f96-14ae22a7dcda",
+  "provider": "clarivate",
+  "office": "ro",
+  "guid": "3969ad1e-cc7e-46e8-9f96-14ae22a7dcda",
+  "applicationNumber": "M 2022 08271",
+  "registrationNumber": "193703",
+  "applicationDate": "2022-11-15",
+  "registrationDate": "2023-11-03",
+  "expiryDate": "2032-11-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ROBERT GROVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Producție de înregistrări sonore și muzicale.",
+      "translation_language": "en",
+      "translation": "Production of sound and music recordings."
+    }
+  ],
+  "owner": "PETRESCU ROBERT DANIEL",
+  "ownerNative": null,
+  "ownerCountry": "RO",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Str. Smaranda Brăescu nr. 47A, Tronson 2, Et. 2, Ap. 15, sector 1, București",
+        "applicantAddressCountryCode": "RO",
+        "applicantAddressCountryName": "Romania",
+        "applicantName": "PETRESCU ROBERT DANIEL"
+      }
+    ],
+    "applicationLanguageCode": "ro",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Production of sound and music recordings.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Producție de înregistrări sonore și muzicale."
+        }
+      ]
+    },
+    "id": "3969ad1e-cc7e-46e8-9f96-14ae22a7dcda",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "RO",
+    "registrationOfficeName": "Romania",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221115",
+        "applicationNumber": "M 2022 08271"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321115",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20231103",
+        "registrationNumber": "193703"
+      }
+    },
+    "version": "20250626173355",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ROBERT GROVENOR"
+    }
+  },
+  "_uri": "/mark/ro/3969ad1e-cc7e-46e8-9f96-14ae22a7dcda",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

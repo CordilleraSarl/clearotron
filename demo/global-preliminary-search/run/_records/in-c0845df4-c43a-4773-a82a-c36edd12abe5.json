@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/c0845df4-c43a-4773-a82a-c36edd12abe5",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "c0845df4-c43a-4773-a82a-c36edd12abe5",
+  "applicationNumber": "2046069",
+  "registrationNumber": "1061518",
+  "applicationDate": "2010-10-28",
+  "registrationDate": "2012-06-02",
+  "expiryDate": "2020-10-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIVVA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, integrated circuits, microcontrollers, microprocessors, multicore microcontrollers, multicore processors, digital signal processors, software programmable microcontrollers and software programmable microprocessors.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA, INC. Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "REMFRY & SAGAR[269]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1303 E. ALGONQUIN ROAD, SCHAUMBURG, IL 60196, U.S.A.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC. Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, integrated circuits, microcontrollers, microprocessors, multicore microcontrollers, multicore processors, digital signal processors, software programmable microcontrollers and software programmable microprocessors."
+        }
+      ]
+    },
+    "id": "c0845df4-c43a-4773-a82a-c36edd12abe5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1521"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "MILLENIUM PLAZA, SECTOR 27, GURGAON- 122002.",
+        "representativeName": "REMFRY & SAGAR[269]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20101028",
+        "applicationNumber": "2046069"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20201028",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120602",
+        "registrationNumber": "1061518"
+      }
+    },
+    "version": "20250710120702",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIVVA"
+    }
+  },
+  "_uri": "/mark/in/c0845df4-c43a-4773-a82a-c36edd12abe5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.394Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

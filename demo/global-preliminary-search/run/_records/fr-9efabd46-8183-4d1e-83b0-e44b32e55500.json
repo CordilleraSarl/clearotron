@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/fr/9efabd46-8183-4d1e-83b0-e44b32e55500",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "9efabd46-8183-4d1e-83b0-e44b32e55500",
+  "applicationNumber": "17 4414526",
+  "registrationNumber": "17 4414526",
+  "applicationDate": "2017-12-20",
+  "registrationDate": null,
+  "expiryDate": "2027-12-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-05-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PREV'EN QUIZ Nos vies en questions",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Programme informatique et logiciels de toutes sortes quel qu'en soit le support d'enregistrement ou de diffusion, ou téléchargé par tout moyen; questionnaire interactif (logiciel informatique) sur la prévention des risques professionnels pour le secteur du bâtiment et des travaux publics ",
+      "translation_language": "en",
+      "translation": "Computer programs and software of all kinds regardless of the recording or distribution medium, or downloaded by any means; interactive questionnaire (computer software) on the prevention of occupational risks for the construction and public works sector"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": Formation, sensibilisation (formation), enseignement à distance par internet aux risques et moyens de prévention pour le secteur du bâtiment et des travaux publics.",
+      "translation_language": "en",
+      "translation": "Training, awareness (training), distance education via the internet on risks and means of prevention for the construction and public works sector."
+    }
+  ],
+  "owner": "OPPBTP",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "OPPBTP, Madame HELENE WOZEK",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "25 AVENUE GENERAL LECLERC, 92660 BOULOGNE BILLANCOURT CEDEX",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "OPPBTP"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "09.07.21",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programs and software of all kinds regardless of the recording or distribution medium, or downloaded by any means; interactive questionnaire (computer software) on the prevention of occupational risks for the construction and public works sector",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Programme informatique et logiciels de toutes sortes quel qu'en soit le support d'enregistrement ou de diffusion, ou téléchargé par tout moyen; questionnaire interactif (logiciel informatique) sur la prévention des risques professionnels pour le secteur du bâtiment et des travaux publics "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training, awareness (training), distance education via the internet on risks and means of prevention for the construction and public works sector.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Formation, sensibilisation (formation), enseignement à distance par internet aux risques et moyens de prévention pour le secteur du bâtiment et des travaux publics."
+        }
+      ]
+    },
+    "id": "9efabd46-8183-4d1e-83b0-e44b32e55500",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00139",
+        "publicationVolume": "20"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "OPPBTP, Madame HELENE WOZEK"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171220",
+        "applicationNumber": "17 4414526"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271219",
+      "lastPublicationDate": "20180518",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "17 4414526"
+      }
+    },
+    "version": "20250426161922",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREV'EN QUIZ Nos vies en questions"
+    }
+  },
+  "_uri": "/mark/fr/9efabd46-8183-4d1e-83b0-e44b32e55500",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

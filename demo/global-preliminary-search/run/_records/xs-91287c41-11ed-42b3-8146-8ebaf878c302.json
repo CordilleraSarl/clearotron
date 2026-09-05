@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/xs/91287c41-11ed-42b3-8146-8ebaf878c302",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "91287c41-11ed-42b3-8146-8ebaf878c302",
+  "applicationNumber": null,
+  "registrationNumber": "4664210",
+  "applicationDate": null,
+  "registrationDate": "2021-04-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DEVEN CORTEZ PHOTOGRAPHY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Freelance photography & photo edits.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "DEVEN POMPEY-LOMAX",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4409 DRIFTON DRIVE, COLUMBUS, OH, 43227",
+        "applicantAddressCity": "COLUMBUS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "43227",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "4409 DRIFTON DRIVE",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "DEVEN POMPEY-LOMAX"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Freelance photography & photo edits."
+        }
+      ]
+    },
+    "id": "91287c41-11ed-42b3-8146-8ebaf878c302",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "4409 DRIFTON DRIVE, COLUMBUS, OH, 43227",
+        "city": "COLUMBUS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "DEVEN POMPEY-LOMAX",
+        "postalCode": "43227",
+        "stateName": "OHIO",
+        "street": "4409 DRIFTON DRIVE"
+      }
+    ],
+    "recordLastUpdated": "20250712",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210421",
+        "registrationNumber": "4664210"
+      }
+    },
+    "usStateOfficeCode": "OH",
+    "usStateOfficeName": "OHIO",
+    "version": "20250712102442",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DEVEN CORTEZ PHOTOGRAPHY"
+    }
+  },
+  "_uri": "/mark/xs/91287c41-11ed-42b3-8146-8ebaf878c302",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

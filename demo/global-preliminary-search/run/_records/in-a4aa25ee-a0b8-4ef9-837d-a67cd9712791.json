@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/a4aa25ee-a0b8-4ef9-837d-a67cd9712791",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "a4aa25ee-a0b8-4ef9-837d-a67cd9712791",
+  "applicationNumber": "6178449",
+  "registrationNumber": "3559502",
+  "applicationDate": "2023-11-07",
+  "registrationDate": "2024-05-29",
+  "expiryDate": "2033-11-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MOBIHEAVEN QUALITY AND PRICE IS OUR PRIORITY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "batteries, electric, holders adapted for mobile telephones and smartphones, mobile phone chargers,mobile phone ring holders, mobile phone ring stands, mobile phone screen protectors, headphones, headsets, covers for smartphones, covers for tablet computers",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RAHUL Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "BHAWNA PIPLANI[24967]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ward no-05 ,Sangaria,Hanumangarh Rajasthan-335063",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "RAHUL Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "batteries, electric, holders adapted for mobile telephones and smartphones, mobile phone chargers,mobile phone ring holders, mobile phone ring stands, mobile phone screen protectors, headphones, headsets, covers for smartphones, covers for tablet computers"
+        }
+      ]
+    },
+    "id": "a4aa25ee-a0b8-4ef9-837d-a67cd9712791",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2134"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "B-2,FF B/S, MODEL TOWN II, DELHI-110009",
+        "representativeName": "BHAWNA PIPLANI[24967]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231107",
+        "applicationNumber": "6178449"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331107",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20240529",
+        "registrationNumber": "3559502"
+      }
+    },
+    "version": "20250710165608",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MOBIHEAVEN QUALITY AND PRICE IS OUR PRIORITY"
+    }
+  },
+  "_uri": "/mark/in/a4aa25ee-a0b8-4ef9-837d-a67cd9712791",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.559Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

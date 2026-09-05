@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/in/2812d9cb-4555-44c9-98c9-f6cfd6e1da5d",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "2812d9cb-4555-44c9-98c9-f6cfd6e1da5d",
+  "applicationNumber": "6513011",
+  "registrationNumber": "3970967",
+  "applicationDate": "2024-07-05",
+  "registrationDate": "2026-06-03",
+  "expiryDate": "2034-07-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Wire and cables including in class-9",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ATUL BANSAL PROPRIETOR OF GIMPEX CABLE INDUSTRIES Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ROLIKA SRIVASTAVA[44325]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "A-10/2, 2ND FLOOR, JHILMIL INDUSTRIAL AREA, DELHI -110095",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "ATUL BANSAL PROPRIETOR OF GIMPEX CABLE INDUSTRIES Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wire and cables including in class-9"
+        }
+      ]
+    },
+    "id": "2812d9cb-4555-44c9-98c9-f6cfd6e1da5d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2243"
+      }
+    ],
+    "recordLastUpdated": "20260710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "AKCENT ASSOCIATES - PLOT NO. 620, 2ND FLOOR, S.K-3, INDIRAPURAM, GHAZIABAD, U.P.- 201014",
+        "representativeName": "ROLIKA SRIVASTAVA[44325]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240705",
+        "applicationNumber": "6513011"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340705",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260603",
+        "registrationNumber": "3970967"
+      }
+    },
+    "version": "20260710020104",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DORI"
+    }
+  },
+  "_uri": "/mark/in/2812d9cb-4555-44c9-98c9-f6cfd6e1da5d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.997Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

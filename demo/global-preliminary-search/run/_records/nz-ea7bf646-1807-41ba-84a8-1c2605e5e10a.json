@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/nz/ea7bf646-1807-41ba-84a8-1c2605e5e10a",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "ea7bf646-1807-41ba-84a8-1c2605e5e10a",
+  "applicationNumber": "1215068",
+  "registrationNumber": "1215068",
+  "applicationDate": "2022-07-18",
+  "registrationDate": "2023-01-19",
+  "expiryDate": "2032-07-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ORITAIN VERIFIED PROVEN ORIGIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific research, testing and analysis services relating to the verification of origin of agricultural products, aquaculture products, horticultural products, food and beverage products, fibre and yarn products, textiles and clothing products, pharmaceuticals, nutraceutical and cosmeceutical products, biological and genetic materials, mineral and timber materials.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ORITAIN GLOBAL LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "167 High Street, Otago, Dunedin 9016",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "ORITAIN GLOBAL LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific research, testing and analysis services relating to the verification of origin of agricultural products, aquaculture products, horticultural products, food and beverage products, fibre and yarn products, textiles and clothing products, pharmaceuticals, nutraceutical and cosmeceutical products, biological and genetic materials, mineral and timber materials."
+        }
+      ]
+    },
+    "id": "ea7bf646-1807-41ba-84a8-1c2605e5e10a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.09.17",
+      "24.17.20",
+      "26.11.12",
+      "26.11.13",
+      "27.01.06",
+      "27.05.01",
+      "27.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Level 2 PO Box 1116 115 Lower Stuart Street Dunedin 9054",
+        "representativeCorrespondentAddressCountryCode": "NZ",
+        "representativeCorrespondentAddressCountryName": "New Zealand",
+        "representativeCorrespondentName": "Marks & Worth Lawyers"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220718",
+        "applicationNumber": "1215068"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320718",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230119",
+        "registrationNumber": "1215068"
+      }
+    },
+    "version": "20250626163634",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ORITAIN VERIFIED PROVEN ORIGIN"
+    }
+  },
+  "_uri": "/mark/nz/ea7bf646-1807-41ba-84a8-1c2605e5e10a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

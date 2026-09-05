@@ -1,0 +1,296 @@
+{
+  "uri": "/mark/us/93655f2b-cf0e-4abd-aabe-563553cc716a",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "93655f2b-cf0e-4abd-aabe-563553cc716a",
+  "applicationNumber": "86616941",
+  "registrationNumber": "4891988",
+  "applicationDate": "2015-05-01",
+  "registrationDate": "2016-01-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-11-10"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2022-08-05",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VINCARI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 software as a service (SAAS) services featuring software for use in surgical, medical procedure, and patient treatment documentation to improve hospital and doctor reporting, accuracy, acuity, speed, and billing; computer services, namely, implementation and integration of software into computer systems and networks for use in surgical, medical procedure, and patient treatment documentation",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ComplyMD, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Stephen H. Hall",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1500 First Avenue N, Suite 51, Birmingham, AL, 35203",
+        "applicantAddressCity": "Birmingham",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "35203",
+        "applicantAddressStateName": "ALABAMA",
+        "applicantAddressStreet": "1500 First Avenue N, Suite 51",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "ComplyMD, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 software as a service (SAAS) services featuring software for use in surgical, medical procedure, and patient treatment documentation to improve hospital and doctor reporting, accuracy, acuity, speed, and billing; computer services, namely, implementation and integration of software into computer systems and networks for use in surgical, medical procedure, and patient treatment documentation"
+        }
+      ]
+    },
+    "id": "93655f2b-cf0e-4abd-aabe-563553cc716a",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20220805",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20210126",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20160126",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20151110",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20151110",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20151021",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20151008",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20151001",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20150911",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150911",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20150902",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20150819",
+        "descriptionText": "EXAMINERS AMENDMENT AND/OR PRIORITY ACTION - COMPLETED"
+      },
+      {
+        "date": "20150819",
+        "descriptionText": "EXAMINER'S AMENDMENT/PRIORITY ACTION E-MAILED"
+      },
+      {
+        "date": "20150819",
+        "descriptionText": "NOTIFICATION OF EXAMINER'S AMENDMENT/PRIORITY ACTION E-MAILED"
+      },
+      {
+        "date": "20150819",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20150819",
+        "descriptionText": "COMBINED EXAMINER'S AMENDMENT/PRIORITY ACTION ENTERED"
+      },
+      {
+        "date": "20150812",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20150512",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20150505",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1500 First Avenue N, Suite 51, Birmingham, AL, 35203",
+        "city": "Birmingham",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ComplyMD, LLC",
+        "postalCode": "35203",
+        "stateName": "ALABAMA",
+        "street": "1500 First Avenue N, Suite 51"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1500 First Avenue N, Suite 51, Birmingham, AL, 35203",
+        "city": "Birmingham",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ComplyMD, LLC",
+        "postalCode": "35203",
+        "stateName": "ALABAMA",
+        "street": "1500 First Avenue N, Suite 51"
+      },
+      {
+        "address": "1500 First Avenue N, Suite 51, Birmingham, AL, 35203",
+        "city": "Birmingham",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ComplyMD, LLC",
+        "postalCode": "35203",
+        "stateName": "ALABAMA",
+        "street": "1500 First Avenue N, Suite 51"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1500 First Avenue N, Suite 51, Birmingham, AL, 35203",
+        "city": "Birmingham",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "ComplyMD, LLC",
+        "postalCode": "35203",
+        "stateName": "ALABAMA",
+        "street": "1500 First Avenue N, Suite 51"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Huntsville, AL 35801-4933, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Huntsville, AL 35801-4933",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "STEPHEN H. HALL Bradley Arant Boult Cummings Llp, 200 Clinton Ave W Ste 900"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Huntsville, AL 35801-4933, UNITED STATES",
+        "representativeAddressLines": [
+          "Huntsville, AL 35801-4933",
+          "UNITED STATES"
+        ],
+        "representativeName": "Stephen H. Hall"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150501",
+        "applicationNumber": "86616941"
+      },
+      "cancellationDate": "20220805",
+      "cancellationPublicationDate": "20220913",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20150422"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20150501"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20220805",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20151110"
+      ],
+      "registration": {
+        "registrationDate": "20160126",
+        "registrationNumber": "4891988"
+      }
+    },
+    "version": "20260111004150",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"VINCARI\" has no meaning in a foreign language.",
+      "markVerbalElementText": "VINCARI"
+    }
+  },
+  "_uri": "/mark/us/93655f2b-cf0e-4abd-aabe-563553cc716a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.807Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/mx/723c17cd-3378-48e4-9318-55c9d9aba49a",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "723c17cd-3378-48e4-9318-55c9d9aba49a",
+  "applicationNumber": "3159317",
+  "registrationNumber": "2766552",
+  "applicationDate": "2024-05-16",
+  "registrationDate": "2024-10-11",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación; formación; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES."
+    }
+  ],
+  "owner": "OMAR PEREZ REYES",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "JULIO PAOLO ORDOÑEZ MASSIMI",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CAMINO AL OLIVO NUM. EXT. 15 NUM. INT. PISO 3 303B, VISTA HERMOSA, CUAJIMALPA, CDMX 05100",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "OMAR PEREZ REYES"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación; formación; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "723c17cd-3378-48e4-9318-55c9d9aba49a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1120R2",
+        "publicationYear": "2024"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "COAHUILA NUM. EXT. 43 NUM. INT. 25, CUAJIMALPA, CUAJIMALPA DE MORELOS, CIUDAD DE MEXICO 05000, MEXICO",
+        "representativeName": "JULIO PAOLO ORDOÑEZ MASSIMI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240516",
+        "applicationNumber": "3159317"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20241011",
+        "registrationNumber": "2766552"
+      }
+    },
+    "version": "20250704194826",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR"
+    }
+  },
+  "_uri": "/mark/mx/723c17cd-3378-48e4-9318-55c9d9aba49a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

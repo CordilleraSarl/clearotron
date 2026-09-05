@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "02558506-a07b-4503-a974-35b5331ceb35",
+  "applicationNumber": "40-2004-0057999",
+  "registrationNumber": "4006442080000",
+  "applicationDate": "2004-12-23",
+  "registrationDate": "2005-12-22",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "주식회사 스타밴코리아",
+  "markTransliteration": "STAR VAN KOREA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "금전등록기,전기계산기,총액계산기,카드단말기,크레디트카드기계,타임레코더,표수계산기,현금교환기,화폐계수기계",
+      "translation_language": "en",
+      "translation": "Cash register, electric calculator, total amount calculator, card terminal, credit card machine, time recorder, ticket counter, cash changer, money counter"
+    }
+  ],
+  "owner": "Starvan Korea CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인 신세기 (SHINSEGI PATENT LAW FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Starvan Korea CO., LTD.",
+        "applicantNativeName": "주식회사 스타밴코리아"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cash register, electric calculator, total amount calculator, card terminal, credit card machine, time recorder, ticket counter, cash changer, money counter",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "금전등록기,전기계산기,총액계산기,카드단말기,크레디트카드기계,타임레코더,표수계산기,현금교환기,화폐계수기계"
+        }
+      ]
+    },
+    "id": "02558506-a07b-4503-a974-35b5331ceb35",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": ", Gil, Seolleung-ro, Gangnam-gu, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인 신세기 (SHINSEGI PATENT LAW FIRM)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20041223",
+        "applicationNumber": "40-2004-0057999"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20051222",
+        "registrationNumber": "4006442080000"
+      }
+    },
+    "version": "20250625152649",
+    "wordMarkSpecification": {
+      "markTransliteration": "STAR VAN KOREA",
+      "markVerbalElementText": "주식회사 스타밴코리아"
+    }
+  },
+  "_uri": "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.821Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

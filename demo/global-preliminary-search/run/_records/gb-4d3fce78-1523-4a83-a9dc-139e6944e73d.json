@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/gb/4d3fce78-1523-4a83-a9dc-139e6944e73d",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "4d3fce78-1523-4a83-a9dc-139e6944e73d",
+  "applicationNumber": "UK00902316362",
+  "registrationNumber": "UK00902316362",
+  "applicationDate": "2001-07-25",
+  "registrationDate": "2003-12-09",
+  "expiryDate": "2031-07-25",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR HOUSE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    39,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Vehicles; apparatus for locomotion by land, air or water; air cushion vehicles; amphibious airplanes; buses; aeroplanes; ferry boats; boats; boat hulls; boat hooks; steering gears for ships; disengaging gear for boats; inclined ways for boats; screw propellors for boats; oars; davits for boats; dinghies; barges; launches; ships' hulls; horns for vehicles; sleeping berths for vehicles; timbers [frames] for ships; boat hooks; fenders for boats; dredgers [boats]; portholes; seaplanes; hydroplanes; water vehicles; ships; funnels for ships; screws [propellors] for ships; paddles; pontoons; oars; cleats [nautical]; yachts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Transportation and storage; transport of persons and goods; boat transport; barge transport; river transport; ferry-boat transport; freighting; packaging and storage of goods; boat storage; arranging tours and excursions; shipping services; arranging of cruises; escorting of travellers; sightseeing (tourism); tourist offices and travel agents (except for hotel reservation); transshipment services; marine towing; unloading of ships; refloating of ships; information relating to transport or travel; booking of seats for tourism, transport and travel; ship brokerage; transport brokerage; chauffeur services; taxi services; motor shuttle services; bus transport; pleasure boat transport; courier services (messages and merchandise); operating canal locks; navigation services; rental of motor cars, boats, diving bells, diving suits, wheelchairs, horses, warehouses, garages and storage containers; wrapping of goods; storage of goods in a warehouse for their protection or safekeeping; storage, safekeeping of clothing; salvaging; underwater salvage; salvaging of shipping; rescue operations (transport).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Providing of education; training; entertainment; party planning (entertainment); sporting and cultural activities; publication of books, magazines, newspapers, catalogues, guides and manuals (handbooks); book lending; publication of books and texts (other than publicity texts); organisation of shows (theatrical booking agencies); presentation of live performances; theatre productions; orchestra services; music hall; modelling for artists; entertainer services; organization of balls; theatrical agencies; rental of show scenery, accessories for theatre scenery, audio apparatus, cinematographic films, television sets, video tapes, video cameras, video recorders, sound recordings and cinema projection apparatus; organisation of beauty contests; television and radio entertainment; production of shows, films and rental of video tapes; discothèque services; recording studio services; providing sports facilities; providing movie theatre facilities; movie studios; circuses; providing museum facilities (presentation, exhibitions); organization of sports competitions; arranging of competitions for education or entertainment; organisation and conducting of colloquiums, conferences, congresses, seminars and symposiums; organization of exhibitions for cultural and educational purposes; booking of seats for shows; bookmobile services; amusement parks; zoological gardens; holiday camp entertainment services; sports camp services; providing golf facilities; health clubs; education, entertainment and recreation information; rental of sports equipment except vehicles; rental of stadium facilities and tennis courts; timing of sports events; none of the aforesaid services including the provision of gaming, gambling or casino services or operation of loteries.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Hotel services; temporary accommodation; motel services; providing hotel accommodation; holiday homes and guest houses; holiday camp services (lodging); rural holiday accommodation; providing campground facilities; hotel reservations for travellers, booking temporary accommodation and boarding houses; providing of food and drink; cafeterias; bars and brasseries; snack-bars; self-service restaurants; canteens; catering services; butler services; daycare centres and nurseries; personal body guarding (escort services); escorting in society (chaperoning); medical, hygienic and beauty care; hairdressing salons; manicuring and pedicuring services; massage services; thalassotherapy services; public baths for hygiene purposes; turkish baths; pet grooming; legal services; translation services; architectural services; news reporters services; filming on video; photography; photographic reporting; management of exhibition facilities; printing; scientific and industrial research; computer programming; leasing of access time to a computer data base server centre; reconstruction of databases; design of software; updating of computer software; technical consultancy relating to the design (creation), installation and use of Internet sites; rental of computer software and computers; consultancy in the field of computers; analysis for computer system installation; rental of temporary accommodation and meeting rooms; rental of clothing, costumes, uniforms, bedding, automatic vending machines, chairs, tables, table linen, glassware, tents and transportable buildings; licensing of intellectual property.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GHH Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Joseph Kassouf Colliers International Property Advisers UK LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "THIRD FLOOR ONE LONDON SQUARE CROSS LANES SURREY, GUILDFORD GU1 1UN",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "GHH Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Vehicles; apparatus for locomotion by land, air or water; air cushion vehicles; amphibious airplanes; buses; aeroplanes; ferry boats; boats; boat hulls; boat hooks; steering gears for ships; disengaging gear for boats; inclined ways for boats; screw propellors for boats; oars; davits for boats; dinghies; barges; launches; ships' hulls; horns for vehicles; sleeping berths for vehicles; timbers [frames] for ships; boat hooks; fenders for boats; dredgers [boats]; portholes; seaplanes; hydroplanes; water vehicles; ships; funnels for ships; screws [propellors] for ships; paddles; pontoons; oars; cleats [nautical]; yachts."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transportation and storage; transport of persons and goods; boat transport; barge transport; river transport; ferry-boat transport; freighting; packaging and storage of goods; boat storage; arranging tours and excursions; shipping services; arranging of cruises; escorting of travellers; sightseeing (tourism); tourist offices and travel agents (except for hotel reservation); transshipment services; marine towing; unloading of ships; refloating of ships; information relating to transport or travel; booking of seats for tourism, transport and travel; ship brokerage; transport brokerage; chauffeur services; taxi services; motor shuttle services; bus transport; pleasure boat transport; courier services (messages and merchandise); operating canal locks; navigation services; rental of motor cars, boats, diving bells, diving suits, wheelchairs, horses, warehouses, garages and storage containers; wrapping of goods; storage of goods in a warehouse for their protection or safekeeping; storage, safekeeping of clothing; salvaging; underwater salvage; salvaging of shipping; rescue operations (transport)."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing of education; training; entertainment; party planning (entertainment); sporting and cultural activities; publication of books, magazines, newspapers, catalogues, guides and manuals (handbooks); book lending; publication of books and texts (other than publicity texts); organisation of shows (theatrical booking agencies); presentation of live performances; theatre productions; orchestra services; music hall; modelling for artists; entertainer services; organization of balls; theatrical agencies; rental of show scenery, accessories for theatre scenery, audio apparatus, cinematographic films, television sets, video tapes, video cameras, video recorders, sound recordings and cinema projection apparatus; organisation of beauty contests; television and radio entertainment; production of shows, films and rental of video tapes; discothèque services; recording studio services; providing sports facilities; providing movie theatre facilities; movie studios; circuses; providing museum facilities (presentation, exhibitions); organization of sports competitions; arranging of competitions for education or entertainment; organisation and conducting of colloquiums, conferences, congresses, seminars and symposiums; organization of exhibitions for cultural and educational purposes; booking of seats for shows; bookmobile services; amusement parks; zoological gardens; holiday camp entertainment services; sports camp services; providing golf facilities; health clubs; education, entertainment and recreation information; rental of sports equipment except vehicles; rental of stadium facilities and tennis courts; timing of sports events; none of the aforesaid services including the provision of gaming, gambling or casino services or operation of loteries."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Hotel services; temporary accommodation; motel services; providing hotel accommodation; holiday homes and guest houses; holiday camp services (lodging); rural holiday accommodation; providing campground facilities; hotel reservations for travellers, booking temporary accommodation and boarding houses; providing of food and drink; cafeterias; bars and brasseries; snack-bars; self-service restaurants; canteens; catering services; butler services; daycare centres and nurseries; personal body guarding (escort services); escorting in society (chaperoning); medical, hygienic and beauty care; hairdressing salons; manicuring and pedicuring services; massage services; thalassotherapy services; public baths for hygiene purposes; turkish baths; pet grooming; legal services; translation services; architectural services; news reporters services; filming on video; photography; photographic reporting; management of exhibition facilities; printing; scientific and industrial research; computer programming; leasing of access time to a computer data base server centre; reconstruction of databases; design of software; updating of computer software; technical consultancy relating to the design (creation), installation and use of Internet sites; rental of computer software and computers; consultancy in the field of computers; analysis for computer system installation; rental of temporary accommodation and meeting rooms; rental of clothing, costumes, uniforms, bedding, automatic vending machines, chairs, tables, table linen, glassware, tents and transportable buildings; licensing of intellectual property."
+        }
+      ]
+    },
+    "id": "4d3fce78-1523-4a83-a9dc-139e6944e73d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "50 George Street, London W1U 7GA",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Joseph Kassouf Colliers International Property Advisers UK LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20010725",
+        "applicationNumber": "UK00902316362"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310725",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20031209",
+        "registrationNumber": "UK00902316362"
+      }
+    },
+    "version": "20250627204906",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR HOUSE"
+    }
+  },
+  "_uri": "/mark/gb/4d3fce78-1523-4a83-a9dc-139e6944e73d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

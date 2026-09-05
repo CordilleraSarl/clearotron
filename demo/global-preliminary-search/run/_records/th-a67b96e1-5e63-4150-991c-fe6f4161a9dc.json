@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/th/a67b96e1-5e63-4150-991c-fe6f4161a9dc",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "a67b96e1-5e63-4150-991c-fe6f4161a9dc",
+  "applicationNumber": "647573",
+  "registrationNumber": "36374",
+  "applicationDate": "2006-12-13",
+  "registrationDate": "2006-12-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "เซไกคิวเซเคียว",
+  "markTransliteration": "Seven Q Seven trigger sickle",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "th",
+      "description": "การรับรองความถูกต้องของงานศิลปกรรม การบริการวิเคราะห์ทางเคมี การค้นคว้าวิจัยทางเคมี การให้เช่าข้อมูลคอมพิวเตอร์ การให้คำปรึกษาเกี่ยวกับคอมพิวเตอร์ฮาร์ดแวร์ การจัดทำโปรแกรมคอมพิวเตอร์ การใช้เช่าคอมพิวเตอร์ การปรับปรุงคอมพิวเตอร์ซอฟแวร์ให้ทันสมัย การเขียนโปรแกรมคอมพิวเตอร์ การจัดการด้านลิขสิทธิ์ การวิจัยเครื่องสำอาง การสำรวจใต้น้ำ การวิจัยด้านการสืบสายพันธุ์ การจัดให้มีการใช้ประโยชน์สิทธิบัตร การทดสอบทางจิตวิทยา การบริการควบคุมคุณภาพสินค้า.",
+      "translation_language": "en",
+      "translation": "The authentication of works of art. Chemical analysis services Research Chemical Rental of computer data Consulting on computer hardware. Preparation of a computer program Using Computer Rentals Updated computer software up to date. Computer Programming Management Rights Cosmetics research Underwater exploration Research descended from varieties To provide for the use of patents. Psychological testing The service control product quality."
+    }
+  ],
+  "owner": "Toho No Hikari",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Toho No Hikari",
+        "applicantNativeAddress": "7 - 11, โมโมยามาโช, อตามิ, ชิซูโอกะ, ปรเทศญี่ปุ่น",
+        "applicantNativeName": "โตโฮ โน ฮิคาริ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "The authentication of works of art. Chemical analysis services Research Chemical Rental of computer data Consulting on computer hardware. Preparation of a computer program Using Computer Rentals Updated computer software up to date. Computer Programming Management Rights Cosmetics research Underwater exploration Research descended from varieties To provide for the use of patents. Psychological testing The service control product quality.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "th",
+          "intGoodsServicesDescription": "การรับรองความถูกต้องของงานศิลปกรรม การบริการวิเคราะห์ทางเคมี การค้นคว้าวิจัยทางเคมี การให้เช่าข้อมูลคอมพิวเตอร์ การให้คำปรึกษาเกี่ยวกับคอมพิวเตอร์ฮาร์ดแวร์ การจัดทำโปรแกรมคอมพิวเตอร์ การใช้เช่าคอมพิวเตอร์ การปรับปรุงคอมพิวเตอร์ซอฟแวร์ให้ทันสมัย การเขียนโปรแกรมคอมพิวเตอร์ การจัดการด้านลิขสิทธิ์ การวิจัยเครื่องสำอาง การสำรวจใต้น้ำ การวิจัยด้านการสืบสายพันธุ์ การจัดให้มีการใช้ประโยชน์สิทธิบัตร การทดสอบทางจิตวิทยา การบริการควบคุมคุณภาพสินค้า."
+        }
+      ]
+    },
+    "id": "a67b96e1-5e63-4150-991c-fe6f4161a9dc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20241115",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "นางสาวดวงเดือน ณ น่าน"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร",
+        "representativeNativeName": "นายมงคล วุฒิธนากุล"
+      },
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "11 ชั้นที่ 16 อาคารคิว. เฮ้าส์ ถนนสาทรใต้ แขวงทุ่งมหาเมฆ เขตสาทร กรุงเทพมหานคร 10120",
+        "representativeNativeName": "บริษัท ไพร้ซ์สานนท์ประภาสและวีนน์ จำกัด (ดีคอนส์)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20061213",
+        "applicationNumber": "647573"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20061213",
+        "registrationNumber": "36374"
+      }
+    },
+    "version": "20241115224127",
+    "wordMarkSpecification": {
+      "markTransliteration": "Seven Q Seven trigger sickle",
+      "markVerbalElementText": "เซไกคิวเซเคียว"
+    }
+  },
+  "_uri": "/mark/th/a67b96e1-5e63-4150-991c-fe6f4161a9dc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

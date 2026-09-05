@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/2670082c-90f5-4661-88aa-338c854aa5aa",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "2670082c-90f5-4661-88aa-338c854aa5aa",
+  "applicationNumber": "2008-043268",
+  "registrationNumber": "5241972",
+  "applicationDate": "2008-06-04",
+  "registrationDate": "2009-06-26",
+  "expiryDate": "2019-06-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2009-07-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＣＯＤＥＴＥＳＴ",
+  "markTransliteration": "KOODOTESUTO",
+  "markTranslation": "CODETEST",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "マイクロプロセッサーに埋め込まれたコンピュータプログラムがどのように稼働するかを分析し検証するための電子応用機器及び同電子応用機器用プログラムを記憶させた磁気ディスク及びその他の記憶媒体，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "An electronic applied device for analyzing and verifying how the computer program embedded in the microprocessor operates and a magnetic disk and other storage medium storing the program for the electronic applied device and other electronic applied appliances And its parts"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20080604"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "An electronic applied device for analyzing and verifying how the computer program embedded in the microprocessor operates and a magnetic disk and other storage medium storing the program for the electronic applied device and other electronic applied appliances And its parts",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "マイクロプロセッサーに埋め込まれたコンピュータプログラムがどのように稼働するかを分析し検証するための電子応用機器及び同電子応用機器用プログラムを記憶させた磁気ディスク及びその他の記憶媒体，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "2670082c-90f5-4661-88aa-338c854aa5aa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20080604"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "MORI CHIKAKO",
+        "representativeNativeName": "森　智香子"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20080604",
+        "applicationNumber": "2008-043268"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20190626",
+      "lastPublicationDate": "20090728",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20090626",
+        "registrationNumber": "5241972"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "CODETEST",
+      "markTransliteration": "KOODOTESUTO",
+      "markVerbalElementText": "ＣＯＤＥＴＥＳＴ"
+    }
+  },
+  "_uri": "/mark/jp/2670082c-90f5-4661-88aa-338c854aa5aa",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.461Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

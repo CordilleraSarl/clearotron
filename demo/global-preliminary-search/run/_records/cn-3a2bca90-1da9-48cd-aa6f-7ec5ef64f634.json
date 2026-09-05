@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/cn/3a2bca90-1da9-48cd-aa6f-7ec5ef64f634",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "3a2bca90-1da9-48cd-aa6f-7ec5ef64f634",
+  "applicationNumber": "40432538",
+  "registrationNumber": "40432538",
+  "applicationDate": "2019-08-19",
+  "registrationDate": "2020-05-14",
+  "expiryDate": "2030-05-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-02-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电开关,行车记录仪,复印机（照相、静电、热）,电池,计算机,智能手表（数据处理）,眼镜,手机,导航仪器,扬声器",
+      "translation_language": "en",
+      "translation": "Electric switch, driving recorder, copier (photographing, static electricity, heat), battery, computer, smart watch (data processing), glasses, mobile phone, navigation instrument, speaker"
+    }
+  ],
+  "owner": "Li Jinbiao",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省晋江市东石镇湖头村龟湖北区57号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Li Jinbiao",
+        "applicantNativeName": "李金表"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electric switch, driving recorder, copier (photographing, static electricity, heat), battery, computer, smart watch (data processing), glasses, mobile phone, navigation instrument, speaker",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电开关,行车记录仪,复印机（照相、静电、热）,电池,计算机,智能手表（数据处理）,眼镜,手机,导航仪器,扬声器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Machines used in office (except for typewriters, duplicators and printers)",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0903",
+          "subNatGoodsServicesDescription": "Machines used in office (except for typewriters, duplicators and printers)"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "3a2bca90-1da9-48cd-aa6f-7ec5ef64f634",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1683"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "厦门唯邦知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190819",
+        "applicationNumber": "40432538"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300513",
+      "lastPublicationDate": "20200213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200514",
+        "registrationNumber": "40432538"
+      }
+    },
+    "version": "20251003191611",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/cn/3a2bca90-1da9-48cd-aa6f-7ec5ef64f634",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "uri": "/mark/wo/bf3788e9-f7d2-457f-b9a2-76f23fe2e2e7",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "bf3788e9-f7d2-457f-b9a2-76f23fe2e2e7",
+  "applicationNumber": null,
+  "registrationNumber": "1192034",
+  "applicationDate": null,
+  "registrationDate": "2013-11-08",
+  "expiryDate": "2033-11-08",
+  "renewalDate": "2023-11-08",
+  "lastPublicationDate": "2023-10-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": null,
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (ICs) that provide a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; electronic apparatus for writing and reading of reading of wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques et électromagnétiques; équipements de traitement de données, appareils de stockage de données; microprocesseurs; interfaces pour ordinateurs; circuits intégrés, puces (circuits intégrés); semi-conducteurs; cartes à puce; circuits intégrés de cartes à puce; puces et étiquette RFID; matériel informatique et logiciels pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation de puces et étiquettes RFID; cartes à puce sans contact; cartes à puce à double interface; circuits intégrés à double interface fournissant une liaison entre les cartes à contact et sans contact; lecteurs et graveurs de transmission sans fil vers et à partir de puces de transpondeurs; appareils électroniques pour la lecture et l'écriture de transmissions sans fil en provenance et à destination de puces de transpondeurs; appareils électroniques pour l'écriture et la lecture de transmissions sans fil en provenance et à destination de puces de transpondeurs; programmes informatiques pour la commande de la transmission de données à destination, et de la lecture de données en provenance, de puces de transpondeurs; machines de traitement de données pour la détermination du prix de titres de transport au moyen de puces de transpondeurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces [informática]; circuitos integrados, chips (circuitos integrados); semiconductores; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; hardware y software para la creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia (RFID); tarjetas inteligentes sin contacto; tarjetas inteligentes de interfaces de doble puerto; circuitos integrados de doble puerto que establecen un enlace entre las tarjetas sin contacto y las tarjetas con contacto; grabadores y lectores para la transmisión inalámbrica hacia y desde chips transpondedores; aparatos electrónicos de lectura y escritura de transmisión inalámbrica hacia y desde chips transpondedores; aparatos electrónicos de lectura y escritura de transmisión inalámbrica hacia y desde chips transpondedores; programas informáticas para controlar la transmisión de datos y leer los datos de los chips transpondedores; máquinas de procesamiento de datos para determinar las tarifas mediante chips transpondedores.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20130523",
+      "priorityNumber": "1268870"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20130523",
+          "basicApplicationNumber": "1268791"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20130812",
+          "basicRegistrationNumber": "938432"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US",
+      "RU",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20130523",
+            "basicApplicationNumber": "1268791"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20130812",
+            "basicRegistrationNumber": "938432"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "26.01.01",
+      "26.01.04",
+      "26.01.06",
+      "29.02.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "TR",
+      "US",
+      "RU",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules; data processing equipment, data storage apparatus; microprocessors; interfaces for computers; integrated circuits (ICs), chips (integrated circuits); semiconductors; smart cards; smart card integrated circuits; RFID chips and tags; computer hardware and software for creating, programming, controlling, encoding, scanning, reading and interpreting RFID chips and tags; contactless smart cards; dual interface smart cards; dual interface integrated circuits (ICs) that provide a link between contactless cards and contact cards; writers and readers for wireless transmission to and from transponder chips; electronic apparatus for writing and reading of wireless transmission to and from transponder chips; electronic apparatus for writing and reading of reading of wireless transmission to and from transponder chips; computer programs for controlling transmission of data to and reading of data from transponder chips; data processing machines for fare determination using transponder chips."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques et électromagnétiques; équipements de traitement de données, appareils de stockage de données; microprocesseurs; interfaces pour ordinateurs; circuits intégrés, puces (circuits intégrés); semi-conducteurs; cartes à puce; circuits intégrés de cartes à puce; puces et étiquette RFID; matériel informatique et logiciels pour la création, la programmation, la commande, le codage, le scannage, la lecture et l'interprétation de puces et étiquettes RFID; cartes à puce sans contact; cartes à puce à double interface; circuits intégrés à double interface fournissant une liaison entre les cartes à contact et sans contact; lecteurs et graveurs de transmission sans fil vers et à partir de puces de transpondeurs; appareils électroniques pour la lecture et l'écriture de transmissions sans fil en provenance et à destination de puces de transpondeurs; appareils électroniques pour l'écriture et la lecture de transmissions sans fil en provenance et à destination de puces de transpondeurs; programmes informatiques pour la commande de la transmission de données à destination, et de la lecture de données en provenance, de puces de transpondeurs; machines de traitement de données pour la détermination du prix de titres de transport au moyen de puces de transpondeurs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos; equipos de procesamiento de datos, aparatos de almacenamiento de datos; microprocesadores; interfaces [informática]; circuitos integrados, chips (circuitos integrados); semiconductores; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; hardware y software para la creación, programación, control, codificación, escaneado, lectura e interpretación de chips y etiquetas de identificación por radiofrecuencia (RFID); tarjetas inteligentes sin contacto; tarjetas inteligentes de interfaces de doble puerto; circuitos integrados de doble puerto que establecen un enlace entre las tarjetas sin contacto y las tarjetas con contacto; grabadores y lectores para la transmisión inalámbrica hacia y desde chips transpondedores; aparatos electrónicos de lectura y escritura de transmisión inalámbrica hacia y desde chips transpondedores; aparatos electrónicos de lectura y escritura de transmisión inalámbrica hacia y desde chips transpondedores; programas informáticas para controlar la transmisión de datos y leer los datos de los chips transpondedores; máquinas de procesamiento de datos para determinar las tarifas mediante chips transpondedores."
+        }
+      ]
+    },
+    "id": "bf3788e9-f7d2-457f-b9a2-76f23fe2e2e7",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN ONLY",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Orange, yellow, blue, green and white.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Orange, jaune, bleu, vert et blanc.",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Naranja, amarillo, azul, verde y blanco.",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.01",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20130523",
+        "priorityNumber": "1268870"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "40"
+      }
+    ],
+    "recordLastUpdated": "20260605",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331108",
+      "lastPublicationDate": "20231019",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20131108",
+        "registrationNumber": "1192034"
+      },
+      "renewalDate": "20231108",
+      "renewalPublishedDate": "20231019"
+    },
+    "version": "20260605020018"
+  },
+  "_uri": "/mark/wo/bf3788e9-f7d2-457f-b9a2-76f23fe2e2e7",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.458Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

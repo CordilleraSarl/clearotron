@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/kr/4408fb42-1a01-47ef-886c-e050c6d9bc08",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "4408fb42-1a01-47ef-886c-e050c6d9bc08",
+  "applicationNumber": "41-1993-0004220",
+  "registrationNumber": "4100258360000",
+  "applicationDate": "1993-07-22",
+  "registrationDate": "1995-01-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GOREE 고리",
+  "markTransliteration": "GOREE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "ko",
+      "description": "산업디자인업,상품중개업,새창으로 열림,수출입대행업,오파업",
+      "translation_language": "en",
+      "translation": "Industrial design business, product brokerage business, opening in a new window, import/export agency business, false strike"
+    }
+  ],
+  "owner": "KIM IN SUN",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "남명진 (NAM, Myung-Jin)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM IN SUN",
+        "applicantNativeName": "김인선"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Industrial design business, product brokerage business, opening in a new window, import/export agency business, false strike",
+          "intClassNumber": "35,36,37,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "산업디자인업,상품중개업,새창으로 열림,수출입대행업,오파업"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "112"
+        }
+      ]
+    },
+    "id": "4408fb42-1a01-47ef-886c-e050c6d9bc08",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울 용산구 한강로가 용산관광버스터미널호",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "남명진 (NAM, Myung-Jin)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19930722",
+        "applicationNumber": "41-1993-0004220"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19950123",
+        "registrationNumber": "4100258360000"
+      }
+    },
+    "version": "20250625144300",
+    "wordMarkSpecification": {
+      "markTransliteration": "GOREE",
+      "markVerbalElementText": "GOREE 고리"
+    }
+  },
+  "_uri": "/mark/kr/4408fb42-1a01-47ef-886c-e050c6d9bc08",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

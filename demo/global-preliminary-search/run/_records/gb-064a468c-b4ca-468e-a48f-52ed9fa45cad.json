@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/gb/064a468c-b4ca-468e-a48f-52ed9fa45cad",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "064a468c-b4ca-468e-a48f-52ed9fa45cad",
+  "applicationNumber": "4161247",
+  "registrationNumber": "4161247",
+  "applicationDate": "2025-02-17",
+  "registrationDate": "2025-05-09",
+  "expiryDate": "2035-02-17",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Long Drive North",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Video game software;Computer video game software;Video games software;Downloadable video game software;Games software for use with video game consoles;Game software;Downloadable game software;Video game programs;Interactive game software;Video game computer programs;Video and computer game programs;Downloadable computer game software;Computer game software, downloadable;Video games programs [computer software];Downloadable video game programs;Interactive entertainment computer software for video games;Computer game software;Interactive video software;Computer game software for use with on-line interactive games;Video games on disc [computer software];Downloadable interactive entertainment software for playing video games;Games software;Interactive video game programs;Computer games software;Computer application software featuring games and gaming;Downloadable interactive entertainment software for playing computer games;Downloadable computer game programs;Computer games entertainment software;Computer programs for video and computer games;Downloadable software in the nature of a mobile application for playing games;Computer game software downloadable from a global computer network;Interactive computer game programs;Computer software for the administration of on-line games and gaming;Downloadable computer games;Gaming software;Downloadable computer software;Downloadable electronic game programs.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MINDFLAIR GAMES LTD",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "40 Regent Street, Moulton, NORTHWICH CW9 8NY, Cheshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "MINDFLAIR GAMES LTD"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Video game software;Computer video game software;Video games software;Downloadable video game software;Games software for use with video game consoles;Game software;Downloadable game software;Video game programs;Interactive game software;Video game computer programs;Video and computer game programs;Downloadable computer game software;Computer game software, downloadable;Video games programs [computer software];Downloadable video game programs;Interactive entertainment computer software for video games;Computer game software;Interactive video software;Computer game software for use with on-line interactive games;Video games on disc [computer software];Downloadable interactive entertainment software for playing video games;Games software;Interactive video game programs;Computer games software;Computer application software featuring games and gaming;Downloadable interactive entertainment software for playing computer games;Downloadable computer game programs;Computer games entertainment software;Computer programs for video and computer games;Downloadable software in the nature of a mobile application for playing games;Computer game software downloadable from a global computer network;Interactive computer game programs;Computer software for the administration of on-line games and gaming;Downloadable computer games;Gaming software;Downloadable computer software;Downloadable electronic game programs."
+        }
+      ]
+    },
+    "id": "064a468c-b4ca-468e-a48f-52ed9fa45cad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2025/009"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250217",
+        "applicationNumber": "4161247"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350217",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250509",
+        "registrationNumber": "4161247"
+      }
+    },
+    "version": "20250627223936",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Long Drive North"
+    }
+  },
+  "_uri": "/mark/gb/064a468c-b4ca-468e-a48f-52ed9fa45cad",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

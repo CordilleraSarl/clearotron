@@ -203,25 +203,41 @@ test("--codename renames the whole identity: the runId, the pool dir and the man
   rmSync(root, { recursive: true, force: true });
 });
 
-test("the codename echo names every frozen file that still carries the run's birth codename", () => {
-  // The rename moves the identity; it does not touch the artifacts, and the codename is written INTO
-  // them. Whoever lands the real sample needs the list, not a reminder that a list exists.
+test("the birth codename is REWRITTEN out of the artifacts, not reported and left there", () => {
+  // WHAT THIS ARM USED TO SAY, AND WHY IT CHANGED. It required exit 1 and a
+  // list of every file still carrying the codename — correct about the old tool and useless in practice:
+  // the rename moved the identity, the artifacts kept the pair, and the list ran to 1,460 files on a
+  // real run. No clearance run could be frozen into a committable example at all, whatever codename was
+  // passed. So the tool rewrites now, and the arm follows the behaviour rather than pinning the report.
   const { root, runDir } = makeRun();
   // status.json is where a real run carries it; put it there so the check is over the real shape.
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ markName: "AQUAPLUS", codename: "synthetic-fixture" }));
-  const r = runFreeze(runDir, join(root, "frozen"), ["--codename", "renamed-sample"]);
-  assert.equal(r.code, 1, "a surviving birth codename is a finding, not a note");
-  assert.match(r.out, /still carry the source codename "synthetic-fixture"/, r.out);
-  assert.match(r.out, /status\.json/, r.out);
+  const out = join(root, "frozen");
+  const r = runFreeze(runDir, out, ["--codename", "renamed-sample"]);
+  assert.equal(r.code, 0, `the rewrite makes this freeze committable, so it must succeed:\n${r.out}`);
+
+  const frozen = readFileSync(join(out, "run", "status.json"), "utf8");
+  assert.doesNotMatch(frozen, /synthetic-fixture/, `the birth codename survived in status.json:\n${frozen}`);
+  assert.match(frozen, /renamed-sample/, "and the new one must be there — deletion is not a rename");
+
+  // COUNTED AND THEN RE-READ. The count alone would print the same reassuring line over a tree that was
+  // already clean, so the tool re-reads the frozen copy and a survivor is a finding.
+  assert.match(r.out, /codename: \d+ occurrence\(s\) in \d+ file\(s\) rewritten "synthetic-fixture" -> "renamed-sample"/, r.out);
+  assert.match(r.out, /no codename and no vendor record key survived/, r.out);
   rmSync(root, { recursive: true, force: true });
 });
 
-test("an absent report.md is refused as 'could not look' (exit 2), not reported as a clean freeze", () => {
+test("an absent report.md is refused as 'could not look' (exit 2), and the refusal names the RUN not the tool", () => {
+  // — the exit code is unchanged and the message is not. It used to read "not a
+  // finished clearance run workspace" for every run without a report.md, which is true of the tool and
+  // false about a knockout capture: that lane never writes one, because for it the markdown is an output
+  // of publishing rather than an input to it. Two good captures read as broken runs on that sentence.
   const { root, runDir } = makeRun();
   rmSync(join(runDir, "report.md"));
   const r = runFreeze(runDir, join(root, "frozen"));
   assert.equal(r.code, 2, r.out);
-  assert.match(r.out, /no report\.md/, r.out);
+  assert.match(r.out, /report\.md/, "the missing file is still named");
+  assert.match(r.out, /looks like a clearance run/, `the refusal must say which lane it judged this to be:\n${r.out}`);
   rmSync(root, { recursive: true, force: true });
 });
 

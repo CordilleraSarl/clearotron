@@ -1,0 +1,344 @@
+{
+  "uri": "/mark/us/6ced8074-ff9a-45cd-acd4-98a3141dbe41",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6ced8074-ff9a-45cd-acd4-98a3141dbe41",
+  "applicationNumber": "78626772",
+  "registrationNumber": "3294926",
+  "applicationDate": "2005-05-10",
+  "registrationDate": "2007-09-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2006-01-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2014-04-25",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "STEVE NORTON PERSPECTIVES",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Providing musical entertainment, namely, live performances by musical band, disc jockeys, and live individual musicians; party planning and entertainment event planning for special events",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": null,
+      "description": "INT. CL. 43 Rental of venue, namely, rooms for special events in the nature of banquet and social function facilities for special events; catering of food and drink; and food services equipment rental",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Norton, Steve",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Edward E.  Roberts",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Suite 106, Costa Mesa, CA, 92626",
+        "applicantAddressCity": "Costa Mesa",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "92626",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "Suite 106",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Norton, Steve",
+        "applicantSecondaryAddressUnit": "130 McCormick Ave"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Providing musical entertainment, namely, live performances by musical band, disc jockeys, and live individual musicians; party planning and entertainment event planning for special events"
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsServicesDescription": "INT. CL. 43 Rental of venue, namely, rooms for special events in the nature of banquet and social function facilities for special events; catering of food and drink; and food services equipment rental"
+        }
+      ]
+    },
+    "id": "6ced8074-ff9a-45cd-acd4-98a3141dbe41",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20140425",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20070918",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20070813",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20070810",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20070628",
+        "descriptionText": "AMENDMENT FROM APPLICANT ENTERED"
+      },
+      {
+        "date": "20070628",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20070628",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20070620",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20061221",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20061221",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20061218",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20061018",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20061018",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20060418",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20060214",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20060124",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20060104",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20051210",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20051209",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20051208",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20051207",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20051207",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20051207",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20050517",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Suite 106, Costa Mesa, CA, 92626",
+        "city": "Costa Mesa",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Norton, Steve",
+        "postalCode": "92626",
+        "secondaryAddressUnit": "130 McCormick Ave",
+        "stateName": "CALIFORNIA",
+        "street": "Suite 106"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Suite 106, Costa Mesa, CA, 92626",
+        "city": "Costa Mesa",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Norton, Steve",
+        "postalCode": "92626",
+        "secondaryAddressUnit": "130 McCormick Ave",
+        "stateName": "CALIFORNIA",
+        "street": "Suite 106"
+      },
+      {
+        "address": "Suite 106, Costa Mesa, CA, 92626",
+        "city": "Costa Mesa",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Norton, Steve",
+        "postalCode": "92626",
+        "secondaryAddressUnit": "130 McCormick Ave",
+        "stateName": "CALIFORNIA",
+        "street": "Suite 106"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Suite 106, Costa Mesa, CA, 92626",
+        "city": "Costa Mesa",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Norton, Steve",
+        "postalCode": "92626",
+        "secondaryAddressUnit": "130 McCormick Ave",
+        "stateName": "CALIFORNIA",
+        "street": "Suite 106"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "DANA POINT, CA 92629-8206, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "DANA POINT, CA 92629-8206",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "EDWARD E ROBERTS LAW OFFICES OF EDWARD E ROBERTS, PO BOX 3206"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "DANA POINT, CA 92629-8206, UNITED STATES",
+        "representativeAddressLines": [
+          "DANA POINT, CA 92629-8206",
+          "UNITED STATES"
+        ],
+        "representativeName": "Edward E.  Roberts"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20050510",
+        "applicationNumber": "78626772"
+      },
+      "cancellationDate": "20140425",
+      "cancellationPublicationDate": "20140603",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200505"
+        },
+        {
+          "firstUsedClass": "43",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200505"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200505"
+        },
+        {
+          "firstUsedCommerceClass": "43",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200505"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20140425",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20060124"
+      ],
+      "registration": {
+        "registrationDate": "20070918",
+        "registrationNumber": "3294926"
+      }
+    },
+    "version": "20260110004501",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "STEVE NORTON PERSPECTIVES"
+    }
+  },
+  "_uri": "/mark/us/6ced8074-ff9a-45cd-acd4-98a3141dbe41",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/se/e2b6986b-663f-4b9d-891a-32129af20036",
+  "provider": "clarivate",
+  "office": "se",
+  "guid": "e2b6986b-663f-4b9d-891a-32129af20036",
+  "applicationNumber": "2020/04008",
+  "registrationNumber": "609364",
+  "applicationDate": "2020-06-15",
+  "registrationDate": "2020-07-22",
+  "expiryDate": "2030-06-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ActiveNordic",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    10,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        10
+      ],
+      "language": "sw",
+      "description": "Elektriskt drivna massageapparater; apparater för massage; elektriska massageapparater för hushållsanvändning; elektriska massageapparater för personligt bruk; elektriska massagerullar; uppblåsbara instrument för kompression av lemmar; kompressionskläder; kompressionsstrumpor.",
+      "translation_language": "en",
+      "translation": "Electrically operated massage apparatus; massage apparatus; electric massage apparatus for household use; electric massage apparatus for personal use; electric massage rollers; inflatable limb compression instruments; compression clothing; compression stockings."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Sport och fitness.",
+      "translation_language": "en",
+      "translation": "Sports and fitness."
+    }
+  ],
+  "owner": "Viktor Darmeto",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Musikalvägen 39, 14243 SKogås",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Viktor Darmeto"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrically operated massage apparatus; massage apparatus; electric massage apparatus for household use; electric massage apparatus for personal use; electric massage rollers; inflatable limb compression instruments; compression clothing; compression stockings.",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Elektriskt drivna massageapparater; apparater för massage; elektriska massageapparater för hushållsanvändning; elektriska massageapparater för personligt bruk; elektriska massagerullar; uppblåsbara instrument för kompression av lemmar; kompressionskläder; kompressionsstrumpor."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Sports and fitness.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Sport och fitness."
+        }
+      ]
+    },
+    "id": "e2b6986b-663f-4b9d-891a-32129af20036",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250707",
+    "registrationOfficeCode": "SE",
+    "registrationOfficeName": "Sweden",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200615",
+        "applicationNumber": "2020/04008"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300615",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200722",
+        "registrationNumber": "609364"
+      }
+    },
+    "version": "20250707122314",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ActiveNordic"
+    }
+  },
+  "_uri": "/mark/se/e2b6986b-663f-4b9d-891a-32129af20036",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

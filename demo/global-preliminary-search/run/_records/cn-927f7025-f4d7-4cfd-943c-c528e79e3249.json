@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/cn/927f7025-f4d7-4cfd-943c-c528e79e3249",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "927f7025-f4d7-4cfd-943c-c528e79e3249",
+  "applicationNumber": "17105231",
+  "registrationNumber": "17105231",
+  "applicationDate": "2015-06-02",
+  "registrationDate": "2016-08-21",
+  "expiryDate": "2026-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "博日",
+  "markTransliteration": "bo ri",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电缆连接套筒;电源材料（电线、电缆）;电线;电缆;磁线;太阳能电池;电暖衣服",
+      "translation_language": "en",
+      "translation": "Cable connection sleeve; power materials (wires, cables); wires; cable; magnet wire; solar cells; electric warm clothes"
+    }
+  ],
+  "owner": "he bei bo ri nuan tong she bei ke ji you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "河北省邯郸市复兴区铁西北大街136号四季花城一号院2-1618号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "he bei bo ri nuan tong she bei ke ji you xian gong si",
+        "applicantNativeName": "河北博日暖通设备科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cable connection sleeve; power materials (wires, cables); wires; cable; magnet wire; solar cells; electric warm clothes",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电缆连接套筒;电源材料（电线、电缆）;电线;电缆;磁线;太阳能电池;电暖衣服"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Cables",
+        "Batteries, chargers",
+        "Electrical equipments which are not listed in other classes"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        },
+        {
+          "subNatClassNumber": "0924",
+          "subNatGoodsServicesDescription": "Electrical equipments which are not listed in other classes"
+        }
+      ]
+    },
+    "id": "927f7025-f4d7-4cfd-943c-c528e79e3249",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1504"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "邯郸市中商商标事务所有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150602",
+        "applicationNumber": "17105231"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260820",
+      "lastPublicationDate": "20160520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20160821",
+        "registrationNumber": "17105231"
+      }
+    },
+    "version": "20251002113130",
+    "wordMarkSpecification": {
+      "markTransliteration": "bo ri",
+      "markVerbalElementText": "博日"
+    }
+  },
+  "_uri": "/mark/cn/927f7025-f4d7-4cfd-943c-c528e79e3249",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

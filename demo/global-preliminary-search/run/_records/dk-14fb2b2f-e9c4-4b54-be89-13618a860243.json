@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/dk/14fb2b2f-e9c4-4b54-be89-13618a860243",
+  "provider": "clarivate",
+  "office": "dk",
+  "guid": "14fb2b2f-e9c4-4b54-be89-13618a860243",
+  "applicationNumber": "VA 000828 1977",
+  "registrationNumber": "VR 002671 1980",
+  "applicationDate": "1977-02-24",
+  "registrationDate": "1980-07-18",
+  "expiryDate": "2020-07-18",
+  "renewalDate": null,
+  "lastPublicationDate": "1979-12-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    9,
+    16,
+    27,
+    37,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        16,
+        27,
+        37,
+        41,
+        42
+      ],
+      "language": "da",
+      "description": "Registreringen omfatter ikke glas, herunder skumglas og varer fremstillet deraf.",
+      "translation_language": "en",
+      "translation": "the classes 01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25 , 26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42 The registration does not include glass, including foam glass and articles made therefrom."
+    }
+  ],
+  "owner": "PPG Coatings Danmark A/S",
+  "ownerNative": null,
+  "ownerCountry": "DK",
+  "representative": "Holme Patent A/S",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Gladsaxevej 300, DK-2860 Søborg, Denmark",
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "PPG Coatings Danmark A/S"
+      }
+    ],
+    "applicationLanguageCode": "da",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "the classes 01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25 , 26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42 The registration does not include glass, including foam glass and articles made therefrom.",
+          "intClassNumber": "01,02,03,04,05,07,09,16,27,37,41,42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Registreringen omfatter ikke glas, herunder skumglas og varer fremstillet deraf."
+        }
+      ]
+    },
+    "id": "14fb2b2f-e9c4-4b54-be89-13618a860243",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00687",
+        "publicationVolume": "47A"
+      }
+    ],
+    "recordLastUpdated": "20250410",
+    "registrationOfficeCode": "DK",
+    "registrationOfficeName": "Denmark",
+    "representatives": [
+      {
+        "representativeAddress": "Valbygårdsvej 33, 1., DK-2500 Valby, Denmark",
+        "representativeName": "Holme Patent A/S"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19770224",
+        "applicationNumber": "VA 000828 1977"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20200718",
+      "lastPublicationDate": "19791219",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19800718",
+        "registrationNumber": "VR 002671 1980"
+      },
+      "renewalPublishedDate": "20100519"
+    },
+    "version": "20250410121320",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/dk/14fb2b2f-e9c4-4b54-be89-13618a860243",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

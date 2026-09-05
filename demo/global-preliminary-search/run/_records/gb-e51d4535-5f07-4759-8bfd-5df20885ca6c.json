@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/gb/e51d4535-5f07-4759-8bfd-5df20885ca6c",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "e51d4535-5f07-4759-8bfd-5df20885ca6c",
+  "applicationNumber": "3399382",
+  "registrationNumber": "3399382",
+  "applicationDate": "2019-05-15",
+  "registrationDate": "2019-10-11",
+  "expiryDate": "2029-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qri",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QRI PTY LTD",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "55 Church Road, Clacton-on-Sea CO15 6BQ, Essex",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "QRI PTY LTD"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software."
+        }
+      ]
+    },
+    "id": "e51d4535-5f07-4759-8bfd-5df20885ca6c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2019/031"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190515",
+        "applicationNumber": "3399382"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290515",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20191011",
+        "registrationNumber": "3399382"
+      }
+    },
+    "version": "20250627200302",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qri"
+    }
+  },
+  "_uri": "/mark/gb/e51d4535-5f07-4759-8bfd-5df20885ca6c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.200Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

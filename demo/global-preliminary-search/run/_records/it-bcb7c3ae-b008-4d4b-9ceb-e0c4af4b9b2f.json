@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/it/bcb7c3ae-b008-4d4b-9ceb-e0c4af4b9b2f",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "bcb7c3ae-b008-4d4b-9ceb-e0c4af4b9b2f",
+  "applicationNumber": "362016000104308",
+  "registrationNumber": "362016000104308",
+  "applicationDate": "2016-10-18",
+  "registrationDate": "2017-09-05",
+  "expiryDate": "2026-10-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-10-12",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Q RI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "servizi inerenti a valutazioni,stime,ricerche,perizie e certificazioni di idoneita' di prodotti e servizi; servizi inerenti la certificazione di prodotti e servizi in conformita' alle norme ed agli standard nazionali ed internazionali e ad altri documenti normativi; servizi inerenti le modalita' di fabbricazione e controllo di prodotti; servizi di ispezione,analisi,collaudo e studio di norme riguardanti le procedure di certificazione; verifiche e prove sui prodotti,verifica del sistema di gestione di qualita' nel processo produttivo; preparazione di documenti normativi riguardanti i requisiti di prodotti, processi o servizi, controllo di qualita',preparazione di relazioni e certificati in genere",
+      "translation_language": "en",
+      "translation": "services related to evaluations, estimates, research, surveys and certifications of suitability &#39;of products and services; services related to the certification of products and services in accordance &#39;with the rules and to national and international standards and other normative documents; services concerning the modalities&#39; of manufacture and testing of products; inspection, analysis, testing and study rules on certification procedures; checks and product testing, verification of the quality &#39;management system in the production process; preparation of legal documents concerning the requirements of products, processes or services, quality &#39;control, preparation of reports and certificates in general"
+    }
+  ],
+  "owner": "RINA S.P.A.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "Andreotti Erika , Baldini Maria Cristina , Barbuto Raffaella Maria , Barolo Marcella , Bergadano Mirko , Berta Stefania , Boggio Francesca Carolina , Boggio Luigi Alessandro , Bongiovanni Simone , Bosman Cesare , Cerbaro Elena Maria , Cernuzzi Daniele Luigi Maria , Di Sciuva Michele , Franzolin Luigi , Maccagnan Matteo , Mangini Simone , Plebani Rinaldo , Revelli Giancarlo , Rolando Cristina , Tricerri Elisa c/o Studio Torta S.p.A.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "RINA S.P.A."
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "16.03.17",
+      "26.04.01",
+      "26.04.16",
+      "26.04.22",
+      "37.01.17"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "services related to evaluations, estimates, research, surveys and certifications of suitability &#39;of products and services; services related to the certification of products and services in accordance &#39;with the rules and to national and international standards and other normative documents; services concerning the modalities&#39; of manufacture and testing of products; inspection, analysis, testing and study rules on certification procedures; checks and product testing, verification of the quality &#39;management system in the production process; preparation of legal documents concerning the requirements of products, processes or services, quality &#39;control, preparation of reports and certificates in general",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi inerenti a valutazioni,stime,ricerche,perizie e certificazioni di idoneita' di prodotti e servizi; servizi inerenti la certificazione di prodotti e servizi in conformita' alle norme ed agli standard nazionali ed internazionali e ad altri documenti normativi; servizi inerenti le modalita' di fabbricazione e controllo di prodotti; servizi di ispezione,analisi,collaudo e studio di norme riguardanti le procedure di certificazione; verifiche e prove sui prodotti,verifica del sistema di gestione di qualita' nel processo produttivo; preparazione di documenti normativi riguardanti i requisiti di prodotti, processi o servizi, controllo di qualita',preparazione di relazioni e certificati in genere"
+        }
+      ]
+    },
+    "id": "bcb7c3ae-b008-4d4b-9ceb-e0c4af4b9b2f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "IL MARCHIO CONSISTE NELLA RAFFIGURAZIONE DELLA LETTERA \"Q\" STILIZZATA A FORMA DI QUADRATO, CONTENENTE AL SUO INTERNO LE LETTERE \"R\" ED \"I\" IN CARATTERE MAIUSCOLO, ANCH'ESSE STILIZZATE.(MARCHIO FIGURATIVO)"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260819",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "10121 Torino (Torino)",
+        "representativeName": "Andreotti Erika , Baldini Maria Cristina , Barbuto Raffaella Maria , Barolo Marcella , Bergadano Mirko , Berta Stefania , Boggio Francesca Carolina , Boggio Luigi Alessandro , Bongiovanni Simone , Bosman Cesare , Cerbaro Elena Maria , Cernuzzi Daniele Luigi Maria , Di Sciuva Michele , Franzolin Luigi , Maccagnan Matteo , Mangini Simone , Plebani Rinaldo , Revelli Giancarlo , Rolando Cristina , Tricerri Elisa c/o Studio Torta S.p.A."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161018",
+        "applicationNumber": "362016000104308"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261030",
+      "firstRegistrationApplication": {
+        "firstApplicationDate": "20061030",
+        "firstApplicationNumber": "GE/2006/000453",
+        "firstRegistrationDate": "20090422",
+        "firstRegistrationNumber": "1188110"
+      },
+      "lastPublicationDate": "20171012",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170905",
+        "registrationNumber": "362016000104308"
+      }
+    },
+    "version": "20260819020646",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Q RI"
+    }
+  },
+  "_uri": "/mark/it/bcb7c3ae-b008-4d4b-9ceb-e0c4af4b9b2f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

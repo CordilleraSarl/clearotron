@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/7733c9d5-bc14-4d33-b7aa-8133da50f60d",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "7733c9d5-bc14-4d33-b7aa-8133da50f60d",
+  "applicationNumber": "83429559",
+  "registrationNumber": "83429559",
+  "applicationDate": "2025-02-12",
+  "registrationDate": "2025-10-21",
+  "expiryDate": "2035-10-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "分度玻璃器皿;化学仪器和器具;理化试验和成分分析用仪器和量器;培养皿;实验室用炉;实验室用毛细管",
+      "translation_language": "en",
+      "translation": "Graduated glassware; chemical instruments and apparatus; instruments and measuring vessels for physical and chemical testing and composition analysis; culture dishes; laboratory furnaces; laboratory capillaries"
+    }
+  ],
+  "owner": "Shandong Jingwei Glass Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "山东省济南市历下区经十路9777号鲁商国奥城4号楼2601室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shandong Jingwei Glass Technology Co., Ltd.",
+        "applicantNativeName": "山东经纬玻璃科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Graduated glassware; chemical instruments and apparatus; instruments and measuring vessels for physical and chemical testing and composition analysis; culture dishes; laboratory furnaces; laboratory capillaries",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "分度玻璃器皿;化学仪器和器具;理化试验和成分分析用仪器和量器;培养皿;实验室用炉;实验室用毛细管"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        }
+      ]
+    },
+    "id": "7733c9d5-bc14-4d33-b7aa-8133da50f60d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1944"
+      }
+    ],
+    "recordLastUpdated": "20251231",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京邦盾知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250212",
+        "applicationNumber": "83429559"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351020",
+      "lastPublicationDate": "20250720",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20251021",
+        "registrationNumber": "83429559"
+      }
+    },
+    "version": "20251231020200",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/cn/7733c9d5-bc14-4d33-b7aa-8133da50f60d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

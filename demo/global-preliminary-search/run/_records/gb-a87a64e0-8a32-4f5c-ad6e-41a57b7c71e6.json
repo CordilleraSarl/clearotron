@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/gb/a87a64e0-8a32-4f5c-ad6e-41a57b7c71e6",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "a87a64e0-8a32-4f5c-ad6e-41a57b7c71e6",
+  "applicationNumber": "2011433",
+  "registrationNumber": "2011433",
+  "applicationDate": "1995-02-17",
+  "registrationDate": "1997-07-18",
+  "expiryDate": "2035-02-17",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Gaming, gambling; casino services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Gaming, gambling; casino services."
+        }
+      ]
+    },
+    "id": "a87a64e0-8a32-4f5c-ad6e-41a57b7c71e6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6169"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Chapel Quarter, Mount Street, Nottingham NG1 6HQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19950217",
+        "applicationNumber": "2011433"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350217",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19970718",
+        "registrationNumber": "2011433"
+      }
+    },
+    "version": "20250627184049",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/gb/a87a64e0-8a32-4f5c-ad6e-41a57b7c71e6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

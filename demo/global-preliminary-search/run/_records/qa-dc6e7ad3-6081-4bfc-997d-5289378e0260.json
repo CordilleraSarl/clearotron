@@ -1,0 +1,101 @@
+{
+  "uri": "/mark/qa/dc6e7ad3-6081-4bfc-997d-5289378e0260",
+  "provider": "clarivate",
+  "office": "qa",
+  "guid": "dc6e7ad3-6081-4bfc-997d-5289378e0260",
+  "applicationNumber": "91376",
+  "registrationNumber": null,
+  "applicationDate": "2014-08-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GILDO PALLANCA PASTOR",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MONACO",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "GILDO PALLANCA PASTOR"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "dc6e7ad3-6081-4bfc-997d-5289378e0260",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "QA",
+    "registrationOfficeName": "Qatar",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140827",
+        "applicationNumber": "91376"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427191414",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/qa/dc6e7ad3-6081-4bfc-997d-5289378e0260",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

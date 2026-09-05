@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/es/2f72fe39-1e09-4262-bb60-893dcb0f1205",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "2f72fe39-1e09-4262-bb60-893dcb0f1205",
+  "applicationNumber": "4297744 M4",
+  "registrationNumber": "4297744 M4",
+  "applicationDate": "2024-12-26",
+  "registrationDate": "2025-09-29",
+  "expiryDate": "2034-12-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-03-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOL JOVEN ORQUESTA DE LEIOA Pasión por la música",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Carteles; albumes; folletos; formularios; impresiones graficas; material impreso; material didactico, excepto aparatos; posters; publicaciones impresas; publicaciones periodicas",
+      "translation_language": "en",
+      "translation": "POSTERS; ALBUMS; BROCHURES; FORMS; GRAPHIC PRINTS; PRINTED MATERIAL; DIDACTIC MATERIAL, EXCEPT APPLIANCES; POSTERS; PRINTED PUBLICATIONS; PERIODICAL PUBLICATIONS"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Marketing; publicidad; mercadotecnia; marketing de influenciadores; creacion de perfiles de consumidores con fines comerciales o de marketing; suministro de informacion comercial por sitios web",
+      "translation_language": "en",
+      "translation": "MARKETING; ADVERTISING; MARKETING; INFLUENCER MARKETING; CREATING CONSUMER PROFILES FOR COMMERCIAL OR MARKETING PURPOSES; PROVIDING COMMERCIAL INFORMATION VIA WEBSITES"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de orquestas; produccion musical; servicios de composicion musical; servicios de compositores y autores de musica; organizacion y direccion de conciertos; organizacion y direccion de eventos de entretenimiento; servicios de montaje de video para eventos; publicacion en linea de libros y revistas especializadas en formato electronico",
+      "translation_language": "en",
+      "translation": "ORCHESTRA SERVICES; MUSIC PRODUCTION; MUSIC COMPOSITION SERVICES; MUSIC COMPOSER AND AUTHORS SERVICES; CONCERT ORGANIZATION AND DIRECTION; ENTERTAINMENT EVENTS ORGANIZATION AND DIRECTION; VIDEO EDITING SERVICES FOR EVENTS; ONLINE PUBLICATION OF BOOKS AND SPECIALIZED MAGAZINES IN ELECTRONIC FORMAT"
+    }
+  ],
+  "owner": "AYUNTAMIENTO DE LEIOA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Maitane Valdecantos Flores",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "AYUNTAMIENTO DE LEIOA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "22.01.05",
+      "27.01.02",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "POSTERS; ALBUMS; BROCHURES; FORMS; GRAPHIC PRINTS; PRINTED MATERIAL; DIDACTIC MATERIAL, EXCEPT APPLIANCES; POSTERS; PRINTED PUBLICATIONS; PERIODICAL PUBLICATIONS",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Carteles; albumes; folletos; formularios; impresiones graficas; material impreso; material didactico, excepto aparatos; posters; publicaciones impresas; publicaciones periodicas"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "MARKETING; ADVERTISING; MARKETING; INFLUENCER MARKETING; CREATING CONSUMER PROFILES FOR COMMERCIAL OR MARKETING PURPOSES; PROVIDING COMMERCIAL INFORMATION VIA WEBSITES",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Marketing; publicidad; mercadotecnia; marketing de influenciadores; creacion de perfiles de consumidores con fines comerciales o de marketing; suministro de informacion comercial por sitios web"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ORCHESTRA SERVICES; MUSIC PRODUCTION; MUSIC COMPOSITION SERVICES; MUSIC COMPOSER AND AUTHORS SERVICES; CONCERT ORGANIZATION AND DIRECTION; ENTERTAINMENT EVENTS ORGANIZATION AND DIRECTION; VIDEO EDITING SERVICES FOR EVENTS; ONLINE PUBLICATION OF BOOKS AND SPECIALIZED MAGAZINES IN ELECTRONIC FORMAT",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de orquestas; produccion musical; servicios de composicion musical; servicios de compositores y autores de musica; organizacion y direccion de conciertos; organizacion y direccion de eventos de entretenimiento; servicios de montaje de video para eventos; publicacion en linea de libros y revistas especializadas en formato electronico"
+        }
+      ]
+    },
+    "id": "2f72fe39-1e09-4262-bb60-893dcb0f1205",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "22.01.05",
+      "22.01.15",
+      "27.05.01",
+      "27.05.17",
+      "29.01.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6860"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "Elcano 14, 2º Izquierda 48008 Bilbao BIZKAIA",
+        "representativeName": "Maitane Valdecantos Flores"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241226",
+        "applicationNumber": "4297744 M4"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341225",
+      "lastPublicationDate": "20250310",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250929",
+        "registrationNumber": "4297744 M4"
+      }
+    },
+    "version": "20260427172012",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOL JOVEN ORQUESTA DE LEIOA Pasión por la música"
+    }
+  },
+  "_uri": "/mark/es/2f72fe39-1e09-4262-bb60-893dcb0f1205",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

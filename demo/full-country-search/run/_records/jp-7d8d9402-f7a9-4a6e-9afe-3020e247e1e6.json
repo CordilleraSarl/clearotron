@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/jp/7d8d9402-f7a9-4a6e-9afe-3020e247e1e6",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "7d8d9402-f7a9-4a6e-9afe-3020e247e1e6",
+  "applicationNumber": "2015-051117",
+  "registrationNumber": "5816466",
+  "applicationDate": "2015-05-29",
+  "registrationDate": "2015-12-25",
+  "expiryDate": "2025-12-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-02-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Ｓｑｏｒｅ",
+  "markTransliteration": "SUKOA",
+  "markTranslation": "SQORE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "業務用テレビゲーム機による通信を用いたゲームの提供及びこれに関する情報の提供，家庭用テレビゲームおもちゃによる通信を用いたゲームの提供及びこれに関する情報の提供，携帯用液晶画面ゲームおもちゃによる通信を用いたゲームの提供及びこれに関する情報の提供，携帯電話機・その他の電話機械器具による通信を用いたゲームの提供及びこれに関する情報の提供，パーソナルコンピュータによる通信を用いたゲームの提供及びこれに関する情報の提供，ゲームの提供に関する情報の提供",
+      "translation_language": "en",
+      "translation": "Providing games using communication by commercial video game machines and providing information on this, providing games using communication by home video game toys and providing information on this, communication for portable liquid crystal screen game toys Providing games and providing information on this, providing games using communication by mobile phones and other telephone machinery and equipment, providing information on this, providing games using communication by a personal computer and providing information on this , Providing information on the provision of games"
+    }
+  ],
+  "owner": "RYOICHI TAGA",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "TSUDA KOJI",
+  "priorities": [
+    {
+      "priorityDate": "20150529"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHOUFU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "RYOICHI TAGA",
+        "applicantNativeAddress": "東京都調布市",
+        "applicantNativeName": "多賀　亮一"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing games using communication by commercial video game machines and providing information on this, providing games using communication by home video game toys and providing information on this, communication for portable liquid crystal screen game toys Providing games and providing information on this, providing games using communication by mobile phones and other telephone machinery and equipment, providing information on this, providing games using communication by a personal computer and providing information on this , Providing information on the provision of games",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "業務用テレビゲーム機による通信を用いたゲームの提供及びこれに関する情報の提供，家庭用テレビゲームおもちゃによる通信を用いたゲームの提供及びこれに関する情報の提供，携帯用液晶画面ゲームおもちゃによる通信を用いたゲームの提供及びこれに関する情報の提供，携帯電話機・その他の電話機械器具による通信を用いたゲームの提供及びこれに関する情報の提供，パーソナルコンピュータによる通信を用いたゲームの提供及びこれに関する情報の提供，ゲームの提供に関する情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "41Z99",
+          "natGoodsServicesDescription": "Other education, training, entertainments, sports and cultural activities that do not correspond to any of the listed similar group code(s) for the education, training, entertainments, sports and cultural activities"
+        }
+      ]
+    },
+    "id": "7d8d9402-f7a9-4a6e-9afe-3020e247e1e6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20150529"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "TSUDA KOJI",
+        "representativeNativeName": "津田　宏二"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150529",
+        "applicationNumber": "2015-051117"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20251225",
+      "lastPublicationDate": "20160202",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20151225",
+        "registrationNumber": "5816466"
+      }
+    },
+    "version": "20230427182946",
+    "wordMarkSpecification": {
+      "markTranslation": "SQORE",
+      "markTransliteration": "SUKOA",
+      "markVerbalElementText": "Ｓｑｏｒｅ"
+    }
+  },
+  "_uri": "/mark/jp/7d8d9402-f7a9-4a6e-9afe-3020e247e1e6",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -28,6 +28,8 @@
 // question would be two answers, and the wrong one would be the one nobody read.
 import "../shared/env-local.mjs";   // side effect: apply the install's .env — FIRST, before anything reads process.env
 import { invocationPrefix } from "../shared/invocation.mjs";
+import { existsSync, readFileSync } from "node:fs";
+import { defaultGrantsPath } from "./start.mjs";
 import { mintFromOptions } from "../mcp-server/mint-token.mjs";
 
 const argv = process.argv.slice(2);
@@ -81,5 +83,32 @@ try {
 }
 
 for (const line of minted.notes) console.error(line);
+
+// — bb8's F13. A KEY FOR AN IDENTITY ON NO LIST IS A KEY THAT 403s. This command
+// minted rc 0 for any address, printed the token once — it cannot be shown again — and the operator
+// handed it to a client whose first request was refused, with nothing on either side saying why.
+//
+// A WARNING, NOT A REFUSAL. The key and the grant are two separate acts and issuing first is a
+// legitimate order; refusing here would break it. What was missing is that nothing said the key was
+// inert. STDERR, so the token stays alone on stdout and `key issue ... > token.txt` keeps working —
+// that split is deliberate and this must not undo it.
+try {
+  const rosterPath = defaultGrantsPath();
+  if (!existsSync(rosterPath)) {
+    console.error(`\nNOTE: no guest list at ${rosterPath} yet, so nothing grants ${email} anything and this key will be refused at the door. \`clearotron start\` writes the list; then: clearotron grant add ${email} --tenant <name> --accounts <brand-owner-key>`);
+  } else {
+    const roster = JSON.parse(readFileSync(rosterPath, "utf8"));
+    const tenants = roster?.tenants && typeof roster.tenants === "object" ? roster.tenants : {};
+    const listed = Object.values(tenants).some((t) => t?.users && Object.prototype.hasOwnProperty.call(t.users, email));
+    if (!listed)
+      console.error(`\nNOTE: ${email} is on no tenant in ${rosterPath}, so this key resolves to no accounts and the door will refuse it. Grant them access with: clearotron grant add ${email} --tenant <name> --accounts <brand-owner-key>`);
+  }
+} catch (e) {
+  // A ROSTER THIS COMMAND CANNOT READ IS NOT A ROSTER SAYING THE SUBJECT IS ABSENT. Said as what it is,
+  // and it never blocks the mint — the key is already made by this point and the token must still reach
+  // the operator, or it is lost for good.
+  console.error(`\nNOTE: the guest list could not be read (${e.message}), so whether ${email} is on it is unknown — check before handing this key over.`);
+}
+
 console.error(`\nGive this to ${email} once. It is not stored and cannot be shown again.`);
 console.log(minted.token);

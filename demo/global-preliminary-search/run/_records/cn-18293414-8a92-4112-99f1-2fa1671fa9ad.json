@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/cn/18293414-8a92-4112-99f1-2fa1671fa9ad",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "18293414-8a92-4112-99f1-2fa1671fa9ad",
+  "applicationNumber": "62636466",
+  "registrationNumber": "62636466",
+  "applicationDate": "2022-02-16",
+  "registrationDate": "2022-09-14",
+  "expiryDate": "2032-09-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-06-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "普拉提教学,普拉提指导课程,身体疗法培训,私人健身教练服务,瑜伽培训,健身指导课程,健身俱乐部(健身和体能训练),提供瑜伽教学,体育设备出租(车辆除外),医疗按摩培训",
+      "translation_language": "en",
+      "translation": "Pilates teaching, Pilates coaching courses, body therapy training, personal fitness coaching services, yoga training, fitness coaching courses, fitness clubs (fitness and physical training), providing yoga teaching, sports equipment rental (except vehicles), medical massage training"
+    }
+  ],
+  "owner": "Puyue Sports Health Management (Chengdu) Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "四川省成都市武侯区双凤五路287号8栋6层附19号、附20号A211室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Puyue Sports Health Management (Chengdu) Co., Ltd.",
+        "applicantNativeName": "璞悦运动健康管理(成都)有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Pilates teaching, Pilates coaching courses, body therapy training, personal fitness coaching services, yoga training, fitness coaching courses, fitness clubs (fitness and physical training), providing yoga teaching, sports equipment rental (except vehicles), medical massage training",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "普拉提教学,普拉提指导课程,身体疗法培训,私人健身教练服务,瑜伽培训,健身指导课程,健身俱乐部(健身和体能训练),提供瑜伽教学,体育设备出租(车辆除外),医疗按摩培训"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "18293414-8a92-4112-99f1-2fa1671fa9ad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1795"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "西安佳朋财税咨询有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220216",
+        "applicationNumber": "62636466"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320913",
+      "lastPublicationDate": "20220613",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220914",
+        "registrationNumber": "62636466"
+      }
+    },
+    "version": "20251004193053",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PORI"
+    }
+  },
+  "_uri": "/mark/cn/18293414-8a92-4112-99f1-2fa1671fa9ad",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:33.543Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

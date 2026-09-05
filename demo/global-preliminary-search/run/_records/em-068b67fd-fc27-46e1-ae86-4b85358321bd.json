@@ -1,0 +1,1076 @@
+{
+  "uri": "/mark/em/068b67fd-fc27-46e1-ae86-4b85358321bd",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "068b67fd-fc27-46e1-ae86-4b85358321bd",
+  "applicationNumber": "19280435",
+  "registrationNumber": "19280435",
+  "applicationDate": "2025-11-21",
+  "registrationDate": "2026-03-27",
+  "expiryDate": "2035-11-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-12-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Vedecká zarízení a nástroje, Prístroje a nástroje pro výzkum, Navigacní prístroje a nástroje, Geodetické prístroje a nástroje, Audiovizuální zarízení a prístroje, Prístroje a nástroje na vázení, Mericí prístroje a zarízení, Signalizacní prístroje a zarízení, Detekcní prístroje a nástroje, Zkusební prístroje a nástroje, Inspekcní zarízení a prístroje, Záchranárská zarízení a nástroje a Ucební a vyucovací prístroje a nástroje; Prístroje a nástroje pro vedení, prepínání, premenu, akumulaci, regulaci nebo rízení rozvodu nebo spotreby elektriny; Prístroje a zarízení pro záznam, prenos, reprodukci nebo zpracování zvuku, obrazu nebo dat; Potápecské obleky; Potápecské masky; Spunty do usí pro potápece; Nosní klipsy pro potápece a plavce; Potápecské rukavice; Dýchací prístroje pro plavání pod vodou; Hasicí prístroje; Chytré prsteny (elektronická zarízení); Buzoly; Ochranné prílby; Kryty na chytré telefony (smartphony); Chytré telefony v podobe hodinek; Kapesní pocítace PDA ve tvaru hodinek; Prístroje na merení casu (nikoliv hodiny a hodinky); Nositelná komunikacní zarízení v podobe náramkových hodinek; Kompaktní disky, DVD a ostatní digitální záznamové nosice; Software; Pocítace; Prenosné pocítace [laptopy]; Prenosné pocítace; Prenosné pocítace; Osobní pocitace; Prenosné pocítace; Periferní zarízení pocítacu; Chytré hodinky; Chytré náramky [mericí prístroje]; MP3 prehrávace; Telefonní prístroje; Bunkové telefony; Smartphony; Komunikacní a telekomunikacní prístroje; Prístroje pro záznam, prevod, reprodukci zvuku nebo obrazu; Baterie; Solární baterie; Dobíjecí clánky; Elektrické baterie; Palivové clánky; Digitální stahovatelné obrazové soubory overené nezamenitelnými tokeny [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "cs",
+      "description": "Vozidla a dopravní prostredky; Prostredky na pohyb po zemi, Prostredky na pohyb vzduchem, Dopravní prostredky kosmické a Prostredky na pohyb po vode; Cásti a soucásti dopravních prostredku pozemních, vodních, vzdusných a kosmických; Pruzkumná vozítka (pro zkoumání povrchu planet); Vesmírné dopravní prostredky; Vodní dopravní prostredky; Letecké dopravní prostredky; Letecká zarízení, stroje a prístroje; Rádiem rízené bezpilotní letouny; Drony s kamerou; Vojenské drony a Civilní drony; Dálkove ovládané létající objekty; Dálkové rízená vozidla, ne hracky; Autonomní vozidla; Pruzkumná bezpilotní vozidla; Nosné dopravní prostredky pro druzice; Podvodní vozidla; Vozidla bez posádky (bezobsluzná); Terénní vozidla; A poplasná zabezpecovací zarízení pro vozidla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Vedecké technologické sluzby; Návrhárství; Sluzby v oblasti prumyslových analýz, prumyslového výzkumu a prumyslového designu; Sluzby kontroly kvality a overování pravosti; Styling [prumyslový design]; Sluzby v oblasti výzkumu a vývoje; Ukládání dat on-line; Výzkum, navrhování a vývoj produktu; Technické kreslení; Prumyslový design; Navrhování pocítacové grafiky; Mapovací sluzby; Inzenýrské sluzby; Elektronické ukládání a hosting dat; Technologické poradenství; Poskytování informací vztahujících se k technologickému výzkumu; Poskytování vedeckých informací v oblasti klimatických zmen a globálního oteplování; Navrhování interiéru; Architektonické sluzby a sluzby urbanistického plánování; Navrhování kostýmu a Navrhování dekorací na predstavení.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Videnskabelige apparater og instrumenter, Forskningsapparater og -instrumenter, Navigationsapparater og -instrumenter, Geodætiske apparater og instrumenter, Audiovisuelle apparater og instrumenter, Apparater og instrumenter til vejning, Måleinstrumenter og -apparatur, Signaleringsinstrumenter og -apparater, Detekteringsapparater og -instrumenter, Testudstyr og -instrumenter, Apparater og instrumenter til inspektion, Apparater og instrumenter til livredning og Instruktions- og undervisningsapparater og -instrumenter; Apparater og instrumenter til ledning, distribution, omdannelse, akkumulering, regulering eller kontrol af elektricitetsdistribution eller -forbrug; Apparater og instrumenter til optagelse, transmission, gengivelse eller udarbejdelse af lyd, billeder eller data; Dykkerdragter; Dykkermasker; Ørepropper til dykkere; Næseklemmer til dykkere og svømmere; Dykkerhandsker; Indåndingsapparater til undervandssvømning; Ildslukkere; Smart rings; Retningsangivende kompasser; Hovedbeskyttelse; Covers til smartphones; Smartphones med form som et ur; Personlige digitale assistenter i form af ure; Tidsmålende instrumenter (ikke inklusive ure og armbåndsure); Wearable kommunikationsenheder i form af armbåndsure; CD'ere, DVD'ere og andre digitale optagelsesmedier; Software; Computere; Bærbare computere; Håndholdte computere; Mobile computere; Pc'er; Wearable computere; Perifere enheder til computere; Smartwatches; Opkoblede armbånd [måleinstrumenter]; MP3-afspillere; Telefonapparater; Mobiltelefoner; Smartphones; Apparater til telekommunikation og kommunikation; Apparater til optagelse, transmission og gengivelse af lyd eller billede; Batterier; Solbatterier; Genopladelige celler; Batterier, elektriske; Brændselsceller; Downloadable digitale billedfiler autentificeret af non-fungible tokens [NFT'er].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "da",
+      "description": "Køretøjer og befordringsmidler; Apparatur til bevægelse på land, Apparatur til bevægelse i luften, Befordringsmidler til rumfart og Apparater til befordring på vand; Dele og tilbehør til befordringsmidler til brug på land, til vands, i luften og i rummet; Robotbiler; Rumfartøjer; Vandfartøjer; Flyvemaskiner; Aeronautiske apparater, maskiner og indretninger; Droner; Kameradroner; Militærdroner og Civile droner; Fjernstyrede, flyvende objekter; Fjernstyrede køretøjer, undtagen legetøj; Selvkørende køretøjer; Førerløse overvågningskøretøjer; Løfteraketter til satellitter; Undervandsfartøjer; Ubemandede fartøjer; Terrængående køretøjer; Tyverialarmer og -anordninger til køretøjer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Videnskabelige teknologiske tjenesteydelser; Designtjenesteydelser; Industriel analyse, industriel forskning og industriel design; Kvalitetskontrol og autentificering af identitet; Formgivning [industriel design]; Forsknings- og udviklingsvirksomhed; Online datalagring; Produktundersøgelser, -design og -udvikling; Teknisk tegning; Industriel design; Tjenester vedrørende design af computergrafik; Tegning af kort; Ingeniørtjenesteydelser; Elektronisk lagring og hosting af data; Teknologirådgivning; Tilvejebringelse af information vedrørende teknologisk forskning; Stille videnskabelige oplysninger til rådighed om klimaændringer og global opvarmning; Indretningsarkitektvirksomhed; Arkitektoniske-og byplanlægningstjenesteydelser; Design af kostumer og Design af scenedekorationer til shows.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijke apparatuur en instrumenten, Onderzoeksapparuur en -instrumenten, Navigatieapparatuur en -instrumenten, Geodetische apparatuur en instrumenten, Audiovisuele apparatuur en instrumenten, Weegapparaten en -instrumenten, Meetapparatuur en -instrumenten, Seinapparaten en -instrumenten, Detectie-apparaten en -instrumenten, Testtoestellen en -instrumenten, Inspectie-apparaten en -instrumenten, Levensreddende apparatuur en instrumenten en Onderwijs- en instructie-apparaten en -instrumenten; Apparaten en instrumenten voor het geleiden, distribueren, transformeren, accumuleren, regelen of controleren van de distributie of het verbruik van elektriciteit; Apparaten en instrumenten voor het opnemen, verzenden, weergeven of verwerken van geluiden, beelden of gegevens; Pakken voor duikers; Duikmaskers; Oordopjes voor duikers; Neusklemmen voor duikers en zwemmers; Duikerhandschoenen; Ademhalingsapparaten voor het onderwaterzwemmen; Brandblusapparatuur; Smart ringen; Kompassen; Beschermers voor het hoofd; Hoezen voor smartphones; Smartphones in de vorm van een horloge; Persoonlijke digitale assistent in de vorm van een horloge; Tijdmeetinstrumenten (uitgezonderd uurwerken en horloges); Draagbare communicatietoestellen in de vorm van polshorloges; Compact discs, DVD's en andere digitale dragers; Software; Computers; Laptops; Computers op handformaat; Mobiele computers; Personal computers; Op het lichaam te dragen computers; Computerrandapparatuur; Smartwatches; Smartarmbanden [meetinstrumenten]; MP3-spelers; Telefoonapparaten; Mobiele telefoons; Smartphones; Communicatie- en telecommunicatie-apparatuur; Apparaten voor het opnemen, het overbrengen en het weergeven van geluid of beeld; Batterijen; Zonne-energiebatterijen; Cellen (Oplaadbare -); Elektrische batterijen; Brandstofcellen; Downloadbare digitale bestanden geauthenticeerd door NFT's.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "nl",
+      "description": "Voertuigen en vervoermiddelen; Apparaten voor de voortbeweging over land, Apparaten voor voortbeweging door de lucht, Apparaten voor spatiale voortbeweging en Apparaten voor vervoer over het water; Onderdelen en accessoires van landvoertuigen, zeevaartuigen, lucht- en ruimtevaartuigen; Astromobielen; Ruimtevaartuigen; Vaartuigen; Luchtschepen; Apparatuur, machines en toestellen voor de luchtvaart; Drones; Drones voorzien van een camera; Drones voor militair gebruik en Drones voor civiel gebruik; Afstand (Op -) bestuurbare vliegende objecten; Voertuigen, op afstand bestuurbaar, anders dan speelgoed; Autonome voertuigen; Inspectievoertuigen (Onbemande -); Lanceervoertuigen voor satellieten; Onderwatervoertuigen; Voertuigen (Onbemande -); Terreinvoertuigen; Alarmapparaten tegen diefstal van vervoermiddelen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Wetenschappelijk-technologische diensten; Ontwerpdiensten; Dienstverlening op het gebied van industriële analyse, industrieel onderzoek en industrieel ontwerp; Kwaliteitscontrole en het bevestigen van de echtheid; Styling [industrieel ontwerpen]; Onderzoek- en ontwikkelingsdiensten; Onlinegegevensopslag; Productonderzoek, -planning en -ontwikkeling; Technisch tekenen; Industrieel ontwerp; Grafische vormgevingsdiensten met behulp van computers; Karteringsdiensten; Ingenieursdiensten; Opslag en elektronische hosting van gegevens; Advisering op technologisch gebied; Verschaffen van informatie met betrekking tot technologisch onderzoek; Verstrekking van wetenschappelijke informatie op het gebied van klimaatverandering en opwarming van de aarde; Binnenhuisarchitectuur; Diensten van architecten en stedebouwkundige planning; Kostuumontwerp en Ontwerp van decors voor shows.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific apparatus and instruments, Research apparatus and instruments, Navigation apparatus and instruments, Surveying apparatus and instruments, Audiovisual apparatus and instruments, Weighing apparatus and instruments, Measuring apparatus and instruments, Signalling apparatus and instruments, Detecting apparatus and instruments, Testing apparatus and instruments, Inspecting apparatus and instruments, Life-saving apparatus and instruments and Instructional and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; Apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; Diving suits; Divers' masks; Ear plugs for divers; Nose clips for divers and swimmers; Gloves for divers; Breathing apparatus for underwater swimming; Fire extinguishers; Smart rings; Directional compasses; Head protection; Covers for smartphones; Smartphones in the shape of a watch; Personal digital assistants in the shape of a watch; Time measuring instruments (not including clocks and watches); Wearable communications devices in the form of wristwatches; Compact discs, DVDs and other digital recording media; Software; Computers; Laptop computers; Palmtop computers; mobile computers; Personal computers; Wearable computers; Computer peripheral devices; Smartwatches; Connected bracelets [measuring instruments]; MP3 players; Telephone apparatus; Mobile telephones; Smartphones; Communication and telecommunication apparatus; Apparatus for recording, transmission or reproduction of sound or images; Batteries; Solar batteries; Rechargeable cells; Batteries, electric; Fuel cells; Downloadable digital image files authenticated by non-fungible tokens [NFTs].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Vehicles and conveyances; Apparatus for locomotion by land, Apparatus for locomotion by air, Apparatus for space locomotion and Apparatus for locomotion by water; Parts and fittings for land vehicles, water vehicles, air vehicles and space vehicles; Rovers; Space vehicles; Water vehicles; Aircraft; Aeronautical apparatus, machines and appliances; Drones; Camera drones; Military drones and Civilian drones; Remote controlled flying objects; Remote control vehicles, other than toys; Autonomous vehicles; Pilotless surveying vehicles; Launch vehicles for satellites; Underwater vehicles; Unmanned vehicles; All-terrain vehicles; Anti-theft alarms and devices for vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific technological services; Design services; Industrial analysis, industrial research and industrial design; Quality control and authentication services; Styling [industrial design]; Research and development services; Online data storage; Product research, design and development; Technical drawing; Industrial design; Computer graphics design services; Mapping services; Engineering services; Electronic hosting and storage of data; Technological consultancy; Provision of information relating to technological research; Providing scientific information in the fields of climate change and global warming; Design of interior decor; Architectural and urban planning services; Design of costumes and Design of show scenery.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Teadusotstabelised seadmed ja vahendid, Uurimisseadmed ja -vahendid, Navigatsiooniaparaadid ja -riistad, Geodeesiaaparaadid ja -seadmed, Audiovisuaalseadmed, Kaalumisseadmed, kaalumisriistad, Mõõtevahendid ja -seadmed, Signaalseadmed ja -vahendid, Tuvastusaparaadid ja -instrumendid, Katseseadmed ja -vahendid, Inspekteerimisaparaadid ja -instrumendid, Päästevahendid ja -seadmed ja Juhend- ja õppeseadmed ning -vahendid; Aparaadid ja vahendid elektrienergia jaotuse või tarbimise juhtimiseks, jaotamiseks, muundamiseks, kogumiseks, reguleerimiseks või juhtimiseks; Seadmed ja vahendid heli, kujutise või andmete salvestamiseks, edastamiseks, taasesitamiseks või töötlemiseks; Skafandrid, tuukriülikonnad; Sukeldumismaskid; Kõrvatropid sukeldujatele; Ninaklambrid sukeldujatele ja ujujatele; Kindad sukeldujatele; Akvalangisti, allveeujuja hingamisaparaadid, akvalangid; Tulekustutid; Nutisõrmused; Kompassid, bussoolid; Peakaitsmed; Nutitelefonide katted; Käekellakujulised nutitelefonid; Kellakujulised elektronmärkmikud (PDA); Ajamõõdikud, v.a kellad; Käekelladena kantavad sideseadmed; CD-d, DVD-d ja muud digisalvestusvahendid; Tarkvara; Arvutid, raalid; Sülearvutid; Pihuarvutid; Kantavad arvutid; Personaalarvutid; Kaasaskantavad arvutid; Arvutite välisseadmed; Nutikellad; Nutikäevõrud [mõõteseadmed]; MP3-mängijad; Telefoniaparaadid; Mobiiltelefonid; Nutitelefonid; Kommunikatsiooni- ja sideseadmed; Heli või kujutise salvestamise, edastamise ja taasesitamise aparatuur; Patareid, akud; Päikesepatareid; Taaslaetavad akuelemendid; Elektripatareid; Kütuseelemendid; Allalaaditavad digitaalsed pildifailid, mis on autenditud asendamatute digitaalsete omandiõigust näitavate andmeüksustega [NFT-ga].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "et",
+      "description": "Sõidukid ja transpordivahendid; Maismaaliiklusvahendid, Õhuliiklusvahendid, Kosmoses liikumise seadmed ja Veetranspordivahendid; Maismaa-, mere-, õhu- ja kosmosesõidukite varu- ja koostisosad; Tähekulgurid (astromobiilid); Kosmoselaevad, kosmoseaparaadid, kosmoselennuaparaadid; Veesõidukid; Õhusõidukid, lennukid; Aeronautikaaparaadid, -masinad ja -seadmed; Mehitamata lennukid; Kaameradroonid; Droonid militaarseks kasutuseks ja Droonid tsiviilkasutuseks; Kaugjuhitavad lendavad esemed; Kaugjuhtimisega sõidukid, v.a mänguasjad; Autonoomsed sõidukid; Mehitamata mõõdistussõidukid; Satelliitide kanderaketid; Allveesõidukid; Mehitamata sõidukid; Maastikusõidukid; Ärandamisvastased alarmid ja seadmed sõidukitele.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Teadustehnoloogilised teenused; Disainiteenused; Tööstuslike analüüside, tööstuslike uuringute ja tööstusdisainiteenused; Kvaliteedikontrolli- ja autentimisteenused; Kujundamine, stiliseerimine [tootekujundus, tööstusdisain]; Teadus- ja arendustegevusteenused; Andmesäilitus veebis; Tooteuuringud, -projekteerimine ja -arendamine; Joonestamine; Tööstusdisain, tootekujundus; Arvutigraafikadisain; Kaardistamise teenused; Inseneriteenused; Andmete elektrooniline talletamine ja hostimine; Tehnoloogilised konsultatsioonid; Tehnoloogiauuringute teabe pakkumine; Kliimamuutusi ja ülemaailmset soojenemist puudutava teadusteabe pakkumine; Sisekujundus (ruumi viimistlus sisekujunduselementidega); Arhitektuuri- ja linnaplaneerimisteenused; Kostüümide kavandamine, disainimine ja Lavakujundamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Tieteelliset laitteet ja välineet, Tutkimuskojeet ja -laitteet, Navigointilaitteet ja -välineet, Geodeettiset laitteet, Audiovisuaaliset laitteet ja -välineet, Punnituslaitteet, Mittauslaitteet ja välineet, Signaalilaitteet ja välineet, Ilmaisinlaitteet ja -välineet, Koestuslaitteet ja -kojeet, Tutkimislaitteet ja -välineet, Hengenpelastuslaitteet ja välineet ja Opetus- ja neuvontalaitteet ja -kojeet; Laitteet ja kojeet sähkönjakelun tai -kulutuksen johtamiseen, kytkemiseen, muuntamiseen, varaamiseen, säätämiseen tai hallintaan; Laitteet ja kojeet äänen, kuvien tai datan tallentamiseen, siirtoon, toistoon tai käsittelyyn; Sukelluspuvut; Sukellusnaamarit; Korvatulpat sukeltajille; Nenäpinteet uimareille ja sukeltajille; Käsineet (Sukellus -); Hengityslaitteet sukeltamiseen; Sammuttimet; Älysormukset; Kompassit; Päänsuojaimet; Älypuhelinten suojukset; Älypuhelimet rannekellon muodossa; Rannekellon malliset kämmentietokoneet; Ajanmittausvälineet (ei sisällä kelloja); Päälle puettavat viestintävälineet rannekellojen muodossa; CD-levyt, DVD-levyt ja muut digitaaliset tallennusvälineet; Ohjelmistot; Sylimikrot; Läppärit [kannettavat tietokoneet]; Kämmentietokoneet; Kannettavat tietokoneet; Henkilökohtaiset kotitietokoneet; Puettavat tietokoneet; Tietokoneiden oheislaitteet; Älykellot; Älyrannekkeet (mittausvälineet); MP3-soittimet; Puhelimet; Matkapuhelimet; Älypuhelimet; Viestintä- ja tietoliikennelaitteet; Äänen ja kuvien tallennus-, siirto- ja toistolaitteet; Akut ja paristot; Aurinkoparistot; Ladattavat kennot; Paristot, sähköiset; Polttokennot; Ladattavat digitaaliset kuvatiedostot, varmennettu ei-vaihtokelpoisilla tunnuksilla [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fi",
+      "description": "Ajoneuvot ja kulkuneuvot; Laitteet maateitse liikkumiseen, Laitteet ilmateitse liikkumiseen, Avaruuskulkuneuvot ja Laitteet vedessä kulkemista varten; Maa-, vesi- ilma- ja avaruuskulkuneuvojen osat ja rakenneosat; Astromobiilit; Avaruusalukset; Vesikulkuneuvot; Ilma-alukset; Ilmailulaitteet ja -koneet; Radio-ohjattavat lentokoneet; Kameralla varustetut droonit; Droonit sotilaskäyttöön ja Droonit siviilikäyttöön; Kauko-ohjattavat lentävät esineet; Ajoneuvot, kauko-ohjattavat [paitsi lelut]; Itseohjautuvat ajoneuvot; Miehittämättömät tiedusteluajoneuvot; Satelliittien kantoraketit; Vedenalaiset kulkuneuvot; Miehittämättömät ajoneuvot; Maastoajoneuvot; Varashälyttimet ja varkaudenestolaitteet ajoneuvoja varten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tieteelliset teknologiapalvelut; Suunnittelupalvelut; Teollisiin analyyseihin, teollisiin tutkimuksiin ja teolliseen piirtämiseen liittyvät palvelut; Laaduntarkkailupalvelut ja aitoustodistusten laatiminen; Muotoilu [teollinen muotoilu]; Tutkimus- ja kehittämispalvelut; Tiedon tallennus verkossa; tuotetutkimus, -suunnittelu ja -kehitys; Tekninen piirtäminen; Teollinen muotoilu; Tietokonegrafiikan suunnittelupalvelut; Kartoituspalvelut; Insinööripalvelut; Tietojen elektroninen tallennus ja ylläpito; Tekniikkaan liittyvä konsultointi; Tekniseen tutkimukseen liittyvien tietojen tarjoaminen; Ilmastonmuutokseen ja ilmaston lämpenemiseen liittyvän tieteellisen tiedon tarjoaminen; Sisustussuunnittelijan palvelut; Arkkitehti- ja kaupunkisuunnittelupalvelut; Asujen suunnittelu ja Esitysten kulissien suunnittelu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments scientifiques, de recherche, de navigation, géodésiques, audiovisuels, de pesage, de mesurage, de signalisation, de détection, d'essai, d'inspection, de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande de la distribution ou de la consommation d'électricité; appareils et instruments pour l'enregistrement, la transmission, la reproduction ou le traitement de sons, d'images ou de données; combinaisons de plongée; masques de plongée; tampons d'oreilles pour la plongée; pinces nasales pour plongeurs et nageurs; gants de plongée; appareils respiratoires pour la nage subaquatique; extincteurs; bagues intelligentes; boussoles; casques de protection; coques pour smartphones; smartphones en forme de montre; assistants numériques personnels sous la forme de montres; instruments de mesure temporelle (sans inclure les horloges et les montres); dispositifs de communications portables sous la forme de montres-bracelets; disques compacts, dvd et autres supports d'enregistrement numériques; logiciels; ordinateurs; ordinateurs portables; ordinateurs de poche; ordinateurs mobiles; ordinateurs personnels; ordinateurs à porter sur soi; périphériques d'ordinateurs; montres intelligentes; bracelets connectés (instruments de mesure); lecteurs MP3; téléphones; téléphones portables; smartphones; appareils de télécommunication et de communication; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; batteries; piles solaires; piles rechargeables; piles électriques; piles à combustible; fichiers d'images numériques téléchargeables authentifiés par des jetons non fongibles (NFT).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": "Véhicules et moyens de transport; Appareils de locomotion terrestres, aériens, spatiaux et maritimes; Pièces et parties constitutives de véhicules nautiques, terrestres, aériens et spatiaux; Astromobiles; Spationefs; Vaisseaux; Aéronefs; Appareils, machines et dispositifs pour l'aéronautique; Drones; Drones à caméra; Drones militaires et civils; Objets volants télécommandés; Véhicules télécommandés autres que jouets; Véhicules autonomes; Véhicules géodésiques sans pilote; Véhicules lanceurs de satellites; Véhicules submersibles; Véhicules sans pilote; Véhicules tout-terrains; Alarmes et antivols pour véhicules.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services scientifiques et technologiques; Services de conception; Services d'analyses industrielles, de recherches industrielles et de dessin industriel; Services de contrôle de qualité et d'authentification; Stylisme (esthétique industrielle); Services de recherche et développement; Stockage de données en ligne; Recherche, conception et développement de produits; Dessin technique; Dessin industriel; Services d'infographie; Services de cartographie; Travaux d'ingénieurs; Hébergement et stockage électronique de données; Conseils en matière de technologie; Mise à disposition d'informations en matière de recherches technologiques; Mise à disposition d'informations scientifiques dans les domaines du changement climatique et du réchauffement planétaire; Décoration intérieure; Services d'architecture et d'urbanisme; Conception de costumes et de décors de spectacles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Wissenschaftliche Apparate und Instrumente, Forschungsapparate und -instrumente, Navigationsapparate und -instrumente, Vermessungsapparate und -instrumente, Audiovisuelle Apparate und Instrumente, Wägeapparate und -instrumente, Messapparate und -instrumente, Signalapparate und -instrumente, Detektionsapparate und -instrumente, Testapparate und -instrumente, Kontrollapparate und -instrumente, Lebensrettende Apparate und Instrumente und Lehr- und Unterrichtsgeräte und -instrumente; Apparate und Instrumente zum Leiten, Schalten, Umwandeln, Speichern, Regeln und Kontrollieren der Verteilung oder des Verbrauchs von Elektrizität; Apparate und Instrumente für die Aufzeichnung, Übertragung, Wiedergabe oder Bearbeitung von Klängen, Bildern oder Daten; Taucheranzüge; Tauchermasken; Ohrtampons für Taucher; Nasenklemmen für Schwimmer; Taucherhandschuhe; Atemgeräte zum Tauchen; Feuerlöscher; Smart-Ringe; Kompasse; Kopfschutz; Hüllen für Smartphones; Smartphones in Form von Armbanduhren; PDA-Computer [Personal Digital Assistants] in Form von Armbanduhren; Zeitmessinstrumente und -apparate [ausgenommen Uhren]; Tragbare Kommunikationsgeräte in Form von Armbanduhren; CDs, DVDs und andere digitale Aufzeichnungsträger; Software; Laptops [Computer]; Laptops; Handhelds; Mobil-Computer; PCs; Wearables [Computer]; An Computer angepasste Peripheriegeräte; Smartwatches; Fitness-Armbänder [Messinstrumente]; MP3-Abspielgeräte; Fernsprechapparate; Mobiltelefone; Smartphones; Kommunikations- und Telekommunikationsapparate; Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Ton und Bild; Batterien; Sonnenbatterien; Wiederaufladbare Batteriezellen; Elektrische Batterien; Brennstoffzellen; Durch Non-Fungible-Tokens [NFTs] authentifizierte herunterladbare digitale Bilddateien.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "de",
+      "description": "Fahrzeuge und Beförderungsmittel; Apparate zur Beförderung auf dem Lande, Apparate zur Beförderung in der Luft, Apparate zur Beförderung im Weltraum und Apparate zur Beförderung auf dem Wasser; Teile und Bestandteile für Land-, Wasser-, Luft- und Raumfahrzeuge; Rover (Astromobile); Raumfahrzeuge; Wasserfahrzeuge; Luftfahrzeuge; Apparate, Maschinen und Geräte für die Luftfahrt; Drohnen; Kameradrohnen; Militärische Drohnen und Zivile Drohnen; Ferngesteuerte Flugkörper; Ferngesteuerte Fahrzeuge [ausgenommen Spielzeuge]; Autonome Fahrzeuge; Unbemannte Überwachungsfahrzeuge; Trägerraketen für Satelliten; Unterseefahrzeuge; Unbemannte Fahrzeuge; Geländefahrzeuge; Diebstahlalarmanlagen- und -geräte für Fahrzeuge.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Wissenschaftlich-technologische Dienstleistungen; Designdienstleistungen; industrielle Analyse-, Forschungs- und Designdienstleistungen; Qualitätsprüfungsdienstleistungen und Echtheitsbeglaubigung; Styling [industrielles Design]; Forschungs- und Entwicklungsdienste; Online-Datenspeicherung; Produktforschung, -planung und -entwicklung; Technisches Zeichnen; Industriedesign; Grafikdesigndienste mittels Computer; Kartierungsdienstleistungen; Dienstleistungen von Ingenieuren; Speicherung und Hosting von Daten; Technologieberatung; Bereitstellung von Informationen zu technologischer Forschung; Bereitstellung wissenschaftlicher Informationen auf dem Gebiet des Klimawandels und der globalen Erwärmung; Dienstleistungen eines Innenarchitekten; Architektur- und Stadtplanungsdienstleistungen; Kostümdesign und Design von Showkulissen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Znanstveni aparati i instrumenti, Aparati i instrumenti za istrazivanja, Navigacijski uredaji i instrumenti, Geodetski uredaji i instrumenti, Audiovizualni aparati i instrumenti, Uredaji i instrumenti za vaganje, Mjerni aparati i instrumenti, Signalni aparati i instrumenti, Aparati i instrumenti za otkrivanje, Aparati i instrumenti za ispitivanje, Aparati i instrumenti za inspekciju, Uredaji i instrumenti za spasavanje i Uredaji i instrumenti za nastavu i poduku; Aparati i instrumenti za vodenje, distribuciju, pretvorbu, akumulaciju, reguliranje ili upravljanje distribucijom ili potrosnjom elektricne energije; Uredaji i instrumenti za snimanje, prijenos, reprodukciju ili obradu zvukova, slika i podataka; Ronilacka odijela; Ronilacke maske; Ronilacki tamponi za usi; Stipaljke za nos za ronioce i plivace; Rukavice za ronioce; Uredaji za podvodno disanje; Vatrogasni aparati; Pametni prsteni; Kompasi [mjerni instrumenti]; Zastitna oprema za glavu; Navlake za pametne telefone; Pametni telefoni u obliku rucnog sata; Osobni digitalni pomocnici u obliku rucnog sata; Instrumenti za mjerenje vremena (ne ukljucujuci zidne i rucne satove); Nosivi komunikacijski uredaji u obliku rucnih satova; CD-ovi, DVD-ovi i drugi digitalni mediji za snimanje; Softver; Racunala; Racunala, dzepna; Dlanovnici; Mobilna racunala; Osobna racunala; Nosiva racunala; Periferni uredaji prilagodeni za uporabu s racunalima; Pametni rucni satovi; Pametne narukvice [mjerni instrumenti]; MP3 plejeri [citaci]; Telefoni; Mobiteli; Pametni telefoni; Komunikacijski i telekomunikacijski uredaji; Aparati za snimanje, prijenos ili reprodukciju zvuka ili slike; Baterije; Solarne baterije; Punjivi galvanski elementi; Elektricne baterije; Gorive celije; Digitalne slikovne datoteke koje se mogu preuzimati i cija je autenticnost potvrdena nezamjenjivim tokenima [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "hr",
+      "description": "Vozila i prijevozna sredstva; Uredaji za kopneno kretanje, Uredaji za kretanje zrakom, Uredaji za kretanje u svemiru i Uredaj za kretanje po vodi; Dijelovi i sastavni dijelovi kopnenih, zracnih, pomorskih i svemirskih vozila; Automobila; Svemirske letjelice; Vodena vozila; Zracna vozila; Aparati, strojevi i uredaji za zrakoplovstvo; Dronovi; Bespilotne letjelice za kamere; Vojni dronovi i Civilni dronovi; Daljinski upravljani leteci objekti; Vozila na daljinsko upravljanje [osim igracka]; Autonomna vozila; Nadzorna bespilotna vozila; Lansirna vozila za satelite; Podvodna vozila; Vozila bez posade; Terenska vozila; Alarmi i uredaji protiv krade za vozila.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Znanstvene tehnoloske usluge; Usluge dizajna; Usluge industrijske analize, industrijskih istrazivanja i industrijskog dizajna; Usluge kontrole kvalitete i provjere autenticnosti; Industrijska estetika; Usluge istrazivanja i razvoja; Pohranjivanje podataka na mrezi; Istrazivanje, projektiranje i razvoj proizvoda; Tehnicko crtanje; Industrijski dizajn; Usluge grafickog dizajna na racunalu; Usluge kartiranja; Inzenjerske usluge; Elektronicka pohrana i udomljavanje podataka; Tehnoloske savjetodavne usluge; Pruzanje informacija o tehnoloskom istrazivanju; Pruzanje znanstvenih informacija u podrucju klimatskih promjena i globalnog zagrijavanja; Dizajn interijera; Usluge arhitektonskog i urbanisticko planiranja; Dizajn kostima i Dizajniranje scenografije emisija.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Tudományos készülékek és berendezések, Kutatókészülékek és -eszközök, Navigációs berendezések és muszerek, Földméro berendezések és eszközök, Audiovizuális berendezések és készülékek, Súlyméro készülékek és eszközök, Méroeszközök- és berendezések, Jelzo berendezések és készülékek, Érzékelo berendezések és eszközök, Tesztelo készülékek és muszerek, Ellenorzo berendezések és eszközök, Életmento felszerelések és eszközök és Oktató és tanító készülékek és eszközök; Elektromos áram vezetésére, elosztására, átalakítására, tárolására, szabályozására vagy elosztásának vagy felhasználásának vezérlésére szolgáló készülékek és eszközök; Hang, kép vagy adatok rögzítésére, átvitelére, visszajátszására vagy feldolgozására szolgáló készülékek és eszközök; Búvárruhák; Búvármaszkok, búvárálarcok; Füldugók búvároknak; Orrcsipeszek muugrók és úszók részére; Búvárkesztyuk; Légzokészülékek víz alatti úszáshoz; Tuzoltókészülék; Okosgyuruk; Iránytuk, tájolók, kompaszok [méromuszerek]; Fejvédo eszközök; Tokok okostelefonokhoz; Okostelefonok karóra formájában; Személyes digitális asszisztensek karóra formájában; Idoméro berendezések (órák és karórák kivételével); Hordható kommunikációs eszközök karórák formájában; CD-k (kompakt lemezek), DVD-k és egyéb, digitális rögzítésu média; Szoftverek; Számítógépek; Laptop számítógépek; Tenyérszámítógépek; Hordozható számítógépek; Személyi számítógépek; Viselheto számítógépek; Számítógéphez kialakított perifériák; Okoskarórák; Csatlakozott karkötok [méromuszerek]; MP3 lejátszók; Telefonok; Mobiltelefonok; Okostelefonok; Kommunikációs és távközlési készülékek; Hangok vagy képek rögzítésére, továbbítására, másolására szolgáló készülékek; Elemek; Napelemek, szolár akkumulátorok; Feltöltheto, utántöltheto cellák; Elektromos elemek, akkumulátorok; Tüzeloanyag cellák; Nem helyettesítheto tokenekkel (NFT-k) hitelesített letöltheto képfájlok.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "hu",
+      "description": "Jármuvek és szállítóeszközök; Eszközök szárazföldön történo helyváltoztatáshoz, Eszközök levegoben történo helyváltoztatáshoz, Urbéli helyváltoztató eszközök és Eszközök vízen történo helyváltoztatáshoz; Szárazföldi, tengeri, légi és urjármuvek alkatrészei és tartozékai; Asztromobilok; Urjármuvek; Vízijármuvek; Légi jármuvek; Légi készülékek, gépek és berendezések; Távirányítású kisrepülogépek; Kamerás drónok; Katonai célú drónok és Civil drónok; Távvezérelt repülo tárgyak; Távirányítós jármuvek, nem játékszerek; Önvezeto jármuvek; Pilóta nélküli felderíto jármuvek; Kilövo jármuvek muholdakhoz; Víz alatti jármuvek; Személyzet nélküli jármuvek; Terepjáró jármuvek; Lopásgátló riasztók és eszközök jármuvekhez.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Tudományos technológiai szolgáltatások; Tervezési szolgáltatások; Ipari elemzési, ipari kutatási és ipari formatervezési szolgáltatások; Minoségellenorzési szolgáltatások és hitelesítés; Stíldíszítés [ipari formatervezés]; Kutatás és fejlesztés [szolgáltatások]; Online adattárolás; Termékkutatás, -tervezés és -fejlesztés; Muszaki rajz; Ipari formatervezés; Számítógépes grafikai tervezési szolgáltatások; Térképészeti szolgáltatások; Mérnöki munkák, szolgáltatások; Adatok elektronikus tárolása és hosztolása; Technológiai szaktanácsadás; Technológiai kutatáshoz kapcsolódó tájékoztatás; Tudományos információk biztosítása az éghajlatváltozással és a globális felmelegedéssel kapcsolatban; Beltéri dekoráció tervezése; Építészeti és várostervezési szolgáltatások; Jelmeztervezés és Díszlet-, látványtervezés eloadásokhoz.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchi e strumenti scientifici, Apparecchi e strumenti di ricerca, Apparecchi e strumenti di navigazione, Apparecchi e strumenti geodesici, Apparecchi e strumenti audiovisivi, Apparecchi e strumenti di pesatura, Apparecchi e strumenti di misura, Apparecchi e strumenti di segnalazione, Apparecchi e strumenti di rilevamento, Apparecchi e strumenti di prova, Apparecchi e strumenti di ispezione, Apparecchi e sistemi di salvataggio e Apparecchiature e strumenti per istruzione e insegnamento; Apparecchi e strumenti per conduzione, distribuzione, trasformazione, accumulazione, regolazione o controllo della distribuzione o del consumo dell'elettricità; apparecchi e strumenti per registrare, trasmettere, riprodurre o elaborare suoni, immagini o dati; Scafandri; Maschere per immersione; Tappi per le orecchie per subacquei; Stringinaso per nuotatori; Guanti per subacquei; Apparecchi respiratori per il nuoto subacqueo; Estintori; Anelli intelligenti; Bussole; Protezioni per la testa; Custodie per smartphone; Smartphone in forma d'orologio da polso o da tasca; Assistenti personali digitali sotto forma di orologio; Stumenti per misurare il tempo (escluso gli orologi da tavolo e da polso); Dispositivi di comunicazione indossabili sotto forma di orologi da polso; Compact disk, DVD e altri supporti di registrazione digitale; Software; Elaboratori elettronici; Computer portatili; Palmari; Computer portatili; Personal computer; Computer indossabili; Periferiche concepite per essere utilizzate con i computer; Orologi intelligenti [smartwatch]; Braccialetti collegati [strumenti di misura]; Lettori MP3; Apparecchi telefonici; Telefoni cellulari; Smartphone; Apparecchi di comunicazione e telecomunicazione; Apparecchi per la registrazione, la trasmissione, la riproduzione del suono o delle immagini; Batterie; Pile solari; Celle ricaricabili; Batterie elettriche; Pile a combustibile; File d'immagini digitali scaricabili autenticati da non fungible token [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "it",
+      "description": "Veicoli e mezzi di trasporto; Apparecchi di locomozione terrestri, Apparecchi di locomozione aerei, Apparecchi di locomozione spaziale e Apparecchi di locomozione nautici; Parti e accessori costitutivi per veicoli terrestri, nautici, aerei e spaziali; Astromobili; Veicoli spaziali; Veicoli acquatici; Aeronavi; Apparecchi, macchine e dispositivi per l'aeronautica; Aeromobili senza pilota; Droni con macchina fotografica; Droni militari e Droni civili; Oggetti volanti telecomandati; Veicoli telecomandati [tranne i giocattoli]; Veicoli autonomi; Veicoli di rilevamento senza pilota; Veicoli lanciatori di satelliti; Veicoli subacquei; Veicoli senza equipaggio; Veicoli adatti ad ogni terreno; Allarmi e dispositivi antifurto per veicoli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi di scienza e tecnologia; Servizi di progettazione; Servizi di analisi industriale, di ricerca industriale e di disegno industriale; Servizi di controllo qualità e di autenticazione; Stilismo [industrial design]; Servizi di ricerca e sviluppo; Archiviazione dati online; Ricerca, pianificazione e sviluppo in materia di prodotti; Servizi di disegno tecnico; Servizi di disegni industriali; Computer grafica; Servizi di cartografia; Servizi di ingegneria; Stoccaggio e archiviazione elettronica di dati; Servizi di consulenza tecnologica; Informazioni in materia di ricerca tecnologica; Fornitura di informazioni scientifiche in materia di cambiamento climatico e di riscaldamento globale; Decorazione interna; Servizi di pianificazione architettonica ed urbana; Creazione di costumi e Ideazione di scenografie da spettacolo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Moksliniai aparatai ir instrumentai, Moksliniu tyrimu aparatai ir instrumentai, Navigaciniai aparatai ir instrumentai, Geodezijos aparatai ir prietaisai, Audiovizualiniai aparatai ir prietaisai, Sverimo aparatai ir prietaisai, Matavimo aparatai ir instrumentai, Signaliniai aparatai ir instrumentai, Aptikimo aparatai ir prietaisai, Bandymo aparatai ir instrumentai, Tikrinimo aparatai ir prietaisai, Gelbejimo aparatai ir prietaisai ir Instrukciniai ir mokymo aparatai bei prietaisai; Aparatai ir prietaisai, skirti elektros energijai praleisti, perjungti, transformuoti, akumuliuoti, reguliuoti ar valdyti; Garso, vaizdu ar duomenu irasymo, perdavimo, atkurimo ar apdorojimo aparatai ir prietaisai; Naru kostiumai; Naru kaukes; Naru ausu kamstukai; Naru ir plaukiku nosies spaustukai; Naru pirstines; Povandeninio plaukiojimo kvepavimo aparatai; Gesintuvai; Ismanieji ziedai; Krypties kompasai; Galvos apsaugos; Ismaniuju telefonu dangteliai; Laikrodzio formos ismanieji telefonai; Laikrodzio formos delninukai; Laiko matavimo prietaisai (isskyrus laikrodzius); Rankiniu laikrodziu formos nesiojamieji komunikacijos prietaisai; Kompaktiniai diskai, universalieji skaitmeniniai (DVD) diskai ir kitos skaitmenines irasu laikmenos; Programine iranga; Kompiuteriai; Skreitiniai kompiuteriai; Kiseniniai kompiuteriai; Portatyviniai kompiuteriai; Asmeniniai kompiuteriai; Devimieji kompiuteriai; Kompiuteriu isoriniai irenginiai; Ismanieji laikrodziai; Ismaniosios apyrankes [matavimo prietaisai]; MP3 grotuvai; Telefono aparatai; Mobilieji telefonai; Ismanieji telefonai; Rysio ir telekomunikaciju aparatai; Garso ar vaizdo irasymo, perdavimo ar atkurimo aparatura; Baterijos; Saules baterijos; Ikraunami elementai; Elektrines baterijos; Kuro elementai; Parsisiunciamieji skaitmeniniai vaizdo failai, patvirtinti nepakeiciamaisiais zetonais [NFTs].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "lt",
+      "description": "Transporto priemones ir vezimeliai; Aparatai, skirti judeti sausuma, Aparatai, skirti judeti oru, Erdves judejimo aparatai ir Aparatai, skirti judeti vandeniu; Sausumos, juros, oro ir erdves transporto priemoniu dalys ir priedai; Astromobiliai; Erdvelaiviai; Vandens transporto priemones; Orlaiviai; Aeronautikos aparatai, masinos ir irenginiai; Radijo bangomis valdomi lektuvai; Fotografuojantys bepilociai orlaiviai; Kariniai bepilociai orlaiviai ir Civiliniai bepilociai orlaiviai; Nuotoliniu budu valdomi skraidantys objektai; Nuotolinio valdymo transporto priemones [ne zaislai]; Autonomines transporto priemones; Nepilotuojamosios apzvalgines transporto priemones; Palydovu paleidimo transporto priemones; Povandenines transporto priemones; Nevairuojamosios transporto priemones; Visureigiai; Transporto priemoniu signalizacija ir apsaugines priemones nuo vagysciu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Mokslo technologiju paslaugos; Dizaino paslaugos; Pramonines analizes, pramoniniu tyrimu ir pramoninio dizaino paslaugos; Kokybes kontroles ir autentiskumo patvirtinimo paslaugos; Eskizu darymas [pramoninis dizainas]; Moksliniu tyrimu ir pletros paslaugos; Internetiniu duomenu saugojimas; Produktu tyrimas, projektavimas ir tobulinimas; Techniniu breziniu rengimo paslaugos; Pramoninis konstravimas; Kompiuteriu grafinio dizaino paslaugos; Zemelapiu sudarymo paslaugos; Inzinerijos paslaugos; Elektroniniu duomenu saugojimas ir pregloba; Technologines konsultacijos; Informacijos, susijusios su technologiju tyrimais, teikimas; Mokslines informacijos apie klimato kaita ir visuotini atsilima teikimas; Interjero dekoravimas; Architekturos ir miestu planavimo paslaugos; Kostiumu dizainas ir Scenovaizdzio kurimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Zinatniski aparati un instrumenti, Petnieciskie aparati, ierices un instrumenti, Navigacijas aparati, ierices un instrumenti, Geodezijas aparatura un instrumenti, Audiovizualie aparati un instrumenti, Sversanas iekartas un instrumenti, Merisanas ierices un instrumenti, Signalizacijas aparatura un instrumenti, Indikativie aparati, ierices un instrumenti, Testesanas iekartas un instrumenti, Parbaudes (kontroles) aparati, ierices un instrumenti, Dzivibas glabsanas iekartas un instrumenti un Macibu un apmacibu aparati un instrumenti; Ierices un instrumenti elektribas vadisanai, elektroapgadei, elektribas parveidosanai, elektribas uzkrasanai, elektroapgades vai elektribas paterina regulesanai vai kontrolei; Ierices un instrumenti skanas, attelu vai datu ierakstisanai, parraidisanai, reproducesanai vai apstradei; Nireju un udenslideju terpi; Nireju un udenslideju maskas; Ausu aizbazni nirejiem un udenslidejiem; Deguna klipsi nirejiem un peldetajiem; Nireju un udenslideju cimdi; Elposanas aparati zemudens peldesanai; Ugunsdzesamie aparati; Viedgredzeni; Busoles; Aizsargkiveres; Viedtalrunu vacini; Viedtalruni rokas pulkstenu veida; Personalie digitalie asistenti pulkstenu forma; Laika merinstrumenti (iznemot pulkstenus); Nesajamas komunikacijas ierices rokas pulkstenu veida; Kompaktdiski, DVD diski un citi digitalie datu neseji; Programmatura; Datori; Klepjdatori; Rokas datori; Mobilie datori; Personalie datori; Valkajami datori; Datoru periferijas ierices; Viedie rokas pulksteni; Viedierices aproces forma (merinstrumenti), ko savieno ar citam iericem; MP3 failu atskanotaji; Telefona aparati; Mobilie telefoni; Viedtalruni; Sakaru un telekomunikaciju iekarta; Aparati skanas vai attelu ierakstam, parraidei vai reproducesanai; Akumulatoru baterijas; Saules baterijas; Uzladejamas sunas; Elektrisko akumulatoru baterijas; Kurinama elementi; Lejupieladejami digitalo attelu faili, kas autentificejami ar neaizstajamiem blokkezu zetoniem (NFT).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "lv",
+      "description": "Transportlidzekli un parvietosanas lidzekli; Aparati, kas paredzeti, lai parvietotos pa sauszemi, Aparati, kas paredzeti, lai parvietotos pa gaisu, Kosmosa parvietosanas ierices un Aparati, kas paredzeti, lai parvietotos pa udeni; Dalas un detalas sauszemes, kugniecibas, gaisa un kosmosa transportlidzekliem; Astromobili; Kosmosa kugi; Udens transportlidzekli; Gaisakugi; Aeronautikas aparati, iekartas un ierices; Bezpilota lidmasinas; Ar uznemsanas kameram aprikoti droni; Militarie droni un Civilie droni; Talvadami lidojosi objekti; Talvadami transportlidzekli, iznemot rotallietas; Autonomi transportlidzekli; Bezpilota noverosanas transporta lidzekli; Nesejraketes satelitiem; Zemudens transportlidzekli; Bezpilota transportlidzekli; Transportlidzekli-visurgajeji; Pretzaglu un signalizacijas iekartas transportlidzekliem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Zinatniski tehnologiskie pakalpojumi; Dizaina pakalpojumi; Rupnieciskas analizes, rupnieciskas izpetes un rupnieciska dizaina pakalpojumi; Kvalitates kontroles un autentifikacijas pakalpojumi; Stila izstrade (rupnieciskais dizains); Petniecibas un izstrades pakalpojumi; Datu uzglabasana tiessaiste; Produktu izpete, projektesana un izstrade; Tehniska rasesana; Rupnieciska dizaina pakalpojumi; Datorgrafikas dizaina pakalpojumi; Kartesanas pakalpojumi; Inzeniertehniskie pakalpojumi; Datu elektroniska glabasana un mitinasana; Konsultesana tehnologiju joma; Informacijas sniegsana saistiba ar tehnologiskiem petijumiem; Zinatniskas informacijas sniegsana klimata parmainu un globalas sasilsanas joma; Iekstelpu noformejuma veidosana; Arhitekturas un pilsetplanosanas pakalpojumi; Kostimu dizains un Scenografijas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Apparat u strumenti xjentifici, Apparat u strumenti ghar-ricerka, Apparat u strumenti ghan-navigazzjoni, Apparat u strumenti ghal stharrig, Apparat u strumenti awdjovizivi, Apparat u strumenti tal-uzin, Apparat u strumenti ta' kejl, Apparat u strumenti ta' sinjalar, Apparat u strumenti ghad-ditezzjoni, Apparat u strumenti tal-ittestjar, Apparat u strumenti ghall-ispezzjoni, Apparat u strumenti tas-salvatagg tal-hajja u Apparat u strumenti ghall-istruzzjoni u ghat-taghlim; Apparat u strumenti ghat-tmexxija, id-distribuzzjoni, it-trasformazzjoni, l-akkumulazzjoni, ir-regolazzjoni jew il-kontroll tad-distribuzzjoni jew tal-konsum tal-elettriku; Apparat u strumenti ghar-registrazzjoni, it-trazmissjoni, ir-riproduzzjoni jew il-holqien ta' hsejjes, stampi jew data; Hwejjeg tal-ghaddasa; Maskri tal-ghaddasa; Plaggs tal-widnejn ghall-ghaddasa; Klipps tal-imnieher ghal ghaddasa u ghawwiema; Ingwanti ghall-ghaddasa; Apparat tan-nifs ghall-ghawm taht l-ilma; Apparat tat-tifi tan-nar bil-fowm; Crieket smart; Kumpassi (strumenti tal-kejl); Protezzjoni tar-ras; Kavers ghal smartfowns; Smartfowns fil-forma ta' arlogg tal-idejn; Assistenti digitali personali fil-forma ta' arlogg tal-id; Strumenti ghall-kejl tal-hin (li ma jinkludux arloggi); Taghmir ta' komunikazzjonijiet li jintlibsu fil-forma ta' arloggi ta' mal-polz; Disketti kumpatti (compact discs), DVDs u midja ta' registrazzjoni digitali ohra; Softwer; Kompjuters; Kompjuters stil takkwin; Taghmir informatiku li jinzamm fl-idejn; Kompjuters li jistghu jingarru; Kompjuters personali; Kompjuters li jintlibsu; Periferali addattati ghall-uzu mal-kompjuters; Arloggi tal-idejn tat-tip smart; Cineg konnessi flimkien [strumenti tal-kejl]; Taghmir li jhaddem l-MP3; Telefoni; Mowbajls; Smartphones; Apparat tal-komunikazzjoni u tat-telekomunikazzjoni; Apparat biex tirrekordja, ghat-trasmissjoni u riproduzzjoni ta' hsejjes u stampi; Batteriji; Batteriji solari; Celloli li jistghu jergghu jigu ccargjati; Batteriji tal-elettriku; Celloli li jipproducu kurrent elettriku minn reazzjoni kimika; Fajls ta' stampi digitali li jitnizzlu awtentikati minn tokens mhux fungibbli [NFTs].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "mt",
+      "description": "Vetturi u vetturi ghall-garr; Apparat ghal-lokomozzjoni fl-art, Apparat ghal-lokomozzjoni fl-arja, Apparat tal-lokomozzjoni spazjali u Apparat ghal-lokomozzjoni fuq l-ilma; Partijiet u komponenti tal-vetturi tal-art, tal-bahar, tal-ajru u spazjali; Vetturi spazjali; Vetturi spazjali; Vetturi tal-ilma; Vetturi tal-arja; Apparat, magni u taghmir ghall-ajrunawtika; Drones; Drones bil-kameras; Drones militari u Drones civili; Oggetti li jtiru kkontrollati mill-boghod; Vetturi bil-kontroll mill-boghod, minbarra gugarelli; Vetturi awtonomi; Vetturi ta' studju minghajr pilota; Vetturi tal-illancjar ghas-satelliti; Vetturi ta' taht il-bahar; Vetturi bla ekwipagg; Vetturi tajbin ghal kull xorta ta' terren; Allarmi u taghmir ghal kontra s-serq ghall-vetturi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi teknologici xjentifici; Servizzi tal-Iddisinjar; Servizzi ta' analizi industrijali, ricerka industrijali u disinn industrijali; Servizzi ta' kontroll tal-kwalità u awtentikazzjoni; Il-mod kif haga hi msawra (disinn industrijali); Servizzi ta' ricerka u zvilupp; Hzin ta' data online; Ricerka, disinn u zvilupp ta' prodotti; Tpingija teknika; Disinn u pjanar industrijali; Servizzi ta' disinji grafici bil-kompjuter; Servizzi ta' xoghol ta' mapep; Servizzi ta' Inginerija; Hzin u hosting elettroniku ta' dejta; Konsulenza teknologika; Provvista ta' informazzjoni relatata mar-ricerka teknologika; Ghoti ta' informazzjoni xjentifika fl-oqsma tat-tibdil fil-klima u t-tishin globali; Disinn ta' tizjin ta' gewwa; Servizzi ta' ppjanar ta' arkitettura u urbani; Disinn ta' kostumi u Disinn ta' xenarju ta' spettakli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Urzadzenia i przyrzady naukowe, Urzadzenia i przyrzady badawcze, Urzadzenia i przyrzady nawigacyjne, Urzadzenia i przyrzady geodezyjne, Aparatura i instrumenty audiowizualne, Urzadzenia i przyrzady do wazenia, Urzadzenia i instrumenty pomiarowe, Urzadzenia i instrumenty sygnalizacyjne, Urzadzenia i przyrzady do wykrywania, Urzadzenia i przyrzady testowe, Urzadzenia i przyrzady do kontroli, Urzadzenia i przyrzady do ratownictwa i Urzadzenia i przyrzady szkoleniowe i dydaktyczne; Urzadzenia i przyrzady do przewodzenia, przelaczania, przeksztalcania, gromadzenia, regulacji energii elektrycznej lub sterowania przelaczaniem lub zuzyciem energii elektrycznej; Urzadzenia i przyrzady do nagrywania, przesylania, odtwarzania lub przetwarzania dzwieków, obrazów lub danych; Skafandry dla nurków; Maski do nurkowania; Zatyczki do uszu do nurkowania; Zaciski do nosa dla nurków i plywaków; Rekawice dla nurków; Aparaty tlenowe do plywania podwodnego; Gasnice; Inteligentne pierscionki; Kompasy nawigacyjne; Oslony glowy; Pokrowce na smartfony; Smartfony w ksztalcie zegarka; Komputery kieszonkowe w postaci zegarka; Przyrzady do pomiaru czasu (z wylaczeniem zegarów i zegarków); Urzadzenia komunikacyjne do noszenia w postaci zegarków na reke; Plyty kompaktowe, DVD i inne cyfrowe nosniki do nagrywania danych; Oprogramowanie; Komputery; Laptopy; Urzadzenia typu Hand-Held; Komputery przenosne; Komputery osobiste; Komputery do noszenia na ciele lub w ubraniach; Sprzet peryferyjny do komputerów; Zegarki inteligentne; Inteligentne bransoletki (przyrzady pomiarowe); Odtwarzacze MP3; Telefony; Telefony komórkowe; Smartfony; Urzadzenia komunikacyjne i telekomunikacyjne; Urzadzenia do nagrywania, transmisji lub reprodukcji dzwieku lub obrazu; Baterie; Baterie sloneczne; Akumulatorki do powtórnego naladowania; Baterie, elektryczne; Ogniwa paliwowe; Cyfrowe pliki graficzne do pobrania uwierzytelnione za pomoca tokenów niezbywalnych [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "pl",
+      "description": "Pojazdy i srodki transportu; Urzadzenia do poruszania sie po ladzie, Urzadzenia do poruszania sie w powietrzu, Urzadzenia do transportu kosmicznego i Urzadzenia do poruszania sie po wodzie; Czesci i akcesoria do pojazdów ladowych, zeglarskich, powietrznych i kosmicznych; Laziki; Statki kosmiczne; Pojazdy do poruszania sie po wodzie; Pojazdy lotnicze; Aparaty, maszyny i urzadzenia aeronautyczne; Samoloty; Drony wyposazone w kamere; Drony wojskowe i Drony cywilne; Zdalnie sterowane obiekty latajace; Pojazdy zdalnie sterowane, inne niz zabawki; Pojazdy autonomiczne; Bezzalogowe pojazdy badawcze; Rakiety nosne dla satelitów; Podwodne pojazdy; Pojazdy bezzalogowe; Samochody terenowe; Oraz autoalarmy i urzadzenia przeciwwlamaniowe do pojazdów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi naukowo-technologiczne; Uslugi projektowania; Uslugi w zakresie analizy przemyslowej, badan przemyslowych i projektowania przemyslowego; Uslugi kontroli jakosci i poswiadczenia autentycznosci; Stylizacja [wzornictwo przemyslowe]; Uslugi badawczo-rozwojowe; Przechowywanie danych online; Badania produktu, projektowanie i rozwój; Uslugi w zakresie rysunku technicznego; Wzornictwo przemyslowe; Uslugi projektowania grafiki komputerowej; Uslugi kartograficzne; Uslugi inzynieryjne; Elektroniczne przechowywanie i hosting danych; Uslugi doradcze w dziedzinie technologii; Udzielanie informacji zwiazanych z badaniami technologicznymi; Dostarczanie informacji naukowych w dziedzinie zmiany klimatu i globalnego ocieplenia; Projektowanie dekoracji wnetrz; Uslugi architektoniczne i planowania urbanistycznego; Projektowanie kostiumów i Projektowanie scenografii przedstawien.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Instrumentos e aparelhos científicos, Aparelhos e instrumentos para investigação, Aparelhos e instrumentos de navegação, Aparelhos e instrumentos geodésicos, Aparelhos e instrumentos audiovisuais, Aparelhos e instrumentos de pesagem, Instrumentos e aparelhos de medição, Instrumentos e aparelhos de sinalização, Aparelhos e instrumentos de deteção, Aparelhos e instrumentos de ensaio, Aparelhos e instrumentos de inspeção, Instrumentos e aparelhos de salvamento e Aparelhos e instrumentos de ensino e instrução; Aparelhos e instrumentos para a condução, distribuição, transformação, acumulação, regulação ou controlo da distribuição ou do consumo de eletricidade; Aparelhos e instrumentos para o registo, a transmissão, a reprodução ou o processamento de sons, imagens ou dados; Fatos de mergulhador; Máscaras de mergulho; Tampões de ouvidos para o mergulho; Clipes nasais para mergulho e natação; Luvas para mergulho; Aparelhos de respiração para a natação subaquática; Extintores; Anéis inteligentes; Bússolas; Proteções para a cabeça; Coberturas para smartphones; Telefones inteligentes sob a forma de relógios de pulso; Assistentes digitais pessoais sob a forma de relógios de pulso; Instrumentos de medição de tempo (não incluindo relógios e de artigos de relojoaria); Dispositivos de comunicações portáteis sob a forma de relógios de pulso; CDs, DVDs e outros meios de registo digital; Software; Computadores; Computadores portáteis [laptops]; Computadores de bolso; Computadores móveis; Computadores pessoais; Malas para computadores portáteis; Periféricos adaptados para uso com computadores; Relógios inteligentes; Pulseiras conectáveis [instrumentos de medida]; Reprodutores de MP3; Aparelhos telefónicos; Telefones celulares; Telefones inteligentes; Aparelhos de comunicação e de telecomunicação; Aparelhos para o registo, a transmissão, a reprodução do som ou de imagens; Baterias; Pilhas solares; Células recarregáveis; Baterias elétricas; Pilhas de combustível; Ficheiros de imagem digitais descarregáveis autenticados com \"tokens\" não fungíveis [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "pt",
+      "description": "Veículos e meios de transporte; Aparelhos para locomoção por terra, Aparelhos para locomoção aérea, Aparelhos de locomoção espaciais e Aparelhos para locomoção aquática; Peças e componentes de veículos terrestres, náuticos, aéreos e espaciais; Astromóveis; Veículos espaciais; Veículos aquáticos; Aeronaves; Aparelhos, máquinas e dispositivos para a aeronáutica; Aviões de controlo remoto; Drones com câmaras; Drones militares e Drones civis; Objetos voadores de controlo remoto; Veículos telecomandados, que não brinquedos; Veículos autónomos; Veículos de prospeção sem piloto; Veículos para o lançamento de satélites; Veículos subaquáticos; Veículos não tripulados; Veículos todo-o-terreno; Alarmes e dispositivos anti-roubo para veículos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços científicos e tecnológicos; Serviços de design; Serviços de análises industriais, de pesquisas industriais e de desenho industrial; Serviços de controlo de qualidade e de autenticação; Estilismo; Serviços de investigação e desenvolvimento; Armazenamento de dados on-line; Investigação, concessão e desenvolvimento de produtos; Desenho técnico; Design industrial; Serviços de conceção de gráficos informáticos; Serviços de mapeamento; Serviços de engenharia; Armazenamento e alojamento eletrónico de dados; Consultoria em tecnologia; Fornecimento de informações relacionadas com a investigação tecnológica; Informação científica nos domínios das alterações climáticas e do aquecimento global; Design de decoração de interiores; Serviços de planeamento arquitetónico e urbano; Design de trajes de fantasia e Conceção de cenários de espetáculos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aparate si instrumente utilizate în domeniul stiintei, Aparate si instrumente de cercetare, Aparate si instrumente de navigatie, Aparate si instrumente topografice, Aparate si instrumente audiovizuale, Cântarit (Aparate si instrumente de -), Instrumente si aparate de masurat, Aparate si instrumente de semnalizare, Aparate si instrumente de detectare, Aparate si instrumente de încercare, Aparate si instrumente de inspectie, Echipamente si instrumente de salvare si Aparate si instrumente pentru predare si instruire; Aparate si instrumente pentru conducerea, distributia, transformarea, acumularea, reglarea sau comanda distributiei sau consumului de electricitate; Aparate si instrumente pentru înregistrarea, transmiterea, reproducerea sau elaborarea de sunete, imagini sau date; Costume de scafandru; Masti pentru scafandri; Tampoane de urechi pentru scafandri; Cleme nazale pentru scafandri si înotatori; Manusi de scafandru; Aparate de respirat sub apa pentru înot subacvatic; Extinctoare; Inele inteligente; Compasuri [instrumente de masura]; Protectia capului; Huse pentru telefoane inteligente; Telefoane inteligente sub forma de ceas de mâna; Asistenti digitali personali sub forma unui ceas de mâna; Instrumente pentru masurarea timpului (exceptând ceasuri si ceasornice); Dispozitive de comunicatii portabile, sub forma de ceasuri de mâna; Discuri compacte, DVD-uri si alte suporturi digitale de înregistrare; Software; Computere; Laptopuri; Palmtop-uri; Calculatoare mobile; Calculatoare personale; Calculatoare portabile; Periferice adaptate pentru a fi folosite la calculatoare; Ceasuri inteligente; Bratari conectate [instrumente de masura]; MP3-playere; Telefoane; Telefoane mobile; Telefoane inteligente; Aparate de comunicatii si telecomunicatii; Aparate pentru înregistrarea, transmiterea, reproducerea sunetului sau imaginilor; Baterii; Baterii solare; Celule reîncarcabile; Baterii galvanice; Pile de combustie; Fisiere de imagini digitale descarcabile autentificate prin jetoane nefungibile (NFT-uri).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "ro",
+      "description": "Vehicule si mijloace de transport; Echipamente pentru locomotie terestra, Echipamente pentru locomotie aeriana, Aparatele de locomotie spatiale si Mijloace de locomotie pe apa; Piese si parti constitutive de vehicule terestre, nautice, aeriene si spatiale; Astromobile; Vehicule spatiale; Vehicule acvatice; Aparate de zbor; Aeronautica (Aparate, masini si dispozitive pentru -); Avioane teleghidate; Drone cu camera; Drone militare si Drone civile; Obiecte zburatoare controlate la distanta; Vehicule cu telecomanda, altele decât cele de jucarie; Vehicule autonome; Vehicule geodezice fara pilot; Vehicule de lansare pentru sateliti; Vehicule submarine; Vehicule fara pilot; Vehicule pentru orice tip de teren; Alarme si dispozitive antifurt pentru vehicule.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii tehnologice stiintifice; Servicii de proiectare; Servicii de analiza industriala, cercetare industriala si proiectare industriala; Servicii de control al calitatii si certificare de autenticitate; Stilism [design industrial]; Servicii de cercetare si dezvoltare; Stocare de date online; Inspectarea, proiectarea si dezvoltarea produselor; Realizarea de desene tehnice; Design industrial; Servicii de design grafic pentru calculator; Servicii de cartografiere; Inginerie; Stocare si gazduire electronica de date; Consultanta tehnologica; Furnizare de informatii despre cercetarea tehnologica; Furnizare de informatii stiintifice în domeniul schimbarilor climatice si al încalzirii globale; Decoratiuni interioare; Servicii de planificare arhitecturala si urbana; Design de costume si Proiectare de scenografie de spectacol.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Vedecké zariadenia a nástroje, Výskumné zariadenia a prístroje, Navigacné prístroje a nástroje, Geodetické prístroje a nástroje, Audio-vizuálne prístroje a nástroje, Prístroje a nástroje na vázenie, Zariadenia a nástroje na meranie, Signalizacné zariadenia a nástroje, Detekcné zariadenia a prístroje, Skúsobné prístroje a nástroje, Kontrolné zariadenia a prístroje, Zariadenia a prístroje na záchranu zivota a Instruktázne a ucebné zariadenia a nástroje; Prístroje a nástroje na vedenie, distribúciu, transformáciu, akumuláciu, reguláciu alebo kontrolu distribúcie alebo spotreby elektriny; Prístroje a nástroje na nahrávanie, prenos, reprodukciu alebo spracovanie zvuku, obrazu alebo údajov; Potápacské kombinézy; Potápacské masky; Tampóny do usí pre potápacov; Nosové stipce pre plavcov a potápacov; Potápacské rukavice; Dýchacie prístroje na plávanie pod vodou; Hasiace prístroje; Smart prstene; Buzoly; Chránice hlavy; Kryty na smartfóny; Smartfóny v tvare náramkových hodiniek; Vreckové pocítace (PDA) v tvare hodiniek; Prístroje na meranie casu (okrem hodín a hodiniek); Nositelné komunikacné zariadenia v podobe náramkových hodiniek; Kompaktné disky, DVD a ostatné nosice digitálnych nahrávok; Softvér; Pocítace; Prenosné pocítace; Hand-helds; Mobilné pocítace; Osobné pocítace; Pocítace na nosenie na tele alebo na odeve; Periférne zariadenia pocítacov; Inteligentné hodinky; Inteligentné náramky (meracie prístroje); MP3 prehrávace; Telefónne prístroje; Mobilné telefóny; Smartfóny; Komunikacné a telekomunikacné zariadenia; Prístroje na nahrávanie, prenos alebo reprodukciu zvuku alebo obrazu; Batérie; Solárne clánky; Dobíjatelné clánky; Elektrické batérie (clánky); Palivové clánky; Stahovatelné digitálne obrazové súbory overené nezamenitelnými tokenmi (NFT).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sk",
+      "description": "Vozidlá a dopravné prostriedky; Zariadenia na pohyb po zemi, Zariadenia na pohyb vzduchom, Zariadenia na pohyb v kozme a Zariadenia na pohyb po vode; Casti a súcasti pozemných, námorných, leteckých a kozmických dopravných prostriedkov; Astromobily; Kozmické dopravné prostriedky; Vodné dopravné prostriedky; Lietadlá, helikoptéry; Letecké prístroje, stroje a zariadenia; Bezpilotné lietadlá; Drony s kamerou; Vojenské dróny a Civilné dróny; Dialkovo ovládané lietajúce predmety; Vozidlá na dialkové ovládanie (nie hracky); Autonómne vozidlá; Bezpilotné prieskumné vozidlá; Nosné rakety na vypústanie satelitov; Podvodné vozidlá; Vozidlá bez posádky; Vozidlá na vsetky druhy terénu; Poplasné alarmy a zariadenia pre vozidlá.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Vedecké technologické sluzby; Návrhárske sluzby; Priemyselné analýzy, priemyselný výskum a priemyselný dizajn; Sluzby na kontrolu kvality a overenie pravosti; Navrhovanie vzhladu výrobkov (priemyselné dizajnérstvo); Sluzby v oblasti výskumu a vývoja; Online uchovávanie dát; Výskum, navrhovanie a vývoj produktov; Technické rysovanie; Priemyselné dizajnérstvo; Pocítacový grafický dizajn; Mapovacie sluzby; Inzinierske cinnosti; Elektronické ukladanie a hosting údajov; Technologické poradenstvo; Poskytovanie informácií v oblasti technologického výskumu; Poskytovanie vedeckých informácií v oblasti zmeny klímy a globálneho oteplovania; Výzdoba interiérov; Sluzby v oblasti architektúry a urbanizmu [územného plánovania]; Navrhovanie kostýmov a Navrhovanie pódiových dekorácií.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Znanstveni aparati in instrumenti, Aparati in instrumenti za raziskave, Navigacijski aparati in instrumenti, Geodetski aparati in instrumenti, Avdiovizualni aparati in instrumenti, Aparati in instrumenti za tehtanje, Merilni aparati in instrumenti, Signalni aparati in instrumenti, Aparati in instrumenti za odkrivanje, Testni aparati in instrumenti, Inspekcijski aparati in instrumenti, Aparati in instrumenti za resevanje in Aparati in instrumenti za ucenje in poucevanje; Aparati in instrumenti za prevajanje, preklapljanje, transformiranje, akumuliranje, regulacijo ali kontrolo distribucije ali porabe elektricne energije; Aparati in instrumenti za snemanje, prenos, reprodukcijo ali obdelavo zvoka, slik ali podatkov; Potapljaske obleke; Potapljaske maske; Usesni cepki za potapljace; Nosne scipalke za potapljace in plavalce; Rokavice za potapljace; Dihalni aparati za plavanje pod vodo; Gasilni aparati; Pametni prstani; Kompasi [merilni instrumenti]; Proizvodi za zascito glave; Ohisja za pametne telefone; Pametni telefoni v obliki zapestne ure; Osebni digitalni pomocniki v obliki zapestne ure; Instrumenti za merjenje casa (razen ur in zapestnih ur); Nosljive komunikacijske naprave v obliki zapestne ure; CD-ji, DVD-ji in ostali zvocni mediji; Programska oprema; Racunalniki; Notesniki (osebni racunalniki); Rocni racunalniki; Nosljivi racunalniki; Osebni racunalniki; Prenosni racunalniki; Zunanje enote, prilagojene za uporabo z racunalniki; Pametne zapestne ure; Pametne zapestnice [merilni instrumenti]; MP3 predvajalniki; Telefoni; Mobilni telefoni; Pametni telefoni; Komunikacijski in telekomunikacijski aparati; Aparati za snemanje, prenos in reprodukcijo zvoka in slike; Baterije; Solarne baterije; Celice za ponovno polnjenje; Elektricne baterije; Gorivne celice; Prenosljive digitalne slikovne datoteke, preverjene z nezamenljivimi zetoni (NFT).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sl",
+      "description": "Vozila in prevozna sredstva; Aparati za gibanje po kopnem, Aparati za gibanje po zraku, Vesoljske naprave za premikanje in Aparati za gibanje po vodi; Deli in sestavni deli suhozemskih, pomorskih, zracnih in vesoljskih vozil; Astromobili; Vesoljska vozila; Vodna vozila; Zracna vozila; Aeronavticni aparati, stroji in naprave; Letala brez pilota; Brezpilotna letala s kamero; Vojaski brezpilotni zrakoplovi in Civilni brezpilotni zrakoplovi; Leteci predmeti z daljinskim upravljanjem; Vozila na daljinsko upravljanje (razen igrac); Avtonomna vozila; Brezpilotna vozila za pregledovanje; Nosilne rakete za satelite; Podvodna vozila; Vozila brez posadke; Terenska vozila; Protivlomni alarmi in naprave za vozila.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Znanstveno-tehnoloske storitve; Oblikovalske storitve; Storitve industrijskih analiz, industrijskih raziskav in tehnicnega risanja; Storitve kontrole kakovosti in preverjanja; Oblikovanje [industrijsko]; Raziskovalne in razvojne storitve; Spletno shranjevanje podatkov; Preucevanje, nacrtovanje in razvoj izdelkov; Tehnicno risanje; Industrijsko oblikovanje; Storitve racunalniskega graficnega oblikovanja; Kartografske storitve; Inzenirske storitve; Elektronsko shranjevanje in gostovanje podatkov; Svetovanje glede tehnologije; Nudenje informacij v zvezi s tehnoloskimi raziskavami; Zagotavljanje znanstvenih informacij s podrocja podnebnih sprememb in globalnega segrevanja; Oblikovanje notranjosti prostorov (interierov); Arhitekturne in urbanisticne storitve; Oblikovanje kostumov in Scenografsko oblikovanje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos científicos, Aparatos e instrumentos de investigación, Aparatos e instrumentos de navegación, Aparatos e instrumentos geodésicos, Aparatos e instrumentos audiovisuales, Aparatos e instrumentos de pesaje, Instrumentos y aparatos de medición, Aparatos e instrumentos de señalización, Aparatos e instrumentos de detección, Aparatos e instrumentos de ensayos, Aparatos e instrumentos de inspección, Aparatos e instrumentos de salvamento y Aparatos e instrumentos de instrucción y de enseñanza; Aparatos e instrumentos para la conducción, distribución, transformación, acumulación, regulación o control de la distribución o consumo de electricidad; Aparatos e instrumentos para registrar, transmitir, reproducir o procesar sonido, imágenes o datos; Trajes de buceo; Máscaras de buceo; Tapones para los oídos para buceo; Pinzas nasales para buceo y natación; Guantes de buceo; Aparatos de respiración para la natación subacuática; Extintores; Anillos inteligentes; Brújulas; Cascos de protección; Carcasas para teléfonos inteligentes [smartphones]; Teléfonos inteligentes [ smartphones] en forma de reloj de pulsera; Asistentes digitales personales en forma de reloj; Instrumentos para medir el tiempo (no incluidos los relojes); Dispositivos de comunicaciones que pueden llevarse puestos en forma de relojes de pulsera; Discos compactos, DVD y otros soportes de grabación digitales; Software; Ordenadores; Ordenadores de regazo; Ordenadores de bolsillo; Ordenadores portátiles; Ordenadores personales; Ordenadores ponibles; Dispositivos periféricos utilizados con ordenadores; Relojes inteligentes; Brazaletes conectados [instrumentos de medición]; Reproductores MP3; Aparatos telefónicos; Teléfonos celulares; Smartphones; Comunicaciones y aparatos de telecomunicación; Aparatos de grabación, transmisión o reproducción de sonido o imágenes; Baterías; Pilas solares; Células recargables; Pilas eléctricas; Pilas de combustible; Archivos de imágenes digitales descargables autenticados por tókenes no fungibles [TNF].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "es",
+      "description": "Vehículos y medios de transporte; Aparatos de locomoción terrestre, Aparatos de locomoción aérea, Aparatos de locomoción espaciales y Aparatos de locomoción marítima; Piezas y componentes de vehículos terrestres, náuticos, aéreos y espaciales; Astromóviles; Vehículos espaciales; Vehículos acuáticos; Aeronaves; Aparatos, máquinas y dispositivos para la aeronáutica; Aviones teledirigidos; Drones con cámara; Drones militares y Drones civiles; Objetos volantes de control remoto; Vehículos teledirigidos que no sean juguetes; Vehículos autónomos; Vehículos de inspección sin piloto; Vehículos de lanzamiento para satélites; Vehículos subacuáticos; Vehículos sin piloto; Vehículos todoterreno; Alarmas y dispositivos antirrobo para vehículos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios tecnológicos científicos; Servicios de diseño; Servicios de análisis industrial, investigación industrial y diseño industrial; Servicios de control de calidad y certificados de autenticidad; Estilismo [diseño industrial]; Servicios de investigación y desarrollo; Almacenamiento de datos en línea; Investigación, diseño y desarrollo de productos; Dibujo técnico; Diseño industrial; Servicios de diseño de gráficos por ordenador; Servicios de cartografía; Servicios de ingeniería; Almacenamiento y hospedaje electrónico de datos; Consultoría tecnológica; Suministro de información sobre investigaciones tecnológicas; Suministro de información científica en relación con el cambio climático y el calentamiento global; Decoración de interiores; Servicios de arquitectura y planificación urbanística; Diseño de vestuario escénico y Diseño de decorados para espectáculos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Vetenskapliga apparater och instrument, Forskningsapparater och -instrument, Apparater och instrument för navigation, Geodetiska apparater och instrument, Audio-visuella apparater och instrument, Vägningsapparater och -instrument, Mätapparater och instrument, Signaleringsapparater och instrument, Apparater och instrument för detektering, Apparater och instrument för provning, Inspektionsapparater och -instrument, Livräddningsapparater och instrument och Apparater och instrument för undervisning och instruktion; Apparater och instrument för ledning, distribution, transformering, ackumulering, reglering eller styrning av distribution eller förbrukning av elektricitet; Apparater och instrument för inspelning, överföring, återgivning eller bearbetning av ljud, bilder eller data; Dykardräkter; Dykarmasker; Öronproppar för dykare; Näsklämmor för dykare och simmare; Handskar för dykare; Andningsapparater för sportdykare; Eldsläckare; Smarta ringar; Kompasser; Huvudskydd; Fodral för smartphones; Smartphones i klockformat; Personliga digitala assistenter i form av armbandsur; Tidsmätningsinstrument (inte inkluderande klockor och ur); Bärbar kommunikationsutrustning i form av armbandsur; CD-skivor, DVD's och andra digitala inspelningsbara media; Mjukvaror; Datorer; Laptops; Handdatorer; Mobila datorer; Persondatorer; Kroppsburna datorer; Kringutrustning anpassade för användning med datorer; Smarta klockor; Smartarmband [mätinstrument]; MP3-spelare; Telefoner; Mobiltelefoner; Smarta telefoner; Kommunikations- och telekommunikationsapparater; Apparater för inspelning, upptagning, sändning eller återgivning av ljud och bilder; Batterier; Solbatterier; Laddningsbara celler; Batterier, elektriska; Bränsleceller; Nedladdningsbara digitala bildfiler autentiserade genom non-fungible tokens [NFT].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sw",
+      "description": "Fordon och -fortskaffningsmedel; Fortskaffningsmedel för transport till lands, Fortskaffningsmedel för transport med flyg, Rymdfarkoster och Fortskaffningsmedel för transport på vatten; Delar och komponenter för landfordon, luft-, vatten- och rymdfarkoster; Rovers (rymdfordon); Rymdfarkoster; Vattenfarkoster; Flygmaskiner; Flygapparater, -maskiner och -anordningar; Fjärrstyrda målflygplan; Kameradrönare; Militära drönare och Civila drönare; Fjärrstyrda flygande objekt; Radiostyrda fordon (andra än leksaker); Självkörande fordon; Förarlösa inspektionsfordon; Bärraketer för satelliter; Undervattensfarkoster; Obemannade fordon och farkoster; Terrängfordon; Stöldlarm och stöldskyddsanordningar för fordon.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Vetenskapliga teknologiska tjänster; Designtjänster; Tjänster för industriell analys, industriell forskning och industriell formgivning; Tjänster avseende kvalitetskontroll och äkthetsintygande; Konstnärlig formgivning [industriell]; Forsknings- och utvecklingstjänster; Datalagringstjänster online; Produktundersökning, -planering och -utveckling; Teknisk ritning; Industriell formgivning; Utformning av datorgrafik; Kartläggningstjänster; Ingenjörstjänster; Elektronisk lagring och värdskap av data; Teknologiska konsultationer; Tillhandahållande av information om teknologisk forskning; Tillhandahållande av vetenskaplig information inom området klimatförändring och global uppvärmning; Design av inredningar; Arkitekttjänster och stadsplanering; Design av kostymer och Design av scendekorationer.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo-Pierre Pallanca-Pastor",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "Myriam Angelier",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7, rue du Gabian,Monaco, 98000",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo-Pierre Pallanca-Pastor"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vedecká zarízení a nástroje, Prístroje a nástroje pro výzkum, Navigacní prístroje a nástroje, Geodetické prístroje a nástroje, Audiovizuální zarízení a prístroje, Prístroje a nástroje na vázení, Mericí prístroje a zarízení, Signalizacní prístroje a zarízení, Detekcní prístroje a nástroje, Zkusební prístroje a nástroje, Inspekcní zarízení a prístroje, Záchranárská zarízení a nástroje a Ucební a vyucovací prístroje a nástroje; Prístroje a nástroje pro vedení, prepínání, premenu, akumulaci, regulaci nebo rízení rozvodu nebo spotreby elektriny; Prístroje a zarízení pro záznam, prenos, reprodukci nebo zpracování zvuku, obrazu nebo dat; Potápecské obleky; Potápecské masky; Spunty do usí pro potápece; Nosní klipsy pro potápece a plavce; Potápecské rukavice; Dýchací prístroje pro plavání pod vodou; Hasicí prístroje; Chytré prsteny (elektronická zarízení); Buzoly; Ochranné prílby; Kryty na chytré telefony (smartphony); Chytré telefony v podobe hodinek; Kapesní pocítace PDA ve tvaru hodinek; Prístroje na merení casu (nikoliv hodiny a hodinky); Nositelná komunikacní zarízení v podobe náramkových hodinek; Kompaktní disky, DVD a ostatní digitální záznamové nosice; Software; Pocítace; Prenosné pocítace [laptopy]; Prenosné pocítace; Prenosné pocítace; Osobní pocitace; Prenosné pocítace; Periferní zarízení pocítacu; Chytré hodinky; Chytré náramky [mericí prístroje]; MP3 prehrávace; Telefonní prístroje; Bunkové telefony; Smartphony; Komunikacní a telekomunikacní prístroje; Prístroje pro záznam, prevod, reprodukci zvuku nebo obrazu; Baterie; Solární baterie; Dobíjecí clánky; Elektrické baterie; Palivové clánky; Digitální stahovatelné obrazové soubory overené nezamenitelnými tokeny [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vozidla a dopravní prostredky; Prostredky na pohyb po zemi, Prostredky na pohyb vzduchem, Dopravní prostredky kosmické a Prostredky na pohyb po vode; Cásti a soucásti dopravních prostredku pozemních, vodních, vzdusných a kosmických; Pruzkumná vozítka (pro zkoumání povrchu planet); Vesmírné dopravní prostredky; Vodní dopravní prostredky; Letecké dopravní prostredky; Letecká zarízení, stroje a prístroje; Rádiem rízené bezpilotní letouny; Drony s kamerou; Vojenské drony a Civilní drony; Dálkove ovládané létající objekty; Dálkové rízená vozidla, ne hracky; Autonomní vozidla; Pruzkumná bezpilotní vozidla; Nosné dopravní prostredky pro druzice; Podvodní vozidla; Vozidla bez posádky (bezobsluzná); Terénní vozidla; A poplasná zabezpecovací zarízení pro vozidla."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Vedecké technologické sluzby; Návrhárství; Sluzby v oblasti prumyslových analýz, prumyslového výzkumu a prumyslového designu; Sluzby kontroly kvality a overování pravosti; Styling [prumyslový design]; Sluzby v oblasti výzkumu a vývoje; Ukládání dat on-line; Výzkum, navrhování a vývoj produktu; Technické kreslení; Prumyslový design; Navrhování pocítacové grafiky; Mapovací sluzby; Inzenýrské sluzby; Elektronické ukládání a hosting dat; Technologické poradenství; Poskytování informací vztahujících se k technologickému výzkumu; Poskytování vedeckých informací v oblasti klimatických zmen a globálního oteplování; Navrhování interiéru; Architektonické sluzby a sluzby urbanistického plánování; Navrhování kostýmu a Navrhování dekorací na predstavení."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Videnskabelige apparater og instrumenter, Forskningsapparater og -instrumenter, Navigationsapparater og -instrumenter, Geodætiske apparater og instrumenter, Audiovisuelle apparater og instrumenter, Apparater og instrumenter til vejning, Måleinstrumenter og -apparatur, Signaleringsinstrumenter og -apparater, Detekteringsapparater og -instrumenter, Testudstyr og -instrumenter, Apparater og instrumenter til inspektion, Apparater og instrumenter til livredning og Instruktions- og undervisningsapparater og -instrumenter; Apparater og instrumenter til ledning, distribution, omdannelse, akkumulering, regulering eller kontrol af elektricitetsdistribution eller -forbrug; Apparater og instrumenter til optagelse, transmission, gengivelse eller udarbejdelse af lyd, billeder eller data; Dykkerdragter; Dykkermasker; Ørepropper til dykkere; Næseklemmer til dykkere og svømmere; Dykkerhandsker; Indåndingsapparater til undervandssvømning; Ildslukkere; Smart rings; Retningsangivende kompasser; Hovedbeskyttelse; Covers til smartphones; Smartphones med form som et ur; Personlige digitale assistenter i form af ure; Tidsmålende instrumenter (ikke inklusive ure og armbåndsure); Wearable kommunikationsenheder i form af armbåndsure; CD'ere, DVD'ere og andre digitale optagelsesmedier; Software; Computere; Bærbare computere; Håndholdte computere; Mobile computere; Pc'er; Wearable computere; Perifere enheder til computere; Smartwatches; Opkoblede armbånd [måleinstrumenter]; MP3-afspillere; Telefonapparater; Mobiltelefoner; Smartphones; Apparater til telekommunikation og kommunikation; Apparater til optagelse, transmission og gengivelse af lyd eller billede; Batterier; Solbatterier; Genopladelige celler; Batterier, elektriske; Brændselsceller; Downloadable digitale billedfiler autentificeret af non-fungible tokens [NFT'er]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Køretøjer og befordringsmidler; Apparatur til bevægelse på land, Apparatur til bevægelse i luften, Befordringsmidler til rumfart og Apparater til befordring på vand; Dele og tilbehør til befordringsmidler til brug på land, til vands, i luften og i rummet; Robotbiler; Rumfartøjer; Vandfartøjer; Flyvemaskiner; Aeronautiske apparater, maskiner og indretninger; Droner; Kameradroner; Militærdroner og Civile droner; Fjernstyrede, flyvende objekter; Fjernstyrede køretøjer, undtagen legetøj; Selvkørende køretøjer; Førerløse overvågningskøretøjer; Løfteraketter til satellitter; Undervandsfartøjer; Ubemandede fartøjer; Terrængående køretøjer; Tyverialarmer og -anordninger til køretøjer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Videnskabelige teknologiske tjenesteydelser; Designtjenesteydelser; Industriel analyse, industriel forskning og industriel design; Kvalitetskontrol og autentificering af identitet; Formgivning [industriel design]; Forsknings- og udviklingsvirksomhed; Online datalagring; Produktundersøgelser, -design og -udvikling; Teknisk tegning; Industriel design; Tjenester vedrørende design af computergrafik; Tegning af kort; Ingeniørtjenesteydelser; Elektronisk lagring og hosting af data; Teknologirådgivning; Tilvejebringelse af information vedrørende teknologisk forskning; Stille videnskabelige oplysninger til rådighed om klimaændringer og global opvarmning; Indretningsarkitektvirksomhed; Arkitektoniske-og byplanlægningstjenesteydelser; Design af kostumer og Design af scenedekorationer til shows."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijke apparatuur en instrumenten, Onderzoeksapparuur en -instrumenten, Navigatieapparatuur en -instrumenten, Geodetische apparatuur en instrumenten, Audiovisuele apparatuur en instrumenten, Weegapparaten en -instrumenten, Meetapparatuur en -instrumenten, Seinapparaten en -instrumenten, Detectie-apparaten en -instrumenten, Testtoestellen en -instrumenten, Inspectie-apparaten en -instrumenten, Levensreddende apparatuur en instrumenten en Onderwijs- en instructie-apparaten en -instrumenten; Apparaten en instrumenten voor het geleiden, distribueren, transformeren, accumuleren, regelen of controleren van de distributie of het verbruik van elektriciteit; Apparaten en instrumenten voor het opnemen, verzenden, weergeven of verwerken van geluiden, beelden of gegevens; Pakken voor duikers; Duikmaskers; Oordopjes voor duikers; Neusklemmen voor duikers en zwemmers; Duikerhandschoenen; Ademhalingsapparaten voor het onderwaterzwemmen; Brandblusapparatuur; Smart ringen; Kompassen; Beschermers voor het hoofd; Hoezen voor smartphones; Smartphones in de vorm van een horloge; Persoonlijke digitale assistent in de vorm van een horloge; Tijdmeetinstrumenten (uitgezonderd uurwerken en horloges); Draagbare communicatietoestellen in de vorm van polshorloges; Compact discs, DVD's en andere digitale dragers; Software; Computers; Laptops; Computers op handformaat; Mobiele computers; Personal computers; Op het lichaam te dragen computers; Computerrandapparatuur; Smartwatches; Smartarmbanden [meetinstrumenten]; MP3-spelers; Telefoonapparaten; Mobiele telefoons; Smartphones; Communicatie- en telecommunicatie-apparatuur; Apparaten voor het opnemen, het overbrengen en het weergeven van geluid of beeld; Batterijen; Zonne-energiebatterijen; Cellen (Oplaadbare -); Elektrische batterijen; Brandstofcellen; Downloadbare digitale bestanden geauthenticeerd door NFT's."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Voertuigen en vervoermiddelen; Apparaten voor de voortbeweging over land, Apparaten voor voortbeweging door de lucht, Apparaten voor spatiale voortbeweging en Apparaten voor vervoer over het water; Onderdelen en accessoires van landvoertuigen, zeevaartuigen, lucht- en ruimtevaartuigen; Astromobielen; Ruimtevaartuigen; Vaartuigen; Luchtschepen; Apparatuur, machines en toestellen voor de luchtvaart; Drones; Drones voorzien van een camera; Drones voor militair gebruik en Drones voor civiel gebruik; Afstand (Op -) bestuurbare vliegende objecten; Voertuigen, op afstand bestuurbaar, anders dan speelgoed; Autonome voertuigen; Inspectievoertuigen (Onbemande -); Lanceervoertuigen voor satellieten; Onderwatervoertuigen; Voertuigen (Onbemande -); Terreinvoertuigen; Alarmapparaten tegen diefstal van vervoermiddelen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Wetenschappelijk-technologische diensten; Ontwerpdiensten; Dienstverlening op het gebied van industriële analyse, industrieel onderzoek en industrieel ontwerp; Kwaliteitscontrole en het bevestigen van de echtheid; Styling [industrieel ontwerpen]; Onderzoek- en ontwikkelingsdiensten; Onlinegegevensopslag; Productonderzoek, -planning en -ontwikkeling; Technisch tekenen; Industrieel ontwerp; Grafische vormgevingsdiensten met behulp van computers; Karteringsdiensten; Ingenieursdiensten; Opslag en elektronische hosting van gegevens; Advisering op technologisch gebied; Verschaffen van informatie met betrekking tot technologisch onderzoek; Verstrekking van wetenschappelijke informatie op het gebied van klimaatverandering en opwarming van de aarde; Binnenhuisarchitectuur; Diensten van architecten en stedebouwkundige planning; Kostuumontwerp en Ontwerp van decors voor shows."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific apparatus and instruments, Research apparatus and instruments, Navigation apparatus and instruments, Surveying apparatus and instruments, Audiovisual apparatus and instruments, Weighing apparatus and instruments, Measuring apparatus and instruments, Signalling apparatus and instruments, Detecting apparatus and instruments, Testing apparatus and instruments, Inspecting apparatus and instruments, Life-saving apparatus and instruments and Instructional and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating or controlling the distribution or use of electricity; Apparatus and instruments for recording, transmitting, reproducing or processing sound, images or data; Diving suits; Divers' masks; Ear plugs for divers; Nose clips for divers and swimmers; Gloves for divers; Breathing apparatus for underwater swimming; Fire extinguishers; Smart rings; Directional compasses; Head protection; Covers for smartphones; Smartphones in the shape of a watch; Personal digital assistants in the shape of a watch; Time measuring instruments (not including clocks and watches); Wearable communications devices in the form of wristwatches; Compact discs, DVDs and other digital recording media; Software; Computers; Laptop computers; Palmtop computers; mobile computers; Personal computers; Wearable computers; Computer peripheral devices; Smartwatches; Connected bracelets [measuring instruments]; MP3 players; Telephone apparatus; Mobile telephones; Smartphones; Communication and telecommunication apparatus; Apparatus for recording, transmission or reproduction of sound or images; Batteries; Solar batteries; Rechargeable cells; Batteries, electric; Fuel cells; Downloadable digital image files authenticated by non-fungible tokens [NFTs]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Vehicles and conveyances; Apparatus for locomotion by land, Apparatus for locomotion by air, Apparatus for space locomotion and Apparatus for locomotion by water; Parts and fittings for land vehicles, water vehicles, air vehicles and space vehicles; Rovers; Space vehicles; Water vehicles; Aircraft; Aeronautical apparatus, machines and appliances; Drones; Camera drones; Military drones and Civilian drones; Remote controlled flying objects; Remote control vehicles, other than toys; Autonomous vehicles; Pilotless surveying vehicles; Launch vehicles for satellites; Underwater vehicles; Unmanned vehicles; All-terrain vehicles; Anti-theft alarms and devices for vehicles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific technological services; Design services; Industrial analysis, industrial research and industrial design; Quality control and authentication services; Styling [industrial design]; Research and development services; Online data storage; Product research, design and development; Technical drawing; Industrial design; Computer graphics design services; Mapping services; Engineering services; Electronic hosting and storage of data; Technological consultancy; Provision of information relating to technological research; Providing scientific information in the fields of climate change and global warming; Design of interior decor; Architectural and urban planning services; Design of costumes and Design of show scenery."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Teadusotstabelised seadmed ja vahendid, Uurimisseadmed ja -vahendid, Navigatsiooniaparaadid ja -riistad, Geodeesiaaparaadid ja -seadmed, Audiovisuaalseadmed, Kaalumisseadmed, kaalumisriistad, Mõõtevahendid ja -seadmed, Signaalseadmed ja -vahendid, Tuvastusaparaadid ja -instrumendid, Katseseadmed ja -vahendid, Inspekteerimisaparaadid ja -instrumendid, Päästevahendid ja -seadmed ja Juhend- ja õppeseadmed ning -vahendid; Aparaadid ja vahendid elektrienergia jaotuse või tarbimise juhtimiseks, jaotamiseks, muundamiseks, kogumiseks, reguleerimiseks või juhtimiseks; Seadmed ja vahendid heli, kujutise või andmete salvestamiseks, edastamiseks, taasesitamiseks või töötlemiseks; Skafandrid, tuukriülikonnad; Sukeldumismaskid; Kõrvatropid sukeldujatele; Ninaklambrid sukeldujatele ja ujujatele; Kindad sukeldujatele; Akvalangisti, allveeujuja hingamisaparaadid, akvalangid; Tulekustutid; Nutisõrmused; Kompassid, bussoolid; Peakaitsmed; Nutitelefonide katted; Käekellakujulised nutitelefonid; Kellakujulised elektronmärkmikud (PDA); Ajamõõdikud, v.a kellad; Käekelladena kantavad sideseadmed; CD-d, DVD-d ja muud digisalvestusvahendid; Tarkvara; Arvutid, raalid; Sülearvutid; Pihuarvutid; Kantavad arvutid; Personaalarvutid; Kaasaskantavad arvutid; Arvutite välisseadmed; Nutikellad; Nutikäevõrud [mõõteseadmed]; MP3-mängijad; Telefoniaparaadid; Mobiiltelefonid; Nutitelefonid; Kommunikatsiooni- ja sideseadmed; Heli või kujutise salvestamise, edastamise ja taasesitamise aparatuur; Patareid, akud; Päikesepatareid; Taaslaetavad akuelemendid; Elektripatareid; Kütuseelemendid; Allalaaditavad digitaalsed pildifailid, mis on autenditud asendamatute digitaalsete omandiõigust näitavate andmeüksustega [NFT-ga]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Sõidukid ja transpordivahendid; Maismaaliiklusvahendid, Õhuliiklusvahendid, Kosmoses liikumise seadmed ja Veetranspordivahendid; Maismaa-, mere-, õhu- ja kosmosesõidukite varu- ja koostisosad; Tähekulgurid (astromobiilid); Kosmoselaevad, kosmoseaparaadid, kosmoselennuaparaadid; Veesõidukid; Õhusõidukid, lennukid; Aeronautikaaparaadid, -masinad ja -seadmed; Mehitamata lennukid; Kaameradroonid; Droonid militaarseks kasutuseks ja Droonid tsiviilkasutuseks; Kaugjuhitavad lendavad esemed; Kaugjuhtimisega sõidukid, v.a mänguasjad; Autonoomsed sõidukid; Mehitamata mõõdistussõidukid; Satelliitide kanderaketid; Allveesõidukid; Mehitamata sõidukid; Maastikusõidukid; Ärandamisvastased alarmid ja seadmed sõidukitele."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Teadustehnoloogilised teenused; Disainiteenused; Tööstuslike analüüside, tööstuslike uuringute ja tööstusdisainiteenused; Kvaliteedikontrolli- ja autentimisteenused; Kujundamine, stiliseerimine [tootekujundus, tööstusdisain]; Teadus- ja arendustegevusteenused; Andmesäilitus veebis; Tooteuuringud, -projekteerimine ja -arendamine; Joonestamine; Tööstusdisain, tootekujundus; Arvutigraafikadisain; Kaardistamise teenused; Inseneriteenused; Andmete elektrooniline talletamine ja hostimine; Tehnoloogilised konsultatsioonid; Tehnoloogiauuringute teabe pakkumine; Kliimamuutusi ja ülemaailmset soojenemist puudutava teadusteabe pakkumine; Sisekujundus (ruumi viimistlus sisekujunduselementidega); Arhitektuuri- ja linnaplaneerimisteenused; Kostüümide kavandamine, disainimine ja Lavakujundamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tieteelliset laitteet ja välineet, Tutkimuskojeet ja -laitteet, Navigointilaitteet ja -välineet, Geodeettiset laitteet, Audiovisuaaliset laitteet ja -välineet, Punnituslaitteet, Mittauslaitteet ja välineet, Signaalilaitteet ja välineet, Ilmaisinlaitteet ja -välineet, Koestuslaitteet ja -kojeet, Tutkimislaitteet ja -välineet, Hengenpelastuslaitteet ja välineet ja Opetus- ja neuvontalaitteet ja -kojeet; Laitteet ja kojeet sähkönjakelun tai -kulutuksen johtamiseen, kytkemiseen, muuntamiseen, varaamiseen, säätämiseen tai hallintaan; Laitteet ja kojeet äänen, kuvien tai datan tallentamiseen, siirtoon, toistoon tai käsittelyyn; Sukelluspuvut; Sukellusnaamarit; Korvatulpat sukeltajille; Nenäpinteet uimareille ja sukeltajille; Käsineet (Sukellus -); Hengityslaitteet sukeltamiseen; Sammuttimet; Älysormukset; Kompassit; Päänsuojaimet; Älypuhelinten suojukset; Älypuhelimet rannekellon muodossa; Rannekellon malliset kämmentietokoneet; Ajanmittausvälineet (ei sisällä kelloja); Päälle puettavat viestintävälineet rannekellojen muodossa; CD-levyt, DVD-levyt ja muut digitaaliset tallennusvälineet; Ohjelmistot; Sylimikrot; Läppärit [kannettavat tietokoneet]; Kämmentietokoneet; Kannettavat tietokoneet; Henkilökohtaiset kotitietokoneet; Puettavat tietokoneet; Tietokoneiden oheislaitteet; Älykellot; Älyrannekkeet (mittausvälineet); MP3-soittimet; Puhelimet; Matkapuhelimet; Älypuhelimet; Viestintä- ja tietoliikennelaitteet; Äänen ja kuvien tallennus-, siirto- ja toistolaitteet; Akut ja paristot; Aurinkoparistot; Ladattavat kennot; Paristot, sähköiset; Polttokennot; Ladattavat digitaaliset kuvatiedostot, varmennettu ei-vaihtokelpoisilla tunnuksilla [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ajoneuvot ja kulkuneuvot; Laitteet maateitse liikkumiseen, Laitteet ilmateitse liikkumiseen, Avaruuskulkuneuvot ja Laitteet vedessä kulkemista varten; Maa-, vesi- ilma- ja avaruuskulkuneuvojen osat ja rakenneosat; Astromobiilit; Avaruusalukset; Vesikulkuneuvot; Ilma-alukset; Ilmailulaitteet ja -koneet; Radio-ohjattavat lentokoneet; Kameralla varustetut droonit; Droonit sotilaskäyttöön ja Droonit siviilikäyttöön; Kauko-ohjattavat lentävät esineet; Ajoneuvot, kauko-ohjattavat [paitsi lelut]; Itseohjautuvat ajoneuvot; Miehittämättömät tiedusteluajoneuvot; Satelliittien kantoraketit; Vedenalaiset kulkuneuvot; Miehittämättömät ajoneuvot; Maastoajoneuvot; Varashälyttimet ja varkaudenestolaitteet ajoneuvoja varten."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tieteelliset teknologiapalvelut; Suunnittelupalvelut; Teollisiin analyyseihin, teollisiin tutkimuksiin ja teolliseen piirtämiseen liittyvät palvelut; Laaduntarkkailupalvelut ja aitoustodistusten laatiminen; Muotoilu [teollinen muotoilu]; Tutkimus- ja kehittämispalvelut; Tiedon tallennus verkossa; tuotetutkimus, -suunnittelu ja -kehitys; Tekninen piirtäminen; Teollinen muotoilu; Tietokonegrafiikan suunnittelupalvelut; Kartoituspalvelut; Insinööripalvelut; Tietojen elektroninen tallennus ja ylläpito; Tekniikkaan liittyvä konsultointi; Tekniseen tutkimukseen liittyvien tietojen tarjoaminen; Ilmastonmuutokseen ja ilmaston lämpenemiseen liittyvän tieteellisen tiedon tarjoaminen; Sisustussuunnittelijan palvelut; Arkkitehti- ja kaupunkisuunnittelupalvelut; Asujen suunnittelu ja Esitysten kulissien suunnittelu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments scientifiques, de recherche, de navigation, géodésiques, audiovisuels, de pesage, de mesurage, de signalisation, de détection, d'essai, d'inspection, de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande de la distribution ou de la consommation d'électricité; appareils et instruments pour l'enregistrement, la transmission, la reproduction ou le traitement de sons, d'images ou de données; combinaisons de plongée; masques de plongée; tampons d'oreilles pour la plongée; pinces nasales pour plongeurs et nageurs; gants de plongée; appareils respiratoires pour la nage subaquatique; extincteurs; bagues intelligentes; boussoles; casques de protection; coques pour smartphones; smartphones en forme de montre; assistants numériques personnels sous la forme de montres; instruments de mesure temporelle (sans inclure les horloges et les montres); dispositifs de communications portables sous la forme de montres-bracelets; disques compacts, dvd et autres supports d'enregistrement numériques; logiciels; ordinateurs; ordinateurs portables; ordinateurs de poche; ordinateurs mobiles; ordinateurs personnels; ordinateurs à porter sur soi; périphériques d'ordinateurs; montres intelligentes; bracelets connectés (instruments de mesure); lecteurs MP3; téléphones; téléphones portables; smartphones; appareils de télécommunication et de communication; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; batteries; piles solaires; piles rechargeables; piles électriques; piles à combustible; fichiers d'images numériques téléchargeables authentifiés par des jetons non fongibles (NFT)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Véhicules et moyens de transport; Appareils de locomotion terrestres, aériens, spatiaux et maritimes; Pièces et parties constitutives de véhicules nautiques, terrestres, aériens et spatiaux; Astromobiles; Spationefs; Vaisseaux; Aéronefs; Appareils, machines et dispositifs pour l'aéronautique; Drones; Drones à caméra; Drones militaires et civils; Objets volants télécommandés; Véhicules télécommandés autres que jouets; Véhicules autonomes; Véhicules géodésiques sans pilote; Véhicules lanceurs de satellites; Véhicules submersibles; Véhicules sans pilote; Véhicules tout-terrains; Alarmes et antivols pour véhicules."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services scientifiques et technologiques; Services de conception; Services d'analyses industrielles, de recherches industrielles et de dessin industriel; Services de contrôle de qualité et d'authentification; Stylisme (esthétique industrielle); Services de recherche et développement; Stockage de données en ligne; Recherche, conception et développement de produits; Dessin technique; Dessin industriel; Services d'infographie; Services de cartographie; Travaux d'ingénieurs; Hébergement et stockage électronique de données; Conseils en matière de technologie; Mise à disposition d'informations en matière de recherches technologiques; Mise à disposition d'informations scientifiques dans les domaines du changement climatique et du réchauffement planétaire; Décoration intérieure; Services d'architecture et d'urbanisme; Conception de costumes et de décors de spectacles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftliche Apparate und Instrumente, Forschungsapparate und -instrumente, Navigationsapparate und -instrumente, Vermessungsapparate und -instrumente, Audiovisuelle Apparate und Instrumente, Wägeapparate und -instrumente, Messapparate und -instrumente, Signalapparate und -instrumente, Detektionsapparate und -instrumente, Testapparate und -instrumente, Kontrollapparate und -instrumente, Lebensrettende Apparate und Instrumente und Lehr- und Unterrichtsgeräte und -instrumente; Apparate und Instrumente zum Leiten, Schalten, Umwandeln, Speichern, Regeln und Kontrollieren der Verteilung oder des Verbrauchs von Elektrizität; Apparate und Instrumente für die Aufzeichnung, Übertragung, Wiedergabe oder Bearbeitung von Klängen, Bildern oder Daten; Taucheranzüge; Tauchermasken; Ohrtampons für Taucher; Nasenklemmen für Schwimmer; Taucherhandschuhe; Atemgeräte zum Tauchen; Feuerlöscher; Smart-Ringe; Kompasse; Kopfschutz; Hüllen für Smartphones; Smartphones in Form von Armbanduhren; PDA-Computer [Personal Digital Assistants] in Form von Armbanduhren; Zeitmessinstrumente und -apparate [ausgenommen Uhren]; Tragbare Kommunikationsgeräte in Form von Armbanduhren; CDs, DVDs und andere digitale Aufzeichnungsträger; Software; Laptops [Computer]; Laptops; Handhelds; Mobil-Computer; PCs; Wearables [Computer]; An Computer angepasste Peripheriegeräte; Smartwatches; Fitness-Armbänder [Messinstrumente]; MP3-Abspielgeräte; Fernsprechapparate; Mobiltelefone; Smartphones; Kommunikations- und Telekommunikationsapparate; Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Ton und Bild; Batterien; Sonnenbatterien; Wiederaufladbare Batteriezellen; Elektrische Batterien; Brennstoffzellen; Durch Non-Fungible-Tokens [NFTs] authentifizierte herunterladbare digitale Bilddateien."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Fahrzeuge und Beförderungsmittel; Apparate zur Beförderung auf dem Lande, Apparate zur Beförderung in der Luft, Apparate zur Beförderung im Weltraum und Apparate zur Beförderung auf dem Wasser; Teile und Bestandteile für Land-, Wasser-, Luft- und Raumfahrzeuge; Rover (Astromobile); Raumfahrzeuge; Wasserfahrzeuge; Luftfahrzeuge; Apparate, Maschinen und Geräte für die Luftfahrt; Drohnen; Kameradrohnen; Militärische Drohnen und Zivile Drohnen; Ferngesteuerte Flugkörper; Ferngesteuerte Fahrzeuge [ausgenommen Spielzeuge]; Autonome Fahrzeuge; Unbemannte Überwachungsfahrzeuge; Trägerraketen für Satelliten; Unterseefahrzeuge; Unbemannte Fahrzeuge; Geländefahrzeuge; Diebstahlalarmanlagen- und -geräte für Fahrzeuge."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Wissenschaftlich-technologische Dienstleistungen; Designdienstleistungen; industrielle Analyse-, Forschungs- und Designdienstleistungen; Qualitätsprüfungsdienstleistungen und Echtheitsbeglaubigung; Styling [industrielles Design]; Forschungs- und Entwicklungsdienste; Online-Datenspeicherung; Produktforschung, -planung und -entwicklung; Technisches Zeichnen; Industriedesign; Grafikdesigndienste mittels Computer; Kartierungsdienstleistungen; Dienstleistungen von Ingenieuren; Speicherung und Hosting von Daten; Technologieberatung; Bereitstellung von Informationen zu technologischer Forschung; Bereitstellung wissenschaftlicher Informationen auf dem Gebiet des Klimawandels und der globalen Erwärmung; Dienstleistungen eines Innenarchitekten; Architektur- und Stadtplanungsdienstleistungen; Kostümdesign und Design von Showkulissen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Znanstveni aparati i instrumenti, Aparati i instrumenti za istrazivanja, Navigacijski uredaji i instrumenti, Geodetski uredaji i instrumenti, Audiovizualni aparati i instrumenti, Uredaji i instrumenti za vaganje, Mjerni aparati i instrumenti, Signalni aparati i instrumenti, Aparati i instrumenti za otkrivanje, Aparati i instrumenti za ispitivanje, Aparati i instrumenti za inspekciju, Uredaji i instrumenti za spasavanje i Uredaji i instrumenti za nastavu i poduku; Aparati i instrumenti za vodenje, distribuciju, pretvorbu, akumulaciju, reguliranje ili upravljanje distribucijom ili potrosnjom elektricne energije; Uredaji i instrumenti za snimanje, prijenos, reprodukciju ili obradu zvukova, slika i podataka; Ronilacka odijela; Ronilacke maske; Ronilacki tamponi za usi; Stipaljke za nos za ronioce i plivace; Rukavice za ronioce; Uredaji za podvodno disanje; Vatrogasni aparati; Pametni prsteni; Kompasi [mjerni instrumenti]; Zastitna oprema za glavu; Navlake za pametne telefone; Pametni telefoni u obliku rucnog sata; Osobni digitalni pomocnici u obliku rucnog sata; Instrumenti za mjerenje vremena (ne ukljucujuci zidne i rucne satove); Nosivi komunikacijski uredaji u obliku rucnih satova; CD-ovi, DVD-ovi i drugi digitalni mediji za snimanje; Softver; Racunala; Racunala, dzepna; Dlanovnici; Mobilna racunala; Osobna racunala; Nosiva racunala; Periferni uredaji prilagodeni za uporabu s racunalima; Pametni rucni satovi; Pametne narukvice [mjerni instrumenti]; MP3 plejeri [citaci]; Telefoni; Mobiteli; Pametni telefoni; Komunikacijski i telekomunikacijski uredaji; Aparati za snimanje, prijenos ili reprodukciju zvuka ili slike; Baterije; Solarne baterije; Punjivi galvanski elementi; Elektricne baterije; Gorive celije; Digitalne slikovne datoteke koje se mogu preuzimati i cija je autenticnost potvrdena nezamjenjivim tokenima [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Vozila i prijevozna sredstva; Uredaji za kopneno kretanje, Uredaji za kretanje zrakom, Uredaji za kretanje u svemiru i Uredaj za kretanje po vodi; Dijelovi i sastavni dijelovi kopnenih, zracnih, pomorskih i svemirskih vozila; Automobila; Svemirske letjelice; Vodena vozila; Zracna vozila; Aparati, strojevi i uredaji za zrakoplovstvo; Dronovi; Bespilotne letjelice za kamere; Vojni dronovi i Civilni dronovi; Daljinski upravljani leteci objekti; Vozila na daljinsko upravljanje [osim igracka]; Autonomna vozila; Nadzorna bespilotna vozila; Lansirna vozila za satelite; Podvodna vozila; Vozila bez posade; Terenska vozila; Alarmi i uredaji protiv krade za vozila."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Znanstvene tehnoloske usluge; Usluge dizajna; Usluge industrijske analize, industrijskih istrazivanja i industrijskog dizajna; Usluge kontrole kvalitete i provjere autenticnosti; Industrijska estetika; Usluge istrazivanja i razvoja; Pohranjivanje podataka na mrezi; Istrazivanje, projektiranje i razvoj proizvoda; Tehnicko crtanje; Industrijski dizajn; Usluge grafickog dizajna na racunalu; Usluge kartiranja; Inzenjerske usluge; Elektronicka pohrana i udomljavanje podataka; Tehnoloske savjetodavne usluge; Pruzanje informacija o tehnoloskom istrazivanju; Pruzanje znanstvenih informacija u podrucju klimatskih promjena i globalnog zagrijavanja; Dizajn interijera; Usluge arhitektonskog i urbanisticko planiranja; Dizajn kostima i Dizajniranje scenografije emisija."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tudományos készülékek és berendezések, Kutatókészülékek és -eszközök, Navigációs berendezések és muszerek, Földméro berendezések és eszközök, Audiovizuális berendezések és készülékek, Súlyméro készülékek és eszközök, Méroeszközök- és berendezések, Jelzo berendezések és készülékek, Érzékelo berendezések és eszközök, Tesztelo készülékek és muszerek, Ellenorzo berendezések és eszközök, Életmento felszerelések és eszközök és Oktató és tanító készülékek és eszközök; Elektromos áram vezetésére, elosztására, átalakítására, tárolására, szabályozására vagy elosztásának vagy felhasználásának vezérlésére szolgáló készülékek és eszközök; Hang, kép vagy adatok rögzítésére, átvitelére, visszajátszására vagy feldolgozására szolgáló készülékek és eszközök; Búvárruhák; Búvármaszkok, búvárálarcok; Füldugók búvároknak; Orrcsipeszek muugrók és úszók részére; Búvárkesztyuk; Légzokészülékek víz alatti úszáshoz; Tuzoltókészülék; Okosgyuruk; Iránytuk, tájolók, kompaszok [méromuszerek]; Fejvédo eszközök; Tokok okostelefonokhoz; Okostelefonok karóra formájában; Személyes digitális asszisztensek karóra formájában; Idoméro berendezések (órák és karórák kivételével); Hordható kommunikációs eszközök karórák formájában; CD-k (kompakt lemezek), DVD-k és egyéb, digitális rögzítésu média; Szoftverek; Számítógépek; Laptop számítógépek; Tenyérszámítógépek; Hordozható számítógépek; Személyi számítógépek; Viselheto számítógépek; Számítógéphez kialakított perifériák; Okoskarórák; Csatlakozott karkötok [méromuszerek]; MP3 lejátszók; Telefonok; Mobiltelefonok; Okostelefonok; Kommunikációs és távközlési készülékek; Hangok vagy képek rögzítésére, továbbítására, másolására szolgáló készülékek; Elemek; Napelemek, szolár akkumulátorok; Feltöltheto, utántöltheto cellák; Elektromos elemek, akkumulátorok; Tüzeloanyag cellák; Nem helyettesítheto tokenekkel (NFT-k) hitelesített letöltheto képfájlok."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Jármuvek és szállítóeszközök; Eszközök szárazföldön történo helyváltoztatáshoz, Eszközök levegoben történo helyváltoztatáshoz, Urbéli helyváltoztató eszközök és Eszközök vízen történo helyváltoztatáshoz; Szárazföldi, tengeri, légi és urjármuvek alkatrészei és tartozékai; Asztromobilok; Urjármuvek; Vízijármuvek; Légi jármuvek; Légi készülékek, gépek és berendezések; Távirányítású kisrepülogépek; Kamerás drónok; Katonai célú drónok és Civil drónok; Távvezérelt repülo tárgyak; Távirányítós jármuvek, nem játékszerek; Önvezeto jármuvek; Pilóta nélküli felderíto jármuvek; Kilövo jármuvek muholdakhoz; Víz alatti jármuvek; Személyzet nélküli jármuvek; Terepjáró jármuvek; Lopásgátló riasztók és eszközök jármuvekhez."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Tudományos technológiai szolgáltatások; Tervezési szolgáltatások; Ipari elemzési, ipari kutatási és ipari formatervezési szolgáltatások; Minoségellenorzési szolgáltatások és hitelesítés; Stíldíszítés [ipari formatervezés]; Kutatás és fejlesztés [szolgáltatások]; Online adattárolás; Termékkutatás, -tervezés és -fejlesztés; Muszaki rajz; Ipari formatervezés; Számítógépes grafikai tervezési szolgáltatások; Térképészeti szolgáltatások; Mérnöki munkák, szolgáltatások; Adatok elektronikus tárolása és hosztolása; Technológiai szaktanácsadás; Technológiai kutatáshoz kapcsolódó tájékoztatás; Tudományos információk biztosítása az éghajlatváltozással és a globális felmelegedéssel kapcsolatban; Beltéri dekoráció tervezése; Építészeti és várostervezési szolgáltatások; Jelmeztervezés és Díszlet-, látványtervezés eloadásokhoz."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi e strumenti scientifici, Apparecchi e strumenti di ricerca, Apparecchi e strumenti di navigazione, Apparecchi e strumenti geodesici, Apparecchi e strumenti audiovisivi, Apparecchi e strumenti di pesatura, Apparecchi e strumenti di misura, Apparecchi e strumenti di segnalazione, Apparecchi e strumenti di rilevamento, Apparecchi e strumenti di prova, Apparecchi e strumenti di ispezione, Apparecchi e sistemi di salvataggio e Apparecchiature e strumenti per istruzione e insegnamento; Apparecchi e strumenti per conduzione, distribuzione, trasformazione, accumulazione, regolazione o controllo della distribuzione o del consumo dell'elettricità; apparecchi e strumenti per registrare, trasmettere, riprodurre o elaborare suoni, immagini o dati; Scafandri; Maschere per immersione; Tappi per le orecchie per subacquei; Stringinaso per nuotatori; Guanti per subacquei; Apparecchi respiratori per il nuoto subacqueo; Estintori; Anelli intelligenti; Bussole; Protezioni per la testa; Custodie per smartphone; Smartphone in forma d'orologio da polso o da tasca; Assistenti personali digitali sotto forma di orologio; Stumenti per misurare il tempo (escluso gli orologi da tavolo e da polso); Dispositivi di comunicazione indossabili sotto forma di orologi da polso; Compact disk, DVD e altri supporti di registrazione digitale; Software; Elaboratori elettronici; Computer portatili; Palmari; Computer portatili; Personal computer; Computer indossabili; Periferiche concepite per essere utilizzate con i computer; Orologi intelligenti [smartwatch]; Braccialetti collegati [strumenti di misura]; Lettori MP3; Apparecchi telefonici; Telefoni cellulari; Smartphone; Apparecchi di comunicazione e telecomunicazione; Apparecchi per la registrazione, la trasmissione, la riproduzione del suono o delle immagini; Batterie; Pile solari; Celle ricaricabili; Batterie elettriche; Pile a combustibile; File d'immagini digitali scaricabili autenticati da non fungible token [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Veicoli e mezzi di trasporto; Apparecchi di locomozione terrestri, Apparecchi di locomozione aerei, Apparecchi di locomozione spaziale e Apparecchi di locomozione nautici; Parti e accessori costitutivi per veicoli terrestri, nautici, aerei e spaziali; Astromobili; Veicoli spaziali; Veicoli acquatici; Aeronavi; Apparecchi, macchine e dispositivi per l'aeronautica; Aeromobili senza pilota; Droni con macchina fotografica; Droni militari e Droni civili; Oggetti volanti telecomandati; Veicoli telecomandati [tranne i giocattoli]; Veicoli autonomi; Veicoli di rilevamento senza pilota; Veicoli lanciatori di satelliti; Veicoli subacquei; Veicoli senza equipaggio; Veicoli adatti ad ogni terreno; Allarmi e dispositivi antifurto per veicoli."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi di scienza e tecnologia; Servizi di progettazione; Servizi di analisi industriale, di ricerca industriale e di disegno industriale; Servizi di controllo qualità e di autenticazione; Stilismo [industrial design]; Servizi di ricerca e sviluppo; Archiviazione dati online; Ricerca, pianificazione e sviluppo in materia di prodotti; Servizi di disegno tecnico; Servizi di disegni industriali; Computer grafica; Servizi di cartografia; Servizi di ingegneria; Stoccaggio e archiviazione elettronica di dati; Servizi di consulenza tecnologica; Informazioni in materia di ricerca tecnologica; Fornitura di informazioni scientifiche in materia di cambiamento climatico e di riscaldamento globale; Decorazione interna; Servizi di pianificazione architettonica ed urbana; Creazione di costumi e Ideazione di scenografie da spettacolo."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Moksliniai aparatai ir instrumentai, Moksliniu tyrimu aparatai ir instrumentai, Navigaciniai aparatai ir instrumentai, Geodezijos aparatai ir prietaisai, Audiovizualiniai aparatai ir prietaisai, Sverimo aparatai ir prietaisai, Matavimo aparatai ir instrumentai, Signaliniai aparatai ir instrumentai, Aptikimo aparatai ir prietaisai, Bandymo aparatai ir instrumentai, Tikrinimo aparatai ir prietaisai, Gelbejimo aparatai ir prietaisai ir Instrukciniai ir mokymo aparatai bei prietaisai; Aparatai ir prietaisai, skirti elektros energijai praleisti, perjungti, transformuoti, akumuliuoti, reguliuoti ar valdyti; Garso, vaizdu ar duomenu irasymo, perdavimo, atkurimo ar apdorojimo aparatai ir prietaisai; Naru kostiumai; Naru kaukes; Naru ausu kamstukai; Naru ir plaukiku nosies spaustukai; Naru pirstines; Povandeninio plaukiojimo kvepavimo aparatai; Gesintuvai; Ismanieji ziedai; Krypties kompasai; Galvos apsaugos; Ismaniuju telefonu dangteliai; Laikrodzio formos ismanieji telefonai; Laikrodzio formos delninukai; Laiko matavimo prietaisai (isskyrus laikrodzius); Rankiniu laikrodziu formos nesiojamieji komunikacijos prietaisai; Kompaktiniai diskai, universalieji skaitmeniniai (DVD) diskai ir kitos skaitmenines irasu laikmenos; Programine iranga; Kompiuteriai; Skreitiniai kompiuteriai; Kiseniniai kompiuteriai; Portatyviniai kompiuteriai; Asmeniniai kompiuteriai; Devimieji kompiuteriai; Kompiuteriu isoriniai irenginiai; Ismanieji laikrodziai; Ismaniosios apyrankes [matavimo prietaisai]; MP3 grotuvai; Telefono aparatai; Mobilieji telefonai; Ismanieji telefonai; Rysio ir telekomunikaciju aparatai; Garso ar vaizdo irasymo, perdavimo ar atkurimo aparatura; Baterijos; Saules baterijos; Ikraunami elementai; Elektrines baterijos; Kuro elementai; Parsisiunciamieji skaitmeniniai vaizdo failai, patvirtinti nepakeiciamaisiais zetonais [NFTs]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Transporto priemones ir vezimeliai; Aparatai, skirti judeti sausuma, Aparatai, skirti judeti oru, Erdves judejimo aparatai ir Aparatai, skirti judeti vandeniu; Sausumos, juros, oro ir erdves transporto priemoniu dalys ir priedai; Astromobiliai; Erdvelaiviai; Vandens transporto priemones; Orlaiviai; Aeronautikos aparatai, masinos ir irenginiai; Radijo bangomis valdomi lektuvai; Fotografuojantys bepilociai orlaiviai; Kariniai bepilociai orlaiviai ir Civiliniai bepilociai orlaiviai; Nuotoliniu budu valdomi skraidantys objektai; Nuotolinio valdymo transporto priemones [ne zaislai]; Autonomines transporto priemones; Nepilotuojamosios apzvalgines transporto priemones; Palydovu paleidimo transporto priemones; Povandenines transporto priemones; Nevairuojamosios transporto priemones; Visureigiai; Transporto priemoniu signalizacija ir apsaugines priemones nuo vagysciu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mokslo technologiju paslaugos; Dizaino paslaugos; Pramonines analizes, pramoniniu tyrimu ir pramoninio dizaino paslaugos; Kokybes kontroles ir autentiskumo patvirtinimo paslaugos; Eskizu darymas [pramoninis dizainas]; Moksliniu tyrimu ir pletros paslaugos; Internetiniu duomenu saugojimas; Produktu tyrimas, projektavimas ir tobulinimas; Techniniu breziniu rengimo paslaugos; Pramoninis konstravimas; Kompiuteriu grafinio dizaino paslaugos; Zemelapiu sudarymo paslaugos; Inzinerijos paslaugos; Elektroniniu duomenu saugojimas ir pregloba; Technologines konsultacijos; Informacijos, susijusios su technologiju tyrimais, teikimas; Mokslines informacijos apie klimato kaita ir visuotini atsilima teikimas; Interjero dekoravimas; Architekturos ir miestu planavimo paslaugos; Kostiumu dizainas ir Scenovaizdzio kurimas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zinatniski aparati un instrumenti, Petnieciskie aparati, ierices un instrumenti, Navigacijas aparati, ierices un instrumenti, Geodezijas aparatura un instrumenti, Audiovizualie aparati un instrumenti, Sversanas iekartas un instrumenti, Merisanas ierices un instrumenti, Signalizacijas aparatura un instrumenti, Indikativie aparati, ierices un instrumenti, Testesanas iekartas un instrumenti, Parbaudes (kontroles) aparati, ierices un instrumenti, Dzivibas glabsanas iekartas un instrumenti un Macibu un apmacibu aparati un instrumenti; Ierices un instrumenti elektribas vadisanai, elektroapgadei, elektribas parveidosanai, elektribas uzkrasanai, elektroapgades vai elektribas paterina regulesanai vai kontrolei; Ierices un instrumenti skanas, attelu vai datu ierakstisanai, parraidisanai, reproducesanai vai apstradei; Nireju un udenslideju terpi; Nireju un udenslideju maskas; Ausu aizbazni nirejiem un udenslidejiem; Deguna klipsi nirejiem un peldetajiem; Nireju un udenslideju cimdi; Elposanas aparati zemudens peldesanai; Ugunsdzesamie aparati; Viedgredzeni; Busoles; Aizsargkiveres; Viedtalrunu vacini; Viedtalruni rokas pulkstenu veida; Personalie digitalie asistenti pulkstenu forma; Laika merinstrumenti (iznemot pulkstenus); Nesajamas komunikacijas ierices rokas pulkstenu veida; Kompaktdiski, DVD diski un citi digitalie datu neseji; Programmatura; Datori; Klepjdatori; Rokas datori; Mobilie datori; Personalie datori; Valkajami datori; Datoru periferijas ierices; Viedie rokas pulksteni; Viedierices aproces forma (merinstrumenti), ko savieno ar citam iericem; MP3 failu atskanotaji; Telefona aparati; Mobilie telefoni; Viedtalruni; Sakaru un telekomunikaciju iekarta; Aparati skanas vai attelu ierakstam, parraidei vai reproducesanai; Akumulatoru baterijas; Saules baterijas; Uzladejamas sunas; Elektrisko akumulatoru baterijas; Kurinama elementi; Lejupieladejami digitalo attelu faili, kas autentificejami ar neaizstajamiem blokkezu zetoniem (NFT)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Transportlidzekli un parvietosanas lidzekli; Aparati, kas paredzeti, lai parvietotos pa sauszemi, Aparati, kas paredzeti, lai parvietotos pa gaisu, Kosmosa parvietosanas ierices un Aparati, kas paredzeti, lai parvietotos pa udeni; Dalas un detalas sauszemes, kugniecibas, gaisa un kosmosa transportlidzekliem; Astromobili; Kosmosa kugi; Udens transportlidzekli; Gaisakugi; Aeronautikas aparati, iekartas un ierices; Bezpilota lidmasinas; Ar uznemsanas kameram aprikoti droni; Militarie droni un Civilie droni; Talvadami lidojosi objekti; Talvadami transportlidzekli, iznemot rotallietas; Autonomi transportlidzekli; Bezpilota noverosanas transporta lidzekli; Nesejraketes satelitiem; Zemudens transportlidzekli; Bezpilota transportlidzekli; Transportlidzekli-visurgajeji; Pretzaglu un signalizacijas iekartas transportlidzekliem."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Zinatniski tehnologiskie pakalpojumi; Dizaina pakalpojumi; Rupnieciskas analizes, rupnieciskas izpetes un rupnieciska dizaina pakalpojumi; Kvalitates kontroles un autentifikacijas pakalpojumi; Stila izstrade (rupnieciskais dizains); Petniecibas un izstrades pakalpojumi; Datu uzglabasana tiessaiste; Produktu izpete, projektesana un izstrade; Tehniska rasesana; Rupnieciska dizaina pakalpojumi; Datorgrafikas dizaina pakalpojumi; Kartesanas pakalpojumi; Inzeniertehniskie pakalpojumi; Datu elektroniska glabasana un mitinasana; Konsultesana tehnologiju joma; Informacijas sniegsana saistiba ar tehnologiskiem petijumiem; Zinatniskas informacijas sniegsana klimata parmainu un globalas sasilsanas joma; Iekstelpu noformejuma veidosana; Arhitekturas un pilsetplanosanas pakalpojumi; Kostimu dizains un Scenografijas pakalpojumi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Apparat u strumenti xjentifici, Apparat u strumenti ghar-ricerka, Apparat u strumenti ghan-navigazzjoni, Apparat u strumenti ghal stharrig, Apparat u strumenti awdjovizivi, Apparat u strumenti tal-uzin, Apparat u strumenti ta' kejl, Apparat u strumenti ta' sinjalar, Apparat u strumenti ghad-ditezzjoni, Apparat u strumenti tal-ittestjar, Apparat u strumenti ghall-ispezzjoni, Apparat u strumenti tas-salvatagg tal-hajja u Apparat u strumenti ghall-istruzzjoni u ghat-taghlim; Apparat u strumenti ghat-tmexxija, id-distribuzzjoni, it-trasformazzjoni, l-akkumulazzjoni, ir-regolazzjoni jew il-kontroll tad-distribuzzjoni jew tal-konsum tal-elettriku; Apparat u strumenti ghar-registrazzjoni, it-trazmissjoni, ir-riproduzzjoni jew il-holqien ta' hsejjes, stampi jew data; Hwejjeg tal-ghaddasa; Maskri tal-ghaddasa; Plaggs tal-widnejn ghall-ghaddasa; Klipps tal-imnieher ghal ghaddasa u ghawwiema; Ingwanti ghall-ghaddasa; Apparat tan-nifs ghall-ghawm taht l-ilma; Apparat tat-tifi tan-nar bil-fowm; Crieket smart; Kumpassi (strumenti tal-kejl); Protezzjoni tar-ras; Kavers ghal smartfowns; Smartfowns fil-forma ta' arlogg tal-idejn; Assistenti digitali personali fil-forma ta' arlogg tal-id; Strumenti ghall-kejl tal-hin (li ma jinkludux arloggi); Taghmir ta' komunikazzjonijiet li jintlibsu fil-forma ta' arloggi ta' mal-polz; Disketti kumpatti (compact discs), DVDs u midja ta' registrazzjoni digitali ohra; Softwer; Kompjuters; Kompjuters stil takkwin; Taghmir informatiku li jinzamm fl-idejn; Kompjuters li jistghu jingarru; Kompjuters personali; Kompjuters li jintlibsu; Periferali addattati ghall-uzu mal-kompjuters; Arloggi tal-idejn tat-tip smart; Cineg konnessi flimkien [strumenti tal-kejl]; Taghmir li jhaddem l-MP3; Telefoni; Mowbajls; Smartphones; Apparat tal-komunikazzjoni u tat-telekomunikazzjoni; Apparat biex tirrekordja, ghat-trasmissjoni u riproduzzjoni ta' hsejjes u stampi; Batteriji; Batteriji solari; Celloli li jistghu jergghu jigu ccargjati; Batteriji tal-elettriku; Celloli li jipproducu kurrent elettriku minn reazzjoni kimika; Fajls ta' stampi digitali li jitnizzlu awtentikati minn tokens mhux fungibbli [NFTs]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Vetturi u vetturi ghall-garr; Apparat ghal-lokomozzjoni fl-art, Apparat ghal-lokomozzjoni fl-arja, Apparat tal-lokomozzjoni spazjali u Apparat ghal-lokomozzjoni fuq l-ilma; Partijiet u komponenti tal-vetturi tal-art, tal-bahar, tal-ajru u spazjali; Vetturi spazjali; Vetturi spazjali; Vetturi tal-ilma; Vetturi tal-arja; Apparat, magni u taghmir ghall-ajrunawtika; Drones; Drones bil-kameras; Drones militari u Drones civili; Oggetti li jtiru kkontrollati mill-boghod; Vetturi bil-kontroll mill-boghod, minbarra gugarelli; Vetturi awtonomi; Vetturi ta' studju minghajr pilota; Vetturi tal-illancjar ghas-satelliti; Vetturi ta' taht il-bahar; Vetturi bla ekwipagg; Vetturi tajbin ghal kull xorta ta' terren; Allarmi u taghmir ghal kontra s-serq ghall-vetturi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi teknologici xjentifici; Servizzi tal-Iddisinjar; Servizzi ta' analizi industrijali, ricerka industrijali u disinn industrijali; Servizzi ta' kontroll tal-kwalità u awtentikazzjoni; Il-mod kif haga hi msawra (disinn industrijali); Servizzi ta' ricerka u zvilupp; Hzin ta' data online; Ricerka, disinn u zvilupp ta' prodotti; Tpingija teknika; Disinn u pjanar industrijali; Servizzi ta' disinji grafici bil-kompjuter; Servizzi ta' xoghol ta' mapep; Servizzi ta' Inginerija; Hzin u hosting elettroniku ta' dejta; Konsulenza teknologika; Provvista ta' informazzjoni relatata mar-ricerka teknologika; Ghoti ta' informazzjoni xjentifika fl-oqsma tat-tibdil fil-klima u t-tishin globali; Disinn ta' tizjin ta' gewwa; Servizzi ta' ppjanar ta' arkitettura u urbani; Disinn ta' kostumi u Disinn ta' xenarju ta' spettakli."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Urzadzenia i przyrzady naukowe, Urzadzenia i przyrzady badawcze, Urzadzenia i przyrzady nawigacyjne, Urzadzenia i przyrzady geodezyjne, Aparatura i instrumenty audiowizualne, Urzadzenia i przyrzady do wazenia, Urzadzenia i instrumenty pomiarowe, Urzadzenia i instrumenty sygnalizacyjne, Urzadzenia i przyrzady do wykrywania, Urzadzenia i przyrzady testowe, Urzadzenia i przyrzady do kontroli, Urzadzenia i przyrzady do ratownictwa i Urzadzenia i przyrzady szkoleniowe i dydaktyczne; Urzadzenia i przyrzady do przewodzenia, przelaczania, przeksztalcania, gromadzenia, regulacji energii elektrycznej lub sterowania przelaczaniem lub zuzyciem energii elektrycznej; Urzadzenia i przyrzady do nagrywania, przesylania, odtwarzania lub przetwarzania dzwieków, obrazów lub danych; Skafandry dla nurków; Maski do nurkowania; Zatyczki do uszu do nurkowania; Zaciski do nosa dla nurków i plywaków; Rekawice dla nurków; Aparaty tlenowe do plywania podwodnego; Gasnice; Inteligentne pierscionki; Kompasy nawigacyjne; Oslony glowy; Pokrowce na smartfony; Smartfony w ksztalcie zegarka; Komputery kieszonkowe w postaci zegarka; Przyrzady do pomiaru czasu (z wylaczeniem zegarów i zegarków); Urzadzenia komunikacyjne do noszenia w postaci zegarków na reke; Plyty kompaktowe, DVD i inne cyfrowe nosniki do nagrywania danych; Oprogramowanie; Komputery; Laptopy; Urzadzenia typu Hand-Held; Komputery przenosne; Komputery osobiste; Komputery do noszenia na ciele lub w ubraniach; Sprzet peryferyjny do komputerów; Zegarki inteligentne; Inteligentne bransoletki (przyrzady pomiarowe); Odtwarzacze MP3; Telefony; Telefony komórkowe; Smartfony; Urzadzenia komunikacyjne i telekomunikacyjne; Urzadzenia do nagrywania, transmisji lub reprodukcji dzwieku lub obrazu; Baterie; Baterie sloneczne; Akumulatorki do powtórnego naladowania; Baterie, elektryczne; Ogniwa paliwowe; Cyfrowe pliki graficzne do pobrania uwierzytelnione za pomoca tokenów niezbywalnych [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Pojazdy i srodki transportu; Urzadzenia do poruszania sie po ladzie, Urzadzenia do poruszania sie w powietrzu, Urzadzenia do transportu kosmicznego i Urzadzenia do poruszania sie po wodzie; Czesci i akcesoria do pojazdów ladowych, zeglarskich, powietrznych i kosmicznych; Laziki; Statki kosmiczne; Pojazdy do poruszania sie po wodzie; Pojazdy lotnicze; Aparaty, maszyny i urzadzenia aeronautyczne; Samoloty; Drony wyposazone w kamere; Drony wojskowe i Drony cywilne; Zdalnie sterowane obiekty latajace; Pojazdy zdalnie sterowane, inne niz zabawki; Pojazdy autonomiczne; Bezzalogowe pojazdy badawcze; Rakiety nosne dla satelitów; Podwodne pojazdy; Pojazdy bezzalogowe; Samochody terenowe; Oraz autoalarmy i urzadzenia przeciwwlamaniowe do pojazdów."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi naukowo-technologiczne; Uslugi projektowania; Uslugi w zakresie analizy przemyslowej, badan przemyslowych i projektowania przemyslowego; Uslugi kontroli jakosci i poswiadczenia autentycznosci; Stylizacja [wzornictwo przemyslowe]; Uslugi badawczo-rozwojowe; Przechowywanie danych online; Badania produktu, projektowanie i rozwój; Uslugi w zakresie rysunku technicznego; Wzornictwo przemyslowe; Uslugi projektowania grafiki komputerowej; Uslugi kartograficzne; Uslugi inzynieryjne; Elektroniczne przechowywanie i hosting danych; Uslugi doradcze w dziedzinie technologii; Udzielanie informacji zwiazanych z badaniami technologicznymi; Dostarczanie informacji naukowych w dziedzinie zmiany klimatu i globalnego ocieplenia; Projektowanie dekoracji wnetrz; Uslugi architektoniczne i planowania urbanistycznego; Projektowanie kostiumów i Projektowanie scenografii przedstawien."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Instrumentos e aparelhos científicos, Aparelhos e instrumentos para investigação, Aparelhos e instrumentos de navegação, Aparelhos e instrumentos geodésicos, Aparelhos e instrumentos audiovisuais, Aparelhos e instrumentos de pesagem, Instrumentos e aparelhos de medição, Instrumentos e aparelhos de sinalização, Aparelhos e instrumentos de deteção, Aparelhos e instrumentos de ensaio, Aparelhos e instrumentos de inspeção, Instrumentos e aparelhos de salvamento e Aparelhos e instrumentos de ensino e instrução; Aparelhos e instrumentos para a condução, distribuição, transformação, acumulação, regulação ou controlo da distribuição ou do consumo de eletricidade; Aparelhos e instrumentos para o registo, a transmissão, a reprodução ou o processamento de sons, imagens ou dados; Fatos de mergulhador; Máscaras de mergulho; Tampões de ouvidos para o mergulho; Clipes nasais para mergulho e natação; Luvas para mergulho; Aparelhos de respiração para a natação subaquática; Extintores; Anéis inteligentes; Bússolas; Proteções para a cabeça; Coberturas para smartphones; Telefones inteligentes sob a forma de relógios de pulso; Assistentes digitais pessoais sob a forma de relógios de pulso; Instrumentos de medição de tempo (não incluindo relógios e de artigos de relojoaria); Dispositivos de comunicações portáteis sob a forma de relógios de pulso; CDs, DVDs e outros meios de registo digital; Software; Computadores; Computadores portáteis [laptops]; Computadores de bolso; Computadores móveis; Computadores pessoais; Malas para computadores portáteis; Periféricos adaptados para uso com computadores; Relógios inteligentes; Pulseiras conectáveis [instrumentos de medida]; Reprodutores de MP3; Aparelhos telefónicos; Telefones celulares; Telefones inteligentes; Aparelhos de comunicação e de telecomunicação; Aparelhos para o registo, a transmissão, a reprodução do som ou de imagens; Baterias; Pilhas solares; Células recarregáveis; Baterias elétricas; Pilhas de combustível; Ficheiros de imagem digitais descarregáveis autenticados com \"tokens\" não fungíveis [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Veículos e meios de transporte; Aparelhos para locomoção por terra, Aparelhos para locomoção aérea, Aparelhos de locomoção espaciais e Aparelhos para locomoção aquática; Peças e componentes de veículos terrestres, náuticos, aéreos e espaciais; Astromóveis; Veículos espaciais; Veículos aquáticos; Aeronaves; Aparelhos, máquinas e dispositivos para a aeronáutica; Aviões de controlo remoto; Drones com câmaras; Drones militares e Drones civis; Objetos voadores de controlo remoto; Veículos telecomandados, que não brinquedos; Veículos autónomos; Veículos de prospeção sem piloto; Veículos para o lançamento de satélites; Veículos subaquáticos; Veículos não tripulados; Veículos todo-o-terreno; Alarmes e dispositivos anti-roubo para veículos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços científicos e tecnológicos; Serviços de design; Serviços de análises industriais, de pesquisas industriais e de desenho industrial; Serviços de controlo de qualidade e de autenticação; Estilismo; Serviços de investigação e desenvolvimento; Armazenamento de dados on-line; Investigação, concessão e desenvolvimento de produtos; Desenho técnico; Design industrial; Serviços de conceção de gráficos informáticos; Serviços de mapeamento; Serviços de engenharia; Armazenamento e alojamento eletrónico de dados; Consultoria em tecnologia; Fornecimento de informações relacionadas com a investigação tecnológica; Informação científica nos domínios das alterações climáticas e do aquecimento global; Design de decoração de interiores; Serviços de planeamento arquitetónico e urbano; Design de trajes de fantasia e Conceção de cenários de espetáculos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aparate si instrumente utilizate în domeniul stiintei, Aparate si instrumente de cercetare, Aparate si instrumente de navigatie, Aparate si instrumente topografice, Aparate si instrumente audiovizuale, Cântarit (Aparate si instrumente de -), Instrumente si aparate de masurat, Aparate si instrumente de semnalizare, Aparate si instrumente de detectare, Aparate si instrumente de încercare, Aparate si instrumente de inspectie, Echipamente si instrumente de salvare si Aparate si instrumente pentru predare si instruire; Aparate si instrumente pentru conducerea, distributia, transformarea, acumularea, reglarea sau comanda distributiei sau consumului de electricitate; Aparate si instrumente pentru înregistrarea, transmiterea, reproducerea sau elaborarea de sunete, imagini sau date; Costume de scafandru; Masti pentru scafandri; Tampoane de urechi pentru scafandri; Cleme nazale pentru scafandri si înotatori; Manusi de scafandru; Aparate de respirat sub apa pentru înot subacvatic; Extinctoare; Inele inteligente; Compasuri [instrumente de masura]; Protectia capului; Huse pentru telefoane inteligente; Telefoane inteligente sub forma de ceas de mâna; Asistenti digitali personali sub forma unui ceas de mâna; Instrumente pentru masurarea timpului (exceptând ceasuri si ceasornice); Dispozitive de comunicatii portabile, sub forma de ceasuri de mâna; Discuri compacte, DVD-uri si alte suporturi digitale de înregistrare; Software; Computere; Laptopuri; Palmtop-uri; Calculatoare mobile; Calculatoare personale; Calculatoare portabile; Periferice adaptate pentru a fi folosite la calculatoare; Ceasuri inteligente; Bratari conectate [instrumente de masura]; MP3-playere; Telefoane; Telefoane mobile; Telefoane inteligente; Aparate de comunicatii si telecomunicatii; Aparate pentru înregistrarea, transmiterea, reproducerea sunetului sau imaginilor; Baterii; Baterii solare; Celule reîncarcabile; Baterii galvanice; Pile de combustie; Fisiere de imagini digitale descarcabile autentificate prin jetoane nefungibile (NFT-uri)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Vehicule si mijloace de transport; Echipamente pentru locomotie terestra, Echipamente pentru locomotie aeriana, Aparatele de locomotie spatiale si Mijloace de locomotie pe apa; Piese si parti constitutive de vehicule terestre, nautice, aeriene si spatiale; Astromobile; Vehicule spatiale; Vehicule acvatice; Aparate de zbor; Aeronautica (Aparate, masini si dispozitive pentru -); Avioane teleghidate; Drone cu camera; Drone militare si Drone civile; Obiecte zburatoare controlate la distanta; Vehicule cu telecomanda, altele decât cele de jucarie; Vehicule autonome; Vehicule geodezice fara pilot; Vehicule de lansare pentru sateliti; Vehicule submarine; Vehicule fara pilot; Vehicule pentru orice tip de teren; Alarme si dispozitive antifurt pentru vehicule."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii tehnologice stiintifice; Servicii de proiectare; Servicii de analiza industriala, cercetare industriala si proiectare industriala; Servicii de control al calitatii si certificare de autenticitate; Stilism [design industrial]; Servicii de cercetare si dezvoltare; Stocare de date online; Inspectarea, proiectarea si dezvoltarea produselor; Realizarea de desene tehnice; Design industrial; Servicii de design grafic pentru calculator; Servicii de cartografiere; Inginerie; Stocare si gazduire electronica de date; Consultanta tehnologica; Furnizare de informatii despre cercetarea tehnologica; Furnizare de informatii stiintifice în domeniul schimbarilor climatice si al încalzirii globale; Decoratiuni interioare; Servicii de planificare arhitecturala si urbana; Design de costume si Proiectare de scenografie de spectacol."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vedecké zariadenia a nástroje, Výskumné zariadenia a prístroje, Navigacné prístroje a nástroje, Geodetické prístroje a nástroje, Audio-vizuálne prístroje a nástroje, Prístroje a nástroje na vázenie, Zariadenia a nástroje na meranie, Signalizacné zariadenia a nástroje, Detekcné zariadenia a prístroje, Skúsobné prístroje a nástroje, Kontrolné zariadenia a prístroje, Zariadenia a prístroje na záchranu zivota a Instruktázne a ucebné zariadenia a nástroje; Prístroje a nástroje na vedenie, distribúciu, transformáciu, akumuláciu, reguláciu alebo kontrolu distribúcie alebo spotreby elektriny; Prístroje a nástroje na nahrávanie, prenos, reprodukciu alebo spracovanie zvuku, obrazu alebo údajov; Potápacské kombinézy; Potápacské masky; Tampóny do usí pre potápacov; Nosové stipce pre plavcov a potápacov; Potápacské rukavice; Dýchacie prístroje na plávanie pod vodou; Hasiace prístroje; Smart prstene; Buzoly; Chránice hlavy; Kryty na smartfóny; Smartfóny v tvare náramkových hodiniek; Vreckové pocítace (PDA) v tvare hodiniek; Prístroje na meranie casu (okrem hodín a hodiniek); Nositelné komunikacné zariadenia v podobe náramkových hodiniek; Kompaktné disky, DVD a ostatné nosice digitálnych nahrávok; Softvér; Pocítace; Prenosné pocítace; Hand-helds; Mobilné pocítace; Osobné pocítace; Pocítace na nosenie na tele alebo na odeve; Periférne zariadenia pocítacov; Inteligentné hodinky; Inteligentné náramky (meracie prístroje); MP3 prehrávace; Telefónne prístroje; Mobilné telefóny; Smartfóny; Komunikacné a telekomunikacné zariadenia; Prístroje na nahrávanie, prenos alebo reprodukciu zvuku alebo obrazu; Batérie; Solárne clánky; Dobíjatelné clánky; Elektrické batérie (clánky); Palivové clánky; Stahovatelné digitálne obrazové súbory overené nezamenitelnými tokenmi (NFT)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vozidlá a dopravné prostriedky; Zariadenia na pohyb po zemi, Zariadenia na pohyb vzduchom, Zariadenia na pohyb v kozme a Zariadenia na pohyb po vode; Casti a súcasti pozemných, námorných, leteckých a kozmických dopravných prostriedkov; Astromobily; Kozmické dopravné prostriedky; Vodné dopravné prostriedky; Lietadlá, helikoptéry; Letecké prístroje, stroje a zariadenia; Bezpilotné lietadlá; Drony s kamerou; Vojenské dróny a Civilné dróny; Dialkovo ovládané lietajúce predmety; Vozidlá na dialkové ovládanie (nie hracky); Autonómne vozidlá; Bezpilotné prieskumné vozidlá; Nosné rakety na vypústanie satelitov; Podvodné vozidlá; Vozidlá bez posádky; Vozidlá na vsetky druhy terénu; Poplasné alarmy a zariadenia pre vozidlá."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vedecké technologické sluzby; Návrhárske sluzby; Priemyselné analýzy, priemyselný výskum a priemyselný dizajn; Sluzby na kontrolu kvality a overenie pravosti; Navrhovanie vzhladu výrobkov (priemyselné dizajnérstvo); Sluzby v oblasti výskumu a vývoja; Online uchovávanie dát; Výskum, navrhovanie a vývoj produktov; Technické rysovanie; Priemyselné dizajnérstvo; Pocítacový grafický dizajn; Mapovacie sluzby; Inzinierske cinnosti; Elektronické ukladanie a hosting údajov; Technologické poradenstvo; Poskytovanie informácií v oblasti technologického výskumu; Poskytovanie vedeckých informácií v oblasti zmeny klímy a globálneho oteplovania; Výzdoba interiérov; Sluzby v oblasti architektúry a urbanizmu [územného plánovania]; Navrhovanie kostýmov a Navrhovanie pódiových dekorácií."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Znanstveni aparati in instrumenti, Aparati in instrumenti za raziskave, Navigacijski aparati in instrumenti, Geodetski aparati in instrumenti, Avdiovizualni aparati in instrumenti, Aparati in instrumenti za tehtanje, Merilni aparati in instrumenti, Signalni aparati in instrumenti, Aparati in instrumenti za odkrivanje, Testni aparati in instrumenti, Inspekcijski aparati in instrumenti, Aparati in instrumenti za resevanje in Aparati in instrumenti za ucenje in poucevanje; Aparati in instrumenti za prevajanje, preklapljanje, transformiranje, akumuliranje, regulacijo ali kontrolo distribucije ali porabe elektricne energije; Aparati in instrumenti za snemanje, prenos, reprodukcijo ali obdelavo zvoka, slik ali podatkov; Potapljaske obleke; Potapljaske maske; Usesni cepki za potapljace; Nosne scipalke za potapljace in plavalce; Rokavice za potapljace; Dihalni aparati za plavanje pod vodo; Gasilni aparati; Pametni prstani; Kompasi [merilni instrumenti]; Proizvodi za zascito glave; Ohisja za pametne telefone; Pametni telefoni v obliki zapestne ure; Osebni digitalni pomocniki v obliki zapestne ure; Instrumenti za merjenje casa (razen ur in zapestnih ur); Nosljive komunikacijske naprave v obliki zapestne ure; CD-ji, DVD-ji in ostali zvocni mediji; Programska oprema; Racunalniki; Notesniki (osebni racunalniki); Rocni racunalniki; Nosljivi racunalniki; Osebni racunalniki; Prenosni racunalniki; Zunanje enote, prilagojene za uporabo z racunalniki; Pametne zapestne ure; Pametne zapestnice [merilni instrumenti]; MP3 predvajalniki; Telefoni; Mobilni telefoni; Pametni telefoni; Komunikacijski in telekomunikacijski aparati; Aparati za snemanje, prenos in reprodukcijo zvoka in slike; Baterije; Solarne baterije; Celice za ponovno polnjenje; Elektricne baterije; Gorivne celice; Prenosljive digitalne slikovne datoteke, preverjene z nezamenljivimi zetoni (NFT)."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Vozila in prevozna sredstva; Aparati za gibanje po kopnem, Aparati za gibanje po zraku, Vesoljske naprave za premikanje in Aparati za gibanje po vodi; Deli in sestavni deli suhozemskih, pomorskih, zracnih in vesoljskih vozil; Astromobili; Vesoljska vozila; Vodna vozila; Zracna vozila; Aeronavticni aparati, stroji in naprave; Letala brez pilota; Brezpilotna letala s kamero; Vojaski brezpilotni zrakoplovi in Civilni brezpilotni zrakoplovi; Leteci predmeti z daljinskim upravljanjem; Vozila na daljinsko upravljanje (razen igrac); Avtonomna vozila; Brezpilotna vozila za pregledovanje; Nosilne rakete za satelite; Podvodna vozila; Vozila brez posadke; Terenska vozila; Protivlomni alarmi in naprave za vozila."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Znanstveno-tehnoloske storitve; Oblikovalske storitve; Storitve industrijskih analiz, industrijskih raziskav in tehnicnega risanja; Storitve kontrole kakovosti in preverjanja; Oblikovanje [industrijsko]; Raziskovalne in razvojne storitve; Spletno shranjevanje podatkov; Preucevanje, nacrtovanje in razvoj izdelkov; Tehnicno risanje; Industrijsko oblikovanje; Storitve racunalniskega graficnega oblikovanja; Kartografske storitve; Inzenirske storitve; Elektronsko shranjevanje in gostovanje podatkov; Svetovanje glede tehnologije; Nudenje informacij v zvezi s tehnoloskimi raziskavami; Zagotavljanje znanstvenih informacij s podrocja podnebnih sprememb in globalnega segrevanja; Oblikovanje notranjosti prostorov (interierov); Arhitekturne in urbanisticne storitve; Oblikovanje kostumov in Scenografsko oblikovanje."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos científicos, Aparatos e instrumentos de investigación, Aparatos e instrumentos de navegación, Aparatos e instrumentos geodésicos, Aparatos e instrumentos audiovisuales, Aparatos e instrumentos de pesaje, Instrumentos y aparatos de medición, Aparatos e instrumentos de señalización, Aparatos e instrumentos de detección, Aparatos e instrumentos de ensayos, Aparatos e instrumentos de inspección, Aparatos e instrumentos de salvamento y Aparatos e instrumentos de instrucción y de enseñanza; Aparatos e instrumentos para la conducción, distribución, transformación, acumulación, regulación o control de la distribución o consumo de electricidad; Aparatos e instrumentos para registrar, transmitir, reproducir o procesar sonido, imágenes o datos; Trajes de buceo; Máscaras de buceo; Tapones para los oídos para buceo; Pinzas nasales para buceo y natación; Guantes de buceo; Aparatos de respiración para la natación subacuática; Extintores; Anillos inteligentes; Brújulas; Cascos de protección; Carcasas para teléfonos inteligentes [smartphones]; Teléfonos inteligentes [ smartphones] en forma de reloj de pulsera; Asistentes digitales personales en forma de reloj; Instrumentos para medir el tiempo (no incluidos los relojes); Dispositivos de comunicaciones que pueden llevarse puestos en forma de relojes de pulsera; Discos compactos, DVD y otros soportes de grabación digitales; Software; Ordenadores; Ordenadores de regazo; Ordenadores de bolsillo; Ordenadores portátiles; Ordenadores personales; Ordenadores ponibles; Dispositivos periféricos utilizados con ordenadores; Relojes inteligentes; Brazaletes conectados [instrumentos de medición]; Reproductores MP3; Aparatos telefónicos; Teléfonos celulares; Smartphones; Comunicaciones y aparatos de telecomunicación; Aparatos de grabación, transmisión o reproducción de sonido o imágenes; Baterías; Pilas solares; Células recargables; Pilas eléctricas; Pilas de combustible; Archivos de imágenes digitales descargables autenticados por tókenes no fungibles [TNF]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Vehículos y medios de transporte; Aparatos de locomoción terrestre, Aparatos de locomoción aérea, Aparatos de locomoción espaciales y Aparatos de locomoción marítima; Piezas y componentes de vehículos terrestres, náuticos, aéreos y espaciales; Astromóviles; Vehículos espaciales; Vehículos acuáticos; Aeronaves; Aparatos, máquinas y dispositivos para la aeronáutica; Aviones teledirigidos; Drones con cámara; Drones militares y Drones civiles; Objetos volantes de control remoto; Vehículos teledirigidos que no sean juguetes; Vehículos autónomos; Vehículos de inspección sin piloto; Vehículos de lanzamiento para satélites; Vehículos subacuáticos; Vehículos sin piloto; Vehículos todoterreno; Alarmas y dispositivos antirrobo para vehículos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios tecnológicos científicos; Servicios de diseño; Servicios de análisis industrial, investigación industrial y diseño industrial; Servicios de control de calidad y certificados de autenticidad; Estilismo [diseño industrial]; Servicios de investigación y desarrollo; Almacenamiento de datos en línea; Investigación, diseño y desarrollo de productos; Dibujo técnico; Diseño industrial; Servicios de diseño de gráficos por ordenador; Servicios de cartografía; Servicios de ingeniería; Almacenamiento y hospedaje electrónico de datos; Consultoría tecnológica; Suministro de información sobre investigaciones tecnológicas; Suministro de información científica en relación con el cambio climático y el calentamiento global; Decoración de interiores; Servicios de arquitectura y planificación urbanística; Diseño de vestuario escénico y Diseño de decorados para espectáculos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vetenskapliga apparater och instrument, Forskningsapparater och -instrument, Apparater och instrument för navigation, Geodetiska apparater och instrument, Audio-visuella apparater och instrument, Vägningsapparater och -instrument, Mätapparater och instrument, Signaleringsapparater och instrument, Apparater och instrument för detektering, Apparater och instrument för provning, Inspektionsapparater och -instrument, Livräddningsapparater och instrument och Apparater och instrument för undervisning och instruktion; Apparater och instrument för ledning, distribution, transformering, ackumulering, reglering eller styrning av distribution eller förbrukning av elektricitet; Apparater och instrument för inspelning, överföring, återgivning eller bearbetning av ljud, bilder eller data; Dykardräkter; Dykarmasker; Öronproppar för dykare; Näsklämmor för dykare och simmare; Handskar för dykare; Andningsapparater för sportdykare; Eldsläckare; Smarta ringar; Kompasser; Huvudskydd; Fodral för smartphones; Smartphones i klockformat; Personliga digitala assistenter i form av armbandsur; Tidsmätningsinstrument (inte inkluderande klockor och ur); Bärbar kommunikationsutrustning i form av armbandsur; CD-skivor, DVD's och andra digitala inspelningsbara media; Mjukvaror; Datorer; Laptops; Handdatorer; Mobila datorer; Persondatorer; Kroppsburna datorer; Kringutrustning anpassade för användning med datorer; Smarta klockor; Smartarmband [mätinstrument]; MP3-spelare; Telefoner; Mobiltelefoner; Smarta telefoner; Kommunikations- och telekommunikationsapparater; Apparater för inspelning, upptagning, sändning eller återgivning av ljud och bilder; Batterier; Solbatterier; Laddningsbara celler; Batterier, elektriska; Bränsleceller; Nedladdningsbara digitala bildfiler autentiserade genom non-fungible tokens [NFT]."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Fordon och -fortskaffningsmedel; Fortskaffningsmedel för transport till lands, Fortskaffningsmedel för transport med flyg, Rymdfarkoster och Fortskaffningsmedel för transport på vatten; Delar och komponenter för landfordon, luft-, vatten- och rymdfarkoster; Rovers (rymdfordon); Rymdfarkoster; Vattenfarkoster; Flygmaskiner; Flygapparater, -maskiner och -anordningar; Fjärrstyrda målflygplan; Kameradrönare; Militära drönare och Civila drönare; Fjärrstyrda flygande objekt; Radiostyrda fordon (andra än leksaker); Självkörande fordon; Förarlösa inspektionsfordon; Bärraketer för satelliter; Undervattensfarkoster; Obemannade fordon och farkoster; Terrängfordon; Stöldlarm och stöldskyddsanordningar för fordon."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Vetenskapliga teknologiska tjänster; Designtjänster; Tjänster för industriell analys, industriell forskning och industriell formgivning; Tjänster avseende kvalitetskontroll och äkthetsintygande; Konstnärlig formgivning [industriell]; Forsknings- och utvecklingstjänster; Datalagringstjänster online; Produktundersökning, -planering och -utveckling; Teknisk ritning; Industriell formgivning; Utformning av datorgrafik; Kartläggningstjänster; Ingenjörstjänster; Elektronisk lagring och värdskap av data; Teknologiska konsultationer; Tillhandahållande av information om teknologisk forskning; Tillhandahållande av vetenskaplig information inom området klimatförändring och global uppvärmning; Design av inredningar; Arkitekttjänster och stadsplanering; Design av kostymer och Design av scendekorationer."
+        }
+      ]
+    },
+    "id": "068b67fd-fc27-46e1-ae86-4b85358321bd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "238"
+      }
+    ],
+    "recordLastUpdated": "20260827",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "26 Rue Grignan,Marseille, 13006",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "Myriam Angelier"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251121",
+        "applicationNumber": "19280435"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351121",
+      "lastPublicationDate": "20251216",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260327",
+        "registrationNumber": "19280435"
+      }
+    },
+    "version": "20260827020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/em/068b67fd-fc27-46e1-ae86-4b85358321bd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.176Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

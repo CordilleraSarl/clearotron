@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/sa/1b9dc930-9499-477b-ac2f-cdbf8d9cadcd",
+  "provider": "clarivate",
+  "office": "sa",
+  "guid": "1b9dc930-9499-477b-ac2f-cdbf8d9cadcd",
+  "applicationNumber": "377399",
+  "registrationNumber": null,
+  "applicationDate": "2022-11-10",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "الخدمات العلمية والتقنية وخدمات البحث والتصميم المتعلقة بها، وخدمات التحاليل والأبحاث الصناعية، وخدمات مراقبة الجودة والتوثيق وخدمات تصميم وتطوير عتاد وبرامج الكمبيوتر",
+      "translation_language": "en",
+      "translation": "Scientific and technical services, research and design services related thereto, analysis and industrial research services, quality control and documentation services, and design and development services for computer hardware and software."
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Lincoln Street, Boston, Massachusetts 02111, USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technical services, research and design services related thereto, analysis and industrial research services, quality control and documentation services, and design and development services for computer hardware and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "الخدمات العلمية والتقنية وخدمات البحث والتصميم المتعلقة بها، وخدمات التحاليل والأبحاث الصناعية، وخدمات مراقبة الجودة والتوثيق وخدمات تصميم وتطوير عتاد وبرامج الكمبيوتر"
+        }
+      ]
+    },
+    "id": "1b9dc930-9499-477b-ac2f-cdbf8d9cadcd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240429",
+    "registrationOfficeCode": "SA",
+    "registrationOfficeName": "Saudi Arabia",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "SA",
+        "representativeAddressCountryName": "Saudi Arabia",
+        "representativeNativeAddress": "ص.ب ، الرياض الرمز البريدي 11423",
+        "representativeNativeName": "محمد عبدالعزيز محمد العساكر"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221110",
+        "applicationNumber": "377399"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20240429150247",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/sa/1b9dc930-9499-477b-ac2f-cdbf8d9cadcd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

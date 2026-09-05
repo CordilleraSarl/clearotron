@@ -1,0 +1,378 @@
+{
+  "uri": "/mark/us/c17370ff-b2d0-4db1-85ea-8c957a0e95e4",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "c17370ff-b2d0-4db1-85ea-8c957a0e95e4",
+  "applicationNumber": "87594903",
+  "registrationNumber": "5635703",
+  "applicationDate": "2017-09-03",
+  "registrationDate": "2018-12-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2018-10-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 [ Amplifiers; Binoculars; Cabinets for loudspeakers; Cases for smartphones; Cellular phones; Computer keyboards; ] Computer bags; [ Computer cases; ] Covers for tablet computers; [ Distance measuring apparatus; Eyeglasses; Field-glasses; Magnifying glasses; Oculars; Pickups; Portable media players; ] Protective covers and cases for tablet computers [ ; Protective films adapted for smartphones; Rechargeable batteries; Sighting telescopes for firearms; Solar batteries; Spectacle cases; Telephone apparatus, namely, intercoms; Wearable activity trackers ]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Hubei Zhihengda Garden Engineering Co.,Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Nitin Kaushik",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20240819",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "No.97 Lianzhong St.,Dongyuan Community, Zaoyang, 441000, CHIN",
+        "applicantAddressCity": "Zaoyang",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "441000",
+        "applicantAddressStreet": "No.97 Lianzhong St.,Dongyuan Community",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Hubei Zhihengda Garden Engineering Co.,Ltd."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 [ Amplifiers; Binoculars; Cabinets for loudspeakers; Cases for smartphones; Cellular phones; Computer keyboards; ] Computer bags; [ Computer cases; ] Covers for tablet computers; [ Distance measuring apparatus; Eyeglasses; Field-glasses; Magnifying glasses; Oculars; Pickups; Portable media players; ] Protective covers and cases for tablet computers [ ; Protective films adapted for smartphones; Rechargeable batteries; Sighting telescopes for firearms; Solar batteries; Spectacle cases; Telephone apparatus, namely, intercoms; Wearable activity trackers ]"
+        }
+      ]
+    },
+    "id": "c17370ff-b2d0-4db1-85ea-8c957a0e95e4",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240819",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20240819",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20240819",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20240205",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20231225",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20191216",
+        "descriptionText": "REVIEW OF CORRESPONDENCE COMPLETE - CERTIFICATE OF REG MAILED"
+      },
+      {
+        "date": "20191015",
+        "descriptionText": "REVIEW OF CORRESPONDENCE COMPLETE - CERTIFICATE OF REG MAILED"
+      },
+      {
+        "date": "20190906",
+        "descriptionText": "PETITION TO DIRECTOR GRANTED"
+      },
+      {
+        "date": "20190826",
+        "descriptionText": "ASSIGNED TO PETITION STAFF"
+      },
+      {
+        "date": "20190519",
+        "descriptionText": "TEAS PETITION TO DIRECTOR RECEIVED"
+      },
+      {
+        "date": "20190516",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20190516",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20181225",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20181017",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20181009",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20181009",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20180919",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20180904",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20180717",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20180717",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20180714",
+        "descriptionText": "NOTICE OF REVIVAL - E-MAILED"
+      },
+      {
+        "date": "20180713",
+        "descriptionText": "TEAS PETITION TO REVIVE RECEIVED"
+      },
+      {
+        "date": "20180713",
+        "descriptionText": "PETITION TO REVIVE-GRANTED"
+      },
+      {
+        "date": "20180713",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20180711",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20180711",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20180711",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20180626",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20171213",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20171213",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20171213",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20171208",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170911",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20170906",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "No.97 Lianzhong St.,Dongyuan Community, Zaoyang, 441000, CHIN",
+        "city": "Zaoyang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hubei Zhihengda Garden Engineering Co.,Ltd.",
+        "postalCode": "441000",
+        "street": "No.97 Lianzhong St.,Dongyuan Community"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "No.97 Lianzhong St.,Dongyuan Community, Zaoyang, 441000, CHIN",
+        "city": "Zaoyang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hubei Zhihengda Garden Engineering Co.,Ltd.",
+        "postalCode": "441000",
+        "street": "No.97 Lianzhong St.,Dongyuan Community"
+      },
+      {
+        "address": "No.97 Lianzhong St.,Dongyuan Community, Zaoyang, 441000, CHIN",
+        "city": "Zaoyang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hubei Zhihengda Garden Engineering Co.,Ltd.",
+        "postalCode": "441000",
+        "street": "No.97 Lianzhong St.,Dongyuan Community"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "No.97 Lianzhong St.,Dongyuan Community, Zaoyang, 441000, CHIN",
+        "city": "Zaoyang",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hubei Zhihengda Garden Engineering Co.,Ltd.",
+        "postalCode": "441000",
+        "street": "No.97 Lianzhong St.,Dongyuan Community"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "90843129",
+            "markCurrentStatus": "Pending",
+            "markVerbalElementText": "VUORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90843129",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "VUORI",
+            "refusalStatus": "Refused"
+          },
+          {
+            "applicationNumber": "90843129",
+            "markCurrentStatus": "Published",
+            "markVerbalElementText": "VUORI",
+            "refusalStatus": "Refused"
+          }
+        ],
+        "refusalStatus": "Cited"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Staten Island, NY 10307, United States",
+        "representativeCorrespondentAddressLines": [
+          "Staten Island, NY 10307",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Nitin Kaushik, 50 Lerer Lane"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Staten Island, NY 10307, United States",
+        "representativeAddressLines": [
+          "Staten Island, NY 10307",
+          "United States"
+        ],
+        "representativeName": "Nitin Kaushik"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170903",
+        "applicationNumber": "87594903"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20170701"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20170701"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 8 - ACCEPTED",
+        "markOfficialStatusCode": "701",
+        "markOfficialStatusDate": "20240819",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20181009"
+      ],
+      "registration": {
+        "registrationDate": "20181225",
+        "registrationNumber": "5635703"
+      },
+      "revivalDate": "20180714"
+    },
+    "version": "20260113070244",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VORI"
+    }
+  },
+  "_uri": "/mark/us/c17370ff-b2d0-4db1-85ea-8c957a0e95e4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:11.871Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

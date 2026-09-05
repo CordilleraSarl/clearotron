@@ -1,0 +1,294 @@
+{
+  "uri": "/mark/us/ad8ac439-e191-4980-9cdc-d98e53f0d408",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ad8ac439-e191-4980-9cdc-d98e53f0d408",
+  "applicationNumber": "87160956",
+  "registrationNumber": "5185734",
+  "applicationDate": "2016-09-05",
+  "registrationDate": "2017-04-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2017-01-31"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENORO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Battery chargers; Cases for smartphones; Cell phone straps; Computer peripheral devices; Covers for smartphones; Data processing equipment, namely, couplers; Display screen protectors for providing shade and privacy specially adapted to electronic devices, namely, cell phones, smartphones and mobile phones; Electric contacts; Headphones; Microphones; Monopods used to take photographs by positioning a smartphone or camera beyond the normal range of the arm; Stands adapted for mobile phones; Sunglasses; Tripods; Electric navigational instruments; Electrical plugs and sockets",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Shenzhen hengtaihuarui technology co.,ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Omar F. Darwich",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20231027",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "Chuangye Garden,Minzhi St.,Longhua Dist., Shenzhen, Guangdong, 518000, CHIN",
+        "applicantAddressCity": "Shenzhen, Guangdong",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "518000",
+        "applicantAddressStreet": "Chuangye Garden,Minzhi St.,Longhua Dist.",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantName": "Shenzhen hengtaihuarui technology co.,ltd.",
+        "applicantSecondaryAddressUnit": "No. 402, Taojing Building"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Battery chargers; Cases for smartphones; Cell phone straps; Computer peripheral devices; Covers for smartphones; Data processing equipment, namely, couplers; Display screen protectors for providing shade and privacy specially adapted to electronic devices, namely, cell phones, smartphones and mobile phones; Electric contacts; Headphones; Microphones; Monopods used to take photographs by positioning a smartphone or camera beyond the normal range of the arm; Stands adapted for mobile phones; Sunglasses; Tripods; Electric navigational instruments; Electrical plugs and sockets"
+        }
+      ]
+    },
+    "id": "ad8ac439-e191-4980-9cdc-d98e53f0d408",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260418",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20231027",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20231027",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20231027",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20230622",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20220418",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20170418",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20170131",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20170131",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20170111",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20161216",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20161214",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20161213",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20161213",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20161213",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20161213",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20161213",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20161213",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20160909",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20160908",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "No. 402, Taojing Building, Shenzhen, Guangdong, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Shenzhen hengtaihuarui technology co.,ltd.",
+        "secondaryAddressUnit": "Chuangye Garden,Minzhi St.,Longhua Dist.",
+        "street": "No. 402, Taojing Building"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Chuangye Garden,Minzhi St.,Longhua Dist., Shenzhen, Guangdong, 518000, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Shenzhen hengtaihuarui technology co.,ltd.",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "No. 402, Taojing Building",
+        "street": "Chuangye Garden,Minzhi St.,Longhua Dist."
+      },
+      {
+        "address": "Chuangye Garden,Minzhi St.,Longhua Dist., Shenzhen, Guangdong, 518000, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Shenzhen hengtaihuarui technology co.,ltd.",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "No. 402, Taojing Building",
+        "street": "Chuangye Garden,Minzhi St.,Longhua Dist."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "No. 402, Taojing Building, Shenzhen, Guangdong, CHIN",
+        "city": "Shenzhen, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "name": "Shenzhen hengtaihuarui technology co.,ltd.",
+        "secondaryAddressUnit": "Chuangye Garden,Minzhi St.,Longhua Dist.",
+        "street": "No. 402, Taojing Building"
+      }
+    ],
+    "recordLastUpdated": "20260421",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Wadsworth, OH 44281, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Wadsworth, OH 44281",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Omar F. Darwich The Darwich Law Firm, LLC, 300 Weatherstone Dr #190"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Wadsworth, OH 44281, UNITED STATES",
+        "representativeAddressLines": [
+          "Wadsworth, OH 44281",
+          "UNITED STATES"
+        ],
+        "representativeName": "Omar F. Darwich"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160905",
+        "applicationNumber": "87160956"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20160102"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20160415"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "SECTION 8 - ACCEPTED",
+        "markOfficialStatusCode": "701",
+        "markOfficialStatusDate": "20231027",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20170131"
+      ],
+      "registration": {
+        "registrationDate": "20170418",
+        "registrationNumber": "5185734"
+      }
+    },
+    "version": "20260421090934",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENORO"
+    }
+  },
+  "_uri": "/mark/us/ad8ac439-e191-4980-9cdc-d98e53f0d408",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

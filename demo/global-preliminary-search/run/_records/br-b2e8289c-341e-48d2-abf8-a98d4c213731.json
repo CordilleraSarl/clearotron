@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/br/b2e8289c-341e-48d2-abf8-a98d4c213731",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "b2e8289c-341e-48d2-abf8-a98d4c213731",
+  "applicationNumber": "920295371",
+  "registrationNumber": "920295371",
+  "applicationDate": "2020-07-29",
+  "registrationDate": "2021-04-20",
+  "expiryDate": "2031-04-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "DQORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Assessoria, consultoria e informação em educação [instrução].",
+      "translation_language": "en",
+      "translation": "Advice, consultancy and information in education [instruction]."
+    }
+  ],
+  "owner": "JOEL SOLON FARIAS DE AZEVEDO",
+  "ownerNative": null,
+  "ownerCountry": "BR",
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "BR",
+        "applicantAddressCountryName": "Brazil",
+        "applicantName": "JOEL SOLON FARIAS DE AZEVEDO"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advice, consultancy and information in education [instruction].",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Assessoria, consultoria e informação em educação [instrução]."
+        }
+      ]
+    },
+    "id": "b2e8289c-341e-48d2-abf8-a98d4c213731",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.18",
+      "27.05.24"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250701",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200729",
+        "applicationNumber": "920295371"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310420",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210420",
+        "registrationNumber": "920295371"
+      }
+    },
+    "version": "20250701002137",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DQORI"
+    }
+  },
+  "_uri": "/mark/br/b2e8289c-341e-48d2-abf8-a98d4c213731",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/nz/997a81eb-50ef-4635-8b90-dd4fb9ce0e4e",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "997a81eb-50ef-4635-8b90-dd4fb9ce0e4e",
+  "applicationNumber": "957963",
+  "registrationNumber": "957963",
+  "applicationDate": "2012-07-10",
+  "registrationDate": "2013-01-11",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "DIVE NORTH BAY OF ISLANDS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    39,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising; business management; business administration; office functions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Transport; packaging and storage of goods; travel arrangement.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; entertainment; sporting and cultural activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Sue Wadsworth",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1512 Springbank Road, RD 3, Kerikeri 0293",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "Sue Wadsworth"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising; business management; business administration; office functions."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transport; packaging and storage of goods; travel arrangement."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; entertainment; sporting and cultural activities."
+        }
+      ]
+    },
+    "id": "997a81eb-50ef-4635-8b90-dd4fb9ce0e4e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01",
+      "27.05.25",
+      "53.01.20"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120710",
+        "applicationNumber": "957963"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "20130111",
+        "registrationNumber": "957963"
+      }
+    },
+    "version": "20250626162727",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "DIVE NORTH BAY OF ISLANDS"
+    }
+  },
+  "_uri": "/mark/nz/997a81eb-50ef-4635-8b90-dd4fb9ce0e4e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

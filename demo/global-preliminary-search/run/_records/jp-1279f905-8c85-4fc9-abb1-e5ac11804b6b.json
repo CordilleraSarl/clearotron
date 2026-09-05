@@ -1,0 +1,200 @@
+{
+  "uri": "/mark/jp/1279f905-8c85-4fc9-abb1-e5ac11804b6b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "1279f905-8c85-4fc9-abb1-e5ac11804b6b",
+  "applicationNumber": "2012-026902",
+  "registrationNumber": "5523494",
+  "applicationDate": "2012-04-05",
+  "registrationDate": "2012-09-21",
+  "expiryDate": "2022-09-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2012-10-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ｆｏｒ　ｉ",
+  "markTransliteration": "EFUOOAARU FOOAI",
+  "markTranslation": "FOR I",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "業務用ビデオゲーム機のプログラムを記憶させた電子回路その他の記憶媒体，業務用ゲーム機のプログラム，ダウンロード可能な業務用ビデオゲーム機用プログラム及び同追加データ，ダウンロード可能な移動体電話用コンピュータプログラム，コンピュータ用プログラムその他の電子応用機械器具及びその部品（マウスパッド，キーボードカバー，ＩＣカードその他の周辺機器を含む。），ダウンロード可能なコンピュータ用プログラム及びコンピュータ用ゲームの追加データ，電気通信機械器具（携帯電話用ストラップ，携帯電話機の表示画面に貼って使用するのぞき見防止用シート，その他の電気通信機械器具の部品及び附属品を含む。），家庭用テレビゲーム機用のプログラムを記憶させた読出し専用のカートリッジ式電子回路・同磁気テープ・同磁気カード・同磁気ディスク・同光ディスク・その他の記憶媒体，ダウンロード可能な家庭用テレビゲーム機用プログラム及び同追加データ，携帯用液晶画面ゲーム機用のプログラムを記憶させた電子回路及びＣＤ－ＲＯＭその他の記憶媒体，ダウンロード可能な携帯用液晶画面ゲーム機用のプログラム及び同追加データ，レコード（録音済みコンパクトディスクを含む。），インターネット又は移動体電話通信を利用して受信し及び保存することができる音楽・音声ファイル，映写フィルム，スライドフィルム，スライドフィルム用マウント，インターネット又は移動体電話通信を利用して受信し及び保存することができる画像ファイル，録画済みビデオディスク及びビデオテープ",
+      "translation_language": "en",
+      "translation": "An electronic circuit or other storage medium storing a program of a commercial video game machine, a program of a commercial game machine, a downloadable commercial game video game machine program and additional data, a downloadable mobile telephone computer program, Computer programs and other electronic applied appliances and their parts (including mouse pads, keyboard covers, IC cards and other peripheral devices), downloadable computer programs and additional data for computer games, telecommunications equipment A telephone strap, a peep prevention sheet to be used by pasting on a display screen of a cellular phone, and parts and accessories of other telecommunications machine equipment), a program for home video game machines stored read only Cartridge type electronic circuit A magnetic tape, a magnetic card, a magnetic disk, a magnetic disk, an optical disk, an other storage medium, a program for a downloadable home video game machine, and additional data, a program for a portable liquid crystal screen game machine, A CD-ROM or other storage medium, a program for a portable liquid crystal screen game machine that can be downloaded and the additional data, a record (including a recorded compact disc), the Internet, or mobile phone communication A movie film file, a slide film, a slide film mount, an image file that can be received and stored using the Internet or mobile phone communication, a recorded video disk and a video tape"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "ストリーミング方式による電子計算機端末による通信を用いて行う映像の提供，インターネット又は移動体電話による通信を用いた映像の提供，携帯用液晶画面ゲームおもちゃによる通信を用いて行う映像の提供，業務用ビデオゲーム機による通信を用いて行う映像の提供，家庭用テレビゲームおもちゃによる通信を用いて行う映像の提供，その他の通信を用いて行う映像の提供，映画の上映・制作又は配給，インターネットによる映画の提供，家庭用テレビゲームおもちゃ用プログラムを記憶させた光ディスク・その他の記憶媒体の貸与，その他のおもちゃの貸与，遊園地用機械器具の貸与，スロットマシンの貸与，遊戯用器具の貸与，映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。），演芸の上演，演劇の演出又は上演，音楽の演奏，インターネット又は移動体電話による通信を用いた音楽の提供，放送番組の制作，ゲーム機械器具を備えた遊戯場・遊園地・その他の娯楽施設の提供，インターネット又は移動体電話による通信を用いたゲームの提供，携帯用液晶画面ゲームおもちゃによる通信を用いて行うゲームの提供，業務用ビデオゲーム機による通信を用いて行うゲームの提供，家庭用テレビゲームおもちゃによる通信を用いて行うゲームの提供，その他の通信を用いて行うゲームの提供",
+      "translation_language": "en",
+      "translation": "Providing images using communication by electronic computer terminals by streaming method, providing images using communication via the Internet or mobile phones, providing images using communication by portable liquid crystal screen game toys, providing business video games Providing video by using communication by machine, Providing video using home television game toy communication, Providing video using other communication, Showing / producing or distributing movies, Provision of movies via the Internet , Home video game game Lending of optical discs and other storage medium storing toys program, lending of other toys, lending of machine tools for amusement parks, lending of slot machines, lending of game machines, movies · entertainment · Planning or management of entertainment of performances or performances of music, planning and operation of box office or holding (movies · entertainment · performances · Performance of music performances and sports · horse races · bicycle racing · race boats · excluding those related to entertainment of small car race), performances performances, performances or performances, performances of music, communication via the Internet or mobile phone Providing music, creating broadcast programs, offering entertainment facilities with amusement parks, amusement parks and other amusement equipment with gaming machinery and equipment, providing games using communications via the Internet or mobile phones, using mobile liquid crystal screen game toys Provision of games using communications, provision of games using communications by commercial video game machines, provision of games using communications by home video game toys, and provision of games using other communications"
+    }
+  ],
+  "owner": "BANDAI NAMCO ENTERTAINMENT INC.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "20120405"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MINATO-KU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "BANDAI NAMCO ENTERTAINMENT INC.",
+        "applicantNativeAddress": "東京都港区",
+        "applicantNativeName": "株式会社バンダイナムコエンターテインメント"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "An electronic circuit or other storage medium storing a program of a commercial video game machine, a program of a commercial game machine, a downloadable commercial game video game machine program and additional data, a downloadable mobile telephone computer program, Computer programs and other electronic applied appliances and their parts (including mouse pads, keyboard covers, IC cards and other peripheral devices), downloadable computer programs and additional data for computer games, telecommunications equipment A telephone strap, a peep prevention sheet to be used by pasting on a display screen of a cellular phone, and parts and accessories of other telecommunications machine equipment), a program for home video game machines stored read only Cartridge type electronic circuit A magnetic tape, a magnetic card, a magnetic disk, a magnetic disk, an optical disk, an other storage medium, a program for a downloadable home video game machine, and additional data, a program for a portable liquid crystal screen game machine, A CD-ROM or other storage medium, a program for a portable liquid crystal screen game machine that can be downloaded and the additional data, a record (including a recorded compact disc), the Internet, or mobile phone communication A movie film file, a slide film, a slide film mount, an image file that can be received and stored using the Internet or mobile phone communication, a recorded video disk and a video tape",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "業務用ビデオゲーム機のプログラムを記憶させた電子回路その他の記憶媒体，業務用ゲーム機のプログラム，ダウンロード可能な業務用ビデオゲーム機用プログラム及び同追加データ，ダウンロード可能な移動体電話用コンピュータプログラム，コンピュータ用プログラムその他の電子応用機械器具及びその部品（マウスパッド，キーボードカバー，ＩＣカードその他の周辺機器を含む。），ダウンロード可能なコンピュータ用プログラム及びコンピュータ用ゲームの追加データ，電気通信機械器具（携帯電話用ストラップ，携帯電話機の表示画面に貼って使用するのぞき見防止用シート，その他の電気通信機械器具の部品及び附属品を含む。），家庭用テレビゲーム機用のプログラムを記憶させた読出し専用のカートリッジ式電子回路・同磁気テープ・同磁気カード・同磁気ディスク・同光ディスク・その他の記憶媒体，ダウンロード可能な家庭用テレビゲーム機用プログラム及び同追加データ，携帯用液晶画面ゲーム機用のプログラムを記憶させた電子回路及びＣＤ－ＲＯＭその他の記憶媒体，ダウンロード可能な携帯用液晶画面ゲーム機用のプログラム及び同追加データ，レコード（録音済みコンパクトディスクを含む。），インターネット又は移動体電話通信を利用して受信し及び保存することができる音楽・音声ファイル，映写フィルム，スライドフィルム，スライドフィルム用マウント，インターネット又は移動体電話通信を利用して受信し及び保存することができる画像ファイル，録画済みビデオディスク及びビデオテープ"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing images using communication by electronic computer terminals by streaming method, providing images using communication via the Internet or mobile phones, providing images using communication by portable liquid crystal screen game toys, providing business video games Providing video by using communication by machine, Providing video using home television game toy communication, Providing video using other communication, Showing / producing or distributing movies, Provision of movies via the Internet , Home video game game Lending of optical discs and other storage medium storing toys program, lending of other toys, lending of machine tools for amusement parks, lending of slot machines, lending of game machines, movies · entertainment · Planning or management of entertainment of performances or performances of music, planning and operation of box office or holding (movies · entertainment · performances · Performance of music performances and sports · horse races · bicycle racing · race boats · excluding those related to entertainment of small car race), performances performances, performances or performances, performances of music, communication via the Internet or mobile phone Providing music, creating broadcast programs, offering entertainment facilities with amusement parks, amusement parks and other amusement equipment with gaming machinery and equipment, providing games using communications via the Internet or mobile phones, using mobile liquid crystal screen game toys Provision of games using communications, provision of games using communications by commercial video game machines, provision of games using communications by home video game toys, and provision of games using other communications",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "ストリーミング方式による電子計算機端末による通信を用いて行う映像の提供，インターネット又は移動体電話による通信を用いた映像の提供，携帯用液晶画面ゲームおもちゃによる通信を用いて行う映像の提供，業務用ビデオゲーム機による通信を用いて行う映像の提供，家庭用テレビゲームおもちゃによる通信を用いて行う映像の提供，その他の通信を用いて行う映像の提供，映画の上映・制作又は配給，インターネットによる映画の提供，家庭用テレビゲームおもちゃ用プログラムを記憶させた光ディスク・その他の記憶媒体の貸与，その他のおもちゃの貸与，遊園地用機械器具の貸与，スロットマシンの貸与，遊戯用器具の貸与，映画・演芸・演劇又は音楽の演奏の興行の企画又は運営，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。），演芸の上演，演劇の演出又は上演，音楽の演奏，インターネット又は移動体電話による通信を用いた音楽の提供，放送番組の制作，ゲーム機械器具を備えた遊戯場・遊園地・その他の娯楽施設の提供，インターネット又は移動体電話による通信を用いたゲームの提供，携帯用液晶画面ゲームおもちゃによる通信を用いて行うゲームの提供，業務用ビデオゲーム機による通信を用いて行うゲームの提供，家庭用テレビゲームおもちゃによる通信を用いて行うゲームの提供，その他の通信を用いて行うゲームの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Game programs for arcade video game machines"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Game programs for home video game machines; Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        },
+        {
+          "natClassNumber": "24E02",
+          "natGoodsServicesDescription": "Phonograph records; Downloadable music files; Downloadable image files; Recorded video discs and video tapes"
+        },
+        {
+          "natClassNumber": "26D01",
+          "natGoodsServicesDescription": "Downloadable image files; Recorded video discs and video tapes; Electronic publications; Exposed cinematographic films; Exposed slide films; Slide film mounts"
+        },
+        {
+          "natClassNumber": "41E01",
+          "natGoodsServicesDescription": "Arranging and planning of movies, shows, plays or musical performances"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Providing digital music from the Internet, not downloadable; Presentation of live show performances; Direction or presentation of plays; Presentation of musical performances"
+        },
+        {
+          "natClassNumber": "41E04",
+          "natGoodsServicesDescription": "Production of radio or television programs"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        },
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "41M08",
+          "natGoodsServicesDescription": "Toy rental; Rental of amusement machines and apparatus; Rental of game machines and apparatus"
+        },
+        {
+          "natClassNumber": "41Z99",
+          "natGoodsServicesDescription": "Other education, training, entertainments, sports and cultural activities that do not correspond to any of the listed similar group code(s) for the education, training, entertainments, sports and cultural activities"
+        }
+      ]
+    },
+    "id": "1279f905-8c85-4fc9-abb1-e5ac11804b6b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20120405"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120405",
+        "applicationNumber": "2012-026902"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20220921",
+      "lastPublicationDate": "20121023",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20120921",
+        "registrationNumber": "5523494"
+      }
+    },
+    "version": "20240320174619",
+    "wordMarkSpecification": {
+      "markTranslation": "FOR I",
+      "markTransliteration": "EFUOOAARU FOOAI",
+      "markVerbalElementText": "ｆｏｒ　ｉ"
+    }
+  },
+  "_uri": "/mark/jp/1279f905-8c85-4fc9-abb1-e5ac11804b6b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

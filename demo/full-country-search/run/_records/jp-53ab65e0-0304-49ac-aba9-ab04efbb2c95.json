@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/53ab65e0-0304-49ac-aba9-ab04efbb2c95",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "53ab65e0-0304-49ac-aba9-ab04efbb2c95",
+  "applicationNumber": "2016-103265",
+  "registrationNumber": "5955171",
+  "applicationDate": "2016-09-23",
+  "registrationDate": "2017-06-16",
+  "expiryDate": "2027-06-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-07-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＳＯＨＫＡＩ経営塾",
+  "markTransliteration": "SOOKAIKEEEEJUKU",
+  "markTranslation": "SOHKAI KEIEI-JUKU",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，電子出版物の提供，教育・文化・娯楽・スポーツ用ビデオの制作（映画・放送番組・広告用のものを除く。），ストリーミング方式によるインターネットを利用した映像及び音声の提供，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。）",
+      "translation_language": "en",
+      "translation": "Producers of arts and sports or knowledge, planning, management or holding seminars, providing electronic publications, producing video for education, culture, entertainment and sports (excluding movies, broadcast programs, advertising), streaming method Provision of video and audio using the Internet by the Internet, planning / operation of a box office or organizing (excluding those related to the entertainment of movies, entertainment, theater, music performance and sports, horse racing, bicycle racing, competition boats and small car racing)."
+    }
+  ],
+  "owner": "GK Align",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "TAKEDA KATSUHIRO",
+  "priorities": [
+    {
+      "priorityDate": "20160923"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OTA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "GK Align",
+        "applicantNativeAddress": "東京都大田区",
+        "applicantNativeName": "合同会社Ａｌｉｇｎ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Producers of arts and sports or knowledge, planning, management or holding seminars, providing electronic publications, producing video for education, culture, entertainment and sports (excluding movies, broadcast programs, advertising), streaming method Provision of video and audio using the Internet by the Internet, planning / operation of a box office or organizing (excluding those related to the entertainment of movies, entertainment, theater, music performance and sports, horse racing, bicycle racing, competition boats and small car racing).",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催，電子出版物の提供，教育・文化・娯楽・スポーツ用ビデオの制作（映画・放送番組・広告用のものを除く。），ストリーミング方式によるインターネットを利用した映像及び音声の提供，興行の企画・運営又は開催（映画・演芸・演劇・音楽の演奏の興行及びスポーツ・競馬・競輪・競艇・小型自動車競走の興行に関するものを除く。）"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "41C02",
+          "natGoodsServicesDescription": "Providing electronic publications; Services of reference libraries for literature and documentary records; Book rental"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Providing digital music from the Internet, not downloadable; Presentation of live show performances; Direction or presentation of plays; Presentation of musical performances"
+        },
+        {
+          "natClassNumber": "41E05",
+          "natGoodsServicesDescription": "Production of videotape film in the field of education, culture, entertainment or sports [not for movies or television programs and not for advertising or publicity]"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        }
+      ]
+    },
+    "id": "53ab65e0-0304-49ac-aba9-ab04efbb2c95",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20160923"
+      }
+    ],
+    "recordLastUpdated": "20260501",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "TAKEDA KATSUHIRO",
+        "representativeNativeName": "武田　勝弘"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160923",
+        "applicationNumber": "2016-103265"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270616",
+      "lastPublicationDate": "20170711",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20170616",
+        "registrationNumber": "5955171"
+      }
+    },
+    "version": "20260501084054",
+    "wordMarkSpecification": {
+      "markTranslation": "SOHKAI KEIEI-JUKU",
+      "markTransliteration": "SOOKAIKEEEEJUKU",
+      "markVerbalElementText": "ＳＯＨＫＡＩ経営塾"
+    }
+  },
+  "_uri": "/mark/jp/53ab65e0-0304-49ac-aba9-ab04efbb2c95",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.740Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

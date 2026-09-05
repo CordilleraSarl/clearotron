@@ -1,0 +1,242 @@
+{
+  "uri": "/mark/gb/ae481aaa-2157-470a-8be2-5f8793d89234",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "ae481aaa-2157-470a-8be2-5f8793d89234",
+  "applicationNumber": "4425741",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-04",
+  "registrationDate": null,
+  "expiryDate": "2036-08-04",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "GROSVENOR A K.BRO COMPANY GROSVENOR A K.BRO COMPANY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    10,
+    17,
+    20,
+    24,
+    37,
+    39,
+    42,
+    43,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Clothing especially for operating rooms; surgical gowns; surgical caps; medical gowns; surgical drapes; surgical and medical drapes for examinations medical isolation gowns; compression garments (reuseable); elastic stockings for surgical and/or medical purposes; corsets for medical purposes; post-partum medical corsets; haptic suits for medical purposes; reuseable masks for medical purposes; stockings for varices; robotic exoskeletons suits for medical purposes; specialist clothing for medical and for surgical purposes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "en",
+      "description": "Window films; film for windows and for glass; frosted films for windows and for glass; anti-glare films for windows and for glass; anti-dazzle films for windows and for glass; anti-shatter film for windows and for glass; heat reflective film for windows and for glass; insulating film for windows and for glass; reflective film for windows and for glass; decorative film for windows and for glass; tinted film for windows and for glass; safety film for windows and for glass; film made of synthetic materials; film other than for wrapping; solar control plastic window films.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Blinds, shades and screens; blinds, shades and screens for windows for windows of textiles; fittings, not of metal, for blinds; holders for use in securing blinds; operating devices for blinds, non-electric and not of metal; plastic hardware for blinds; pulleys for blinds; rails, tracks, rods and slats for blinds; hooks, rails, rings, rods, tracks, rollers poles, and holders; draw cords, pulleys, runners, gliders, carriers; draw and rods for curtains and for drapery; embraces for holding back curtains and drapery; articles for hanging drapery and curtains; clamps for fixing drapery and for curtains; fittings for drapery and for curtains; soft furnishings (cushions); cushions; pillows; throw cushions, accent cushions; bedding; tracks and rails for curtains; tracks and rails for curtains for cubicles; tracks and rails for curtains for cubicles for hospitals for medical screening applications; parts, fittings and accessories for the aforesaid goods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Curtains; throws; cushion covers; bed throws; blankets; woollen blankets; towels; travelling rugs; bed linen; bed covers; duvet covers; pillow cases; bedspreads; textiles; table linen and table covers; furniture covers; handkerchiefs of textiles; household linen; bath linen; tea towels; lap rugs; mats; mats of linen; wall hangings; upholstery textiles and table runners; curtain tie-backs of textile; textiles and substitutes for textiles; curtains of textile or plastic; privacy curtains for examination for use in hospitals or for medical examinations; curtains for use with cubicle tracks for hospitals or medical purposes; isolation curtains of textile or plastic for use in hospitals; privacy curtains for hospitals or medical examinations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Laundry services; ironing services; sterilisation of protective clothing; sterilisation of surgical gowns; sterilisation of specialist clothing for medical and for surgical purposes; spot cleaning services (laundry) stain removal services (laundry) sterilisation of clothes, textiles, soft furnishings bedding, curtains table linen and bed linen; laundry services for hotels, factories, schools, shops, offices, restaurants, hospitals, warehouses, industrial institutions, farms and dairies and other organisations; cleaning services for hotels, factories, schools, shops, offices, restaurants, hospitals, warehouses, industrial institutions, farms and dairies and other organisations; specialist cleaning services for hotels, factories, schools, shops, offices, restaurants, hospitals, warehouses, industrial institutions, farms and dairies and other organisations; Installation, repair and maintenance of machines, apparatus and instruments and of fittings, all for cleaning, laundry, ironing and drying purposes; rental of cleaning apparatus and machines; installation of window film; installation of frosted, anti-glare, anti-shatter and temperature controlling (heat reflecting) window film; upholstery repair services; re-upholstery services; stain removal from leather and from fabrics; deodorising of fabrics; sanitising of fabrics and of upholstery; sanitising of clothing especially for operating rooms, specialist clothing for medical and for surgical purposes, surgical gowns; surgical caps; medical gowns, surgical drapes; surgical and medical drapes for examinations; repair of furniture; curtains, blinds, screens cubicle tracks, and their parts and fittings; provision of laundry facilities; provision of laundrette services; provision of facilities for washing, drying, dry-cleaning and ironing of clothes and linens; information, advisory and consultancy services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": "en",
+      "description": "Transportation services; delivery services; warehousing services; transportation and delivery of laundry; collection and delivery of laundry; transportation logistics; tracking and tracing services for logistics purposes of vehicles and laundry; rental of vehicles for transportation of goods; rental of storage containers for transport of goods; compilation and dissemination of information relating to logistics and transport via the Internet or other means; provision of information relating to logistics and transport; fleet and vehicle tracking services; route planning services; transport scheduling services; information, advisory and consultancy services relating to all the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Interior design services; design of blinds, curtains, screens, drapes, drapery, nets, soft furnishings, and film; interior design consultancy services; design consultancy services; room planning services (interior design); preparation of interior layout plans; design services relating to interior decoration; design services relating to interior decor; design services relating to furnishings; information, advisory and consultancy services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Rental of blinds, shades, screens, curtains and drapery; rental of linen, table linen, bed linen, towels, soft furnishings, furniture, pillows, carpets, blankets, crockery, rugs, tableware, cutlery and glassware; rental of furniture, linens and table settings; rental of chairs, tables; rental of wall hangings; rental of internal furnishings; rental of soft furnishings (cushions); cushions; pillows; throw cushions, accent cushions; and throws; information, advisory and consultancy services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Rental of protective clothing and equipment; rental of clothing and equipment for operating rooms; rental of clothing and equipment for cleanroom environments; rental of clothing and equipment for electronic and pharmaceutical manufacture; rental of protective clothing and equipment for laboratory use; information, advisory and consultancy services relating to the aforesaid services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "K-Bro Linen Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "Murgitroyd & Company",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "14903 137 Avenue N.W., Edmonton, Alberta T5V 1R9",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantName": "K-Bro Linen Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "09.01.15",
+      "25.07.20",
+      "26.04.01",
+      "26.04.12"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Clothing especially for operating rooms; surgical gowns; surgical caps; medical gowns; surgical drapes; surgical and medical drapes for examinations medical isolation gowns; compression garments (reuseable); elastic stockings for surgical and/or medical purposes; corsets for medical purposes; post-partum medical corsets; haptic suits for medical purposes; reuseable masks for medical purposes; stockings for varices; robotic exoskeletons suits for medical purposes; specialist clothing for medical and for surgical purposes."
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Window films; film for windows and for glass; frosted films for windows and for glass; anti-glare films for windows and for glass; anti-dazzle films for windows and for glass; anti-shatter film for windows and for glass; heat reflective film for windows and for glass; insulating film for windows and for glass; reflective film for windows and for glass; decorative film for windows and for glass; tinted film for windows and for glass; safety film for windows and for glass; film made of synthetic materials; film other than for wrapping; solar control plastic window films."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Blinds, shades and screens; blinds, shades and screens for windows for windows of textiles; fittings, not of metal, for blinds; holders for use in securing blinds; operating devices for blinds, non-electric and not of metal; plastic hardware for blinds; pulleys for blinds; rails, tracks, rods and slats for blinds; hooks, rails, rings, rods, tracks, rollers poles, and holders; draw cords, pulleys, runners, gliders, carriers; draw and rods for curtains and for drapery; embraces for holding back curtains and drapery; articles for hanging drapery and curtains; clamps for fixing drapery and for curtains; fittings for drapery and for curtains; soft furnishings (cushions); cushions; pillows; throw cushions, accent cushions; bedding; tracks and rails for curtains; tracks and rails for curtains for cubicles; tracks and rails for curtains for cubicles for hospitals for medical screening applications; parts, fittings and accessories for the aforesaid goods."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Curtains; throws; cushion covers; bed throws; blankets; woollen blankets; towels; travelling rugs; bed linen; bed covers; duvet covers; pillow cases; bedspreads; textiles; table linen and table covers; furniture covers; handkerchiefs of textiles; household linen; bath linen; tea towels; lap rugs; mats; mats of linen; wall hangings; upholstery textiles and table runners; curtain tie-backs of textile; textiles and substitutes for textiles; curtains of textile or plastic; privacy curtains for examination for use in hospitals or for medical examinations; curtains for use with cubicle tracks for hospitals or medical purposes; isolation curtains of textile or plastic for use in hospitals; privacy curtains for hospitals or medical examinations."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Laundry services; ironing services; sterilisation of protective clothing; sterilisation of surgical gowns; sterilisation of specialist clothing for medical and for surgical purposes; spot cleaning services (laundry) stain removal services (laundry) sterilisation of clothes, textiles, soft furnishings bedding, curtains table linen and bed linen; laundry services for hotels, factories, schools, shops, offices, restaurants, hospitals, warehouses, industrial institutions, farms and dairies and other organisations; cleaning services for hotels, factories, schools, shops, offices, restaurants, hospitals, warehouses, industrial institutions, farms and dairies and other organisations; specialist cleaning services for hotels, factories, schools, shops, offices, restaurants, hospitals, warehouses, industrial institutions, farms and dairies and other organisations; Installation, repair and maintenance of machines, apparatus and instruments and of fittings, all for cleaning, laundry, ironing and drying purposes; rental of cleaning apparatus and machines; installation of window film; installation of frosted, anti-glare, anti-shatter and temperature controlling (heat reflecting) window film; upholstery repair services; re-upholstery services; stain removal from leather and from fabrics; deodorising of fabrics; sanitising of fabrics and of upholstery; sanitising of clothing especially for operating rooms, specialist clothing for medical and for surgical purposes, surgical gowns; surgical caps; medical gowns, surgical drapes; surgical and medical drapes for examinations; repair of furniture; curtains, blinds, screens cubicle tracks, and their parts and fittings; provision of laundry facilities; provision of laundrette services; provision of facilities for washing, drying, dry-cleaning and ironing of clothes and linens; information, advisory and consultancy services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "39",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transportation services; delivery services; warehousing services; transportation and delivery of laundry; collection and delivery of laundry; transportation logistics; tracking and tracing services for logistics purposes of vehicles and laundry; rental of vehicles for transportation of goods; rental of storage containers for transport of goods; compilation and dissemination of information relating to logistics and transport via the Internet or other means; provision of information relating to logistics and transport; fleet and vehicle tracking services; route planning services; transport scheduling services; information, advisory and consultancy services relating to all the aforesaid services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Interior design services; design of blinds, curtains, screens, drapes, drapery, nets, soft furnishings, and film; interior design consultancy services; design consultancy services; room planning services (interior design); preparation of interior layout plans; design services relating to interior decoration; design services relating to interior decor; design services relating to furnishings; information, advisory and consultancy services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rental of blinds, shades, screens, curtains and drapery; rental of linen, table linen, bed linen, towels, soft furnishings, furniture, pillows, carpets, blankets, crockery, rugs, tableware, cutlery and glassware; rental of furniture, linens and table settings; rental of chairs, tables; rental of wall hangings; rental of internal furnishings; rental of soft furnishings (cushions); cushions; pillows; throw cushions, accent cushions; and throws; information, advisory and consultancy services relating to the aforesaid services."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rental of protective clothing and equipment; rental of clothing and equipment for operating rooms; rental of clothing and equipment for cleanroom environments; rental of clothing and equipment for electronic and pharmaceutical manufacture; rental of protective clothing and equipment for laboratory use; information, advisory and consultancy services relating to the aforesaid services."
+        }
+      ]
+    },
+    "id": "ae481aaa-2157-470a-8be2-5f8793d89234",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.07.00",
+      "26.03.00",
+      "26.04.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260821",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "165-169 Scotland Street, Glasgow G5 8PL",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Murgitroyd & Company"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260804",
+        "applicationNumber": "4425741"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360804",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260821020017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR A K.BRO COMPANY GROSVENOR A K.BRO COMPANY"
+    }
+  },
+  "_uri": "/mark/gb/ae481aaa-2157-470a-8be2-5f8793d89234",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

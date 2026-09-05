@@ -1,0 +1,281 @@
+{
+  "uri": "/mark/ru/29715b4f-00e1-46dd-9fc1-8d04c8d76c31",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "29715b4f-00e1-46dd-9fc1-8d04c8d76c31",
+  "applicationNumber": "2015735976",
+  "registrationNumber": "606696",
+  "applicationDate": "2015-11-05",
+  "registrationDate": "2017-02-22",
+  "expiryDate": "2025-11-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": "LORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    3,
+    4,
+    16,
+    20,
+    28,
+    35,
+    37,
+    40,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2
+      ],
+      "language": "ru",
+      "description": "- белила свинцовые; бумага для окрашивания пасхальных яиц; вещества красящие; вещества связывающие для красок; грунтовки; гуммигут для живописи; заплатки-краски перемещаемые; карбонил для предохранения древесины; картриджи заполненные для принтеров и фотокопировальных аппаратов; красители из древесины; красители; краски [тонеры] для копировальных аппаратов и машин; краски алюминиевые; краски для древесины; краски для изготовления гравюр; краски для керамических изделий; краски клеевые; темпера; краски огнестойкие; краски типографские; краски эмалевые; краски; лак черный; лаки битумные; лаки для бронзирования; лаки; масла защитные для древесины; молоко известковое; паста серебряная; пасты типографские [чернила]; покрытия [краски]; покрытия [краски] для гудронированного картона; покрытия [краски] для древесины; политуры; порошки алюминиевые для художественно-декоративных целей; порошки для бронзирования; порошки для серебрения; порошки металлические для художественно-декоративных целей и печати; препараты защитные для металлов; протравы для древесины; протравы для кожи; разбавители для красок; разбавители для лаков; растворы для побелки; сгустители для красок; сиккативы [ускорители высыхания] для красок; составы для внутренней отделки; составы для предотвращения потускнения металлов; средства для предохранения древесины; фиксативы [лаки]; фиксативы [фиксаторы] для акварельных красок; фольга металлическая для художественно-декоративных целей и печати; экстракты красильные из древесины; эмали [лаки]; эмульсии серебра [пигменты].",
+      "translation_language": "en",
+      "translation": "- lead white; Paper for coloring Easter eggs; Substances that color; Substances binding for paints; Primers; Gum for the painting; Patches-paints being moved; Carbonyl for the protection of wood; Cartridges filled for printers and photocopiers; Dyes from wood; Dyes; Paint [toners] for copiers and machines; Aluminum paints; Paints for wood; Paints for making engravings; Paints for ceramics; Glue paints; tempera; Paints, fireproof; Printing inks; Paints enamel; paints; Varnish black; Varnishes bitumen; Varnishes for bronzing; Varnishes; Protective oils for wood; Lime milk; Silver paste; Paste printing [ink]; Coating of [paint]; Coatings for tarboard; Wood coatings; Polishes; Aluminum powders for artistic and decorative purposes; Powders for bronzing; Powders for silvering; Powders, metal, for artistic and decorative purposes and printing; Protective preparations for metals; Mordant for wood; Mordant for the skin; Diluents for paints; Diluents for varnishes; Whitewash solutions; Thickeners for paints; Desiccants for paints; Compositions for interior decoration; Compositions to prevent tarnishing of metals; Means for the protection of wood; Fixatives [varnishes]; Fixatives for watercolor paints; Metal foil for artistic and decorative purposes and printing; Extracts dyed from wood; Enamels [varnishes]; Emulsion of silver [pigments]."
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": "ru",
+      "description": "- блески для губ; вазелин косметический; вещества клейкие для косметических целей; воск портновский; воски для кожи; кремы для кожи; воски для полирования мебели и полов; воски полировочные; грим; духи; жиры для косметических целей; изделия парфюмерные; карандаши косметические; красители косметические; кремы косметические; лаки для ногтей; масла для парфюмерии; масла косметические; масла туалетные; мыла; мыла кусковые туалетные; наборы косметические; ногти искусственные; помада губная; помады для косметических целей; препараты для удаления красок; средства для гримирования.",
+      "translation_language": "en",
+      "translation": "- lip gloss; Vaseline Cosmetic; Adhesives for cosmetic purposes; Wax tailoring; Waxes for the skin; Creams for the skin; Waxes for polishing furniture and floors; Polishing waxes; makeup; Perfume; Fats for cosmetic purposes; Perfumery products; Cosmetic pencils; Cosmetic dyes; Cosmetic creams; nail polishes; Oils for perfumery; Cosmetic oils; Toilet oils; Soap; Toilet soap; Cosmetic sets; Artificial nails; Lipstick lipstick; Lipsticks for cosmetic purposes; Preparations for removing paints; Means for make-up."
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": "ru",
+      "description": "- масла для облегчения выемки из форм [строительство]; свечи ароматические; свечи для новогодних елок; свечи для освещения.",
+      "translation_language": "en",
+      "translation": "- oils to facilitate the extraction of molds [construction]; Aromatic candles; Candles for Christmas trees; Candles for lighting."
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "ru",
+      "description": "- акварели [краски]; альбомы; афиши, плакаты; банты бумажные; блокноты; блокноты [канцелярские товары]; блокноты для рисования, черчения; буклеты; бумага упаковочная; воск для моделирования, за исключением используемого в стоматологии; вывески бумажные или картонные; глина для лепки; глина полимерная для моделирования; гравюры; изображения графические; издания печатные; камедь [клеи] для канцелярских и бытовых целей; картонки; картинки переводные; картон; каталоги; кашпо бумажные; клеи канцелярские или бытовые; клейковина [клей для канцелярских или бытовых целей; клейстер крахмальный [клеящее вещество] для канцелярских или бытовых целей; книги; коробки картонные или бумажные; коробки с красками [школьные принадлежности]; корректоры жидкие [конторские принадлежности]; ленты бумажные; ленты клейкие [канцелярские товары]; ленты клейкие для канцелярских или бытовых целей; ленты корректирующие [конторские принадлежности]; ленты липкие для канцелярских или бытовых целей; ленты самоклеящиеся канцелярские или бытовые; листовки; лотки для красок; массы пластические для лепки; материалы графические печатные; материалы для лепки; материалы для обучения [за исключением приборов]; материалы канцелярские для запечатывания; материалы клеящие [клеи] канцелярские или бытовые; материалы переплетные; мешки [конверты, пакеты] для упаковки бумажные или пластмассовые; мольберты; наборы типографские портативные [офисные принадлежности]; нагрудники детские бумажные; наклейки самоклеящиеся [канцелярские товары]; обертки для бутылок картонные или бумажные; обложки [канцелярские товары]; обложки для паспортов; образцы вышивок [схемы]; открытки музыкальные; открытки поздравительные; пакетики бумажные; палитры для художников; папье-маше; пасты для лепки; пленки пластмассовые для упаковки; подставки для графинов бумажные; подставки для пивных кружек; полотно клейкое для канцелярских целей; продукция печатная; проспекты; репродукции графические; срезы гистологические для обучения; товары писчебумажные; фигурки [статуэтки] из папье-маше; флаги бумажные; фольга; формы для моделирования из глины [материалы для художников]; фотогравюры; фотографии [отпечатанные]; холсты для картин; чашечки для разведения красок [акварельных]; четки; шаблоны; шкафчики для канцелярских принадлежностей [офисное оборудование]; эмблемы [клейма бумажные]; эстампы [гравюры]; этикетки, за исключением текстильных.",
+      "translation_language": "en",
+      "translation": "- watercolors [paints]; Albums; Posters, posters; Paper bows; Notebooks; Notebooks [stationery]; Notebooks for drawing, drawing; Booklets; Paper packing; Wax for modeling, except for used in dentistry; Signboards of paper or cardboard; Clay for modeling; Polymer clay for modeling; Engravings; Graphic images; Printed publications; Gum [adhesives] for office and household purposes; Cartons; Pictures conversion; cardboard; Catalogs; Paper pots, paper; Adhesive clerical or household; Gluten [glue for office or household purposes; Glue starch [adhesive] for office or household purposes; Books; Carton or paper boxes; Boxes with paints [school supplies]; Correctors liquid [office supplies]; Paper tapes; Adhesive tapes [stationery]; Adhesive tapes for office or household purposes; Correction tapes [office supplies]; Tapes sticky for office or household purposes; Tapes, self-adhesive, stationery or household; Leaflets; Trays for paints; Plastic masses for molding; Graphic printed materials; Materials for modeling; Materials for training [excluding instruments]; Clerical materials for sealing; Materials gluing [glues] stationery or household; Materials are binding; Bags [envelopes, packages] for packing paper or plastic; Easels; Sets of typographic portable [office supplies]; Bibs for children paper; Stickers self-adhesive [stationery]; Wrappers for bottles, cardboard or paper; Covers [stationery]; Covers for passports; Samples of embroideries [diagrams]; Postcards musical; Greeting cards; Paper bags; Palette for artists; papier mache; Pastes for modeling; Plastic film for packing; Stands for decanters of paper; Stands for beer mugs; Adhesive cloth for office purposes; Printed products; Prospectuses; Reproductions graphic; Histological sections for training; Paper products; Figures [figurines] of papier-mâché; Flags are paper; foil; Molds for clay modeling [materials for artists]; Photogravure; Photographs [printed]; Canvases for paintings; Cups for the dilution of colors [watercolor]; beads; Templates; Lockers for office supplies [office equipment]; Emblems [branded paper]; Prints [engravings]; Labels, except for textile."
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "ru",
+      "description": "- бюсты из дерева, воска, гипса или пластмасс; винты неметаллические; витрины; витрины [мебель]; изделия из ротанговой пальмы; изделия из соломы плетеные, за исключением циновок; изделия плетеные; изделия плетеные [короба, корзины]; изделия художественные из дерева, воска, гипса или пластмасс; изделия художественные резные деревянные; камыш [сырье для плетения]; статуи из дерева, воска, гипса или пластмасс; шторы деревянные плетеные [мебель]; ящики деревянные или пластмассовые; ящики для игрушек.",
+      "translation_language": "en",
+      "translation": "- busts made of wood, wax, gypsum or plastics; Non-metallic screws; Shop windows; Showcases [furniture]; Articles made of rattan; Straw products wicker, except mats; Wicker products; Products wicker [boxes, baskets]; Art products made of wood, wax, gypsum or plastics; Art carved wooden products; Reeds [raw materials for weaving]; Statues made of wood, wax, gypsum or plastics; Curtains, wooden, wicker [furniture]; Boxes wooden or plastic; Boxes for toys."
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ru",
+      "description": "- безделушки для вечеринок [знаки внимания]; билеты лотерейные со стираемым слоем; головоломки из набора элементов для составления картины; пазлы; домики для кукол; домино; игрушки; игрушки мягкие; игрушки плюшевые; игрушки с подвижными частями; мобайлы [игрушки]; игрушки с сюрпризом [розыгрыши]; игры комнатные; игры настольные; игры с кольцами; игры; игры-конструкторы; калейдоскопы; карты игральные; колокольчики для новогодних елок; комнаты для кукол; конфетти; конфеты-хлопушки [рождественские хлопушки]; кости игральные; кровати для кукол; кубики строительные [игрушки]; куклы; марионетки; маски карнавальные; маски [игрушки]; матрешки [русские деревянные куклы]; медведи плюшевые; модели [игрушки]; макеты [игрушки]; модели масштабные сборные [игрушки]; модели транспортных средств масштабные; мячи для игры; наборы для детского творчества; одежда для кукол; перчатки для игр; пистолеты игрушечные; погремушки [игрушки]; подсвечники для новогодних елок; подставки для новогодних елок; портативные игры с жидкокристаллическими дисплеями; приспособления для пускания мыльных пузырей [игрушки]; украшения для новогодних елок, за исключением электрических лампочек, свечей и кондитерских изделий; устройства для демонстрации фокусов; устройства для игр; фигурки [игрушки]; фишки [жетоны] для игр; футбол настольный; шарики для игр; шары для игр; шары надувные для игр; шляпы бумажные для праздников.",
+      "translation_language": "en",
+      "translation": "- party baubles [attention signs]; Tickets lottery with an erasable layer; Puzzle pieces from a set of elements for drawing a picture; Puzzles; Cottages for dolls; Dominoes; Toys; Soft toys; Plush toys; Toys with moving parts; Mobile [toys]; Toys with a surprise [raffles]; Games room; Game table; Games with rings; games; Game-designers; Kaleidoscopes; playing cards; Bells for New Year trees; Rooms for dolls; confetti; Candy-crackers [Christmas crackers]; dice; Beds for dolls; Building blocks [toys]; Dolls; Puppets; Masks for carnival; Masks [toys]; Nesting dolls [Russian wooden dolls]; Bears are plush; Models [toys]; Mock-ups [toys]; Models scale prefabricated [toys]; Vehicle models are large-scale; Balls for the game; Sets for children&#39;s creativity; Clothes for dolls; Gloves for games; Toy pistols; Rattles [toys]; Candlesticks for New Year trees; Stands for Christmas trees; Portable games with liquid crystal displays; Devices for blowing bubbles [toys]; Decorations for Christmas trees, except for electric bulbs, candles and confectionery; Devices for demonstrating tricks; Gaming devices; Figurines [toys]; Chips [tokens] for games; Football tabletop; Balls for games; Balls for games; Inflatable balls for games; Paper hats for holidays."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "- комплектование штата сотрудников; консультации по управлению персоналом; прокат офисного оборудования и аппаратов; управление внешнее административное для компаний.",
+      "translation_language": "en",
+      "translation": "- staffing; Consultations on personnel management; Rental of office equipment and apparatus; External administrative management for companies."
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ru",
+      "description": "- прокат строительной техники; прокат экскаваторов; сооружение и ремонт складов.",
+      "translation_language": "en",
+      "translation": "- rental of construction equipment; Rental of excavators; Construction and repair of warehouses."
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ru",
+      "description": "- обработка бумаги; обработка древесины; обработка металлов; печатание рисунков; печать офсетная; полиграфия; работы монтажно-сборочные по заказу для третьих лиц; раскрой тканей; строгание [лесопилки]; цветоделение; шелкография.",
+      "translation_language": "en",
+      "translation": "- paper processing; Wood processing; Processing of metals; Printing of figures; Offset printing; Polygraphy; Assembly and assembly work for third parties; Cutting fabrics; Planing [sawmills]; Color separation; Silk screen printing."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ru",
+      "description": "- анализ химический; дизайн промышленный; дизайн художественный; исследования в области косметологии; исследования в области механики; исследования в области химии; исследования и разработка новых товаров для третьих лиц; исследования научные; исследования технические; контроль качества; размещение серверов; сервер хостинг; разработка программного обеспечения; создание и техническое обслуживание веб-сайтов для третьих лиц; составление программ для компьютеров; услуги дизайнеров в области упаковки; услуги научных лабораторий; услуги по созданию образа [промышленная эстетика]; хранение в электронном виде.",
+      "translation_language": "en",
+      "translation": "- chemical analysis; Industrial design; Design art; Research in the field of cosmetology; Research in the field of mechanics; Research in the field of chemistry; Research and development of new products for third parties; Scientific research; Technical research; quality control; Server placement; Server hosting; Software development; Creation and maintenance of websites for third parties; Compilation of programs for computers; Services of designers in the field of packaging; Services of scientific laboratories; Image creation services [industrial aesthetics]; Storage in electronic form."
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ru",
+      "description": "- агентства по организации ночной охраны; контроль в области интеллектуальной собственности для юридических лиц; контроль систем охранной сигнализации; лицензирование интеллектуальной собственности; охрана штатская.",
+      "translation_language": "en",
+      "translation": "- agencies for the organization of night security; Control in the field of intellectual property for legal entities; The control of systems of the security signal system; Licensing of intellectual property; Protection of civilians."
+    }
+  ],
+  "owner": "NOVITSJKOV VALENTIN VALENTINOVITSJ",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "NOVITSJKOV VALENTIN VALENTINOVITSJ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- lead white; Paper for coloring Easter eggs; Substances that color; Substances binding for paints; Primers; Gum for the painting; Patches-paints being moved; Carbonyl for the protection of wood; Cartridges filled for printers and photocopiers; Dyes from wood; Dyes; Paint [toners] for copiers and machines; Aluminum paints; Paints for wood; Paints for making engravings; Paints for ceramics; Glue paints; tempera; Paints, fireproof; Printing inks; Paints enamel; paints; Varnish black; Varnishes bitumen; Varnishes for bronzing; Varnishes; Protective oils for wood; Lime milk; Silver paste; Paste printing [ink]; Coating of [paint]; Coatings for tarboard; Wood coatings; Polishes; Aluminum powders for artistic and decorative purposes; Powders for bronzing; Powders for silvering; Powders, metal, for artistic and decorative purposes and printing; Protective preparations for metals; Mordant for wood; Mordant for the skin; Diluents for paints; Diluents for varnishes; Whitewash solutions; Thickeners for paints; Desiccants for paints; Compositions for interior decoration; Compositions to prevent tarnishing of metals; Means for the protection of wood; Fixatives [varnishes]; Fixatives for watercolor paints; Metal foil for artistic and decorative purposes and printing; Extracts dyed from wood; Enamels [varnishes]; Emulsion of silver [pigments].",
+          "intClassNumber": "02",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- белила свинцовые; бумага для окрашивания пасхальных яиц; вещества красящие; вещества связывающие для красок; грунтовки; гуммигут для живописи; заплатки-краски перемещаемые; карбонил для предохранения древесины; картриджи заполненные для принтеров и фотокопировальных аппаратов; красители из древесины; красители; краски [тонеры] для копировальных аппаратов и машин; краски алюминиевые; краски для древесины; краски для изготовления гравюр; краски для керамических изделий; краски клеевые; темпера; краски огнестойкие; краски типографские; краски эмалевые; краски; лак черный; лаки битумные; лаки для бронзирования; лаки; масла защитные для древесины; молоко известковое; паста серебряная; пасты типографские [чернила]; покрытия [краски]; покрытия [краски] для гудронированного картона; покрытия [краски] для древесины; политуры; порошки алюминиевые для художественно-декоративных целей; порошки для бронзирования; порошки для серебрения; порошки металлические для художественно-декоративных целей и печати; препараты защитные для металлов; протравы для древесины; протравы для кожи; разбавители для красок; разбавители для лаков; растворы для побелки; сгустители для красок; сиккативы [ускорители высыхания] для красок; составы для внутренней отделки; составы для предотвращения потускнения металлов; средства для предохранения древесины; фиксативы [лаки]; фиксативы [фиксаторы] для акварельных красок; фольга металлическая для художественно-декоративных целей и печати; экстракты красильные из древесины; эмали [лаки]; эмульсии серебра [пигменты]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- lip gloss; Vaseline Cosmetic; Adhesives for cosmetic purposes; Wax tailoring; Waxes for the skin; Creams for the skin; Waxes for polishing furniture and floors; Polishing waxes; makeup; Perfume; Fats for cosmetic purposes; Perfumery products; Cosmetic pencils; Cosmetic dyes; Cosmetic creams; nail polishes; Oils for perfumery; Cosmetic oils; Toilet oils; Soap; Toilet soap; Cosmetic sets; Artificial nails; Lipstick lipstick; Lipsticks for cosmetic purposes; Preparations for removing paints; Means for make-up.",
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- блески для губ; вазелин косметический; вещества клейкие для косметических целей; воск портновский; воски для кожи; кремы для кожи; воски для полирования мебели и полов; воски полировочные; грим; духи; жиры для косметических целей; изделия парфюмерные; карандаши косметические; красители косметические; кремы косметические; лаки для ногтей; масла для парфюмерии; масла косметические; масла туалетные; мыла; мыла кусковые туалетные; наборы косметические; ногти искусственные; помада губная; помады для косметических целей; препараты для удаления красок; средства для гримирования."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- oils to facilitate the extraction of molds [construction]; Aromatic candles; Candles for Christmas trees; Candles for lighting.",
+          "intClassNumber": "04",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- масла для облегчения выемки из форм [строительство]; свечи ароматические; свечи для новогодних елок; свечи для освещения."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- watercolors [paints]; Albums; Posters, posters; Paper bows; Notebooks; Notebooks [stationery]; Notebooks for drawing, drawing; Booklets; Paper packing; Wax for modeling, except for used in dentistry; Signboards of paper or cardboard; Clay for modeling; Polymer clay for modeling; Engravings; Graphic images; Printed publications; Gum [adhesives] for office and household purposes; Cartons; Pictures conversion; cardboard; Catalogs; Paper pots, paper; Adhesive clerical or household; Gluten [glue for office or household purposes; Glue starch [adhesive] for office or household purposes; Books; Carton or paper boxes; Boxes with paints [school supplies]; Correctors liquid [office supplies]; Paper tapes; Adhesive tapes [stationery]; Adhesive tapes for office or household purposes; Correction tapes [office supplies]; Tapes sticky for office or household purposes; Tapes, self-adhesive, stationery or household; Leaflets; Trays for paints; Plastic masses for molding; Graphic printed materials; Materials for modeling; Materials for training [excluding instruments]; Clerical materials for sealing; Materials gluing [glues] stationery or household; Materials are binding; Bags [envelopes, packages] for packing paper or plastic; Easels; Sets of typographic portable [office supplies]; Bibs for children paper; Stickers self-adhesive [stationery]; Wrappers for bottles, cardboard or paper; Covers [stationery]; Covers for passports; Samples of embroideries [diagrams]; Postcards musical; Greeting cards; Paper bags; Palette for artists; papier mache; Pastes for modeling; Plastic film for packing; Stands for decanters of paper; Stands for beer mugs; Adhesive cloth for office purposes; Printed products; Prospectuses; Reproductions graphic; Histological sections for training; Paper products; Figures [figurines] of papier-mâché; Flags are paper; foil; Molds for clay modeling [materials for artists]; Photogravure; Photographs [printed]; Canvases for paintings; Cups for the dilution of colors [watercolor]; beads; Templates; Lockers for office supplies [office equipment]; Emblems [branded paper]; Prints [engravings]; Labels, except for textile.",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- акварели [краски]; альбомы; афиши, плакаты; банты бумажные; блокноты; блокноты [канцелярские товары]; блокноты для рисования, черчения; буклеты; бумага упаковочная; воск для моделирования, за исключением используемого в стоматологии; вывески бумажные или картонные; глина для лепки; глина полимерная для моделирования; гравюры; изображения графические; издания печатные; камедь [клеи] для канцелярских и бытовых целей; картонки; картинки переводные; картон; каталоги; кашпо бумажные; клеи канцелярские или бытовые; клейковина [клей для канцелярских или бытовых целей; клейстер крахмальный [клеящее вещество] для канцелярских или бытовых целей; книги; коробки картонные или бумажные; коробки с красками [школьные принадлежности]; корректоры жидкие [конторские принадлежности]; ленты бумажные; ленты клейкие [канцелярские товары]; ленты клейкие для канцелярских или бытовых целей; ленты корректирующие [конторские принадлежности]; ленты липкие для канцелярских или бытовых целей; ленты самоклеящиеся канцелярские или бытовые; листовки; лотки для красок; массы пластические для лепки; материалы графические печатные; материалы для лепки; материалы для обучения [за исключением приборов]; материалы канцелярские для запечатывания; материалы клеящие [клеи] канцелярские или бытовые; материалы переплетные; мешки [конверты, пакеты] для упаковки бумажные или пластмассовые; мольберты; наборы типографские портативные [офисные принадлежности]; нагрудники детские бумажные; наклейки самоклеящиеся [канцелярские товары]; обертки для бутылок картонные или бумажные; обложки [канцелярские товары]; обложки для паспортов; образцы вышивок [схемы]; открытки музыкальные; открытки поздравительные; пакетики бумажные; палитры для художников; папье-маше; пасты для лепки; пленки пластмассовые для упаковки; подставки для графинов бумажные; подставки для пивных кружек; полотно клейкое для канцелярских целей; продукция печатная; проспекты; репродукции графические; срезы гистологические для обучения; товары писчебумажные; фигурки [статуэтки] из папье-маше; флаги бумажные; фольга; формы для моделирования из глины [материалы для художников]; фотогравюры; фотографии [отпечатанные]; холсты для картин; чашечки для разведения красок [акварельных]; четки; шаблоны; шкафчики для канцелярских принадлежностей [офисное оборудование]; эмблемы [клейма бумажные]; эстампы [гравюры]; этикетки, за исключением текстильных."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- busts made of wood, wax, gypsum or plastics; Non-metallic screws; Shop windows; Showcases [furniture]; Articles made of rattan; Straw products wicker, except mats; Wicker products; Products wicker [boxes, baskets]; Art products made of wood, wax, gypsum or plastics; Art carved wooden products; Reeds [raw materials for weaving]; Statues made of wood, wax, gypsum or plastics; Curtains, wooden, wicker [furniture]; Boxes wooden or plastic; Boxes for toys.",
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- бюсты из дерева, воска, гипса или пластмасс; винты неметаллические; витрины; витрины [мебель]; изделия из ротанговой пальмы; изделия из соломы плетеные, за исключением циновок; изделия плетеные; изделия плетеные [короба, корзины]; изделия художественные из дерева, воска, гипса или пластмасс; изделия художественные резные деревянные; камыш [сырье для плетения]; статуи из дерева, воска, гипса или пластмасс; шторы деревянные плетеные [мебель]; ящики деревянные или пластмассовые; ящики для игрушек."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- party baubles [attention signs]; Tickets lottery with an erasable layer; Puzzle pieces from a set of elements for drawing a picture; Puzzles; Cottages for dolls; Dominoes; Toys; Soft toys; Plush toys; Toys with moving parts; Mobile [toys]; Toys with a surprise [raffles]; Games room; Game table; Games with rings; games; Game-designers; Kaleidoscopes; playing cards; Bells for New Year trees; Rooms for dolls; confetti; Candy-crackers [Christmas crackers]; dice; Beds for dolls; Building blocks [toys]; Dolls; Puppets; Masks for carnival; Masks [toys]; Nesting dolls [Russian wooden dolls]; Bears are plush; Models [toys]; Mock-ups [toys]; Models scale prefabricated [toys]; Vehicle models are large-scale; Balls for the game; Sets for children&#39;s creativity; Clothes for dolls; Gloves for games; Toy pistols; Rattles [toys]; Candlesticks for New Year trees; Stands for Christmas trees; Portable games with liquid crystal displays; Devices for blowing bubbles [toys]; Decorations for Christmas trees, except for electric bulbs, candles and confectionery; Devices for demonstrating tricks; Gaming devices; Figurines [toys]; Chips [tokens] for games; Football tabletop; Balls for games; Balls for games; Inflatable balls for games; Paper hats for holidays.",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- безделушки для вечеринок [знаки внимания]; билеты лотерейные со стираемым слоем; головоломки из набора элементов для составления картины; пазлы; домики для кукол; домино; игрушки; игрушки мягкие; игрушки плюшевые; игрушки с подвижными частями; мобайлы [игрушки]; игрушки с сюрпризом [розыгрыши]; игры комнатные; игры настольные; игры с кольцами; игры; игры-конструкторы; калейдоскопы; карты игральные; колокольчики для новогодних елок; комнаты для кукол; конфетти; конфеты-хлопушки [рождественские хлопушки]; кости игральные; кровати для кукол; кубики строительные [игрушки]; куклы; марионетки; маски карнавальные; маски [игрушки]; матрешки [русские деревянные куклы]; медведи плюшевые; модели [игрушки]; макеты [игрушки]; модели масштабные сборные [игрушки]; модели транспортных средств масштабные; мячи для игры; наборы для детского творчества; одежда для кукол; перчатки для игр; пистолеты игрушечные; погремушки [игрушки]; подсвечники для новогодних елок; подставки для новогодних елок; портативные игры с жидкокристаллическими дисплеями; приспособления для пускания мыльных пузырей [игрушки]; украшения для новогодних елок, за исключением электрических лампочек, свечей и кондитерских изделий; устройства для демонстрации фокусов; устройства для игр; фигурки [игрушки]; фишки [жетоны] для игр; футбол настольный; шарики для игр; шары для игр; шары надувные для игр; шляпы бумажные для праздников."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- staffing; Consultations on personnel management; Rental of office equipment and apparatus; External administrative management for companies.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- комплектование штата сотрудников; консультации по управлению персоналом; прокат офисного оборудования и аппаратов; управление внешнее административное для компаний."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- rental of construction equipment; Rental of excavators; Construction and repair of warehouses.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- прокат строительной техники; прокат экскаваторов; сооружение и ремонт складов."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- paper processing; Wood processing; Processing of metals; Printing of figures; Offset printing; Polygraphy; Assembly and assembly work for third parties; Cutting fabrics; Planing [sawmills]; Color separation; Silk screen printing.",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- обработка бумаги; обработка древесины; обработка металлов; печатание рисунков; печать офсетная; полиграфия; работы монтажно-сборочные по заказу для третьих лиц; раскрой тканей; строгание [лесопилки]; цветоделение; шелкография."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- chemical analysis; Industrial design; Design art; Research in the field of cosmetology; Research in the field of mechanics; Research in the field of chemistry; Research and development of new products for third parties; Scientific research; Technical research; quality control; Server placement; Server hosting; Software development; Creation and maintenance of websites for third parties; Compilation of programs for computers; Services of designers in the field of packaging; Services of scientific laboratories; Image creation services [industrial aesthetics]; Storage in electronic form.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- анализ химический; дизайн промышленный; дизайн художественный; исследования в области косметологии; исследования в области механики; исследования в области химии; исследования и разработка новых товаров для третьих лиц; исследования научные; исследования технические; контроль качества; размещение серверов; сервер хостинг; разработка программного обеспечения; создание и техническое обслуживание веб-сайтов для третьих лиц; составление программ для компьютеров; услуги дизайнеров в области упаковки; услуги научных лабораторий; услуги по созданию образа [промышленная эстетика]; хранение в электронном виде."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "- agencies for the organization of night security; Control in the field of intellectual property for legal entities; The control of systems of the security signal system; Licensing of intellectual property; Protection of civilians.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "- агентства по организации ночной охраны; контроль в области интеллектуальной собственности для юридических лиц; контроль систем охранной сигнализации; лицензирование интеллектуальной собственности; охрана штатская."
+        }
+      ]
+    },
+    "id": "29715b4f-00e1-46dd-9fc1-8d04c8d76c31",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250705",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "representatives": [
+      {
+        "representativeNativeName": "150044, г. Ярославль, п/о 44, а/я 1414, В.В. Новичкову"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151105",
+        "applicationNumber": "2015735976"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20251105",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170222",
+        "registrationNumber": "606696"
+      }
+    },
+    "version": "20250705075742",
+    "wordMarkSpecification": {
+      "markTransliteration": "LORI",
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/ru/29715b4f-00e1-46dd-9fc1-8d04c8d76c31",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.454Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

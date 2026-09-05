@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/xs/149886c5-495e-4c5f-bb0b-e9be68e89ef4",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "149886c5-495e-4c5f-bb0b-e9be68e89ef4",
+  "applicationNumber": null,
+  "registrationNumber": "2052206",
+  "applicationDate": null,
+  "registrationDate": "2011-10-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2016-10-14",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FCI AUTOMOTIVE NORTH AMERICA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "FCI AUTOMOTIVE USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "28100 CABOT DRIVE,STE. 100, NOVI, MI, 48377",
+        "applicantAddressCity": "NOVI",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "48377",
+        "applicantAddressStateName": "MICHIGAN",
+        "applicantAddressStreet": "28100 CABOT DRIVE,STE. 100",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "FCI AUTOMOTIVE USA, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "149886c5-495e-4c5f-bb0b-e9be68e89ef4",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "28100 CABOT DRIVE,STE. 100, NOVI, MI, 48377",
+        "city": "NOVI",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "FCI AUTOMOTIVE USA, INC.",
+        "postalCode": "48377",
+        "stateName": "MICHIGAN",
+        "street": "28100 CABOT DRIVE,STE. 100"
+      }
+    ],
+    "recordLastUpdated": "20241214",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cancellationDate": "20161014",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "CANCELLED"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "registration": {
+        "registrationDate": "20111006",
+        "registrationNumber": "2052206"
+      }
+    },
+    "usStateOfficeCode": "OH",
+    "usStateOfficeName": "OHIO",
+    "version": "20241214113450",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FCI AUTOMOTIVE NORTH AMERICA"
+    }
+  },
+  "_uri": "/mark/xs/149886c5-495e-4c5f-bb0b-e9be68e89ef4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

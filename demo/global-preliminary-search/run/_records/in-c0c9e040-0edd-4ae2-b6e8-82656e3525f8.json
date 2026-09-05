@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/c0c9e040-0edd-4ae2-b6e8-82656e3525f8",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "c0c9e040-0edd-4ae2-b6e8-82656e3525f8",
+  "applicationNumber": "7618992",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-27",
+  "registrationDate": null,
+  "expiryDate": "2036-03-27",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Smart watches; earbuds; earphones; headphones; headsets; wireless speakers; speakers; chargers; wireless chargers; usb chargers; electrical adapters; mobile phone chargers; portable power chargers; power banks; digital tablets; keyboards, multifunction keyboards, wireless keyboards, computer keyboards, keyboards for smartphones, keyboards for laptops and tablets, keypads, computer keypads, wireless keypads, gaming keypads, numeric keypads, computer mouse, mousepads, and other computer peripherals; smart wearables, smart rings, fitness trackers, smart bands, home automation systems; home automation devices; computer software; software applications; smartphones; covers for smartphones; covers for tablet computers; cases for smartphones; lot products & mobile phones and accessories included in class 9",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SRK POWERTECH PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "SIDDHARTH LUTHRA[29901]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "A-12, Hosiery Complex, Noida, Gautam Budh Nagar, Uttar Pradesh 201305",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SRK POWERTECH PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Smart watches; earbuds; earphones; headphones; headsets; wireless speakers; speakers; chargers; wireless chargers; usb chargers; electrical adapters; mobile phone chargers; portable power chargers; power banks; digital tablets; keyboards, multifunction keyboards, wireless keyboards, computer keyboards, keyboards for smartphones, keyboards for laptops and tablets, keypads, computer keypads, wireless keypads, gaming keypads, numeric keypads, computer mouse, mousepads, and other computer peripherals; smart wearables, smart rings, fitness trackers, smart bands, home automation systems; home automation devices; computer software; software applications; smartphones; covers for smartphones; covers for tablet computers; cases for smartphones; lot products & mobile phones and accessories included in class 9"
+        }
+      ]
+    },
+    "id": "c0c9e040-0edd-4ae2-b6e8-82656e3525f8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260715",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "A-3 CHRISTIAN COLONY PATEL CHEST,DELHI-110007",
+        "representativeName": "SIDDHARTH LUTHRA[29901]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260327",
+        "applicationNumber": "7618992"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360327",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20251001"
+        }
+      ],
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20260715020035",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/in/c0c9e040-0edd-4ae2-b6e8-82656e3525f8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "uri": "/mark/eu/016384844",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "016384844",
+  "applicationNumber": "016384844",
+  "registrationNumber": "016384844",
+  "applicationDate": "2017-02-18",
+  "registrationDate": "2018-09-27",
+  "expiryDate": "2027-02-18",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2018-10-01",
+  "markText": "QODI",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "HK ZUOYOU INFORMATION LIMITED",
+  "ownerCountry": null,
+  "representative": "Katarzyna Binder-Sony",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Aerials",
+            " Antennas",
+            " Radios",
+            " Acoustic couplers",
+            " Megaphones",
+            " Stereoscopes",
+            " Electricity mains, namely, electric cables and wires",
+            " Protection devices for personal use against accidents, namely, shoes for protection against accidents and fire, clothing for protection against accidents, irradiation and fire, face-protection shields",
+            " Batteries, electric",
+            " Chargers for electric batteries",
+            " Sound alarms",
+            " Semi-conductors",
+            " Optical lanterns",
+            " Electro-dynamic apparatus for the remote control of signals"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [
+    {
+      "oppositionNumber": "002901653",
+      "oppositionDate": "2017-05-26",
+      "status": "CLOSED"
+    }
+  ],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [
+    {
+      "caseNumber": "002901653",
+      "decisionKind": "OPPOSITION",
+      "decisionDate": "2017-12-06"
+    }
+  ],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/016384844",
+  "_uri": "/mark/eu/016384844",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:33.158Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

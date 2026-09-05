@@ -1,0 +1,284 @@
+{
+  "uri": "/mark/us/7d92e3d1-89ec-40b6-b8fb-a18c6f4350f9",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "7d92e3d1-89ec-40b6-b8fb-a18c6f4350f9",
+  "applicationNumber": "77713082",
+  "registrationNumber": "3701650",
+  "applicationDate": "2009-04-14",
+  "registrationDate": "2009-10-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2009-08-11"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2016-06-03",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LEAVE NO RIM NETLESS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Amateur youth sports services, namely, organizing and providing youth sports activities; Charitable services, namely, providing sporting goods to underprivileged children; Education services, namely, one-on-one mentoring in the fields of physical activity and healthcare; Educational and entertainment services, namely, providing motivational and educational speakers in the field of self- and personal improvement; Encouraging amateur sports and physical education by organizing, sanctioning, conducting, regulating and governing amateur athletic programs and activities; Operation of sports camps; Organizing sporting events, namely, dribbleathon; Physical education; Physical education services; Providing educational mentoring services and programs in the field of physical activity and healthcare; Providing sports facilities; Providing various facilities for an array of sporting events, sports and athletic competitions and awards programmes; Sport camps; Sports camp services; Sports refereeing and officiating; Sports training services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "netz 4 Life, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "13681 Newport Ave., Ste. #8-163, Tustin, CA, 92780",
+        "applicantAddressCity": "Tustin",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "92780",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "13681 Newport Ave., Ste. #8-163",
+        "applicantJurisdictionOfIncorporation": "CALIFORNIA",
+        "applicantLegalEntity": "non-profit corporation",
+        "applicantName": "netz 4 Life, Inc.",
+        "entities": [
+          {
+            "name": "Ray Roman, CEO; Kristine Kim, Treasurer; Ricardo Cendejas, Secretary; Clinton Sanders, Camp coordinator; Dave Shales, Project Manager"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Amateur youth sports services, namely, organizing and providing youth sports activities; Charitable services, namely, providing sporting goods to underprivileged children; Education services, namely, one-on-one mentoring in the fields of physical activity and healthcare; Educational and entertainment services, namely, providing motivational and educational speakers in the field of self- and personal improvement; Encouraging amateur sports and physical education by organizing, sanctioning, conducting, regulating and governing amateur athletic programs and activities; Operation of sports camps; Organizing sporting events, namely, dribbleathon; Physical education; Physical education services; Providing educational mentoring services and programs in the field of physical activity and healthcare; Providing sports facilities; Providing various facilities for an array of sporting events, sports and athletic competitions and awards programmes; Sport camps; Sports camp services; Sports refereeing and officiating; Sports training services"
+        }
+      ]
+    },
+    "id": "7d92e3d1-89ec-40b6-b8fb-a18c6f4350f9",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20160603",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20091027",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090811",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20090722",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20090709",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20090709",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20090630",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090630",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20090417",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20090417",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "13681 Newport Ave., Ste. #8-163, Tustin, CA, 92780",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Ray Roman, CEO; Kristine Kim, Treasurer; Ricardo Cendejas, Secretary; Clinton Sanders, Camp coordinator; Dave Shales, Project Manager"
+          }
+        ],
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "non-profit corporation",
+        "name": "netz 4 Life, Inc.",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste. #8-163"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "13681 Newport Ave., Ste. #8-163, Tustin, CA, 92780",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Ray Roman, CEO; Kristine Kim, Treasurer; Ricardo Cendejas, Secretary; Clinton Sanders, Camp coordinator; Dave Shales, Project Manager"
+          }
+        ],
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "non-profit corporation",
+        "name": "netz 4 Life, Inc.",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste. #8-163"
+      },
+      {
+        "address": "13681 Newport Ave., Ste. #8-163, Tustin, CA, 92780",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Ray Roman, CEO; Kristine Kim, Treasurer; Ricardo Cendejas, Secretary; Clinton Sanders, Camp coordinator; Dave Shales, Project Manager"
+          }
+        ],
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "non-profit corporation",
+        "name": "netz 4 Life, Inc.",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste. #8-163"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "13681 Newport Ave., Ste. #8-163, Tustin, CA, 92780",
+        "city": "Tustin",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "entities": [
+          {
+            "name": "Ray Roman, CEO; Kristine Kim, Treasurer; Ricardo Cendejas, Secretary; Clinton Sanders, Camp coordinator; Dave Shales, Project Manager"
+          }
+        ],
+        "jurisdictionOfIncorporation": "CALIFORNIA",
+        "legalEntity": "non-profit corporation",
+        "name": "netz 4 Life, Inc.",
+        "postalCode": "92780",
+        "stateName": "CALIFORNIA",
+        "street": "13681 Newport Ave., Ste. #8-163"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "TUSTIN, CA 92780-4689, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "TUSTIN, CA 92780-4689",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "NETZ 4 LIFE, INC. NETZ 4 LIFE, INC., 13681 NEWPORT AVE STE 8-163"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "TUSTIN, CA 92780-4689, UNITED STATES",
+        "representativeAddressLines": [
+          "TUSTIN, CA 92780-4689",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20090414",
+        "applicationNumber": "77713082"
+      },
+      "cancellationDate": "20160603",
+      "cancellationPublicationDate": "20160712",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20050121"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20050831"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20160603",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20090811"
+      ],
+      "registration": {
+        "registrationDate": "20091027",
+        "registrationNumber": "3701650"
+      }
+    },
+    "version": "20260109204610",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "LEAVE NO RIM NET LESS",
+      "markVerbalElementText": "LEAVE NO RIM NETLESS"
+    }
+  },
+  "_uri": "/mark/us/7d92e3d1-89ec-40b6-b8fb-a18c6f4350f9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

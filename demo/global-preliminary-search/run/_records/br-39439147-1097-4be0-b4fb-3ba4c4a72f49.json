@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/br/39439147-1097-4be0-b4fb-3ba4c4a72f49",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "39439147-1097-4be0-b4fb-3ba4c4a72f49",
+  "applicationNumber": "814924794",
+  "registrationNumber": null,
+  "applicationDate": "1989-07-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    5,
+    8,
+    9,
+    10,
+    14,
+    16,
+    18,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    34,
+    36,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        14,
+        16,
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        34,
+        36,
+        37,
+        40,
+        42
+      ],
+      "language": "pt",
+      "description": "[CLASS 25. 10]: : Roupas e acessórios do vestuário de uso comum. [CLASS 25. 20]: : Roupas e acessórios do vestuário para prática de esportes. [CLASS 25. 30]: : Roupas e acessórios do vestuário de uso profissional.",
+      "translation_language": "en",
+      "translation": "[CLASS 25. 10]: : General wear clothing and clothing accessories. [CLASS 25. 20]: : Sports clothing and clothing accessories. [CLASS 25. 30]: : Clothing and clothing accessories for professional use."
+    }
+  ],
+  "owner": "L J K SILVA PRANCHAS DE SURF ME",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "L J K SILVA PRANCHAS DE SURF ME"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "[CLASS 25. 10]: : General wear clothing and clothing accessories. [CLASS 25. 20]: : Sports clothing and clothing accessories. [CLASS 25. 30]: : Clothing and clothing accessories for professional use.",
+          "intClassNumber": "03,05,08,09,10,14,16,18,21,22,23,24,25,26,28,34,36,37,40,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "[CLASS 25. 10]: : Roupas e acessórios do vestuário de uso comum. [CLASS 25. 20]: : Roupas e acessórios do vestuário para prática de esportes. [CLASS 25. 30]: : Roupas e acessórios do vestuário de uso profissional."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "25.10"
+        },
+        {
+          "natClassNumber": "25.20"
+        },
+        {
+          "natClassNumber": "25.30"
+        }
+      ]
+    },
+    "id": "39439147-1097-4be0-b4fb-3ba4c4a72f49",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19890704",
+        "applicationNumber": "814924794"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630194301",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/br/39439147-1097-4be0-b4fb-3ba4c4a72f49",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

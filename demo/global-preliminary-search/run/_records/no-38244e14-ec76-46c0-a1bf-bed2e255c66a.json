@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/no/38244e14-ec76-46c0-a1bf-bed2e255c66a",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "38244e14-ec76-46c0-a1bf-bed2e255c66a",
+  "applicationNumber": "201605574",
+  "registrationNumber": "289115",
+  "applicationDate": "2016-05-09",
+  "registrationDate": "2016-10-05",
+  "expiryDate": "2026-05-09",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-10-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "interactive NORWAY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Fotografiske, kinematografiske og optiske apparater og instrumenter samt apparater og instrumenter for undervisning; apparater for opptak, overføring og gjengivelse av lyd og bilder; databehandlingsutstyr og datamaskiner; elektroniske interaktive tavler; fjernsynsmottakere; software",
+      "translation_language": "en",
+      "translation": "Photographic, cinematographic and optical apparatus and instruments and teaching apparatus and instruments; apparatus for recording, transmitting and reproducing sound and images; data processing equipment and computers; electronic interactive whiteboards; television receivers; software"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "no",
+      "description": "Installasjon og reparasjon av fotografiske, kinematiografiske og optiske apparater og instrumenter, av apparater og instrumenter for undervisning, av apparater for opptak, overføring og gjengivelse av lyd og bilder, av databehandlingsutstyr og datamaskiner, av elektroniske interaktive tavler, fjernsynsmottakere og software.",
+      "translation_language": "en",
+      "translation": "Installation and repair of photographic, cinematographic and optical apparatus and instruments, of apparatus and instruments for teaching, of apparatus for recording, transmission and reproduction of sound and images, of data processing equipment and computers, of electronic interactive whiteboards, television receivers and software."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "no",
+      "description": "Design og utvikling av datamaskiner og dataprogrammer; tekniske tjenester i forbindelse med fotografiske, kinematografiske og optiske apparater og instrumenter, med apparater og instrumenter for undervisning, med apparater for opptak, overføring og gjengivelse av lyd og bilder, med databehandlingsutstyr og datamaskiner, med elektroniske interaktive tavler, fjernsynsmottakere, og software.",
+      "translation_language": "en",
+      "translation": "Design and development of computers and computer programs; technical services in connection with photographic, cinematographic and optical apparatus and instruments, with apparatus and instruments for teaching, with apparatus for recording, transmitting and reproducing sound and images, with data processing equipment and computers, with electronic interactive whiteboards, television receivers, and software."
+    }
+  ],
+  "owner": "Interactive Norway AS",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": "ACAPO ONSAGERS AS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1326 LYSAKER",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "Interactive Norway AS"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Photographic, cinematographic and optical apparatus and instruments and teaching apparatus and instruments; apparatus for recording, transmitting and reproducing sound and images; data processing equipment and computers; electronic interactive whiteboards; television receivers; software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Fotografiske, kinematografiske og optiske apparater og instrumenter samt apparater og instrumenter for undervisning; apparater for opptak, overføring og gjengivelse av lyd og bilder; databehandlingsutstyr og datamaskiner; elektroniske interaktive tavler; fjernsynsmottakere; software"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Installation and repair of photographic, cinematographic and optical apparatus and instruments, of apparatus and instruments for teaching, of apparatus for recording, transmission and reproduction of sound and images, of data processing equipment and computers, of electronic interactive whiteboards, television receivers and software.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Installasjon og reparasjon av fotografiske, kinematiografiske og optiske apparater og instrumenter, av apparater og instrumenter for undervisning, av apparater for opptak, overføring og gjengivelse av lyd og bilder, av databehandlingsutstyr og datamaskiner, av elektroniske interaktive tavler, fjernsynsmottakere og software."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design and development of computers and computer programs; technical services in connection with photographic, cinematographic and optical apparatus and instruments, with apparatus and instruments for teaching, with apparatus for recording, transmitting and reproducing sound and images, with data processing equipment and computers, with electronic interactive whiteboards, television receivers, and software.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Design og utvikling av datamaskiner og dataprogrammer; tekniske tjenester i forbindelse med fotografiske, kinematografiske og optiske apparater og instrumenter, med apparater og instrumenter for undervisning, med apparater for opptak, overføring og gjengivelse av lyd og bilder, med databehandlingsutstyr og datamaskiner, med elektroniske interaktive tavler, fjernsynsmottakere, og software."
+        }
+      ]
+    },
+    "id": "38244e14-ec76-46c0-a1bf-bed2e255c66a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.16"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250808",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "0123 OSLO",
+        "representativeAddressCountryCode": "NO",
+        "representativeAddressCountryName": "Norway",
+        "representativeName": "ACAPO ONSAGERS AS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160509",
+        "applicationNumber": "201605574"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260509",
+      "lastPublicationDate": "20161010",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20161005",
+        "registrationNumber": "289115"
+      }
+    },
+    "version": "20250808020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "interactive NORWAY"
+    }
+  },
+  "_uri": "/mark/no/38244e14-ec76-46c0-a1bf-bed2e255c66a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/it/817f6bee-61a0-46c8-9307-792bcf7e3a46",
+  "provider": "clarivate",
+  "office": "it",
+  "guid": "817f6bee-61a0-46c8-9307-792bcf7e3a46",
+  "applicationNumber": "362017000147766",
+  "registrationNumber": "362017000147766",
+  "applicationDate": "2017-12-21",
+  "registrationDate": "2018-09-06",
+  "expiryDate": "2028-05-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-10-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "L.O.R.I.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42,
+        44
+      ],
+      "language": "it",
+      "description": "servizi di odontotecnica (servizi per conto terzi) s",
+      "translation_language": "en",
+      "translation": "of dental services (for others) s"
+    }
+  ],
+  "owner": "L.O.R.I. S.R.L.",
+  "ownerNative": null,
+  "ownerCountry": "IT",
+  "representative": "Dr. Modiano & Associati S.p.A.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Noventa Padovana Padova, PADOVA",
+        "applicantAddressCountryCode": "IT",
+        "applicantAddressCountryName": "Italy",
+        "applicantName": "L.O.R.I. S.R.L."
+      }
+    ],
+    "applicationLanguageCode": "it",
+    "cmMarkImageEUclassification": [
+      "26.03.04",
+      "26.03.06",
+      "26.04.11",
+      "26.04.12",
+      "26.11.07"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "of dental services (for others) s",
+          "intClassNumber": "42,44",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "servizi di odontotecnica (servizi per conto terzi) s"
+        }
+      ]
+    },
+    "id": "817f6bee-61a0-46c8-9307-792bcf7e3a46",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Bianco, Nero, Verde;"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "L.O.R.I. (A COLORI) - IL MARCHIO CONSISTE IN UN'IMPRONTA RETTANGOLARE CONTENENTE LA FIGURA DI UN DENTE STILIZZATO NERO IN CAMPO VERDE, POSTA SUPERIORMENTE ALLA DICITURA L.O.R.I. BIANCA IN CARATTERI MAIUSCOLI."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250403",
+    "registrationOfficeCode": "IT",
+    "registrationOfficeName": "Italy",
+    "representatives": [
+      {
+        "representativeAddress": "via Meravigli 16 20123 Milano (MILANO)",
+        "representativeName": "Dr. Modiano & Associati S.p.A."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171221",
+        "applicationNumber": "362017000147766"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280525",
+      "firstRegistrationApplication": {
+        "firstApplicationDate": "19880525",
+        "firstApplicationNumber": "88/027738",
+        "firstRegistrationDate": "19900509",
+        "firstRegistrationNumber": "527497"
+      },
+      "lastPublicationDate": "20181029",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180906",
+        "registrationNumber": "362017000147766"
+      }
+    },
+    "version": "20250403190447",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "L.O.R.I."
+    }
+  },
+  "_uri": "/mark/it/817f6bee-61a0-46c8-9307-792bcf7e3a46",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

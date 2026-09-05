@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/kw/167e22d8-c013-4ba9-8f27-2f7f633b7de1",
+  "provider": "clarivate",
+  "office": "kw",
+  "guid": "167e22d8-c013-4ba9-8f27-2f7f633b7de1",
+  "applicationNumber": "91922",
+  "registrationNumber": null,
+  "applicationDate": "2008-01-31",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR HOUSE APARTMENTS LONDON G",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "خدمات المطاعم وجميع البضائع المتضمنة في الفئة",
+      "translation_language": "en",
+      "translation": "Catering services and all goods included in the category"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "سكيبتر كورت، 40 تاوير هيل، لندن إي سي3إن 4دي إكس",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantNativeName": "جروسفنر هاوس أبارتمينتز ليميتد"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Catering services and all goods included in the category",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "خدمات المطاعم وجميع البضائع المتضمنة في الفئة"
+        }
+      ]
+    },
+    "id": "167e22d8-c013-4ba9-8f27-2f7f633b7de1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "KW",
+    "registrationOfficeName": "Kuwait",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "KW",
+        "representativeAddressCountryName": "Kuwait",
+        "representativeNativeName": "العيبان والقطامي للملكية الفكرية والاستشارات"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080131",
+        "applicationNumber": "91922"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION"
+    },
+    "version": "20230427114430",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR HOUSE APARTMENTS LONDON G"
+    }
+  },
+  "_uri": "/mark/kw/167e22d8-c013-4ba9-8f27-2f7f633b7de1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

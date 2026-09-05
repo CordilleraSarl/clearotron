@@ -1,0 +1,226 @@
+{
+  "uri": "/mark/wo/4979fa0f-650d-46e9-a7dd-3117dca8cd47",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "4979fa0f-650d-46e9-a7dd-3117dca8cd47",
+  "applicationNumber": null,
+  "registrationNumber": "858973",
+  "applicationDate": null,
+  "registrationDate": "2005-03-18",
+  "expiryDate": "2035-03-18",
+  "renewalDate": "2025-03-18",
+  "lastPublicationDate": "2025-04-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CoolFluxDSP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus and instruments for recording, transmission and reproduction of sound and/or images; electronic, electrotechnical, electromechanical and electromagnetic modules, parts and components therefor, including integrated circuits (IC's), chips, diodes, transistors, semiconductors and semiconductor elements; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments d'enregistrement, transmission et reproduction du son et/ou d'images; modules électroniques, électrotechniques, électromécaniques et électromagnétiques, leurs parties et composants, y compris circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments à semi-conducteurs; logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos para la grabación, la transmisión y la reproducción de sonido y/o imágenes; módulos electrónicos, electrotécnicos y electromecánicos y electromagnéticos, así como sus partes y componentes, incluidos circuitos integrados (CI), chips, diodos, transistores, semiconductores y elementos semiconductores; software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20041025",
+      "priorityNumber": "1064572"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20041025",
+          "basicApplicationNumber": "1064572"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20041029",
+          "basicRegistrationNumber": "756109"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20041025",
+            "basicApplicationNumber": "1064572"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20041029",
+            "basicRegistrationNumber": "756109"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "02.01.08",
+      "02.01.16",
+      "26.04.16"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus and instruments for recording, transmission and reproduction of sound and/or images; electronic, electrotechnical, electromechanical and electromagnetic modules, parts and components therefor, including integrated circuits (IC's), chips, diodes, transistors, semiconductors and semiconductor elements; software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments d'enregistrement, transmission et reproduction du son et/ou d'images; modules électroniques, électrotechniques, électromécaniques et électromagnétiques, leurs parties et composants, y compris circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments à semi-conducteurs; logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos para la grabación, la transmisión y la reproducción de sonido y/o imágenes; módulos electrónicos, electrotécnicos y electromecánicos y electromagnéticos, así como sus partes y componentes, incluidos circuitos integrados (CI), chips, diodos, transistores, semiconductores y elementos semiconductores; software."
+        }
+      ]
+    },
+    "id": "4979fa0f-650d-46e9-a7dd-3117dca8cd47",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.01",
+      "25.01",
+      "27.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20041025",
+        "priorityNumber": "1064572"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "14"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350318",
+      "lastPublicationDate": "20250417",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20050318",
+        "registrationNumber": "858973"
+      },
+      "renewalDate": "20250318",
+      "renewalPublishedDate": "20250417"
+    },
+    "version": "20250620162853",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CoolFluxDSP"
+    }
+  },
+  "_uri": "/mark/wo/4979fa0f-650d-46e9-a7dd-3117dca8cd47",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

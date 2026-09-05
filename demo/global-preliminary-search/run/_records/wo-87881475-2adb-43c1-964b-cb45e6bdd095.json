@@ -1,0 +1,256 @@
+{
+  "uri": "/mark/wo/87881475-2adb-43c1-964b-cb45e6bdd095",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "87881475-2adb-43c1-964b-cb45e6bdd095",
+  "applicationNumber": null,
+  "registrationNumber": "569985",
+  "applicationDate": null,
+  "registrationDate": "1991-03-29",
+  "expiryDate": "2031-03-29",
+  "renewalDate": "2021-03-29",
+  "lastPublicationDate": "2021-04-15",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": "Véhicules automobiles, leurs pièces détachées et éléments constitutifs.",
+      "translation_language": "en",
+      "translation": "Motor vehicles, their parts and components."
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Tous services d'entretien, de réparation et de nettoyage de véhicules automobiles; services de location d'automobiles.",
+      "translation_language": "en",
+      "translation": "All maintenance, repair and cleaning of motor vehicles; car rental services."
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Services de transformation d'automobiles.",
+      "translation_language": "en",
+      "translation": "automobile processing services."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de bureaux d'étude, de recherche en matière de stylisme; travaux d'ingénieurs, services de mise au point de véhicules automobiles.",
+      "translation_language": "en",
+      "translation": "offices Services of study, styling research; engineering services, development of automotive services."
+    }
+  ],
+  "owner": "Gildo Pierre Pallanca",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "Myriam Angelier SCP BBLM",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "19901001",
+      "priorityNumber": "1 643 291"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "19901001",
+          "basicApplicationNumber": "22 808"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "FR",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "19901001",
+          "basicRegistrationNumber": "1 643 291"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AT",
+      "CH",
+      "DE",
+      "ES",
+      "IT",
+      "MA",
+      "MC",
+      "PT",
+      "BX"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7 rue du gabian MC-98000 MONACO",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo Pierre Pallanca"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "19901001",
+            "basicApplicationNumber": "22 808"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "FR",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "19901001",
+            "basicRegistrationNumber": "1 643 291"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "01.03.02",
+      "03.07.01",
+      "03.07.16",
+      "26.01.10",
+      "26.03.16",
+      "37.01.22"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AT",
+      "CH",
+      "DE",
+      "ES",
+      "IT",
+      "MA",
+      "MC",
+      "PT",
+      "BX"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Motor vehicles, their parts and components.",
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Véhicules automobiles, leurs pièces détachées et éléments constitutifs."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "All maintenance, repair and cleaning of motor vehicles; car rental services.",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Tous services d'entretien, de réparation et de nettoyage de véhicules automobiles; services de location d'automobiles."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "automobile processing services.",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de transformation d'automobiles."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "offices Services of study, styling research; engineering services, development of automotive services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de bureaux d'étude, de recherche en matière de stylisme; travaux d'ingénieurs, services de mise au point de véhicules automobiles."
+        }
+      ]
+    },
+    "id": "87881475-2adb-43c1-964b-cb45e6bdd095",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.03",
+      "03.07",
+      "24.01",
+      "26.01",
+      "27.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "19901001",
+        "priorityNumber": "1 643 291"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "13"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "3 place Félix Baret F-13006 Marseille",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "Myriam Angelier SCP BBLM"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310329",
+      "lastPublicationDate": "20210415",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19910329",
+        "registrationNumber": "569985"
+      },
+      "renewalDate": "20210329",
+      "renewalPublishedDate": "20210415"
+    },
+    "version": "20250620153435",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/wo/87881475-2adb-43c1-964b-cb45e6bdd095",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.181Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

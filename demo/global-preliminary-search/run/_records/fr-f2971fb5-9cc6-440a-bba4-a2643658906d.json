@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/fr/f2971fb5-9cc6-440a-bba4-a2643658906d",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "f2971fb5-9cc6-440a-bba4-a2643658906d",
+  "applicationNumber": "01 3120238",
+  "registrationNumber": "01 3120238",
+  "applicationDate": "2001-09-10",
+  "registrationDate": null,
+  "expiryDate": "2031-09-10",
+  "renewalDate": "2021-05-12",
+  "lastPublicationDate": "2002-09-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    28,
+    38,
+    41,
+    42,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16,
+        28,
+        38,
+        41,
+        42,
+        43
+      ],
+      "language": "fr",
+      "description": "Papier et carton ; produits de l'imprimerie ; photographies ; papeterie ; cartes à jouer ; caractères d'imprimerie ; clichés. Jeux, jouets ; articles de gymnastique et de sport (à l'exception des vêtements, tapis, chaussures). Agences de presse et d'informations dans le domaine du sport ou de l'automobile, par tous moyens y compris électroniques, informatiques et téléphoniques ; services de fourniture d'informations et de nouvelles dans le domaine du sport ou de la mécanique, par tous moyens y compris électroniques, informatiques et téléphoniques ; Diffusion de programmes radiophoniques ou de télévision, émissions radiophoniques, émissions télévisées par câbles, par satellite ou par l'intermédiaire du réseau Internet, dans le domaine du sport ou de l'automobile. Education ; formation, école de pilotage ; divertissement dans le domaine du sport ou de l'automobile ; activités sportives et culturelles. Edition de livres, de revues, de journaux dans le domaine du sport ou de l'automobile. Production de spectacles, de films et téléfilms dans le domaine du sport ou de l'automobile. Montage de bandes vidéo. Organisation de concours en matière d'éducation ou de divertissement. Organisation d'expositions à buts culturels ou éducatifs. Organisation de loteries. Réservation de places de spectacles dans le domaine du sport. Production de films sur bandes vidéo, sur vidéocassettes, et sur vidéogrammes, exploitation de salles de jeux, divertissements radiophoniques, divertissements télévisés, représentation de spectacles. Restauration (alimentation) ; cafés-restaurants, cafétérias, restaurants, restaurant libreservice ; hébergement temporaire. Essais de matériaux, dans le domaine du sport ou de l'automobile. Gestion de lieux d'expositions.",
+      "translation_language": "en",
+      "translation": "Paper and cardboard; printing products; photographs; stationery store ; playing cards ; printing characters; cliches. Games toys ; gymnastic and sporting articles (except clothing, mats, shoes). Press and information agencies in the field of sport or the automobile, by all means including electronic, computer and telephone; services for providing information and news in the field of sport or mechanics, by any means including electronic, computer and telephone; Broadcasting of radio or television programs, radio broadcasts, television broadcasts by cable, by satellite or via the Internet network, in the field of sports or automobiles. Education ; training, flight school; entertainment in the field of sports or automobiles; sports and cultural activities. Publishing of books, magazines, newspapers in the field of sport or the automobile. Production of shows, films and television films in the field of sport or the automobile. Editing of videotapes. Organization of competitions relating to education or entertainment. Organization of exhibitions for cultural or educational purposes. Organization of lotteries. Reservation of tickets for shows in the field of sport. Production of films on videotapes, on videocassettes, and on videograms, operation of amusement arcades, radio entertainment, television entertainment, presentation of shows. Catering (food); coffee shops, cafeterias, restaurants, self-service restaurant; temporary accommodation. Testing of materials, in the field of sport or the automobile. Management of exhibition venues."
+    }
+  ],
+  "owner": "Déposant(s): Venturi SAM Société Anonyme Monégasque",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "BBLM avocats, Mme ANGELIER Myriam",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7, rue du Gabian MC, 98000 Monaco",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Déposant(s): Venturi SAM Société Anonyme Monégasque"
+      },
+      {
+        "applicantName": "Titulaire(s): VENTURI AUTOMOBILES SAM (RNM no 377500)"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Paper and cardboard; printing products; photographs; stationery store ; playing cards ; printing characters; cliches. Games toys ; gymnastic and sporting articles (except clothing, mats, shoes). Press and information agencies in the field of sport or the automobile, by all means including electronic, computer and telephone; services for providing information and news in the field of sport or mechanics, by any means including electronic, computer and telephone; Broadcasting of radio or television programs, radio broadcasts, television broadcasts by cable, by satellite or via the Internet network, in the field of sports or automobiles. Education ; training, flight school; entertainment in the field of sports or automobiles; sports and cultural activities. Publishing of books, magazines, newspapers in the field of sport or the automobile. Production of shows, films and television films in the field of sport or the automobile. Editing of videotapes. Organization of competitions relating to education or entertainment. Organization of exhibitions for cultural or educational purposes. Organization of lotteries. Reservation of tickets for shows in the field of sport. Production of films on videotapes, on videocassettes, and on videograms, operation of amusement arcades, radio entertainment, television entertainment, presentation of shows. Catering (food); coffee shops, cafeterias, restaurants, self-service restaurant; temporary accommodation. Testing of materials, in the field of sport or the automobile. Management of exhibition venues.",
+          "intClassNumber": "16,28,38,41,42,43",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Papier et carton ; produits de l'imprimerie ; photographies ; papeterie ; cartes à jouer ; caractères d'imprimerie ; clichés. Jeux, jouets ; articles de gymnastique et de sport (à l'exception des vêtements, tapis, chaussures). Agences de presse et d'informations dans le domaine du sport ou de l'automobile, par tous moyens y compris électroniques, informatiques et téléphoniques ; services de fourniture d'informations et de nouvelles dans le domaine du sport ou de la mécanique, par tous moyens y compris électroniques, informatiques et téléphoniques ; Diffusion de programmes radiophoniques ou de télévision, émissions radiophoniques, émissions télévisées par câbles, par satellite ou par l'intermédiaire du réseau Internet, dans le domaine du sport ou de l'automobile. Education ; formation, école de pilotage ; divertissement dans le domaine du sport ou de l'automobile ; activités sportives et culturelles. Edition de livres, de revues, de journaux dans le domaine du sport ou de l'automobile. Production de spectacles, de films et téléfilms dans le domaine du sport ou de l'automobile. Montage de bandes vidéo. Organisation de concours en matière d'éducation ou de divertissement. Organisation d'expositions à buts culturels ou éducatifs. Organisation de loteries. Réservation de places de spectacles dans le domaine du sport. Production de films sur bandes vidéo, sur vidéocassettes, et sur vidéogrammes, exploitation de salles de jeux, divertissements radiophoniques, divertissements télévisés, représentation de spectacles. Restauration (alimentation) ; cafés-restaurants, cafétérias, restaurants, restaurant libreservice ; hébergement temporaire. Essais de matériaux, dans le domaine du sport ou de l'automobile. Gestion de lieux d'expositions."
+        }
+      ]
+    },
+    "id": "f2971fb5-9cc6-440a-bba4-a2643658906d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00058",
+        "publicationVolume": "37"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "BBLM avocats, Mme ANGELIER Myriam"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20010910",
+        "applicationNumber": "01 3120238"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310910",
+      "lastPublicationDate": "20020913",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "01 3120238"
+      },
+      "renewalDate": "20210512",
+      "renewalPublishedDate": "20210709"
+    },
+    "version": "20250426145124",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/fr/f2971fb5-9cc6-440a-bba4-a2643658906d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

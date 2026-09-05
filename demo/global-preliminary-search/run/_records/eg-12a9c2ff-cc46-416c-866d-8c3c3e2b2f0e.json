@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/eg/12a9c2ff-cc46-416c-866d-8c3c3e2b2f0e",
+  "provider": "clarivate",
+  "office": "eg",
+  "guid": "12a9c2ff-cc46-416c-866d-8c3c3e2b2f0e",
+  "applicationNumber": "0403463",
+  "registrationNumber": null,
+  "applicationDate": "2019-12-05",
+  "registrationDate": "2021-03-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "فينوريس VENORIS",
+  "markTransliteration": "VENORIS venoris",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ar",
+      "description": "جميع المنتجات الواردة بالفئه رقم.",
+      "translation_language": "en",
+      "translation": "All products listed in item no."
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantNativeName": "ماجد احمد محمد وشركاة - شركة فينوس للاستيراد والتصدير والتجميع والتوكيلات التجارية"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "All products listed in item no.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "جميع المنتجات الواردة بالفئه رقم."
+        }
+      ]
+    },
+    "id": "12a9c2ff-cc46-416c-866d-8c3c3e2b2f0e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230426",
+    "registrationOfficeCode": "EG",
+    "registrationOfficeName": "Egypt",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191205",
+        "applicationNumber": "0403463"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210310"
+      }
+    },
+    "version": "20230426194612",
+    "wordMarkSpecification": {
+      "markTransliteration": "VENORIS venoris",
+      "markVerbalElementText": "فينوريس VENORIS"
+    }
+  },
+  "_uri": "/mark/eg/12a9c2ff-cc46-416c-866d-8c3c3e2b2f0e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/mx/76bde00a-7e0e-4d67-8d5f-7164c62b7d68",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "76bde00a-7e0e-4d67-8d5f-7164c62b7d68",
+  "applicationNumber": "1984362",
+  "registrationNumber": "1907413",
+  "applicationDate": "2018-02-21",
+  "registrationDate": "2018-07-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HEAVEN OR HELL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Deportes electronicos",
+      "translation_language": "en",
+      "translation": "ELECTRONIC SPORTS"
+    }
+  ],
+  "owner": "MAGDALENA DE JESÚS CAMPOS CARRETO 5º CALLEJON DE CHONTALES NUM. EXT. 6 PROVISIONAL",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SANTA CRUZ ACALPIXCA XOCHIMILCO, CIUDAD DE MÉXICO 16500",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "MAGDALENA DE JESÚS CAMPOS CARRETO 5º CALLEJON DE CHONTALES NUM. EXT. 6 PROVISIONAL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "ELECTRONIC SPORTS",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Deportes electronicos"
+        }
+      ]
+    },
+    "id": "76bde00a-7e0e-4d67-8d5f-7164c62b7d68",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.15.05",
+      "03.07.17",
+      "27.05.23"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0807R1",
+        "publicationYear": "2018"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180221",
+        "applicationNumber": "1984362"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180730",
+        "registrationNumber": "1907413"
+      }
+    },
+    "version": "20250704181847",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVEN OR HELL"
+    }
+  },
+  "_uri": "/mark/mx/76bde00a-7e0e-4d67-8d5f-7164c62b7d68",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

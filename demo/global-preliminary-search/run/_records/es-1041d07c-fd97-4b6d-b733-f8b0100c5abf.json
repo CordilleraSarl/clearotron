@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/es/1041d07c-fd97-4b6d-b733-f8b0100c5abf",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "1041d07c-fd97-4b6d-b733-f8b0100c5abf",
+  "applicationNumber": "3702021 M8",
+  "registrationNumber": "3702021 M8",
+  "applicationDate": "2018-01-31",
+  "registrationDate": "2019-04-12",
+  "expiryDate": "2028-01-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-03-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOVEN ORQUESTA DE CAMARA DE CANARIAS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales.",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES."
+    }
+  ],
+  "owner": "Gutiérrez Pérez Patricio",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Gutiérrez Pérez Patricio"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales."
+        }
+      ]
+    },
+    "id": "1041d07c-fd97-4b6d-b733-f8b0100c5abf",
+    "ipRightKind": "tmk",
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "AZUL MARINO, AZUL CELESTE Y LILA."
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "5129"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180131",
+        "applicationNumber": "3702021 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280130",
+      "lastPublicationDate": "20180308",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190412",
+        "registrationNumber": "3702021 M8"
+      }
+    },
+    "version": "20260427164715",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOVEN ORQUESTA DE CAMARA DE CANARIAS"
+    }
+  },
+  "_uri": "/mark/es/1041d07c-fd97-4b6d-b733-f8b0100c5abf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

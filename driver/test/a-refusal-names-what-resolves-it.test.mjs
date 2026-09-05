@@ -14,11 +14,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describeChange } from "../../shared/client-door.mjs";
+import { VERBS } from "../../bin/clearotron.mjs";   // — a named command is checked against the table, not a spelling
 import { whatItNeeds, clientById } from "../../shared/connect-clients.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -83,24 +84,49 @@ test("2176-F30 the not-on-the-internet refusal names what to set and where it is
 
 // ── F38 · the dead end reached by following instructions ──────────────────────────────────────────
 
-test("2176-F38 `grant add` with no tenant prints the route that creates one", () => {
-  // connect → "run grant" → grant → "a tenant must already exist" → nothing. Nothing in the CLI writes
-  // a tenant: brandowner never has, grant refuses to, and the only route is the file.
+test("2176-F38 / 2191-F13 `grant add` CREATES the first tenant instead of refusing", () => {
+  // WHAT THIS ARM USED TO ASSERT, and why it changed. F38 found the dead end — connect → "run grant" →
+  // grant → "a tenant must already exist" → nothing — and its fix printed the JSON shape into the
+  // refusal. That was better than a bare stop and still asked a person to hand-edit the file the product
+  // is meant to manage. bb8's F13 found the rest of the road missing too, so the refusal is no longer
+  // the right behaviour on an EMPTY roster: this command creates the first tenant now.
   const home = mkdtempSync(join(tmpdir(), "f38-"));
   const file = join(home, "grants.json");
   writeFileSync(file, `${JSON.stringify({ tenants: {} }, null, 2)}\n`);
-  let out = "";
-  try {
-    execFileSync(process.execPath,
-      [join(REPO, "bin", "grant.mjs"), "add", "lawyer@acme.example", "--tenant", "acme", "--accounts", "acme"],
-      { encoding: "utf8", stdio: "pipe", env: { ...process.env, HOME: home, CLEAROTRON_ACCESS_FILE: file } });
-  } catch (e) { out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
-  assert.ok(out, "expected grant to refuse on a fresh install with no tenants");
-  assert.match(out, /No tenant "acme"/, out);
-  assert.match(out, /"tenants"/, `the refusal must show the shape that creates one:\n${out}`);
-  assert.match(out, new RegExp(file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
-    `the refusal must name THIS install's file, not a generic one:\n${out}`);
-  assert.match(out, /brandowner list/, `it must name how to find the account keys it asks for:\n${out}`);
+  const run = (args) => {
+    try {
+      return execFileSync(process.execPath, [join(REPO, "bin", "grant.mjs"), ...args],
+        { encoding: "utf8", stdio: "pipe", env: { ...process.env, HOME: home, CLEAROTRON_ACCESS_FILE: file } });
+    } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }
+  };
+
+  const made = run(["add", "lawyer@acme.example", "--tenant", "acme", "--accounts", "acme"]);
+  assert.match(made, /Creating the first tenant "acme"/, `an empty roster must be enrollable:\n${made}`);
+  const after = JSON.parse(readFileSync(file, "utf8"));
+  // THE FILE, NOT THE MESSAGE. Saying it created a tenant and writing nothing is the failure mode this
+  // whole finding is about, and an earlier draft of the fix did exactly that: it created the tenant with
+  // no accounts, the next check refused, and nothing was written.
+  assert.deepEqual(after.tenants.acme.accounts, ["acme"], "the new tenant holds the accounts that were asked for");
+  assert.deepEqual(after.tenants.acme.users["lawyer@acme.example"], ["acme"], "and the user is granted them");
+
+  // AND THE TYPO GUARD, which is why creation is limited to the empty case: once a roster exists, an
+  // unknown name is far more likely a mistake than a request.
+  const refused = run(["add", "other@acme.example", "--tenant", "acmee", "--accounts", "acme"]);
+  assert.match(refused, /No tenant "acmee"/, refused);
+  assert.match(refused, /Tenants: acme/, `the refusal must name what does exist:\n${refused}`);
+  assert.match(refused, new RegExp(file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    `the refusal must name THIS install's file, not a generic one:\n${refused}`);
+
+  // THE COMMAND IT NAMES MUST EXIST. This arm used to require the string "brandowner list", and there is
+  // no such subcommand — `brandowner` takes `add` alone. So the arm was pinning a dead reference and
+  // reporting it as a passing refusal, which is the failure this file is named for. Resolved against the
+  // verb table rather than against a remembered spelling.
+  const named = refused.match(/`?clearotron ([a-z-]+)/);
+  assert.ok(named, `the refusal must name a command to run:\n${refused}`);
+  assert.ok(Object.prototype.hasOwnProperty.call(VERBS, named[1]),
+    `the refusal names \`clearotron ${named[1]}\`, which is not in the verb table — a refusal that sends a `
+    + "reader to a command that does not exist is the dead end it was written to close");
+
   rmSync(home, { recursive: true, force: true });
 });
 

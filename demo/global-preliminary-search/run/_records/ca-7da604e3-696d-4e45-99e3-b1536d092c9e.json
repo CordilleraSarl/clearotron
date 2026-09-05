@@ -1,0 +1,239 @@
+{
+  "uri": "/mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "7da604e3-696d-4e45-99e3-b1536d092c9e",
+  "applicationNumber": "2312216",
+  "registrationNumber": null,
+  "applicationDate": "2024-02-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-06-10"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Probes for assessing soil nutrient content and soil health; probes for assessing soil and turf conditions; probes for analyzing the fertility and nutrient reading of soil samples; extruding machine for soil testing; probes to determine and measure soil health and properties, quality and fertility at different depths; depth sensors; probes for environmental monitoring, soil irrigation and soil nutrient management.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Soil analysis; Use and operation for others of probes for probing soil and the surface of the earth, namely, providing scientific and technical information in the nature of soil and soil samples analysis services for others using probes and tubular devices for measuring soil temperature, airflow and soil conditions in the field of environmental science; Technical environmental advice and consultation relating to the use and operation of probes for soil analysis and soil condition assessment in the field of environmental science; Technical environmental consultation in the field of environmental science.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Biogénie Canada Inc.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4535, boulevard Wilfrid-Hamel, Bureau 250, Québec, QUÉBEC, G1P2J7",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "4535, boulevard Wilfrid-Hamel",
+          "Bureau 250",
+          "Québec",
+          "QUÉBEC"
+        ],
+        "applicantAddressPostalCode": "G1P2J7",
+        "applicantName": "Biogénie Canada Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "footNotes": [
+      "CHANGE IN TITLE / CHANGEMENT EN TITRE:",
+      "TYPE OF CHANGE / GENRE DE CHANGEMENT: Name / Nom",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 26 août/Aug 2024",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 05 juil/Jul 2024",
+      "COMMENTS / COMMENTAIRES: FROM/DE: Englobe Environnement inc.",
+      "TO/A: Biogénie Canada Inc.",
+      "Owner Address Change / Changement d'adresse du propriétaire",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 16 mars/Mar 2026"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Probes for assessing soil nutrient content and soil health; probes for assessing soil and turf conditions; probes for analyzing the fertility and nutrient reading of soil samples; extruding machine for soil testing; probes to determine and measure soil health and properties, quality and fertility at different depths; depth sensors; probes for environmental monitoring, soil irrigation and soil nutrient management."
+        },
+        {
+          "intClassNumber": "09,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Soil analysis; Use and operation for others of probes for probing soil and the surface of the earth, namely, providing scientific and technical information in the nature of soil and soil samples analysis services for others using probes and tubular devices for measuring soil temperature, airflow and soil conditions in the field of environmental science; Technical environmental advice and consultation relating to the use and operation of probes for soil analysis and soil condition assessment in the field of environmental science; Technical environmental consultation in the field of environmental science."
+        }
+      ]
+    },
+    "id": "7da604e3-696d-4e45-99e3-b1536d092c9e",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260610",
+        "descriptionText": "Advertised",
+        "information": "Vol.73 Issue 3737"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20260316",
+        "descriptionText": "Amendment to Application",
+        "information": "Address/address"
+      },
+      {
+        "date": "20250729",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20260129"
+      },
+      {
+        "date": "20250729",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20240826",
+        "descriptionText": "Amendment to Application",
+        "information": "Name/Nom"
+      },
+      {
+        "date": "20240307",
+        "descriptionText": "287",
+        "information": "Goods or Services Not Acceptable"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4535, boulevard Wilfrid-Hamel, Bureau 250, Québec, QUÉBEC, G1P2J7",
+        "addressLines": [
+          "4535, boulevard Wilfrid-Hamel",
+          "Bureau 250",
+          "Québec",
+          "QUÉBEC",
+          "G1P2J7"
+        ],
+        "countryName": "Canada",
+        "name": "Biogénie Canada Inc.",
+        "postalCode": "G1P2J7"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3737",
+        "publicationVolume": "73"
+      }
+    ],
+    "recordLastUpdated": "20260619",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+          "630, boul. René-Lévesque Ouest",
+          "20e étage",
+          "Montréal",
+          "QUÉBEC H3B1S6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+        "representativeReferenceNumber": "000293-0828 VBE/VBU"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240226",
+        "applicationNumber": "2312216"
+      },
+      "approvalDate": "20260318",
+      "cmNormalisedStatus": "PENDING",
+      "formalisationDate": "20240226",
+      "markCurrentStatus": "Advertised",
+      "publicationDate": [
+        "20260610"
+      ]
+    },
+    "subjectHeadings": [
+      "VENTURI"
+    ],
+    "version": "20260619104102",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI",
+      "markVerbalElementTextFormal": "VENTURI"
+    }
+  },
+  "_uri": "/mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

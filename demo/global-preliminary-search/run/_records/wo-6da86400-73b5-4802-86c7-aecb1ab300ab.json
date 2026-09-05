@@ -1,0 +1,349 @@
+{
+  "uri": "/mark/wo/6da86400-73b5-4802-86c7-aecb1ab300ab",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "6da86400-73b5-4802-86c7-aecb1ab300ab",
+  "applicationNumber": null,
+  "registrationNumber": "567710",
+  "applicationDate": null,
+  "registrationDate": "1991-02-04",
+  "expiryDate": "2031-02-04",
+  "renewalDate": "2021-02-04",
+  "lastPublicationDate": "2021-02-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    12,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "All maintenance, repair and cleaning services for motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Transformation services for automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consulting firm services, research services relating to styling, engineering work, development of motor vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": "Véhicules automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Tous services d'entretien, de réparation, de nettoyage de véhicules automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Services de transformation d'automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de bureaux d'étude, de recherche en matière de stylisme, travaux d'ingénieurs, services de mise au point de véhicules automobiles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "es",
+      "description": "Automóviles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Todo tipo de servicios de mantenimiento, reparación, limpieza de vehículos automóviles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Servicios de transformación de automóviles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de oficinas de proyectos, investigación en materia de estilismo, trabajos de ingenieros, servicios de desarrollo de vehículos automóviles.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo Pierre Pallanca",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "Myriam Angelier SCP BBLM",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "19900803",
+      "priorityNumber": "1 636 802"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "19900803",
+          "basicApplicationNumber": "22 288"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "FR",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "19900803",
+          "basicRegistrationNumber": "1 636 802"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AT",
+      "CH",
+      "DE",
+      "ES",
+      "IT",
+      "MA",
+      "MC",
+      "NO",
+      "PT",
+      "RU",
+      "BX"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7 rue du gabian MC-98000 MONACO",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo Pierre Pallanca"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "19900803",
+            "basicApplicationNumber": "22 288"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "FR",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "19900803",
+            "basicRegistrationNumber": "1 636 802"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AT",
+      "CH",
+      "DE",
+      "ES",
+      "IT",
+      "MA",
+      "MC",
+      "NO",
+      "PT",
+      "RU",
+      "BX"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Motor vehicles."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "All maintenance, repair and cleaning services for motor vehicles."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Transformation services for automobiles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consulting firm services, research services relating to styling, engineering work, development of motor vehicles."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Véhicules automobiles."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Tous services d'entretien, de réparation, de nettoyage de véhicules automobiles."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de transformation d'automobiles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de bureaux d'étude, de recherche en matière de stylisme, travaux d'ingénieurs, services de mise au point de véhicules automobiles."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Automóviles."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Todo tipo de servicios de mantenimiento, reparación, limpieza de vehículos automóviles."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de transformación de automóviles."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de oficinas de proyectos, investigación en materia de estilismo, trabajos de ingenieros, servicios de desarrollo de vehículos automóviles."
+        }
+      ]
+    },
+    "id": "6da86400-73b5-4802-86c7-aecb1ab300ab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "19900803",
+        "priorityNumber": "1 636 802"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "05"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "3 place Félix Baret F-13006 Marseille",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "Myriam Angelier SCP BBLM"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310204",
+      "lastPublicationDate": "20210218",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19910204",
+        "registrationNumber": "567710"
+      },
+      "renewalDate": "20210204",
+      "renewalPublishedDate": "20210218"
+    },
+    "version": "20250620153435",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/wo/6da86400-73b5-4802-86c7-aecb1ab300ab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

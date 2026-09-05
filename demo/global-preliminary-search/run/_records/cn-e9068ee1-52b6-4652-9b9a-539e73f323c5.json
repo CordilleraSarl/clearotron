@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/cn/e9068ee1-52b6-4652-9b9a-539e73f323c5",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "e9068ee1-52b6-4652-9b9a-539e73f323c5",
+  "applicationNumber": "41088724",
+  "registrationNumber": "41088724",
+  "applicationDate": "2019-09-17",
+  "registrationDate": "2020-05-07",
+  "expiryDate": "2030-05-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-02-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "麒日",
+  "markTransliteration": "QI RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "数据处理设备,计算机,已录制的计算机程序,电子导航和定位用设备和仪器,测量仪器,手机,眼镜,计量仪表,可下载的计算机程序,电池",
+      "translation_language": "en",
+      "translation": "Data processing equipment, computers, recorded computer programs, equipment and instruments for electronic navigation and positioning, measuring instruments, mobile phones, glasses, metering instruments, downloadable computer programs, batteries"
+    }
+  ],
+  "owner": "Shanghai Haori Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市宝山区富联三路99号14幢A区1019室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Haori Technology Co., Ltd.",
+        "applicantNativeName": "上海麒日科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Data processing equipment, computers, recorded computer programs, equipment and instruments for electronic navigation and positioning, measuring instruments, mobile phones, glasses, metering instruments, downloadable computer programs, batteries",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "数据处理设备,计算机,已录制的计算机程序,电子导航和定位用设备和仪器,测量仪器,手机,眼镜,计量仪表,可下载的计算机程序,电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "e9068ee1-52b6-4652-9b9a-539e73f323c5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageViennaClassification": [
+      "04.03.03",
+      "26.04.09",
+      "26.07.19"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1682"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "国铭（北京）国际知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190917",
+        "applicationNumber": "41088724"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300506",
+      "lastPublicationDate": "20200206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200507",
+        "registrationNumber": "41088724"
+      }
+    },
+    "version": "20251003201232",
+    "wordMarkSpecification": {
+      "markTransliteration": "QI RI",
+      "markVerbalElementText": "麒日"
+    }
+  },
+  "_uri": "/mark/cn/e9068ee1-52b6-4652-9b9a-539e73f323c5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:38.359Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

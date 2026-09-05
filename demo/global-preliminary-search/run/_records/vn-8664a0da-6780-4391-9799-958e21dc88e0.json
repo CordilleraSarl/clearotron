@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/vn/8664a0da-6780-4391-9799-958e21dc88e0",
+  "provider": "clarivate",
+  "office": "vn",
+  "guid": "8664a0da-6780-4391-9799-958e21dc88e0",
+  "applicationNumber": "4202526716",
+  "registrationNumber": null,
+  "applicationDate": "2025-06-10",
+  "registrationDate": null,
+  "expiryDate": "2035-06-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VNQR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "vi",
+      "description": "Phần mềm quét mã vạch, mã QR, hình ảnh mã hóa và tra cứu thông tin hàng hóa trên điện thoại thông minh.",
+      "translation_language": "en",
+      "translation": "Software to scan barcodes, QR codes, encrypted images and look up product information on smartphones."
+    }
+  ],
+  "owner": "CÔNG TY TNHH FIKA VIỆT NAM",
+  "ownerNative": null,
+  "ownerCountry": "VN",
+  "representative": "KHANGLAW",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "416/15/85A Dương Quảng Hàm, phường 5, quận Gò Vấp, thành phố Hồ Chí Minh",
+        "applicantAddressCountryCode": "VN",
+        "applicantAddressCountryName": "Vietnam",
+        "applicantName": "CÔNG TY TNHH FIKA VIỆT NAM"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software to scan barcodes, QR codes, encrypted images and look up product information on smartphones.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Phần mềm quét mã vạch, mã QR, hình ảnh mã hóa và tra cứu thông tin hàng hóa trên điện thoại thông minh."
+        }
+      ]
+    },
+    "id": "8664a0da-6780-4391-9799-958e21dc88e0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.01.01",
+      "25.05.25",
+      "26.02.03",
+      "26.04.01",
+      "26.04.07"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251017",
+    "registrationOfficeCode": "VN",
+    "registrationOfficeName": "Vietnam",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VN",
+        "representativeAddressCountryName": "Vietnam",
+        "representativeName": "KHANGLAW"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250610",
+        "applicationNumber": "4202526716"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350610",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20251017050347",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VNQR"
+    }
+  },
+  "_uri": "/mark/vn/8664a0da-6780-4391-9799-958e21dc88e0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:14.632Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

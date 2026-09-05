@@ -1,0 +1,167 @@
+{
+  "uri": "/mark/nz/8664db01-5807-4c61-8057-45f0b17a039e",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "8664db01-5807-4c61-8057-45f0b17a039e",
+  "applicationNumber": "1073605",
+  "registrationNumber": "1073605",
+  "applicationDate": "2017-08-11",
+  "registrationDate": "2018-02-13",
+  "expiryDate": "2027-08-11",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PROVEN ORIGIN ORITAIN.COM/VERIFY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    24,
+    25,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "en",
+      "description": "Fetal bovine serum; new born calf serum; donor calf serum; bovine plasma for scientific purposes; bovine serum albumin; porcine serum; equine serum; scientific materials for culturing cells",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Towels, face cloths, linen; textiles and textile goods, not included in other classes",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Clothing, footwear and headgear",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Laboratory testing and analysis; material testing and analysis; product testing and analysis",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ORITAIN GLOBAL LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "NZ",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "167 High Street, Otago, Dunedin 9016",
+        "applicantAddressCountryCode": "NZ",
+        "applicantAddressCountryName": "New Zealand",
+        "applicantName": "ORITAIN GLOBAL LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Fetal bovine serum; new born calf serum; donor calf serum; bovine plasma for scientific purposes; bovine serum albumin; porcine serum; equine serum; scientific materials for culturing cells"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Towels, face cloths, linen; textiles and textile goods, not included in other classes"
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Clothing, footwear and headgear"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Laboratory testing and analysis; material testing and analysis; product testing and analysis"
+        }
+      ]
+    },
+    "id": "8664db01-5807-4c61-8057-45f0b17a039e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01.15.15",
+      "02.09.17",
+      "26.11.12",
+      "27.01.06",
+      "27.05.01",
+      "27.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Level 2 PO Box 1116 115 Lower Stuart Street Dunedin 9054",
+        "representativeCorrespondentAddressCountryCode": "NZ",
+        "representativeCorrespondentAddressCountryName": "New Zealand",
+        "representativeCorrespondentName": "Marks & Worth Lawyers"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170811",
+        "applicationNumber": "1073605"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270811",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180213",
+        "registrationNumber": "1073605"
+      }
+    },
+    "version": "20250626163506",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PROVEN ORIGIN ORITAIN.COM/VERIFY"
+    }
+  },
+  "_uri": "/mark/nz/8664db01-5807-4c61-8057-45f0b17a039e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/cn/f3bfde2a-2dfb-4caf-9969-59f5ce05ba65",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "f3bfde2a-2dfb-4caf-9969-59f5ce05ba65",
+  "applicationNumber": "53890294",
+  "registrationNumber": "53890294",
+  "applicationDate": "2021-02-26",
+  "registrationDate": "2021-12-21",
+  "expiryDate": "2031-12-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-09-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七色智造",
+  "markTransliteration": "SEVEN QI SE ZHI ZAO",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "灭火设备",
+      "translation_language": "en",
+      "translation": "Fire extinguishing equipment"
+    }
+  ],
+  "owner": "Dong'a Blue Sky Seven Color Building Materials Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "山东省聊城市东阿县大桥镇驻地",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Dong'a Blue Sky Seven Color Building Materials Co., Ltd.",
+        "applicantNativeName": "东阿蓝天七色建材有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Fire extinguishing equipment",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "灭火设备"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Fire extinguishing instruments"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0916",
+          "subNatGoodsServicesDescription": "Fire extinguishing instruments"
+        }
+      ]
+    },
+    "id": "f3bfde2a-2dfb-4caf-9969-59f5ce05ba65",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.31.2a"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1760"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广西安度知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210226",
+        "applicationNumber": "53890294"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311220",
+      "lastPublicationDate": "20210920",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211221",
+        "registrationNumber": "53890294"
+      }
+    },
+    "version": "20251004105403",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QI SE ZHI ZAO",
+      "markVerbalElementText": "七色智造"
+    }
+  },
+  "_uri": "/mark/cn/f3bfde2a-2dfb-4caf-9969-59f5ce05ba65",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

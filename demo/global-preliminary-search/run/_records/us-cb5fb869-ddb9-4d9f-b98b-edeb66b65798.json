@@ -1,0 +1,440 @@
+{
+  "uri": "/mark/us/cb5fb869-ddb9-4d9f-b98b-edeb66b65798",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "cb5fb869-ddb9-4d9f-b98b-edeb66b65798",
+  "applicationNumber": "79272290",
+  "registrationNumber": "6132658",
+  "applicationDate": "2019-09-24",
+  "registrationDate": "2020-08-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2020-06-09"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer software development tools; recorded computer software development tools; downloadable computer software for use in facilitating, optimizing, and managing online marketing campaigns; recorded computer software for use in facilitating, optimizing, and managing online marketing campaigns; downloadable computer software for use in web site traffic optimization and search engine optimization; recorded computer software for use in web site traffic optimization and search engine optimization",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Advertising; arranging subscriptions to telecommunication services for others; advertising agencies; rental of advertising space; computerized file management; market studies; business research; marketing research; business management and organization consultancy; consultancy regarding public relations communication strategies; consultancy regarding advertising communication strategies; layout services for advertising purposes; marketing; marketing in the framework of software publishing; targeted marketing; scriptwriting for advertising purposes; updating and maintenance of data in computer databases; updating of advertising material; design of advertising materials; providing business information via a web site; provision of commercial and business contact information; provision of an online marketplace for buyers and sellers of goods and services; media relations services; sales promotion for others; rental of advertising time on communication media; publicity material rental; publication of publicity texts; dissemination of advertising matter; writing of publicity texts; online advertising on a computer network; compilation of statistics; compilation of information into computer databases; business inquiries; systemization of information into computer databases; advisory services for business management; compiling indexes of information for commercial or advertising purposes; web site traffic optimization; search engine optimization for sales promotion; pay per click advertising",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Design and development of computer hardware and software; computer system analysis; recovery of computer data; business card design; graphic design of promotional materials; graphic arts design; installation of computer software; research in the field of telecommunications technology; web site design consultancy; computer security consultancy; information technology (IT) consultancy; computer software consultancy; updating of computer software; software as a service (SaaS) services featuring software for use in web site traffic optimization and search engine optimization, and for facilitating, optimizing, and managing online marketing campaign; maintenance of computer software; providing information on computer technology and programming via a web site; providing search engines for the internet; platform as a service (PaaS) featuring computer software platforms for use in web site traffic optimization and search engine optimization, and for facilitating, optimizing, and managing online marketing campaign; conversion of computer programs and data, other than physical conversion; hosting computer sites, namely, web sites; server hosting; development of computer platforms; creating and maintaining web sites for others; cloud computing, namely, cloud hosing provider services; outsource service providers in the field of information technology; off-site data backup; computer technology consultancy; telecommunications technology consultancy; electronic data storage",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "\"AORI.RU\" JOINT STOCK COMPANY",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "VERKHNYAYA KRASNOSELSKAYA ST., 3, RU-107140 MOSCOW, RUSS",
+        "applicantAddressCity": "RU-107140 MOSCOW",
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantAddressStreet": "VERKHNYAYA KRASNOSELSKAYA ST., 3,",
+        "applicantJurisdictionOfIncorporation": "Russian Federation",
+        "applicantLegalEntity": "JOINT STOCK COMPANY",
+        "applicantName": "\"AORI.RU\" JOINT STOCK COMPANY",
+        "applicantSecondaryAddressUnit": "BUILDING 2, FLOOR A2, SPACE I, ROOM 19"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "VERKHNYAYA KRASNOSELSKAYA ST., 3, RU-107140 MOSCOW, RUSS",
+            "city": "RU-107140 MOSCOW",
+            "countryCode": "RU",
+            "countryName": "Russian Federation",
+            "jurisdictionOfIncorporation": "Russian Federation",
+            "legalEntity": "JOINT STOCK COMPANY",
+            "name": "\"AORI.RU\" JOINT STOCK COMPANY",
+            "secondaryAddressUnit": "BUILDING 2, FLOOR A2, SPACE I, ROOM 19",
+            "street": "VERKHNYAYA KRASNOSELSKAYA ST., 3,"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "NOT PROVIDED",
+            "name": "AORI TECHNOLOGIES LIMITED"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "VERKHNYAYA KRASNOSELSKAYA ST., 3,, RU-107140 MOSCOW, RUSSIAN FEDERATION",
+            "addressLines": [
+              "\"AORI.RU\" JOINT STOCK COMPANY",
+              "VERKHNYAYA KRASNOSELSKAYA ST., 3,",
+              "RU-107140 MOSCOW",
+              "RUSSIAN FEDERATION"
+            ],
+            "name": "\"AORI.RU\" JOINT STOCK COMPANY"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20220322",
+        "recordedDate": "20220623",
+        "reelFrameNumber": "7742/0389"
+      },
+      {
+        "assignees": [
+          {
+            "address": "¿¿ 11, ANTHOUPOLI, CY-2302 NICOSIA, CYPR",
+            "city": "CY-2302 NICOSIA",
+            "countryCode": "CY",
+            "countryName": "Cyprus",
+            "jurisdictionOfIncorporation": "Cyprus",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "AORI TECHNOLOGIES LIMITED",
+            "street": "¿¿ 11, ANTHOUPOLI"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "NOT PROVIDED",
+            "name": "\"AORI.RU\" JOINT STOCK COMPANY"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "¿¿ 11, ANTHOUPOLI, CY-2302 NICOSIA, CYPRUS",
+            "addressLines": [
+              "AORI TECHNOLOGIES LIMITED",
+              "¿¿ 11, ANTHOUPOLI",
+              "CY-2302 NICOSIA",
+              "CYPRUS"
+            ],
+            "name": "AORI TECHNOLOGIES LIMITED"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20200219",
+        "recordedDate": "20200326",
+        "reelFrameNumber": "7606/0457"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "24.15.03",
+      "27.03.05",
+      "29.07.03",
+      "30.01.18",
+      "30.05.04",
+      "30.05.08"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer software development tools; recorded computer software development tools; downloadable computer software for use in facilitating, optimizing, and managing online marketing campaigns; recorded computer software for use in facilitating, optimizing, and managing online marketing campaigns; downloadable computer software for use in web site traffic optimization and search engine optimization; recorded computer software for use in web site traffic optimization and search engine optimization"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Advertising; arranging subscriptions to telecommunication services for others; advertising agencies; rental of advertising space; computerized file management; market studies; business research; marketing research; business management and organization consultancy; consultancy regarding public relations communication strategies; consultancy regarding advertising communication strategies; layout services for advertising purposes; marketing; marketing in the framework of software publishing; targeted marketing; scriptwriting for advertising purposes; updating and maintenance of data in computer databases; updating of advertising material; design of advertising materials; providing business information via a web site; provision of commercial and business contact information; provision of an online marketplace for buyers and sellers of goods and services; media relations services; sales promotion for others; rental of advertising time on communication media; publicity material rental; publication of publicity texts; dissemination of advertising matter; writing of publicity texts; online advertising on a computer network; compilation of statistics; compilation of information into computer databases; business inquiries; systemization of information into computer databases; advisory services for business management; compiling indexes of information for commercial or advertising purposes; web site traffic optimization; search engine optimization for sales promotion; pay per click advertising"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Design and development of computer hardware and software; computer system analysis; recovery of computer data; business card design; graphic design of promotional materials; graphic arts design; installation of computer software; research in the field of telecommunications technology; web site design consultancy; computer security consultancy; information technology (IT) consultancy; computer software consultancy; updating of computer software; software as a service (SaaS) services featuring software for use in web site traffic optimization and search engine optimization, and for facilitating, optimizing, and managing online marketing campaign; maintenance of computer software; providing information on computer technology and programming via a web site; providing search engines for the internet; platform as a service (PaaS) featuring computer software platforms for use in web site traffic optimization and search engine optimization, and for facilitating, optimizing, and managing online marketing campaign; conversion of computer programs and data, other than physical conversion; hosting computer sites, namely, web sites; server hosting; development of computer platforms; creating and maintaining web sites for others; cloud computing, namely, cloud hosing provider services; outsource service providers in the field of information technology; off-site data backup; computer technology consultancy; telecommunications technology consultancy; electronic data storage"
+        }
+      ]
+    },
+    "id": "cb5fb869-ddb9-4d9f-b98b-edeb66b65798",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1499008",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20191121",
+        "priorityClaimDate": "20190814",
+        "protectionGrantedDate": "20210521",
+        "publicationDate": "20191121",
+        "registrationDate": "20190924",
+        "renewalDate": "20290924"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250825",
+        "descriptionText": "COURTESY REMINDER - SEC. 71 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20220624",
+        "descriptionText": "CHANGE OF OWNER RECEIVED FROM IB"
+      },
+      {
+        "date": "20210104",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20201211",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20201210",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20201125",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20200825",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200609",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20200609",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20200520",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20200501",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20200409",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20200408",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20200408",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20200326",
+        "descriptionText": "CHANGE OF OWNER RECEIVED FROM IB"
+      },
+      {
+        "date": "20200215",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20200125",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20200125",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20200101",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20191231",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20191224",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20191126",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20191122",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20191121",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The colors blue and white are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the word \"AORI\" in blue stylized font on a white background with a white arrow forming the center of the top portion of the letter \"R\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Verkhnyaya Krasnoselskaya Str., 3, RUSS",
+        "countryCode": "RU",
+        "countryName": "Russian Federation",
+        "jurisdictionOfIncorporation": "RUSSIAN FEDERATION",
+        "legalEntity": "JOINT STOCK COMPANY",
+        "name": "\"Aori.Ru\" Joint Stock Company",
+        "secondaryAddressUnit": "building 2, floor A2, space I, room 19;",
+        "street": "Verkhnyaya Krasnoselskaya Str., 3,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "11, Anthoupoli, CYPR",
+        "countryCode": "CY",
+        "countryName": "Cyprus",
+        "jurisdictionOfIncorporation": "CYPRUS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Aori Technologies Limited",
+        "secondaryAddressUnit": "CY-2302 Nicosia",
+        "street": "11, Anthoupoli"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "11, Anthoupoli, CYPR",
+        "countryCode": "CY",
+        "countryName": "Cyprus",
+        "jurisdictionOfIncorporation": "CYPRUS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Aori Technologies Limited",
+        "secondaryAddressUnit": "CY-2302 Nicosia",
+        "street": "11, Anthoupoli"
+      }
+    ],
+    "postApplicationOwners": [
+      {
+        "address": "11, Anthoupoli, CYPR",
+        "countryCode": "CY",
+        "countryName": "Cyprus",
+        "jurisdictionOfIncorporation": "CYPRUS",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Aori Technologies Limited",
+        "secondaryAddressUnit": "CY-2302 Nicosia",
+        "street": "11, Anthoupoli"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "Verkhnyaya Krasnoselskaya st., 3, RUSS",
+        "countryCode": "RU",
+        "countryName": "Russian Federation",
+        "jurisdictionOfIncorporation": "RUSSIAN FEDERATION",
+        "legalEntity": "Joint Stock Company",
+        "name": "\"Aori.Ru\" Joint Stock Company",
+        "secondaryAddressUnit": "building 2, floor A2, space I, room 19  RU-107140 Moscow",
+        "street": "Verkhnyaya Krasnoselskaya st., 3,"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Glendale, CA 91205, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Glendale, CA 91205",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "John Alumit ALUMIT IP, 135 S. Jackson Street, Suite 200"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Glendale, CA 91205, UNITED STATES",
+        "representativeAddressLines": [
+          "Glendale, CA 91205",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190924",
+        "applicationNumber": "79272290"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20200825",
+        "markOfficialStatusEvents": [
+          "Color Drawing Filed",
+          "Color Drawing Currently",
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20200609"
+      ],
+      "registration": {
+        "registrationDate": "20200825",
+        "registrationNumber": "6132658"
+      }
+    },
+    "version": "20260130162424",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording \"AORI\" has no meaning in a foreign language.",
+      "markVerbalElementText": "AORI"
+    }
+  },
+  "_uri": "/mark/us/cb5fb869-ddb9-4d9f-b98b-edeb66b65798",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:50.842Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

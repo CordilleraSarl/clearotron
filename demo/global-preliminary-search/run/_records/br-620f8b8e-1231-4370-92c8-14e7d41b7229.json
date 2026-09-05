@@ -1,0 +1,107 @@
+{
+  "uri": "/mark/br/620f8b8e-1231-4370-92c8-14e7d41b7229",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "620f8b8e-1231-4370-92c8-14e7d41b7229",
+  "applicationNumber": "943673585",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-10",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SULSEVEN",
+  "markTransliteration": null,
+  "markTranslation": "A MARCA É A JUNÇÃO DO TERMO EM PORTUGUÊS 'SUL' COM A PALAVRA EM INGLÊS 'SEVEN', QUE SIGNIFICA 'SETE'.",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Aluguel de software de computador;Atualização de software de computador;Computação gráfica [serviços de informática];Consultoria em software de computador;Criação e manutenção de websites para terceiros;Desenho de arte gráfica, inclusive para homepage;Design de aplicativo de multimídia;Elaboração [concepção] de software de computador;Hospedagem de plataformas de software para colaboração profissional com base em realidade virtual;Manutenção de software de computador;Programação de computador [informática];Provimento de sistemas virtuais de computador por meio de computação em nuvem;Provimento de software de computador on - line não baixável;Serviços de consultoria tecnológica para transformação digital;Software como serviço [saas].",
+      "translation_language": "en",
+      "translation": "Computer software rental; Computer software upgrade; Computer graphics [IT services]; Computer software consulting; Creation and maintenance of websites for third parties; Graphic art design, including for homepages; Multimedia application design; Development [conception] of computer software; Hosting of software platforms for professional collaboration based on virtual reality; Computer software maintenance; Computer programming [IT]; Provision of virtual computer systems through cloud computing; Provision of non-downloadable online computer software; Technology consulting services for digital transformation; Software as a service [SaaS]."
+    }
+  ],
+  "owner": "EGKM CONSULTING LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "EGKM CONSULTING LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software rental; Computer software upgrade; Computer graphics [IT services]; Computer software consulting; Creation and maintenance of websites for third parties; Graphic art design, including for homepages; Multimedia application design; Development [conception] of computer software; Hosting of software platforms for professional collaboration based on virtual reality; Computer software maintenance; Computer programming [IT]; Provision of virtual computer systems through cloud computing; Provision of non-downloadable online computer software; Technology consulting services for digital transformation; Software as a service [SaaS].",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aluguel de software de computador;Atualização de software de computador;Computação gráfica [serviços de informática];Consultoria em software de computador;Criação e manutenção de websites para terceiros;Desenho de arte gráfica, inclusive para homepage;Design de aplicativo de multimídia;Elaboração [concepção] de software de computador;Hospedagem de plataformas de software para colaboração profissional com base em realidade virtual;Manutenção de software de computador;Programação de computador [informática];Provimento de sistemas virtuais de computador por meio de computação em nuvem;Provimento de software de computador on - line não baixável;Serviços de consultoria tecnológica para transformação digital;Software como serviço [saas]."
+        }
+      ]
+    },
+    "id": "620f8b8e-1231-4370-92c8-14e7d41b7229",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260809",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260510",
+        "applicationNumber": "943673585"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260809020129",
+    "wordMarkSpecification": {
+      "markTranslation": "A MARCA É A JUNÇÃO DO TERMO EM PORTUGUÊS 'SUL' COM A PALAVRA EM INGLÊS 'SEVEN', QUE SIGNIFICA 'SETE'.",
+      "markVerbalElementText": "SULSEVEN"
+    }
+  },
+  "_uri": "/mark/br/620f8b8e-1231-4370-92c8-14e7d41b7229",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

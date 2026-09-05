@@ -1,0 +1,26 @@
+{
+  "ts": "2026-09-03T18:01:39.000Z",
+  "verdict": "CONDITIONAL",
+  "reasons": [
+    "Decide whether to keep any paired probe or meter out of the measuring-instrument goods in the Japanese class 9 filing.",
+    "Have the Vencora group's Japanese filings checked under its subsidiary and agent names before this clearance is relied on.",
+    "the lawyer judged a material slice not fully cleared: Two searches were not closed and both bear on the answer: the Japanese class 9 sound-alike band on the VEN- opening — the ベンコリ neighbourhood — was counted and not read, and it is the zone the one advice-changing right came out of; and the Vencora group's Japanese portfolio matched no owner name the ",
+    "register coverage deferred on primary-sweep — the search did not finish and must be re-run before this can be relied on"
+  ],
+  "kinds": {
+    "legalActions": true,
+    "coverage": true,
+    "registerGap": true
+  },
+  "tier": "Manageable",
+  "badge": "l2",
+  "gaugeIndex": 1,
+  "maxComposite": 0,
+  "band": {
+    "label": "Manageable",
+    "rankFromTop": 4,
+    "scale": 4
+  },
+  "statement": "Manageable — conditional on: A live Japanese class 9 registration reading ベンクリ covers measuring and testing instruments (and 3 more).",
+  "stance": "conditional"
+}

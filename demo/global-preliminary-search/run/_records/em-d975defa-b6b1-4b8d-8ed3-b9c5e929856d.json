@@ -1,0 +1,759 @@
+{
+  "uri": "/mark/em/d975defa-b6b1-4b8d-8ed3-b9c5e929856d",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "d975defa-b6b1-4b8d-8ed3-b9c5e929856d",
+  "applicationNumber": "19169027",
+  "registrationNumber": "19169027",
+  "applicationDate": "2025-04-07",
+  "registrationDate": "2025-08-10",
+  "expiryDate": "2035-04-07",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-05-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    12
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Mobilní aplikace pro rízení, monitorování a vyhodnocování pohonných jednotek pro cyklisty na elektrokolech.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "cs",
+      "description": "Hnací jednotky pro cyklisty na elektrokolech, slozené z elektromotoru, dobíjecí baterie a elektronické obsluzné jednotky; Rídící prístroje pro regulaci hnacích systému elektrokol; Cidla pro záznam slapací síly, slapací frekvence a rychlosti, jako soucást hnacích systému elektrokol.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Mobilapps til styring, overvågning og analyse af drivenheder til elcykler.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "da",
+      "description": "Drivenheder til elcykler, bestående af elmotorer, genopladelige batterier og elektroniske betjeningsenheder; Styreenheder til regulering af drivsystemer til elcykler; Sensorer til registrering af watt, kadance og hastighed, i form af dele til drivsystemer til elcykler.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Mobiele apps voor het besturen, bewaken en evalueren van aandrijfeenheden voor elektrische fietsen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "nl",
+      "description": "Aandrijfeenheden voor elektrische fietsen, bestaande uit een elektromotor, een oplaadbare accu en een elektronische besturingseenheid; Besturingsapparaten voor het regelen van aandrijfsystemen van e-bikes; Sensoren voor het meten van trapkracht, trapfrequentie en snelheid als componenten van aandrijfsystemen van e-bikes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Mobile apps for controlling, monitoring and evaluating drive units for electric bicycles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "en",
+      "description": "Drive units for electric bicycles, consisting of electric motors, rechargeable batteries and electric control units; Control apparatus for regulating electric bike drive systems; Sensors for recording pedal force, pedal frequency and speed, being components of electric bike drive systems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Elektrijalgrataste ajamiüksuste juhtimise, seire ja hindamise mobiilirakendused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "et",
+      "description": "Elektrijalgrataste ajamiüksused, mis koosnevad elektrimootorist, taaslaaditavast akust ja elektroonilisest juhtimisüksusest; Elektrijalgrataste ajamisüsteemide reguleerimise juhtseadmed; Pedaalimisjõu, kadentsi ja kiiruse registreerimise andurid elektrijalgrataste ajamisüsteemide komponentidena.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Mobiilisovellukset sähköpolkupyörien moottoriyksiköiden ohjaukseen, valvontaan ja analysointiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fi",
+      "description": "Sellaiset käyttöyksiköt sähköpolkupyöriin, jotka koostuvat sähkömoottorista, ladattavasta akusta ja elektronisesta ohjausyksiköstä; Ohjauslaitteet sähköpolkupyörien käyttöjärjestelmien säätämiseen; Anturit poljinvoiman, polkemisen taajuuden ja nopeuden rekisteröintiin, osana sähköpolkupyörien käyttöjärjestelmiä.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Applis mobiles pour la commande, la surveillances et l'évaluation d'unités d'entraînement de vélos électriques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "fr",
+      "description": "Unités d'entraînement de vélos électriques, constituées par un moteur électrique, une batterie rechargeable et une unité de commande électronique; Appareils de commande pour la régulation de systèmes d'entraînement de vélos électriques; Capteurs pour la détection de la force d'appui sur les pédales, la fréquence de pédalage et la vitesse, en tant qu'éléments de systèmes d'entraînement de vélos électriques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Mobile Apps für die Steuerung, Überwachung und Auswertung von Antriebseinheiten für Elektrofahrräder.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "de",
+      "description": "Antriebseinheiten für Elektrofahrräder, bestehend aus Elektromotor, wiederaufladbarer Batterie und elektronischer Bedieneinheit; Steuergeräte zur Regelung von E-Bike-Antriebssystemen; Sensoren zur Erfassung von Tretkraft, Trittfrequenz und Geschwindigkeit, als Bestandteile von E-Bike-Antriebssystemen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Mobilne aplikacije za upravljanje, nadzor i procjenu pogonskih jedinica za elektricne bicikle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "hr",
+      "description": "Pogonske jedinice za elektricne bicikle, koje se sastoje od elektromotora, punjivih baterija i elektronickih upravljackih jedinica; Upravljacki uredaji za regulaciju pogonskih sustava e-bicikala; Senzori za biljezenje sile okretanja pedala, ritma i brzine, kao sastavni dijelovi pogonskih sustava e-bicikala.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Mobil alkalmazások elektromos kerékpárok meghajtó egységeinek vezérléséhez, felügyeletéhez és értékeléséhez.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "hu",
+      "description": "Meghajtó egységek elektromos kerékpárokhoz, elektromos motorokból, újratöltheto elemekbol és elektronikus vezérloegységekbol; Vezérlo eszközök elektromos kerékpár-meghajtó rendszerek szabályozásához; Pedálero, pedálfordulat és sebesség rögzítésére szolgáló érzékelok, elektromos kerékpár-meghajtó rendszerek alkatrészei formájában.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Applicazioni per cellulari per il comando, il monitoraggio e l'analisi di unità di trazione per biciclette elettriche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "it",
+      "description": "Unità di trazione per biciclette elettriche, composte da motore elettrico, batteria ricaricabile e unità d'azionamento elettronica; Dispositivi di controllo per la regolazione di sistemi di trazione di biciclette elettriche; Sensori per la registrazione della potenza della pedalata, la cadenza e la velocità, come componenti di sistemi di trazione di biciclette elettriche.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Mobiliosios programeles, skirtos elektriniu dviraciu pavaros blokams valdyti, stebeti ir vertinti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "lt",
+      "description": "Elektriniu dviraciu pavaros itaisai, sudaryti is elektros variklio, ikraunamos baterijos ir elektroninio valdymo bloko; Valdymo blokai el. dviraciu pavaros sistemoms reguliuoti; Jutikliai, skirti minamosios galios, minimosios daznio ir greicio matavimui, kaip el. dviraciu pavaros sistemu dalys.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Mobilas lietotnes piedzinas bloku vadibai, uzraudzibai un izvertesanai elektriskajiem velosipediem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "lv",
+      "description": "Piedzinas bloki elektriskajiem velosipediem, kas sastav no elektromotora, atkartoti uzladejamas baterijas un elektroniska vadibas bloka; Vadibas ierices e-velosipedu piedzinas sistemu regulesanai; Sensori misanas speka, misanas frekvences un atruma registresanai ka e-velosipedu piedzinas sistemu dalas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Apps mobbli ghall-kontroll, il-monitoragg u l-valutazzjoni ta' unitajiet tad-drive ghal roti elettrici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "mt",
+      "description": "Unitajiet tad-drive ghal roti, li jikkonsistu minn mutur elettriku, batterija rikarikabbli u unità elettronika ta' kontroll; Taghmir ta' kontroll ghar-regolazzjoni ta' sistemi tad-drive ta' roti elettrici; Sensuri ghall-kejl tal-forza tal-pedala, il-kadenza u l-velocità bhala komponenti ta' sistemi tad-drive ta' roti elettrici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Aplikacje mobilne do sterowania, monitorowania i analizowania jednostek napedowych rowerów elektrycznych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "pl",
+      "description": "Jednostki napedowe do rowerów elektrycznych, skladajace sie z silnika elektrycznego, akumulatora i elektronicznej jednostki sterujacej; Jednostki sterujace do regulacji ukladów napedowych rowerów elektrycznych; Czujniki do rejestrowania sily pedalowania, kadencji i predkosci jako elementy ukladów napedowych rowerów elektrycznych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aplicações móveis para o controlo, monitorização e avaliação de unidades de acionamento de bicicletas elétricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "pt",
+      "description": "Unidades de acionamento de bicicletas elétricas, constituídas por motores elétricos, baterias recarregáveis e unidades de controlo eletrónicas; Aparelhos de comando para a regulação de sistemas de acionamento de bicicletas elétricas; Sensores para o registo da potência de pedalada, ritmo de pedalada e velocidade, enquanto componentes de sistemas de acionamento de bicicletas elétricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aplicatii mobile pentru controlul, monitorizarea si evaluarea unitatilor de propulsie pentru biciclete electrice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "ro",
+      "description": "Unitati de antrenare pentru biciclete electrice, constând într-un motor electric, o baterie reîncarcabila si o unitate de comanda electronica; Unitati de control pentru reglarea sistemelor de actionare a bicicletelor electrice; Senzori pentru masurarea fortei pedalei, cadentei si vitezei ca elemente componente ale sistemelor de actionare a bicicletei electrice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Mobilné aplikácie na ovládanie, monitorovanie a vyhodnotenie hnacích strojov pre elektrické bicykle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sk",
+      "description": "Hnacie stroje pre elektrické bicykle, pozostávajúce z elektrického motora, nabíjatelného akumulátora a elektrickej riadiacej jednotky; Prístroje na ovládanie na reguláciu hnacích systémov elektrických bicyklov; Snímace na zaznamenávanie hnacej sily, kadencie a rýchlosti, ako súcasti hnacích systémov pre elektrické bicykle.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Mobilne aplikacije za nadzor, spremljanje in vrednotenje pogonskih enot za elektricna kolesa.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sl",
+      "description": "Pogonske enote za elektricna kolesa, sestavljene iz elektricnega motorja, polnilne baterije in elektronske krmilne enote; Krmilne enote za regulacijo pogonskih sistemov e-koles; Senzorji za merjenje sile na pedalu, kadence poganjanja pedal in hitrosti kot komponente pogonskih sistemov e-koles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aplicaciones móviles para controlar, supervisar y evaluar unidades de propulsión para bicicletas eléctricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "es",
+      "description": "Unidades de propulsión para bicicletas eléctricas, que incluyen un motor eléctrico, una batería recargable y una unidad de control electrónica; Dispositivos de control para regular los sistemas de propulsión de las bicicletas eléctricas; Sensores para medir la fuerza de pedaleo, la cadencia y la velocidad, como parte de sistemas de propulsión de las bicicletas eléctricas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Mobilappar för styrning, övervakning och utvärdering av drivenheter för elcyklar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "sw",
+      "description": "Drivenheter för elcyklar, bestående av elmotor, återuppladdningsbara batterier och elektronisk manöverenhet; Styrdon för reglering av drivsystem för elcyklar; Sensorer för registrering av pedalkraft, pedalfrekvens och hastighet, som beståndsdelar av drivsystem för elcyklar.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Yamaha Motor eBike Systems GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "GRÜNECKER PATENT- UND RECHTSANWÄLTE PARTG MBB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Sickingenstraße 29 - 38,Berlin, 10553",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Yamaha Motor eBike Systems GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "55.00.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Mobilní aplikace pro rízení, monitorování a vyhodnocování pohonných jednotek pro cyklisty na elektrokolech."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hnací jednotky pro cyklisty na elektrokolech, slozené z elektromotoru, dobíjecí baterie a elektronické obsluzné jednotky; Rídící prístroje pro regulaci hnacích systému elektrokol; Cidla pro záznam slapací síly, slapací frekvence a rychlosti, jako soucást hnacích systému elektrokol."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Mobilapps til styring, overvågning og analyse af drivenheder til elcykler."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Drivenheder til elcykler, bestående af elmotorer, genopladelige batterier og elektroniske betjeningsenheder; Styreenheder til regulering af drivsystemer til elcykler; Sensorer til registrering af watt, kadance og hastighed, i form af dele til drivsystemer til elcykler."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Mobiele apps voor het besturen, bewaken en evalueren van aandrijfeenheden voor elektrische fietsen."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Aandrijfeenheden voor elektrische fietsen, bestaande uit een elektromotor, een oplaadbare accu en een elektronische besturingseenheid; Besturingsapparaten voor het regelen van aandrijfsystemen van e-bikes; Sensoren voor het meten van trapkracht, trapfrequentie en snelheid als componenten van aandrijfsystemen van e-bikes."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mobile apps for controlling, monitoring and evaluating drive units for electric bicycles."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Drive units for electric bicycles, consisting of electric motors, rechargeable batteries and electric control units; Control apparatus for regulating electric bike drive systems; Sensors for recording pedal force, pedal frequency and speed, being components of electric bike drive systems."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Elektrijalgrataste ajamiüksuste juhtimise, seire ja hindamise mobiilirakendused."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Elektrijalgrataste ajamiüksused, mis koosnevad elektrimootorist, taaslaaditavast akust ja elektroonilisest juhtimisüksusest; Elektrijalgrataste ajamisüsteemide reguleerimise juhtseadmed; Pedaalimisjõu, kadentsi ja kiiruse registreerimise andurid elektrijalgrataste ajamisüsteemide komponentidena."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Mobiilisovellukset sähköpolkupyörien moottoriyksiköiden ohjaukseen, valvontaan ja analysointiin."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Sellaiset käyttöyksiköt sähköpolkupyöriin, jotka koostuvat sähkömoottorista, ladattavasta akusta ja elektronisesta ohjausyksiköstä; Ohjauslaitteet sähköpolkupyörien käyttöjärjestelmien säätämiseen; Anturit poljinvoiman, polkemisen taajuuden ja nopeuden rekisteröintiin, osana sähköpolkupyörien käyttöjärjestelmiä."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Applis mobiles pour la commande, la surveillances et l'évaluation d'unités d'entraînement de vélos électriques."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Unités d'entraînement de vélos électriques, constituées par un moteur électrique, une batterie rechargeable et une unité de commande électronique; Appareils de commande pour la régulation de systèmes d'entraînement de vélos électriques; Capteurs pour la détection de la force d'appui sur les pédales, la fréquence de pédalage et la vitesse, en tant qu'éléments de systèmes d'entraînement de vélos électriques."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Mobile Apps für die Steuerung, Überwachung und Auswertung von Antriebseinheiten für Elektrofahrräder."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Antriebseinheiten für Elektrofahrräder, bestehend aus Elektromotor, wiederaufladbarer Batterie und elektronischer Bedieneinheit; Steuergeräte zur Regelung von E-Bike-Antriebssystemen; Sensoren zur Erfassung von Tretkraft, Trittfrequenz und Geschwindigkeit, als Bestandteile von E-Bike-Antriebssystemen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Mobilne aplikacije za upravljanje, nadzor i procjenu pogonskih jedinica za elektricne bicikle."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Pogonske jedinice za elektricne bicikle, koje se sastoje od elektromotora, punjivih baterija i elektronickih upravljackih jedinica; Upravljacki uredaji za regulaciju pogonskih sustava e-bicikala; Senzori za biljezenje sile okretanja pedala, ritma i brzine, kao sastavni dijelovi pogonskih sustava e-bicikala."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Mobil alkalmazások elektromos kerékpárok meghajtó egységeinek vezérléséhez, felügyeletéhez és értékeléséhez."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Meghajtó egységek elektromos kerékpárokhoz, elektromos motorokból, újratöltheto elemekbol és elektronikus vezérloegységekbol; Vezérlo eszközök elektromos kerékpár-meghajtó rendszerek szabályozásához; Pedálero, pedálfordulat és sebesség rögzítésére szolgáló érzékelok, elektromos kerékpár-meghajtó rendszerek alkatrészei formájában."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Applicazioni per cellulari per il comando, il monitoraggio e l'analisi di unità di trazione per biciclette elettriche."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Unità di trazione per biciclette elettriche, composte da motore elettrico, batteria ricaricabile e unità d'azionamento elettronica; Dispositivi di controllo per la regolazione di sistemi di trazione di biciclette elettriche; Sensori per la registrazione della potenza della pedalata, la cadenza e la velocità, come componenti di sistemi di trazione di biciclette elettriche."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Mobiliosios programeles, skirtos elektriniu dviraciu pavaros blokams valdyti, stebeti ir vertinti."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Elektriniu dviraciu pavaros itaisai, sudaryti is elektros variklio, ikraunamos baterijos ir elektroninio valdymo bloko; Valdymo blokai el. dviraciu pavaros sistemoms reguliuoti; Jutikliai, skirti minamosios galios, minimosios daznio ir greicio matavimui, kaip el. dviraciu pavaros sistemu dalys."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Mobilas lietotnes piedzinas bloku vadibai, uzraudzibai un izvertesanai elektriskajiem velosipediem."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Piedzinas bloki elektriskajiem velosipediem, kas sastav no elektromotora, atkartoti uzladejamas baterijas un elektroniska vadibas bloka; Vadibas ierices e-velosipedu piedzinas sistemu regulesanai; Sensori misanas speka, misanas frekvences un atruma registresanai ka e-velosipedu piedzinas sistemu dalas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Apps mobbli ghall-kontroll, il-monitoragg u l-valutazzjoni ta' unitajiet tad-drive ghal roti elettrici."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Unitajiet tad-drive ghal roti, li jikkonsistu minn mutur elettriku, batterija rikarikabbli u unità elettronika ta' kontroll; Taghmir ta' kontroll ghar-regolazzjoni ta' sistemi tad-drive ta' roti elettrici; Sensuri ghall-kejl tal-forza tal-pedala, il-kadenza u l-velocità bhala komponenti ta' sistemi tad-drive ta' roti elettrici."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Aplikacje mobilne do sterowania, monitorowania i analizowania jednostek napedowych rowerów elektrycznych."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Jednostki napedowe do rowerów elektrycznych, skladajace sie z silnika elektrycznego, akumulatora i elektronicznej jednostki sterujacej; Jednostki sterujace do regulacji ukladów napedowych rowerów elektrycznych; Czujniki do rejestrowania sily pedalowania, kadencji i predkosci jako elementy ukladów napedowych rowerów elektrycznych."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aplicações móveis para o controlo, monitorização e avaliação de unidades de acionamento de bicicletas elétricas."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Unidades de acionamento de bicicletas elétricas, constituídas por motores elétricos, baterias recarregáveis e unidades de controlo eletrónicas; Aparelhos de comando para a regulação de sistemas de acionamento de bicicletas elétricas; Sensores para o registo da potência de pedalada, ritmo de pedalada e velocidade, enquanto componentes de sistemas de acionamento de bicicletas elétricas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aplicatii mobile pentru controlul, monitorizarea si evaluarea unitatilor de propulsie pentru biciclete electrice."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Unitati de antrenare pentru biciclete electrice, constând într-un motor electric, o baterie reîncarcabila si o unitate de comanda electronica; Unitati de control pentru reglarea sistemelor de actionare a bicicletelor electrice; Senzori pentru masurarea fortei pedalei, cadentei si vitezei ca elemente componente ale sistemelor de actionare a bicicletei electrice."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Mobilné aplikácie na ovládanie, monitorovanie a vyhodnotenie hnacích strojov pre elektrické bicykle."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hnacie stroje pre elektrické bicykle, pozostávajúce z elektrického motora, nabíjatelného akumulátora a elektrickej riadiacej jednotky; Prístroje na ovládanie na reguláciu hnacích systémov elektrických bicyklov; Snímace na zaznamenávanie hnacej sily, kadencie a rýchlosti, ako súcasti hnacích systémov pre elektrické bicykle."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Mobilne aplikacije za nadzor, spremljanje in vrednotenje pogonskih enot za elektricna kolesa."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Pogonske enote za elektricna kolesa, sestavljene iz elektricnega motorja, polnilne baterije in elektronske krmilne enote; Krmilne enote za regulacijo pogonskih sistemov e-koles; Senzorji za merjenje sile na pedalu, kadence poganjanja pedal in hitrosti kot komponente pogonskih sistemov e-koles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aplicaciones móviles para controlar, supervisar y evaluar unidades de propulsión para bicicletas eléctricas."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Unidades de propulsión para bicicletas eléctricas, que incluyen un motor eléctrico, una batería recargable y una unidad de control electrónica; Dispositivos de control para regular los sistemas de propulsión de las bicicletas eléctricas; Sensores para medir la fuerza de pedaleo, la cadencia y la velocidad, como parte de sistemas de propulsión de las bicicletas eléctricas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Mobilappar för styrning, övervakning och utvärdering av drivenheter för elcyklar."
+        },
+        {
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Drivenheter för elcyklar, bestående av elmotor, återuppladdningsbara batterier och elektronisk manöverenhet; Styrdon för reglering av drivsystem för elcyklar; Sensorer för registrering av pedalkraft, pedalfrekvens och hastighet, som beståndsdelar av drivsystem för elcyklar."
+        }
+      ]
+    },
+    "id": "d975defa-b6b1-4b8d-8ed3-b9c5e929856d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "82"
+      }
+    ],
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Leopoldstr. 4,München, 80802",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "GRÜNECKER PATENT- UND RECHTSANWÄLTE PARTG MBB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250407",
+        "applicationNumber": "19169027"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350407",
+      "lastPublicationDate": "20250502",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250810",
+        "registrationNumber": "19169027"
+      }
+    },
+    "version": "20260512020340",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/em/d975defa-b6b1-4b8d-8ed3-b9c5e929856d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

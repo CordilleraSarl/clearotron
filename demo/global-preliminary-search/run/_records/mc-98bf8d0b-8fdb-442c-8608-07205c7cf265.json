@@ -1,0 +1,292 @@
+{
+  "uri": "/mark/mc/98bf8d0b-8fdb-442c-8608-07205c7cf265",
+  "provider": "clarivate",
+  "office": "mc",
+  "guid": "98bf8d0b-8fdb-442c-8608-07205c7cf265",
+  "applicationNumber": null,
+  "registrationNumber": "R 24721",
+  "applicationDate": "2015-06-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-08-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    8,
+    9,
+    14,
+    16,
+    18,
+    21,
+    25,
+    28,
+    32,
+    34,
+    36,
+    37,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        8
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        34
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "S.A.M. VENTURI AUTOMOBILES",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "RUE DU GABIAN MONACO",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "S.A.M. VENTURI AUTOMOBILES"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "08"
+        },
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "14"
+        },
+        {
+          "intClassNumber": "16"
+        },
+        {
+          "intClassNumber": "18"
+        },
+        {
+          "intClassNumber": "21"
+        },
+        {
+          "intClassNumber": "25"
+        },
+        {
+          "intClassNumber": "28"
+        },
+        {
+          "intClassNumber": "32"
+        },
+        {
+          "intClassNumber": "34"
+        },
+        {
+          "intClassNumber": "36"
+        },
+        {
+          "intClassNumber": "37"
+        },
+        {
+          "intClassNumber": "41"
+        },
+        {
+          "intClassNumber": "42"
+        },
+        {
+          "intClassNumber": "45"
+        }
+      ]
+    },
+    "id": "98bf8d0b-8fdb-442c-8608-07205c7cf265",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00040",
+        "publicationVolume": "237"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "MC",
+    "registrationOfficeName": "Monaco",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150616"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "lastPublicationDate": "20150828",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "R 24721"
+      },
+      "renewalPublishedDate": "20150828"
+    },
+    "version": "20250620100406",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/mc/98bf8d0b-8fdb-442c-8608-07205c7cf265",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.180Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

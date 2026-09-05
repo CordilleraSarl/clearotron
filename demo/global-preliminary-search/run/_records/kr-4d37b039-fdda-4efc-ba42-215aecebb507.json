@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/4d37b039-fdda-4efc-ba42-215aecebb507",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "4d37b039-fdda-4efc-ba42-215aecebb507",
+  "applicationNumber": "41-2012-0021744",
+  "registrationNumber": "4102585460000",
+  "applicationDate": "2012-06-27",
+  "registrationDate": "2013-05-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "EORI",
+  "markTransliteration": "EORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "dvd영화제작업,공연기획업,만화영화상영업,만화영화제작업,뮤지컬제작업,비디오테이프영화제작업,온라인 게임 서비스업,온라인 전자출판물 제공업{읽기전용},인형극공연업,텔레비전프로그램제작업",
+      "translation_language": "en",
+      "translation": "{readonly}, puppet theater performance, television program production, DVD movie festival, performance planning business, cartoon film business, cartoon festival work, musical production work, video tape festival work, online game service industry,"
+    }
+  ],
+  "owner": "NHC MEDIA Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김종수 (KIM Jong soo)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 금천구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NHC MEDIA Co., Ltd",
+        "applicantNativeName": "(주)엔에이치씨미디어"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "{readonly}, puppet theater performance, television program production, DVD movie festival, performance planning business, cartoon film business, cartoon festival work, musical production work, video tape festival work, online game service industry,",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "dvd영화제작업,공연기획업,만화영화상영업,만화영화제작업,뮤지컬제작업,비디오테이프영화제작업,온라인 게임 서비스업,온라인 전자출판물 제공업{읽기전용},인형극공연업,텔레비전프로그램제작업"
+        }
+      ]
+    },
+    "id": "4d37b039-fdda-4efc-ba42-215aecebb507",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.01.04",
+      "03.01.16",
+      "05.03.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "JoyTower, , Teheran-ro -gil, Gangnam-gu, Seoul, SEOUL - Rep. of KOREA(DAESIN international patent & Law office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김종수 (KIM Jong soo)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120627",
+        "applicationNumber": "41-2012-0021744"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20130509",
+        "registrationNumber": "4102585460000"
+      }
+    },
+    "version": "20250625171853",
+    "wordMarkSpecification": {
+      "markTransliteration": "EORI",
+      "markVerbalElementText": "EORI"
+    }
+  },
+  "_uri": "/mark/kr/4d37b039-fdda-4efc-ba42-215aecebb507",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:13.069Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

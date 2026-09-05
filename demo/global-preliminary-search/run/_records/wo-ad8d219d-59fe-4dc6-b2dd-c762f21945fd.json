@@ -1,0 +1,291 @@
+{
+  "uri": "/mark/wo/ad8d219d-59fe-4dc6-b2dd-c762f21945fd",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "ad8d219d-59fe-4dc6-b2dd-c762f21945fd",
+  "applicationNumber": null,
+  "registrationNumber": "1071910",
+  "applicationDate": null,
+  "registrationDate": "2010-12-21",
+  "expiryDate": "2030-12-21",
+  "renewalDate": "2020-12-21",
+  "lastPublicationDate": "2021-01-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    37,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Financial services; asset and fund management; capital investment; real estate management services; leasing of real estate, residential, retail, commercial and industrial buildings and offices; stocks and bonds coverage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto; civil engineering services (construction and building).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Architectural services; architectural services relating to the development of land; design and planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to residential properties; space planning; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services; civil engineering consultancy services; civil engineering design services and civil engineering planning services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Services financiers; gestion d'actifs et de fonds; placement de fonds; gérance de biens immobiliers; crédit-bail d'immobilier, de bâtiments résidentiels, de commerces de détail, de bâtiments et bureaux à usage commercial et industriel; couverture d'actions et obligations.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "fr",
+      "description": "Services de promotion immobilière; aménagement foncier, immobilier, de propriétés, logements et biens immeubles; travaux de construction et travaux de démolition; supervision de bâtiments pendant la construction et démolition; services de gestion de projets immobiliers sur place; services d'ignifugation, d'étanchéité et d'isolation; pose de câbles, charpenterie, services de câblage électrique, pose de vitrages, maçonnerie, peinture et décoration, pose et raccordement de tuyaux, plâtrerie, plomberie, rivetage, couverture et montage d'échafaudages; travaux de réparation, rénovation, restauration, remise à neuf, décoration, maintenance et entretien de propriétés, bâtiments, maisons et bureaux; nettoyage de propriétés et bâtiments; fourniture, installation et maintenance d'éclairages publics et d'éclairage de zones commerciales et résidentielles; travaux de construction, maintenance, nettoyage et réparation de routes, réseaux d'évacuation, ascenseurs, canalisations, télécommunications, systèmes de commande de chauffages et éclairages et de lutte antipollution; installation et réparation de systèmes d'alarme, y compris alarmes incendie et alarmes de sécurité; travaux publics; informations, prestation de conseils et services de conseillers s'y rapportant; services de travaux publics (construction et de bâtiments).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services d'architecture; services architecturaux concernant l'aménagement de terrains; services de conception et de planification; services de planification d'ensembles résidentiels, centres commerciaux, établissements de restauration, hôtels, bâtiments, propriétés immobilières, bureaux, installations publiques et aires de stationnement; services de bureaux d'étude concernant de l'immobilier résidentiel; aménagement de l'espace; conception et planification de villes; services d'inspection de bâtiments; expertises; estimation de la sécurité; services de conseillers, d'informations et de conseils relatifs aux services précités; services de conseillers en génie civil; services de conception et de planification en matière de génie civil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Servicios financieros; gestión de activos y de fondos; inversión de capital; administración de bienes inmuebles; arrendamiento de bienes inmuebles, oficinas y edificios residenciales, de venta, comerciales e industriales; cobertura de acciones y bonos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "es",
+      "description": "Servicios de desarrollo inmobiliario; acondicionamiento de terrenos, edificios y propiedades, gestión de bienes inmuebles y viviendas; servicios de construcción y servicios de demolición; supervisión de edificios durante obras de construcción y demolición; servicios de gestión de proyectos de construcción en el terreno; servicios de aislamiento, impermeabilización y aislamiento resistente al fuego; servicios de cableado, carpintería, cableado eléctrico, encristalado, albañilería, pintura, decoración, conexión y colocación de tuberías, enyesado, fontanería, remache, colocación de techos y montaje de andamios; servicios de reparación, renovación, restauración, reacondicionamiento, decoración, mantenimiento y manutención de propiedades, edificios, casas y oficinas; limpieza de propiedades y edificios; facilitación, instalación y mantenimiento de alumbrado callejero y alumbrado para zonas comerciales y residenciales; construcción, mantenimiento, limpieza y reparación de carreteras, desagües, elevadores, tuberías, sistemas de telecomunicación, calefacción e iluminación y sistemas de control medioambiental; instalación y reparación de sistemas de alarma, incluidas alarmas de seguridad y contra incendios; obras públicas; servicios de información, asesoramiento y consultoría relacionados con los servicios antes mencionados; servicios de ingeniería civil (construcción).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de arquitectura; servicios de arquitectura relacionados con el acondicionamiento de terrenos; servicios de diseño y planificación; servicios de planificación de comunidades residenciales, centros comerciales, locales de catering, hoteles, edificios, zonas de edificios, oficinas, instalaciones públicas y estacionamientos; servicios de diseño relacionados con propiedades residenciales; planificación espacial; planificación y diseño urbanos; servicios de inspección de construcciones; peritajes; evaluación de la seguridad; servicios de información, asesoramiento y consultoría relacionados con los servicios antes mencionados; servicios de consultoría en ingeniería civil; servicios de diseño de ingeniería civil y servicios de planificación de ingeniería civil.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20071126",
+          "basicApplicationNumber": "006463781"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "EM",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20080918",
+          "basicRegistrationNumber": "006463781"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CN",
+      "JP",
+      "KR",
+      "MA",
+      "SG",
+      "TR",
+      "VN"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street London W1K 3JP",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20071126",
+            "basicApplicationNumber": "006463781"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "EM",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20080918",
+            "basicRegistrationNumber": "006463781"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CN",
+      "JP",
+      "KR",
+      "MA",
+      "SG",
+      "TR",
+      "VN"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Financial services; asset and fund management; capital investment; real estate management services; leasing of real estate, residential, retail, commercial and industrial buildings and offices; stocks and bonds coverage."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Property development services; development of land, buildings, properties, housing and real estate; building construction and demolition services; supervision of buildings during construction and demolition; on-site building project management services; fire-proofing, water-proofing and insulating services; cable laying, carpentry, electrical wiring services, glazing, masonry, painting and decorating, pipe-fitting and laying, plastering, plumbing, riveting, roofing and scaffolding erection; repair, renovation, restoration, refurbishment, decoration, maintenance and servicing of properties, buildings, houses and offices; cleaning of properties and buildings; the provision, installation and maintenance of street lighting and lighting for business and residential areas; construction, maintenance, cleaning and repair of roads, drainage systems, lifts, pipelines, telecommunication, heating and lighting and environmental control systems; installation and repair of alarm systems including fire and security alarms; public works; information, advice and consultancy services relating thereto; civil engineering services (construction and building)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Architectural services; architectural services relating to the development of land; design and planning services; services for the planning of residential communities, shopping centres, catering establishments, hotels, buildings, building estates, offices, public facilities and car parks; design services relating to residential properties; space planning; urban design and planning; building inspection services; surveying services; safety evaluations; information, advisory and consultancy services relating to the aforesaid services; civil engineering consultancy services; civil engineering design services and civil engineering planning services."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services financiers; gestion d'actifs et de fonds; placement de fonds; gérance de biens immobiliers; crédit-bail d'immobilier, de bâtiments résidentiels, de commerces de détail, de bâtiments et bureaux à usage commercial et industriel; couverture d'actions et obligations."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de promotion immobilière; aménagement foncier, immobilier, de propriétés, logements et biens immeubles; travaux de construction et travaux de démolition; supervision de bâtiments pendant la construction et démolition; services de gestion de projets immobiliers sur place; services d'ignifugation, d'étanchéité et d'isolation; pose de câbles, charpenterie, services de câblage électrique, pose de vitrages, maçonnerie, peinture et décoration, pose et raccordement de tuyaux, plâtrerie, plomberie, rivetage, couverture et montage d'échafaudages; travaux de réparation, rénovation, restauration, remise à neuf, décoration, maintenance et entretien de propriétés, bâtiments, maisons et bureaux; nettoyage de propriétés et bâtiments; fourniture, installation et maintenance d'éclairages publics et d'éclairage de zones commerciales et résidentielles; travaux de construction, maintenance, nettoyage et réparation de routes, réseaux d'évacuation, ascenseurs, canalisations, télécommunications, systèmes de commande de chauffages et éclairages et de lutte antipollution; installation et réparation de systèmes d'alarme, y compris alarmes incendie et alarmes de sécurité; travaux publics; informations, prestation de conseils et services de conseillers s'y rapportant; services de travaux publics (construction et de bâtiments)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'architecture; services architecturaux concernant l'aménagement de terrains; services de conception et de planification; services de planification d'ensembles résidentiels, centres commerciaux, établissements de restauration, hôtels, bâtiments, propriétés immobilières, bureaux, installations publiques et aires de stationnement; services de bureaux d'étude concernant de l'immobilier résidentiel; aménagement de l'espace; conception et planification de villes; services d'inspection de bâtiments; expertises; estimation de la sécurité; services de conseillers, d'informations et de conseils relatifs aux services précités; services de conseillers en génie civil; services de conception et de planification en matière de génie civil."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios financieros; gestión de activos y de fondos; inversión de capital; administración de bienes inmuebles; arrendamiento de bienes inmuebles, oficinas y edificios residenciales, de venta, comerciales e industriales; cobertura de acciones y bonos."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de desarrollo inmobiliario; acondicionamiento de terrenos, edificios y propiedades, gestión de bienes inmuebles y viviendas; servicios de construcción y servicios de demolición; supervisión de edificios durante obras de construcción y demolición; servicios de gestión de proyectos de construcción en el terreno; servicios de aislamiento, impermeabilización y aislamiento resistente al fuego; servicios de cableado, carpintería, cableado eléctrico, encristalado, albañilería, pintura, decoración, conexión y colocación de tuberías, enyesado, fontanería, remache, colocación de techos y montaje de andamios; servicios de reparación, renovación, restauración, reacondicionamiento, decoración, mantenimiento y manutención de propiedades, edificios, casas y oficinas; limpieza de propiedades y edificios; facilitación, instalación y mantenimiento de alumbrado callejero y alumbrado para zonas comerciales y residenciales; construcción, mantenimiento, limpieza y reparación de carreteras, desagües, elevadores, tuberías, sistemas de telecomunicación, calefacción e iluminación y sistemas de control medioambiental; instalación y reparación de sistemas de alarma, incluidas alarmas de seguridad y contra incendios; obras públicas; servicios de información, asesoramiento y consultoría relacionados con los servicios antes mencionados; servicios de ingeniería civil (construcción)."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de arquitectura; servicios de arquitectura relacionados con el acondicionamiento de terrenos; servicios de diseño y planificación; servicios de planificación de comunidades residenciales, centros comerciales, locales de catering, hoteles, edificios, zonas de edificios, oficinas, instalaciones públicas y estacionamientos; servicios de diseño relacionados con propiedades residenciales; planificación espacial; planificación y diseño urbanos; servicios de inspección de construcciones; peritajes; evaluación de la seguridad; servicios de información, asesoramiento y consultoría relacionados con los servicios antes mencionados; servicios de consultoría en ingeniería civil; servicios de diseño de ingeniería civil y servicios de planificación de ingeniería civil."
+        }
+      ]
+    },
+    "id": "ad8d219d-59fe-4dc6-b2dd-c762f21945fd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "GROSVENOR.",
+        "markImageDescriptionLanguageCode": "en"
+      },
+      {
+        "markImageDescription": "GROSVENOR.",
+        "markImageDescriptionLanguageCode": "fr"
+      },
+      {
+        "markImageDescription": "GROSVENOR.",
+        "markImageDescriptionLanguageCode": "es"
+      }
+    ],
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "01"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301221",
+      "lastPublicationDate": "20210121",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20101221",
+        "registrationNumber": "1071910"
+      },
+      "renewalDate": "20201221",
+      "renewalPublishedDate": "20210121"
+    },
+    "version": "20250620171633",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/wo/ad8d219d-59fe-4dc6-b2dd-c762f21945fd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

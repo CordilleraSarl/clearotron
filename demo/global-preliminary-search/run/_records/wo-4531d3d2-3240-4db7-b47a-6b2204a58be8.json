@@ -1,0 +1,317 @@
+{
+  "uri": "/mark/wo/4531d3d2-3240-4db7-b47a-6b2204a58be8",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "4531d3d2-3240-4db7-b47a-6b2204a58be8",
+  "applicationNumber": null,
+  "registrationNumber": "1478661",
+  "applicationDate": null,
+  "registrationDate": "2019-04-11",
+  "expiryDate": "2029-04-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-07-25",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MAVENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software; downloadable computer software applications; computer software and application software for the processing, collection, organization, systematization, communication, access, transmission, sharing, verification, analysis, modification, research, monitoring and storing of content, data and information; computer software and computer applications for auditing, quality control and for regulatory compliance purposes in the pharmaceutical and medical fields; document management software; electronic databases recorded on computer media; application software for cloud computing.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Computerized record keeping services for auditing and regulatory compliance purposes in the pharmaceutical and medical fields; consulting services in the field of business audits (business analytics) in the medical and pharmaceutical fields; the collection, compilation and systemization of content, data and information in computer databases; data processing services in the medical and pharmaceutical fields.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education and training services; organization and conducting of seminars, conferences, training workshops, training course and refresher training; provision of educational materials and manuals on the subject of auditing and regulatory compliance in the pharmaceutical and medical fields.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design, development and updating of software\"; technical support services relating to the use of computer software; provision of non-downloadable software on line; provision of software on platforms enabling users to access and use software, computer networks, computer servers and data storage systems; provision of temporary use of non-downloadable computer software for processing, collection, organization, systemization, communication, access, transmission, sharing, verification, analysis, modification, research, monitoring and storage of content, data and information; provision of a service (Software as a Service, SaaS) for auditing, quality control and regulatory compliance purposes in the pharmaceutical and medical fields; provision of a platform as a service [PaaS] for auditing; provision of a service [Software as a service, SaaS] and platform as a service [PaaS] for document management; research and development services with respect to computer software for auditing, quality control and for regulatory compliance purposes; providing temporary use of online non-downloadable software for accessing and using a cloud computing network [cloud computing]; consulting services in the field of quality control in the medical and pharmaceutical fields; consulting services in the field of regulatory compliance in the pharmaceutical and medical fields.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels; applications logicielles informatiques téléchargeables; logiciels informatiques et logiciels d'application pour le traitement, la collecte, l'organisation, la systématisation, la communication, l'accès, la transmission, le partage, la vérification, l'analyse, la modification, la recherche, le suivi et le stockage de contenus, de données et d'informations; logiciels informatiques et logiciels d'application pour les audits, les contrôles de qualité et à des fins de mise en conformité réglementaire dans les domaines pharmaceutique et médical; logiciels de gestion de documents; bases de données électroniques enregistrées sur des supports informatiques; logiciels d'application pour services d'informatique en nuage [cloud computing].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de tenue informatisée d'archives commerciales à des fins d'audit et de mise en conformité réglementaire dans les domaines pharmaceutique et médical; services de conseil dans le domaine des audits d'entreprises (analyses commerciales) dans les domaines pharmaceutique et médical; la collecte, la compilation et la systématisation de contenus, de données et d'informations dans des bases de données informatiques; services de traitement de données dans les domaines pharmaceutique et médical.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services d'éducation et de formation; organisation et conduite de séminaires, de conférences, d'ateliers de formation, de cours de formation et de cours de perfectionnement; mise à disposition de manuels et de matériel pédagogique sur le thème de l'audit et de la mise en conformité réglementaire dans les domaines pharmaceutique et médical.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception, développement et mise à jour de logiciels\"; services d'assistance technique concernant l'usage de logiciels; mise à disposition de logiciels non téléchargeables en ligne; mise à disposition des logiciels sur des plateformes permettant aux utilisateurs d'accéder et d'utiliser des logiciels, réseaux informatiques, serveurs informatiques et systèmes de stockage de données; mise à disposition temporaire de logiciels informatiques non téléchargeables à des fins de traitement, de collecte, d'organisation, de systématisation, de communication, d'accès, de transmission, de partage, de vérification, d'analyse, de modification, de recherche, de suivi et de stockage de contenus, de données et d'informations; mise à disposition d'un logiciel-service (Software as a Service, SaaS) pour l'audit, le contrôle de qualité et à des fins de mise en conformité réglementaire dans les domaines pharmaceutique et médical; mise à disposition d'une plate-forme informatique en tant que service [PaaS] pour l'audit; mise à disposition d'un logiciel-service (Software as a Service, SaaS) et d'une plate-forme informatique en tant que service [PaaS] pour la gestion de documents; services de recherche et développement en matière de logiciels pour les audits, les contrôles de qualité et à des fins de mise en conformité réglementaire; mise à disposition temporaire de logiciels d'exploitation en ligne non téléchargeables pour accéder et utiliser à un réseau informatique en nuage [cloud computing]; services de conseil dans le domaine des contrôles de qualité dans les domaines pharmaceutique et médical; services de conseil dans le domaine de la conformité réglementaire dans les domaines pharmaceutique et médical.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software; aplicaciones informáticas descargables; software y software de aplicación para el tratamiento, recopilación, organización, sistematización, comunicación, acceso, transmisión, intercambio, verificación, análisis, modificación, investigación, seguimiento y almacenamiento de contenidos, datos e información; software y software de aplicación para auditorías, controles de calidad y con fines de cumplimiento reglamentario en los ámbitos farmacéutico y médico; software de gestión de documentos; bases de datos electrónicas grabadas en soportes informáticos; software de aplicación para servicios informáticos en la nube [cloud computing].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios de teneduría informatizada de archivos comerciales con fines de auditoría y cumplimiento reglamentario en los ámbitos farmacéutico y médico; servicios de asesoramiento en el ámbito de las auditorías de empresas (análisis comerciales) en los ámbitos farmacéutico y médico; la recopilación, compilación y sistematización de contenidos, datos e información en bases de datos informáticas; servicios de procesamiento de datos en los ámbitos farmacéutico y médico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educación y formación; organización y dirección de seminarios, conferencias, talleres de formación, cursos de formación y cursos de perfeccionamiento; suministro de manuales y material educativo sobre el tema de la auditoría y el cumplimiento reglamentario en los ámbitos farmacéutico y médico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño, desarrollo y actualización de software\"; servicios de asistencia técnica sobre el uso de software; suministro de software en línea no descargable; suministro de software en plataformas que permiten a los usuarios acceder y utilizar software, redes informáticas, servidores informáticos y sistemas de almacenamiento de datos; suministro temporal de software no descargable para el procesamiento, recopilación, organización, sistematización, comunicación, acceso, transmisión, intercambio, control, análisis, modificación, investigación, seguimiento y almacenamiento de contenidos, datos e información; suministro de un software de servicio (Software as a Service, SaaS) para auditoría, control de calidad y cumplimiento reglamentario en los ámbitos farmacéutico y médico; suministro de una plataforma informática en cuanto servicio [PaaS] para la auditoría; suministro de un software como servicio [Software as a Service, SaaS] y una plataforma informática en cuanto servicio [PaaS] para la gestión de documentos; investigación y desarrollo respecto de software para auditorías, controles de calidad y cumplimiento reglamentario; suministro temporal de software operativo en línea no descargable para acceder y utilizar a una red de servicios informáticos en la nube [cloud computing]; servicios de asesoramiento en el ámbito de los controles de calidad en los campos farmacéutico y médico; servicios de asesoramiento en el ámbito del cumplimiento reglamentario en los campos farmacéutico y médico.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Caryatid Sàrl",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": "Novagraaf Switzerland S.A.",
+  "priorities": [
+    {
+      "priorityCountryCode": "CH",
+      "priorityCountryName": "Switzerland",
+      "priorityDate": "20181030",
+      "priorityNumber": "729652"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicRegistrationApplicationOfficeCode": "CH",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20181030",
+          "basicRegistrationNumber": "729652"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "GB",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Rue du Clos 9 CH-1207 Genève",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "Caryatid Sàrl"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicRegistrationApplicationOfficeCode": "CH",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20181030",
+            "basicRegistrationNumber": "729652"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "GB",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software; downloadable computer software applications; computer software and application software for the processing, collection, organization, systematization, communication, access, transmission, sharing, verification, analysis, modification, research, monitoring and storing of content, data and information; computer software and computer applications for auditing, quality control and for regulatory compliance purposes in the pharmaceutical and medical fields; document management software; electronic databases recorded on computer media; application software for cloud computing."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computerized record keeping services for auditing and regulatory compliance purposes in the pharmaceutical and medical fields; consulting services in the field of business audits (business analytics) in the medical and pharmaceutical fields; the collection, compilation and systemization of content, data and information in computer databases; data processing services in the medical and pharmaceutical fields."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education and training services; organization and conducting of seminars, conferences, training workshops, training course and refresher training; provision of educational materials and manuals on the subject of auditing and regulatory compliance in the pharmaceutical and medical fields."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design, development and updating of software\"; technical support services relating to the use of computer software; provision of non-downloadable software on line; provision of software on platforms enabling users to access and use software, computer networks, computer servers and data storage systems; provision of temporary use of non-downloadable computer software for processing, collection, organization, systemization, communication, access, transmission, sharing, verification, analysis, modification, research, monitoring and storage of content, data and information; provision of a service (Software as a Service, SaaS) for auditing, quality control and regulatory compliance purposes in the pharmaceutical and medical fields; provision of a platform as a service [PaaS] for auditing; provision of a service [Software as a service, SaaS] and platform as a service [PaaS] for document management; research and development services with respect to computer software for auditing, quality control and for regulatory compliance purposes; providing temporary use of online non-downloadable software for accessing and using a cloud computing network [cloud computing]; consulting services in the field of quality control in the medical and pharmaceutical fields; consulting services in the field of regulatory compliance in the pharmaceutical and medical fields."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels; applications logicielles informatiques téléchargeables; logiciels informatiques et logiciels d'application pour le traitement, la collecte, l'organisation, la systématisation, la communication, l'accès, la transmission, le partage, la vérification, l'analyse, la modification, la recherche, le suivi et le stockage de contenus, de données et d'informations; logiciels informatiques et logiciels d'application pour les audits, les contrôles de qualité et à des fins de mise en conformité réglementaire dans les domaines pharmaceutique et médical; logiciels de gestion de documents; bases de données électroniques enregistrées sur des supports informatiques; logiciels d'application pour services d'informatique en nuage [cloud computing]."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de tenue informatisée d'archives commerciales à des fins d'audit et de mise en conformité réglementaire dans les domaines pharmaceutique et médical; services de conseil dans le domaine des audits d'entreprises (analyses commerciales) dans les domaines pharmaceutique et médical; la collecte, la compilation et la systématisation de contenus, de données et d'informations dans des bases de données informatiques; services de traitement de données dans les domaines pharmaceutique et médical."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services d'éducation et de formation; organisation et conduite de séminaires, de conférences, d'ateliers de formation, de cours de formation et de cours de perfectionnement; mise à disposition de manuels et de matériel pédagogique sur le thème de l'audit et de la mise en conformité réglementaire dans les domaines pharmaceutique et médical."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception, développement et mise à jour de logiciels\"; services d'assistance technique concernant l'usage de logiciels; mise à disposition de logiciels non téléchargeables en ligne; mise à disposition des logiciels sur des plateformes permettant aux utilisateurs d'accéder et d'utiliser des logiciels, réseaux informatiques, serveurs informatiques et systèmes de stockage de données; mise à disposition temporaire de logiciels informatiques non téléchargeables à des fins de traitement, de collecte, d'organisation, de systématisation, de communication, d'accès, de transmission, de partage, de vérification, d'analyse, de modification, de recherche, de suivi et de stockage de contenus, de données et d'informations; mise à disposition d'un logiciel-service (Software as a Service, SaaS) pour l'audit, le contrôle de qualité et à des fins de mise en conformité réglementaire dans les domaines pharmaceutique et médical; mise à disposition d'une plate-forme informatique en tant que service [PaaS] pour l'audit; mise à disposition d'un logiciel-service (Software as a Service, SaaS) et d'une plate-forme informatique en tant que service [PaaS] pour la gestion de documents; services de recherche et développement en matière de logiciels pour les audits, les contrôles de qualité et à des fins de mise en conformité réglementaire; mise à disposition temporaire de logiciels d'exploitation en ligne non téléchargeables pour accéder et utiliser à un réseau informatique en nuage [cloud computing]; services de conseil dans le domaine des contrôles de qualité dans les domaines pharmaceutique et médical; services de conseil dans le domaine de la conformité réglementaire dans les domaines pharmaceutique et médical."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software; aplicaciones informáticas descargables; software y software de aplicación para el tratamiento, recopilación, organización, sistematización, comunicación, acceso, transmisión, intercambio, verificación, análisis, modificación, investigación, seguimiento y almacenamiento de contenidos, datos e información; software y software de aplicación para auditorías, controles de calidad y con fines de cumplimiento reglamentario en los ámbitos farmacéutico y médico; software de gestión de documentos; bases de datos electrónicas grabadas en soportes informáticos; software de aplicación para servicios informáticos en la nube [cloud computing]."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de teneduría informatizada de archivos comerciales con fines de auditoría y cumplimiento reglamentario en los ámbitos farmacéutico y médico; servicios de asesoramiento en el ámbito de las auditorías de empresas (análisis comerciales) en los ámbitos farmacéutico y médico; la recopilación, compilación y sistematización de contenidos, datos e información en bases de datos informáticas; servicios de procesamiento de datos en los ámbitos farmacéutico y médico."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educación y formación; organización y dirección de seminarios, conferencias, talleres de formación, cursos de formación y cursos de perfeccionamiento; suministro de manuales y material educativo sobre el tema de la auditoría y el cumplimiento reglamentario en los ámbitos farmacéutico y médico."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño, desarrollo y actualización de software\"; servicios de asistencia técnica sobre el uso de software; suministro de software en línea no descargable; suministro de software en plataformas que permiten a los usuarios acceder y utilizar software, redes informáticas, servidores informáticos y sistemas de almacenamiento de datos; suministro temporal de software no descargable para el procesamiento, recopilación, organización, sistematización, comunicación, acceso, transmisión, intercambio, control, análisis, modificación, investigación, seguimiento y almacenamiento de contenidos, datos e información; suministro de un software de servicio (Software as a Service, SaaS) para auditoría, control de calidad y cumplimiento reglamentario en los ámbitos farmacéutico y médico; suministro de una plataforma informática en cuanto servicio [PaaS] para la auditoría; suministro de un software como servicio [Software as a Service, SaaS] y una plataforma informática en cuanto servicio [PaaS] para la gestión de documentos; investigación y desarrollo respecto de software para auditorías, controles de calidad y cumplimiento reglamentario; suministro temporal de software operativo en línea no descargable para acceder y utilizar a una red de servicios informáticos en la nube [cloud computing]; servicios de asesoramiento en el ámbito de los controles de calidad en los campos farmacéutico y médico; servicios de asesoramiento en el ámbito del cumplimiento reglamentario en los campos farmacéutico y médico."
+        }
+      ]
+    },
+    "id": "4531d3d2-3240-4db7-b47a-6b2204a58be8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "CH",
+        "priorityCountryName": "Switzerland",
+        "priorityDate": "20181030",
+        "priorityNumber": "729652"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "28"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Chemin de l'Echo 3 CH-1213 Onex / Genève",
+        "representativeAddressCountryCode": "CH",
+        "representativeAddressCountryName": "Switzerland",
+        "representativeName": "Novagraaf Switzerland S.A."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290411",
+      "lastPublicationDate": "20190725",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190411",
+        "registrationNumber": "1478661"
+      }
+    },
+    "version": "20250620190227",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MAVENCOR"
+    }
+  },
+  "_uri": "/mark/wo/4531d3d2-3240-4db7-b47a-6b2204a58be8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.746Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

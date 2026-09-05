@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/fr/1734bb75-fbc9-4744-8994-4cabf586acbb",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "1734bb75-fbc9-4744-8994-4cabf586acbb",
+  "applicationNumber": "23 5000635",
+  "registrationNumber": "23 5000635",
+  "applicationDate": "2023-10-23",
+  "registrationDate": null,
+  "expiryDate": "2033-10-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-11-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HPV, en quête d'action",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": logiciels de jeux",
+      "translation_language": "en",
+      "translation": "game software"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": ": Jeux ; jeux de cartes ; jeux de table ; figurines [jouets]",
+      "translation_language": "en",
+      "translation": "Games; card games; table games; figurines [toys]"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": Éducation ; formation ; mise à disposition d'informations en matière d'éducation ; publication de livres ; organisation et conduite de colloques ; organisation et conduite de conférences ; organisation d'expositions à buts culturels ou éducatifs ; services de jeu proposés en ligne à partir d'un réseau informatique ; publication électronique de livres et de périodiques en ligne.",
+      "translation_language": "en",
+      "translation": "Education; training; provision of educational information; publication of books; organization and conduct of conferences; organization and conduct of conferences; organization of exhibitions for cultural or educational purposes; gaming services offered online from a computer network; electronic publication of books and periodicals online."
+    }
+  ],
+  "owner": "Université de Lorraine EPSCP",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "34 Cours Léopold, BP 25233, 54052 Nancy",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "Université de Lorraine EPSCP"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "game software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": logiciels de jeux"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Games; card games; table games; figurines [toys]",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Jeux ; jeux de cartes ; jeux de table ; figurines [jouets]"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; provision of educational information; publication of books; organization and conduct of conferences; organization and conduct of conferences; organization of exhibitions for cultural or educational purposes; gaming services offered online from a computer network; electronic publication of books and periodicals online.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Éducation ; formation ; mise à disposition d'informations en matière d'éducation ; publication de livres ; organisation et conduite de colloques ; organisation et conduite de conférences ; organisation d'expositions à buts culturels ou éducatifs ; services de jeu proposés en ligne à partir d'un réseau informatique ; publication électronique de livres et de périodiques en ligne."
+        }
+      ]
+    },
+    "id": "1734bb75-fbc9-4744-8994-4cabf586acbb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00240",
+        "publicationVolume": "46"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20231023",
+        "applicationNumber": "23 5000635"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331023",
+      "lastPublicationDate": "20231117",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "23 5000635"
+      }
+    },
+    "version": "20250426165939",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HPV, en quête d'action"
+    }
+  },
+  "_uri": "/mark/fr/1734bb75-fbc9-4744-8994-4cabf586acbb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

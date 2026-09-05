@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/c68834ab-9815-477c-9ce5-4c836b11b370",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "c68834ab-9815-477c-9ce5-4c836b11b370",
+  "applicationNumber": "7406244",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-18",
+  "registrationDate": null,
+  "expiryDate": "2035-12-18",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SEVEN CORE INTERIORS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Architectural design service (metal works), engineering , furnishing design services, architectural and interior designing, consultancy relating to selection of curtaining (interior design), design services relating to interior decorating for homes, selection of loose covers for furniture [interior design]; design of curtains, textile testing, textile design services; hosting and maintenance of websites; research and development in the field of computer hardware and software; software as a service [saas]; electronic data storage; information technology [it] consultancy. Home inspection services [surveying]",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SAJANA PAYYAMPALLIL SASI Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "PRG ASSOCIATES[15446]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SEVEN CORE INTERIORS, VAYANASALA JUNCTION KANJOOR ROAD, 7/274A, NEELAMBETH BUILDING, AMBADI JUNCTION, CHINGOLI, ALAPPUZHA, KERALA- 690532, INDIA",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SAJANA PAYYAMPALLIL SASI Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Architectural design service (metal works), engineering , furnishing design services, architectural and interior designing, consultancy relating to selection of curtaining (interior design), design services relating to interior decorating for homes, selection of loose covers for furniture [interior design]; design of curtains, textile testing, textile design services; hosting and maintenance of websites; research and development in the field of computer hardware and software; software as a service [saas]; electronic data storage; information technology [it] consultancy. Home inspection services [surveying]"
+        }
+      ]
+    },
+    "id": "c68834ab-9815-477c-9ce5-4c836b11b370",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260108",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "4TH FLOOR,D.D VYAPAR BHAVAN KADAVANTHRA - 682020, ERNAKULAM, KERALA",
+        "representativeName": "PRG ASSOCIATES[15446]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251218",
+        "applicationNumber": "7406244"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20351218",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20230115"
+        }
+      ],
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20260108020040",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN CORE INTERIORS"
+    }
+  },
+  "_uri": "/mark/in/c68834ab-9815-477c-9ce5-4c836b11b370",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

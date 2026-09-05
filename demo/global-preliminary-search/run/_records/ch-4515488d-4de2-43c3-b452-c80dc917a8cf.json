@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/ch/4515488d-4de2-43c3-b452-c80dc917a8cf",
+  "provider": "clarivate",
+  "office": "ch",
+  "guid": "4515488d-4de2-43c3-b452-c80dc917a8cf",
+  "applicationNumber": "7913/2025",
+  "registrationNumber": "848422",
+  "applicationDate": "2025-06-03",
+  "registrationDate": "2026-05-11",
+  "expiryDate": "2035-06-03",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Evenora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        41,
+        42
+      ],
+      "language": "fr",
+      "description": "35 Services de publicité, de communication et de marketing pour la promotion de lieux à usage événementiel; services de diffusion et de publication d'annonces publicitaires relatives à la location de lieux; services de mise en relation commerciale (intermédiation commerciale) entre propriétaires de lieux et clients; services de conseil en marketing, communication et stratégie commerciale pour la valorisation de lieux; création de contenus publicitaires et promotionnels, notamment photographies et vidéos; systématisation et compilation d'informations dans des bases de données à des fins commerciales ou publicitaires; optimisation de moteurs de recherche à des fins promotionnelles (référencement); services administratifs liés à la gestion de dossiers de réservation, y compris établissement de factures (facturation) et traitement administratif des demandes; services d'accompagnement administratif pour l'obtention d'autorisations nécessaires à la tenue d'événements (occupation du domaine public, bruit, sécurité, autorisations spécifiques). 36 Affaires immobilières; services de location et de mise en location temporaire de biens immobiliers et d'espaces à usage événementiel; services d'agence immobilière et de courtage pour la location d'espaces à usage événementiel; services de gérance immobilière et de gestion de biens immobiliers, en particulier pour la location temporaire d'espaces; services de conseil et d'information en matière immobilière relatifs à la location temporaire de lieux. 41 Services d'organisation, de planification et de réservation d'événements privés, publics ou professionnels; services de conseil pour le choix et la planification de lieux pour événements. 42 Conception, développement, hébergement, maintenance et mise à disposition de plateformes numériques et de logiciels en ligne (SaaS) pour la gestion, la réservation et la location temporaire de lieux; fourniture d'accès temporaire à des logiciels non téléchargeables permettant la création de comptes utilisateurs, la gestion des disponibilités et des réservations, la communication entre utilisateurs et la gestion de demandes; développement et mise à disposition d'outils logiciels com prenant notamment moteurs de recherche, filtres, bases de données et calendriers interactifs; développement de logiciels permettant la génération automatique de documents électroniques liés aux réservations (confirmations, contrats, attestations, etc.); intégration de services tiers au sein de logiciels, notamment solutions de paiement et de cautionnement (via prestataires), messagerie et notifications; services d'information concernant les caractéristiques, capacités et équipements techniques des lieux destinés à des événements.",
+      "translation_language": "en",
+      "translation": "35 Advertising, communication, and marketing services for the promotion of venues for event use; services for the distribution and publication of advertisements relating to venue rental; business matchmaking services (commercial intermediation) between venue owners and clients; marketing, communication, and business strategy consulting services for venue enhancement; creation of advertising and promotional content, including photographs and videos; systematization and compilation of information in databases for commercial or advertising purposes; search engine optimization for promotional purposes (SEO); administrative services related to the management of booking files, including invoicing and administrative processing of requests; administrative support services for obtaining permits necessary for holding events (occupancy of public space, noise, security, specific permits). 36 Real estate transactions; rental and temporary leasing services for real estate and event spaces; real estate agency and brokerage services for the rental of event spaces; Property management and real estate services, in particular for the temporary rental of spaces; real estate consulting and information services relating to the temporary rental of premises. 41 Organization, planning and booking services for private, public or professional events; consulting services for the selection and planning of venues for events. 42 Design, development, hosting, maintenance and provision of digital platforms and online software (SaaS) for the management, booking and temporary rental of venues; provision of temporary access to non-downloadable software enabling the creation of user accounts, the management of availability and bookings, communication between users and the management of requests; development and provision of software tools including in particular search engines, filters, databases and interactive calendars; development of software enabling the automatic generation of electronic documents related to bookings (confirmations, contracts, certificates, etc.); integration of third-party services within software, including payment and security deposit solutions (via providers), messaging and notifications; information services concerning the characteristics, capacities and technical equipment of venues intended for events."
+    }
+  ],
+  "owner": "William Dutoit",
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Chemin des Argilles 20, 2088 Cressier",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantName": "William Dutoit"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "35 Advertising, communication, and marketing services for the promotion of venues for event use; services for the distribution and publication of advertisements relating to venue rental; business matchmaking services (commercial intermediation) between venue owners and clients; marketing, communication, and business strategy consulting services for venue enhancement; creation of advertising and promotional content, including photographs and videos; systematization and compilation of information in databases for commercial or advertising purposes; search engine optimization for promotional purposes (SEO); administrative services related to the management of booking files, including invoicing and administrative processing of requests; administrative support services for obtaining permits necessary for holding events (occupancy of public space, noise, security, specific permits). 36 Real estate transactions; rental and temporary leasing services for real estate and event spaces; real estate agency and brokerage services for the rental of event spaces; Property management and real estate services, in particular for the temporary rental of spaces; real estate consulting and information services relating to the temporary rental of premises. 41 Organization, planning and booking services for private, public or professional events; consulting services for the selection and planning of venues for events. 42 Design, development, hosting, maintenance and provision of digital platforms and online software (SaaS) for the management, booking and temporary rental of venues; provision of temporary access to non-downloadable software enabling the creation of user accounts, the management of availability and bookings, communication between users and the management of requests; development and provision of software tools including in particular search engines, filters, databases and interactive calendars; development of software enabling the automatic generation of electronic documents related to bookings (confirmations, contracts, certificates, etc.); integration of third-party services within software, including payment and security deposit solutions (via providers), messaging and notifications; information services concerning the characteristics, capacities and technical equipment of venues intended for events.",
+          "intClassNumber": "35,36,41,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "35 Services de publicité, de communication et de marketing pour la promotion de lieux à usage événementiel; services de diffusion et de publication d'annonces publicitaires relatives à la location de lieux; services de mise en relation commerciale (intermédiation commerciale) entre propriétaires de lieux et clients; services de conseil en marketing, communication et stratégie commerciale pour la valorisation de lieux; création de contenus publicitaires et promotionnels, notamment photographies et vidéos; systématisation et compilation d'informations dans des bases de données à des fins commerciales ou publicitaires; optimisation de moteurs de recherche à des fins promotionnelles (référencement); services administratifs liés à la gestion de dossiers de réservation, y compris établissement de factures (facturation) et traitement administratif des demandes; services d'accompagnement administratif pour l'obtention d'autorisations nécessaires à la tenue d'événements (occupation du domaine public, bruit, sécurité, autorisations spécifiques). 36 Affaires immobilières; services de location et de mise en location temporaire de biens immobiliers et d'espaces à usage événementiel; services d'agence immobilière et de courtage pour la location d'espaces à usage événementiel; services de gérance immobilière et de gestion de biens immobiliers, en particulier pour la location temporaire d'espaces; services de conseil et d'information en matière immobilière relatifs à la location temporaire de lieux. 41 Services d'organisation, de planification et de réservation d'événements privés, publics ou professionnels; services de conseil pour le choix et la planification de lieux pour événements. 42 Conception, développement, hébergement, maintenance et mise à disposition de plateformes numériques et de logiciels en ligne (SaaS) pour la gestion, la réservation et la location temporaire de lieux; fourniture d'accès temporaire à des logiciels non téléchargeables permettant la création de comptes utilisateurs, la gestion des disponibilités et des réservations, la communication entre utilisateurs et la gestion de demandes; développement et mise à disposition d'outils logiciels com prenant notamment moteurs de recherche, filtres, bases de données et calendriers interactifs; développement de logiciels permettant la génération automatique de documents électroniques liés aux réservations (confirmations, contrats, attestations, etc.); intégration de services tiers au sein de logiciels, notamment solutions de paiement et de cautionnement (via prestataires), messagerie et notifications; services d'information concernant les caractéristiques, capacités et équipements techniques des lieux destinés à des événements."
+        }
+      ]
+    },
+    "id": "4515488d-4de2-43c3-b452-c80dc917a8cf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "0511"
+      }
+    ],
+    "recordLastUpdated": "20260517",
+    "registrationOfficeCode": "CH",
+    "registrationOfficeName": "Switzerland",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250603",
+        "applicationNumber": "7913/2025"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350603",
+      "lastPublicationDate": "20260511",
+      "registration": {
+        "registrationDate": "20260511",
+        "registrationNumber": "848422"
+      }
+    },
+    "version": "20260517020324",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Evenora"
+    }
+  },
+  "_uri": "/mark/ch/4515488d-4de2-43c3-b452-c80dc917a8cf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.807Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

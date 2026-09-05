@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/8c7704b1-b205-4d67-a557-94b3884d72cc",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "8c7704b1-b205-4d67-a557-94b3884d72cc",
+  "applicationNumber": "40-2016-0100782",
+  "registrationNumber": "4012873150000",
+  "applicationDate": "2016-11-18",
+  "registrationDate": "2017-09-20",
+  "expiryDate": "2027-09-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-09-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qsori",
+  "markTransliteration": "QSORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "3d프린터 활용 직업교육훈련지도업,3d프린터 활용기술 관련 교육 지도업,3d프린터 활용기술 지도업,3d프린터를 활용한 게임 서비스업,문화적 또는 교육적 목적의 세미나/훈련워크샵/전시회 조직/준비/진행업,문화적 또는 교육적 목적의 시각예술 및 문학작품 공연업,문화적 또는 교육적 목적의 전시회/컨벤션/컨퍼런스 조직업,문화적 또는 교육적 목적의 컨퍼런스 및 전시회 준비 및 진행업,문화적 또는 교육적 목적의 컨퍼런스/컨벤션/전시회 준비 및 진행업,문화적 목적의 전시회 정보제공업,문화적 목적의 전시회업,문화적 및 교육적 목적의 전시회 조직업,문화적 및 교육적 목적의 회의 및컨퍼런스 조직업,미술관전시기획업,박물관내 전시실 운영업,박물관전시관 전시업,애니매이션 제작업,예술작품전시회업,테마파크운영업",
+      "translation_language": "en",
+      "translation": "3d printer utilization vocational education and training guidance business, 3d printer utilization technology related education guidance business, 3d printer application technology guidance business, game service business using 3d printer, seminar/training workshop/exhibition organization/preparation/progress business for cultural or educational purposes, performing visual arts and literary works for cultural or educational purposes; organizing exhibitions/conventions/conferences for cultural or educational purposes; preparing and conducting conferences and exhibitions for cultural or educational purposes; Preparation and processing business, exhibition information provision for cultural purposes, exhibition business for cultural purposes, exhibition organization business for cultural and educational purposes, meeting and conference organization business for cultural and educational purposes, museum exhibition planning business, exhibition room operation business in museums, museum exhibition hall Exhibition business, animation production business, art exhibition business, theme park operation business"
+    }
+  ],
+  "owner": "Qtel Soft Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인 남양 (Namyang patent & Law office)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "제주특별자치도 제주시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Qtel Soft Co., Ltd.",
+        "applicantNativeName": "(주)큐텔소프트"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "3d printer utilization vocational education and training guidance business, 3d printer utilization technology related education guidance business, 3d printer application technology guidance business, game service business using 3d printer, seminar/training workshop/exhibition organization/preparation/progress business for cultural or educational purposes, performing visual arts and literary works for cultural or educational purposes; organizing exhibitions/conventions/conferences for cultural or educational purposes; preparing and conducting conferences and exhibitions for cultural or educational purposes; Preparation and processing business, exhibition information provision for cultural purposes, exhibition business for cultural purposes, exhibition organization business for cultural and educational purposes, meeting and conference organization business for cultural and educational purposes, museum exhibition planning business, exhibition room operation business in museums, museum exhibition hall Exhibition business, animation production business, art exhibition business, theme park operation business",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "3d프린터 활용 직업교육훈련지도업,3d프린터 활용기술 관련 교육 지도업,3d프린터 활용기술 지도업,3d프린터를 활용한 게임 서비스업,문화적 또는 교육적 목적의 세미나/훈련워크샵/전시회 조직/준비/진행업,문화적 또는 교육적 목적의 시각예술 및 문학작품 공연업,문화적 또는 교육적 목적의 전시회/컨벤션/컨퍼런스 조직업,문화적 또는 교육적 목적의 컨퍼런스 및 전시회 준비 및 진행업,문화적 또는 교육적 목적의 컨퍼런스/컨벤션/전시회 준비 및 진행업,문화적 목적의 전시회 정보제공업,문화적 목적의 전시회업,문화적 및 교육적 목적의 전시회 조직업,문화적 및 교육적 목적의 회의 및컨퍼런스 조직업,미술관전시기획업,박물관내 전시실 운영업,박물관전시관 전시업,애니매이션 제작업,예술작품전시회업,테마파크운영업"
+        }
+      ]
+    },
+    "id": "8c7704b1-b205-4d67-a557-94b3884d72cc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Namyang patent & Law office",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인 남양 (Namyang patent & Law office)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161118",
+        "applicationNumber": "40-2016-0100782"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270920",
+      "lastPublicationDate": "20170926",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20170920",
+        "registrationNumber": "4012873150000"
+      }
+    },
+    "version": "20250625182008",
+    "wordMarkSpecification": {
+      "markTransliteration": "QSORI",
+      "markVerbalElementText": "Qsori"
+    }
+  },
+  "_uri": "/mark/kr/8c7704b1-b205-4d67-a557-94b3884d72cc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:54.668Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

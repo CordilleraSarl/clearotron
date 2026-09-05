@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/jp/8f4d6026-82f0-408e-aa95-06277113e90f",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "8f4d6026-82f0-408e-aa95-06277113e90f",
+  "applicationNumber": "2015-011241",
+  "registrationNumber": "5777605",
+  "applicationDate": "2015-02-06",
+  "registrationDate": "2015-07-10",
+  "expiryDate": "2035-07-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-08-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ソリ",
+  "markTransliteration": "SORI",
+  "markTranslation": "SORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2
+      ],
+      "language": null,
+      "description": "インクジェットプリンター用インキ，インクジェットプリンター用インクカートリッジ",
+      "translation_language": "en",
+      "translation": "Ink for ink jet printer, ink cartridge for ink jet printer"
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "プリンター，インクジェットプリンター，コンピューター用プリンター",
+      "translation_language": "en",
+      "translation": "Printers, inkjet printers, printers for computers"
+    }
+  ],
+  "owner": "SEIKO EPSON K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "NISHIDA KEISUKE",
+  "priorities": [
+    {
+      "priorityDate": "20150206"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHINJUKU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "SEIKO EPSON K.K.",
+        "applicantNativeAddress": "東京都新宿区",
+        "applicantNativeName": "セイコーエプソン株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Ink for ink jet printer, ink cartridge for ink jet printer",
+          "intClassNumber": "02",
+          "intGoodsServicesDescription": "インクジェットプリンター用インキ，インクジェットプリンター用インクカートリッジ"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printers, inkjet printers, printers for computers",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "プリンター，インクジェットプリンター，コンピューター用プリンター"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "03D01",
+          "natGoodsServicesDescription": "Printing ink, other than mimeographing inks"
+        },
+        {
+          "natClassNumber": "11C01"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        }
+      ]
+    },
+    "id": "8f4d6026-82f0-408e-aa95-06277113e90f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20150206"
+      }
+    ],
+    "recordLastUpdated": "20250606",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NISHIDA KEISUKE",
+        "representativeNativeName": "西田　圭介"
+      },
+      {
+        "representativeName": "NAKAI SATOSHI",
+        "representativeNativeName": "仲井　智至"
+      },
+      {
+        "representativeName": "WATANABE KAZUAKI",
+        "representativeNativeName": "渡辺　和昭"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150206",
+        "applicationNumber": "2015-011241"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350710",
+      "lastPublicationDate": "20150811",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150710",
+        "registrationNumber": "5777605"
+      }
+    },
+    "version": "20250606083257",
+    "wordMarkSpecification": {
+      "markTranslation": "SORI",
+      "markTransliteration": "SORI",
+      "markVerbalElementText": "ソリ"
+    }
+  },
+  "_uri": "/mark/jp/8f4d6026-82f0-408e-aa95-06277113e90f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

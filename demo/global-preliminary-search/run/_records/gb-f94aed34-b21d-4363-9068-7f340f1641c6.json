@@ -1,0 +1,195 @@
+{
+  "uri": "/mark/gb/f94aed34-b21d-4363-9068-7f340f1641c6",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "f94aed34-b21d-4363-9068-7f340f1641c6",
+  "applicationNumber": "3845266",
+  "registrationNumber": "3845266",
+  "applicationDate": "2022-11-02",
+  "registrationDate": "2023-02-03",
+  "expiryDate": "2032-11-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR CASINOS BAYSWATER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    35,
+    38,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software including downloadable computer software; downloadable games; downloadable poker games; interactive software; computer software for online payment and transaction processing; apparatus and instruments for recording, transmission or reproduction of audio, visual and audio visual data; data carriers, discs, cards, CD-ROMs, DVDs, laser discs, mini discs, tapes and other data storage media; electronic apparatus and instruments for the delivery, receipt, recordal, processing, logging, storage, searching, retrieval, transmission and/or exchange of data and information; electronic publications and information provided online from databases or the Internet (downloadable); electronic publications and information provided by electronic mail (downloadable); mobile applications; telecommunications equipment, hardware and software; television apparatus and instruments; electronic devices for receiving television and/or global communication network transmissions and transmitting them to a television or other display device and computer programs for use therewith; interactive computer systems; interactive electronic apparatus and instruments for the delivery, receipt, recordal, processing, logging, storage, searching, retrieval, transmission and/or exchange of data and information, included in this class; all the aforesaid goods in relation to gaming, gambling, betting, bingo, competition, casino, amusement and entertainment services; credit cards; encoded prepaid cards, magnetic, charge, discount and encoded cards; encoded loyalty scheme cards; encoded cards for use in connection with promotion schemes; game cards (downloadable); hand held electronic apparatus for providing internet access to selected web sites.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Electronic games; electronic arcade games (coin or counter operated); amusement games and machines (automatic and coin operated); interactive electronic apparatus for use in games, gaming, gambling and competitions; electronic games and gaming apparatus adapted for use with a television receiver; interactive electronic apparatus adapted for use with a television receiver for use in gaming services; amusement machines and apparatus adapted for use with a television receiver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Administration of entertainment, amusement, competition, gaming, gambling, betting, bingo and casino services; provision of the aforesaid services in electronic or computerised form, from a computer database, via computer networks, by telephony or the Internet; loyalty card services; loyalty scheme services; loyalty, incentive and bonus program services; organization, operation and supervision of customer loyalty schemes and incentive schemes; management of customer loyalty, incentive or promotional schemes; customer loyalty services for commercial, promotional and/or advertising purposes; promoting the sale of payment card accounts through the administration of incentive award programmes, awarding purchase points, discounts, rebates, valued added offers and coupons; information, consultancy and advisory services in relation to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Telecommunication services; telecommunication services relating to the Internet; providing telecommunications connection and access to the Internet and databases; data transmission services; subscription data transmission services; electronic mail services; operation of TV channels; broadcasting, Internet, transmission and communication services; interactive broadcasting, transmission and communication services; communication by means of computers and/or the Internet; transmission of messages, text, sound, images and data; computer-aided transmission of messages, text, sound, images and data; instant messaging; message sending and receiving services; electronic data exchange; broadcasting and transmission of interactive events; Internet portal services; web portal services; provision of broadband services; all the aforesaid services in relation to gaming, gambling, betting, bingo, competition, casino, amusement and entertainment services; provision of information, consultancy and advisory services in relation to all the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Casino services; gaming and gambling services; amusement services; entertainment services; competition, betting and bingo services; interactive entertainment, amusement, competition, gaming, gambling, betting, bingo and casino services; recreational services; arranging, organising, presenting, conducting, production, provision and management of entertainment, amusement, competition, gaming, gambling, betting, bingo and casino services; video game entertainment services; club entertainment services; provision of live and recorded musical entertainment, cabarets and dances; organisation, production and presentation of competitions, poker tournaments and gaming events; organisation, production and presentation of competitions, contests, games and events including the provision of all the aforesaid services rendered live or through the medium of television or provided online from a computer database or via the Internet; online bingo games; online gambling programs; online betting programs; online sports betting programs; online game programs; all the aforesaid services also provided online from a computer database, via computer networks, by telephony or the Internet; provision of facilities for bingo, games, betting, sports betting, gaming, gambling, entertainment and leisure; betting and sports betting facilities; services for the operation of computerised betting and sports betting; hosting and arranging of corporate hospitality, private functions and parties (entertainment); hosting and arranging of award ceremonies and parties; education and information services relating to gaming and poker; provision of information, consultancy and advisory services in relation to all the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Provision of food and drink; restaurant, cafe and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); all of the aforesaid provided from a casino.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software including downloadable computer software; downloadable games; downloadable poker games; interactive software; computer software for online payment and transaction processing; apparatus and instruments for recording, transmission or reproduction of audio, visual and audio visual data; data carriers, discs, cards, CD-ROMs, DVDs, laser discs, mini discs, tapes and other data storage media; electronic apparatus and instruments for the delivery, receipt, recordal, processing, logging, storage, searching, retrieval, transmission and/or exchange of data and information; electronic publications and information provided online from databases or the Internet (downloadable); electronic publications and information provided by electronic mail (downloadable); mobile applications; telecommunications equipment, hardware and software; television apparatus and instruments; electronic devices for receiving television and/or global communication network transmissions and transmitting them to a television or other display device and computer programs for use therewith; interactive computer systems; interactive electronic apparatus and instruments for the delivery, receipt, recordal, processing, logging, storage, searching, retrieval, transmission and/or exchange of data and information, included in this class; all the aforesaid goods in relation to gaming, gambling, betting, bingo, competition, casino, amusement and entertainment services; credit cards; encoded prepaid cards, magnetic, charge, discount and encoded cards; encoded loyalty scheme cards; encoded cards for use in connection with promotion schemes; game cards (downloadable); hand held electronic apparatus for providing internet access to selected web sites."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic games; electronic arcade games (coin or counter operated); amusement games and machines (automatic and coin operated); interactive electronic apparatus for use in games, gaming, gambling and competitions; electronic games and gaming apparatus adapted for use with a television receiver; interactive electronic apparatus adapted for use with a television receiver for use in gaming services; amusement machines and apparatus adapted for use with a television receiver."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Administration of entertainment, amusement, competition, gaming, gambling, betting, bingo and casino services; provision of the aforesaid services in electronic or computerised form, from a computer database, via computer networks, by telephony or the Internet; loyalty card services; loyalty scheme services; loyalty, incentive and bonus program services; organization, operation and supervision of customer loyalty schemes and incentive schemes; management of customer loyalty, incentive or promotional schemes; customer loyalty services for commercial, promotional and/or advertising purposes; promoting the sale of payment card accounts through the administration of incentive award programmes, awarding purchase points, discounts, rebates, valued added offers and coupons; information, consultancy and advisory services in relation to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Telecommunication services; telecommunication services relating to the Internet; providing telecommunications connection and access to the Internet and databases; data transmission services; subscription data transmission services; electronic mail services; operation of TV channels; broadcasting, Internet, transmission and communication services; interactive broadcasting, transmission and communication services; communication by means of computers and/or the Internet; transmission of messages, text, sound, images and data; computer-aided transmission of messages, text, sound, images and data; instant messaging; message sending and receiving services; electronic data exchange; broadcasting and transmission of interactive events; Internet portal services; web portal services; provision of broadband services; all the aforesaid services in relation to gaming, gambling, betting, bingo, competition, casino, amusement and entertainment services; provision of information, consultancy and advisory services in relation to all the aforesaid."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Casino services; gaming and gambling services; amusement services; entertainment services; competition, betting and bingo services; interactive entertainment, amusement, competition, gaming, gambling, betting, bingo and casino services; recreational services; arranging, organising, presenting, conducting, production, provision and management of entertainment, amusement, competition, gaming, gambling, betting, bingo and casino services; video game entertainment services; club entertainment services; provision of live and recorded musical entertainment, cabarets and dances; organisation, production and presentation of competitions, poker tournaments and gaming events; organisation, production and presentation of competitions, contests, games and events including the provision of all the aforesaid services rendered live or through the medium of television or provided online from a computer database or via the Internet; online bingo games; online gambling programs; online betting programs; online sports betting programs; online game programs; all the aforesaid services also provided online from a computer database, via computer networks, by telephony or the Internet; provision of facilities for bingo, games, betting, sports betting, gaming, gambling, entertainment and leisure; betting and sports betting facilities; services for the operation of computerised betting and sports betting; hosting and arranging of corporate hospitality, private functions and parties (entertainment); hosting and arranging of award ceremonies and parties; education and information services relating to gaming and poker; provision of information, consultancy and advisory services in relation to all the aforesaid."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of food and drink; restaurant, cafe and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); all of the aforesaid provided from a casino."
+        }
+      ]
+    },
+    "id": "f94aed34-b21d-4363-9068-7f340f1641c6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2022/047"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Chapel Quarter, Chapel Bar, Nottingham NG1 6HQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221102",
+        "applicationNumber": "3845266"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321102",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230203",
+        "registrationNumber": "3845266"
+      }
+    },
+    "version": "20250627222425",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR CASINOS BAYSWATER"
+    }
+  },
+  "_uri": "/mark/gb/f94aed34-b21d-4363-9068-7f340f1641c6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

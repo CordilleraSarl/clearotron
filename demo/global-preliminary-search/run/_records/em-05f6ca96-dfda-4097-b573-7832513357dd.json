@@ -1,0 +1,1035 @@
+{
+  "uri": "/mark/em/05f6ca96-dfda-4097-b573-7832513357dd",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "05f6ca96-dfda-4097-b573-7832513357dd",
+  "applicationNumber": "9409392",
+  "registrationNumber": "9409392",
+  "applicationDate": "2010-09-29",
+  "registrationDate": "2011-03-25",
+  "expiryDate": "2030-09-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-11-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "cs",
+      "description": "Zemedelské stroje a strojní zemedelská zarízení, jakoz i jejich cásti, soucásti a príslusenství, zejména kombajny, sekacky, obilní zací stroje, noze pro zací stroje, vázací stroje, síta pro kombajny, prosívacky, prosívací zarízení, mláticí ústrojí, vytrásadla, mobilní a stacionární cisticky obilí; cisticí stroje pro biologické výrobky, jakoz i pro biologickou, organickou a anorganickou sypkou hmotu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Porádání pracovních setkání, skolení a vzdelávání, v souvislosti se zacházením a údrzbou a pécí o kombajny a jejich cásti, jakoz i v souvislosti s logistikou kombajnové sklizne; Skolení v oblasti zacích stroju, kombajnu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Strojírenství, výzkum a stavební projektování, zejména zemedelských stroju a zarízení, jakoz i jejich cástí, soucástí a príslusenství, zejména kombajnu, sít pro kombajny, prosívacek, prosívací zarízení, mláticích ústrojí, vytrásadel, mobilních a stacionárních cisticek obilí, cisticích stroju pro biologické výrobky, jakoz i pro biologickou, organickou a anorganickou sypkou hmotu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "da",
+      "description": "Landbrugsmaskiner og maskinelle landbrugsredskaber samt dele hertil, komponenter og tilbehør hertil, særlig mejetærskere, slåmaskiner, mejemaskiner, knive til mejemaskiner, selvbindere, sigter til mejetærskere, mejetærskersigter, sigteanlæg, tærskeaggregater, rystere til tremmeriste, rystere, mobile og stationære maskiner til rensning af korn; rensemaskiner til biologiske produkter samt til biologisk, organisk og uorganisk styrtegods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Arrangering af workshopper og kurser samt undervisningsvirksomhed inden for behandling af og vedligeholdelse og pleje af mejetærskere og dele hertil samt logistik for mejetærskning; Kurser inden for mejetærskning.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Maskinteknik, forskning og konstruktionsplanlægning, særlig inden for landbrugsmaskiner og landbrugsredskaber samt dele hertil, komponenter og tilbehør hertil, særlig mejetærskere, sigter til mejetærskere, mejetærskersigter, sigteanlæg, tærskeaggregater, rystere til tremmeriste, rystere, mobile og stationære maskiner til rensning af korn, rensemaskiner til biologiske produkter samt til biologisk, organisk og uorganisk styrtegods.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "nl",
+      "description": "Landbouwmachines en machinale landbouwmachines, alsmede onderdelen daarvan, onderdelen en accessoire onderdelen hiervoor, met name maaidorsmachines, maaimachines, maaimachinemessen, maaibindmachines, zeven voor maaidorsmachines, maaidorsmachinezeven, zeefinstallaties, dorsaggregaten, gaffelschudders, schudders, mobiele en stationaire graanreinigingsmachines; reinigingsmachines voor biologische producten alsmede voor biologisch, organisch en anorganisch stortgoed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Het houden van workshops en trainingen alsmede opleidingen, voor het omgaan met en het onderhouden en verzorgen van maaidorsmachines en onderdelen daarvan alsmede voor de maaidorslogistiek; Maaidorstrainingen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Machinebouw, onderzoek en constructieplanning, met name van landbouwmachines en apparaten alsmede onderdelen hiervan, bestanddelen en accessoire onderdelen hiervoor, met name van maaidorsmachines, zeven voor maaidorsmachines, zeefinstallaties, dorsaggregaten, gaffelschudders, schudders, mobiele en stationaire graanreinigingsmachines, reinigingsmachines voor biologische producten alsmede voor biologisch, organisch en anorganisch stortgoed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "en",
+      "description": "Agricultural machines and mechanical agricultural implements, and parts, components and accessories therefor, in particular combine harvesters, mowing machines, reapers, knives for mowing machines, reapers and binders, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines; cleaning machines for biological products, and for biological, organic and inorganic bulk materials.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Arranging of workshops, courses and training courses, with regard to operating, maintaining and servicing combine harvesters and parts therefor, and with regard to combine harvester logistics; combine harvester training.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Mechanical engineering, research and construction drafting, in particular for agricultural machines and apparatus and parts, components and accessories therefor, in particular combine harvesters, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines, cleaning machines for biological products, and for biological, organic and inorganic bulk materials.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "et",
+      "description": "Põllutöömasinad ja põllutööriistad (va käsitööriistad), samuti nende osad, komponendid ja lisatarvikud, eelkõige teraviljakombainid, niidumasinad, viljaniidukid, niidukiterad, vihusidumismasinad, sõelurid teraviljakombainidele, teraviljakombainide sõelurid, sõelumisseadmed, viljapeksumasinad, klahv(põllu)puisturid, puisturid, liikuvad ja statsionaarsed teravilja puhastusmasinad; biotoodete, samuti bioloogiliste, orgaaniliste ja anorgaaniliste puisteainete puhastusmasinad.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Õpikodade ja koolituste, samuti väljaõppe korraldamine, teraviljakombainide ja nende osade käsitsemise ja hoolduse ja hooldamise alal ning teraviljakombainide logistika alal; Teraviljakombainide alased koolitused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Masinaehitus, uurimused ja tarindusplaneerimine, eelkõige põllutöömasinate ja põllutööriistade (va käsitööriistade), samuti nende osade, komponentide ja nende tarbeks lisatarvikute, eelkõige teraviljakombainide, teraviljakombainidele sõelurite, teraviljakombainide sõelurite, sõelurite, viljapeksumasinate, klahv(põllu)puisturite, puisturite, liikuvted ja statsionaarsete teraviljapuhastusmasinate, biotoodete, samuti bioloogiliste, orgaaniliste ja anorgaaniliste puisteainete puhastusmasinate alal.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "fi",
+      "description": "Maanviljelyskoneet ja konekäyttöiset maanviljelysvälineet sekä niiden osat, rakenneosat ja tarvikkeet, erityisesti leikkuupuimurit, niittokoneet, viljanleikkuukoneet, niittokoneiden terät, niittoleikkuukoneet, seulat leikkuupuimureihin, leikkuupuimurien seulat, seulalaitteistot, puintiyksiköt, kohlimet, täristimet, liikutettavat ja kiinteät viljanpuhdistuskoneet; biologisten tuotteiden sekä biologisen, orgaanisen ja epäorgaanisen irtotavaran puhdistuskoneet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Työpajojen ja koulutuksen järjestäminen leikkuupuimurien ja niiden osien laajuudesta ja huollosta ja ylläpidosta sekä viljanpuinnin logistiikasta; Viljanpuintiin liittyvä koulutus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Koneenrakennus, tutkimus ja rakennuspiirustus, joka liittyy erityisesti maanviljelyskoneisiin ja -välineisiin sekä niiden osiin, rakenneosiin ja tarvikkeisiin, erityisesti leikkuupuimureihin, leikkuupuimureihin tarkoitettuihin seuloihin, leikkuupuimurien seuloihin, seulalaitteistoihin, puintiyksiköihin, kohlimiin, täristimiin, liikutettaviin ja kiinteisiin viljanpuhdistuskoneisiin, biologisten tuotteiden sekä biologisen, orgaanisen ja epäorgaanisen irtotavaran puhdistuskoneisiin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": "Machines agricoles et instruments agricoles mécaniques, ainsi que leurs pièces, éléments et accessoires, en particulier moissonneuses-batteuses, faucheuses, couteaux de faucheuses, moissonneuses-lieuses, tamis pour moissonneuses batteuses, installations de criblage, aggrégats de battage, secoueurs de claies, secoueurs, machines mobiles et stationnaires de nettoyage des céréales; machines de nettoyage pour les produits biologiques ainsi que pour le vrac biologique, organique et anorganique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Organisation d'ateliers, de cours et de formations concernant la manipulation ainsi que la maintenance et l'entretien de moisssonneuses-batteuses et de leurs pièces ainsi que pour la logistique du moissonnage-battage; Formations en moissonnage-battage.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Construction de machine, recherche et planification de construction, en particulier de machines et d'équipements agricoles ainsi que leurs pièces, composants et accessoires, en particulier de moissonneuses-batteuses, tamis pour moissonneuses batteuses, installations de criblage, aggrégats de battage, secoueurs de claies, secoueurs, machines mobiles et stationnaires de nettoyage des céréales, machines de nettoyage pour les produits biologiques ainsi que pour le vrac biologique, organique et anorganique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "de",
+      "description": "Landwirtschaftliche Maschinen und maschinelle landwirtschaftliche Geräte, sowie deren Teile, Bestandteile und Zubehörteile hierfür, insbesondere Mähdrescher, Mähmaschinen, Getreidemähmaschinen, Mähmaschinenmesser, Mähbinder, Siebe für Mähdrescher, Mähdreschersiebe, Siebanlagen, Dreschaggregate, Hordenschüttler, Schüttler, mobile und stationäre Getreidereinigungsmaschinen; Reinigungsmaschinen für biologische Produkte sowie für biologisches, organisches und anorganisches Schüttgut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Veranstaltung von Workshops und Schulungen sowie Ausbildungen, für den Umgang mit und die Wartung und Pflege von Mähdreschern und deren Teilen sowie für Mähdruschlogistik; Mähdreschschulungen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Maschinenbau, Forschung und Konstruktionsplanung, insbesondere von landwirtschaftlichen Maschinen und Geräten sowie deren Teilen, Bestandteilen und Zubehörteilen hierfür, insbesondere von Mähdreschern, Sieben für Mähdrescher, Mähdreschersieben, Siebanlagen, Dreschaggregaten, Hordenschüttlern, Schüttlern, mobilen und stationären Getreidereinigungsmaschinen, Reinigungsmaschinen für biologische Produkte sowie für biologisches, organisches und anorganisches Schüttgut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "hu",
+      "description": "Mezogazdasági gépek és mezogazdasági gépi készülékek, valamint ezek alkatrészei, alkotóelemek és tartozékok ezekhez, különösen kombájnok, aratógépek, kaszálógépek, aratógépek kései, arató-kéveköto gépek, sziták kombájnokhoz, kombájnsziták, rostáló berendezések, cséploaggregátorok, szalmarázók, rázógépek, mobil és rögzített gabonatisztító gépek; tisztítógépek biológiai termékek, valamint biológiai, szerves és szervetlen, ömlesztett áru számára.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Workshopok és oktatások, valamint szakképzések rendezése, kombájnok kezeléséhez és kombájnok és alkatrészeik karbantartása és ápolása, valamint kombájnlogisztika számára; Kombájnoktatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Gépgyártás, kutatás és szerkezeti tervezés, különösen mezogazdasági gépek és készülékek, valamint alkatrészeik, alkotóelemeik és tartozékaik, különösen kombájnok, sziták kombájnokhoz, kombájnsziták, rostáló berendezések, cséploaggregátorok, szalmarázók, rázógépek, mobil és rögzített gabonatisztító gépek, tisztítógépek biológiai termékek, valamint biológiai, szerves és szervetlen, ömlesztett áru számára.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "it",
+      "description": "Macchine agricole e strumenti agricoli meccanici, relative parti, componenti e accessori, in particolare mietitrebbiatrici, falciatrici, mietitrici, coltelli di falciatrici, mietilegatrici, vagli per mietitrebbiatrici, crivelli per mietitrebbiatrici, impianti di vagliatura, gruppi di trebbiatura, scuotipaglia, scuotitori, composizioni mobili e macchine mobili e fisse per la pulitura dei cereali; macchine per la pulizia di prodotti biologici per materiale sfuso biologico, organico e inorganico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Organizzazione di seminari di lavoro e corsi d'addestramento e formazione sul tema dell'utilizzo, manutenzione e mantenimento di mietitrebbiatrici e relative parti per applicazioni logistiche relative alla mietitrebbiatura; Corsi di formazione sulla mietitrebbiatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Costruzione di macchine, ricerca e allestimento di piani per la costruzione, in particolare di macchine ed apparecchi agricoli, parti, componenti ed accessori relativi, in particolare mietitrebbiatrici, falciatrici, mietitrici, coltelli di falciatrici, mietilegatrici, vagli per mietitrebbiatrici, crivelli per mietitrebbiatrici, impianti di vagliatura, gruppi di trebbiatura, scuotipaglia, scuotitori, composizioni mobili e macchine mobili e fisse per la pulitura dei cereali, macchine per la pulizia di prodotti biologici per materiale sfuso biologico, organico e inorganico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "lt",
+      "description": "Zemes ukio masinos ir masininiai zemes ukio padargai bei ju dalys, sudetines dalys ir ju priedu dalys, ypac kombainai, sienapjoves ir javapjoves, javapjoves, sienapjoviu peiliai, pedarises ir pjaunamosios, kombainu sietai, kombainu sietai, sijojimo irenginiai, kulimo agregatai, pertvariniai kratytuvai, kratytuvai, kilnojamosios ir stacionarios grudu valymo masinos; biologiniu produktu bei biologiniu, organiniu ir neorganiniu biriu produktu valymo masinos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Praktiniu seminaru ir apmokymo bei mokymo renginiu kombainu ir ju daliu naudojimo, technines prieziuros ir prieziuros bei derliaus nuemimo logistikos temomis rengimas; Su javapjute susije mokymai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Masinu gamyba, tyrimai ir projektavimas, ypac zemes ukio masinu ir masininiu zemes ukio padargu bei ju daliu, sudetiniu daliu ir ju priedu daliu, ypac kombainu, kombainu sietu, sijojimo irenginiu, kulimo agregatu, pertvariniu kratytuvu, kratytuvu, kilnojamuju ir stacionariu grudu valymo masinu, biologiniu produktu bei biologiniu, organiniu ir neorganiniu biriu produktu valymo masinu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "lv",
+      "description": "Lauksaimniecibas masinas un mehaniskas lauksaimniecibas ierices, ka ari to dalas, sastavdalas un ari piederumi, jo ipasi labibas kombaini, plaujmasinas, labibas plaujmasinas, plaujmasinu nazi, kulisu sejeji, sieti, kas paredzeti labibas kombainiem, labibas kombainu sieti, sijasanas iekartas, kombainu agregati, kastisu salmu kratitaji, kratitaji, parvietojamas un stacionaras graudu tirisanas masinas; tirisanas masinas, kas paredzetas biologiskiem produktiem, ka ari biologiskai, organiskai un neorganiskai beramkravai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Darbseminaru un apmacibu, ka ari izglitibas pasakumu rikosana saistiba ar kombainu un to dalu ekspluataciju un tehnisko apkopi, ka ari ar labibas plausanas logistiku; Labibas kombainu apmaciba.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Masinbuve, izpete un konstrukciju planosana, jo ipasi lauksaimniecibas iekartu un iericu, ka ari to dalu, sastavdalu un ari piederumu, jo ipasi labibas kombainu, sieti, kas paredzeti labibas kombainiem, labibas kombainu sieti, sijasanas iekartas, kombainu agregati, kastisu salmu kratitaji, kratitaji, parvietojamas un stacionaras labibas tirisanas masinas, tirisanas masinas, kas paredzetas biologiskiem produktiem, ka ari biologiskai, organiskai un neorganiskai beramkravai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "mt",
+      "description": "Magni agrikoli u taghmir agrikolu mhaddem b'magni, kif ukoll l-partijiet taghhom, komponenti u accessorji ghalihom, specjalment magni tal-hrit u tad-dris, magni tal-hsad, magni ghall-hsad ta' cereali, xfafar ghal magni tal-hsad, magni ghall-irbit, gharbiela ghal magni tal-hrit u tad-dris, gharbiela ta' magni tal-hrit u tad-dris, impjanti li jgharblu, aggregati ghad-dris, taghmir ghat-thawwid ta' munzelli, taghmir ghat-thawwid, magni mobbli u stazzjonarji ghat-tindif ta' cereali; magni tat-tindif ghal prodotti bijologici kif ukoll ghal kwantitajiet kbar ta' materjali bijologici, organici u inorganici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Organizzazzjoni ta' workshops u korsijiet, kif ukoll tahrig, dwar il-kontroll ta' u l-manutenzjoni ta' magni tal-hsad u tal-partijiet taghhom, kif ukoll dwar il-logistika ghall-hsad; Korsijiet dwar il-hrit u d-dris.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Kostruzzjoni ta' magni, ricerka u pjanar tal-kostruzzjoni, specjalment ta' magni u taghmir agrikoli kif ukoll l-partijiet taghhom, komponenti u accessorji ghalihom, specjalment ta' magni tal-hrit u tad-dris, gharbiela ghal magni tal-hrit u tad-dris, gharbiela ta' magni tal-hrit u tad-dris, impjanti li jgharblu, aggregati ghad-dris, taghmir ghat-thawwid ta' munzelli, taghmir ghat-thawwid, magni mobbli u stazzjonarji ghat-tindif ta' cereali, magni tat-tindif ghal prodotti bijologici kif ukoll ghal kwantitajiet kbar ta' materjali bijologici, organici u inorganici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "pl",
+      "description": "Maszyny rolnicze i urzadzenia rolnicze mechaniczne, jak równiez ich czesci, czesci skladowe i akcesoria do nich, zwlaszcza kombajny zbozowe, zniwiarki, kosiarki, noze do kosiarek, kosiarki - snopowiazalki, sita do kombajnów zbozowych, sita do kombajnów zbozowych, przesiewacze, agregaty do mlócenia, wytrzasacze kratowe, wytrzasacze, mobilne i stacjonarne maszyny do czyszczenia zboza; maszyny do czyszczenia do produktów biologicznych oraz do biologicznych, organicznych i nieorganicznych materialów sypkich.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Organizacja warsztatów i szkolen, jak równiez szkolen, w zakresie obslugi, konserwacji i pielegnacji kombajnów zbozowych i ich czesci oraz logistyki kombajnowania; Szkolenia kombajnowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Budowa maszyn, badanie i projektowanie konstrukcji, zwlaszcza maszyn i urzadzen rolniczych oraz ich czesci i akcesoriów do nich, zwlaszcza kombajnów zbozowych, sita do kombajnów zbozowych, sita do kombajnów zbozowych, przesiewaczy, agregatów do mlócenia, wytrzasaczy kratowych, wytrzasaczy, mobilnych i stacjonarnych maszyn do czyszczenia zboza, maszyn do czyszczenia do produktów biologicznych oraz do biologicznych, organicznych i nieorganicznych materialów sypkich.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "pt",
+      "description": "Máquinas agrícolas e aparelhos agrícolas mecânicos, bem como respectivas peças, componentes e acessórios, em especial ceifeiras-debulhadoras, ceifeiras, lâminas de ceifeiras, ceifeiras-enfardadeiras, peneiras para ceifeiras-debulhadoras, peneiras de ceifeiras-debulhadoras, instalações de peneiração, módulos debulhadores, sacudidores de vários elementos, sacudidores, limpadores-separadores móveis e fixos; limpadores-separadores de produtos biológicos, bem como de material a granel biológico, orgânico e inorgânico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Organização de workshops e acções de formação com vista ao manuseamento e à manutenção e assistência de ceifeiras-debulhadoras e respectivas peças, bem como à logística da colheita com ceifeiras-debulhadoras; Acções de formação em matéria de colheita com ceifeiras-debulhadoras.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Construção de máquinas, investigação e elaboração de plantas para a construção, em especial de máquinas e aparelhos agrícolas, bem como respectivas peças, componentes e acessórios, em especial ceifeiras-debulhadoras, peneiras para ceifeiras-debulhadoras, peneiras de ceifeiras-debulhadoras, instalações de peneiração, módulos debulhadores, sacudidores de vários elementos, sacudidores, limpadores-separadores móveis e fixos, limpadores-separadores de produtos biológicos, bem como de material a granel biológico, orgânico e inorgânico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "ro",
+      "description": "Masini agricole si aparate agricole mecanice, precum si piese ale acestora, componente si accesorii pentru acestea, în special cositori, masini de cosit, masini de cosit cereale, cutite pentru cositori, seceratori, site pentru cositori, site pentru cositori, instalatii de cernut, batoze, vibratoare cu cremaliera, vibratoare, masini mobile si stationare de curatat cereale; masini de curatat pentru produse biologice precum si pentru materiale vrac biologice, organice si anorganice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Organizare de ateliere si cursuri precum si instruiri, pentru manevrarea, întretinerea si service-ul combinelor de secerat si pieselor acestora precum si pentru logistica combinelor de secerat; Instruiri cu privire la cositori.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Constructii de masini, cercetare si proiectare de constructii, în special de masini si aparate agricole, precum si de piese ale acestora, componente si accesorii pentru acestea, în special de cositori, site pentru cositori, site pentru cositori, instalatii de cernut, batoze, vibratoare cu cremaliera, vibratoare, masini mobile si stationare pentru curatat cereale, masini de curatat pentru produse biologice precum si pentru materiale vrac biologice, organice si anorganice.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "sk",
+      "description": "Polnohospodárske stroje a strojové polnohospodárske prístroje, a tiez ich súcasti, súcasti a casti príslusenstva pre ne, najmä zacie mlátacky, kosacky na trávniky, kosacky obilia, sekacie cepele pre sekacky, zacie hrstovacie a viazacie stroje, sitá pre zacie mlátacky, sitá zacích mlátaciek, preosievacie stroje, mlátacie agregáty, klávesové vytriasadlá, vytriasadlá, mobilné a stanicné stroje na cistenie obilia; cistiace stroje pre biologické produkty, ako aj pre biologický, organický a anorganický sypaný materiál.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Usporadúvanie pracovných dielní (workshop) a skolení, ako aj vzdelávania, najmä pre rozsah s a údrzbu a starostlivost o zacie mlátacky a ich casti, ako aj logistiku zacích mlátaciek; Skolenia v oblasti zacích mlátaciek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "strojárstvo, výskum a konstrukcné plánovanie, najmä polnohospodárskych strojov a prístrojov, ako aj ich castí, súcastí a castí príslusenstva pre ne, najmä zacie mlátacky, sitá pre zacie mlátacky, sitá zacích mlátaciek, sitové zariadenia, mlátacie agregáty, klávesové vytriasadlá, vytriasadlá, mobilné a stanicné stroje na cistenie obilia, cistiace stroje pre biologické produkty, ako aj pre biologický, organický a anorganický sypaný materiál.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "sl",
+      "description": "Poljedelski stroji in strojne poljedelske naprave ter njihovi deli, sestavni deli in pripadajoci deli dodatne opreme, predvsem kombajni, kosilniki, zitni kosilniki, nozi za kosilnike, vezalni zitni kosilniki, sita za kombajne, presejalne instalacije, mlatilni agregati, pretresala, pretresalke, mobilni in stacionarni stroji za ciscenje zita; cistilni stroji za bioloske proizvode ter za bioloski, organski in anorganski sipki material.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Organizacija delavnic in solanj ter izobrazevanj za rokovanje s kombajni in njihovimi deli in njihovo vzdrzevanje in nego ter za logistiko v zvezi z zetvijo in mlatenjem s pomocjo kombajnov; Solanja v zvezi z zetvijo in mlatenjem s pomocjo kombajnov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Strojegradnja, raziskave in konstrukcijsko nacrtovanje, predvsem poljedelskih strojev in naprav ter njihovih delov, sestavnih delov in pripadajocih delov dodatne opreme, predvsem kombajnov, sit za kombajne, presejalnih instalacij, mlatilnih agregatov, pretresal, pretresalk, mobilnih in stacionarnih strojev za ciscenje zita, cistilnih strojev za bioloske proizvode ter za bioloski, organski in anorganski sipki material.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "es",
+      "description": "Maquinaria agrícola y aperos agrícolas mecánicos, así como partes, componentes y accesorios de los mismos, en particular segadoras-trilladoras, segadoras, segadoras para cereales, cuchillas de segadoras, segadoras-agavilladoras, cribas para segadoras-trilladoras, cribas para segadoras-trilladoras, instalaciones de cribado, grupos de trillar, sacudidores de agitadores, piezas mecánicas sacudidoras, máquinas para limpiar cereales móviles y fijas; máquinas para limpiar productos biológicos así como productos a granel biológicos, orgánicos e inorgánicos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Realización de talleres y cursos de formación e instrucción, para el manejo, mantenimiento y cuidado de segadoras-trilladoras y de sus partes así como para la logística de segadoras-trilladoras; Cursos de formación para segadoras-trilladoras.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Ingeniería de construcción, investigación y elaboración de planos, en particular de máquinas y aparatos agrícolas así como de sus partes, componentes y accesorios, en particular de segadoras-trilladoras, cribas para segadoras-trilladoras, cribas de segadoras-trilladoras, instalaciones de cribado, grupos de trillar, sacudidores de agitadores, piezas mecánicas sacudidoras, máquinas para limpiar cereales móviles y fijas, máquinas para limpiar productos biológicos así como productos a granel biológicos, orgánicos e inorgánicos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "sw",
+      "description": "Jordbruksmaskiner och maskinella jordbruksapparater, och delar därtill, komponenter och tillbehörsdelar för dessa, speciellt skördetröskor, slåttermaskiner, spannmålsslåttermaskiner, knivar för slåttermaskiner, självbindare, siktar för skördetröskor, skördetrösksiktar, siktanläggningar, tröskaggregat, torkningsskakare, skakare, mobila och stationära spannmålsrensningsmaskiner; rensningsmaskiner för biologiska produkter samt för biologiskt, organiskt och oorganiskt bulkmaterial.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Anordnande av studiecirklar och anordnande av handledning och instruktion, för hantering av och underhåll och skötsel av skördetröskor och deras delar samt för skördetrösklogistik; Kurser avseende skördetröskor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Maskinbyggnation, forskning och konstruktionsplanering, speciellt av jordbruksmaskiner och -anordningar samt deras delar, komponenter och tillbehör för dessa, speciellt av skördetröskor, siktar för skördetröskor, skördetrösksiktar, siktanläggningar, tröskaggregat, torkningsskakare, skakare, mobila och stationära spannmålsrensningsmaskiner, rengöringsmaskiner för biologiskt, organiskt och oorganiskt bulkmaterial.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Jörg Wollesen",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "RGTH PATENTANWÄLTE PARTGMBB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Landwehrstr. 64,Solingen, 42699",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Jörg Wollesen"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zemedelské stroje a strojní zemedelská zarízení, jakoz i jejich cásti, soucásti a príslusenství, zejména kombajny, sekacky, obilní zací stroje, noze pro zací stroje, vázací stroje, síta pro kombajny, prosívacky, prosívací zarízení, mláticí ústrojí, vytrásadla, mobilní a stacionární cisticky obilí; cisticí stroje pro biologické výrobky, jakoz i pro biologickou, organickou a anorganickou sypkou hmotu."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Porádání pracovních setkání, skolení a vzdelávání, v souvislosti se zacházením a údrzbou a pécí o kombajny a jejich cásti, jakoz i v souvislosti s logistikou kombajnové sklizne; Skolení v oblasti zacích stroju, kombajnu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Strojírenství, výzkum a stavební projektování, zejména zemedelských stroju a zarízení, jakoz i jejich cástí, soucástí a príslusenství, zejména kombajnu, sít pro kombajny, prosívacek, prosívací zarízení, mláticích ústrojí, vytrásadel, mobilních a stacionárních cisticek obilí, cisticích stroju pro biologické výrobky, jakoz i pro biologickou, organickou a anorganickou sypkou hmotu."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Landbrugsmaskiner og maskinelle landbrugsredskaber samt dele hertil, komponenter og tilbehør hertil, særlig mejetærskere, slåmaskiner, mejemaskiner, knive til mejemaskiner, selvbindere, sigter til mejetærskere, mejetærskersigter, sigteanlæg, tærskeaggregater, rystere til tremmeriste, rystere, mobile og stationære maskiner til rensning af korn; rensemaskiner til biologiske produkter samt til biologisk, organisk og uorganisk styrtegods."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Arrangering af workshopper og kurser samt undervisningsvirksomhed inden for behandling af og vedligeholdelse og pleje af mejetærskere og dele hertil samt logistik for mejetærskning; Kurser inden for mejetærskning."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Maskinteknik, forskning og konstruktionsplanlægning, særlig inden for landbrugsmaskiner og landbrugsredskaber samt dele hertil, komponenter og tilbehør hertil, særlig mejetærskere, sigter til mejetærskere, mejetærskersigter, sigteanlæg, tærskeaggregater, rystere til tremmeriste, rystere, mobile og stationære maskiner til rensning af korn, rensemaskiner til biologiske produkter samt til biologisk, organisk og uorganisk styrtegods."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Landbouwmachines en machinale landbouwmachines, alsmede onderdelen daarvan, onderdelen en accessoire onderdelen hiervoor, met name maaidorsmachines, maaimachines, maaimachinemessen, maaibindmachines, zeven voor maaidorsmachines, maaidorsmachinezeven, zeefinstallaties, dorsaggregaten, gaffelschudders, schudders, mobiele en stationaire graanreinigingsmachines; reinigingsmachines voor biologische producten alsmede voor biologisch, organisch en anorganisch stortgoed."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Het houden van workshops en trainingen alsmede opleidingen, voor het omgaan met en het onderhouden en verzorgen van maaidorsmachines en onderdelen daarvan alsmede voor de maaidorslogistiek; Maaidorstrainingen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Machinebouw, onderzoek en constructieplanning, met name van landbouwmachines en apparaten alsmede onderdelen hiervan, bestanddelen en accessoire onderdelen hiervoor, met name van maaidorsmachines, zeven voor maaidorsmachines, zeefinstallaties, dorsaggregaten, gaffelschudders, schudders, mobiele en stationaire graanreinigingsmachines, reinigingsmachines voor biologische producten alsmede voor biologisch, organisch en anorganisch stortgoed."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Agricultural machines and mechanical agricultural implements, and parts, components and accessories therefor, in particular combine harvesters, mowing machines, reapers, knives for mowing machines, reapers and binders, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines; cleaning machines for biological products, and for biological, organic and inorganic bulk materials."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Arranging of workshops, courses and training courses, with regard to operating, maintaining and servicing combine harvesters and parts therefor, and with regard to combine harvester logistics; combine harvester training."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Mechanical engineering, research and construction drafting, in particular for agricultural machines and apparatus and parts, components and accessories therefor, in particular combine harvesters, sifters for combine harvesters, combine harvester sifters, sifting installations, threshing units, straw walkers, shakers, mobile and stationary cereal cleaning machines, cleaning machines for biological products, and for biological, organic and inorganic bulk materials."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Põllutöömasinad ja põllutööriistad (va käsitööriistad), samuti nende osad, komponendid ja lisatarvikud, eelkõige teraviljakombainid, niidumasinad, viljaniidukid, niidukiterad, vihusidumismasinad, sõelurid teraviljakombainidele, teraviljakombainide sõelurid, sõelumisseadmed, viljapeksumasinad, klahv(põllu)puisturid, puisturid, liikuvad ja statsionaarsed teravilja puhastusmasinad; biotoodete, samuti bioloogiliste, orgaaniliste ja anorgaaniliste puisteainete puhastusmasinad."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Õpikodade ja koolituste, samuti väljaõppe korraldamine, teraviljakombainide ja nende osade käsitsemise ja hoolduse ja hooldamise alal ning teraviljakombainide logistika alal; Teraviljakombainide alased koolitused."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Masinaehitus, uurimused ja tarindusplaneerimine, eelkõige põllutöömasinate ja põllutööriistade (va käsitööriistade), samuti nende osade, komponentide ja nende tarbeks lisatarvikute, eelkõige teraviljakombainide, teraviljakombainidele sõelurite, teraviljakombainide sõelurite, sõelurite, viljapeksumasinate, klahv(põllu)puisturite, puisturite, liikuvted ja statsionaarsete teraviljapuhastusmasinate, biotoodete, samuti bioloogiliste, orgaaniliste ja anorgaaniliste puisteainete puhastusmasinate alal."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Maanviljelyskoneet ja konekäyttöiset maanviljelysvälineet sekä niiden osat, rakenneosat ja tarvikkeet, erityisesti leikkuupuimurit, niittokoneet, viljanleikkuukoneet, niittokoneiden terät, niittoleikkuukoneet, seulat leikkuupuimureihin, leikkuupuimurien seulat, seulalaitteistot, puintiyksiköt, kohlimet, täristimet, liikutettavat ja kiinteät viljanpuhdistuskoneet; biologisten tuotteiden sekä biologisen, orgaanisen ja epäorgaanisen irtotavaran puhdistuskoneet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Työpajojen ja koulutuksen järjestäminen leikkuupuimurien ja niiden osien laajuudesta ja huollosta ja ylläpidosta sekä viljanpuinnin logistiikasta; Viljanpuintiin liittyvä koulutus."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Koneenrakennus, tutkimus ja rakennuspiirustus, joka liittyy erityisesti maanviljelyskoneisiin ja -välineisiin sekä niiden osiin, rakenneosiin ja tarvikkeisiin, erityisesti leikkuupuimureihin, leikkuupuimureihin tarkoitettuihin seuloihin, leikkuupuimurien seuloihin, seulalaitteistoihin, puintiyksiköihin, kohlimiin, täristimiin, liikutettaviin ja kiinteisiin viljanpuhdistuskoneisiin, biologisten tuotteiden sekä biologisen, orgaanisen ja epäorgaanisen irtotavaran puhdistuskoneisiin."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Machines agricoles et instruments agricoles mécaniques, ainsi que leurs pièces, éléments et accessoires, en particulier moissonneuses-batteuses, faucheuses, couteaux de faucheuses, moissonneuses-lieuses, tamis pour moissonneuses batteuses, installations de criblage, aggrégats de battage, secoueurs de claies, secoueurs, machines mobiles et stationnaires de nettoyage des céréales; machines de nettoyage pour les produits biologiques ainsi que pour le vrac biologique, organique et anorganique."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Organisation d'ateliers, de cours et de formations concernant la manipulation ainsi que la maintenance et l'entretien de moisssonneuses-batteuses et de leurs pièces ainsi que pour la logistique du moissonnage-battage; Formations en moissonnage-battage."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Construction de machine, recherche et planification de construction, en particulier de machines et d'équipements agricoles ainsi que leurs pièces, composants et accessoires, en particulier de moissonneuses-batteuses, tamis pour moissonneuses batteuses, installations de criblage, aggrégats de battage, secoueurs de claies, secoueurs, machines mobiles et stationnaires de nettoyage des céréales, machines de nettoyage pour les produits biologiques ainsi que pour le vrac biologique, organique et anorganique."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Landwirtschaftliche Maschinen und maschinelle landwirtschaftliche Geräte, sowie deren Teile, Bestandteile und Zubehörteile hierfür, insbesondere Mähdrescher, Mähmaschinen, Getreidemähmaschinen, Mähmaschinenmesser, Mähbinder, Siebe für Mähdrescher, Mähdreschersiebe, Siebanlagen, Dreschaggregate, Hordenschüttler, Schüttler, mobile und stationäre Getreidereinigungsmaschinen; Reinigungsmaschinen für biologische Produkte sowie für biologisches, organisches und anorganisches Schüttgut."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Veranstaltung von Workshops und Schulungen sowie Ausbildungen, für den Umgang mit und die Wartung und Pflege von Mähdreschern und deren Teilen sowie für Mähdruschlogistik; Mähdreschschulungen."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Maschinenbau, Forschung und Konstruktionsplanung, insbesondere von landwirtschaftlichen Maschinen und Geräten sowie deren Teilen, Bestandteilen und Zubehörteilen hierfür, insbesondere von Mähdreschern, Sieben für Mähdrescher, Mähdreschersieben, Siebanlagen, Dreschaggregaten, Hordenschüttlern, Schüttlern, mobilen und stationären Getreidereinigungsmaschinen, Reinigungsmaschinen für biologische Produkte sowie für biologisches, organisches und anorganisches Schüttgut."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Mezogazdasági gépek és mezogazdasági gépi készülékek, valamint ezek alkatrészei, alkotóelemek és tartozékok ezekhez, különösen kombájnok, aratógépek, kaszálógépek, aratógépek kései, arató-kéveköto gépek, sziták kombájnokhoz, kombájnsziták, rostáló berendezések, cséploaggregátorok, szalmarázók, rázógépek, mobil és rögzített gabonatisztító gépek; tisztítógépek biológiai termékek, valamint biológiai, szerves és szervetlen, ömlesztett áru számára."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Workshopok és oktatások, valamint szakképzések rendezése, kombájnok kezeléséhez és kombájnok és alkatrészeik karbantartása és ápolása, valamint kombájnlogisztika számára; Kombájnoktatások."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Gépgyártás, kutatás és szerkezeti tervezés, különösen mezogazdasági gépek és készülékek, valamint alkatrészeik, alkotóelemeik és tartozékaik, különösen kombájnok, sziták kombájnokhoz, kombájnsziták, rostáló berendezések, cséploaggregátorok, szalmarázók, rázógépek, mobil és rögzített gabonatisztító gépek, tisztítógépek biológiai termékek, valamint biológiai, szerves és szervetlen, ömlesztett áru számára."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Macchine agricole e strumenti agricoli meccanici, relative parti, componenti e accessori, in particolare mietitrebbiatrici, falciatrici, mietitrici, coltelli di falciatrici, mietilegatrici, vagli per mietitrebbiatrici, crivelli per mietitrebbiatrici, impianti di vagliatura, gruppi di trebbiatura, scuotipaglia, scuotitori, composizioni mobili e macchine mobili e fisse per la pulitura dei cereali; macchine per la pulizia di prodotti biologici per materiale sfuso biologico, organico e inorganico."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Organizzazione di seminari di lavoro e corsi d'addestramento e formazione sul tema dell'utilizzo, manutenzione e mantenimento di mietitrebbiatrici e relative parti per applicazioni logistiche relative alla mietitrebbiatura; Corsi di formazione sulla mietitrebbiatura."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Costruzione di macchine, ricerca e allestimento di piani per la costruzione, in particolare di macchine ed apparecchi agricoli, parti, componenti ed accessori relativi, in particolare mietitrebbiatrici, falciatrici, mietitrici, coltelli di falciatrici, mietilegatrici, vagli per mietitrebbiatrici, crivelli per mietitrebbiatrici, impianti di vagliatura, gruppi di trebbiatura, scuotipaglia, scuotitori, composizioni mobili e macchine mobili e fisse per la pulitura dei cereali, macchine per la pulizia di prodotti biologici per materiale sfuso biologico, organico e inorganico."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Zemes ukio masinos ir masininiai zemes ukio padargai bei ju dalys, sudetines dalys ir ju priedu dalys, ypac kombainai, sienapjoves ir javapjoves, javapjoves, sienapjoviu peiliai, pedarises ir pjaunamosios, kombainu sietai, kombainu sietai, sijojimo irenginiai, kulimo agregatai, pertvariniai kratytuvai, kratytuvai, kilnojamosios ir stacionarios grudu valymo masinos; biologiniu produktu bei biologiniu, organiniu ir neorganiniu biriu produktu valymo masinos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Praktiniu seminaru ir apmokymo bei mokymo renginiu kombainu ir ju daliu naudojimo, technines prieziuros ir prieziuros bei derliaus nuemimo logistikos temomis rengimas; Su javapjute susije mokymai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Masinu gamyba, tyrimai ir projektavimas, ypac zemes ukio masinu ir masininiu zemes ukio padargu bei ju daliu, sudetiniu daliu ir ju priedu daliu, ypac kombainu, kombainu sietu, sijojimo irenginiu, kulimo agregatu, pertvariniu kratytuvu, kratytuvu, kilnojamuju ir stacionariu grudu valymo masinu, biologiniu produktu bei biologiniu, organiniu ir neorganiniu biriu produktu valymo masinu."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Lauksaimniecibas masinas un mehaniskas lauksaimniecibas ierices, ka ari to dalas, sastavdalas un ari piederumi, jo ipasi labibas kombaini, plaujmasinas, labibas plaujmasinas, plaujmasinu nazi, kulisu sejeji, sieti, kas paredzeti labibas kombainiem, labibas kombainu sieti, sijasanas iekartas, kombainu agregati, kastisu salmu kratitaji, kratitaji, parvietojamas un stacionaras graudu tirisanas masinas; tirisanas masinas, kas paredzetas biologiskiem produktiem, ka ari biologiskai, organiskai un neorganiskai beramkravai."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Darbseminaru un apmacibu, ka ari izglitibas pasakumu rikosana saistiba ar kombainu un to dalu ekspluataciju un tehnisko apkopi, ka ari ar labibas plausanas logistiku; Labibas kombainu apmaciba."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Masinbuve, izpete un konstrukciju planosana, jo ipasi lauksaimniecibas iekartu un iericu, ka ari to dalu, sastavdalu un ari piederumu, jo ipasi labibas kombainu, sieti, kas paredzeti labibas kombainiem, labibas kombainu sieti, sijasanas iekartas, kombainu agregati, kastisu salmu kratitaji, kratitaji, parvietojamas un stacionaras labibas tirisanas masinas, tirisanas masinas, kas paredzetas biologiskiem produktiem, ka ari biologiskai, organiskai un neorganiskai beramkravai."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Magni agrikoli u taghmir agrikolu mhaddem b'magni, kif ukoll l-partijiet taghhom, komponenti u accessorji ghalihom, specjalment magni tal-hrit u tad-dris, magni tal-hsad, magni ghall-hsad ta' cereali, xfafar ghal magni tal-hsad, magni ghall-irbit, gharbiela ghal magni tal-hrit u tad-dris, gharbiela ta' magni tal-hrit u tad-dris, impjanti li jgharblu, aggregati ghad-dris, taghmir ghat-thawwid ta' munzelli, taghmir ghat-thawwid, magni mobbli u stazzjonarji ghat-tindif ta' cereali; magni tat-tindif ghal prodotti bijologici kif ukoll ghal kwantitajiet kbar ta' materjali bijologici, organici u inorganici."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Organizzazzjoni ta' workshops u korsijiet, kif ukoll tahrig, dwar il-kontroll ta' u l-manutenzjoni ta' magni tal-hsad u tal-partijiet taghhom, kif ukoll dwar il-logistika ghall-hsad; Korsijiet dwar il-hrit u d-dris."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Kostruzzjoni ta' magni, ricerka u pjanar tal-kostruzzjoni, specjalment ta' magni u taghmir agrikoli kif ukoll l-partijiet taghhom, komponenti u accessorji ghalihom, specjalment ta' magni tal-hrit u tad-dris, gharbiela ghal magni tal-hrit u tad-dris, gharbiela ta' magni tal-hrit u tad-dris, impjanti li jgharblu, aggregati ghad-dris, taghmir ghat-thawwid ta' munzelli, taghmir ghat-thawwid, magni mobbli u stazzjonarji ghat-tindif ta' cereali, magni tat-tindif ghal prodotti bijologici kif ukoll ghal kwantitajiet kbar ta' materjali bijologici, organici u inorganici."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Maszyny rolnicze i urzadzenia rolnicze mechaniczne, jak równiez ich czesci, czesci skladowe i akcesoria do nich, zwlaszcza kombajny zbozowe, zniwiarki, kosiarki, noze do kosiarek, kosiarki - snopowiazalki, sita do kombajnów zbozowych, sita do kombajnów zbozowych, przesiewacze, agregaty do mlócenia, wytrzasacze kratowe, wytrzasacze, mobilne i stacjonarne maszyny do czyszczenia zboza; maszyny do czyszczenia do produktów biologicznych oraz do biologicznych, organicznych i nieorganicznych materialów sypkich."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Organizacja warsztatów i szkolen, jak równiez szkolen, w zakresie obslugi, konserwacji i pielegnacji kombajnów zbozowych i ich czesci oraz logistyki kombajnowania; Szkolenia kombajnowe."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Budowa maszyn, badanie i projektowanie konstrukcji, zwlaszcza maszyn i urzadzen rolniczych oraz ich czesci i akcesoriów do nich, zwlaszcza kombajnów zbozowych, sita do kombajnów zbozowych, sita do kombajnów zbozowych, przesiewaczy, agregatów do mlócenia, wytrzasaczy kratowych, wytrzasaczy, mobilnych i stacjonarnych maszyn do czyszczenia zboza, maszyn do czyszczenia do produktów biologicznych oraz do biologicznych, organicznych i nieorganicznych materialów sypkich."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Máquinas agrícolas e aparelhos agrícolas mecânicos, bem como respectivas peças, componentes e acessórios, em especial ceifeiras-debulhadoras, ceifeiras, lâminas de ceifeiras, ceifeiras-enfardadeiras, peneiras para ceifeiras-debulhadoras, peneiras de ceifeiras-debulhadoras, instalações de peneiração, módulos debulhadores, sacudidores de vários elementos, sacudidores, limpadores-separadores móveis e fixos; limpadores-separadores de produtos biológicos, bem como de material a granel biológico, orgânico e inorgânico."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Organização de workshops e acções de formação com vista ao manuseamento e à manutenção e assistência de ceifeiras-debulhadoras e respectivas peças, bem como à logística da colheita com ceifeiras-debulhadoras; Acções de formação em matéria de colheita com ceifeiras-debulhadoras."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Construção de máquinas, investigação e elaboração de plantas para a construção, em especial de máquinas e aparelhos agrícolas, bem como respectivas peças, componentes e acessórios, em especial ceifeiras-debulhadoras, peneiras para ceifeiras-debulhadoras, peneiras de ceifeiras-debulhadoras, instalações de peneiração, módulos debulhadores, sacudidores de vários elementos, sacudidores, limpadores-separadores móveis e fixos, limpadores-separadores de produtos biológicos, bem como de material a granel biológico, orgânico e inorgânico."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Masini agricole si aparate agricole mecanice, precum si piese ale acestora, componente si accesorii pentru acestea, în special cositori, masini de cosit, masini de cosit cereale, cutite pentru cositori, seceratori, site pentru cositori, site pentru cositori, instalatii de cernut, batoze, vibratoare cu cremaliera, vibratoare, masini mobile si stationare de curatat cereale; masini de curatat pentru produse biologice precum si pentru materiale vrac biologice, organice si anorganice."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Organizare de ateliere si cursuri precum si instruiri, pentru manevrarea, întretinerea si service-ul combinelor de secerat si pieselor acestora precum si pentru logistica combinelor de secerat; Instruiri cu privire la cositori."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Constructii de masini, cercetare si proiectare de constructii, în special de masini si aparate agricole, precum si de piese ale acestora, componente si accesorii pentru acestea, în special de cositori, site pentru cositori, site pentru cositori, instalatii de cernut, batoze, vibratoare cu cremaliera, vibratoare, masini mobile si stationare pentru curatat cereale, masini de curatat pentru produse biologice precum si pentru materiale vrac biologice, organice si anorganice."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Polnohospodárske stroje a strojové polnohospodárske prístroje, a tiez ich súcasti, súcasti a casti príslusenstva pre ne, najmä zacie mlátacky, kosacky na trávniky, kosacky obilia, sekacie cepele pre sekacky, zacie hrstovacie a viazacie stroje, sitá pre zacie mlátacky, sitá zacích mlátaciek, preosievacie stroje, mlátacie agregáty, klávesové vytriasadlá, vytriasadlá, mobilné a stanicné stroje na cistenie obilia; cistiace stroje pre biologické produkty, ako aj pre biologický, organický a anorganický sypaný materiál."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Usporadúvanie pracovných dielní (workshop) a skolení, ako aj vzdelávania, najmä pre rozsah s a údrzbu a starostlivost o zacie mlátacky a ich casti, ako aj logistiku zacích mlátaciek; Skolenia v oblasti zacích mlátaciek."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "strojárstvo, výskum a konstrukcné plánovanie, najmä polnohospodárskych strojov a prístrojov, ako aj ich castí, súcastí a castí príslusenstva pre ne, najmä zacie mlátacky, sitá pre zacie mlátacky, sitá zacích mlátaciek, sitové zariadenia, mlátacie agregáty, klávesové vytriasadlá, vytriasadlá, mobilné a stanicné stroje na cistenie obilia, cistiace stroje pre biologické produkty, ako aj pre biologický, organický a anorganický sypaný materiál."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Poljedelski stroji in strojne poljedelske naprave ter njihovi deli, sestavni deli in pripadajoci deli dodatne opreme, predvsem kombajni, kosilniki, zitni kosilniki, nozi za kosilnike, vezalni zitni kosilniki, sita za kombajne, presejalne instalacije, mlatilni agregati, pretresala, pretresalke, mobilni in stacionarni stroji za ciscenje zita; cistilni stroji za bioloske proizvode ter za bioloski, organski in anorganski sipki material."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Organizacija delavnic in solanj ter izobrazevanj za rokovanje s kombajni in njihovimi deli in njihovo vzdrzevanje in nego ter za logistiko v zvezi z zetvijo in mlatenjem s pomocjo kombajnov; Solanja v zvezi z zetvijo in mlatenjem s pomocjo kombajnov."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Strojegradnja, raziskave in konstrukcijsko nacrtovanje, predvsem poljedelskih strojev in naprav ter njihovih delov, sestavnih delov in pripadajocih delov dodatne opreme, predvsem kombajnov, sit za kombajne, presejalnih instalacij, mlatilnih agregatov, pretresal, pretresalk, mobilnih in stacionarnih strojev za ciscenje zita, cistilnih strojev za bioloske proizvode ter za bioloski, organski in anorganski sipki material."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Maquinaria agrícola y aperos agrícolas mecánicos, así como partes, componentes y accesorios de los mismos, en particular segadoras-trilladoras, segadoras, segadoras para cereales, cuchillas de segadoras, segadoras-agavilladoras, cribas para segadoras-trilladoras, cribas para segadoras-trilladoras, instalaciones de cribado, grupos de trillar, sacudidores de agitadores, piezas mecánicas sacudidoras, máquinas para limpiar cereales móviles y fijas; máquinas para limpiar productos biológicos así como productos a granel biológicos, orgánicos e inorgánicos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Realización de talleres y cursos de formación e instrucción, para el manejo, mantenimiento y cuidado de segadoras-trilladoras y de sus partes así como para la logística de segadoras-trilladoras; Cursos de formación para segadoras-trilladoras."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Ingeniería de construcción, investigación y elaboración de planos, en particular de máquinas y aparatos agrícolas así como de sus partes, componentes y accesorios, en particular de segadoras-trilladoras, cribas para segadoras-trilladoras, cribas de segadoras-trilladoras, instalaciones de cribado, grupos de trillar, sacudidores de agitadores, piezas mecánicas sacudidoras, máquinas para limpiar cereales móviles y fijas, máquinas para limpiar productos biológicos así como productos a granel biológicos, orgánicos e inorgánicos."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Jordbruksmaskiner och maskinella jordbruksapparater, och delar därtill, komponenter och tillbehörsdelar för dessa, speciellt skördetröskor, slåttermaskiner, spannmålsslåttermaskiner, knivar för slåttermaskiner, självbindare, siktar för skördetröskor, skördetrösksiktar, siktanläggningar, tröskaggregat, torkningsskakare, skakare, mobila och stationära spannmålsrensningsmaskiner; rensningsmaskiner för biologiska produkter samt för biologiskt, organiskt och oorganiskt bulkmaterial."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Anordnande av studiecirklar och anordnande av handledning och instruktion, för hantering av och underhåll och skötsel av skördetröskor och deras delar samt för skördetrösklogistik; Kurser avseende skördetröskor."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Maskinbyggnation, forskning och konstruktionsplanering, speciellt av jordbruksmaskiner och -anordningar samt deras delar, komponenter och tillbehör för dessa, speciellt av skördetröskor, siktar för skördetröskor, skördetrösksiktar, siktanläggningar, tröskaggregat, torkningsskakare, skakare, mobila och stationära spannmålsrensningsmaskiner, rengöringsmaskiner för biologiskt, organiskt och oorganiskt bulkmaterial."
+        }
+      ]
+    },
+    "id": "05f6ca96-dfda-4097-b573-7832513357dd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00979",
+        "publicationVolume": "223"
+      }
+    ],
+    "recordLastUpdated": "20260514",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Mönckebergstrasse 11,Hamburg, 20095",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "RGTH PATENTANWÄLTE PARTGMBB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100929",
+        "applicationNumber": "9409392"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300929",
+      "lastPublicationDate": "20101126",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20110325",
+        "registrationNumber": "9409392"
+      }
+    },
+    "version": "20260514020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/em/05f6ca96-dfda-4097-b573-7832513357dd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.171Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

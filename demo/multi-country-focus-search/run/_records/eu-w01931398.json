@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/eu/W01931398",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "W01931398",
+  "applicationNumber": "W01931398",
+  "registrationNumber": "W01931398",
+  "applicationDate": null,
+  "registrationDate": "2026-06-08",
+  "expiryDate": "2036-06-08",
+  "statusClass": "live",
+  "statusText": "UNDER_EXAMINATION",
+  "statusDate": "2026-08-06",
+  "markText": "QORE",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "INTERNATIONAL_TRADEMARK",
+  "niceClasses": [],
+  "owner": "QORE3 PTE. LTD.",
+  "ownerCountry": null,
+  "representative": "QUAHE WOO & PALMER LLC",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Computer software",
+            "computer software applications, downloadable",
+            "computer software for analysing market information",
+            "computer software for database management",
+            "computer software for application and database integration",
+            "computer software for business purposes",
+            "downloadable computer software",
+            "downloadable computer software for data processing",
+            "downloadable business management software",
+            "software and applications for mobile devices",
+            "artificial intelligence software",
+            "computer hardware and software for artificial intelligence",
+            "downloadable artificial intelligence software",
+            "downloadable artificial intelligence software for analysis",
+            "downloadable computer software using artificial intelligence for data analysis",
+            "downloadable computer software for use as a digital wallet",
+            "downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets."
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 36,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Brokerage of carbon credits",
+            "brokerage of currencies",
+            "business liquidation services, financial",
+            "capital investment",
+            "charitable fund raising",
+            "clearing, financial",
+            "credit bureau services",
+            "issuance of credit cards",
+            "crowdfunding",
+            "deposits of valuables",
+            "e-wallet payment services",
+            "electronic funds transfer",
+            "electronic transfer of virtual currencies",
+            "exchanging money",
+            "factoring",
+            "financial analysis",
+            "financial appraisals in responding to calls for tenders",
+            "financial appraisals in responding to requests for proposals [RFPs]",
+            "financial consultancy",
+            "financial customs brokerage services",
+            "financial evaluation [insurance, banking, real estate]",
+            "financial evaluation of development costs relating to the oil, gas and mining industries",
+            "financial valuation of standing timber",
+            "financial valuation of wool",
+            "financial exchange of virtual currency",
+            "financial management",
+            "financial management of reimbursement payments for others",
+            "financial research",
+            "financial sponsorship",
+            "financial valuation of intellectual property assets",
+            "providing financial information",
+            "providing financial information via a website",
+            "financing services",
+            "fiscal valuation",
+            "instalment loans",
+            "insurance brokerage",
+            "insurance consultancy",
+            "insurance underwriting",
+            "providing insurance information",
+            "investment of funds",
+            "lending against security",
+            "loans [financing]",
+            "organization of monetary collections",
+            "mortgage banking",
+            "mutual funds",
+            "online banking",
+            "pawnbrokerage",
+            "processing of credit card payments",
+            "processing of debit card payments",
+            "provident fund services",
+            "preparation of quotes for cost estimation purposes",
+            "safe deposit services",
+            "savings bank services",
+            "securities brokerage",
+            "stock brokerage services",
+            "stock exchange quotations",
+            "stocks and bonds brokerage",
+            "issuance of tokens of value",
+            "trusteeship",
+            "fiduciary."
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 42,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Artificial intelligence technology services",
+            "software as a service [SaaS]",
+            "artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics",
+            "application service provider [ASP] services",
+            "consultancy relating to the design and development of information and communications technology",
+            "design and development of computer systems",
+            "design and development of operating system software",
+            "design, development and programming of computer software",
+            "computer software consulting",
+            "computer software design for others",
+            "computer website design",
+            "creating and designing web pages for others."
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/W01931398",
+  "_uri": "/mark/eu/w01931398",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:35.678Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

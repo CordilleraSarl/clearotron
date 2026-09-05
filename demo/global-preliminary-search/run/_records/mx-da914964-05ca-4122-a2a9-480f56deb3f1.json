@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/mx/da914964-05ca-4122-a2a9-480f56deb3f1",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "da914964-05ca-4122-a2a9-480f56deb3f1",
+  "applicationNumber": "959812",
+  "registrationNumber": "1065797",
+  "applicationDate": "2008-09-08",
+  "registrationDate": "2008-10-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores, circuitos integrados, microprocesadores, microprocesadores por encargo, microprocesadores programables a traves de software, procesadores multinucleo, circuitos integrados de aplicacion especifica.",
+      "translation_language": "en",
+      "translation": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROPROCESSORS, CUSTOM MICROPROCESSORS, PROGRAMMABLE MICROPROCESSORS THROUGH SOFTWARE, MULTINUCLEO PROCESSORS, INTEGRATED CIRCUITS OF SPECIFIC APPLICATION."
+    }
+  ],
+  "owner": "FREESCALE SEMICONDUCTOR, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TX., 78735, ESTADOS UNIDOS DE AMERICA.",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "FREESCALE SEMICONDUCTOR, INC."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROPROCESSORS, CUSTOM MICROPROCESSORS, PROGRAMMABLE MICROPROCESSORS THROUGH SOFTWARE, MULTINUCLEO PROCESSORS, INTEGRATED CIRCUITS OF SPECIFIC APPLICATION.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores, circuitos integrados, microprocesadores, microprocesadores por encargo, microprocesadores programables a traves de software, procesadores multinucleo, circuitos integrados de aplicacion especifica."
+        }
+      ]
+    },
+    "id": "da914964-05ca-4122-a2a9-480f56deb3f1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "10",
+        "publicationYear": "2008"
+      }
+    ],
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080908",
+        "applicationNumber": "959812"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20081009",
+        "registrationNumber": "1065797"
+      }
+    },
+    "version": "20250704162150",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ"
+    }
+  },
+  "_uri": "/mark/mx/da914964-05ca-4122-a2a9-480f56deb3f1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

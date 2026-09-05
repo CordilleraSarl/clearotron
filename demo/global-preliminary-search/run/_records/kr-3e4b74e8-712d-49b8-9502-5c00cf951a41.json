@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/3e4b74e8-712d-49b8-9502-5c00cf951a41",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "3e4b74e8-712d-49b8-9502-5c00cf951a41",
+  "applicationNumber": "40-2026-0073330",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "enqor",
+  "markTransliteration": "enqor",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 휴대폰용 애플리케이션 소프트웨어 개발업, 서비스형 소프트웨어업, 서비스형 플랫폼업, 애플리케이션 서비스제공업, 온라인 콘텐츠 제공을 위한 플랫폼 제공업, 웹사이트 호스팅업, 전자상거래용 인터넷 플랫폼 구축업, 컴퓨터 관련 기술자문제공업, 컴퓨터 소프트웨어 개발업, 컴퓨터 소프트웨어 설계/관리/개발 및 업데이트업",
+      "translation_language": "en",
+      "translation": "Downloadable mobile phone application software development business, service-type software business, service-type platform business, application service provision business, platform provision business for providing online content, website hosting business, internet platform construction business for e-commerce, computer-related technical problem industry, computer software development business, computer software design/management/development and update business."
+    }
+  ],
+  "owner": "Align Networks Inc.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인테헤란 (TEHERAN PATENT FIRM)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Align Networks Inc.",
+        "applicantNativeName": "주식회사 얼라인네트웍스"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable mobile phone application software development business, service-type software business, service-type platform business, application service provision business, platform provision business for providing online content, website hosting business, internet platform construction business for e-commerce, computer-related technical problem industry, computer software development business, computer software design/management/development and update business.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 휴대폰용 애플리케이션 소프트웨어 개발업, 서비스형 소프트웨어업, 서비스형 플랫폼업, 애플리케이션 서비스제공업, 온라인 콘텐츠 제공을 위한 플랫폼 제공업, 웹사이트 호스팅업, 전자상거래용 인터넷 플랫폼 구축업, 컴퓨터 관련 기술자문제공업, 컴퓨터 소프트웨어 개발업, 컴퓨터 소프트웨어 설계/관리/개발 및 업데이트업"
+        }
+      ]
+    },
+    "id": "3e4b74e8-712d-49b8-9502-5c00cf951a41",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260505",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 테헤란로 *층(대치동, 케이티선릉타워웨스트)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인테헤란 (TEHERAN PATENT FIRM)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260414",
+        "applicationNumber": "40-2026-0073330"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20260505020534",
+    "wordMarkSpecification": {
+      "markTransliteration": "enqor",
+      "markVerbalElementText": "enqor"
+    }
+  },
+  "_uri": "/mark/kr/3e4b74e8-712d-49b8-9502-5c00cf951a41",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

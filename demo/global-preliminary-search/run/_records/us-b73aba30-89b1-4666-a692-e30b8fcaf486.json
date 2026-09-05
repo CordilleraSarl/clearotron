@@ -1,0 +1,392 @@
+{
+  "uri": "/mark/us/b73aba30-89b1-4666-a692-e30b8fcaf486",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "b73aba30-89b1-4666-a692-e30b8fcaf486",
+  "applicationNumber": "77509743",
+  "registrationNumber": "3665763",
+  "applicationDate": "2008-06-27",
+  "registrationDate": "2009-08-11",
+  "expiryDate": null,
+  "renewalDate": "2019-08-11",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2009-05-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Expert services in the field of efficient extraction of hydrocarbon resources, namely, providing consulting services to others in the nature of compiling and analyzing critical information covering oil and gas reservoirs, namely, formation properties, geologic attributes, production histories, well design details and production facilities formation, and utilizing reservoir management metrics, analytical tools, and knowledge management instruments to guide the diagnostic and implementation phases of optimizing the efficient extraction of hydrocarbon resources from reservoirs of others",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QRI Group, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Jonathan W. Richards",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20181110",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "2 Houston Center, Houston, TX, 77010",
+        "applicantAddressCity": "Houston",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "77010",
+        "applicantAddressStateName": "TEXAS",
+        "applicantAddressStreet": "2 Houston Center",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "QRI Group, LLC",
+        "applicantSecondaryAddressUnit": "909 Fannin, Suite 2200"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "01.01.25",
+      "24.15.04",
+      "26.01.10",
+      "26.01.14",
+      "26.01.37"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Expert services in the field of efficient extraction of hydrocarbon resources, namely, providing consulting services to others in the nature of compiling and analyzing critical information covering oil and gas reservoirs, namely, formation properties, geologic attributes, production histories, well design details and production facilities formation, and utilizing reservoir management metrics, analytical tools, and knowledge management instruments to guide the diagnostic and implementation phases of optimizing the efficient extraction of hydrocarbon resources from reservoirs of others"
+        }
+      ]
+    },
+    "id": "b73aba30-89b1-4666-a692-e30b8fcaf486",
+    "internationalMarkKeys": [
+      {
+        "applicationDate": "20111111",
+        "internationalRegistrationNumber": "1111234",
+        "markCurrentStatus": "APPLICATION FOR IR REGISTERED BY IB",
+        "markCurrentStatusDate": "20120412",
+        "markEvents": [
+          {
+            "date": "20120415",
+            "descriptionText": "APPLICATION FOR IR REGISTERED BY IB"
+          },
+          {
+            "date": "20120308",
+            "descriptionText": "IRREGULARITY RESPONSE SENT TO IB"
+          },
+          {
+            "date": "20120308",
+            "descriptionText": "RESPONSE TO IRREGULARITY REVIEWED AND ACCEPTED"
+          },
+          {
+            "date": "20120307",
+            "descriptionText": "IRREGULARITY RESPONSE RECEIVED FROM APPLICANT"
+          },
+          {
+            "date": "20111214",
+            "descriptionText": "IRREGULARITY NOTICE RECEIVED FROM IB"
+          },
+          {
+            "date": "20111115",
+            "descriptionText": "IR CERTIFIED AND SENT TO IB"
+          },
+          {
+            "date": "20111115",
+            "descriptionText": "MANUALLY CERTIFIED"
+          },
+          {
+            "date": "20111111",
+            "descriptionText": "NEW APPLICATION FOR IR RECEIVED"
+          }
+        ],
+        "registrationDate": "20111111",
+        "renewalDate": "20311111",
+        "usptoReferenceNumber": "A0027126"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20181110",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20181110",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20181110",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20181110",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20181102",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20180811",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20150320",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20150320",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20150320",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20150306",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20150129",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20090811",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090526",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20090506",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20090423",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20090423",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20090423",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20090331",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20090331",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20090331",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20081004",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20081004",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20081004",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20081001",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20080702",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE MAILED"
+      },
+      {
+        "date": "20080701",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the letters \"QRI\" and to the top right of the letters is a circle with a white center and white lines expanding from the center and an arrow inserted toward bottom right.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Suite 3300, Houston, TX, 77027",
+        "city": "Houston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QRI Group, LLC",
+        "postalCode": "77027",
+        "secondaryAddressUnit": "3200 SW Freeway",
+        "stateName": "TEXAS",
+        "street": "Suite 3300"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2 Houston Center, Houston, TX, 77010",
+        "city": "Houston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QRI Group, LLC",
+        "postalCode": "77010",
+        "secondaryAddressUnit": "909 Fannin, Suite 2200",
+        "stateName": "TEXAS",
+        "street": "2 Houston Center"
+      },
+      {
+        "address": "2 Houston Center, Houston, TX, 77010",
+        "city": "Houston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QRI Group, LLC",
+        "postalCode": "77010",
+        "secondaryAddressUnit": "909 Fannin, Suite 2200",
+        "stateName": "TEXAS",
+        "street": "2 Houston Center"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Suite 3300, Houston, TX, 77027",
+        "city": "Houston",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "QRI Group, LLC",
+        "postalCode": "77027",
+        "secondaryAddressUnit": "3200 SW Freeway",
+        "stateName": "TEXAS",
+        "street": "Suite 3300"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SALT LAKE CITY, UT 84111-1004, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SALT LAKE CITY, UT 84111-1004",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JONATHAN W. RICHARDS WORKMAN NYDEGGER, 60 East South Temple #1000"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SALT LAKE CITY, UT 84111-1004, UNITED STATES",
+        "representativeAddressLines": [
+          "SALT LAKE CITY, UT 84111-1004",
+          "UNITED STATES"
+        ],
+        "representativeName": "Jonathan W. Richards"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080627",
+        "applicationNumber": "77509743"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20070515"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20070515"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20181110",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT",
+          "Color Drawing Filed"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20090526"
+      ],
+      "registration": {
+        "registrationDate": "20090811",
+        "registrationNumber": "3665763"
+      },
+      "renewalDate": "20190811"
+    },
+    "version": "20260109055530",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/us/b73aba30-89b1-4666-a692-e30b8fcaf486",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

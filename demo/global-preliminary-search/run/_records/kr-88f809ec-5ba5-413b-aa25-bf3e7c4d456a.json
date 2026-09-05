@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/kr/88f809ec-5ba5-413b-aa25-bf3e7c4d456a",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "88f809ec-5ba5-413b-aa25-bf3e7c4d456a",
+  "applicationNumber": "40-1987-0004019",
+  "registrationNumber": null,
+  "applicationDate": "1987-03-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "코리",
+  "markTransliteration": "Corey",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    8,
+    9,
+    16
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2,
+        8,
+        9,
+        16
+      ],
+      "language": "ko",
+      "description": "매직펜, 백묵_, 싸인펜, 인쇄잉크, 잉크지우개, 칠판, 캔버스, 필판, 필판지우개, 흑판, 흑판지우개",
+      "translation_language": "en",
+      "translation": "Magic pen, chalk_, sign pen, printing ink, ink eraser, blackboard, canvas, writing board, writing board eraser, blackboard, blackboard eraser"
+    }
+  ],
+  "owner": "Samsun Parish Industrial Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "강동수 (KANG, Dong Soo)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기 고양시 덕양구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Samsun Parish Industrial Co., Ltd.",
+        "applicantNativeName": "삼선교구공업주식회사"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Magic pen, chalk_, sign pen, printing ink, ink eraser, blackboard, canvas, writing board, writing board eraser, blackboard, blackboard eraser",
+          "intClassNumber": "02,08,09,16",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "매직펜, 백묵_, 싸인펜, 인쇄잉크, 잉크지우개, 칠판, 캔버스, 필판, 필판지우개, 흑판, 흑판지우개"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "022"
+        }
+      ]
+    },
+    "id": "88f809ec-5ba5-413b-aa25-bf3e7c4d456a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260423",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 도산대로**길 **, 지유페이턴트 하우스 (논현동)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "강동수 (KANG, Dong Soo)"
+      },
+      {
+        "representativeAddress": "서울 강남구 도산대로**길 ** (논현동) 지유페이턴트하우스(강앤드강국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "강일우 (Kang Ea Roo)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19870303",
+        "applicationNumber": "40-1987-0004019"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260423020543",
+    "wordMarkSpecification": {
+      "markTransliteration": "Corey",
+      "markVerbalElementText": "코리"
+    }
+  },
+  "_uri": "/mark/kr/88f809ec-5ba5-413b-aa25-bf3e7c4d456a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.793Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

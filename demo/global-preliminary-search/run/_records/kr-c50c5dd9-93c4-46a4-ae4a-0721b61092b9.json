@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/kr/c50c5dd9-93c4-46a4-ae4a-0721b61092b9",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "c50c5dd9-93c4-46a4-ae4a-0721b61092b9",
+  "applicationNumber": "40-2010-0055342",
+  "registrationNumber": "4008967990000",
+  "applicationDate": "2010-10-28",
+  "registrationDate": "2011-12-29",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QORIVVA",
+  "markTransliteration": "QORIVVA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "디지털신호처리기,마이크로컨트롤러,마이크로프로세서,멀티코어 마이크로컨트롤러,멀티코어 프로세서,반도체,소프트웨어 프로그램 가능한 마이크로컨트롤러,소프트웨어 프로그램 가능한 마이크로프로세서,집적회로",
+      "translation_language": "en",
+      "translation": "Digital Signal Processors, Microcontrollers, Microprocessors, Multicore Microcontrollers, Multicore Processors, Semiconductors, Software Programmable Microcontrollers, Software Programmable Microprocessors, Integrated Circuits"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Digital Signal Processors, Microcontrollers, Microprocessors, Multicore Microcontrollers, Multicore Processors, Semiconductors, Software Programmable Microcontrollers, Software Programmable Microprocessors, Integrated Circuits",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "디지털신호처리기,마이크로컨트롤러,마이크로프로세서,멀티코어 마이크로컨트롤러,멀티코어 프로세서,반도체,소프트웨어 프로그램 가능한 마이크로컨트롤러,소프트웨어 프로그램 가능한 마이크로프로세서,집적회로"
+        }
+      ]
+    },
+    "id": "c50c5dd9-93c4-46a4-ae4a-0721b61092b9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20101028",
+        "applicationNumber": "40-2010-0055342"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20111229",
+        "registrationNumber": "4008967990000"
+      }
+    },
+    "version": "20250625165528",
+    "wordMarkSpecification": {
+      "markTransliteration": "QORIVVA",
+      "markVerbalElementText": "QORIVVA"
+    }
+  },
+  "_uri": "/mark/kr/c50c5dd9-93c4-46a4-ae4a-0721b61092b9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.400Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

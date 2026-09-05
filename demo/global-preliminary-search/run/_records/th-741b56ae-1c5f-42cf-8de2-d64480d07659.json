@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/th/741b56ae-1c5f-42cf-8de2-d64480d07659",
+  "provider": "clarivate",
+  "office": "th",
+  "guid": "741b56ae-1c5f-42cf-8de2-d64480d07659",
+  "applicationNumber": "230129161",
+  "registrationNumber": "241113980",
+  "applicationDate": "2023-08-11",
+  "registrationDate": "2024-07-19",
+  "expiryDate": "2033-08-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "โซริ",
+  "markTransliteration": "Sori",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Miss Tassana Thanyaphol",
+  "ownerNative": null,
+  "ownerCountry": "TH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TH",
+        "applicantAddressCountryName": "Thailand",
+        "applicantName": "Miss Tassana Thanyaphol",
+        "applicantNativeAddress": "เลขที่ 164/555 หมู่ 1ตำบลพิมลราช อำเภอบางบัวทอง จังหวัดนนทบุรี 11110",
+        "applicantNativeName": "นางสาวทัศนา ธัญญะผล"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "741b56ae-1c5f-42cf-8de2-d64480d07659",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20241126",
+    "registrationOfficeCode": "TH",
+    "registrationOfficeName": "Thailand",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TH",
+        "representativeAddressCountryName": "Thailand",
+        "representativeNativeAddress": "นางสาวทัศนา ธัญญะผล ที่อยู่ เลขที่ 94 หมู่ 1 ถนนราชพฤกษ์",
+        "representativeNativeName": "นางสาวณัฐรดา สีทา"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230811",
+        "applicationNumber": "230129161"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330810",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20240719",
+        "registrationNumber": "241113980"
+      }
+    },
+    "version": "20241126161604",
+    "wordMarkSpecification": {
+      "markTransliteration": "Sori",
+      "markVerbalElementText": "โซริ"
+    }
+  },
+  "_uri": "/mark/th/741b56ae-1c5f-42cf-8de2-d64480d07659",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.876Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

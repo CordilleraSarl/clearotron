@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/jp/2da4a69b-b2c6-4c08-8807-0bf8856cbdad",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "2da4a69b-b2c6-4c08-8807-0bf8856cbdad",
+  "applicationNumber": "2024-049049",
+  "registrationNumber": "6954185",
+  "applicationDate": "2024-05-09",
+  "registrationDate": "2025-08-04",
+  "expiryDate": "2035-08-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-08-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "アライン",
+  "markTransliteration": "ARAIN",
+  "markTranslation": "ALIGN",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "受託による歯列矯正ブレース（歯列矯正器具）の製造，受託による歯科補綴物及び義歯の製造，歯の技工，義肢又は義歯の加工（「医療材料の加工」を含む。）",
+      "translation_language": "en",
+      "translation": "Contract manufacturing of orthodontic braces (orthodontic appliances), contract manufacturing of dental prostheses and dentures, dental technician work, and processing of artificial limbs and dentures (including \"processing of medical materials\")."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "歯科用のオンラインによるダウンロードが不可能なコンピュータソフトウェアの提供，歯科治療・歯科設計又は歯科医療用のオンラインによるダウンロードが不可能なソフトウェアの提供，歯科用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，歯科及び歯列矯正治療計画で使用されるウェブベースのソフトウェアアプリケーションの一時的な使用の提供，コンピュータソフトウェアの設計，注文によるコンピュータソフトウェアの設計，コンピュータソフトウェアの設計・開発・インストール及び保守に関する助言，コンピュータハードウェア及びソフトウェアの設計，コンピュータのハードウェア及びソフトウェアの設計及び開発，コンピュータソフトウェアの設計・開発・インストール及び保守に関する指導，コンピュータソフトウェアの設計・開発・インストール及び保守，歯科の分野におけるコンピュータソフトウェアの開発，歯科治療計画の目的でコンピュータアプリケーションをホストするための情報管理の分野における、アプリケーションサービスプロバイダーによるコンピュータソフトウェアの提供，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供，他人への歯科印象用のコンピュータソフトウェアの設計・作成・保守に関する助言，歯科印象用の３Ｄコンピュータ画像のコンピュータ支援によるデザインのためのオンラインによるダウンロードが不可能なコンピュータソフトウェアの提供，コンピュータハードウェア及びソフトウェアシステムの選択・適合及び使用に関する助言",
+      "translation_language": "en",
+      "translation": "Provision of non-downloadable online dental computer software, Provision of non-downloadable online software for dental treatment, dental design or dental medicine, Provision of temporary use of dental web-based software applications, Provision of temporary use of web-based software applications used in dental and orthodontic treatment planning, Computer software design, Bespoke computer software design, Advice on the design, development, installation and maintenance of computer software, Design of computer hardware and software, Design and development of computer hardware and software, Instruction on the design, development, installation and maintenance of computer software, Design, development, installation and maintenance of computer software, Development of computer software in the field of dentistry, Provision of computer software by application service providers in the field of information management for hosting computer applications for dental treatment planning purposes, Design of machinery, apparatus or tools (including parts for any of these) or equipment consisting of such machinery, Design, creation or maintenance of computer programs, Provision of computer programs, Advice to others on the design, creation or maintenance of computer software for dental impressions, Provision of non-downloadable online computer software for computer-aided design of 3D computer images for dental impressions, Advice on the selection, adaptation and use of computer hardware and software systems"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IDAKA MASATO",
+  "priorities": [
+    {
+      "priorityDate": "20240509"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Contract manufacturing of orthodontic braces (orthodontic appliances), contract manufacturing of dental prostheses and dentures, dental technician work, and processing of artificial limbs and dentures (including \"processing of medical materials\").",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "受託による歯列矯正ブレース（歯列矯正器具）の製造，受託による歯科補綴物及び義歯の製造，歯の技工，義肢又は義歯の加工（「医療材料の加工」を含む。）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of non-downloadable online dental computer software, Provision of non-downloadable online software for dental treatment, dental design or dental medicine, Provision of temporary use of dental web-based software applications, Provision of temporary use of web-based software applications used in dental and orthodontic treatment planning, Computer software design, Bespoke computer software design, Advice on the design, development, installation and maintenance of computer software, Design of computer hardware and software, Design and development of computer hardware and software, Instruction on the design, development, installation and maintenance of computer software, Design, development, installation and maintenance of computer software, Development of computer software in the field of dentistry, Provision of computer software by application service providers in the field of information management for hosting computer applications for dental treatment planning purposes, Design of machinery, apparatus or tools (including parts for any of these) or equipment consisting of such machinery, Design, creation or maintenance of computer programs, Provision of computer programs, Advice to others on the design, creation or maintenance of computer software for dental impressions, Provision of non-downloadable online computer software for computer-aided design of 3D computer images for dental impressions, Advice on the selection, adaptation and use of computer hardware and software systems",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "歯科用のオンラインによるダウンロードが不可能なコンピュータソフトウェアの提供，歯科治療・歯科設計又は歯科医療用のオンラインによるダウンロードが不可能なソフトウェアの提供，歯科用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，歯科及び歯列矯正治療計画で使用されるウェブベースのソフトウェアアプリケーションの一時的な使用の提供，コンピュータソフトウェアの設計，注文によるコンピュータソフトウェアの設計，コンピュータソフトウェアの設計・開発・インストール及び保守に関する助言，コンピュータハードウェア及びソフトウェアの設計，コンピュータのハードウェア及びソフトウェアの設計及び開発，コンピュータソフトウェアの設計・開発・インストール及び保守に関する指導，コンピュータソフトウェアの設計・開発・インストール及び保守，歯科の分野におけるコンピュータソフトウェアの開発，歯科治療計画の目的でコンピュータアプリケーションをホストするための情報管理の分野における、アプリケーションサービスプロバイダーによるコンピュータソフトウェアの提供，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供，他人への歯科印象用のコンピュータソフトウェアの設計・作成・保守に関する助言，歯科印象用の３Ｄコンピュータ画像のコンピュータ支援によるデザインのためのオンラインによるダウンロードが不可能なコンピュータソフトウェアの提供，コンピュータハードウェア及びソフトウェアシステムの選択・適合及び使用に関する助言"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "2da4a69b-b2c6-4c08-8807-0bf8856cbdad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20240509"
+      }
+    ],
+    "recordLastUpdated": "20250829",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IDAKA MASATO",
+        "representativeNativeName": "井▲高▼　将斗"
+      },
+      {
+        "representativeName": "YAMAMOTO KENSAKU",
+        "representativeNativeName": "山本　健策"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      },
+      {
+        "representativeName": "ISHIKAWA DAISUKE",
+        "representativeNativeName": "石川　大輔"
+      },
+      {
+        "representativeName": "IIDA TAKATOSHI",
+        "representativeNativeName": "飯田　貴敏"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240509",
+        "applicationNumber": "2024-049049"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350804",
+      "lastPublicationDate": "20250813",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250804",
+        "registrationNumber": "6954185"
+      }
+    },
+    "version": "20250829083544",
+    "wordMarkSpecification": {
+      "markTranslation": "ALIGN",
+      "markTransliteration": "ARAIN",
+      "markVerbalElementText": "アライン"
+    }
+  },
+  "_uri": "/mark/jp/2da4a69b-b2c6-4c08-8807-0bf8856cbdad",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.741Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

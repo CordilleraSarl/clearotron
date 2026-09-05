@@ -1,0 +1,268 @@
+{
+  "uri": "/mark/ca/844e42db-2c5e-442e-971b-340fa0062aa9",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "844e42db-2c5e-442e-971b-340fa0062aa9",
+  "applicationNumber": "1628794",
+  "registrationNumber": "TMA913529",
+  "applicationDate": "2013-05-30",
+  "registrationDate": "2015-09-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2014-12-03"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VINKARA WINERY KALECIK ANKARA THIS IS THE TIME, MY LOVE TO POUR  THE WINE...",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    33,
+    35,
+    36,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        33,
+        35,
+        36,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Alcoholic beverages, namely wine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        33,
+        35,
+        36,
+        41
+      ],
+      "language": "en",
+      "description": "(1) Advertising the wares and services of others, marketing services in the field of arranging for the distribution of the products of others, arranging and conducting food and beverage exhibitions, organizing food and beverage trade fairs, wine appraisals, product demonstrations of food and beverages, advertising the wares and services of others on the Internet, promoting the sale of wares and services through promotional contests and the distribution of related printed materials.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Mithatpasa Cad. No: 13/2 Kizilay Yenisehir, Ankara",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantAddressLines": [
+          "Mithatpasa Cad. No: 13/2 Kizilay Yenisehir",
+          "Ankara"
+        ],
+        "applicantName": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as July 2012 on wares marked (1) on services (1)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "33,35,36,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Alcoholic beverages, namely wine."
+        },
+        {
+          "intClassNumber": "33,35,36,41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Advertising the wares and services of others, marketing services in the field of arranging for the distribution of the products of others, arranging and conducting food and beverage exhibitions, organizing food and beverage trade fairs, wine appraisals, product demonstrations of food and beverages, advertising the wares and services of others on the Internet, promoting the sale of wares and services through promotional contests and the distribution of related printed materials."
+        }
+      ]
+    },
+    "id": "844e42db-2c5e-442e-971b-340fa0062aa9",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260421",
+        "descriptionText": "Agent changed",
+        "information": "Transferred From: 2502 To: 59"
+      },
+      {
+        "date": "20150910",
+        "descriptionText": "Registered",
+        "responseDate": "20300910"
+      },
+      {
+        "date": "20150320",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20150920"
+      },
+      {
+        "date": "20150320",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20141203",
+        "descriptionText": "Advertised",
+        "information": "Vol.61 Issue 3136"
+      },
+      {
+        "date": "20141113",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20140922",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20141020"
+      },
+      {
+        "date": "20140224",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20140824"
+      },
+      {
+        "date": "20140224",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20130604",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20130530",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20130530",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "05.07.10",
+      "01.01.01",
+      "01.01.02",
+      "01.01.10",
+      "24.03.01",
+      "24.03.07",
+      "24.03.14",
+      "24.03.11",
+      "24.03.18",
+      "26.01.01",
+      "26.01.05",
+      "26.01.15",
+      "26.01.21"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Mithatpasa Cad. No: 13/2 Kizilay Yenisehir, Ankara",
+        "addressLines": [
+          "Mithatpasa Cad. No: 13/2 Kizilay Yenisehir",
+          "Ankara"
+        ],
+        "countryName": "Turkey",
+        "name": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3136",
+        "publicationVolume": "61"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "Scotia Plaza, 40 King Street West",
+          "40th Floor",
+          "Toronto",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP",
+        "representativeReferenceNumber": "22645-TM90662CA00"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20150320"
+      ],
+      "application": {
+        "applicationDate": "20130530",
+        "applicationNumber": "1628794"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "201207",
+          "firstUsedText": "Used in CANADA since at least as early as July 2012 on wares marked (1) on services (1)"
+        }
+      ],
+      "formalisationDate": "20130604",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20300910",
+      "publicationDate": [
+        "20141203"
+      ],
+      "registration": {
+        "registrationDate": "20150910",
+        "registrationNumber": "TMA913529"
+      }
+    },
+    "subjectHeadings": [
+      "VINKARA WINERY KALECIK ANKARA THIS IS THE TIME, MY LOVE, TO POUR THE WINE...",
+      "VIN KARA"
+    ],
+    "version": "20260429130145",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "VINKARA WINERY KALECIK ANKARA THIS IS THE TIME MY LOVE TO POUR  THE WINE",
+      "markVerbalElementText": "VINKARA WINERY KALECIK ANKARA THIS IS THE TIME, MY LOVE TO POUR  THE WINE...",
+      "markVerbalElementTextFormal": "VINKARA & Design"
+    }
+  },
+  "_uri": "/mark/ca/844e42db-2c5e-442e-971b-340fa0062aa9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

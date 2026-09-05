@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/kr/92847fe6-ef71-4d90-a5ba-31ab42ae95cf",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "92847fe6-ef71-4d90-a5ba-31ab42ae95cf",
+  "applicationNumber": "40-2011-0040668",
+  "registrationNumber": "4009679080000",
+  "applicationDate": "2011-07-27",
+  "registrationDate": "2013-05-07",
+  "expiryDate": "2033-05-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": "QORIQ QONVERGE",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "기지국이 내장된 칩(무선기지국이 내장된 칩 및 시스템온칩을 포함하는 것,,데이터처리장치용 가속기,디지털신호처리기,마이크로프로세서,멀티코어 프로세서,무선 베이스밴드 프로세서,반도체,벡터 프로세서,소프트웨어 프로그램 가능한 마이크로프로세서,집적회로,커뮤니케이션 프로세서,특수용도의 집적회로",
+      "translation_language": "en",
+      "translation": "Chips with built-in base stations (including chips and system-on-chips with built-in wireless base stations, accelerators for data processing devices, digital signal processors, microprocessors, multi-core processors, wireless baseband processors, semiconductors, vector processors, software programs) Available microprocessors, integrated circuits, communication processors, special purpose integrated circuits"
+    }
+  ],
+  "owner": "NXP USA, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "양영준 (YANG, Young June)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20110203",
+      "priorityNumber": "85/233,451"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미합중국 텍사스 (우편번호 ) 오스틴 윌리암 캐논 드라이브 웨스트",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, Inc.",
+        "applicantNativeName": "엔엑스피 유에스에이, 인코포레이티드"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Chips with built-in base stations (including chips and system-on-chips with built-in wireless base stations, accelerators for data processing devices, digital signal processors, microprocessors, multi-core processors, wireless baseband processors, semiconductors, vector processors, software programs) Available microprocessors, integrated circuits, communication processors, special purpose integrated circuits",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기지국이 내장된 칩(무선기지국이 내장된 칩 및 시스템온칩을 포함하는 것,,데이터처리장치용 가속기,디지털신호처리기,마이크로프로세서,멀티코어 프로세서,무선 베이스밴드 프로세서,반도체,벡터 프로세서,소프트웨어 프로그램 가능한 마이크로프로세서,집적회로,커뮤니케이션 프로세서,특수용도의 집적회로"
+        }
+      ]
+    },
+    "id": "92847fe6-ef71-4d90-a5ba-31ab42ae95cf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20110203",
+        "priorityNumber": "85/233,451"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "F, Seyang B/D, Naeja-dong, Jongno-gu, Seoul, Korea(KIM & CHANG)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "양영준 (YANG, Young June)"
+      },
+      {
+        "representativeAddress": "Seoul(none)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "위혜숙 (Wee Hye Suk)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20110727",
+        "applicationNumber": "40-2011-0040668"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330507",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20130507",
+        "registrationNumber": "4009679080000"
+      }
+    },
+    "version": "20250625170647",
+    "wordMarkSpecification": {
+      "markTransliteration": "QORIQ QONVERGE",
+      "markVerbalElementText": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/kr/92847fe6-ef71-4d90-a5ba-31ab42ae95cf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.400Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

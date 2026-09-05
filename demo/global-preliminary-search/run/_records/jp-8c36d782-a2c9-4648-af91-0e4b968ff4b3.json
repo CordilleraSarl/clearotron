@@ -1,0 +1,175 @@
+{
+  "uri": "/mark/jp/8c36d782-a2c9-4648-af91-0e4b968ff4b3",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "8c36d782-a2c9-4648-af91-0e4b968ff4b3",
+  "applicationNumber": "S61-079724",
+  "registrationNumber": "2088662",
+  "applicationDate": "1986-07-29",
+  "registrationDate": "1988-10-26",
+  "expiryDate": "1998-10-26",
+  "renewalDate": null,
+  "lastPublicationDate": "1988-04-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＧＯＲＩ　ゴリ",
+  "markTransliteration": "GORI",
+  "markTranslation": "GORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    11,
+    12,
+    13,
+    17,
+    19,
+    20,
+    22,
+    27
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        11,
+        12,
+        13,
+        17,
+        19,
+        20,
+        22,
+        27
+      ],
+      "language": null,
+      "description": "輸送機械器具、その部品および附属品",
+      "translation_language": "en",
+      "translation": "Transport machine equipment, parts and accessories thereof"
+    }
+  ],
+  "owner": "GORI A/S",
+  "ownerNative": null,
+  "ownerCountry": "DK",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19860729"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "GORI A/S",
+        "applicantNativeAddress": "デンマ－ク国　デ－ケ－　６０００　コ－ルデイング　ビルケモセベイ　１",
+        "applicantNativeName": "ゴリ　アクチセル　スカベツト"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Transport machine equipment, parts and accessories thereof",
+          "intClassNumber": "06,09,11,12,13,17,19,20,22,27",
+          "intGoodsServicesDescription": "輸送機械器具、その部品および附属品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "12A01"
+        },
+        {
+          "natClassNumber": "12A02"
+        },
+        {
+          "natClassNumber": "12A03"
+        },
+        {
+          "natClassNumber": "12A04"
+        },
+        {
+          "natClassNumber": "12A05"
+        },
+        {
+          "natClassNumber": "12A06"
+        },
+        {
+          "natClassNumber": "12A71"
+        },
+        {
+          "natClassNumber": "12A72"
+        },
+        {
+          "natClassNumber": "12A73"
+        },
+        {
+          "natClassNumber": "12A74"
+        },
+        {
+          "natClassNumber": "12A75"
+        }
+      ]
+    },
+    "id": "8c36d782-a2c9-4648-af91-0e4b968ff4b3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19860729"
+      }
+    ],
+    "recordLastUpdated": "20240214",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19860729",
+        "applicationNumber": "S61-079724"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "19981026",
+      "lastPublicationDate": "19880409",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19881026",
+        "registrationNumber": "2088662"
+      }
+    },
+    "version": "20240214103858",
+    "wordMarkSpecification": {
+      "markTranslation": "GORI",
+      "markTransliteration": "GORI",
+      "markVerbalElementText": "ＧＯＲＩ　ゴリ"
+    }
+  },
+  "_uri": "/mark/jp/8c36d782-a2c9-4648-af91-0e4b968ff4b3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

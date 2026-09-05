@@ -1,0 +1,186 @@
+{
+  "uri": "/mark/jp/453befe7-44cc-4cd2-8b3a-24cd429b5d87",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "453befe7-44cc-4cd2-8b3a-24cd429b5d87",
+  "applicationNumber": "H03-096528",
+  "registrationNumber": "2640032",
+  "applicationDate": "1991-09-18",
+  "registrationDate": "1994-03-31",
+  "expiryDate": "2014-03-31",
+  "renewalDate": null,
+  "lastPublicationDate": "1993-05-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＱＲＩ",
+  "markTransliteration": "KYUUAARUAI",
+  "markTranslation": "QRI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    2,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    17,
+    20,
+    21,
+    26,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        16,
+        17,
+        20,
+        21,
+        26,
+        28
+      ],
+      "language": null,
+      "description": "電気機械器具、電気通信機械器具、電子応用機械器具（医療機械器具に属するものを除く）電気材料",
+      "translation_language": "en",
+      "translation": "Electrical machinery equipment, telecommunication machinery equipment, electronic appliances and appliances (excluding those belonging to medical machinery and equipment) Electrical materials"
+    }
+  ],
+  "owner": "QUICK CORP.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19910918"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "QUICK CORP.",
+        "applicantNativeAddress": "東京都千代田区大手町１丁目６番１号",
+        "applicantNativeName": "株式会社ＱＵＩＣＫ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electrical machinery equipment, telecommunication machinery equipment, electronic appliances and appliances (excluding those belonging to medical machinery and equipment) Electrical materials",
+          "intClassNumber": "02,06,07,08,09,10,11,12,16,17,20,21,26,28",
+          "intGoodsServicesDescription": "電気機械器具、電気通信機械器具、電子応用機械器具（医療機械器具に属するものを除く）電気材料"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01"
+        },
+        {
+          "natClassNumber": "11A02"
+        },
+        {
+          "natClassNumber": "11A03"
+        },
+        {
+          "natClassNumber": "11A04"
+        },
+        {
+          "natClassNumber": "11A05"
+        },
+        {
+          "natClassNumber": "11A06"
+        },
+        {
+          "natClassNumber": "11A07"
+        },
+        {
+          "natClassNumber": "11A08"
+        },
+        {
+          "natClassNumber": "11B01"
+        },
+        {
+          "natClassNumber": "11C01"
+        },
+        {
+          "natClassNumber": "11C02"
+        },
+        {
+          "natClassNumber": "11D01"
+        }
+      ]
+    },
+    "id": "453befe7-44cc-4cd2-8b3a-24cd429b5d87",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19910918"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19910918",
+        "applicationNumber": "H03-096528"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20140331",
+      "lastPublicationDate": "19930521",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19940331",
+        "registrationNumber": "2640032"
+      }
+    },
+    "version": "20240320160304",
+    "wordMarkSpecification": {
+      "markTranslation": "QRI",
+      "markTransliteration": "KYUUAARUAI",
+      "markVerbalElementText": "ＱＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/453befe7-44cc-4cd2-8b3a-24cd429b5d87",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.202Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

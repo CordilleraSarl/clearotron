@@ -1,0 +1,234 @@
+{
+  "uri": "/mark/wo/1d1f9125-db8d-4a11-8046-e253f39c5713",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "1d1f9125-db8d-4a11-8046-e253f39c5713",
+  "applicationNumber": null,
+  "registrationNumber": "920010",
+  "applicationDate": null,
+  "registrationDate": "2007-02-19",
+  "expiryDate": "2027-02-19",
+  "renewalDate": "2017-02-19",
+  "lastPublicationDate": "2017-03-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "NXP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers; recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (Ics), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils et instruments scientifiques, nautiques, géodésiques, photographiques, cinématographiques, optiques, de pesage, de mesure, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande du courant électrique; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques; disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et ordinateurs; extincteurs; modules électroniques, électrotechniques et électromagnétiques, leurs parties et composants, y compris circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments à semi-conducteurs; interfaces; logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesar, de medida, de señalización, de control (inspección), de socorro (salvamento) y de enseñanza; aparatos e instrumentos para la conducción, la conmutación, la transformación, la acumulación, la regulación y el control de la electricidad; aparatos para la grabación, la transmisión y la reproducción de sonido o imágenes; soportes de grabación magnéticos; discos acústicos; distribuidores automáticos y mecanismos para aparatos de previo pago; cajas registradoras, máquinas calculadoras, equipos para el tratamiento de la información y ordenadores; extintores; módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y componentes, incluidos circuitos integrados, chips, diodos, transistores, semiconductores y elementos semiconductores; interfaces; software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20060822",
+      "priorityNumber": "1117603"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20060822",
+          "basicApplicationNumber": "1117603"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20060904",
+          "basicRegistrationNumber": "806204"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "TR",
+      "US",
+      "VN",
+      "RU",
+      "UA",
+      "BY",
+      "MK"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20060822",
+            "basicApplicationNumber": "1117603"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20060904",
+            "basicRegistrationNumber": "806204"
+          }
+        ]
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "26.04.02",
+      "26.04.22",
+      "37.02.27"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "CN",
+      "JP",
+      "KR",
+      "NO",
+      "SG",
+      "TR",
+      "US",
+      "VN",
+      "RU",
+      "UA",
+      "BY",
+      "MK"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific, nautical, surveying, photographic, cinematographic, optical, weighing, measuring, signalling, checking (supervision), life-saving and teaching apparatus and instruments; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers; recording discs; automatic vending machines and mechanisms for coin-operated apparatus; cash registers, calculating machines, data processing equipment and computers; fire-extinguishing apparatus; electronic, electrotechnical and electromagnetic modules, parts and components therefor including integrated circuits (Ics), chips, diodes, transistors, semiconductors and semiconductor elements; interfaces; software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils et instruments scientifiques, nautiques, géodésiques, photographiques, cinématographiques, optiques, de pesage, de mesure, de signalisation, de contrôle (inspection), de secours (sauvetage) et d'enseignement; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande du courant électrique; appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrement magnétiques; disques acoustiques; distributeurs automatiques et mécanismes pour appareils à prépaiement; caisses enregistreuses, machines à calculer, équipement pour le traitement de l'information et ordinateurs; extincteurs; modules électroniques, électrotechniques et électromagnétiques, leurs parties et composants, y compris circuits intégrés, puces, diodes, transistors, semi-conducteurs et éléments à semi-conducteurs; interfaces; logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos científicos, náuticos, geodésicos, fotográficos, cinematográficos, ópticos, de pesar, de medida, de señalización, de control (inspección), de socorro (salvamento) y de enseñanza; aparatos e instrumentos para la conducción, la conmutación, la transformación, la acumulación, la regulación y el control de la electricidad; aparatos para la grabación, la transmisión y la reproducción de sonido o imágenes; soportes de grabación magnéticos; discos acústicos; distribuidores automáticos y mecanismos para aparatos de previo pago; cajas registradoras, máquinas calculadoras, equipos para el tratamiento de la información y ordenadores; extintores; módulos electrónicos, electrotécnicos y electromagnéticos, sus partes y componentes, incluidos circuitos integrados, chips, diodos, transistores, semiconductores y elementos semiconductores; interfaces; software."
+        }
+      ]
+    },
+    "id": "1d1f9125-db8d-4a11-8046-e253f39c5713",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20060822",
+        "priorityNumber": "1117603"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "08"
+      }
+    ],
+    "recordLastUpdated": "20260226",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270219",
+      "lastPublicationDate": "20170309",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070219",
+        "registrationNumber": "920010"
+      },
+      "renewalDate": "20170219",
+      "renewalPublishedDate": "20170309"
+    },
+    "version": "20260226020119",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP"
+    }
+  },
+  "_uri": "/mark/wo/1d1f9125-db8d-4a11-8046-e253f39c5713",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.459Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

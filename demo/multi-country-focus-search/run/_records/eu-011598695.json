@@ -1,0 +1,74 @@
+{
+  "uri": "/mark/eu/011598695",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "011598695",
+  "applicationNumber": "011598695",
+  "registrationNumber": "011598695",
+  "applicationDate": "2013-02-22",
+  "registrationDate": "2013-07-22",
+  "expiryDate": "2033-02-22",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2013-07-24",
+  "markText": "QRI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "CERAN",
+  "ownerCountry": null,
+  "representative": "GEVERS",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Magnetic recording carriers, Including audio and video cassettes",
+            " CDs, CD-ROMs, DVDs",
+            " Computer software"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 16,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Printed matter",
+            " Instructional and teaching material except for the apparatus"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 41,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Teaching, including correspondence courses, telephone courses and courses via the Internet",
+            " Organisation of courses and seminars"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/011598695",
+  "_uri": "/mark/eu/011598695",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:36.529Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

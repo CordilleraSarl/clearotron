@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/es/1767cb41-a57e-4e05-8968-ac3261980dc5",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "1767cb41-a57e-4e05-8968-ac3261980dc5",
+  "applicationNumber": "3622676 M9",
+  "registrationNumber": "3622676 M9",
+  "applicationDate": "2016-07-11",
+  "registrationDate": "2017-02-22",
+  "expiryDate": "2026-07-10",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-07-21",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "J.O.S.E JOVEN ORQUESTA DEL SUR DE ESPAÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Los servicios de una orquesta musico vocal.",
+      "translation_language": "en",
+      "translation": "THE SERVICES OF A MUSICIAN ORCHESTRA VOCAL."
+    }
+  ],
+  "owner": "AYUNTAMIENTO DE MOLVIZAR",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "AYUNTAMIENTO DE MOLVIZAR"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "01.03.02",
+      "18.03.09",
+      "24.17.14",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "THE SERVICES OF A MUSICIAN ORCHESTRA VOCAL.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Los servicios de una orquesta musico vocal."
+        }
+      ]
+    },
+    "id": "1767cb41-a57e-4e05-8968-ac3261980dc5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "BLANCO, AMARILLO, GRIS, NEGRO Y ROJO."
+      }
+    ],
+    "markImageViennaClassification": [
+      "24.17.12",
+      "27.05.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "4717"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160711",
+        "applicationNumber": "3622676 M9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260710",
+      "lastPublicationDate": "20160721",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170222",
+        "registrationNumber": "3622676 M9"
+      }
+    },
+    "version": "20260427164134",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "J.O.S.E JOVEN ORQUESTA DEL SUR DE ESPAÑA"
+    }
+  },
+  "_uri": "/mark/es/1767cb41-a57e-4e05-8968-ac3261980dc5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

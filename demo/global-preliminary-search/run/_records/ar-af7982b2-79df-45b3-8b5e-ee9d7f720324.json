@@ -1,0 +1,104 @@
+{
+  "uri": "/mark/ar/af7982b2-79df-45b3-8b5e-ee9d7f720324",
+  "provider": "clarivate",
+  "office": "ar",
+  "guid": "af7982b2-79df-45b3-8b5e-ee9d7f720324",
+  "applicationNumber": "4761233",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-05",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-19",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Clase 09 : Internacional Limitada CAMARAS DE SEGURIDAD ;CAMARAS DE VIDEOVIGILANCIA ;CERRADURAS BIOMETRICAS ;GRABADORAS DE VIDEO DIGITAL [DVR] ;SOFTWARE PARA GESTION DE DATOS Y DE FICHEROS INFORMATICOS Y BASES DE DATOS ;SOFTWARE PARA LA GESTION OPERATIVA DE TARJETAS MAGNETICAS Y ELECTRONICAS PORTATILES ;SOFTWARE PARA PROCESAR IMAGENES, GRAFICOS, AUDIO, VIDEO Y TEXTO ;",
+      "translation_language": "en",
+      "translation": "Class 09: International Limited SECURITY CAMERAS; VIDEO SURVEILLANCE CAMERAS; BIOMETRIC LOCKS; DIGITAL VIDEO RECORDERS [DVR]; SOFTWARE FOR MANAGING DATA AND COMPUTER FILES AND DATABASES; SOFTWARE FOR THE OPERATIONAL MANAGEMENT OF MAGNETIC AND ELECTRONIC PORTABLE CARDS; SOFTWARE FOR PROCESSING IMAGES, GRAPHICS, AUDIO, VIDEO AND TEXT;"
+    }
+  ],
+  "owner": "JORGE HUTCHINS",
+  "ownerNative": null,
+  "ownerCountry": "AR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "AR",
+        "applicantAddressCountryName": "Argentina",
+        "applicantName": "JORGE HUTCHINS"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 09: International Limited SECURITY CAMERAS; VIDEO SURVEILLANCE CAMERAS; BIOMETRIC LOCKS; DIGITAL VIDEO RECORDERS [DVR]; SOFTWARE FOR MANAGING DATA AND COMPUTER FILES AND DATABASES; SOFTWARE FOR THE OPERATIONAL MANAGEMENT OF MAGNETIC AND ELECTRONIC PORTABLE CARDS; SOFTWARE FOR PROCESSING IMAGES, GRAPHICS, AUDIO, VIDEO AND TEXT;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Clase 09 : Internacional Limitada CAMARAS DE SEGURIDAD ;CAMARAS DE VIDEOVIGILANCIA ;CERRADURAS BIOMETRICAS ;GRABADORAS DE VIDEO DIGITAL [DVR] ;SOFTWARE PARA GESTION DE DATOS Y DE FICHEROS INFORMATICOS Y BASES DE DATOS ;SOFTWARE PARA LA GESTION OPERATIVA DE TARJETAS MAGNETICAS Y ELECTRONICAS PORTATILES ;SOFTWARE PARA PROCESAR IMAGENES, GRAFICOS, AUDIO, VIDEO Y TEXTO ;"
+        }
+      ]
+    },
+    "id": "af7982b2-79df-45b3-8b5e-ee9d7f720324",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260902",
+    "registrationOfficeCode": "AR",
+    "registrationOfficeName": "Argentina",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260805",
+        "applicationNumber": "4761233"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260819",
+      "markCurrentStatus": "NEW APPLICATION"
+    },
+    "version": "20260902020521",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENOR"
+    }
+  },
+  "_uri": "/mark/ar/af7982b2-79df-45b3-8b5e-ee9d7f720324",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

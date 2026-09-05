@@ -1,0 +1,343 @@
+{
+  "uri": "/mark/us/2e77c2c4-914b-4fc3-a34b-f5f227b81bf8",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "2e77c2c4-914b-4fc3-a34b-f5f227b81bf8",
+  "applicationNumber": "99249053",
+  "registrationNumber": null,
+  "applicationDate": "2025-06-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-03-24"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "IQOR INSIGHTS IQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Outsource service provider in the field of business analytics; Business management consulting with relation to strategy, marketing, sales, operation, product design particularly specializing in the use of analytic and statistic models for the understanding and predicting of consumers, businesses, and market trends and actions; Consumer strategy business consulting in the fields of marketing, sales, operation, and product design particularly specializing in the use of analytic models for the understanding and predicting of consumer, business, and retail market trends and actions; Business monitoring and consulting services, namely, tracking web sites and applications of others to provide strategy, insight, marketing, sales, operation, product design, particularly specializing in the use of analytic and statistic models for the understanding and predicting of consumers, businesses, and market trends and actions; Development of marketing strategies, concepts and tactics, namely, audience development, brand awareness, customer relations, online community building and digital word of mouth communications; Total quality management services, namely, business management services for establishing business quality policy and determining business means for implementing those policies to improve customer satisfaction; Business assistance services, namely, assisting health care facilities and other companies with customer follow-up to improve customer outcomes and satisfaction through the use of telecommunication devices and computer networks with automated interaction and data feedback, monitoring and compilation capacity; Customer relationship management; Outsource service provider in the field of customer relationship management",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing services for Customer relationship management; Providing services for predictive analytics to uncover actionable insights that reduce customer churn, improve satisfaction, and drive revenue",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "IQOR US INC.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Daniel Basov",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6700 N Andrews Avenue, Fort Lauderdale, FL, 33309, USAM",
+        "applicantAddressCity": "Fort Lauderdale",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "33309",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantAddressStreet": "6700 N Andrews Avenue",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "IQOR US INC.",
+        "applicantSecondaryAddressUnit": "Suite 600"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "150 E. 42ND STREET, 40TH FLOOR, NEW YORK, NEW YORK, 10017",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL BANKING ASSOCIATION",
+            "name": "WELLS FARGO BANK, NATIONAL ASSOCIATION",
+            "postalCode": "10017",
+            "stateName": "NEW YORK",
+            "street": "150 E. 42ND STREET, 40TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "IQOR US INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "BLANK ROME LLP, 717 TEXAS AVENUE, SUITE 1400, HOUSTON, TX 77002",
+            "addressLines": [
+              "KAREEM ANSLEY",
+              "BLANK ROME LLP",
+              "717 TEXAS AVENUE, SUITE 1400",
+              "HOUSTON, TX 77002"
+            ],
+            "name": "KAREEM ANSLEY"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20250701",
+        "recordedDate": "20250702",
+        "reelFrameNumber": "8922/0805"
+      },
+      {
+        "assignees": [
+          {
+            "address": "150 EAST 58TH STREET, 39TH FLOOR, NEW YORK, NEW YORK, 10155",
+            "city": "NEW YORK",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "BLUE TORCH FINANCE LLC, AS COLLATERAL AGENT",
+            "postalCode": "10155",
+            "stateName": "NEW YORK",
+            "street": "150 EAST 58TH STREET, 39TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "IQOR US INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1025 CONNECTICUT AVE NW, SUITE 712, COGENCY GLOBAL, WASHINGTON, DC 20036",
+            "addressLines": [
+              "JENNIFER TINDIE",
+              "1025 CONNECTICUT AVE NW, SUITE 712",
+              "COGENCY GLOBAL",
+              "WASHINGTON, DC 20036"
+            ],
+            "name": "JENNIFER TINDIE"
+          }
+        ],
+        "descriptionText": "INTELLECTUAL PROPERTY SECURITY AGREEMENT",
+        "executedDate": "20250701",
+        "recordedDate": "20250702",
+        "reelFrameNumber": "8923/0252"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Outsource service provider in the field of business analytics; Business management consulting with relation to strategy, marketing, sales, operation, product design particularly specializing in the use of analytic and statistic models for the understanding and predicting of consumers, businesses, and market trends and actions; Consumer strategy business consulting in the fields of marketing, sales, operation, and product design particularly specializing in the use of analytic models for the understanding and predicting of consumer, business, and retail market trends and actions; Business monitoring and consulting services, namely, tracking web sites and applications of others to provide strategy, insight, marketing, sales, operation, product design, particularly specializing in the use of analytic and statistic models for the understanding and predicting of consumers, businesses, and market trends and actions; Development of marketing strategies, concepts and tactics, namely, audience development, brand awareness, customer relations, online community building and digital word of mouth communications; Total quality management services, namely, business management services for establishing business quality policy and determining business means for implementing those policies to improve customer satisfaction; Business assistance services, namely, assisting health care facilities and other companies with customer follow-up to improve customer outcomes and satisfaction through the use of telecommunication devices and computer networks with automated interaction and data feedback, monitoring and compilation capacity; Customer relationship management; Outsource service provider in the field of customer relationship management"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing services for Customer relationship management; Providing services for predictive analytics to uncover actionable insights that reduce customer churn, improve satisfaction, and drive revenue"
+        }
+      ]
+    },
+    "id": "2e77c2c4-914b-4fc3-a34b-f5f227b81bf8",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260519",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20260324",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260324",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20260318",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20260227",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260127",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20260127",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20260127",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20251113",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20251113",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251113",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251105",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20251031",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250804",
+        "descriptionText": "ASSIGNMENT OF OWNERSHIP NOT UPDATED AUTOMATICALLY"
+      },
+      {
+        "date": "20250624",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250624",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6700 N Andrews Avenue, Fort Lauderdale, FL, 33309, USAM",
+        "city": "Fort Lauderdale",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "IQOR US INC.",
+        "postalCode": "33309",
+        "secondaryAddressUnit": "Suite 600",
+        "stateName": "FLORIDA",
+        "street": "6700 N Andrews Avenue"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "6700 N Andrews Avenue, Fort Lauderdale, FL, 33309, USAM",
+        "city": "Fort Lauderdale",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "IQOR US INC.",
+        "postalCode": "33309",
+        "secondaryAddressUnit": "Suite 600",
+        "stateName": "FLORIDA",
+        "street": "6700 N Andrews Avenue"
+      },
+      {
+        "address": "6700 N Andrews Avenue, Fort Lauderdale, FL, 33309, USAM",
+        "city": "Fort Lauderdale",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "IQOR US INC.",
+        "postalCode": "33309",
+        "secondaryAddressUnit": "Suite 600",
+        "stateName": "FLORIDA",
+        "street": "6700 N Andrews Avenue"
+      }
+    ],
+    "recordLastUpdated": "20260522",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "New York, NY 10009, United States",
+        "representativeCorrespondentAddressLines": [
+          "New York, NY 10009",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Daniel Basov, 18 Stuyvesant Oval, apt. 10E"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "New York, NY 10009, United States",
+        "representativeAddressLines": [
+          "New York, NY 10009",
+          "United States"
+        ],
+        "representativeName": "Daniel Basov"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250624",
+        "applicationNumber": "99249053"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NOTICE OF ALLOWANCE - ISSUED",
+        "markOfficialStatusCode": "688",
+        "markOfficialStatusDate": "20260519",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20260324"
+      ]
+    },
+    "version": "20260522062648",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IQOR INSIGHTS IQ"
+    }
+  },
+  "_uri": "/mark/us/2e77c2c4-914b-4fc3-a34b-f5f227b81bf8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

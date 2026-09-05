@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/xs/d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+  "applicationNumber": null,
+  "registrationNumber": "M07333",
+  "applicationDate": null,
+  "registrationDate": "2004-03-17",
+  "expiryDate": null,
+  "renewalDate": "2014-03-17",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "THE VEIN CARE CENTER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Miscellaneous",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Miscellaneous",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MUSKEGON SURGICAL ASSOCIATES, P.C.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1316 MERCY DRIVE, MUSKEGON, MI, 49444",
+        "applicantAddressCity": "MUSKEGON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "49444",
+        "applicantAddressStateName": "MICHIGAN",
+        "applicantAddressStreet": "1316 MERCY DRIVE",
+        "applicantLegalEntity": "PROFESSIONAL CORPORATION",
+        "applicantName": "MUSKEGON SURGICAL ASSOCIATES, P.C."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Miscellaneous"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Miscellaneous"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "100",
+          "natGoodsServicesDescription": "Miscellaneous"
+        }
+      ]
+    },
+    "id": "d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "1316 MERCY DRIVE, MUSKEGON, MI, 49444",
+        "city": "MUSKEGON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "PROFESSIONAL CORPORATION",
+        "name": "MUSKEGON SURGICAL ASSOCIATES, P.C.",
+        "postalCode": "49444",
+        "stateName": "MICHIGAN",
+        "street": "1316 MERCY DRIVE"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "1316 MERCY DRIVE, MUSKEGON, MI, 49444",
+        "city": "MUSKEGON",
+        "legalEntity": "PROFESSIONAL CORPORATION",
+        "name": "MUSKEGON SURGICAL ASSOCIATES, P.C.",
+        "postalCode": "49444",
+        "renewalDate": "20140317",
+        "stateName": "MICHIGAN",
+        "street": "1316 MERCY DRIVE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20030701"
+        }
+      ],
+      "firstUsedAnywhereDate": "20030701",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20040317",
+        "registrationNumber": "M07333"
+      },
+      "renewalDate": "20140317"
+    },
+    "usStateOfficeCode": "MI",
+    "usStateOfficeName": "MICHIGAN",
+    "version": "20240305092958",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE VEIN CARE CENTER"
+    }
+  },
+  "_uri": "/mark/xs/d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

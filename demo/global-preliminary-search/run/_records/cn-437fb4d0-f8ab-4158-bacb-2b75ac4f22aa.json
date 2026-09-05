@@ -1,0 +1,161 @@
+{
+  "uri": "/mark/cn/437fb4d0-f8ab-4158-bacb-2b75ac4f22aa",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "437fb4d0-f8ab-4158-bacb-2b75ac4f22aa",
+  "applicationNumber": "62109155",
+  "registrationNumber": "62109155",
+  "applicationDate": "2022-01-12",
+  "registrationDate": "2022-07-14",
+  "expiryDate": "2032-07-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-04-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "凯文克里斯",
+  "markTransliteration": "KAI WEN KE LI SI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "头戴式耳机,电子芯片,眼镜,时间记录装置,智能手表(数据处理),可下载的手机应用软件,移动电源(可充电电池),电源连接器,智能手机,商品电子标签",
+      "translation_language": "en",
+      "translation": "Headphones, electronic chips, glasses, time recording devices, smart watches (data processing), downloadable mobile application software, mobile power (rechargeable batteries), power connectors, smart phones, commodity electronic labels"
+    }
+  ],
+  "owner": "Wuhan Kevin Kris Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省武汉市江夏区文化大道111号通达广场21层2103室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wuhan Kevin Kris Technology Co., Ltd.",
+        "applicantNativeName": "武汉凯文克里斯科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Headphones, electronic chips, glasses, time recording devices, smart watches (data processing), downloadable mobile application software, mobile power (rechargeable batteries), power connectors, smart phones, commodity electronic labels",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "头戴式耳机,电子芯片,眼镜,时间记录装置,智能手表(数据处理),可下载的手机应用软件,移动电源(可充电电池),电源连接器,智能手机,商品电子标签"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "437fb4d0-f8ab-4158-bacb-2b75ac4f22aa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1787"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京细软智谷知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220112",
+        "applicationNumber": "62109155"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320713",
+      "lastPublicationDate": "20220413",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220714",
+        "registrationNumber": "62109155"
+      }
+    },
+    "version": "20251004185625",
+    "wordMarkSpecification": {
+      "markTransliteration": "KAI WEN KE LI SI",
+      "markVerbalElementText": "凯文克里斯"
+    }
+  },
+  "_uri": "/mark/cn/437fb4d0-f8ab-4158-bacb-2b75ac4f22aa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.826Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

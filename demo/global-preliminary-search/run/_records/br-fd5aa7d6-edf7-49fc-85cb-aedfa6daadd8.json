@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/br/fd5aa7d6-edf7-49fc-85cb-aedfa6daadd8",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "fd5aa7d6-edf7-49fc-85cb-aedfa6daadd8",
+  "applicationNumber": "830835440",
+  "registrationNumber": "830835440",
+  "applicationDate": "2010-11-09",
+  "registrationDate": "2014-04-15",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QORIVVA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Semicondutores, circuitos integrados, microcontroladores, microprocessadores, microcontroladores, multinúcleos ('multicore'), processadores multinúcleo ('multicore'), processadores de sinal digital, microcontroladores programáveis por software e microprocessadores programáveis por software.",
+      "translation_language": "en",
+      "translation": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROCONTROLLERS, MICROPROCESSORS, MICROCONTROLLERS, MULTI-NUCLEUS (&#39;MULTICORE&#39;), MULTI-NUCLEUS PROCESSORS (&#39;MULTICORE&#39;), DIGITAL SIGNAL PROCESSORS, MICROCONTROLLERS BY SOFTWARE PROGRAMMABLE MICROCONTROLLERS."
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "MOMSEN, LEONARDOS & CIA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC."
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SEMICONDUCTORS, INTEGRATED CIRCUITS, MICROCONTROLLERS, MICROPROCESSORS, MICROCONTROLLERS, MULTI-NUCLEUS (&#39;MULTICORE&#39;), MULTI-NUCLEUS PROCESSORS (&#39;MULTICORE&#39;), DIGITAL SIGNAL PROCESSORS, MICROCONTROLLERS BY SOFTWARE PROGRAMMABLE MICROCONTROLLERS.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Semicondutores, circuitos integrados, microcontroladores, microprocessadores, microcontroladores, multinúcleos ('multicore'), processadores multinúcleo ('multicore'), processadores de sinal digital, microcontroladores programáveis por software e microprocessadores programáveis por software."
+        }
+      ]
+    },
+    "id": "fd5aa7d6-edf7-49fc-85cb-aedfa6daadd8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "MOMSEN, LEONARDOS & CIA."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20101109",
+        "applicationNumber": "830835440"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20140415",
+        "registrationNumber": "830835440"
+      }
+    },
+    "version": "20250630221535",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIVVA"
+    }
+  },
+  "_uri": "/mark/br/fd5aa7d6-edf7-49fc-85cb-aedfa6daadd8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

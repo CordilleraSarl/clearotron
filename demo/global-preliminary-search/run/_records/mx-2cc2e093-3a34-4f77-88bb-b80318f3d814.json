@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/mx/2cc2e093-3a34-4f77-88bb-b80318f3d814",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "2cc2e093-3a34-4f77-88bb-b80318f3d814",
+  "applicationNumber": "133587",
+  "registrationNumber": null,
+  "applicationDate": "2021-02-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SOMOS UNA EMPRESA JOVEN QUE NACIÓ CON EXPERIENCIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Direccion de cursos, seminarios y talleres; organizacion de talleres profesionales y cursos de formacion; realizacion de talleres educativos en materia de negocios; imparticion de cursos en diplomados (dirigidos a proyectos de construccion); capacitacion en administracion de proyectos de construccion; informacion relacionada con la educacion, facilitada en linea desde una base de datos informatica o desde internet.",
+      "translation_language": "en",
+      "translation": "DIRECTION OF COURSES, SEMINARS AND WORKSHOPS; ORGANIZATION OF PROFESSIONAL WORKSHOPS AND TRAINING COURSES; CARRYING OUT EDUCATIONAL WORKSHOPS ON BUSINESS; TEACHING OF COURSES IN DIPLOMA (AIMED AT CONSTRUCTION PROJECTS); TRAINING IN ADMINISTRATION OF CONSTRUCTION PROJECTS; INFORMATION RELATED TO EDUCATION, FACILITATED ONLINE FROM AN COMPUTER DATABASE OR FROM THE INTERNET."
+    }
+  ],
+  "owner": "JOSÉ ANTONIO VILLARREAL SALDAÑA",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "OSCAR HERIBERTO GONZALEZ AGUILAR",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "RÍO MISSOURI ORIENTE NUM. EXT. 600 NUM. INT. 213-B, DEL VALLE, SAN PEDRO GARZA GARCÍA, NUEVO LEÓN 66220",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "JOSÉ ANTONIO VILLARREAL SALDAÑA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DIRECTION OF COURSES, SEMINARS AND WORKSHOPS; ORGANIZATION OF PROFESSIONAL WORKSHOPS AND TRAINING COURSES; CARRYING OUT EDUCATIONAL WORKSHOPS ON BUSINESS; TEACHING OF COURSES IN DIPLOMA (AIMED AT CONSTRUCTION PROJECTS); TRAINING IN ADMINISTRATION OF CONSTRUCTION PROJECTS; INFORMATION RELATED TO EDUCATION, FACILITATED ONLINE FROM AN COMPUTER DATABASE OR FROM THE INTERNET.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Direccion de cursos, seminarios y talleres; organizacion de talleres profesionales y cursos de formacion; realizacion de talleres educativos en materia de negocios; imparticion de cursos en diplomados (dirigidos a proyectos de construccion); capacitacion en administracion de proyectos de construccion; informacion relacionada con la educacion, facilitada en linea desde una base de datos informatica o desde internet."
+        }
+      ]
+    },
+    "id": "2cc2e093-3a34-4f77-88bb-b80318f3d814",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representatives": [
+      {
+        "representativeAddress": "PRIVADA EVIA NUM. EXT. 440-B, MARÍA LUISA, MONTERREY, NUEVO LEÓN 64040, MEXICO",
+        "representativeName": "OSCAR HERIBERTO GONZALEZ AGUILAR"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210212",
+        "applicationNumber": "133587"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250704185532",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SOMOS UNA EMPRESA JOVEN QUE NACIÓ CON EXPERIENCIA"
+    }
+  },
+  "_uri": "/mark/mx/2cc2e093-3a34-4f77-88bb-b80318f3d814",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

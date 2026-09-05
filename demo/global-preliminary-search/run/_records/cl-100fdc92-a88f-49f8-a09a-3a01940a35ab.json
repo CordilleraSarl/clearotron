@@ -1,0 +1,108 @@
+{
+  "uri": "/mark/cl/100fdc92-a88f-49f8-a09a-3a01940a35ab",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "100fdc92-a88f-49f8-a09a-3a01940a35ab",
+  "applicationNumber": "1614213",
+  "registrationNumber": "1471146",
+  "applicationDate": "2025-02-20",
+  "registrationDate": "2025-08-07",
+  "expiryDate": "2035-08-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "wayna tusuy",
+  "markTransliteration": "JOVEN QUE BAILA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "(Concedida) Servicios de entretenimiento prestados por grupos musicales; organización de eventos culturales y artísticos; presentaciones artísticas de conjuntos folclóricos, grupos artísticos y folclóricos.",
+      "translation_language": "en",
+      "translation": "(Granted) Entertainment services provided by musical groups; organization of cultural and artistic events; artistic presentations by folklore groups, artistic and folklore groups."
+    }
+  ],
+  "owner": "Enzo Piero Labra Abarca",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "Enzo Piero Labra Abarca"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Entertainment services provided by musical groups; organization of cultural and artistic events; artistic presentations by folklore groups, artistic and folklore groups.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Servicios de entretenimiento prestados por grupos musicales; organización de eventos culturales y artísticos; presentaciones artísticas de conjuntos folclóricos, grupos artísticos y folclóricos."
+        }
+      ]
+    },
+    "id": "100fdc92-a88f-49f8-a09a-3a01940a35ab",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250220",
+        "applicationNumber": "1614213"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350807",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250807",
+        "registrationNumber": "1471146"
+      }
+    },
+    "version": "20260615170256",
+    "wordMarkSpecification": {
+      "markTransliteration": "JOVEN QUE BAILA",
+      "markVerbalElementText": "wayna tusuy"
+    }
+  },
+  "_uri": "/mark/cl/100fdc92-a88f-49f8-a09a-3a01940a35ab",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

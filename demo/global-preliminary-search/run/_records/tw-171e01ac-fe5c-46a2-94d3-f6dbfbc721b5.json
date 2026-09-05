@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/tw/171e01ac-fe5c-46a2-94d3-f6dbfbc721b5",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "171e01ac-fe5c-46a2-94d3-f6dbfbc721b5",
+  "applicationNumber": "095030126",
+  "registrationNumber": "01254290",
+  "applicationDate": "2006-06-12",
+  "registrationDate": "2007-03-16",
+  "expiryDate": "2017-03-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "KORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "zh",
+      "description": "第009類:測高計、測微計、長度計、電子測距儀、迴轉計、轉數計、流速計、硬度計、計數器、光學測距器、流量計、測距計、電子脈衝測量器、千分表、百分表、線計數器、測距設備、測微器。",
+      "translation_language": "en",
+      "translation": "Class 009: Altimeter, micrometer, length meter, electronic distance meter, gyrometer, tachometer, flow meter, hardness meter, counter, optical distance meter, flow meter, distance meter, electronic pulse measurement instruments, dial indicators, dial indicators, line counters, distance measuring equipment, micrometers."
+    }
+  ],
+  "owner": "Kori Seiki Manufacturing Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Kori Seiki Manufacturing Co., Ltd.",
+        "applicantNativeAddress": "日本;",
+        "applicantNativeName": "古里精機製作所股份有限公司"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 009: Altimeter, micrometer, length meter, electronic distance meter, gyrometer, tachometer, flow meter, hardness meter, counter, optical distance meter, flow meter, distance meter, electronic pulse measurement instruments, dial indicators, dial indicators, line counters, distance measuring equipment, micrometers.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第009類:測高計、測微計、長度計、電子測距儀、迴轉計、轉數計、流速計、硬度計、計數器、光學測距器、流量計、測距計、電子脈衝測量器、千分表、百分表、線計數器、測距設備、測微器。"
+        }
+      ]
+    },
+    "id": "171e01ac-fe5c-46a2-94d3-f6dbfbc721b5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "TW",
+        "representativeAddressCountryName": "Taiwan",
+        "representativeNativeName": "簡志道    臺北市信義區信義路4段415號6樓之6"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060612",
+        "applicationNumber": "095030126"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20170315",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20070316",
+        "registrationNumber": "01254290"
+      }
+    },
+    "version": "20260331171155",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KORI"
+    }
+  },
+  "_uri": "/mark/tw/171e01ac-fe5c-46a2-94d3-f6dbfbc721b5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

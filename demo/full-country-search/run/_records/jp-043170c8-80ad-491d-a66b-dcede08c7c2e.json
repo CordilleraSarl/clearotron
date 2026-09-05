@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/jp/043170c8-80ad-491d-a66b-dcede08c7c2e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "043170c8-80ad-491d-a66b-dcede08c7c2e",
+  "applicationNumber": "2026-015237",
+  "registrationNumber": null,
+  "applicationDate": "2026-02-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ＩＮＶＩＳＡＬＩＧＮ　ＡＳＩＡ’Ｎ　ＳＭＩＬＥＳ",
+  "markTransliteration": "INBIZARAINAJIANSUMAIRUZU",
+  "markTranslation": "INVISALIGN ASIA'N SMILES",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のデジタル画像用ソフトウェア（ダウンロード可能なコンピュータソフトウェア），個別にカスタマイズされた矯正歯科治療方針の作成用のダウンロード可能なコンピュータソフトウェア，矯正歯科治療方針案並びにそれに関する患者のデータ及び情報の提供・追跡及び修正用のダウンロード可能なコンピュータソフトウェア，個々の歯の状態の評価用及び矯正歯科治療の計画立案用の歯科専門家向けのダウンロード可能なソフトウェア，修復歯科用・歯冠及びブリッジの作成用並びに修復歯科治療用のダウンロード可能なソフトウェア，電子計算機用プログラム（ダウンロード可能なソフトウェア）",
+      "translation_language": "en",
+      "translation": "Digital imaging software for tooth movement and depiction of dental and orthodontic treatment plans (downloadable computer software), downloadable computer software for creating individualized orthodontic treatment plans, downloadable computer software for providing, tracking and modifying orthodontic treatment plans and related patient data and information, downloadable software for dental professionals to assess the condition of individual teeth and to plan orthodontic treatment, downloadable software for restorative dentistry, the creation of crowns and bridges and for restorative dental treatment, computer programs (downloadable software)"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "歯科及び矯正歯科の分野における訓練，歯列矯正器具の使用における訓練，矯正歯科用ソフトウェアの使用における訓練，デジタル画像用ソフトウェアの使用における歯科矯正医及び歯科医の訓練（教育及び訓練），訓練・セミナー・会議及びワークショップの企画及び運営（全て、外科・内科・歯科及び矯正歯科の技術・器具・機器及び装置に関するもの），技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催",
+      "translation_language": "en",
+      "translation": "Training in the fields of dentistry and orthodontics, Training in the use of orthodontic appliances, Training in the use of orthodontic software, Training of orthodontists and dentists in the use of digital imaging software (education and training), Organising and running of trainings, seminars, conferences and workshops (all relating to surgical, medical, dental and orthodontic techniques, instruments, equipment and devices), Teaching of arts, sports or knowledge, Organising, running or running of seminars"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "個別にカスタマイズされた歯科及び矯正歯科の治療計画方針の作成用・歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のソフトウェア（矯正歯科及び歯科治療サービスの提供用のソフトウェア）を特徴とするアプリケーションサービスプロバイダー（ＡＳＰ），医師・患者及び潜在患者の間のインスタントメッセージ通信用のソフトウェアの設計及び開発，個別にカスタマイズされた歯科及び矯正歯科の治療計画方針の作成用・歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のオンラインによるダウンロードが不可能なソフトウェア（歯科用のソフトウェア）の提供，個別にカスタマイズされた歯科及び矯正歯科の治療計画方針の作成用・歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のオンラインによるダウンロードが不可能なソフトウェア（歯科治療・歯科設計又は歯科サービス用のソフトウェア）の提供，コンピュータソフトウェアに関する助言，歯科の分野におけるコンピュータソフトウェアの開発，歯科治療の計画立案の目的のコンピュータアプリケーションをホストするための、情報管理の分野におけるアプリケーションサービスプロバイダーとしての行動（コンピュータサービス），インターネット経由での、ダウンロードが不可能なコンピュータソフトウェアの提供，オンラインによるダウンロードが不可能なシングルサインオン（ＳＳＯ）ソフトウェアの一時的使用の提供，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Application service providers (ASPs) featuring software for creating customized dental and orthodontic treatment plans, tooth movement and dental and orthodontic treatment plan drawings (software for the provision of orthodontic and dental treatment services), design and development of software for instant messaging between doctors, patients and potential patients, provision of non-downloadable software for creating customized dental and orthodontic treatment plans, tooth movement and dental and orthodontic treatment plan drawings (dental software), provision of non-downloadable software for creating customized dental and orthodontic treatment plans, tooth movement and dental and orthodontic treatment plan drawings (dental treatment, dental design or dental services software), computer software advice, development of computer software in the field of dentistry, acting as an application service provider in the field of information management for hosting computer applications for dental treatment planning purposes (computer services), provision of non-downloadable computer software via the Internet, provision of temporary use of non-downloadable single sign-on (SSO) software, design, creation or maintenance of computer programs, provision of computer programs"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IDAKA MASATO",
+  "priorities": [
+    {
+      "priorityDate": "20260212"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Digital imaging software for tooth movement and depiction of dental and orthodontic treatment plans (downloadable computer software), downloadable computer software for creating individualized orthodontic treatment plans, downloadable computer software for providing, tracking and modifying orthodontic treatment plans and related patient data and information, downloadable software for dental professionals to assess the condition of individual teeth and to plan orthodontic treatment, downloadable software for restorative dentistry, the creation of crowns and bridges and for restorative dental treatment, computer programs (downloadable software)",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のデジタル画像用ソフトウェア（ダウンロード可能なコンピュータソフトウェア），個別にカスタマイズされた矯正歯科治療方針の作成用のダウンロード可能なコンピュータソフトウェア，矯正歯科治療方針案並びにそれに関する患者のデータ及び情報の提供・追跡及び修正用のダウンロード可能なコンピュータソフトウェア，個々の歯の状態の評価用及び矯正歯科治療の計画立案用の歯科専門家向けのダウンロード可能なソフトウェア，修復歯科用・歯冠及びブリッジの作成用並びに修復歯科治療用のダウンロード可能なソフトウェア，電子計算機用プログラム（ダウンロード可能なソフトウェア）"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training in the fields of dentistry and orthodontics, Training in the use of orthodontic appliances, Training in the use of orthodontic software, Training of orthodontists and dentists in the use of digital imaging software (education and training), Organising and running of trainings, seminars, conferences and workshops (all relating to surgical, medical, dental and orthodontic techniques, instruments, equipment and devices), Teaching of arts, sports or knowledge, Organising, running or running of seminars",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "歯科及び矯正歯科の分野における訓練，歯列矯正器具の使用における訓練，矯正歯科用ソフトウェアの使用における訓練，デジタル画像用ソフトウェアの使用における歯科矯正医及び歯科医の訓練（教育及び訓練），訓練・セミナー・会議及びワークショップの企画及び運営（全て、外科・内科・歯科及び矯正歯科の技術・器具・機器及び装置に関するもの），技芸・スポーツ又は知識の教授，セミナーの企画・運営又は開催"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Application service providers (ASPs) featuring software for creating customized dental and orthodontic treatment plans, tooth movement and dental and orthodontic treatment plan drawings (software for the provision of orthodontic and dental treatment services), design and development of software for instant messaging between doctors, patients and potential patients, provision of non-downloadable software for creating customized dental and orthodontic treatment plans, tooth movement and dental and orthodontic treatment plan drawings (dental software), provision of non-downloadable software for creating customized dental and orthodontic treatment plans, tooth movement and dental and orthodontic treatment plan drawings (dental treatment, dental design or dental services software), computer software advice, development of computer software in the field of dentistry, acting as an application service provider in the field of information management for hosting computer applications for dental treatment planning purposes (computer services), provision of non-downloadable computer software via the Internet, provision of temporary use of non-downloadable single sign-on (SSO) software, design, creation or maintenance of computer programs, provision of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "個別にカスタマイズされた歯科及び矯正歯科の治療計画方針の作成用・歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のソフトウェア（矯正歯科及び歯科治療サービスの提供用のソフトウェア）を特徴とするアプリケーションサービスプロバイダー（ＡＳＰ），医師・患者及び潜在患者の間のインスタントメッセージ通信用のソフトウェアの設計及び開発，個別にカスタマイズされた歯科及び矯正歯科の治療計画方針の作成用・歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のオンラインによるダウンロードが不可能なソフトウェア（歯科用のソフトウェア）の提供，個別にカスタマイズされた歯科及び矯正歯科の治療計画方針の作成用・歯の移動並びに歯科及び矯正歯科の治療計画案の描写用のオンラインによるダウンロードが不可能なソフトウェア（歯科治療・歯科設計又は歯科サービス用のソフトウェア）の提供，コンピュータソフトウェアに関する助言，歯科の分野におけるコンピュータソフトウェアの開発，歯科治療の計画立案の目的のコンピュータアプリケーションをホストするための、情報管理の分野におけるアプリケーションサービスプロバイダーとしての行動（コンピュータサービス），インターネット経由での、ダウンロードが不可能なコンピュータソフトウェアの提供，オンラインによるダウンロードが不可能なシングルサインオン（ＳＳＯ）ソフトウェアの一時的使用の提供，電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "043170c8-80ad-491d-a66b-dcede08c7c2e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20260212"
+      }
+    ],
+    "recordLastUpdated": "20260403",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IDAKA MASATO",
+        "representativeNativeName": "井▲高▼　将斗"
+      },
+      {
+        "representativeName": "Mikata, Ryoji",
+        "representativeNativeName": "見方　良二"
+      },
+      {
+        "representativeName": "YAMAMOTO KENSAKU",
+        "representativeNativeName": "山本　健策"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      },
+      {
+        "representativeName": "ISHIKAWA DAISUKE",
+        "representativeNativeName": "石川　大輔"
+      },
+      {
+        "representativeName": "IIDA TAKATOSHI",
+        "representativeNativeName": "飯田　貴敏"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260212",
+        "applicationNumber": "2026-015237"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260403083309",
+    "wordMarkSpecification": {
+      "markTranslation": "INVISALIGN ASIA'N SMILES",
+      "markTransliteration": "INBIZARAINAJIANSUMAIRUZU",
+      "markVerbalElementText": "ＩＮＶＩＳＡＬＩＧＮ　ＡＳＩＡ’Ｎ　ＳＭＩＬＥＳ"
+    }
+  },
+  "_uri": "/mark/jp/043170c8-80ad-491d-a66b-dcede08c7c2e",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.740Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

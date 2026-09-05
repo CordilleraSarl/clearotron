@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/my/75886fec-a544-4934-a1d6-bb389c02c398",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "75886fec-a544-4934-a1d6-bb389c02c398",
+  "applicationNumber": "TM2024034933",
+  "registrationNumber": null,
+  "applicationDate": "2024-11-07",
+  "registrationDate": "2024-11-07",
+  "expiryDate": "2034-11-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "i scr nx",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "led display boards; led display devices; led display panels; led displays; led message boards; leds; leds for use in display boards; leds for use in display panels; led screen displays; led televisions; light emitting diodes [led]; light-emitting diodes [led] display panels; light-emitting diodes [led] for use in display panels; oled displays; oled screens; digital signage display panels; digital signage monitors; lcd monitors; lcd panels; lcd projectors; lcd screens; lcd televisions; liquid crystal display [lcd] units; liquid crystal display monitors; liquid crystal display panels; liquid crystal display projectors; liquid crystal display screens; liquid crystal display televisions; liquid crystal display units; liquid crystal displays; portable displays; qled display panels; qled displays; visual display units; liquid crystal display [lcd] monitors; liquid crystal display [lcd] panels; liquid crystal display [lcd] projectors; liquid crystal display [lcd] screens; liquid crystal display [lcd] televisions; liquid crystal displays [lcds] for home theaters; liquid crystal displays [lcds] for home theatres; multimedia projectors; electronic advertising displays; facial recognition equipment; display screens; large-screen lcds; large-screen liquid crystal displays; large-screen liquid crystal displays [lcds]; lcd large-screen displays; projection screens; projection screens for cinematographic films; projection screens for movie films; qled screens; touchscreen monitors; touch sensitive electronic screens; touch screen monitors; video screens; display devices; display monitors; electronic touchscreen displays; flexible flat panel displays for computers; light-emitting diodes displays; light-emitting diodes for use in display boards; light-emitting diodes for use in display panels; light-emitting diodes [led] display boards; light-emitting diodes [led] display devices; light-emitting diodes [led] displays; light-emitting diodes [led] for use in display boards; light-emitting diodes display boards; light-emitting diodes display devices; light-emitting diodes display panels; led screens.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ISCREEN SDN BHD",
+  "ownerNative": null,
+  "ownerCountry": "MY",
+  "representative": "ISCREEN SDN. BHD.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2-18B, Jalan Desa 1/3, Desa Aman Puri Wilayah Persekutuan 52100 Kuala Lumpur",
+        "applicantAddressCountryCode": "MY",
+        "applicantAddressCountryName": "Malaysia",
+        "applicantName": "ISCREEN SDN BHD"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "led display boards; led display devices; led display panels; led displays; led message boards; leds; leds for use in display boards; leds for use in display panels; led screen displays; led televisions; light emitting diodes [led]; light-emitting diodes [led] display panels; light-emitting diodes [led] for use in display panels; oled displays; oled screens; digital signage display panels; digital signage monitors; lcd monitors; lcd panels; lcd projectors; lcd screens; lcd televisions; liquid crystal display [lcd] units; liquid crystal display monitors; liquid crystal display panels; liquid crystal display projectors; liquid crystal display screens; liquid crystal display televisions; liquid crystal display units; liquid crystal displays; portable displays; qled display panels; qled displays; visual display units; liquid crystal display [lcd] monitors; liquid crystal display [lcd] panels; liquid crystal display [lcd] projectors; liquid crystal display [lcd] screens; liquid crystal display [lcd] televisions; liquid crystal displays [lcds] for home theaters; liquid crystal displays [lcds] for home theatres; multimedia projectors; electronic advertising displays; facial recognition equipment; display screens; large-screen lcds; large-screen liquid crystal displays; large-screen liquid crystal displays [lcds]; lcd large-screen displays; projection screens; projection screens for cinematographic films; projection screens for movie films; qled screens; touchscreen monitors; touch sensitive electronic screens; touch screen monitors; video screens; display devices; display monitors; electronic touchscreen displays; flexible flat panel displays for computers; light-emitting diodes displays; light-emitting diodes for use in display boards; light-emitting diodes for use in display panels; light-emitting diodes [led] display boards; light-emitting diodes [led] display devices; light-emitting diodes [led] displays; light-emitting diodes [led] for use in display boards; light-emitting diodes display boards; light-emitting diodes display devices; light-emitting diodes display panels; led screens."
+        }
+      ]
+    },
+    "id": "75886fec-a544-4934-a1d6-bb389c02c398",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260303",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "2-18B, Jalan Desa 1/3, Desa Aman Puri Wilayah Persekutuan 52100 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "ISCREEN SDN. BHD."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241107",
+        "applicationNumber": "TM2024034933"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341107",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20241107"
+      }
+    },
+    "version": "20260303050117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "i scr nx"
+    }
+  },
+  "_uri": "/mark/my/75886fec-a544-4934-a1d6-bb389c02c398",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

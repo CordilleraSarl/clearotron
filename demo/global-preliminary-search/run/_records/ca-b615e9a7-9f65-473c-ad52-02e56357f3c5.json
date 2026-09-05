@@ -1,0 +1,222 @@
+{
+  "uri": "/mark/ca/b615e9a7-9f65-473c-ad52-02e56357f3c5",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "b615e9a7-9f65-473c-ad52-02e56357f3c5",
+  "applicationNumber": "1614897",
+  "registrationNumber": null,
+  "applicationDate": "2013-02-20",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2014-07-15",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "INTERACTIVE NORTH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        37,
+        38,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Internet Service Provider and Internet integration \n(2) Av Equipment Retailer \n(3) CCTV sales",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35,
+        37,
+        38,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Home automation \n(2) Internet installation and service provider \n(3) Computer and technical support \n(4) CCTV installation",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Phil Sifft",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1118 Hamills Pt Rd, MacTier, ONTARIO, P0C1H0",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "1118 Hamills Pt Rd",
+          "MacTier",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "P0C1H0",
+        "applicantName": "Phil Sifft"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since February 01, 2013 on services (1),(3),(4) on wares marked (1) (2) (3)",
+        "typeDescription": "First Use"
+      },
+      {
+        "text": "Used in CANADA since February 01, 2012 on services (2)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,37,38,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Internet Service Provider and Internet integration \n(2) Av Equipment Retailer \n(3) CCTV sales"
+        },
+        {
+          "intClassNumber": "35,37,38,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Home automation \n(2) Internet installation and service provider \n(3) Computer and technical support \n(4) CCTV installation"
+        }
+      ]
+    },
+    "id": "b615e9a7-9f65-473c-ad52-02e56357f3c5",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20140715",
+        "descriptionText": "Abandoned - Section 36"
+      },
+      {
+        "date": "20140422",
+        "descriptionText": "Default Notice Sent",
+        "responseDate": "20140622"
+      },
+      {
+        "date": "20131001",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20140401"
+      },
+      {
+        "date": "20130924",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20130222",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20130221",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20130220",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageViennaClassification": [
+      "05.01.01",
+      "05.01.10",
+      "05.01.16",
+      "05.01.05",
+      "26.11.01",
+      "26.11.12",
+      "01.15.25",
+      "26.01.01",
+      "26.01.15",
+      "26.01.24",
+      "26.11.22"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1118 Hamills Pt Rd, MacTier, ONTARIO, P0C1H0",
+        "addressLines": [
+          "1118 Hamills Pt Rd",
+          "MacTier",
+          "ONTARIO",
+          "P0C1H0"
+        ],
+        "countryName": "Canada",
+        "name": "Phil Sifft",
+        "postalCode": "P0C1H0"
+      }
+    ],
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "abandonmentDate": "20140715",
+      "active": false,
+      "application": {
+        "applicationDate": "20130220",
+        "applicationNumber": "1614897"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "defaultNotice": {
+        "dueDate": "20140622",
+        "sentDate": "20140422"
+      },
+      "firstUsed": [
+        {
+          "firstUsedDate": "20120201",
+          "firstUsedText": "Used in CANADA since February 01, 2013 on services (1),(3),(4) on wares marked (1) (2) (3)"
+        },
+        {
+          "firstUsedDate": "20120201",
+          "firstUsedText": "Used in CANADA since February 01, 2012 on services (2)"
+        }
+      ],
+      "formalisationDate": "20130222",
+      "markCurrentStatus": "Abandoned - Section 36"
+    },
+    "subjectHeadings": [
+      "INTERACTIVE NORTH"
+    ],
+    "version": "20250624151515",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "INTERACTIVE NORTH",
+      "markVerbalElementTextFormal": "tree & wireless logo design in a circle"
+    }
+  },
+  "_uri": "/mark/ca/b615e9a7-9f65-473c-ad52-02e56357f3c5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.809Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

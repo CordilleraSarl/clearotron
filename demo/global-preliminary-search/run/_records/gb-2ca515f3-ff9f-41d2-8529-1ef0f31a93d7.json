@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "2ca515f3-ff9f-41d2-8529-1ef0f31a93d7",
+  "applicationNumber": "3927817",
+  "registrationNumber": "3927817",
+  "applicationDate": "2023-06-28",
+  "registrationDate": "2023-11-17",
+  "expiryDate": "2033-06-28",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software; Educational Technology Software; Education software; Parental control software; Cyber safety software; Student software; Filtering and monitoring software; Filtering and monitoring software for educational institution; Privacy protection software; Classroom management software; Children's educational software; Computer software concerned with children's education; Computer software for education; Educational computer software; Middleware for management of software functions on electronic devices; Access control devices; Access control software; Downloadable computer security software; Downloadable computer software for remote monitoring and analysis; Security software; System and system support software, and firmware; Content control software. Software for network and device security.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Digital safety education; Education and training services in the field of classroom management services; Cyber safety education; Computer based educational services; Computer education training services; Education and training services in the field of digital safeguarding solutions; Education and training services; Education services; Educational consultancy; Educational services provided for teachers of children; Educational services provided for children; Educational services relating to digital safety; Educational services in relation to computer systems; Educational services in relation to online safety; Online education services; Training of school personnel to ensure digital security protection of students; Training of educational institution personnel on the use of filtering and monitoring systems and services. .",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer services; Educational Technology Services; Classroom management software services; Parental control software services; Cyber safety software services; Hosting services, software as a service, and rental of software; Monitoring of computer systems for security purposes; Computer and information technology consultancy services; Computer security system monitoring services; Computer security services for the protection against illegal network access; Computer security consultancy; Consultancy in the field of computer security; Consultancy in the field of security software; Data security services [firewalls]; Design and development of Internet security program; Hosting multimedia educational content; Internet Security consultancy; IT consultancy, advisory and information services; IT Services; Programming of educational software; Programming of Internet security programs; Provision of computer security risk management programs; Rental of Internet security programs; Software development, programming and implementation; IT filtering and monitoring systems; IT filtering and monitoring services for educational institutions; Content control IT services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Qoria Holdings Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "Franks & Co Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "945 Wellington Street, West Perth 6005, Western Australia",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Qoria Holdings Pty Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software; Educational Technology Software; Education software; Parental control software; Cyber safety software; Student software; Filtering and monitoring software; Filtering and monitoring software for educational institution; Privacy protection software; Classroom management software; Children's educational software; Computer software concerned with children's education; Computer software for education; Educational computer software; Middleware for management of software functions on electronic devices; Access control devices; Access control software; Downloadable computer security software; Downloadable computer software for remote monitoring and analysis; Security software; System and system support software, and firmware; Content control software. Software for network and device security."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Digital safety education; Education and training services in the field of classroom management services; Cyber safety education; Computer based educational services; Computer education training services; Education and training services in the field of digital safeguarding solutions; Education and training services; Education services; Educational consultancy; Educational services provided for teachers of children; Educational services provided for children; Educational services relating to digital safety; Educational services in relation to computer systems; Educational services in relation to online safety; Online education services; Training of school personnel to ensure digital security protection of students; Training of educational institution personnel on the use of filtering and monitoring systems and services. ."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer services; Educational Technology Services; Classroom management software services; Parental control software services; Cyber safety software services; Hosting services, software as a service, and rental of software; Monitoring of computer systems for security purposes; Computer and information technology consultancy services; Computer security system monitoring services; Computer security services for the protection against illegal network access; Computer security consultancy; Consultancy in the field of computer security; Consultancy in the field of security software; Data security services [firewalls]; Design and development of Internet security program; Hosting multimedia educational content; Internet Security consultancy; IT consultancy, advisory and information services; IT Services; Programming of educational software; Programming of Internet security programs; Provision of computer security risk management programs; Rental of Internet security programs; Software development, programming and implementation; IT filtering and monitoring systems; IT filtering and monitoring services for educational institutions; Content control IT services."
+        }
+      ]
+    },
+    "id": "2ca515f3-ff9f-41d2-8529-1ef0f31a93d7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2023/036"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "15-16 Jessops Riverside, Brightside Lane, Sheffield South Yorkshire, Sheffield S9 2RX",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Franks & Co Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230628",
+        "applicationNumber": "3927817"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330628",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20231117",
+        "registrationNumber": "3927817"
+      }
+    },
+    "version": "20250627222820",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIA"
+    }
+  },
+  "_uri": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

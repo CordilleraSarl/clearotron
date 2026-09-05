@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/sg/8f1891bc-561d-4bf8-a964-b3f6048d5c70",
+  "provider": "clarivate",
+  "office": "sg",
+  "guid": "8f1891bc-561d-4bf8-a964-b3f6048d5c70",
+  "applicationNumber": "40201714261Y",
+  "registrationNumber": null,
+  "applicationDate": "2017-07-24",
+  "registrationDate": null,
+  "expiryDate": "2027-07-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-09-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "soheaven qi ye hun",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Publication of books; On-line publication of electronic books and journals; Videotaping; Vocational guidance [education or training advice]; Correspondence courses; Arranging and conducting of workshops [training].",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Soheaven International Group Inc.",
+  "ownerNative": null,
+  "ownerCountry": "WS",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Vistra Corporate Services Centre, Ground Floor NPF Building, Beach Road, Apia, Samoa",
+        "applicantAddressCountryCode": "WS",
+        "applicantAddressCountryName": "Samoa",
+        "applicantName": "Soheaven International Group Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Publication of books; On-line publication of electronic books and journals; Videotaping; Vocational guidance [education or training advice]; Correspondence courses; Arranging and conducting of workshops [training]."
+        }
+      ]
+    },
+    "id": "8f1891bc-561d-4bf8-a964-b3f6048d5c70",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "arrowhead"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250704",
+    "registrationOfficeCode": "SG",
+    "registrationOfficeName": "Singapore",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170724",
+        "applicationNumber": "40201714261Y"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270724",
+      "lastPublicationDate": "20170908",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250704173106",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "soheaven qi ye hun"
+    }
+  },
+  "_uri": "/mark/sg/8f1891bc-561d-4bf8-a964-b3f6048d5c70",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.566Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

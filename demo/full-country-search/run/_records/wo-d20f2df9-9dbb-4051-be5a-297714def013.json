@@ -1,0 +1,522 @@
+{
+  "uri": "/mark/wo/d20f2df9-9dbb-4051-be5a-297714def013",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "d20f2df9-9dbb-4051-be5a-297714def013",
+  "applicationNumber": null,
+  "registrationNumber": "1427533",
+  "applicationDate": null,
+  "registrationDate": "2018-01-24",
+  "expiryDate": "2028-01-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-10-11",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "align",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    40,
+    41,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software; computer software, namely, digital imaging software used to depict tooth movement and proposed treatment plans; computer software used in restorative dentistry; computer workstations for processing and displaying captured medical and dental images; computer hardware; computer programs; data processing equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "en",
+      "description": "Surgical, medical and dental apparatus and instruments for use in the dental and orthodontic field; dental equipment; dental apparatus and instruments; dental apparatus, namely, orthodontic appliances; apparatus and instruments for use in the dental field related to orthodontic treatment and for use in restorative dentistry; scanners for medical and dental diagnosis; intra-oral scanning cameras for use in the dental and orthodontic field; intra-oral scanning cameras used for medical and dental digital image capture, storage, retrieval and transmission over telecommunication media for use in the dental and orthodontic field; scanning cameras for capturing medical and dental images for use in the dental and orthodontic field; ultrasonic diagnostic instruments for use in the dental and orthodontic field.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom manufacture of orthodontic appliances, equipment and instruments; custom manufacture of intra-oral scanning cameras; custom manufacture of dental appliances and dental prostheses; dental technician services; all the aforementioned services being in relation to the dental and orthodontic field.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Educational and training services, namely, training orthodontists and dental practitioners in the use of digital imaging software and intra-oral scanning cameras; arranging and conducting training, seminars, conferences, courses of instruction, workshops, lectures and symposia, all relating to surgical, medical, dental and orthodontic techniques, appliances, apparatus and equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing temporary use of non-downloadable computer software used in creation of individually customized courses of dental and orthodontic treatment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Dentistry, consultation services in the field of dentistry and orthodontia; advisory and consultancy services relating to orthodontics, endodontics, pedodontics, periodontics, and restorative dental treatments, including the provision of such service online via the Internet or extranets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels informatiques; logiciels informatiques, à savoir logiciels d'imagerie numérique utilisés pour l'illustration de mouvements de dents et de plans de traitement proposés; logiciels informatiques utilisés dans l'odontologie restauratrice; postes de travail informatiques pour le traitement et l'affichage d'images dentaires et médicales capturées; matériel informatique; programmes informatiques; équipements pour le traitement de données.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "fr",
+      "description": "Instruments et appareils chirurgicaux, médicaux et dentaires utilisés dans les domaines dentaire et orthodontique; équipements dentaires; appareils et instruments dentaires; appareils dentaires, à savoir appareils d'orthodontie; appareils et instruments utilisés dans le domaine dentaire en rapport avec des traitements orthodontiques et pour l'odontologie restauratrice; scanneurs pour diagnostics médicaux et dentaires; appareils de prise de vues intra-oraux à numérisation par balayage électronique utilisés dans les domaines dentaire et orthodontique; appareils de prise de vues intra-oraux à numérisation par balayage électronique utilisés pour la transmission, l'extraction, le stockage et la capture d'images numériques dentaires et médicales sur des supports de télécommunication utilisés dans les domaines dentaire et orthodontique; appareils de prise de vues à numérisation par balayage électronique pour la capture d'images dentaires et médicales utilisés dans les domaines dentaire et orthodontique; instruments de diagnostic à ultrasons utilisés dans les domaines dentaire et orthodontique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Services de fabrication sur mesure d'instruments, d'équipements et d'appareils orthodontiques; services de fabrication sur mesure d'appareils de prise de vues intra-oraux à numérisation par balayage électronique; services de fabrication sur mesure d'appareils dentaires et de prothèses dentaires; services de prothésistes dentaires; tous les services précités étant en rapport avec les domaines dentaire et orthodontique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Services éducatifs et de formation, à savoir services de formation à l'utilisation de logiciels d'imagerie numérique et d'appareils de prise de vues intra-oraux à numérisation par balayage électronique pour orthodontistes et praticiens dentaires; services de mise en place et d'animation de formations, séminaires, conférences, cours d'instruction, ateliers, cours magistraux et symposiums, tous en rapport avec des équipements, appareils et dispositifs chirurgicaux, médicaux, dentaires et de techniques orthodontiques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Mise à disposition, pour utilisation temporaire, de logiciels informatiques non téléchargeables utilisés dans la création de cours individuels personnalisés de traitements dentaire et orthodontique.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "fr",
+      "description": "Services de dentisterie, services de conseillers dans le domaine de la dentisterie et de l'orthodontie; services de conseil et services de conseillers en rapport avec l'orthodontie, l'endodontie, la pédodontie, la parodontologie, les traitements dentaires restaurateurs, y compris mise à disposition desdits services en ligne par le biais d'Internet ou d'extranets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software informático; software informático, a saber, software de formación de imágenes digitales para la representación del movimiento de dientes y planes de tratamiento propuestos; software informático para la odontología reconstituyente; estaciones de trabajo informáticas para el procesamiento y la visualización de imágenes médicas y dentales capturadas; hardware; programas informáticos; equipos de procesamiento de datos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "es",
+      "description": "Aparatos e instrumentos quirúrgicos, médicos y dentales para los ámbitos dental y de la ortodoncia; equipos dentales; aparatos e instrumentos dentales; aparatos dentales, a saber, aparatos de ortodoncia; aparatos e instrumentos para ser utilizados en el ámbito de la odontología relacionados con tratamientos de ortodoncia y para su uso en odontología restauradora; escáneres para diagnósticos médicos y dentales; cámaras de escaneado intrabucal para los ámbitos dental y de la ortodoncia; cámaras de escaneado intrabucal para la captura, el almacenamiento, la recuperación y la transmisión de imágenes médicas y dentales digitales por medios de telecomunicación para los ámbitos dental y de la ortodoncia; cámaras de escaneado para la captura de imágenes médicas y dentales para los ámbitos dental y de la ortodoncia; instrumentos de diagnóstico por ultrasonidos para los ámbitos dental y de la ortodoncia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Fabricación por encargo de aparatos, equipos e instrumentos de ortodoncia; fabricación por encargo de cámaras de escaneado intrabucal; fabricación por encargo de aparatos y prótesis dentales; servicios de mecánicos dentales; de ortodoncia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de educación y formación, a saber, formación de ortodoncistas y odontólogos en relación con el uso de software de formación de imágenes digitales y cámaras de escaneado intrabucal; organización y dirección de cursos de formación, seminarios, conferencias, cursos de instrucción, talleres, ponencias y simposios en relación con técnicas, dispositivos, aparatos y equipos quirúrgicos, médicos, dentales y de ortodoncia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Suministro de acceso temporal a software informático no descargable para la creación de cursos personalizados individualmente en relación con tratamientos dentales y de ortodoncia.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "es",
+      "description": "Odontología, servicios de consultoría sobre odontología y ortodoncia; servicios de asesoramiento y consultoría sobre ortodoncia, endodoncia, pedodoncia, periodoncia y tratamientos dentales reconstituyentes, incluida la prestación de los servicios mencionados en línea por Internet o mediante redes externas.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Align Technology Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20170725",
+      "priorityNumber": "87542029"
+    },
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20170725",
+      "priorityNumber": "87542096"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20170725",
+          "basicApplicationNumber": "87542096"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US"
+    },
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20170725",
+          "basicApplicationNumber": "87542029"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AT",
+      "AU",
+      "BG",
+      "BH",
+      "CH",
+      "CN",
+      "CO",
+      "DE",
+      "DK",
+      "EG",
+      "ES",
+      "FR",
+      "GB",
+      "IL",
+      "IN",
+      "IR",
+      "IT",
+      "JP",
+      "KR",
+      "MX",
+      "NZ",
+      "PL",
+      "SG",
+      "TH",
+      "TR",
+      "VN",
+      "RU",
+      "OA",
+      "UA",
+      "EM",
+      "BX"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2820 Orchard Parkway San Jose CA 95134",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology Inc."
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20170725",
+            "basicApplicationNumber": "87542096"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US"
+      },
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20170725",
+            "basicApplicationNumber": "87542029"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US"
+      }
+    ],
+    "cmMarkImageEUclassification": [
+      "29.02.00",
+      "55.00.00"
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AT",
+      "AU",
+      "BG",
+      "BH",
+      "CH",
+      "CN",
+      "CO",
+      "DE",
+      "DK",
+      "EG",
+      "ES",
+      "FR",
+      "GB",
+      "IL",
+      "IN",
+      "IR",
+      "IT",
+      "JP",
+      "KR",
+      "MX",
+      "NZ",
+      "PL",
+      "SG",
+      "TH",
+      "TR",
+      "VN",
+      "RU",
+      "OA",
+      "UA",
+      "EM",
+      "BX"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software; computer software, namely, digital imaging software used to depict tooth movement and proposed treatment plans; computer software used in restorative dentistry; computer workstations for processing and displaying captured medical and dental images; computer hardware; computer programs; data processing equipment."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Surgical, medical and dental apparatus and instruments for use in the dental and orthodontic field; dental equipment; dental apparatus and instruments; dental apparatus, namely, orthodontic appliances; apparatus and instruments for use in the dental field related to orthodontic treatment and for use in restorative dentistry; scanners for medical and dental diagnosis; intra-oral scanning cameras for use in the dental and orthodontic field; intra-oral scanning cameras used for medical and dental digital image capture, storage, retrieval and transmission over telecommunication media for use in the dental and orthodontic field; scanning cameras for capturing medical and dental images for use in the dental and orthodontic field; ultrasonic diagnostic instruments for use in the dental and orthodontic field."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom manufacture of orthodontic appliances, equipment and instruments; custom manufacture of intra-oral scanning cameras; custom manufacture of dental appliances and dental prostheses; dental technician services; all the aforementioned services being in relation to the dental and orthodontic field."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Educational and training services, namely, training orthodontists and dental practitioners in the use of digital imaging software and intra-oral scanning cameras; arranging and conducting training, seminars, conferences, courses of instruction, workshops, lectures and symposia, all relating to surgical, medical, dental and orthodontic techniques, appliances, apparatus and equipment."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing temporary use of non-downloadable computer software used in creation of individually customized courses of dental and orthodontic treatment."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Dentistry, consultation services in the field of dentistry and orthodontia; advisory and consultancy services relating to orthodontics, endodontics, pedodontics, periodontics, and restorative dental treatments, including the provision of such service online via the Internet or extranets."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels informatiques; logiciels informatiques, à savoir logiciels d'imagerie numérique utilisés pour l'illustration de mouvements de dents et de plans de traitement proposés; logiciels informatiques utilisés dans l'odontologie restauratrice; postes de travail informatiques pour le traitement et l'affichage d'images dentaires et médicales capturées; matériel informatique; programmes informatiques; équipements pour le traitement de données."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Instruments et appareils chirurgicaux, médicaux et dentaires utilisés dans les domaines dentaire et orthodontique; équipements dentaires; appareils et instruments dentaires; appareils dentaires, à savoir appareils d'orthodontie; appareils et instruments utilisés dans le domaine dentaire en rapport avec des traitements orthodontiques et pour l'odontologie restauratrice; scanneurs pour diagnostics médicaux et dentaires; appareils de prise de vues intra-oraux à numérisation par balayage électronique utilisés dans les domaines dentaire et orthodontique; appareils de prise de vues intra-oraux à numérisation par balayage électronique utilisés pour la transmission, l'extraction, le stockage et la capture d'images numériques dentaires et médicales sur des supports de télécommunication utilisés dans les domaines dentaire et orthodontique; appareils de prise de vues à numérisation par balayage électronique pour la capture d'images dentaires et médicales utilisés dans les domaines dentaire et orthodontique; instruments de diagnostic à ultrasons utilisés dans les domaines dentaire et orthodontique."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de fabrication sur mesure d'instruments, d'équipements et d'appareils orthodontiques; services de fabrication sur mesure d'appareils de prise de vues intra-oraux à numérisation par balayage électronique; services de fabrication sur mesure d'appareils dentaires et de prothèses dentaires; services de prothésistes dentaires; tous les services précités étant en rapport avec les domaines dentaire et orthodontique."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services éducatifs et de formation, à savoir services de formation à l'utilisation de logiciels d'imagerie numérique et d'appareils de prise de vues intra-oraux à numérisation par balayage électronique pour orthodontistes et praticiens dentaires; services de mise en place et d'animation de formations, séminaires, conférences, cours d'instruction, ateliers, cours magistraux et symposiums, tous en rapport avec des équipements, appareils et dispositifs chirurgicaux, médicaux, dentaires et de techniques orthodontiques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Mise à disposition, pour utilisation temporaire, de logiciels informatiques non téléchargeables utilisés dans la création de cours individuels personnalisés de traitements dentaire et orthodontique."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de dentisterie, services de conseillers dans le domaine de la dentisterie et de l'orthodontie; services de conseil et services de conseillers en rapport avec l'orthodontie, l'endodontie, la pédodontie, la parodontologie, les traitements dentaires restaurateurs, y compris mise à disposition desdits services en ligne par le biais d'Internet ou d'extranets."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software informático; software informático, a saber, software de formación de imágenes digitales para la representación del movimiento de dientes y planes de tratamiento propuestos; software informático para la odontología reconstituyente; estaciones de trabajo informáticas para el procesamiento y la visualización de imágenes médicas y dentales capturadas; hardware; programas informáticos; equipos de procesamiento de datos."
+        },
+        {
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos e instrumentos quirúrgicos, médicos y dentales para los ámbitos dental y de la ortodoncia; equipos dentales; aparatos e instrumentos dentales; aparatos dentales, a saber, aparatos de ortodoncia; aparatos e instrumentos para ser utilizados en el ámbito de la odontología relacionados con tratamientos de ortodoncia y para su uso en odontología restauradora; escáneres para diagnósticos médicos y dentales; cámaras de escaneado intrabucal para los ámbitos dental y de la ortodoncia; cámaras de escaneado intrabucal para la captura, el almacenamiento, la recuperación y la transmisión de imágenes médicas y dentales digitales por medios de telecomunicación para los ámbitos dental y de la ortodoncia; cámaras de escaneado para la captura de imágenes médicas y dentales para los ámbitos dental y de la ortodoncia; instrumentos de diagnóstico por ultrasonidos para los ámbitos dental y de la ortodoncia."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Fabricación por encargo de aparatos, equipos e instrumentos de ortodoncia; fabricación por encargo de cámaras de escaneado intrabucal; fabricación por encargo de aparatos y prótesis dentales; servicios de mecánicos dentales; de ortodoncia."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de educación y formación, a saber, formación de ortodoncistas y odontólogos en relación con el uso de software de formación de imágenes digitales y cámaras de escaneado intrabucal; organización y dirección de cursos de formación, seminarios, conferencias, cursos de instrucción, talleres, ponencias y simposios en relación con técnicas, dispositivos, aparatos y equipos quirúrgicos, médicos, dentales y de ortodoncia."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Suministro de acceso temporal a software informático no descargable para la creación de cursos personalizados individualmente en relación con tratamientos dentales y de ortodoncia."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Odontología, servicios de consultoría sobre odontología y ortodoncia; servicios de asesoramiento y consultoría sobre ortodoncia, endodoncia, pedodoncia, periodoncia y tratamientos dentales reconstituyentes, incluida la prestación de los servicios mencionados en línea por Internet o mediante redes externas."
+        }
+      ]
+    },
+    "id": "d20f2df9-9dbb-4051-be5a-297714def013",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "Blue. The color(s) blue in the dot above the letter \"i\" is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      },
+      {
+        "markImageColourClaimedText": "Bleu La couleur bleue dans le point au-dessus de la lettre \"i\" est revendiquée en tant qu'élément distinctif de la marque",
+        "markImageColourClaimedTextLanguageCode": "fr"
+      },
+      {
+        "markImageColourClaimedText": "Azul Se reivindica el color azul del punto sobre la letra \"i\" como rasgo distintivo de la marca",
+        "markImageColourClaimedTextLanguageCode": "es"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of the word \"align\" in lower case, with a dot above the letter \"i\" in the color blue.",
+        "markImageDescriptionLanguageCode": "en"
+      },
+      {
+        "markImageDescription": "La marque se compose du mot \"align\" en minuscules, avec un point au-dessus de la lettre \"i\" en bleu",
+        "markImageDescriptionLanguageCode": "fr"
+      },
+      {
+        "markImageDescription": "La marca consiste en la palabra \"align\" en minúsculas, con un punto sobre la letra \"i\" de color azul",
+        "markImageDescriptionLanguageCode": "es"
+      }
+    ],
+    "markImageViennaClassification": [
+      "27.05",
+      "29.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20170725",
+        "priorityNumber": "87542029"
+      },
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20170725",
+        "priorityNumber": "87542096"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "39"
+      }
+    ],
+    "recordLastUpdated": "20250803",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280124",
+      "lastPublicationDate": "20181011",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180124",
+        "registrationNumber": "1427533"
+      }
+    },
+    "version": "20250803020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "align"
+    }
+  },
+  "_uri": "/mark/wo/d20f2df9-9dbb-4051-be5a-297714def013",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.738Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/xs/28208976-2aaa-456c-8d1a-4cb004860ba3",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "28208976-2aaa-456c-8d1a-4cb004860ba3",
+  "applicationNumber": null,
+  "registrationNumber": "25188",
+  "applicationDate": null,
+  "registrationDate": "1985-12-04",
+  "expiryDate": "2015-12-04",
+  "renewalDate": "2005-12-04",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Services associated with hotels, motels, inns, lodgings, apartment buildings, condominium projects, and residential projects",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GROSVENOR PROPERTIES, LTD",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "200 CALIFORNIA STREET, 6TH FLOOR, SAN FRANCISCO, CA, 94111",
+        "applicantAddressCity": "SAN FRANCISCO",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "94111",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "200 CALIFORNIA STREET, 6TH FLOOR",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "GROSVENOR PROPERTIES, LTD",
+        "applicantStateOfIncorporation": "CALIFORNIA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Services associated with hotels, motels, inns, lodgings, apartment buildings, condominium projects, and residential projects"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "100",
+          "natGoodsServicesDescription": "Services associated with hotels, motels, inns, lodgings, apartment buildings, condominium projects, and residential projects"
+        }
+      ]
+    },
+    "id": "28208976-2aaa-456c-8d1a-4cb004860ba3",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "ON BUSINESS SIGNS; ON ADVERTISING BROCHURES; ON ADVERTISING LEAFLETS; ON BUSINESS CARDS; ON LETTERHEADS",
+    "markFeature": "STYLIZED LETTERS",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "SUITE 800 160 SANSOME STREET, SAN FRANCISCO, CA, 94104",
+        "city": "SAN FRANCISCO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES, LTD.",
+        "phoneNumber": "415-673-4711",
+        "postalCode": "94104",
+        "stateName": "CALIFORNIA",
+        "stateOfIncorporation": "CALIFORNIA",
+        "street": "SUITE 800 160 SANSOME STREET"
+      }
+    ],
+    "recordLastUpdated": "20251202",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "160 SANSOME STREET, SUITE 800, SAN FRANCISCO, CA, 94104",
+        "city": "SAN FRANCISCO",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES LTD.",
+        "postalCode": "94104",
+        "registrationNumber": "4544",
+        "renewalDate": "19951204",
+        "stateName": "CALIFORNIA",
+        "stateOfIncorporation": "CALIFORNIA",
+        "street": "160 SANSOME STREET, SUITE 800"
+      },
+      {
+        "address": "200 CALIFORNIA STREET, 6TH FLOOR, SAN FRANCISCO, CA, 94111",
+        "city": "SAN FRANCISCO",
+        "legalEntity": "CORPORATION",
+        "name": "GROSVENOR PROPERTIES, LTD",
+        "postalCode": "94111",
+        "registrationNumber": "7440",
+        "renewalDate": "20051204",
+        "stateName": "CALIFORNIA",
+        "stateOfIncorporation": "CALIFORNIA",
+        "street": "200 CALIFORNIA STREET, 6TH FLOOR"
+      }
+    ],
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20151204",
+      "firstUsed": [
+        {
+          "firstUsedDate": "1972"
+        }
+      ],
+      "firstUsedAnywhereDate": "1972",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "19851204",
+        "registrationNumber": "25188"
+      },
+      "renewalDate": "20051204"
+    },
+    "usStateOfficeCode": "CA",
+    "usStateOfficeName": "CALIFORNIA",
+    "version": "20251202120039",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/xs/28208976-2aaa-456c-8d1a-4cb004860ba3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

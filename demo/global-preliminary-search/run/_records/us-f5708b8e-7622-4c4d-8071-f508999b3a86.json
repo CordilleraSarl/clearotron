@@ -1,0 +1,441 @@
+{
+  "uri": "/mark/us/f5708b8e-7622-4c4d-8071-f508999b3a86",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f5708b8e-7622-4c4d-8071-f508999b3a86",
+  "applicationNumber": "90865253",
+  "registrationNumber": "7565737",
+  "applicationDate": "2021-08-04",
+  "registrationDate": "2024-11-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-11-08"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORG",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable computer operating software and recorded computer operating software",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software authoring; software development in the framework of software publishing; software porting; computer software design; updating of computer software",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Megha Shyam Birudavolu",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "Jaxon C. Munns",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2 Kosmina Street, Glenwood, NSW2768, AUST",
+        "applicantAddressCity": "Glenwood",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantAddressPostalCode": "NSW2768",
+        "applicantAddressStreet": "2 Kosmina Street,",
+        "applicantJurisdictionOfIncorporation": "AUSTRALIA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Megha Shyam Birudavolu"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable computer operating software and recorded computer operating software"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software authoring; software development in the framework of software publishing; software porting; computer software design; updating of computer software"
+        }
+      ]
+    },
+    "id": "f5708b8e-7622-4c4d-8071-f508999b3a86",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20241112",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20241112",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20241009",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20241009",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20240823",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20240821",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20240426",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20240426",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20240221",
+        "descriptionText": "SU - NON-FINAL ACTION - WRITTEN"
+      },
+      {
+        "date": "20240221",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20240221",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20240121",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20240120",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20240102",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20240102",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20231007",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20231005",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20231005",
+        "descriptionText": "SOU EXTENSION 2 FILED"
+      },
+      {
+        "date": "20231005",
+        "descriptionText": "SOU EXTENSION 2 GRANTED"
+      },
+      {
+        "date": "20230510",
+        "descriptionText": "NOTICE OF APPROVAL OF EXTENSION REQUEST E-MAILED"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "SOU TEAS EXTENSION RECEIVED"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "20230103",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20221108",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20221108",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20221019",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20220930",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20220811",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20220811",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20220811",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20220517",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20220517",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20220517",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20220503",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20211005",
+        "descriptionText": "PRELIMINARY/VOLUNTARY AMENDMENT - ENTERED"
+      },
+      {
+        "date": "20211004",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20210929",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20210811",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20210807",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2 Kosmina Street, Glenwood, NSW2768, AUST",
+        "city": "Glenwood",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Megha Shyam Birudavolu",
+        "postalCode": "NSW2768",
+        "street": "2 Kosmina Street,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2 Kosmina Street, Glenwood, NSW2768, AUST",
+        "city": "Glenwood",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Megha Shyam Birudavolu",
+        "postalCode": "NSW2768",
+        "street": "2 Kosmina Street,"
+      },
+      {
+        "address": "2 Kosmina Street, Glenwood, NSW2768, AUST",
+        "city": "Glenwood",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Megha Shyam Birudavolu",
+        "postalCode": "NSW2768",
+        "street": "2 Kosmina Street,"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2 Kosmina Street, Glenwood, NSW2768, AUST",
+        "city": "Glenwood",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Megha Shyam Birudavolu",
+        "postalCode": "NSW2768",
+        "street": "2 Kosmina Street,"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "86504769",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "KORG SYRO",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "86504769",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "KORG SYRO",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "IDAHO FALLS, ID 83401, United States",
+        "representativeCorrespondentAddressLines": [
+          "IDAHO FALLS, ID 83401",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Jaxon C. Munns MURRAY, ZIEL, & JOHNSTON, PLLC, 770 S. WOODRUFF AVENUE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "IDAHO FALLS, ID 83401, United States",
+        "representativeAddressLines": [
+          "IDAHO FALLS, ID 83401",
+          "United States"
+        ],
+        "representativeName": "Jaxon C. Munns"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210804",
+        "applicationNumber": "90865253"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "extension": {
+        "approvalDate": [
+          "20230508",
+          "20231005"
+        ]
+      },
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240102"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240102"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240102"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240102"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20241112",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20221108"
+      ],
+      "registration": {
+        "registrationDate": "20241112",
+        "registrationNumber": "7565737"
+      }
+    },
+    "version": "20260113080332",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORG"
+    }
+  },
+  "_uri": "/mark/us/f5708b8e-7622-4c4d-8071-f508999b3a86",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:08.869Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "uri": "/mark/jp/d78b733e-3efa-41ab-b5bf-e3e5c9337a7c",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "d78b733e-3efa-41ab-b5bf-e3e5c9337a7c",
+  "applicationNumber": "S59-051486",
+  "registrationNumber": "1995469",
+  "applicationDate": "1984-05-22",
+  "registrationDate": "1987-10-27",
+  "expiryDate": "1997-10-27",
+  "renewalDate": null,
+  "lastPublicationDate": "1987-01-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＴＵＲＩ　ベンチュリ－",
+  "markTransliteration": "BENCHURII",
+  "markTranslation": "VENTURI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    14
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        14
+      ],
+      "language": null,
+      "description": "時計、眼鏡、これらの部品および附属品",
+      "translation_language": "en",
+      "translation": "Clocks, glasses, these parts and accessories"
+    }
+  ],
+  "owner": "MITSUI PRODUCTS SPORTS PRODUCTS SALES K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityDate": "19840522"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "MITSUI PRODUCTS SPORTS PRODUCTS SALES K.K.",
+        "applicantNativeAddress": "東京都千代田区神田駿河台３丁目４番地",
+        "applicantNativeName": "三井物産スポ－ツ用品販売株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clocks, glasses, these parts and accessories",
+          "intClassNumber": "09,14",
+          "intGoodsServicesDescription": "時計、眼鏡、これらの部品および附属品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "23A01"
+        },
+        {
+          "natClassNumber": "23B01"
+        }
+      ]
+    },
+    "id": "d78b733e-3efa-41ab-b5bf-e3e5c9337a7c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19840522"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19840522",
+        "applicationNumber": "S59-051486"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "19971027",
+      "lastPublicationDate": "19870106",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "19871027",
+        "registrationNumber": "1995469"
+      }
+    },
+    "version": "20230427111632",
+    "wordMarkSpecification": {
+      "markTranslation": "VENTURI",
+      "markTransliteration": "BENCHURII",
+      "markVerbalElementText": "ＶＥＮＴＵＲＩ　ベンチュリ－"
+    }
+  },
+  "_uri": "/mark/jp/d78b733e-3efa-41ab-b5bf-e3e5c9337a7c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.177Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

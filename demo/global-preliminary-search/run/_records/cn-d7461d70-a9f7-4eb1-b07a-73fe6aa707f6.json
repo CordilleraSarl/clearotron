@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/cn/d7461d70-a9f7-4eb1-b07a-73fe6aa707f6",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "d7461d70-a9f7-4eb1-b07a-73fe6aa707f6",
+  "applicationNumber": "8202367",
+  "registrationNumber": "8202367",
+  "applicationDate": "2010-04-13",
+  "registrationDate": "2011-10-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2011-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-12-20",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "质量控制;质量检测;质量评估;质量体系认证",
+      "translation_language": "en",
+      "translation": "quality control; quality inspection; quality assessment; quality system certification"
+    }
+  ],
+  "owner": "Shanghai Serui Quality Certification Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市浦东新区浦东大道2000号12楼G-I座",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Serui Quality Certification Co., Ltd.",
+        "applicantNativeName": "上海赛瑞质量认证有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "quality control; quality inspection; quality assessment; quality system certification",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "质量控制;质量检测;质量评估;质量体系认证"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        }
+      ]
+    },
+    "id": "d7461d70-a9f7-4eb1-b07a-73fe6aa707f6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1272"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海芳栋商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20100413",
+        "applicationNumber": "8202367"
+      },
+      "cancellationDate": "20231220",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20110720",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20111021",
+        "registrationNumber": "8202367"
+      }
+    },
+    "version": "20251002005940",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SORI"
+    }
+  },
+  "_uri": "/mark/cn/d7461d70-a9f7-4eb1-b07a-73fe6aa707f6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.876Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

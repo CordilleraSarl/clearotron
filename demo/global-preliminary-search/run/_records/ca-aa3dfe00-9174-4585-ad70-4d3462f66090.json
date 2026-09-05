@@ -1,0 +1,206 @@
+{
+  "uri": "/mark/ca/aa3dfe00-9174-4585-ad70-4d3462f66090",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "aa3dfe00-9174-4585-ad70-4d3462f66090",
+  "applicationNumber": "2390618",
+  "registrationNumber": null,
+  "applicationDate": "2025-04-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-08-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ENQOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    37,
+    40,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        37,
+        40,
+        42,
+        44
+      ],
+      "language": "en",
+      "description": "(1) Building construction and repair; construction, installation and repair of steel frames and metal buildings; building construction services; construction of residential and commercial properties; general building contractor services; project management in the field of building construction; project management in the field of residential and commercial construction and renovation. \n(2) Custom manufacturing of paneling systems for buildings; manufacturing metal building materials for others. \n(3) Design of building interiors and exteriors; design, planning and engineering in the field of building construction; architectural design. \n(4) Landscape design.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SOUTH ESSEX FABRICATING INC.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4 Seneca Road, PO Box 400, Leamington, ONTARIO, N8H3W5",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "4 Seneca Road, PO Box 400",
+          "Leamington",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "N8H3W5",
+        "applicantName": "SOUTH ESSEX FABRICATING INC."
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "37,40,42,44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Building construction and repair; construction, installation and repair of steel frames and metal buildings; building construction services; construction of residential and commercial properties; general building contractor services; project management in the field of building construction; project management in the field of residential and commercial construction and renovation. \n(2) Custom manufacturing of paneling systems for buildings; manufacturing metal building materials for others. \n(3) Design of building interiors and exteriors; design, planning and engineering in the field of building construction; architectural design. \n(4) Landscape design."
+        }
+      ]
+    },
+    "id": "aa3dfe00-9174-4585-ad70-4d3462f66090",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260805",
+        "descriptionText": "Advertised",
+        "information": "Vol.73 Issue 3745"
+      },
+      {
+        "date": "20260513",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20260513",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20260130",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20260730"
+      },
+      {
+        "date": "20260130",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20250417",
+        "descriptionText": "287",
+        "information": "Improper Classes"
+      },
+      {
+        "date": "20250404",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20250404",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20250404",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4 Seneca Road, PO Box 400, Leamington, ONTARIO, N8H3W5",
+        "addressLines": [
+          "4 Seneca Road, PO Box 400",
+          "Leamington",
+          "ONTARIO",
+          "N8H3W5"
+        ],
+        "countryName": "Canada",
+        "name": "SOUTH ESSEX FABRICATING INC.",
+        "postalCode": "N8H3W5"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3745",
+        "publicationVolume": "73"
+      }
+    ],
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+          "630, boul. René-Lévesque Ouest",
+          "20e étage",
+          "Montréal",
+          "QUÉBEC H3B1S6"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "ROBIC AGENCE PI S.E.C./ ROBIC IP AGENCY LP",
+        "representativeReferenceNumber": "020068-0024 CMB/VDR"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250404",
+        "applicationNumber": "2390618"
+      },
+      "approvalDate": "20260513",
+      "cmNormalisedStatus": "PENDING",
+      "formalisationDate": "20250404",
+      "markCurrentStatus": "Advertised",
+      "publicationDate": [
+        "20260805"
+      ]
+    },
+    "subjectHeadings": [
+      "ENQOR"
+    ],
+    "version": "20260812150134",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ENQOR",
+      "markVerbalElementTextFormal": "ENQOR"
+    }
+  },
+  "_uri": "/mark/ca/aa3dfe00-9174-4585-ad70-4d3462f66090",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:13.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

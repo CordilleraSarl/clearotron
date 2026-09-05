@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/bd67a34c-66ac-4eed-bb56-c3a0fa24705f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "bd67a34c-66ac-4eed-bb56-c3a0fa24705f",
+  "applicationNumber": "40432456",
+  "registrationNumber": null,
+  "applicationDate": "2019-08-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QOI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "导航仪器;电池;电开关;复印机（照相、静电）;计算机;手机;行车记录仪;眼镜;扬声器;智能手表（数据处理）",
+      "translation_language": "en",
+      "translation": "navigation instrument; battery; electric switch; copier (photo, static); computer; mobile phone; driving recorder; glasses; speaker; smart watch (data processing)"
+    }
+  ],
+  "owner": "Li Jinbiao",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省晋江市东石镇湖头村龟湖北区57号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Li Jinbiao",
+        "applicantNativeName": "李金表"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "navigation instrument; battery; electric switch; copier (photo, static); computer; mobile phone; driving recorder; glasses; speaker; smart watch (data processing)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "导航仪器;电池;电开关;复印机（照相、静电）;计算机;手机;行车记录仪;眼镜;扬声器;智能手表（数据处理）"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "bd67a34c-66ac-4eed-bb56-c3a0fa24705f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190819",
+        "applicationNumber": "40432456"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003191611",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOI"
+    }
+  },
+  "_uri": "/mark/cn/bd67a34c-66ac-4eed-bb56-c3a0fa24705f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:01.420Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/ve/10bcff19-8b84-494d-a3da-e99e374b1623",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "10bcff19-8b84-494d-a3da-e99e374b1623",
+  "applicationNumber": "1991-019196",
+  "registrationNumber": null,
+  "applicationDate": "1991-09-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENKOREN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "una empresa dedicada a la fabricacion, venta, distribucion, importacion y/o exportacion de cilindros y lamparas de fotocopiadoras asi como tonel e implementes para fotocopiadoras.",
+      "translation_language": "en",
+      "translation": "a company dedicated to the manufacture, sale, distribution, import and / or export of photocopier cylinders and lamps as well as barrel and implementes for photocopiers."
+    }
+  ],
+  "owner": "AZIER ATELA",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": "BARAZARTE LIZARRAGA, LUISA EMILIA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARACAS",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "AZIER ATELA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "a company dedicated to the manufacture, sale, distribution, import and / or export of photocopier cylinders and lamps as well as barrel and implementes for photocopiers.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "una empresa dedicada a la fabricacion, venta, distribucion, importacion y/o exportacion de cilindros y lamparas de fotocopiadoras asi como tonel e implementes para fotocopiadoras."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "10bcff19-8b84-494d-a3da-e99e374b1623",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "BARAZARTE LIZARRAGA, LUISA EMILIA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19910923",
+        "applicationNumber": "1991-019196"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250630155735",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKOREN"
+    }
+  },
+  "_uri": "/mark/ve/10bcff19-8b84-494d-a3da-e99e374b1623",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.777Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

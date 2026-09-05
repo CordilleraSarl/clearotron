@@ -1,0 +1,331 @@
+{
+  "uri": "/mark/us/bac37b50-738f-47ec-8c05-9398c8aaea35",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "bac37b50-738f-47ec-8c05-9398c8aaea35",
+  "applicationNumber": "99044840",
+  "registrationNumber": "7985279",
+  "applicationDate": "2025-02-18",
+  "registrationDate": "2025-10-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-08-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EVENQIU07",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computers; Portable computers; MP3 players; Tape recorders; Jukeboxes; Loudspeakers, headphones, microphones and CD players; Flashing bicycle safety lights; PC tablets; Computer peripheral equipment; LED and HID light controls",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MA, LAN",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Justin Brown",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA, SHENZHEN, GUANGDONG, 518000, CHIN",
+        "applicantAddressCity": "SHENZHEN, GUANGDONG",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "518000",
+        "applicantAddressStreet": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "MA, LAN",
+        "applicantSecondaryAddressUnit": "LONGCHENG SOUTH ROAD, LONGGANG DISTRICT"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA, SHENZHEN, GUANGDONG, 518000, CHIN",
+            "city": "SHENZHEN, GUANGDONG",
+            "countryCode": "CN",
+            "countryName": "China",
+            "jurisdictionOfIncorporation": "China",
+            "legalEntity": "INDIVIDUAL",
+            "name": "MA, LAN",
+            "postalCode": "518000",
+            "secondaryAddressUnit": "LONGCHENG SOUTH ROAD, LONGGANG DISTRICT",
+            "street": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "LIMITED COMPANY",
+            "name": "HUNAN KUAIZAIFENG INFORMATION TECHNOLOGY CO., LTD."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1827 Harley Drive, Ann Arbor, MI 48103",
+            "addressLines": [
+              "Justin Brown",
+              "1827 Harley Drive",
+              "Ann Arbor, MI 48103"
+            ],
+            "name": "Justin Brown"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20251010",
+        "recordedDate": "20251128",
+        "reelFrameNumber": "9085/0748"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computers; Portable computers; MP3 players; Tape recorders; Jukeboxes; Loudspeakers, headphones, microphones and CD players; Flashing bicycle safety lights; PC tablets; Computer peripheral equipment; LED and HID light controls"
+        }
+      ]
+    },
+    "id": "bac37b50-738f-47ec-8c05-9398c8aaea35",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260218",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20251127",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20251127",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20251127",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20251127",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20251014",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20251014",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250820",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250724",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250723",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250715",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250218",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250218",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "105-588, Bldg.3, Kela Meili Villa, Changsha, Hunan, 410000, CHIN",
+        "city": "Changsha, Hunan",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hunan Kuaizaifeng information technology Co., Ltd.",
+        "postalCode": "410000",
+        "secondaryAddressUnit": "No.958, Youyi Rd., Tianxin Dist.,",
+        "street": "105-588, Bldg.3, Kela Meili Villa,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "105-588, Bldg.3, Kela Meili Villa, Changsha, Hunan, 410000, CHIN",
+        "city": "Changsha, Hunan",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hunan Kuaizaifeng information technology Co., Ltd.",
+        "postalCode": "410000",
+        "secondaryAddressUnit": "No.958, Youyi Rd., Tianxin Dist.,",
+        "street": "105-588, Bldg.3, Kela Meili Villa,"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "105-588, Bldg.3, Kela Meili Villa, Changsha, Hunan, 410000, CHIN",
+        "city": "Changsha, Hunan",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Hunan Kuaizaifeng information technology Co., Ltd.",
+        "postalCode": "410000",
+        "secondaryAddressUnit": "No.958, Youyi Rd., Tianxin Dist.,",
+        "street": "105-588, Bldg.3, Kela Meili Villa,"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA, SHENZHEN, GUANGDONG, 518000, CHIN",
+        "city": "SHENZHEN, GUANGDONG",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "MA, LAN",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "LONGCHENG SOUTH ROAD, LONGGANG DISTRICT",
+        "street": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA"
+      },
+      {
+        "address": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA, SHENZHEN, GUANGDONG, 518000, CHIN",
+        "city": "SHENZHEN, GUANGDONG",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "MA, LAN",
+        "postalCode": "518000",
+        "secondaryAddressUnit": "LONGCHENG SOUTH ROAD, LONGGANG DISTRICT",
+        "street": "ROOM 2204, UNIT C, BUILDING 1, JINDI KAIXUAN PLAZA"
+      }
+    ],
+    "recordLastUpdated": "20260709",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ann arbor, MI 48103, United States",
+        "representativeCorrespondentAddressLines": [
+          "ann arbor, MI 48103",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Justin Brown Brown Brothers Law LLP, 1827 harley drive"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ann arbor, MI 48103, United States",
+        "representativeAddressLines": [
+          "ann arbor, MI 48103",
+          "United States"
+        ],
+        "representativeName": "Justin Brown"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250218",
+        "applicationNumber": "99044840"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20241026"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20241201"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20251014",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20250826"
+      ],
+      "registration": {
+        "registrationDate": "20251014",
+        "registrationNumber": "7985279"
+      }
+    },
+    "version": "20260709194035",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "EVENQIU 07",
+      "markVerbalElementText": "EVENQIU07"
+    }
+  },
+  "_uri": "/mark/us/bac37b50-738f-47ec-8c05-9398c8aaea35",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.567Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

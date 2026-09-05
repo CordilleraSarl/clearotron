@@ -1,0 +1,1090 @@
+{
+  "uri": "/mark/em/2cdbb673-2b06-4fa2-8ec7-967e8e6b5648",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "2cdbb673-2b06-4fa2-8ec7-967e8e6b5648",
+  "applicationNumber": "18100893",
+  "registrationNumber": "18100893",
+  "applicationDate": "2019-07-29",
+  "registrationDate": "2019-11-20",
+  "expiryDate": "2029-07-29",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-08-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "cns CREATIVE NORTH SOLUTION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Ovládací zarízení (Elektrické -); Rádiová zarízení a prístroje; Bezdrátové ovladace pro dálkové monitorování a ovládání fungování a statusu jiných elektrických, elektronických a mechanických zarízení nebo systému; Cipové karty [karty s integrovaným obvodem]; Cidla a detektory; Pocítacový software pro softwarové inzenýrství s pouzitím pocítace; Pocítacový hardware pro pocítacem ovládané softwarové inzenýrství; Ovladace cidel; Monitorovací prístroje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "cs",
+      "description": "Zakázková konstrukce stroju.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Tvorba pocítacového softwaru; Poradenství v oblasti pocítacového softwaru; Vývoj softwaru; Príprava technických manuálu; Výzkum v oboru elektrotechniky; Grafický design; Inzenýrské sluzby týkající se návrhu konstrukcí; Strojní inzenýrství; Projektování ve výstavbe; Poradenství v oblasti stavebního projektování; Testování funkcnosti prístroju a nástroju; Testování funkcnosti stroju; Testování prístroju v oblasti elektrotechniky; Testování, analýza a hodnocení zbozí jiných subjektu pro úcely certifikace; Testování kvality výrobku pro úcely certifikace; Sluzby v oblasti technických zkousek; Technologické poradenské sluzby vztahující se ke strojarské analýze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Elektriske kontrolinstallationer; Radioapparater og -instrumenter; Trådløse styreenheder til fjernovervågning og -styring af andre elektriske, elektroniske og mekaniske enheders eller systemers funktion og status; Smartkort [kodede]; Sensorer og detektorer; Computersoftware til computerstøttet softwareudvikling; Computerhardware til brug ved computerunderstøttet udvikling af software; Controllere til sensorer; Overvågningsinstrumenter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "da",
+      "description": "Konstruktion af maskiner lavet på bestilling.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design af computerprogrammer; Rådgivning vedrørende computer software; Softwareudvikling; Udarbejdelse af tekniske manualer; Forskning inden for elektroteknik; Grafisk design; Ingeniørvirksomhed vedrørende design af konstruktioner; Mekanisk ingeniørvirksomhed; Udarbejdelse af byggeplaner; Konsulentbistand inden for udarbejdelse af bygningsplaner; Afprøvning af apparaters og instrumenters funktionalitet; Afprøvning af maskiners funktionalitet; Afprøvning af apparater inden for elektroteknik; Afprøvning, analyse og vurdering af andres varer med henblik på certificering; Kvalitetsafprøvning af produkter til certificeringsformål; Tjenesteydelser inden for tekniske tests; Teknologisk rådgivning vedrørende maskinteknisk analyse.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Bedieningsinstallaties (Elektrische -); Radioapparaten en -instrumenten; Draadloze regelaars voor het op afstand bewaken en regelen van de werking en status van andere elektrische, elektronische en mechanische toestellen of systemen; Kaarten met geheugen of met microprocessor; Sensoren en detectoren; Software voor computerondersteunde software-ingenieursdiensten (expertises); Hardware voor computerondersteunde software-ontwikkeling; Regelingsapparatuur voor sensoren; Bewakingstoestellen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "nl",
+      "description": "Bouw van op maat gemaakte machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Software-ontwikkeling; Advisering op het gebied van software; Ontwikkeling van software; Voorbereiding van technische handboeken; Onderzoek op het gebied van elektrotechniek; Grafische vormgeving; Ingenieursdiensten voor het ontwerp van structuren; Werktuigbouwkunde; Bouwkundig ontwerpen; Advisering op het gebied van bouwplanning; Het testen van de functionaliteit van apparaten en instrumenten; Het testen van de functionaliteit van machines; Testen van apparatuur op het gebied van de elektrotechniek; Het testen, analyseren en evalueren van de goederen van derden voor certificatiedoeleinden; Testen van de kwaliteit van producten certificeringsdoeleinden; Technische testdiensten; Technologische advisering met betrekking tot analyse van machinetechnieken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Control installations (Electric -); Radio apparatus and instruments; Wireless controllers to remotely monitor and control the function and status of other electrical, electronic, and mechanical devices or systems; Integrated circuit cards [smart cards]; Sensors and detectors; Computer software for computer aided software engineering; Computer hardware for use in computer-assisted software engineering; Sensor controllers; Monitoring instruments.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom construction of machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer software design; Computer software consultancy; Software development; Preparation of technical manuals; Research in the field of electrical engineering; Graphic design; Engineering services for the design of structures; Mechanical engineering; Construction drafting; Consultancy in the field of construction drafting; Testing the functionality of apparatus and instruments; Testing the functionality of machines; Testing of apparatus in the field of electrical engineering; Testing, analysis and evaluation of the goods of others for the purpose of certification; Quality testing of products for certification purposes; Technical testing services; Technological advisory services relating to machine engineering analysis.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Elektrilised juhtimissüsteemi paigaldised; Raadioseadmed ja -instrumendid; Muude elektriliste, elektrooniliste ja mehaaniliste seadmete või süsteemide töö ja seisundi kaugjälgimise ning -juhtimise juhtmeta kontrollerid; Integraalskeemkaardid, kiipkaardid; Andurid ja detektorid; Arvutitarkvara, mida kasutatakse tarkvara projekteerimiseks arvuti abil; Arvutipõhiseks tarkvaraarenduseks kasutatav arvutiriistvara; Sensorite kontrollerid; Seireseadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "et",
+      "description": "Masinate tellimuskonstrueerimine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Tarkvara projekteerimine; Arvutitarkvarakonsultatsioonid; Tarkvara arendamine; Tehniliste manuaalide koostamine; Uurimustegevus elektrotehnika valdkonnas; Graafiline disain; Inseneriteenused tarindite projekteerimiseks; Masinaehitus; Ehitusprojekteerimine, tarindustööd; Ehitusprojekteerimise konsultatsioonid; Seadmete ja riistade funktsioonide katsetamine; Masinate funktsioonide katsetamine; Elektrotehnikaseadmete katsetamine; Kolmandate isikute kaupade katsetamine, analüüsimine ja hindamine sertifitseerimise eesmärgil; Toodete kvaliteedikontroll sertifitseerimiseks; Tehnilise testimise teenused; Masinaehituse analüüsiga seotud tehnoloogiline nõustamine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjauslaitteistot (sähköiset); Radiolaitteet ja -välineet; Langattomat ohjaimet muiden sähköisten, elektronisten ja mekaanisten laitteiden tai järjestelmien etävalvontaan ja -ohjaukseen; Älykortit [mikropiirikortit]; Anturit ja ilmaisimet; Tietokoneohjelmistot tietokoneavusteiseen ohjelmistojen tekniseen suunnitteluun; Tietokonelaitteistot tietokoneavusteiseen ohjelmistosuunnitteluun; Anturiohjaimet; Seurantalaitteet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fi",
+      "description": "Koneiden rakennus tilauksesta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Ohjelmistosuunnittelu; Konsultointi liittyen tietokoneohjelmistoihin; Ohjelmistokehitys; Teknisten käsikirjojen valmistelu; Tutkimukset sähkötekniikan alalla; Graafinen suunnittelu; Tekniset suunnittelupalvelut rakenteiden suunnittelua varten; Koneinsinöörin palvelut; Rakennuspiirustus; Rakennuspiirustuksiin liittyvä neuvonta; Laitteiden ja välineiden toimivuuden testaus; Koneiden toimivuuden testaus; Laitteiden testaus sähkötekniikan alalla; Muiden tuottamien tavaroiden testaus, analysointi ja arviointi sertifiointitarkoituksiin; Tuotteiden laatuarviointien tekeminen sertifiointitarkoituksiin; Tekniset testauspalvelut; Teknologiset neuvontapalvelut koneiden teknisen analysoinnin alalla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Installations de contrôle électriques; Appareils et instruments de radio; Contrôleurs sans fil pour surveiller et contrôler à distance le fonctionnement et l'état d'autres dispositifs ou systèmes électriques, électroniques et mécaniques; Cartes à mémoire ou à microprocesseur; Capteurs et détecteurs; Logiciel d'ingénierie logicielle assistée par ordinateur; Matériel informatique destiné à l'ingénierie logicielle assistée par ordinateur; Commandes de détecteurs; Instruments de surveillance.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Construction de machines [services sur commande].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Élaboration [conception] de logiciels; Consultation en matière de logiciels; Développement de logiciels; Préparation de manuels techniques; Recherches en matière d'électrotechnique; Conception graphique; Services d'ingénierie pour la conception de structures; Génie mécanique; Établissement de plans pour la construction; Consultation dans le domaine de l'établissement de plans pour la construction; Test de la fonctionnalité d'appareils et d'instruments; Test de la fonctionnalité de machines; Essais d'appareils dans le domaine du génie électrique; Essai, analyse et évaluation de services de tiers à des fins de certification; Tests de qualité de produits à des fins de certification; Services d'essais techniques; Services de conseils technologiques dans le domaine de l'analyse de l'ingénierie des machines.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Elektrische Steuerungsanlagen; Funkgeräte und -instrumente; Kabellose Steuerungen zur Fernüberwachung sowie zur Funktions- und Statuskontrolle von anderen elektrischen, elektronischen und mechanischen Geräten oder Systemen; Leiterplatten; Sensoren und Detektoren; Computersoftware für die computergestützte Softwareentwicklung; Computerhardware zur Verwendung für computergestützte Softwareentwicklung; Steuergeräte für Sensoren; Überwachungsinstrumente und -apparate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "de",
+      "description": "Kundenspezifischer Maschinenbau [Auftragsfertigung für Dritte].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Hard- und Softwareberatung; Softwareberatung; Softwareentwicklung; Erstellung von technischen Bedienungsanleitungen; Forschung auf dem Gebiet der Elektrotechnik; Grafikdesigndienste; Ingenieurdienstleistungen für den Entwurf von Konstruktionen; Ingenieurdienstleistungen im Maschinenbau; Konstruktionsplanung; Beratung auf dem Gebiet der Konstruktionsplanung; Prüfung der Funktionalität von Apparaten und Instrumenten; Prüfung der Funktionalität von Maschinen; Prüfung von Geräten im Bereich der Elektrotechnik; Prüfung, Analyse und Bewertung der Waren Dritter für Zertifizierungszwecke; Qualitätsprüfung von Erzeugnissen zu Zertifizierungszwecken; Technische Tests; Technologische Beratung in Bezug auf Maschinenbauanalysen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Kontrolne instalacije (Elektricne -); Radijski uredaji i instrumenti; Bezicni kontrolni uredaji za daljinski nadzor i kontrolu funkcije i statusa drugih elektricnih, elektronickih i mehanickih uredaja i sustava; Smart kartice [kartice s integriranim rasklopnim krugom]; Senzori i detektori; Racunalni programi za racunalno potpomognuto programsko inzenjerstvo; Racunalni hardver za uporabu u racunalno potpomognutom softverskom inzenjerstvu; Upravljaci senzora; Instrumenti za nadzor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "hr",
+      "description": "Izrada strojeva po narudzbi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Izrada [koncipiranje] racunalnih progama; Konzultantske usluge u svezi s racunalnim softverom; Razvoj softvera; Priprema tehnickih prirucnika; Istrazivanje u podrucju elektrotehnike; Graficki dizajn; Inzenjerske usluge za dizajn struktura; Strojarstvo; Planovi (izrada gradevinskih planova); Savjetovanje u podrucju izrade gradevinskih planova; Testiranje funkcionalnosti aparata i instrumenata; Testiranje funkcionalnosti strojeva; Ispitivanje uredaja u podrucju elektricnog inzenjeringa; Ispitivanje, analiza i procjena proizvoda drugih u svrhu certificiranja; Ispitivanje kvalitete proizvoda u svrhu certifikacije; Usluge tehnickog testiranja; Tehnoloske savjetodavne usluge u svezi sa strojarskim analizama.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Elektromos vezérlo berendezések, felszerelések; Rádiókészülékek és berendezések; Vezeték nélküli vezérlok egyéb elektromos és elektronikus eszközök vagy rendszerek funkcióinak és állapotának távoli ellenorzésére és vezérlésére; Chipkártyák [integrált áramkörös kártyák]; Érzékelok és detektorok; Számítógépes szoftverek számítógépes szoftverfejlesztéshez; Számítógéppel támogatott szoftverfejlesztéshez használt számítógép hardverek; Érzékelo vezérlok; Felügyeleti berendezések.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "hu",
+      "description": "Gépgyártás megrendelés alapján.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Szoftvertervezés; Számítógép szoftver tanácsadás; Számítógépes szoftver fejlesztése; Muszaki kézikönyvek készítése; Elektrotechnikai kutatások; Grafikai tervezés; Szerkezetek tervezésével kapcsolatos muszaki szolgáltatások; Gépészmérnökség; Építési tervkészítés; Építészeti tervrajzok készítésével kapcsolatos konzultáció; Berendezések és muszerek muködésének ellenorzése; Gépek funkcióinak ellenorzése; Készülékek tesztelése az elektrotechnika területén; Mások áruinak tesztelése, elemzése és kiértékelése tanúsítási célokra; Termékek minoségellenorzése tanúsítási célokra; Muszaki vizsgálat, tesztelési szolgáltatások; Gépészeti elemzéssel kapcsolatos technológiai tanácsadási szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchiature di regolazione (Elettriche -); Apparecchi e strumenti radio; Dispositivi di comando senza fili per monitorare e controllare a distanza la funzione e lo stato d'altri dispositivi o sistemi elettrici, elettronici e meccanici; Carte magnetiche; Sensori e rilevatori; Software per ingegneria di software assistita da computer; Hardware per ingegneria del sofware assistita dal computer; Dispositivi di controllo per sensori; Strumenti di monitoraggio.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "it",
+      "description": "Costruzione di macchine conformi alle richieste del cliente.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Elaborazione [ideazione] di software; Consulenza in materia di software; Sviluppo di software; Preparazione di manuali tecnici; Ricerche nel settore dell'elettrotecnica; Servizi di grafica; Servizi tecnici relativi alla progettazione di strutture; Ingegneria meccanica; Progettazione per la costruzione; Consulenza in materia di progettazione per la costruzione; Esame della funzionalità di apparecchi e strumenti; Prova della funzionalità delle macchine; Testing di apparecchiature nell'ambito dell'ingegneria elettrica; Sperimentazione, analisi e valutazione di prodotti di terzi ai fini della certificazione; Test di qualità dei prodotti al fine di conseguire una certificazione; Servizi di collaudo tecnico; Servizi di consulenza tecnologica riguardante l'analisi tecnica di macchine.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Elektrine valdymo iranga; Radijo aparatai ir prietaisai; Belaidziai valdikliai, skirti kitu elektriniu, elektroniniu ir mechaniniu prietaisu ar sistemu veikimui ir busenai nuotoliniu budu stebeti ir valdyti; Integriniu grandiniu korteles [lustines korteles]; Jutikliai ir detektoriai; Kompiuterizuoto programines irangos projektavimo programine iranga; Kompiuteriu aparatine iranga kompiuterizuoto programines irangos projektavimo reikmems; Jutikliu valdikliai; Prieziuros prietaisai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "lt",
+      "description": "Uzsakomasis masinu konstravimas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Kompiuteriu programines irangos projektavimas; Kompiuteriu programines irangos konsultacijos; Programines irangos tobulinimas; Techniniu instrukciju ruosimas; Tyrimai elektros inzinerijos srityje; Grafinis dizainas; Konstrukciju projektavimo inzinerines paslaugos; Mechanine inzinerija; Statybu projektavimas; Statybu projektavimo konsultacijos; Aparatu ir instrumentu funkcionalumo testavimas; Masinu funkcionalumo testavimas; Elektros inzinerijos srities aparatu bandymai; Treciuju asmenu prekiu tyrimai, analize ir vertinimas sertifikavimo reikmems; Gaminiu kokybes tikrinimas sertifikavimo reikmems; Techninio testavimo paslaugos; Technologines konsultacijos, susijusios su masinu inzinerijos analize.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Elektriskas regulesanas iekartas; Radio aparati un instrumenti; Bezvadu kontroliekartas, lai ar talvadibas palidzibu noverotu un kontroletu citu elektrisko, elektronisko iericu vai mehanisko iekartu vai sistemu funkciju un statusu; Viedkartes (kartes ar integreto shemu); Sensori un detektori; Datoru programmatura datorizetai programmaturas inzenierijai; Datoraparatura izmantosanai datorizeta programmaturas inzenierija; Sensoru kontrolleri; Monitoringa ierices.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "lv",
+      "description": "Iekartu izgatavosana pec pasutijuma.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Programmaturas izstrade; Konsultesana datoru programmaturas joma; Datoru programmaturu izstrade; Tehnisko rokasgramatu sagatavosana; Petijumi elektrotehnikas joma; Grafiska dizaina izstrade; Inzenierijas pakalpojumi celtnu projektesanai; Pakalpojumi masinbuves joma; Buvniecibas planu izstrade; Konsultacijas par konstrukciju rasejumiem; Aparatu un instrumentu funkcionalitates testesana; Masinu funcionalitates testesana; Aparatu parbaude elektrotehnikas joma; Citu personu precu testesana, analize un novertesana sertifikacijas vajadzibam; Produktu kvalitates parbaude sertifikacijas nolukos; Tehniskas testesanas pakalpojumi; Tehnologiju konsultaciju pakalpojumi attieciba uz masinbuves analizi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Installazzjonijiet (tal-elettriku) ghall-kontroll; Apparat u strumenti tar-radju; Kontrolluri minghajr fili ghall-monitoragg u l-kontroll mill-boghod tal-funzjoni u l-istatus ta' strumenti jew sistemi ohra elettrici, elettronici u mekkanici; Skedi [kards] b'cirkwiti integrati; Sensuri u ditetturi; Softwer tal-kompjuters ghall-inginerija tas-softwer mghejuna mill-kompjuter; Hardwer tal-kompjuter ghall-uzu f'inginerija assistita mill-kompjuter ta' softwer; Apparat li jikkontrolla s-sensers; Strumenti ghall-monitoragg.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "mt",
+      "description": "Bini ta' magni skont l-ordni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "L-izvilupp ta' softwer tal-kompjuter; Konsulenza (fis-softwer tal-kompjuter); Zvilupp ta' softwer; Il-preparazzjoni ta' manwali teknici; Ricerki fil-qasam ta' l-inginerija elettrika; Disinn grafiku; Servizzi ta' inginerija ghad-disinn ta' strutturi; Inginerija mekkanika; Disinn ta' bini; Konsulenza fil-qasam tad-disinjar arkitettoniku; L-ittestjar tal-funzjonalità tal-apparat u l-istrumenti; L-ittestjar tal-funzjonalità tal-magni; L-ittestjar ta' apparat fil-qasam tal-inginerija elettrika; L-ittestjar, l-analizi u l-evalwazzjoni ta' l-oggetti ta' ohrajn ghac-certifikazzjoni; L-ittestjar ghall-kwalità ta' prodotti ghal skopijiet ta' certifikazzjoni; Servizzi ta' testijiet teknici; Servizzi ta' pariri teknologici relatati mal-analizi tal-inginerija ta' magni.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Elektryczne instalacje sterujace; Urzadzenia i przyrzady radiowe; Bezprzewodowe sterowniki do zdalnego monitorowania i kontroli funkcjonowania i statusu innych urzadzen lub systemów elektrycznych, elektronicznych i mechanicznych; Karty inteligentne [karty z ukladem scalonym]; Czujniki i detektory; Oprogramowanie komputerowe do inzynierii oprogramowania wspomaganej komputerowo; Sprzet komputerowy stosowany do inzynierii oprogramowania wspomaganej komputerowo; Kontrolery czujników; Urzadzenia do monitorowania.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "pl",
+      "description": "Budowanie maszyn na zamówienie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Projektowanie oprogramowania komputerowego; Doradztwo w zakresie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Opracowywanie podreczników technicznych; Badania w dziedzinie inzynierii elektrycznej; Projektowanie graficzne; Uslugi inzynieryjne w zakresie projektowania konstrukcji; Inzynieria mechaniczna; Projektowanie budowlane; Doradztwo w zakresie projektowania konstrukcyjnego; Testowanie funkcjonalnosci sprzetu i instrumentów; Testowanie funkcjonalnosci maszyn; Testowanie urzadzen w dziedzinie inzynierii elektrycznej; Testowanie, analiza i ocena towarów osób trzecich do celów certyfikacji; Testowanie jakosci produktów do celów certyfikacji; Uslugi w zakresie testów technicznych; Uslugi doradztwa technologicznego w zakresie analiz budowy maszyn.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Instalações elétricas de controlo; Aparelhos e instrumentos de rádio; Controladores sem fios para monitorização e controlo remotos do funcionamento e do estado de outros dispositivos ou sistemas elétricos, eletrónicos ou mecânicos; Cartões de circuitos integrados [smart cards]; Sensores e detetores; Software para engenharia de software assistida por computador; Hardware informático para usar na engenharia de software assistida por computador; Controladores de sensor; Instrumentos de monitorização.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "pt",
+      "description": "Construção de maquinaria por encomenda.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Design de software; Consultoria em software; Desenvolvimento de software; Preparação de manuais técnicos; Pesquisas na área de engenharia elétrica; Design gráfico; Serviços de engenharia para o design de estruturas; Engenharia mecânica; Elaboração de planos para construção; Consultoria na área de projetos de construção; Teste da funcionalidade de aparelhos e instrumentos; Teste da funcionalidade de máquinas; Testes de aparelhos na área da engenharia elétrica; Testes, análise e avaliação dos bens de terceiros para efeitos de certificação; Testes de qualidade de produtos para certificação; Serviços de ensaios técnicos; Serviços de assessoria tecnológica relacionados com análise de engenharia de máquinas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Instalatii de control (electrice); Aparate si instrumente radio; Controlere fara fir pentru monitorizarea si controlul de la distanta al functiei si starii altor dispozitive sau sisteme electrice, electronice si mecanice; Cartele cu cip [carduri cu circuite integrate]; Senzori si detectoare; Software de calculator pentru ingineria de software asistata de calculator; Hardware de calculator folosit la ingineria de software asistata de calculator; Dispozitive de comanda pentru senzori; Instrumente de monitorizare.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ro",
+      "description": "Constructie de utilaje pe baza de comanda.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Proiectare de software; Consultanta în domeniul programelor de calculator; Dezvoltare de software; Elaborarea de manuale tehnice; Cercetare în domeniul ingineriei electrice; Design grafic; Servicii de inginerie în materie de proiectare de structuri; Inginerie mecanica; Planuri (realizarea de -) [constructii]; Consultanta în domeniul desenului tehnic în constructii; Testarea functionalitatii aparatelor si instrumentelor; Testarea functionalitatii masinilor; Testare de aparate în domeniul ingineriei electrice; Testare, analiza si evaluare a produselor tertilor în vederea certificarii; Testarea calitatii produselor în scopul certificarii; Servicii de testare tehnica; Servicii de consiliere tehnologica privind analiza tehnica a utilajelor.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Elektrické ovládacie instalácie; Rádiové prístroje a zariadenia; Bezdrôtové ovládace pre dialkové monitorovanie a kontrolu funkcií a stavu iných elektrických, elektronických a mechanických prístrojov alebo systémov; Karty s integrovanými obvodmi (pamätové alebo mikroprocesorové); Senzory a detektory; Pocítacový software pre softvérové inzinierstvo s pouzitím pocítaca; Pocítacový hardvér pre pocítacové softvérové inzinierstvo; Ovládace senzorov; Monitorovacie nástroje.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "sk",
+      "description": "Konstrukcia strojov podla poziadaviek zákazníka.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Tvorba softvéru; Poradenstvo v oblasti pocítacových programov; Vývoj pocítacového softvéru; Vypracovanie technických manuálov; Výskum v oblasti elektrotechniky; Grafické dizajnérstvo; Inzinierske sluzby v oblasti navrhovania konstrukcií; Strojné inzinierstvo; Vypracovanie stavebných výkresov; Poradenstvo v oblasti stavebného projektovania; Testovanie funkcnosti prístrojov a nástrojov; Testovanie funkcnosti strojov; Testovanie zariadení v oblasti elektrotechnického inzinierstva; Testovanie, analýza a hodnotenie tovarov klientov za úcelom certifikácie; Testovanie kvality produktov na certifikacné úcely; Technické skúsky; Technologické poradenské sluzby v oblasti analýzy strojného inzinierstva.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Elektricne krmilne instalacije; Radijski aparati in instrumenti; Brezzicni krmilniki za daljinski nadzor in kontrolo funkcije in stanja drugih elektricnih, elektronskih in mehanskih naprav ali sistemov; Pametne kartice (kartice z integriranim vezjem]; Senzorji in detektorji; Racunalniska programska oprema za racunalnisko podprt inzeniring; Racunalniska strojna oprema, ki se uporablja pri racunalnisko podprtem inzeniringu programske opreme; Upravljalniki senzorjev; Nadzorni instrumenti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "sl",
+      "description": "Izdelava strojev po narocilu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Oblikovanje programske opreme; Svetovanje na podrocju racunalniske programske opreme; Razvoj programske opreme; Priprava tehnicnih prirocnikov; Raziskave na podrocju elektrotehnike; Graficno oblikovanje; Inzenirske storitve za oblikovanje struktur; Strojni inzeniring; Nacrtovanje konstrukcij; Svetovanje na podrocju izdelave gradbenih nacrtov; Preskusanje funkcionalnosti aparatov in instrumentov; Preskusanje funkcionalnosti strojev; Testiranje aparatov na podrocju elektricnega inzeniringa; Testiranje, analiza in ocenjevanje blaga drugih za namene certificiranja; Testiranje kakovosti izdelkov za namene certificiranja; Storitve tehnicnih testiranj; Tehnoloske svetovalne storitve na podrocju inzenirske analize strojev.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Instalaciones de control eléctricas; Instrumentos y aparatos de radio; Controladores inalámbricos para la supervisión y el control a distancia del funcionamiento y el estado de otros dispositivos o sistemas eléctricos, electrónicos y mecánicos; Tarjetas de circuitos integrados; Sensores y detectores; Software informático para ingeniería de software asistida por ordenador; Hardware informático para su uso en la ingeniería de software asistida por ordenador; Controladores de sensores; Instrumentos de monitorización.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Construcción por encargo de máquinas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño de software; Consultoría sobre software; Desarrollo de software; Preparación de manuales técnicos; Investigaciones en el sector de la electrotecnia; Servicios de diseño gráfico; Servicios de ingeniería para el diseño de estructuras; Ingeniería mecánica; Elaboración de planos para la construcción; Consultoría sobre elaboración de planos de construcción; Comprobar la funcionalidad de aparatos e instrumentos; Ensayo de la funcionalidad de máquinas; Comprobación de aparatos en el campo de la ingeniería eléctrica; Pruebas, análisis y productos de servicios de terceros con fines de certificación; Pruebas de calidad de productos con fines de certificación; Servicios de ensayo técnico; Servicios de asesoramiento tecnológico relativo a análisis de ingeniería de máquinas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Elektriska installationer för styrning; Apparater och instrument för radio; Trådlösa styrenheter för fjärrövervakning och -styrning av funktionen och statusen hos andra elektriska, elektroniska och mekaniska anordningar eller system; Integrerade kretskort [smartcards] aktivkort; Sensorer och detektorer; Datorprogramvara för datorstödd programvarukonstruktion; Datormaskinvara för användning vid datorstödd datorprogramkonstruktion; Styrenheter för sensorer; Övervakningsinstrument.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "sw",
+      "description": "Skräddarsydd maskinkonstruktion.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Utformning av programvara; Rådgivning avseende datormjukvara; Utveckling av mjukvara; Framtagning av tekniska handböcker; Forskning inom området elektroteknik; Grafisk design; Ingenjörstjänster för utformning/design av konstruktioner; Maskiningenjörstjänster; Konstruktionsritning; Konsultationer inom området konstruktionsritning; Testning av funktionen hos apparater och instrument; Testning av funktionen hos maskiner; Apparatprovning inom området för elektroteknik; Provning, analys och utvärdering av andras varor för certifieringsändamål; Kvalitetsprovning av varor för certifieringsändamål; Teknisk provning; Tekniska rådgivningstjänster avseende maskinteknisk analys.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CREATIVE NORTH SOLUTION GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "SCHNEBBE, HEUSER & PARTNER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Bültbek 11,siek, 22962",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "CREATIVE NORTH SOLUTION GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "26.11.02",
+      "26.11.12",
+      "37.01.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Ovládací zarízení (Elektrické -); Rádiová zarízení a prístroje; Bezdrátové ovladace pro dálkové monitorování a ovládání fungování a statusu jiných elektrických, elektronických a mechanických zarízení nebo systému; Cipové karty [karty s integrovaným obvodem]; Cidla a detektory; Pocítacový software pro softwarové inzenýrství s pouzitím pocítace; Pocítacový hardware pro pocítacem ovládané softwarové inzenýrství; Ovladace cidel; Monitorovací prístroje."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Zakázková konstrukce stroju."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Tvorba pocítacového softwaru; Poradenství v oblasti pocítacového softwaru; Vývoj softwaru; Príprava technických manuálu; Výzkum v oboru elektrotechniky; Grafický design; Inzenýrské sluzby týkající se návrhu konstrukcí; Strojní inzenýrství; Projektování ve výstavbe; Poradenství v oblasti stavebního projektování; Testování funkcnosti prístroju a nástroju; Testování funkcnosti stroju; Testování prístroju v oblasti elektrotechniky; Testování, analýza a hodnocení zbozí jiných subjektu pro úcely certifikace; Testování kvality výrobku pro úcely certifikace; Sluzby v oblasti technických zkousek; Technologické poradenské sluzby vztahující se ke strojarské analýze."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Elektriske kontrolinstallationer; Radioapparater og -instrumenter; Trådløse styreenheder til fjernovervågning og -styring af andre elektriske, elektroniske og mekaniske enheders eller systemers funktion og status; Smartkort [kodede]; Sensorer og detektorer; Computersoftware til computerstøttet softwareudvikling; Computerhardware til brug ved computerunderstøttet udvikling af software; Controllere til sensorer; Overvågningsinstrumenter."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Konstruktion af maskiner lavet på bestilling."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design af computerprogrammer; Rådgivning vedrørende computer software; Softwareudvikling; Udarbejdelse af tekniske manualer; Forskning inden for elektroteknik; Grafisk design; Ingeniørvirksomhed vedrørende design af konstruktioner; Mekanisk ingeniørvirksomhed; Udarbejdelse af byggeplaner; Konsulentbistand inden for udarbejdelse af bygningsplaner; Afprøvning af apparaters og instrumenters funktionalitet; Afprøvning af maskiners funktionalitet; Afprøvning af apparater inden for elektroteknik; Afprøvning, analyse og vurdering af andres varer med henblik på certificering; Kvalitetsafprøvning af produkter til certificeringsformål; Tjenesteydelser inden for tekniske tests; Teknologisk rådgivning vedrørende maskinteknisk analyse."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Bedieningsinstallaties (Elektrische -); Radioapparaten en -instrumenten; Draadloze regelaars voor het op afstand bewaken en regelen van de werking en status van andere elektrische, elektronische en mechanische toestellen of systemen; Kaarten met geheugen of met microprocessor; Sensoren en detectoren; Software voor computerondersteunde software-ingenieursdiensten (expertises); Hardware voor computerondersteunde software-ontwikkeling; Regelingsapparatuur voor sensoren; Bewakingstoestellen."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Bouw van op maat gemaakte machines."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software-ontwikkeling; Advisering op het gebied van software; Ontwikkeling van software; Voorbereiding van technische handboeken; Onderzoek op het gebied van elektrotechniek; Grafische vormgeving; Ingenieursdiensten voor het ontwerp van structuren; Werktuigbouwkunde; Bouwkundig ontwerpen; Advisering op het gebied van bouwplanning; Het testen van de functionaliteit van apparaten en instrumenten; Het testen van de functionaliteit van machines; Testen van apparatuur op het gebied van de elektrotechniek; Het testen, analyseren en evalueren van de goederen van derden voor certificatiedoeleinden; Testen van de kwaliteit van producten certificeringsdoeleinden; Technische testdiensten; Technologische advisering met betrekking tot analyse van machinetechnieken."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Control installations (Electric -); Radio apparatus and instruments; Wireless controllers to remotely monitor and control the function and status of other electrical, electronic, and mechanical devices or systems; Integrated circuit cards [smart cards]; Sensors and detectors; Computer software for computer aided software engineering; Computer hardware for use in computer-assisted software engineering; Sensor controllers; Monitoring instruments."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom construction of machines."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software design; Computer software consultancy; Software development; Preparation of technical manuals; Research in the field of electrical engineering; Graphic design; Engineering services for the design of structures; Mechanical engineering; Construction drafting; Consultancy in the field of construction drafting; Testing the functionality of apparatus and instruments; Testing the functionality of machines; Testing of apparatus in the field of electrical engineering; Testing, analysis and evaluation of the goods of others for the purpose of certification; Quality testing of products for certification purposes; Technical testing services; Technological advisory services relating to machine engineering analysis."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Elektrilised juhtimissüsteemi paigaldised; Raadioseadmed ja -instrumendid; Muude elektriliste, elektrooniliste ja mehaaniliste seadmete või süsteemide töö ja seisundi kaugjälgimise ning -juhtimise juhtmeta kontrollerid; Integraalskeemkaardid, kiipkaardid; Andurid ja detektorid; Arvutitarkvara, mida kasutatakse tarkvara projekteerimiseks arvuti abil; Arvutipõhiseks tarkvaraarenduseks kasutatav arvutiriistvara; Sensorite kontrollerid; Seireseadmed."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Masinate tellimuskonstrueerimine."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara projekteerimine; Arvutitarkvarakonsultatsioonid; Tarkvara arendamine; Tehniliste manuaalide koostamine; Uurimustegevus elektrotehnika valdkonnas; Graafiline disain; Inseneriteenused tarindite projekteerimiseks; Masinaehitus; Ehitusprojekteerimine, tarindustööd; Ehitusprojekteerimise konsultatsioonid; Seadmete ja riistade funktsioonide katsetamine; Masinate funktsioonide katsetamine; Elektrotehnikaseadmete katsetamine; Kolmandate isikute kaupade katsetamine, analüüsimine ja hindamine sertifitseerimise eesmärgil; Toodete kvaliteedikontroll sertifitseerimiseks; Tehnilise testimise teenused; Masinaehituse analüüsiga seotud tehnoloogiline nõustamine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjauslaitteistot (sähköiset); Radiolaitteet ja -välineet; Langattomat ohjaimet muiden sähköisten, elektronisten ja mekaanisten laitteiden tai järjestelmien etävalvontaan ja -ohjaukseen; Älykortit [mikropiirikortit]; Anturit ja ilmaisimet; Tietokoneohjelmistot tietokoneavusteiseen ohjelmistojen tekniseen suunnitteluun; Tietokonelaitteistot tietokoneavusteiseen ohjelmistosuunnitteluun; Anturiohjaimet; Seurantalaitteet."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Koneiden rakennus tilauksesta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistosuunnittelu; Konsultointi liittyen tietokoneohjelmistoihin; Ohjelmistokehitys; Teknisten käsikirjojen valmistelu; Tutkimukset sähkötekniikan alalla; Graafinen suunnittelu; Tekniset suunnittelupalvelut rakenteiden suunnittelua varten; Koneinsinöörin palvelut; Rakennuspiirustus; Rakennuspiirustuksiin liittyvä neuvonta; Laitteiden ja välineiden toimivuuden testaus; Koneiden toimivuuden testaus; Laitteiden testaus sähkötekniikan alalla; Muiden tuottamien tavaroiden testaus, analysointi ja arviointi sertifiointitarkoituksiin; Tuotteiden laatuarviointien tekeminen sertifiointitarkoituksiin; Tekniset testauspalvelut; Teknologiset neuvontapalvelut koneiden teknisen analysoinnin alalla."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Installations de contrôle électriques; Appareils et instruments de radio; Contrôleurs sans fil pour surveiller et contrôler à distance le fonctionnement et l'état d'autres dispositifs ou systèmes électriques, électroniques et mécaniques; Cartes à mémoire ou à microprocesseur; Capteurs et détecteurs; Logiciel d'ingénierie logicielle assistée par ordinateur; Matériel informatique destiné à l'ingénierie logicielle assistée par ordinateur; Commandes de détecteurs; Instruments de surveillance."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Construction de machines [services sur commande]."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Élaboration [conception] de logiciels; Consultation en matière de logiciels; Développement de logiciels; Préparation de manuels techniques; Recherches en matière d'électrotechnique; Conception graphique; Services d'ingénierie pour la conception de structures; Génie mécanique; Établissement de plans pour la construction; Consultation dans le domaine de l'établissement de plans pour la construction; Test de la fonctionnalité d'appareils et d'instruments; Test de la fonctionnalité de machines; Essais d'appareils dans le domaine du génie électrique; Essai, analyse et évaluation de services de tiers à des fins de certification; Tests de qualité de produits à des fins de certification; Services d'essais techniques; Services de conseils technologiques dans le domaine de l'analyse de l'ingénierie des machines."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Elektrische Steuerungsanlagen; Funkgeräte und -instrumente; Kabellose Steuerungen zur Fernüberwachung sowie zur Funktions- und Statuskontrolle von anderen elektrischen, elektronischen und mechanischen Geräten oder Systemen; Leiterplatten; Sensoren und Detektoren; Computersoftware für die computergestützte Softwareentwicklung; Computerhardware zur Verwendung für computergestützte Softwareentwicklung; Steuergeräte für Sensoren; Überwachungsinstrumente und -apparate."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Kundenspezifischer Maschinenbau [Auftragsfertigung für Dritte]."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Hard- und Softwareberatung; Softwareberatung; Softwareentwicklung; Erstellung von technischen Bedienungsanleitungen; Forschung auf dem Gebiet der Elektrotechnik; Grafikdesigndienste; Ingenieurdienstleistungen für den Entwurf von Konstruktionen; Ingenieurdienstleistungen im Maschinenbau; Konstruktionsplanung; Beratung auf dem Gebiet der Konstruktionsplanung; Prüfung der Funktionalität von Apparaten und Instrumenten; Prüfung der Funktionalität von Maschinen; Prüfung von Geräten im Bereich der Elektrotechnik; Prüfung, Analyse und Bewertung der Waren Dritter für Zertifizierungszwecke; Qualitätsprüfung von Erzeugnissen zu Zertifizierungszwecken; Technische Tests; Technologische Beratung in Bezug auf Maschinenbauanalysen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Kontrolne instalacije (Elektricne -); Radijski uredaji i instrumenti; Bezicni kontrolni uredaji za daljinski nadzor i kontrolu funkcije i statusa drugih elektricnih, elektronickih i mehanickih uredaja i sustava; Smart kartice [kartice s integriranim rasklopnim krugom]; Senzori i detektori; Racunalni programi za racunalno potpomognuto programsko inzenjerstvo; Racunalni hardver za uporabu u racunalno potpomognutom softverskom inzenjerstvu; Upravljaci senzora; Instrumenti za nadzor."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Izrada strojeva po narudzbi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Izrada [koncipiranje] racunalnih progama; Konzultantske usluge u svezi s racunalnim softverom; Razvoj softvera; Priprema tehnickih prirucnika; Istrazivanje u podrucju elektrotehnike; Graficki dizajn; Inzenjerske usluge za dizajn struktura; Strojarstvo; Planovi (izrada gradevinskih planova); Savjetovanje u podrucju izrade gradevinskih planova; Testiranje funkcionalnosti aparata i instrumenata; Testiranje funkcionalnosti strojeva; Ispitivanje uredaja u podrucju elektricnog inzenjeringa; Ispitivanje, analiza i procjena proizvoda drugih u svrhu certificiranja; Ispitivanje kvalitete proizvoda u svrhu certifikacije; Usluge tehnickog testiranja; Tehnoloske savjetodavne usluge u svezi sa strojarskim analizama."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Elektromos vezérlo berendezések, felszerelések; Rádiókészülékek és berendezések; Vezeték nélküli vezérlok egyéb elektromos és elektronikus eszközök vagy rendszerek funkcióinak és állapotának távoli ellenorzésére és vezérlésére; Chipkártyák [integrált áramkörös kártyák]; Érzékelok és detektorok; Számítógépes szoftverek számítógépes szoftverfejlesztéshez; Számítógéppel támogatott szoftverfejlesztéshez használt számítógép hardverek; Érzékelo vezérlok; Felügyeleti berendezések."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Gépgyártás megrendelés alapján."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftvertervezés; Számítógép szoftver tanácsadás; Számítógépes szoftver fejlesztése; Muszaki kézikönyvek készítése; Elektrotechnikai kutatások; Grafikai tervezés; Szerkezetek tervezésével kapcsolatos muszaki szolgáltatások; Gépészmérnökség; Építési tervkészítés; Építészeti tervrajzok készítésével kapcsolatos konzultáció; Berendezések és muszerek muködésének ellenorzése; Gépek funkcióinak ellenorzése; Készülékek tesztelése az elektrotechnika területén; Mások áruinak tesztelése, elemzése és kiértékelése tanúsítási célokra; Termékek minoségellenorzése tanúsítási célokra; Muszaki vizsgálat, tesztelési szolgáltatások; Gépészeti elemzéssel kapcsolatos technológiai tanácsadási szolgáltatások."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchiature di regolazione (Elettriche -); Apparecchi e strumenti radio; Dispositivi di comando senza fili per monitorare e controllare a distanza la funzione e lo stato d'altri dispositivi o sistemi elettrici, elettronici e meccanici; Carte magnetiche; Sensori e rilevatori; Software per ingegneria di software assistita da computer; Hardware per ingegneria del sofware assistita dal computer; Dispositivi di controllo per sensori; Strumenti di monitoraggio."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Costruzione di macchine conformi alle richieste del cliente."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Elaborazione [ideazione] di software; Consulenza in materia di software; Sviluppo di software; Preparazione di manuali tecnici; Ricerche nel settore dell'elettrotecnica; Servizi di grafica; Servizi tecnici relativi alla progettazione di strutture; Ingegneria meccanica; Progettazione per la costruzione; Consulenza in materia di progettazione per la costruzione; Esame della funzionalità di apparecchi e strumenti; Prova della funzionalità delle macchine; Testing di apparecchiature nell'ambito dell'ingegneria elettrica; Sperimentazione, analisi e valutazione di prodotti di terzi ai fini della certificazione; Test di qualità dei prodotti al fine di conseguire una certificazione; Servizi di collaudo tecnico; Servizi di consulenza tecnologica riguardante l'analisi tecnica di macchine."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Elektrine valdymo iranga; Radijo aparatai ir prietaisai; Belaidziai valdikliai, skirti kitu elektriniu, elektroniniu ir mechaniniu prietaisu ar sistemu veikimui ir busenai nuotoliniu budu stebeti ir valdyti; Integriniu grandiniu korteles [lustines korteles]; Jutikliai ir detektoriai; Kompiuterizuoto programines irangos projektavimo programine iranga; Kompiuteriu aparatine iranga kompiuterizuoto programines irangos projektavimo reikmems; Jutikliu valdikliai; Prieziuros prietaisai."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Uzsakomasis masinu konstravimas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuteriu programines irangos projektavimas; Kompiuteriu programines irangos konsultacijos; Programines irangos tobulinimas; Techniniu instrukciju ruosimas; Tyrimai elektros inzinerijos srityje; Grafinis dizainas; Konstrukciju projektavimo inzinerines paslaugos; Mechanine inzinerija; Statybu projektavimas; Statybu projektavimo konsultacijos; Aparatu ir instrumentu funkcionalumo testavimas; Masinu funkcionalumo testavimas; Elektros inzinerijos srities aparatu bandymai; Treciuju asmenu prekiu tyrimai, analize ir vertinimas sertifikavimo reikmems; Gaminiu kokybes tikrinimas sertifikavimo reikmems; Techninio testavimo paslaugos; Technologines konsultacijos, susijusios su masinu inzinerijos analize."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Elektriskas regulesanas iekartas; Radio aparati un instrumenti; Bezvadu kontroliekartas, lai ar talvadibas palidzibu noverotu un kontroletu citu elektrisko, elektronisko iericu vai mehanisko iekartu vai sistemu funkciju un statusu; Viedkartes (kartes ar integreto shemu); Sensori un detektori; Datoru programmatura datorizetai programmaturas inzenierijai; Datoraparatura izmantosanai datorizeta programmaturas inzenierija; Sensoru kontrolleri; Monitoringa ierices."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Iekartu izgatavosana pec pasutijuma."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmaturas izstrade; Konsultesana datoru programmaturas joma; Datoru programmaturu izstrade; Tehnisko rokasgramatu sagatavosana; Petijumi elektrotehnikas joma; Grafiska dizaina izstrade; Inzenierijas pakalpojumi celtnu projektesanai; Pakalpojumi masinbuves joma; Buvniecibas planu izstrade; Konsultacijas par konstrukciju rasejumiem; Aparatu un instrumentu funkcionalitates testesana; Masinu funcionalitates testesana; Aparatu parbaude elektrotehnikas joma; Citu personu precu testesana, analize un novertesana sertifikacijas vajadzibam; Produktu kvalitates parbaude sertifikacijas nolukos; Tehniskas testesanas pakalpojumi; Tehnologiju konsultaciju pakalpojumi attieciba uz masinbuves analizi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Installazzjonijiet (tal-elettriku) ghall-kontroll; Apparat u strumenti tar-radju; Kontrolluri minghajr fili ghall-monitoragg u l-kontroll mill-boghod tal-funzjoni u l-istatus ta' strumenti jew sistemi ohra elettrici, elettronici u mekkanici; Skedi [kards] b'cirkwiti integrati; Sensuri u ditetturi; Softwer tal-kompjuters ghall-inginerija tas-softwer mghejuna mill-kompjuter; Hardwer tal-kompjuter ghall-uzu f'inginerija assistita mill-kompjuter ta' softwer; Apparat li jikkontrolla s-sensers; Strumenti ghall-monitoragg."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Bini ta' magni skont l-ordni."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "L-izvilupp ta' softwer tal-kompjuter; Konsulenza (fis-softwer tal-kompjuter); Zvilupp ta' softwer; Il-preparazzjoni ta' manwali teknici; Ricerki fil-qasam ta' l-inginerija elettrika; Disinn grafiku; Servizzi ta' inginerija ghad-disinn ta' strutturi; Inginerija mekkanika; Disinn ta' bini; Konsulenza fil-qasam tad-disinjar arkitettoniku; L-ittestjar tal-funzjonalità tal-apparat u l-istrumenti; L-ittestjar tal-funzjonalità tal-magni; L-ittestjar ta' apparat fil-qasam tal-inginerija elettrika; L-ittestjar, l-analizi u l-evalwazzjoni ta' l-oggetti ta' ohrajn ghac-certifikazzjoni; L-ittestjar ghall-kwalità ta' prodotti ghal skopijiet ta' certifikazzjoni; Servizzi ta' testijiet teknici; Servizzi ta' pariri teknologici relatati mal-analizi tal-inginerija ta' magni."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Elektryczne instalacje sterujace; Urzadzenia i przyrzady radiowe; Bezprzewodowe sterowniki do zdalnego monitorowania i kontroli funkcjonowania i statusu innych urzadzen lub systemów elektrycznych, elektronicznych i mechanicznych; Karty inteligentne [karty z ukladem scalonym]; Czujniki i detektory; Oprogramowanie komputerowe do inzynierii oprogramowania wspomaganej komputerowo; Sprzet komputerowy stosowany do inzynierii oprogramowania wspomaganej komputerowo; Kontrolery czujników; Urzadzenia do monitorowania."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Budowanie maszyn na zamówienie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Projektowanie oprogramowania komputerowego; Doradztwo w zakresie oprogramowania komputerowego; Opracowywanie oprogramowania komputerowego; Opracowywanie podreczników technicznych; Badania w dziedzinie inzynierii elektrycznej; Projektowanie graficzne; Uslugi inzynieryjne w zakresie projektowania konstrukcji; Inzynieria mechaniczna; Projektowanie budowlane; Doradztwo w zakresie projektowania konstrukcyjnego; Testowanie funkcjonalnosci sprzetu i instrumentów; Testowanie funkcjonalnosci maszyn; Testowanie urzadzen w dziedzinie inzynierii elektrycznej; Testowanie, analiza i ocena towarów osób trzecich do celów certyfikacji; Testowanie jakosci produktów do celów certyfikacji; Uslugi w zakresie testów technicznych; Uslugi doradztwa technologicznego w zakresie analiz budowy maszyn."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Instalações elétricas de controlo; Aparelhos e instrumentos de rádio; Controladores sem fios para monitorização e controlo remotos do funcionamento e do estado de outros dispositivos ou sistemas elétricos, eletrónicos ou mecânicos; Cartões de circuitos integrados [smart cards]; Sensores e detetores; Software para engenharia de software assistida por computador; Hardware informático para usar na engenharia de software assistida por computador; Controladores de sensor; Instrumentos de monitorização."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Construção de maquinaria por encomenda."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Design de software; Consultoria em software; Desenvolvimento de software; Preparação de manuais técnicos; Pesquisas na área de engenharia elétrica; Design gráfico; Serviços de engenharia para o design de estruturas; Engenharia mecânica; Elaboração de planos para construção; Consultoria na área de projetos de construção; Teste da funcionalidade de aparelhos e instrumentos; Teste da funcionalidade de máquinas; Testes de aparelhos na área da engenharia elétrica; Testes, análise e avaliação dos bens de terceiros para efeitos de certificação; Testes de qualidade de produtos para certificação; Serviços de ensaios técnicos; Serviços de assessoria tecnológica relacionados com análise de engenharia de máquinas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Instalatii de control (electrice); Aparate si instrumente radio; Controlere fara fir pentru monitorizarea si controlul de la distanta al functiei si starii altor dispozitive sau sisteme electrice, electronice si mecanice; Cartele cu cip [carduri cu circuite integrate]; Senzori si detectoare; Software de calculator pentru ingineria de software asistata de calculator; Hardware de calculator folosit la ingineria de software asistata de calculator; Dispozitive de comanda pentru senzori; Instrumente de monitorizare."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Constructie de utilaje pe baza de comanda."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Proiectare de software; Consultanta în domeniul programelor de calculator; Dezvoltare de software; Elaborarea de manuale tehnice; Cercetare în domeniul ingineriei electrice; Design grafic; Servicii de inginerie în materie de proiectare de structuri; Inginerie mecanica; Planuri (realizarea de -) [constructii]; Consultanta în domeniul desenului tehnic în constructii; Testarea functionalitatii aparatelor si instrumentelor; Testarea functionalitatii masinilor; Testare de aparate în domeniul ingineriei electrice; Testare, analiza si evaluare a produselor tertilor în vederea certificarii; Testarea calitatii produselor în scopul certificarii; Servicii de testare tehnica; Servicii de consiliere tehnologica privind analiza tehnica a utilajelor."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Elektrické ovládacie instalácie; Rádiové prístroje a zariadenia; Bezdrôtové ovládace pre dialkové monitorovanie a kontrolu funkcií a stavu iných elektrických, elektronických a mechanických prístrojov alebo systémov; Karty s integrovanými obvodmi (pamätové alebo mikroprocesorové); Senzory a detektory; Pocítacový software pre softvérové inzinierstvo s pouzitím pocítaca; Pocítacový hardvér pre pocítacové softvérové inzinierstvo; Ovládace senzorov; Monitorovacie nástroje."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Konstrukcia strojov podla poziadaviek zákazníka."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Tvorba softvéru; Poradenstvo v oblasti pocítacových programov; Vývoj pocítacového softvéru; Vypracovanie technických manuálov; Výskum v oblasti elektrotechniky; Grafické dizajnérstvo; Inzinierske sluzby v oblasti navrhovania konstrukcií; Strojné inzinierstvo; Vypracovanie stavebných výkresov; Poradenstvo v oblasti stavebného projektovania; Testovanie funkcnosti prístrojov a nástrojov; Testovanie funkcnosti strojov; Testovanie zariadení v oblasti elektrotechnického inzinierstva; Testovanie, analýza a hodnotenie tovarov klientov za úcelom certifikácie; Testovanie kvality produktov na certifikacné úcely; Technické skúsky; Technologické poradenské sluzby v oblasti analýzy strojného inzinierstva."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Elektricne krmilne instalacije; Radijski aparati in instrumenti; Brezzicni krmilniki za daljinski nadzor in kontrolo funkcije in stanja drugih elektricnih, elektronskih in mehanskih naprav ali sistemov; Pametne kartice (kartice z integriranim vezjem]; Senzorji in detektorji; Racunalniska programska oprema za racunalnisko podprt inzeniring; Racunalniska strojna oprema, ki se uporablja pri racunalnisko podprtem inzeniringu programske opreme; Upravljalniki senzorjev; Nadzorni instrumenti."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Izdelava strojev po narocilu."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oblikovanje programske opreme; Svetovanje na podrocju racunalniske programske opreme; Razvoj programske opreme; Priprava tehnicnih prirocnikov; Raziskave na podrocju elektrotehnike; Graficno oblikovanje; Inzenirske storitve za oblikovanje struktur; Strojni inzeniring; Nacrtovanje konstrukcij; Svetovanje na podrocju izdelave gradbenih nacrtov; Preskusanje funkcionalnosti aparatov in instrumentov; Preskusanje funkcionalnosti strojev; Testiranje aparatov na podrocju elektricnega inzeniringa; Testiranje, analiza in ocenjevanje blaga drugih za namene certificiranja; Testiranje kakovosti izdelkov za namene certificiranja; Storitve tehnicnih testiranj; Tehnoloske svetovalne storitve na podrocju inzenirske analize strojev."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Instalaciones de control eléctricas; Instrumentos y aparatos de radio; Controladores inalámbricos para la supervisión y el control a distancia del funcionamiento y el estado de otros dispositivos o sistemas eléctricos, electrónicos y mecánicos; Tarjetas de circuitos integrados; Sensores y detectores; Software informático para ingeniería de software asistida por ordenador; Hardware informático para su uso en la ingeniería de software asistida por ordenador; Controladores de sensores; Instrumentos de monitorización."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Construcción por encargo de máquinas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño de software; Consultoría sobre software; Desarrollo de software; Preparación de manuales técnicos; Investigaciones en el sector de la electrotecnia; Servicios de diseño gráfico; Servicios de ingeniería para el diseño de estructuras; Ingeniería mecánica; Elaboración de planos para la construcción; Consultoría sobre elaboración de planos de construcción; Comprobar la funcionalidad de aparatos e instrumentos; Ensayo de la funcionalidad de máquinas; Comprobación de aparatos en el campo de la ingeniería eléctrica; Pruebas, análisis y productos de servicios de terceros con fines de certificación; Pruebas de calidad de productos con fines de certificación; Servicios de ensayo técnico; Servicios de asesoramiento tecnológico relativo a análisis de ingeniería de máquinas."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Elektriska installationer för styrning; Apparater och instrument för radio; Trådlösa styrenheter för fjärrövervakning och -styrning av funktionen och statusen hos andra elektriska, elektroniska och mekaniska anordningar eller system; Integrerade kretskort [smartcards] aktivkort; Sensorer och detektorer; Datorprogramvara för datorstödd programvarukonstruktion; Datormaskinvara för användning vid datorstödd datorprogramkonstruktion; Styrenheter för sensorer; Övervakningsinstrument."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Skräddarsydd maskinkonstruktion."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Utformning av programvara; Rådgivning avseende datormjukvara; Utveckling av mjukvara; Framtagning av tekniska handböcker; Forskning inom området elektroteknik; Grafisk design; Ingenjörstjänster för utformning/design av konstruktioner; Maskiningenjörstjänster; Konstruktionsritning; Konsultationer inom området konstruktionsritning; Testning av funktionen hos apparater och instrument; Testning av funktionen hos maskiner; Apparatprovning inom området för elektroteknik; Provning, analys och utvärdering av andras varor för certifieringsändamål; Kvalitetsprovning av varor för certifieringsändamål; Teknisk provning; Tekniska rådgivningstjänster avseende maskinteknisk analys."
+        }
+      ]
+    },
+    "id": "2cdbb673-2b06-4fa2-8ec7-967e8e6b5648",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "25.05.95",
+      "27.05.25",
+      "27.99.03",
+      "27.99.14",
+      "27.99.19",
+      "29.01.04",
+      "29.01.08"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "152"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Esplanade 41,Hamburg, 20354",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "SCHNEBBE, HEUSER & PARTNER"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20190729",
+        "applicationNumber": "18100893"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290729",
+      "lastPublicationDate": "20190813",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20191120",
+        "registrationNumber": "18100893"
+      }
+    },
+    "version": "20260511212609",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "cns CREATIVE NORTH SOLUTION"
+    }
+  },
+  "_uri": "/mark/em/2cdbb673-2b06-4fa2-8ec7-967e8e6b5648",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.818Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

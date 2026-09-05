@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/kr/db1fc549-89d9-42e0-986b-29c659e5bfcf",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "db1fc549-89d9-42e0-986b-29c659e5bfcf",
+  "applicationNumber": "40-1997-0003044",
+  "registrationNumber": null,
+  "applicationDate": "1997-01-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "요리",
+  "markTransliteration": "Cooking",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    6,
+    7,
+    8,
+    9,
+    11,
+    14,
+    16,
+    18,
+    19,
+    20,
+    21,
+    24,
+    26,
+    27,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        18,
+        19,
+        20,
+        21,
+        24,
+        26,
+        27,
+        28
+      ],
+      "language": "ko",
+      "description": "물수건받침대, 쇼핑백, 식기소독기, 접시스텐드, 행주, 행주걸이",
+      "translation_language": "en",
+      "translation": "Wet towel stand, shopping bag, dish sterilizer, dish stand, dishtowel, dishcloth holder"
+    }
+  ],
+  "owner": "MAMISOHN CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "이상우 (LEE, Sang Woo)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "MAMISOHN CO., LTD.",
+        "applicantNativeName": "주식회사 마미손"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Wet towel stand, shopping bag, dish sterilizer, dish stand, dishtowel, dishcloth holder",
+          "intClassNumber": "01,05,06,07,08,09,11,14,16,18,19,20,21,24,26,27,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "물수건받침대, 쇼핑백, 식기소독기, 접시스텐드, 행주, 행주걸이"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "018"
+        }
+      ]
+    },
+    "id": "db1fc549-89d9-42e0-986b-29c659e5bfcf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260515",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 중구 칠패로 **, 호 (봉래동*가, 우남빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이상우 (LEE, Sang Woo)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19970124",
+        "applicationNumber": "40-1997-0003044"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260515020125",
+    "wordMarkSpecification": {
+      "markTransliteration": "Cooking",
+      "markVerbalElementText": "요리"
+    }
+  },
+  "_uri": "/mark/kr/db1fc549-89d9-42e0-986b-29c659e5bfcf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:45.804Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

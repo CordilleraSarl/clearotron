@@ -1,0 +1,323 @@
+{
+  "uri": "/mark/wo/5de8bac1-8975-4b39-a8d5-3a43a20edfdd",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "5de8bac1-8975-4b39-a8d5-3a43a20edfdd",
+  "applicationNumber": null,
+  "registrationNumber": "904887",
+  "applicationDate": null,
+  "registrationDate": "2006-06-02",
+  "expiryDate": "2036-06-02",
+  "renewalDate": "2026-06-02",
+  "lastPublicationDate": "2026-04-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "en",
+      "description": "Power-operated assembly line automation equipment, namely machines to move, assemble, and fasten automotive, defense and industrial parts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Machines to test and inspect automotive, defense and industrial parts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "en",
+      "description": "Custom assembling of power-operated assembly line automation equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Custom design of power-operated assembly line automation equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "fr",
+      "description": "Equipements d'automatisation de chaînes de montage mécaniques, à savoir machines pour déplacer, assembler et fixer des parties d'automobiles, de matériel de défense et d'équipement industriel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Machines pour tester et inspecter les parties d'automobiles, de matériel de défense et d'équipement industriel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "fr",
+      "description": "Assemblage sur demande d'équipements d'automatisation de chaînes de montage mécaniques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception sur demande d'équipements d'automatisation de chaînes de montage mécaniques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "es",
+      "description": "Equipos de automatización de cadenas de montaje mecánicas, a saber, máquinas para desplazar, ensamblar y fijar partes de automóviles, de material de defensa y de equipos industriales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Máquinas para probar e inspeccionar partes de automóviles, de material de defensa y de equipos industriales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "es",
+      "description": "Ensamblaje por encargo de equipos de automatización de cadenas de montaje mecánicas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño personalizado de equipos de automatización de cadenas de montaje mecánicas.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Fori Automation, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Ross Kowalski, Tucker Ellis LLP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20060517",
+      "priorityNumber": "78886041"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20060517",
+          "basicApplicationNumber": "78886041"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CN",
+      "MX",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "13231 - 23 Mile Road Shelby Twp MI 48315",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Fori Automation, LLC"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20060517",
+            "basicApplicationNumber": "78886041"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CN",
+      "MX",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Power-operated assembly line automation equipment, namely machines to move, assemble, and fasten automotive, defense and industrial parts."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Machines to test and inspect automotive, defense and industrial parts."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom assembling of power-operated assembly line automation equipment."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Custom design of power-operated assembly line automation equipment."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Equipements d'automatisation de chaînes de montage mécaniques, à savoir machines pour déplacer, assembler et fixer des parties d'automobiles, de matériel de défense et d'équipement industriel."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Machines pour tester et inspecter les parties d'automobiles, de matériel de défense et d'équipement industriel."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Assemblage sur demande d'équipements d'automatisation de chaînes de montage mécaniques."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception sur demande d'équipements d'automatisation de chaînes de montage mécaniques."
+        },
+        {
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Equipos de automatización de cadenas de montaje mecánicas, a saber, máquinas para desplazar, ensamblar y fijar partes de automóviles, de material de defensa y de equipos industriales."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Máquinas para probar e inspeccionar partes de automóviles, de material de defensa y de equipos industriales."
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Ensamblaje por encargo de equipos de automatización de cadenas de montaje mecánicas."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño personalizado de equipos de automatización de cadenas de montaje mecánicas."
+        }
+      ]
+    },
+    "id": "5de8bac1-8975-4b39-a8d5-3a43a20edfdd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20060517",
+        "priorityNumber": "78886041"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "13"
+      }
+    ],
+    "recordLastUpdated": "20260421",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Tucker Ellis LLP, 950 Main Ave, Suite 1100 Cleveland OH 44113",
+        "representativeAddressCountryCode": "US",
+        "representativeAddressCountryName": "United States of America",
+        "representativeName": "Ross Kowalski, Tucker Ellis LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360602",
+      "lastPublicationDate": "20260409",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20060602",
+        "registrationNumber": "904887"
+      },
+      "renewalDate": "20260602",
+      "renewalPublishedDate": "20260409"
+    },
+    "version": "20260421020015",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/wo/5de8bac1-8975-4b39-a8d5-3a43a20edfdd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

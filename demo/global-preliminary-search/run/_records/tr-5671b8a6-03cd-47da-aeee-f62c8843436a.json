@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/tr/5671b8a6-03cd-47da-aeee-f62c8843436a",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "5671b8a6-03cd-47da-aeee-f62c8843436a",
+  "applicationNumber": "2021/00402",
+  "registrationNumber": null,
+  "applicationDate": "2021-01-04",
+  "registrationDate": null,
+  "expiryDate": "2031-01-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-06-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "haldem psikoloji ve nöropedagoji enstitüsü",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41,
+        44
+      ],
+      "language": "tr",
+      "description": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri. Tıbbi hizmetler. Güzellik bakımı hizmetleri. Veterinerlik ve hayvan üretme, besicilik, nalbantlık ile ilgili hizmetler. Tarım, bahçecilik ve ormancılıkla ile ilgili hizmetler; peyzaj tasarımı hizmetleri. İşyeri ve personel sağlığı ile ilgili danışmanlık hizmetleri.",
+      "translation_language": "en",
+      "translation": "Education and training services. The symposium, conference and seminar organization and administration services. Sports, cultural and entertainment services (movies, sports events, theaters, museums, providing services including tickets for cultural and entertainment events such as concerts). Magazines, books, newspapers vbgib be ready for printing publications, for services to be delivered to the reader (including the provision of the services referred to by global communication networks). Film, television and radio program production services. News correspondent services, newspaper photographer services. Photography services. Translation services. Medical services. Beauty care services. Veterinary and animal breeding, fattening, services related to blacksmithing. Agriculture, horticulture and forestry services; landscape design services. advisory services relating to business and personal health."
+    }
+  ],
+  "owner": "HALDEM YAYINCILIK EĞİTİM DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": "NİLGÜN DİNKÇİ TAŞCI",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "AZİZİYE MAH.KULOĞLU SK. HİSAR APT.1510 Çankaya Ankara",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "HALDEM YAYINCILIK EĞİTİM DANIŞMANLIK SANAYİ VE TİCARET LİMİTED ŞİRKETİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training services. The symposium, conference and seminar organization and administration services. Sports, cultural and entertainment services (movies, sports events, theaters, museums, providing services including tickets for cultural and entertainment events such as concerts). Magazines, books, newspapers vbgib be ready for printing publications, for services to be delivered to the reader (including the provision of the services referred to by global communication networks). Film, television and radio program production services. News correspondent services, newspaper photographer services. Photography services. Translation services. Medical services. Beauty care services. Veterinary and animal breeding, fattening, services related to blacksmithing. Agriculture, horticulture and forestry services; landscape design services. advisory services relating to business and personal health.",
+          "intClassNumber": "41,44",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Eğitim ve öğretim hizmetleri. Sempozyum, konferans, kongre ve seminer düzenleme, idare hizmetleri. Spor, kültür ve eğlence hizmetleri (sinema, spor karşılaşmaları, tiyatro, müze, konser gibi kültür ve eğlence etkinlikleri için bilet sağlama hizmetleri dahil). Dergi, kitap, gazete v.b.gibi yayınların basıma hazır hale getirilmesi, okuyucuya ulaştırılmasına ilişkin hizmetler (global iletişim ağları vasıtasıyla anılan hizmetlerin sağlanması da dahil). Film, televizyon ve radyo programları yapım hizmetleri. Haber muhabirliği hizmetleri, foto-muhabirliği hizmetleri. Fotoğrafçılık hizmetleri. Tercüme hizmetleri. Tıbbi hizmetler. Güzellik bakımı hizmetleri. Veterinerlik ve hayvan üretme, besicilik, nalbantlık ile ilgili hizmetler. Tarım, bahçecilik ve ormancılıkla ile ilgili hizmetler; peyzaj tasarımı hizmetleri. İşyeri ve personel sağlığı ile ilgili danışmanlık hizmetleri."
+        }
+      ]
+    },
+    "id": "5671b8a6-03cd-47da-aeee-f62c8843436a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "374"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "representatives": [
+      {
+        "representativeAddress": "No Address available/İSTANBUL",
+        "representativeName": "NİLGÜN DİNKÇİ TAŞCI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210104",
+        "applicationNumber": "2021/00402"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20310104",
+      "lastPublicationDate": "20210614",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250708183143",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "haldem psikoloji ve nöropedagoji enstitüsü"
+    }
+  },
+  "_uri": "/mark/tr/5671b8a6-03cd-47da-aeee-f62c8843436a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.829Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

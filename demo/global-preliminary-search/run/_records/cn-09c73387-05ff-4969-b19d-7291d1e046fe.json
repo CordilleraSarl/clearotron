@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/cn/09c73387-05ff-4969-b19d-7291d1e046fe",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "09c73387-05ff-4969-b19d-7291d1e046fe",
+  "applicationNumber": "61430981",
+  "registrationNumber": null,
+  "applicationDate": "2021-12-15",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ASEVEN ORIGIN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "可下载的手机应用软件,智能手机用壳,手机专用支架,移动电源(可充电电池),平板电脑保护套,智能手机,智能手机屏幕专用保护膜,手机用USB线,智能手机用无线充电器,无线蓝牙耳机",
+      "translation_language": "en",
+      "translation": "Downloadable mobile phone application software, smartphone case, mobile phone holder, mobile power supply (rechargeable battery), tablet case, smartphone, smartphone screen special protective film, mobile phone USB cable, smartphone wireless charging , Wireless bluetooth headset"
+    }
+  ],
+  "owner": "Chen Yecheng",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市罗湖区嘉宾路4025号城市天地广场B座1902",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Chen Yecheng",
+        "applicantNativeName": "陈业正"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable mobile phone application software, smartphone case, mobile phone holder, mobile power supply (rechargeable battery), tablet case, smartphone, smartphone screen special protective film, mobile phone USB cable, smartphone wireless charging , Wireless bluetooth headset",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "可下载的手机应用软件,智能手机用壳,手机专用支架,移动电源(可充电电池),平板电脑保护套,智能手机,智能手机屏幕专用保护膜,手机用USB线,智能手机用无线充电器,无线蓝牙耳机"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Cables",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "09c73387-05ff-4969-b19d-7291d1e046fe",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "安徽头派知识产权有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211215",
+        "applicationNumber": "61430981"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004175349",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ASEVEN ORIGIN"
+    }
+  },
+  "_uri": "/mark/cn/09c73387-05ff-4969-b19d-7291d1e046fe",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

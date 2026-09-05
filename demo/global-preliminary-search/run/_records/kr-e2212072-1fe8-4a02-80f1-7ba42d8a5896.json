@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/kr/e2212072-1fe8-4a02-80f1-7ba42d8a5896",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e2212072-1fe8-4a02-80f1-7ba42d8a5896",
+  "applicationNumber": "40-1971-0002859",
+  "registrationNumber": "4000240780000",
+  "applicationDate": "1971-07-08",
+  "registrationDate": "1971-11-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "도리",
+  "markTransliteration": "duty",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    17,
+    21
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        17,
+        21
+      ],
+      "language": "ko",
+      "description": "기타전기용이발기계,드라이어,새창으로 열림,전기바리캉,전기빗",
+      "translation_language": "en",
+      "translation": "Other electric haircutting machines, hair dryers, new window openings, electric hair clippers, electric combs"
+    }
+  ],
+  "owner": "LEE, Jung Hwui",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "대구광역시 북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "LEE, Jung Hwui",
+        "applicantNativeName": "이정휘"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Other electric haircutting machines, hair dryers, new window openings, electric hair clippers, electric combs",
+          "intClassNumber": "07,08,09,10,11,17,21",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "기타전기용이발기계,드라이어,새창으로 열림,전기바리캉,전기빗"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "039"
+        }
+      ]
+    },
+    "id": "e2212072-1fe8-4a02-80f1-7ba42d8a5896",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19710708",
+        "applicationNumber": "40-1971-0002859"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19711110",
+        "registrationNumber": "4000240780000"
+      }
+    },
+    "version": "20250625201605",
+    "wordMarkSpecification": {
+      "markTransliteration": "duty",
+      "markVerbalElementText": "도리"
+    }
+  },
+  "_uri": "/mark/kr/e2212072-1fe8-4a02-80f1-7ba42d8a5896",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/za/12c54873-3d24-4fd5-b62e-6c468ab225f5",
+  "provider": "clarivate",
+  "office": "za",
+  "guid": "12c54873-3d24-4fd5-b62e-6c468ab225f5",
+  "applicationNumber": "2014/01469",
+  "registrationNumber": "2014/01469",
+  "applicationDate": "2014-01-22",
+  "registrationDate": "2016-07-29",
+  "expiryDate": "2024-01-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; industrial analysis and research services; design and development of computer hardware and software; material testing in the sport and automobile field.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Gildo Pallanca Pastor, a Monaco citizen",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "SPOOR & FISHER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3 avenue Princess Grace, Monaco, 98000, Monaco Monaco Monaco",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Gildo Pallanca Pastor, a Monaco citizen"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; industrial analysis and research services; design and development of computer hardware and software; material testing in the sport and automobile field."
+        }
+      ]
+    },
+    "id": "12c54873-3d24-4fd5-b62e-6c468ab225f5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250414",
+    "registrationOfficeCode": "ZA",
+    "registrationOfficeName": "South Africa",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "No correspondent available"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "11 BYLS BRIDGE BOULEVARD BUILDING NO. 14 HIGH VELD EXT 73",
+        "representativeName": "SPOOR & FISHER"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140122",
+        "applicationNumber": "2014/01469"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20240122",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20160729",
+        "registrationNumber": "2014/01469"
+      }
+    },
+    "version": "20250414172157",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/za/12c54873-3d24-4fd5-b62e-6c468ab225f5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.181Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

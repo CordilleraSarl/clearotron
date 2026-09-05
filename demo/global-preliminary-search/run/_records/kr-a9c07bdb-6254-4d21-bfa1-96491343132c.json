@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/kr/a9c07bdb-6254-4d21-bfa1-96491343132c",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a9c07bdb-6254-4d21-bfa1-96491343132c",
+  "applicationNumber": "40-2016-0100783",
+  "registrationNumber": "4012873160000",
+  "applicationDate": "2016-11-18",
+  "registrationDate": "2017-09-20",
+  "expiryDate": "2027-09-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-09-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Qsori",
+  "markTransliteration": "QSORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "3d기술 관련 소프트웨어 설계업,3d컨텐츠/입체3d프로젝션/3d애니메이션기술에 사용되는 컴퓨터소프트웨어 개발업,3d컴퓨터소프트웨어 연구업,가상현실 소프트웨어 설계 및 개발업,게임소프트웨어개발업,멀티미디어응용 프로그래밍업,서비스형 소프트웨어업,소프트웨어 설계 및 개발업,소프트웨어 제품개발 및 품질향상 관련 자문업,소프트웨어제작업,웹사이트 개발 및 관리업,웹사이트 개발 및 유지관리업,웹사이트 제작 및 관리업,웹사이트 제작/설계 및 관리업,응용소프트웨어유지관리업,전자상거래용 컴퓨터 소프트웨어 기술 지원제공업,컴퓨터 프로그램개발업,컴퓨터그래픽디자인서비스업,컴퓨터소프트웨어 연구 및 개발업,컴퓨터소프트웨어의 자문 및 개발업",
+      "translation_language": "en",
+      "translation": "3d technology related software design business, computer software development business used for 3d content/stereoscopic 3d projection/3d animation technology, 3d computer software research business, virtual reality software design and development business, game software development business, multimedia application programming business, service type software business, Software design and development business, software product development and quality improvement related consulting business, software manufacturing business, website development and management business, website development and maintenance business, website production and management business, website production/design and management business, application software maintenance business, Computer software technical support business for e-commerce, computer program development business, computer graphic design service business, computer software research and development business, computer software consulting and development business"
+    }
+  ],
+  "owner": "Qtel Soft Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인 남양 (Namyang patent & Law office)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "제주특별자치도 제주시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Qtel Soft Co., Ltd.",
+        "applicantNativeName": "(주)큐텔소프트"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "3d technology related software design business, computer software development business used for 3d content/stereoscopic 3d projection/3d animation technology, 3d computer software research business, virtual reality software design and development business, game software development business, multimedia application programming business, service type software business, Software design and development business, software product development and quality improvement related consulting business, software manufacturing business, website development and management business, website development and maintenance business, website production and management business, website production/design and management business, application software maintenance business, Computer software technical support business for e-commerce, computer program development business, computer graphic design service business, computer software research and development business, computer software consulting and development business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "3d기술 관련 소프트웨어 설계업,3d컨텐츠/입체3d프로젝션/3d애니메이션기술에 사용되는 컴퓨터소프트웨어 개발업,3d컴퓨터소프트웨어 연구업,가상현실 소프트웨어 설계 및 개발업,게임소프트웨어개발업,멀티미디어응용 프로그래밍업,서비스형 소프트웨어업,소프트웨어 설계 및 개발업,소프트웨어 제품개발 및 품질향상 관련 자문업,소프트웨어제작업,웹사이트 개발 및 관리업,웹사이트 개발 및 유지관리업,웹사이트 제작 및 관리업,웹사이트 제작/설계 및 관리업,응용소프트웨어유지관리업,전자상거래용 컴퓨터 소프트웨어 기술 지원제공업,컴퓨터 프로그램개발업,컴퓨터그래픽디자인서비스업,컴퓨터소프트웨어 연구 및 개발업,컴퓨터소프트웨어의 자문 및 개발업"
+        }
+      ]
+    },
+    "id": "a9c07bdb-6254-4d21-bfa1-96491343132c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Namyang patent & Law office",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인 남양 (Namyang patent & Law office)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161118",
+        "applicationNumber": "40-2016-0100783"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270920",
+      "lastPublicationDate": "20170926",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20170920",
+        "registrationNumber": "4012873160000"
+      }
+    },
+    "version": "20250625182008",
+    "wordMarkSpecification": {
+      "markTransliteration": "QSORI",
+      "markVerbalElementText": "Qsori"
+    }
+  },
+  "_uri": "/mark/kr/a9c07bdb-6254-4d21-bfa1-96491343132c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:54.668Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

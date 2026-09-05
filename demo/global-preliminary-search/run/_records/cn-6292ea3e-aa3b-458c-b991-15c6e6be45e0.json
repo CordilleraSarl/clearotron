@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/6292ea3e-aa3b-458c-b991-15c6e6be45e0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "6292ea3e-aa3b-458c-b991-15c6e6be45e0",
+  "applicationNumber": "83988125",
+  "registrationNumber": null,
+  "applicationDate": "2025-03-12",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七度俱乐部",
+  "markTransliteration": "SEVEN QI DU JU LE BU",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "安排娱乐活动;健身俱乐部(健身和体能训练);健身指导课程;教育;培训;身体疗法培训;提供娱乐设施;娱乐;组织教育或娱乐竞赛;组织娱乐活动",
+      "translation_language": "en",
+      "translation": "Arranging recreational activities; health clubs (fitness and physical training); fitness instruction courses; education; training; physical therapy training; providing recreational facilities; entertainment; organizing educational or recreational competitions; organizing recreational activities"
+    }
+  ],
+  "owner": "Chengdu Xingmu Chenxi Culture Media Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "四川省成都市成华区二仙桥西路398号1栋1单元104号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Chengdu Xingmu Chenxi Culture Media Co., Ltd.",
+        "applicantNativeName": "成都星慕晨曦文化传媒有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Arranging recreational activities; health clubs (fitness and physical training); fitness instruction courses; education; training; physical therapy training; providing recreational facilities; entertainment; organizing educational or recreational competitions; organizing recreational activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "安排娱乐活动;健身俱乐部(健身和体能训练);健身指导课程;教育;培训;身体疗法培训;提供娱乐设施;娱乐;组织教育或娱乐竞赛;组织娱乐活动"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "6292ea3e-aa3b-458c-b991-15c6e6be45e0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "四川麦创智汇知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250312",
+        "applicationNumber": "83988125"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005145530",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN QI DU JU LE BU",
+      "markVerbalElementText": "七度俱乐部"
+    }
+  },
+  "_uri": "/mark/cn/6292ea3e-aa3b-458c-b991-15c6e6be45e0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

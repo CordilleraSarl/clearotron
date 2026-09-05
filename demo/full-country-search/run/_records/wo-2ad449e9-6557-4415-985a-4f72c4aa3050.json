@@ -1,0 +1,183 @@
+{
+  "uri": "/mark/wo/2ad449e9-6557-4415-985a-4f72c4aa3050",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "2ad449e9-6557-4415-985a-4f72c4aa3050",
+  "applicationNumber": null,
+  "registrationNumber": "893924",
+  "applicationDate": null,
+  "registrationDate": "2005-11-11",
+  "expiryDate": "2035-11-11",
+  "renewalDate": "2025-11-11",
+  "lastPublicationDate": "2025-10-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "INVISALIGN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software, namely digital imaging software used to depict tooth movement and proposed treatment plan; computer software used to provide, track and modify proposed courses of orthodontic treatment and patient data and information related thereto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels informatiques, à savoir logiciels d'imagerie numérique utilisés pour illustrer les mouvements des dents et le plan de traitement proposé; logiciels informatiques utilisés pour fournir, suivre et modifier les modalités d'un traitement d'orthodontie, ainsi que les informations et les données y relatives des patients.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software, a saber, programas informáticos de imágenes digitales para representar movimientos dentales y planes de tratamiento propuestos; software para proveer, seguir y modificar tratamientos odontológicos propuestos y la correspondiente información sobre pacientes.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Harrison IP Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20050707",
+          "basicApplicationNumber": "78665771"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CH",
+      "JP",
+      "NO",
+      "SG",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2820 Orchard Parkway San Jose CA 95134-2019",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20050707",
+            "basicApplicationNumber": "78665771"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CH",
+      "JP",
+      "NO",
+      "SG",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software, namely digital imaging software used to depict tooth movement and proposed treatment plan; computer software used to provide, track and modify proposed courses of orthodontic treatment and patient data and information related thereto."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels informatiques, à savoir logiciels d'imagerie numérique utilisés pour illustrer les mouvements des dents et le plan de traitement proposé; logiciels informatiques utilisés pour fournir, suivre et modifier les modalités d'un traitement d'orthodontie, ainsi que les informations et les données y relatives des patients."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software, a saber, programas informáticos de imágenes digitales para representar movimientos dentales y planes de tratamiento propuestos; software para proveer, seguir y modificar tratamientos odontológicos propuestos y la correspondiente información sobre pacientes."
+        }
+      ]
+    },
+    "id": "2ad449e9-6557-4415-985a-4f72c4aa3050",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "39"
+      }
+    ],
+    "recordLastUpdated": "20251026",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Mereside, Alderley Park, Congleton Road, Nether Alderley, Macclesfield SK10 4TG",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Harrison IP Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351111",
+      "lastPublicationDate": "20251009",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20051111",
+        "registrationNumber": "893924"
+      },
+      "renewalDate": "20251111",
+      "renewalPublishedDate": "20251009"
+    },
+    "version": "20251026020028",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "INVISALIGN"
+    }
+  },
+  "_uri": "/mark/wo/2ad449e9-6557-4415-985a-4f72c4aa3050",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.738Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

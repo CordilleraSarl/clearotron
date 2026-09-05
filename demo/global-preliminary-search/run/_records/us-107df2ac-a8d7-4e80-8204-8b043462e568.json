@@ -1,0 +1,294 @@
+{
+  "uri": "/mark/us/107df2ac-a8d7-4e80-8204-8b043462e568",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "107df2ac-a8d7-4e80-8204-8b043462e568",
+  "applicationNumber": "87386244",
+  "registrationNumber": "5354023",
+  "applicationDate": "2017-03-27",
+  "registrationDate": "2017-12-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2017-09-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2024-06-28",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QNORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "STYLIZED LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Cases adapted for mobile phones; Cases for mobile phones; Carrying cases for cell phones; Mobile phone cases featuring rechargeable batteries; Protective covers and cases for cell phones, laptops and portable media players",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Qingdao Haitaixinhe Science Technology Co.,Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Zhengzhou road 57# 3040C, Qindao Shandong, CHIN",
+        "applicantAddressCity": "Qindao Shandong",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressStreet": "Zhengzhou road 57# 3040C",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "private limited company",
+        "applicantName": "Qingdao Haitaixinhe Science Technology Co.,Ltd",
+        "applicantSecondaryAddressUnit": "Shibei district"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Cases adapted for mobile phones; Cases for mobile phones; Carrying cases for cell phones; Mobile phone cases featuring rechargeable batteries; Protective covers and cases for cell phones, laptops and portable media players"
+        }
+      ]
+    },
+    "id": "107df2ac-a8d7-4e80-8204-8b043462e568",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240628",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20221212",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20171212",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20170926",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20170926",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20170906",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20170818",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20170812",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20170812",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20170811",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20170717",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20170626",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20170626",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170626",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170620",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20170330",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20170330",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "STYLIZED LETTERS",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Color is not claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of The stylized word \"Qnori\".",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Zhengzhou road 57# 3040C, Qindao Shandong, CHIN",
+        "city": "Qindao Shandong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "private limited company",
+        "name": "Qingdao Haitaixinhe Science Technology Co.,Ltd",
+        "secondaryAddressUnit": "Shibei district",
+        "street": "Zhengzhou road 57# 3040C"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Zhengzhou road 57# 3040C, Qindao Shandong, CHIN",
+        "city": "Qindao Shandong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "private limited company",
+        "name": "Qingdao Haitaixinhe Science Technology Co.,Ltd",
+        "secondaryAddressUnit": "Shibei district",
+        "street": "Zhengzhou road 57# 3040C"
+      },
+      {
+        "address": "Zhengzhou road 57# 3040C, Qindao Shandong, CHIN",
+        "city": "Qindao Shandong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "private limited company",
+        "name": "Qingdao Haitaixinhe Science Technology Co.,Ltd",
+        "secondaryAddressUnit": "Shibei district",
+        "street": "Zhengzhou road 57# 3040C"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Zhengzhou road 57# 3040C, Qindao Shandong, CHIN",
+        "city": "Qindao Shandong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "private limited company",
+        "name": "Qingdao Haitaixinhe Science Technology Co.,Ltd",
+        "secondaryAddressUnit": "Shibei district",
+        "street": "Zhengzhou road 57# 3040C"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "27563,, VANCOUVER, BC, V5Z4M4, CANADA",
+        "representativeCorrespondentAddressLines": [
+          "27563,",
+          "VANCOUVER, BC, V5Z4M4",
+          "CANADA"
+        ],
+        "representativeCorrespondentName": "YANG HE QINGDAO HAITAIXINHE SCIENCE TECHNOLOGY CO.,LTD, OAKRIDGE PO,"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "27563,, VANCOUVER, BC, V5Z4M4, CANADA",
+        "representativeAddressLines": [
+          "27563,",
+          "VANCOUVER, BC, V5Z4M4",
+          "CANADA"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20170327",
+        "applicationNumber": "87386244"
+      },
+      "cancellationDate": "20240628",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20120101"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20120101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20240628",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20170926"
+      ],
+      "registration": {
+        "registrationDate": "20171212",
+        "registrationNumber": "5354023"
+      }
+    },
+    "version": "20260111081305",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QNORI"
+    }
+  },
+  "_uri": "/mark/us/107df2ac-a8d7-4e80-8204-8b043462e568",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:37.945Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/de/adea0f16-0fb5-40fd-929b-6cc4e68749ee",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "adea0f16-0fb5-40fd-929b-6cc4e68749ee",
+  "applicationNumber": "302026231507.0",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-10",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "UEQORIY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    20,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Yantai Deligao E-Commerce Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Rechtsanw. Liesmann, Oliver",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Yantai Shandong Province",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Yantai Deligao E-Commerce Co., Ltd."
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "20"
+        },
+        {
+          "intClassNumber": "35"
+        }
+      ]
+    },
+    "id": "adea0f16-0fb5-40fd-929b-6cc4e68749ee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260628",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Liesmann, Auf dem Berge 36, 28844 Weyhe"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "28844 Weyhe",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Rechtsanw. Liesmann, Oliver"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260610",
+        "applicationNumber": "302026231507.0"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20260628020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "UEQORIY"
+    }
+  },
+  "_uri": "/mark/de/adea0f16-0fb5-40fd-929b-6cc4e68749ee",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

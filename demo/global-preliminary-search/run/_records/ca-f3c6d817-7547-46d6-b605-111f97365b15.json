@@ -1,0 +1,235 @@
+{
+  "uri": "/mark/ca/f3c6d817-7547-46d6-b605-111f97365b15",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "f3c6d817-7547-46d6-b605-111f97365b15",
+  "applicationNumber": "2053195",
+  "registrationNumber": "TMA1309516",
+  "applicationDate": "2020-09-23",
+  "registrationDate": "2025-05-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-02-12"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CDBIS CERTIFIED DEAFBLIND INTERVENOR SPECIALIST",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        41,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Testing to determine professional competency in the field of deafblind intervention; promoting the interests of certified deafblind intervenors in the field of deafblind intervention; maintaining a registry of certified professionals in the field of deafblind intervention \n(2) Development of intervenor standards, namely, professional standards and best practices in the field of personal support for deafblind individuals; developing, administering and evaluating qualifying educational examination for certification purposes in the field of deaf blindness deafblind intervenor profession \n(3) Research in the field of deaf blindness; analysis and evaluation of deafblind intervention services of others to determine conformity with accreditation and certification standards through the assessment and evaluation of intervenor education, knowledge, and experience in the field of deafblind intervention;",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Academy for Certification of Vision Rehabilitation andEducation Professionals DBA ACVREP CORPORATION",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "GOWLING WLG (CANADA) LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4380 N Campbell Ave Ste 200, Tucson, AZ 85718-5472",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "4380 N Campbell Ave Ste 200",
+          "Tucson, AZ 85718-5472"
+        ],
+        "applicantName": "Academy for Certification of Vision Rehabilitation andEducation Professionals DBA ACVREP CORPORATION"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,41,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Testing to determine professional competency in the field of deafblind intervention; promoting the interests of certified deafblind intervenors in the field of deafblind intervention; maintaining a registry of certified professionals in the field of deafblind intervention \n(2) Development of intervenor standards, namely, professional standards and best practices in the field of personal support for deafblind individuals; developing, administering and evaluating qualifying educational examination for certification purposes in the field of deaf blindness deafblind intervenor profession \n(3) Research in the field of deaf blindness; analysis and evaluation of deafblind intervention services of others to determine conformity with accreditation and certification standards through the assessment and evaluation of intervenor education, knowledge, and experience in the field of deafblind intervention;"
+        }
+      ]
+    },
+    "id": "f3c6d817-7547-46d6-b605-111f97365b15",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20250502",
+        "descriptionText": "Registered",
+        "responseDate": "20350502"
+      },
+      {
+        "date": "20250502",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20250212",
+        "descriptionText": "Advertised",
+        "information": "Vol.72 Issue 3668"
+      },
+      {
+        "date": "20250120",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20250120",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20240718",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20250118"
+      },
+      {
+        "date": "20240718",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20220621",
+        "descriptionText": "287",
+        "information": "Goods or Services Not Acceptable"
+      },
+      {
+        "date": "20200923",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20200923",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20200923",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "Colour is claimed as a feature of the trademark. The color(s) medium blue, light blue, and white is/are claimed as a feature of the mark. The mark consists of the literal element \"CDBIS\" in capital letters in medium blue inside a circle formed by arrows. The portion of the circle running from the 8 o'clock position upward and over to the 2 o'clock position is medium blue and contains the literal element \"CERTIFIED DEAFBLIND\" in white. The portion of the circle running from the 2 o'clock position downward and over to the 8 o'clock position is light blue and contains the literal element \"INTERVENOR SPECIALIST\" in white. There is a medium blue colored hand above \"CDBIS\" and a light blue colored hand below \"CDBIS\".",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.09.14",
+      "02.09.15",
+      "24.15.02",
+      "24.15.13",
+      "26.01.01",
+      "26.01.04",
+      "26.01.14",
+      "26.01.16",
+      "26.01.18",
+      "26.01.21",
+      "26.01.20",
+      "26.01.24",
+      "29.01.04",
+      "29.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4380 N Campbell Ave Ste 200, Tucson, AZ 85718-5472",
+        "addressLines": [
+          "4380 N Campbell Ave Ste 200",
+          "Tucson, AZ 85718-5472"
+        ],
+        "countryName": "United States",
+        "name": "Academy for Certification of Vision Rehabilitation andEducation Professionals DBA ACVREP CORPORATION"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3668",
+        "publicationVolume": "72"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "GOWLING WLG (CANADA) LLP",
+          "SUITE 2600, 160 ELGIN STREET",
+          "OTTAWA",
+          "ONTARIO K1P1C3"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "GOWLING WLG (CANADA) LLP",
+        "representativeReferenceNumber": "06742133CA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200923",
+        "applicationNumber": "2053195"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "formalisationDate": "20200923",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20350502",
+      "publicationDate": [
+        "20250212"
+      ],
+      "registration": {
+        "registrationDate": "20250502",
+        "registrationNumber": "TMA1309516"
+      }
+    },
+    "subjectHeadings": [
+      "CDBIS CERTIFIED DEAFBLIND INTERVENOR SPECIALIST",
+      "DEAF BLIND"
+    ],
+    "version": "20250625111038",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CDBIS CERTIFIED DEAF BLIND INTERVENOR SPECIALIST",
+      "markVerbalElementText": "CDBIS CERTIFIED DEAFBLIND INTERVENOR SPECIALIST",
+      "markVerbalElementTextFormal": "CDBIS logo"
+    }
+  },
+  "_uri": "/mark/ca/f3c6d817-7547-46d6-b605-111f97365b15",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/tr/64f5850a-4017-4d2e-876f-0eeb2129af33",
+  "provider": "clarivate",
+  "office": "tr",
+  "guid": "64f5850a-4017-4d2e-876f-0eeb2129af33",
+  "applicationNumber": "2026/068339",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-28",
+  "registrationDate": null,
+  "expiryDate": "2036-05-28",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-06-29",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "future dijital güven koruma gelecek",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        35,
+        36,
+        42
+      ],
+      "language": "tr",
+      "description": "Yapay zekalı insansı robotlar, laboratuvar robotları, eğitim öğretim amaçlı robotlar, güvenliği gözetleyici robotlar. Sigorta hizmetleri.Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri.",
+      "translation_language": "en",
+      "translation": "AI-powered humanoid robots, laboratory robots, educational robots, security surveillance robots. Insurance services. Computer services: computer programming, computer virus protection, computer system design, website design, maintenance and updating on behalf of others, software design, rental and updating, internet search engine provision, hosting, consulting in the field of computer hardware, computer hardware rental services."
+    }
+  ],
+  "owner": "ÇAMLICA TURİZM ORGANİZASYON REKLAM VE MATBAACILIK HİZMETLERİ TİCARET LİMİTED ŞİRKETİ",
+  "ownerNative": null,
+  "ownerCountry": "TR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KÜÇÜK ÇAMLICA MAH. LİBADİYE CAD. 46 3 Üsküdar İstanbul 34196",
+        "applicantAddressCountryCode": "TR",
+        "applicantAddressCountryName": "Turkey",
+        "applicantName": "ÇAMLICA TURİZM ORGANİZASYON REKLAM VE MATBAACILIK HİZMETLERİ TİCARET LİMİTED ŞİRKETİ"
+      }
+    ],
+    "applicationLanguageCode": "tr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "AI-powered humanoid robots, laboratory robots, educational robots, security surveillance robots. Insurance services. Computer services: computer programming, computer virus protection, computer system design, website design, maintenance and updating on behalf of others, software design, rental and updating, internet search engine provision, hosting, consulting in the field of computer hardware, computer hardware rental services.",
+          "intClassNumber": "09,35,36,42",
+          "intGoodsLanguageCode": "tr",
+          "intGoodsServicesDescription": "Yapay zekalı insansı robotlar, laboratuvar robotları, eğitim öğretim amaçlı robotlar, güvenliği gözetleyici robotlar. Sigorta hizmetleri.Bilgisayar hizmetleri: bilgisayar programlama, bilgisayarı virüse karşı koruma, bilgisayar sistem tasarımı, başkaları adına web sitelerinin tasarlanması, bakımı ve güncelleştirilmesi, yazılım tasarımı, kiralanması ve güncelleştirilmesi, internet arama motoru sağlama, hosting, bilgisayar donanımları alanında danışmanlık, bilgisayar donanımlarının kiralanması hizmetleri."
+        }
+      ]
+    },
+    "id": "64f5850a-4017-4d2e-876f-0eeb2129af33",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "495"
+      }
+    ],
+    "recordLastUpdated": "20260716",
+    "registrationOfficeCode": "TR",
+    "registrationOfficeName": "Turkey",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260528",
+        "applicationNumber": "2026/068339"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360528",
+      "lastPublicationDate": "20260629",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260716020057",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "future dijital güven koruma gelecek"
+    }
+  },
+  "_uri": "/mark/tr/64f5850a-4017-4d2e-876f-0eeb2129af33",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.776Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

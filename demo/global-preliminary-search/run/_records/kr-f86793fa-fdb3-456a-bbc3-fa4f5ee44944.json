@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/kr/f86793fa-fdb3-456a-bbc3-fa4f5ee44944",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "f86793fa-fdb3-456a-bbc3-fa4f5ee44944",
+  "applicationNumber": "40-2001-0049314",
+  "registrationNumber": null,
+  "applicationDate": "2001-11-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "포아이 (FOR i)",
+  "markTransliteration": "FOR I",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "방진안경, 방현안경, 선그라스, 손잡이안경, 안경알, 안경집, 안경테, 콘텍트렌즈",
+      "translation_language": "en",
+      "translation": "Dust-proof glasses, anti-glare glasses, sunglasses, handle glasses, eyeglasses, glasses cases, glasses frames, contact lenses"
+    }
+  ],
+  "owner": "KIM HONG GYU",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 의정부시 신",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "KIM HONG GYU",
+        "applicantNativeName": "김홍규"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dust-proof glasses, anti-glare glasses, sunglasses, handle glasses, eyeglasses, glasses cases, glasses frames, contact lenses",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "방진안경, 방현안경, 선그라스, 손잡이안경, 안경알, 안경집, 안경테, 콘텍트렌즈"
+        }
+      ]
+    },
+    "id": "f86793fa-fdb3-456a-bbc3-fa4f5ee44944",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "16.03.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260816",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20011108",
+        "applicationNumber": "40-2001-0049314"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260816020414",
+    "wordMarkSpecification": {
+      "markTransliteration": "FOR I",
+      "markVerbalElementText": "포아이 (FOR i)"
+    }
+  },
+  "_uri": "/mark/kr/f86793fa-fdb3-456a-bbc3-fa4f5ee44944",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

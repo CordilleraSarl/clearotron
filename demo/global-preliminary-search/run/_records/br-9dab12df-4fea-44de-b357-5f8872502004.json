@@ -1,0 +1,147 @@
+{
+  "uri": "/mark/br/9dab12df-4fea-44de-b357-5f8872502004",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "9dab12df-4fea-44de-b357-5f8872502004",
+  "applicationNumber": "813028523",
+  "registrationNumber": null,
+  "applicationDate": "1986-09-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    5,
+    9,
+    10,
+    14,
+    16,
+    18,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    34,
+    36,
+    37,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3,
+        5,
+        9,
+        10,
+        14,
+        16,
+        18,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        28,
+        34,
+        36,
+        37,
+        40,
+        42
+      ],
+      "language": "pt",
+      "description": "Roupas e acessórios do vestuário de uso comum.",
+      "translation_language": "en",
+      "translation": "Clothing and clothing accessories in common use."
+    }
+  ],
+  "owner": "CONFECCOES LORI LIMITADA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "CONFECCOES LORI LIMITADA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing and clothing accessories in common use.",
+          "intClassNumber": "03,05,09,10,14,16,18,21,22,23,24,25,26,28,34,36,37,40,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Roupas e acessórios do vestuário de uso comum."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "25.10"
+        }
+      ]
+    },
+    "id": "9dab12df-4fea-44de-b357-5f8872502004",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19860924",
+        "applicationNumber": "813028523"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630192051",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/br/9dab12df-4fea-44de-b357-5f8872502004",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.455Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/gb/e17e5504-949b-4a85-a2c2-3d6db4f73ec4",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "e17e5504-949b-4a85-a2c2-3d6db4f73ec4",
+  "applicationNumber": "2618237",
+  "registrationNumber": "2618237",
+  "applicationDate": "2012-04-20",
+  "registrationDate": "2012-08-10",
+  "expiryDate": "2032-04-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR GLOUCESTER CASINO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Casino services; gaming and gambling services; amusements; organisation, production and presentation of competitions, poker tournaments and gaming events; including the provision of all the aforesaid services rendered live or through the medium of television or provided on-line from a computer database or via the Internet; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; hosting and arranging of corporate hospitality, private functions and parties (entertainment); education and information services relating to gaming and poker.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Provision of food and drink; restaurant, cafe and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); all of the aforesaid provided from a casino.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Casino services; gaming and gambling services; amusements; organisation, production and presentation of competitions, poker tournaments and gaming events; including the provision of all the aforesaid services rendered live or through the medium of television or provided on-line from a computer database or via the Internet; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; hosting and arranging of corporate hospitality, private functions and parties (entertainment); education and information services relating to gaming and poker."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of food and drink; restaurant, cafe and bar services; catering services; corporate hospitality, private functions and parties (room hire and provision of food and drink); all of the aforesaid provided from a casino."
+        }
+      ]
+    },
+    "id": "e17e5504-949b-4a85-a2c2-3d6db4f73ec4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6942"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Belgrave Centre, Talbot Street, Nottingham NG1 5GG",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20120420",
+        "applicationNumber": "2618237"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320420",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120810",
+        "registrationNumber": "2618237"
+      }
+    },
+    "version": "20250627192947",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR GLOUCESTER CASINO"
+    }
+  },
+  "_uri": "/mark/gb/e17e5504-949b-4a85-a2c2-3d6db4f73ec4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

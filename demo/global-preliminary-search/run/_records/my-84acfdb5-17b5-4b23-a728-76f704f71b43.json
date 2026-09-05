@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/my/84acfdb5-17b5-4b23-a728-76f704f71b43",
+  "provider": "clarivate",
+  "office": "my",
+  "guid": "84acfdb5-17b5-4b23-a728-76f704f71b43",
+  "applicationNumber": "M021368",
+  "registrationNumber": null,
+  "applicationDate": "1952-05-17",
+  "registrationDate": "1954-07-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "K B",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "radio television and sound recording and reproducing apparatus and electrical devices for aiding the deaf; all included in class 09;",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KOLSTER-BRANDES LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Zaharizan Ahmed Meah",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CRAY WORKS;SIDCUP;KENT;ENGLAND UKG",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "KOLSTER-BRANDES LIMITED"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "radio television and sound recording and reproducing apparatus and electrical devices for aiding the deaf; all included in class 09;"
+        }
+      ]
+    },
+    "id": "84acfdb5-17b5-4b23-a728-76f704f71b43",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "03.07.16",
+      "27.05.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250909",
+    "registrationOfficeCode": "MY",
+    "registrationOfficeName": "Malaysia",
+    "representatives": [
+      {
+        "representativeAddress": "Drewmarks Patents & Designs (Malaysia) Sdn Bhd, 9th Floor, Bangunan Getah Asli (Menara) 148 Jalan Ampang Wilayah Persekutuan 50450 Kuala Lumpur",
+        "representativeAddressCountryCode": "MY",
+        "representativeAddressCountryName": "Malaysia",
+        "representativeName": "Zaharizan Ahmed Meah"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19520517",
+        "applicationNumber": "M021368"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "19540714"
+      }
+    },
+    "version": "20250909050053",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "K B"
+    }
+  },
+  "_uri": "/mark/my/84acfdb5-17b5-4b23-a728-76f704f71b43",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

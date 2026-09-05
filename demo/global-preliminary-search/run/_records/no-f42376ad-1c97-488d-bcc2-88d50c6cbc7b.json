@@ -1,0 +1,121 @@
+{
+  "uri": "/mark/no/f42376ad-1c97-488d-bcc2-88d50c6cbc7b",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "f42376ad-1c97-488d-bcc2-88d50c6cbc7b",
+  "applicationNumber": "202602190",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-31",
+  "registrationDate": "2026-07-31",
+  "expiryDate": "2036-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer gaming software; computer application software featuring games and gaming; interactive multimedia software for playing games.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Games; board games; party games; parlor games.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KYW ApS",
+  "ownerNative": null,
+  "ownerCountry": "DK",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "DK",
+        "applicantAddressCountryName": "Denmark",
+        "applicantName": "KYW ApS"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer gaming software; computer application software featuring games and gaming; interactive multimedia software for playing games."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Games; board games; party games; parlor games."
+        }
+      ]
+    },
+    "id": "f42376ad-1c97-488d-bcc2-88d50c6cbc7b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260816",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260731",
+        "applicationNumber": "202602190"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360120",
+      "lastPublicationDate": "20260803",
+      "markCurrentStatus": "GRANTED",
+      "registration": {
+        "registrationDate": "20260731"
+      }
+    },
+    "version": "20260816020022",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORK"
+    }
+  },
+  "_uri": "/mark/no/f42376ad-1c97-488d-bcc2-88d50c6cbc7b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:15.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

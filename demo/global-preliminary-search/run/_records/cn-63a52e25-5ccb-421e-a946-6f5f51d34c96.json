@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/cn/63a52e25-5ccb-421e-a946-6f5f51d34c96",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "63a52e25-5ccb-421e-a946-6f5f51d34c96",
+  "applicationNumber": "54467658",
+  "registrationNumber": null,
+  "applicationDate": "2021-03-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "M.H.Q ORIGINAL DESIGN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "移动电源(可充电电池),网络通信设备,自拍杆(手持单脚架),头戴式耳机,蓄电池充电器,智能手机屏幕专用保护膜,智能手机用壳,智能手机用套,移动电话,智能手机",
+      "translation_language": "en",
+      "translation": "Power bank (rechargeable battery), network communication equipment, selfie stick (handheld monopod), headset, battery charger, special protective film for smartphone screen, smartphone case, smartphone case, mobile phone ,smart phone"
+    }
+  ],
+  "owner": "Guangzhou Newlake Trading Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省广州市海珠区福场路5号1710房",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangzhou Newlake Trading Co., Ltd.",
+        "applicantNativeName": "广州纽莱克贸易有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Power bank (rechargeable battery), network communication equipment, selfie stick (handheld monopod), headset, battery charger, special protective film for smartphone screen, smartphone case, smartphone case, mobile phone ,smart phone",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "移动电源(可充电电池),网络通信设备,自拍杆(手持单脚架),头戴式耳机,蓄电池充电器,智能手机屏幕专用保护膜,智能手机用壳,智能手机用套,移动电话,智能手机"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "63a52e25-5ccb-421e-a946-6f5f51d34c96",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州市玮信莱外商投资服务中心有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210319",
+        "applicationNumber": "54467658"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004112845",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "M.H.Q ORIGINAL DESIGN"
+    }
+  },
+  "_uri": "/mark/cn/63a52e25-5ccb-421e-a946-6f5f51d34c96",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.398Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

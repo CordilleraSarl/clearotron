@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/br/766a9459-3333-4ee7-8151-d14c46519d24",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "766a9459-3333-4ee7-8151-d14c46519d24",
+  "applicationNumber": "811545458",
+  "registrationNumber": null,
+  "applicationDate": "1984-05-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    29,
+    30,
+    31,
+    32,
+    33,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5,
+        29,
+        30,
+        31,
+        32,
+        33,
+        35,
+        42
+      ],
+      "language": "pt",
+      "description": "Frutas, verduras, legumes e cereais.",
+      "translation_language": "en",
+      "translation": "Fruits, vegetables, legumes and cereals."
+    }
+  ],
+  "owner": "ENTRE RIOS COMERCIAL DE CEREAIS LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "No agent available",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "ENTRE RIOS COMERCIAL DE CEREAIS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Fruits, vegetables, legumes and cereals.",
+          "intClassNumber": "05,29,30,31,32,33,35,42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Frutas, verduras, legumes e cereais."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "29.30"
+        }
+      ]
+    },
+    "id": "766a9459-3333-4ee7-8151-d14c46519d24",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "No agent available"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19840508",
+        "applicationNumber": "811545458"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630192006",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/766a9459-3333-4ee7-8151-d14c46519d24",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

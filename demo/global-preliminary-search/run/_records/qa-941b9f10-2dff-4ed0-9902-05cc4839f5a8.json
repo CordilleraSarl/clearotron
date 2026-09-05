@@ -1,0 +1,103 @@
+{
+  "uri": "/mark/qa/941b9f10-2dff-4ed0-9902-05cc4839f5a8",
+  "provider": "clarivate",
+  "office": "qa",
+  "guid": "941b9f10-2dff-4ed0-9902-05cc4839f5a8",
+  "applicationNumber": "91375",
+  "registrationNumber": null,
+  "applicationDate": "2014-08-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "الخدمات العلمية والتكنولوجية والبحوث والتصاميم المتعلقة بها التحاليل الصناعية وخدمات البحوث تصميم وتطوير برامج واجهزة الحاسب الالى اختبار المواد فى مجال الرياضة والسيارات",
+      "translation_language": "en",
+      "translation": "Scientific and technological services and research and design relating thereto industrial analysis and research services design and development of software and computers test materials in the field of sports cars"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3افينيو برينسيس غريس ام سى 98000 موناكو ام سى",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantNativeName": "جيلدو بالانكا باستور رجل اعمال من امارة موناكو"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services and research and design relating thereto industrial analysis and research services design and development of software and computers test materials in the field of sports cars",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "الخدمات العلمية والتكنولوجية والبحوث والتصاميم المتعلقة بها التحاليل الصناعية وخدمات البحوث تصميم وتطوير برامج واجهزة الحاسب الالى اختبار المواد فى مجال الرياضة والسيارات"
+        }
+      ]
+    },
+    "id": "941b9f10-2dff-4ed0-9902-05cc4839f5a8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "QA",
+    "registrationOfficeName": "Qatar",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140827",
+        "applicationNumber": "91375"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427124059",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/qa/941b9f10-2dff-4ed0-9902-05cc4839f5a8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

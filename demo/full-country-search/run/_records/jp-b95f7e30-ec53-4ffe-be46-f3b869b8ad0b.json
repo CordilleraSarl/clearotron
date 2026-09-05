@@ -1,0 +1,206 @@
+{
+  "uri": "/mark/jp/b95f7e30-ec53-4ffe-be46-f3b869b8ad0b",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "b95f7e30-ec53-4ffe-be46-f3b869b8ad0b",
+  "applicationNumber": "2022-062212",
+  "registrationNumber": "6631619",
+  "applicationDate": "2022-06-01",
+  "registrationDate": "2022-10-24",
+  "expiryDate": "2032-10-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-11-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＳＱＯＲＥ",
+  "markTransliteration": "SUKOA",
+  "markTranslation": "SQORE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    5,
+    40,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        5
+      ],
+      "language": null,
+      "description": "診察または治療用の生物学的薬剤，診察または治療用のモノクローナル抗体，治療用組成物の製造用の医薬品添加物及び治療用組成物としての医薬品添加物，薬剤",
+      "translation_language": "en",
+      "translation": "Biological agents for medical examination or treatment, monoclonal antibodies for medical examination or treatment, pharmaceutical additives for the production of therapeutic compositions and pharmaceutical additives as therapeutic compositions, drugs"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "他者の治療用分子の製造・加工・処理，受託による医薬品の製造，医療材料の加工",
+      "translation_language": "en",
+      "translation": "Manufacture, processing, and processing of therapeutic molecules for others, manufacturing of contracted pharmaceutical products, processing of medical materials"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "治療用生物製剤とともに使用する医療用添加物の科学的な設計及び開発，治療用製剤開発の分野における科学的な研究及び設計，治療用製剤及び医薬品添加物の開発の分野における助言，薬品の試験・検査又は研究",
+      "translation_language": "en",
+      "translation": "Scientific design and development of medical additives for use with therapeutic biologics, scientific research and design in the field of therapeutic formulation development, advice in the field of therapeutic formulation and pharmaceutical additive development, drug testing・ Inspection or research"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "知的財産権の利用に関する契約の代理又は媒介，知的財産権に関する助言",
+      "translation_language": "en",
+      "translation": "Representation or mediation of contracts regarding the use of intellectual property rights, advice regarding intellectual property rights"
+    }
+  ],
+  "owner": "Comera Life Sciences Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "NAKAJIN MICHIO",
+  "priorities": [
+    {
+      "priorityDate": "20211203"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Comera Life Sciences Inc.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "コメラ　ライフ　サイエンス　インク"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Biological agents for medical examination or treatment, monoclonal antibodies for medical examination or treatment, pharmaceutical additives for the production of therapeutic compositions and pharmaceutical additives as therapeutic compositions, drugs",
+          "intClassNumber": "05",
+          "intGoodsServicesDescription": "診察または治療用の生物学的薬剤，診察または治療用のモノクローナル抗体，治療用組成物の製造用の医薬品添加物及び治療用組成物としての医薬品添加物，薬剤"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Manufacture, processing, and processing of therapeutic molecules for others, manufacturing of contracted pharmaceutical products, processing of medical materials",
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "他者の治療用分子の製造・加工・処理，受託による医薬品の製造，医療材料の加工"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific design and development of medical additives for use with therapeutic biologics, scientific research and design in the field of therapeutic formulation development, advice in the field of therapeutic formulation and pharmaceutical additive development, drug testing・ Inspection or research",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "治療用生物製剤とともに使用する医療用添加物の科学的な設計及び開発，治療用製剤開発の分野における科学的な研究及び設計，治療用製剤及び医薬品添加物の開発の分野における助言，薬品の試験・検査又は研究"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Representation or mediation of contracts regarding the use of intellectual property rights, advice regarding intellectual property rights",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "知的財産権の利用に関する契約の代理又は媒介，知的財産権に関する助言"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "01B01",
+          "natGoodsServicesDescription": "Pharmaceutical preparations; Reagent paper for medical purposes"
+        },
+        {
+          "natClassNumber": "01B02",
+          "natGoodsServicesDescription": "Fumigants [only for agricultural purposes]; Fungicides [only for agricultural purposes]; Rodenticides [only for agricultural purposes]; Insecticides [only for agricultural purposes]; Herbicides [weedkillers]; Insect-repellents [only for agricultural purposes]; Antiseptics [only for agricultural purposes]"
+        },
+        {
+          "natClassNumber": "40C10",
+          "natGoodsServicesDescription": "Processing of artificial limbs or artificial teeth, including processing of medical materials"
+        },
+        {
+          "natClassNumber": "40H99",
+          "natGoodsServicesDescription": "Other processing that do not correspond to any of the listed similar group code(s) for the processing"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42R01",
+          "natGoodsServicesDescription": "Agencies for procedures relating to industrial property rights, preparation of expert opinions; Agencies for legal procedures relating to lawsuits or other legal issues; Agencies for judicial registration or deposits"
+        },
+        {
+          "natClassNumber": "42R02",
+          "natGoodsServicesDescription": "Agencies for copyright licensing"
+        }
+      ]
+    },
+    "id": "b95f7e30-ec53-4ffe-be46-f3b869b8ad0b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20211203"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "NAKAJIN MICHIO",
+        "representativeNativeName": "中陳　道夫"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220601",
+        "applicationNumber": "2022-062212"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321024",
+      "lastPublicationDate": "20221101",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20221024",
+        "registrationNumber": "6631619"
+      }
+    },
+    "version": "20230427113909",
+    "wordMarkSpecification": {
+      "markTranslation": "SQORE",
+      "markTransliteration": "SUKOA",
+      "markVerbalElementText": "ＳＱＯＲＥ"
+    }
+  },
+  "_uri": "/mark/jp/b95f7e30-ec53-4ffe-be46-f3b869b8ad0b",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.708Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

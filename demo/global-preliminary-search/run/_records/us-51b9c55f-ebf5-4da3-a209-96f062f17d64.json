@@ -1,0 +1,245 @@
+{
+  "uri": "/mark/us/51b9c55f-ebf5-4da3-a209-96f062f17d64",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "51b9c55f-ebf5-4da3-a209-96f062f17d64",
+  "applicationNumber": "88775316",
+  "registrationNumber": null,
+  "applicationDate": "2020-01-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2020-10-19",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QUORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Cases for mobile phones; Data processing equipment, namely, couplers; Earphones; Electrical plugs and sockets; Power adapters; Protective films adapted for smartphones; Rechargeable batteries; Smartphone mounts; USB cables; Virtual reality headsets",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Guangzhou Xinhaotian Technology Company Limited",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Willy H. Wong",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "C2254 2nd Floor No.65 Zhuji Road, Guangzhou, Guangdong, 518129, CHIN",
+        "applicantAddressCity": "Guangzhou, Guangdong",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "518129",
+        "applicantAddressStreet": "C2254 2nd Floor No.65 Zhuji Road",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Guangzhou Xinhaotian Technology Company Limited",
+        "applicantSecondaryAddressUnit": "Tianhe District"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "5580419"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Cases for mobile phones; Data processing equipment, namely, couplers; Earphones; Electrical plugs and sockets; Power adapters; Protective films adapted for smartphones; Rechargeable batteries; Smartphone mounts; USB cables; Virtual reality headsets"
+        }
+      ]
+    },
+    "id": "51b9c55f-ebf5-4da3-a209-96f062f17d64",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20230426",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20230426",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20230426",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20220116",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20220116",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20220116",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20201028",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20201028",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20200416",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200131",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20200131",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "C2254 2nd Floor No.65 Zhuji Road, Guangzhou, Guangdong, 518129, CHIN",
+        "city": "Guangzhou, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Guangzhou Xinhaotian Technology Company Limited",
+        "postalCode": "518129",
+        "secondaryAddressUnit": "Tianhe District",
+        "street": "C2254 2nd Floor No.65 Zhuji Road"
+      },
+      {
+        "address": "C2254 2nd Floor No.65 Zhuji Road, Guangzhou, Guangdong, 518129, CHIN",
+        "city": "Guangzhou, Guangdong",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Guangzhou Xinhaotian Technology Company Limited",
+        "postalCode": "518129",
+        "secondaryAddressUnit": "Tianhe District",
+        "street": "C2254 2nd Floor No.65 Zhuji Road"
+      }
+    ],
+    "recordLastUpdated": "20260508",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "San Jose, CA 95126, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "San Jose, CA 95126",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Willy H. Wong Minder Law Group, 1043 Garland Ave. Unit C #626"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "San Jose, CA 95126, UNITED STATES",
+        "representativeAddressLines": [
+          "San Jose, CA 95126",
+          "UNITED STATES"
+        ],
+        "representativeName": "Willy H. Wong"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20201019",
+      "active": false,
+      "application": {
+        "applicationDate": "20200128",
+        "applicationNumber": "88775316"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20170930"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20180307"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20201028",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260508173420",
+    "wordMarkSpecification": {
+      "markTranslationDescription": "The wording quori has no meaning in a foreign language.",
+      "markVerbalElementText": "QUORI"
+    }
+  },
+  "_uri": "/mark/us/51b9c55f-ebf5-4da3-a209-96f062f17d64",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:25.704Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

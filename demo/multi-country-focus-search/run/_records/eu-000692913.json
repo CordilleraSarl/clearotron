@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/eu/000692913",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "000692913",
+  "applicationNumber": "000692913",
+  "registrationNumber": "000692913",
+  "applicationDate": "1997-12-02",
+  "registrationDate": "1999-10-01",
+  "expiryDate": "2027-12-02",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2000-01-13",
+  "markText": "sevenOrients",
+  "markFeature": "FIGURATIVE",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "SEVENORIENTS, Société à Responsabilité Limitée",
+  "ownerCountry": null,
+  "representative": "SANTARELLI (IPSIDE)",
+  "goodsAndServices": [
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Apparatus for recording, transmission or reproduction of sound or images",
+            " magnetic data carriers, recording discs",
+            " camcorders, cinematographic cameras",
+            " sound recording strips",
+            " sound recording carriers",
+            " cameras (photography)",
+            " videodisks",
+            " optical discs",
+            " television apparatus",
+            " videotapes",
+            " compact discs (audio, video)",
+            " CDroms",
+            " magnetic data medias",
+            " exposed cinematographic films",
+            " editing appliances for cinematographic films",
+            " screens (photography)",
+            " projection screen",
+            " computer software (recorded)"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 16,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Photographs",
+            " artists' materials",
+            " posters",
+            " albums",
+            " magazine",
+            " newspapers",
+            " books",
+            " booklets",
+            " almanacs",
+            " indexes",
+            " postcards",
+            " printer's type",
+            " printed paper",
+            " printed matter"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 41,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Radio and television entertainment",
+            " film production and videdotape film production",
+            " entertainment information",
+            " rental of show scenery",
+            " rental of motion pictures",
+            " videotape editing",
+            " production of radio and television programs",
+            " organisation of exhibitions for cultural or educational purposes",
+            " organisation of competitions (education or entertainment)",
+            " arranging and conducting of colloquiums, conferences, congresses, seminars, symposiums",
+            " publication of books",
+            " production of radio and television programs"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/000692913",
+  "_uri": "/mark/eu/000692913",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:37.440Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

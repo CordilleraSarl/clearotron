@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/a603310e-dc7a-4994-b01a-ceec9f4e35bf",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "a603310e-dc7a-4994-b01a-ceec9f4e35bf",
+  "applicationNumber": "7390037",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-10",
+  "registrationDate": null,
+  "expiryDate": "2035-12-10",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "LEVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Facility management software for controlling access to buildings and security systems; Facility management software for controlling building environmental access and security systems; Project management software; Document management software; Downloadable project management software; Downloadable computer software for use in project management through tracking time, tasks, expenses, costs, activity, attendance and productivity; Downloadable computer software for use in project management and scheduling; Downloadable computer software for use in costs or budget estimation and management; Software for production process control, optimisation and management; Production process control, optimization and management software; Supply chain management, logistics and warehousing software; Computer utility programs for file management; Downloadable software for supporting financial management; Computer systems designed for project management; Downloadable computer software for business management; Computer software for cryptocurrency asset management; Business management software; Financial management software; Personal security alarms; Security surveillance apparatus; Security alarms; Security software; Security surveillance robots; Security warning apparatus; Handheld security wands; Downloadable computer software for use in project management through tracking, managing and analysing project labour, project time, project compliance and task time estimates; Training software; Software, Mobile Application.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LEVENCORE ASSET MANAGEMENT AND ASSURANCE SERVICES PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "ADV. SHREY SINGH[45001]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4TH FLOOR, P NO 1355-H AND 1355-I SY NO 120, NIHARIKA JUBILEE ONE,ROAD NO 1, JUBILEE HILLS, HYDERABAD, TELANGANA- 500033, INDIA",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "LEVENCORE ASSET MANAGEMENT AND ASSURANCE SERVICES PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Facility management software for controlling access to buildings and security systems; Facility management software for controlling building environmental access and security systems; Project management software; Document management software; Downloadable project management software; Downloadable computer software for use in project management through tracking time, tasks, expenses, costs, activity, attendance and productivity; Downloadable computer software for use in project management and scheduling; Downloadable computer software for use in costs or budget estimation and management; Software for production process control, optimisation and management; Production process control, optimization and management software; Supply chain management, logistics and warehousing software; Computer utility programs for file management; Downloadable software for supporting financial management; Computer systems designed for project management; Downloadable computer software for business management; Computer software for cryptocurrency asset management; Business management software; Financial management software; Personal security alarms; Security surveillance apparatus; Security alarms; Security software; Security surveillance robots; Security warning apparatus; Handheld security wands; Downloadable computer software for use in project management through tracking, managing and analysing project labour, project time, project compliance and task time estimates; Training software; Software, Mobile Application."
+        }
+      ]
+    },
+    "id": "a603310e-dc7a-4994-b01a-ceec9f4e35bf",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260122",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "PURVA SUMMIT, 2ND FLOOR, SURVEY NO 8, WHITEFIELDS ROAD, WHITE FIELDS, HITECH CITY, HYDERABAD, TELANGANA, 500 081, INDIA",
+        "representativeName": "ADV. SHREY SINGH[45001]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251210",
+        "applicationNumber": "7390037"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20351210",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20211217"
+        }
+      ],
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20260122020047",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LEVENCORE"
+    }
+  },
+  "_uri": "/mark/in/a603310e-dc7a-4994-b01a-ceec9f4e35bf",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.730Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

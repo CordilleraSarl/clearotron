@@ -1,0 +1,175 @@
+{
+  "uri": "/mark/de/073d8904-871c-49fb-ade0-e385a6022d6c",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "073d8904-871c-49fb-ade0-e385a6022d6c",
+  "applicationNumber": "30637814.0",
+  "registrationNumber": "30637814",
+  "applicationDate": "2006-06-16",
+  "registrationDate": "2006-08-23",
+  "expiryDate": "2036-06-30",
+  "renewalDate": "2026-07-01",
+  "lastPublicationDate": "2006-09-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "win Wassertourismus Initiative Nordbrandenburg",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Organisation von Ausstellungen und Messen für wirtschaftliche und Werbezwecke; betriebswirtschaftliche Beratung; Beschaffungsdienstleistungen für Dritte (Erwerb von Waren und Dienstleistungen für andere Unternehmen); Systematisierung von Daten in Computerdatenbanken; Zusammenstellen von Daten in Computerdatenbanken; Marktforschung; Informationen in Geschäftsangelegenheiten; Nachforschungen in Geschäftsangelegenheiten; Organisationsberatung in Geschäftsangelegenheiten; Aufstellung von Kosten- und Preisanalysen; Marketing (Absatzforschung); Meinungsforschung; Nachforschen in Computerdateien (für Dritte); Öffentlichkeitsarbeit; Beratung bei der Organisation und Führung von Unternehmen; Organisationsberatung in Geschäftsangelegenheiten; Herausgabe von Statistiken; Vermietung von Werbeflächen; Werbung; Erstellung von Wirtschaftsprognosen",
+      "translation_language": "en",
+      "translation": "Organization of exhibitions and trade fairs for commercial and advertising purposes; business advice; Procurement services for others (purchasing goods and services for other businesses); Systemisation of data in computer databases; Compilation of data in computer databases; Market research; Business information; Business research; Business organization consultancy; Preparation of cost and price analyzes; Marketing (sales research); Opinion research; Investigating computer files (for others); Public relation; Consultancy in the organization and management of businesses; Business organization consultancy; Publication of statistics; Rental of advertising space; Advertising; Economic forecasting"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Veranstaltung von Ausstellungen für kulturelle oder Unterrichtszwecke; Dienstleistungen bezüglich Freizeitgestaltung; Herausgabe von Texten (ausgenommen Werbetexte); Organisation und Veranstaltung von Konferenzen; Organisation und Veranstaltung von Kongressen; Organisation und Veranstaltung von Symposien; Veranstaltung von Wettbewerben (Erziehung und Unterhaltung); Veranstaltung und Durchführung von Workshops (Ausbildung)",
+      "translation_language": "en",
+      "translation": "Organization of exhibitions for cultural or educational purposes; Recreational services; Publication of texts (other than publicity texts); Arranging and arranging conferences; Organization and arranging of congresses; Organizing and arranging symposiums; Organization of competitions (education and entertainment); Arranging and conducting of workshops (training)"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Bauberatung; Dienstleistungen von Ingenieuren; Gestaltung und Unterhalt von Websites für Dritte; Erstellung von geologischen Gutachten; technische Projektplanungen; Recherche- und Entwicklungsdienste bezüglich neuer Produkte (für Dritte); Erstellung von technischen Gutachten",
+      "translation_language": "en",
+      "translation": "Construction consultancy; Engineering services; Design and maintenance of websites for others; Preparation of geological surveys; technical project planning; Research and development services relating to new products (for others); Preparation of technical reports"
+    }
+  ],
+  "owner": "WInTO GmbH - Wirtschafts-, Innovations- und Tourismusförderung Oberhavel GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "16761 Hennigsdorf",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "WInTO GmbH - Wirtschafts-, Innovations- und Tourismusförderung Oberhavel GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "24.15.01",
+      "26.05.05",
+      "26.11.03",
+      "26.11.12",
+      "29.02.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organization of exhibitions and trade fairs for commercial and advertising purposes; business advice; Procurement services for others (purchasing goods and services for other businesses); Systemisation of data in computer databases; Compilation of data in computer databases; Market research; Business information; Business research; Business organization consultancy; Preparation of cost and price analyzes; Marketing (sales research); Opinion research; Investigating computer files (for others); Public relation; Consultancy in the organization and management of businesses; Business organization consultancy; Publication of statistics; Rental of advertising space; Advertising; Economic forecasting",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Organisation von Ausstellungen und Messen für wirtschaftliche und Werbezwecke; betriebswirtschaftliche Beratung; Beschaffungsdienstleistungen für Dritte (Erwerb von Waren und Dienstleistungen für andere Unternehmen); Systematisierung von Daten in Computerdatenbanken; Zusammenstellen von Daten in Computerdatenbanken; Marktforschung; Informationen in Geschäftsangelegenheiten; Nachforschungen in Geschäftsangelegenheiten; Organisationsberatung in Geschäftsangelegenheiten; Aufstellung von Kosten- und Preisanalysen; Marketing (Absatzforschung); Meinungsforschung; Nachforschen in Computerdateien (für Dritte); Öffentlichkeitsarbeit; Beratung bei der Organisation und Führung von Unternehmen; Organisationsberatung in Geschäftsangelegenheiten; Herausgabe von Statistiken; Vermietung von Werbeflächen; Werbung; Erstellung von Wirtschaftsprognosen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organization of exhibitions for cultural or educational purposes; Recreational services; Publication of texts (other than publicity texts); Arranging and arranging conferences; Organization and arranging of congresses; Organizing and arranging symposiums; Organization of competitions (education and entertainment); Arranging and conducting of workshops (training)",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Veranstaltung von Ausstellungen für kulturelle oder Unterrichtszwecke; Dienstleistungen bezüglich Freizeitgestaltung; Herausgabe von Texten (ausgenommen Werbetexte); Organisation und Veranstaltung von Konferenzen; Organisation und Veranstaltung von Kongressen; Organisation und Veranstaltung von Symposien; Veranstaltung von Wettbewerben (Erziehung und Unterhaltung); Veranstaltung und Durchführung von Workshops (Ausbildung)"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Construction consultancy; Engineering services; Design and maintenance of websites for others; Preparation of geological surveys; technical project planning; Research and development services relating to new products (for others); Preparation of technical reports",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bauberatung; Dienstleistungen von Ingenieuren; Gestaltung und Unterhalt von Websites für Dritte; Erstellung von geologischen Gutachten; technische Projektplanungen; Recherche- und Entwicklungsdienste bezüglich neuer Produkte (für Dritte); Erstellung von technischen Gutachten"
+        }
+      ]
+    },
+    "id": "073d8904-871c-49fb-ade0-e385a6022d6c",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "blau, grün, orange"
+      }
+    ],
+    "markImageViennaClassification": [
+      "18.03.23",
+      "26.11.12",
+      "27.05.10",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "14760",
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20260414",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "WInTO GmbH - Wirtschafts-, Innovations- und Tourismusförderung Oberhavel GmbH, Neuendorfstr. 23a, 16761 Hennigsdorf"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20060616",
+        "applicationNumber": "30637814.0"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360630",
+      "lastPublicationDate": "20060922",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20060823",
+        "registrationNumber": "30637814"
+      },
+      "renewalDate": "20260701",
+      "renewalPublishedDate": "20260402"
+    },
+    "version": "20260414020026",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "win Wassertourismus Initiative Nordbrandenburg"
+    }
+  },
+  "_uri": "/mark/de/073d8904-871c-49fb-ade0-e385a6022d6c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

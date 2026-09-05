@@ -1,0 +1,177 @@
+{
+  "uri": "/mark/cl/f6c279f2-780c-412b-bfa5-c43d41b5d848",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "f6c279f2-780c-412b-bfa5-c43d41b5d848",
+  "applicationNumber": "429944",
+  "registrationNumber": "541958",
+  "applicationDate": "1998-10-15",
+  "registrationDate": "1999-06-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "LABBE Y CIA. LTDA.",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "CARMEN GLORIA SILVA AMAYA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "LABBE Y CIA. LTDA."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "f6c279f2-780c-412b-bfa5-c43d41b5d848",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "CARMEN GLORIA SILVA AMAYA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19981015",
+        "applicationNumber": "429944"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "19990602",
+        "registrationNumber": "541958"
+      }
+    },
+    "version": "20260615175631",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCOR"
+    }
+  },
+  "_uri": "/mark/cl/f6c279f2-780c-412b-bfa5-c43d41b5d848",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

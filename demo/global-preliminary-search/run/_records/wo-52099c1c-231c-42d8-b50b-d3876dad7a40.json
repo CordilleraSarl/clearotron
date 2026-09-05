@@ -1,0 +1,276 @@
+{
+  "uri": "/mark/wo/52099c1c-231c-42d8-b50b-d3876dad7a40",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "52099c1c-231c-42d8-b50b-d3876dad7a40",
+  "applicationNumber": null,
+  "registrationNumber": "1931398",
+  "applicationDate": null,
+  "registrationDate": "2026-06-08",
+  "expiryDate": "2036-06-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer software; computer software applications, downloadable; computer software for analysing market information; computer software for database management; computer software for application and database integration; computer software for business purposes; downloadable computer software; downloadable computer software for data processing; downloadable business management software; software and applications for mobile devices; artificial intelligence software; computer hardware and software for artificial intelligence; downloadable artificial intelligence software; downloadable artificial intelligence software for analysis; downloadable computer software using artificial intelligence for data analysis; downloadable computer software for use as a digital wallet; downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Brokerage of carbon credits; brokerage of currencies; business liquidation services, financial; capital investment; charitable fund raising; clearing, financial; credit bureau services; issuance of credit cards; crowdfunding; deposits of valuables; e-wallet payment services; electronic funds transfer; electronic transfer of virtual currencies; exchanging money; factoring; financial analysis; financial appraisals in responding to calls for tenders; financial appraisals in responding to requests for proposals [RFPs]; financial consultancy; financial customs brokerage services; financial evaluation [insurance, banking, real estate]; financial evaluation of development costs relating to the oil, gas and mining industries; financial valuation of standing timber; financial valuation of wool; financial exchange of virtual currency; financial management; financial management of reimbursement payments for others; financial research; financial sponsorship; financial valuation of intellectual property assets; providing financial information; providing financial information via a website; financing services; fiscal valuation; instalment loans; insurance brokerage; insurance consultancy; insurance underwriting; providing insurance information; investment of funds; lending against security; loans [financing]; organization of monetary collections; mortgage banking; mutual funds; online banking; pawnbrokerage; processing of credit card payments; processing of debit card payments; provident fund services; preparation of quotes for cost estimation purposes; safe deposit services; savings bank services; securities brokerage; stock brokerage services; stock exchange quotations; stocks and bonds brokerage; issuance of tokens of value; trusteeship; fiduciary.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Artificial intelligence technology services; software as a service [SaaS]; artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics; application service provider [ASP] services; consultancy relating to the design and development of information and communications technology; design and development of computer systems; design and development of operating system software; design, development and programming of computer software; computer software consulting; computer software design for others; computer website design; creating and designing web pages for others.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels informatiques; applications logicielles informatiques téléchargeables; logiciels informatiques pour l'analyse d'informations de marché; logiciels informatiques pour la gestion de bases de données; logiciels informatiques d'intégration d'applications et de bases de données; logiciels informatiques à usage commercial; logiciels informatiques téléchargeables; logiciels informatiques téléchargeables pour le traitement de données; logiciels téléchargeables de gestion d'entreprises; logiciels et applications pour dispositifs mobiles; logiciels d'intelligence artificielle; matériel informatiques et logiciels d'intelligence artificielle; logiciels d'intelligence artificielle téléchargeables; logiciels d'intelligence artificielle téléchargeables pour analyses; logiciels informatiques téléchargeables utilisant une intelligence artificielle pour l'analyse de données; logiciels informatiques téléchargeables à utiliser en tant que portefeuille numérique; logiciels informatiques téléchargeables pour la création, la gestion, le stockage, l'accès, l'envoi, la réception, l'échange, la validation et la vente d'actifs numériques.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "fr",
+      "description": "Courtage de crédits carbone; courtage de devises; services financiers de liquidation d'entreprises; investissement de capitaux; collecte de fonds au profit d'oeuvres caritatives; opérations de compensation; services de bureaux de crédit; émission de cartes de crédit; services de financement participatif; services de dépôt de valeurs; services de paiement par portefeuille électronique; transfert électronique de fonds; transfert électronique de devises virtuelles; change de devises; affacturage; analyses financières; services d'estimations financières en matière de réponse à des appels d'offres; services d'estimations financières en matière de réponse à des demandes de propositions [RFP]; services de conseillers financiers; services financiers de courtage en douane; estimations financières [assurances, banque, immobilier]; évaluation financière de coûts de développement en lien avec les secteurs minier, gazier et pétrolier; services d'estimation de bois sur pied; estimation financière en matière de laine; échanges financiers de monnaies virtuelles; gestion financière; gestion financière de paiements de remboursements pour des tiers; recherches financières; services de parrainage financier; évaluations financières d'actifs de propriété intellectuelle; mise à disposition d'informations financières; mise à disposition d'informations financières par le biais d'un site Web; services de financement; évaluations fiscales; services de prêts à tempérament; courtage en assurances; services de conseillers en assurances; souscription d'assurances; fourniture d'informations en matière d'assurance; investissement de fonds; prêt sur nantissement; prêts [financement]; organisation de collectes monétaires; opérations bancaires hypothécaires; services de fonds communs de placement; services bancaires en ligne; prêts sur gage; traitement de paiements par cartes de crédit; traitement de paiements par cartes de débit; services de caisses de prévoyance; préparation de devis à des fins d'estimation de coûts; services de dépôt en coffres-forts; services de banques d'épargne; courtage de valeurs mobilières; services de courtage d'actions; cotations boursières; courtage d'actions et obligations; émissions de bons de valeur; services fiduciaires; services de fiducie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de technologie d'intelligence artificielle; logiciels en tant que service [SaaS]; intelligence artificielle en tant que service [AIaaS] proposant des logiciels utilisant l'intelligence artificielle pour l'analyse commerciale; prestations de fournisseurs de services d'application [FSA]; services de conseillers en matière de conception et développement de technologies de l'information et des communications; conception et développement de systèmes informatiques; conception et développement de logiciels de système d'exploitation; conception, développement et programmation de logiciels informatiques; services de conseillers en matière de logiciels informatiques; conception de logiciels informatiques pour des tiers; conception de sites Web informatiques; création et conception de pages Web pour des tiers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software informático; aplicaciones de software informático descargables; software de análisis de información de mercados; software informático de gestión de bases de datos; software de aplicación e integración de bases de datos; software informático para uso empresarial; software informático descargable; software informático descargable de procesamiento de datos; software descargable de gestión empresarial; software y aplicaciones para dispositivos móviles; software de inteligencia artificial; hardware y software informáticos de inteligencia artificial; software de inteligencia artificial descargable; software de inteligencia artificial descargable para análisis; software informático descargable con inteligencia artificial para el análisis de datos; software informático descargable utilizado como cartera digital; software informático descargable para la creación, la gestión, el almacenamiento, el acceso, el envío, la recepción, el intercambio, la validación y la venta de activos digitales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "es",
+      "description": "Corretaje de créditos de carbono; corretaje de divisas; servicios de liquidación de empresas [finanzas]; inversión de capital; recaudación de fondos de beneficencia; operaciones de cámaras de compensación; servicios de establecimientos crediticios; emisión de tarjetas de crédito; financiación colectiva; depósito de valores; servicios de pago con monederos electrónicos; transferencia electrónica de fondos; transferencia electrónica de divisas virtuales; operaciones de cambio; descuento de facturas [factoraje]; análisis financieros; estimaciones financieras en respuesta a convocatorias de licitación; valoraciones financieras en respuesta a solicitudes de propuestas [RFP]; consultoría financiera; servicios financieros de corretaje aduanero; evaluación financiera [seguros, bancos, bienes inmuebles]; evaluación financiera de costos de desarrollo relacionada con las industrias del petróleo, del gas y minera; valoración de la madera en pie; valoración financiera de lanas; intercambio financiero de monedas virtuales; gestión financiera; gestión financiera de pagos de reembolso para terceros; investigación financiera; patrocinio financiero; tasación financiera de activos de propiedad intelectual; suministro de información financiera; suministro de información financiera por sitios web; servicios de financiación; peritajes fiscales; préstamos a plazos; corretaje de seguros; consultoría sobre seguros; suscripción de seguros; suministro de información sobre seguros; inversión de fondos; préstamos prendarios; préstamos [financiación]; organización de colectas monetarias; servicios de banco hipotecario; fondos mutuos de inversión; servicios bancarios en línea; préstamos prendarios; procesamiento de transacciones con tarjetas de crédito; procesamiento de transacciones realizadas con tarjetas de débito; servicios de fondos de previsión; elaboración de presupuestos para la estimación de costos; servicios de depósito en cajas de seguridad; servicios de caja de ahorro; corretaje en bolsa (valores); servicios de corretaje de acciones; servicios de cotización en bolsa; corretaje de acciones y obligaciones; emisión de tókenes de valor; servicios fiduciarios; servicios fiduciarios.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de tecnología de inteligencia artificial; software como servicio [SaaS]; inteligencia artificial como servicio [AIaaS] con software de inteligencia artificial para análisis comerciales; servicios de proveedores de servicios de aplicaciones [ASP]; consultoría en diseño y desarrollo de las tecnologías de la información y la comunicación; diseño y desarrollo de sistemas informáticos; diseño y desarrollo de software de sistemas operativos; diseño, desarrollo y programación de software; consultoría sobre software informático; diseño de software para terceros; diseño de sitios web; creación y diseño de páginas web para terceros.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORE3 PTE. LTD.",
+  "ownerNative": null,
+  "ownerCountry": "SG",
+  "representative": "QUAHE WOO & PALMER LLC",
+  "priorities": [
+    {
+      "priorityCountryCode": "SG",
+      "priorityCountryName": "Singapore",
+      "priorityDate": "20260605",
+      "priorityNumber": "40202614759U"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20260605",
+          "basicApplicationNumber": "40202614759U"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "SG"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CH",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "11 COLLYER QUAY, #16-02 THE ARCADE SINGAPORE 049317",
+        "applicantAddressCountryCode": "SG",
+        "applicantAddressCountryName": "Singapore",
+        "applicantName": "QORE3 PTE. LTD."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20260605",
+            "basicApplicationNumber": "40202614759U"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "SG"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CH",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer software; computer software applications, downloadable; computer software for analysing market information; computer software for database management; computer software for application and database integration; computer software for business purposes; downloadable computer software; downloadable computer software for data processing; downloadable business management software; software and applications for mobile devices; artificial intelligence software; computer hardware and software for artificial intelligence; downloadable artificial intelligence software; downloadable artificial intelligence software for analysis; downloadable computer software using artificial intelligence for data analysis; downloadable computer software for use as a digital wallet; downloadable computer software for creating, managing, storing, accessing, sending, receiving, exchanging, validating and selling digital assets."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Brokerage of carbon credits; brokerage of currencies; business liquidation services, financial; capital investment; charitable fund raising; clearing, financial; credit bureau services; issuance of credit cards; crowdfunding; deposits of valuables; e-wallet payment services; electronic funds transfer; electronic transfer of virtual currencies; exchanging money; factoring; financial analysis; financial appraisals in responding to calls for tenders; financial appraisals in responding to requests for proposals [RFPs]; financial consultancy; financial customs brokerage services; financial evaluation [insurance, banking, real estate]; financial evaluation of development costs relating to the oil, gas and mining industries; financial valuation of standing timber; financial valuation of wool; financial exchange of virtual currency; financial management; financial management of reimbursement payments for others; financial research; financial sponsorship; financial valuation of intellectual property assets; providing financial information; providing financial information via a website; financing services; fiscal valuation; instalment loans; insurance brokerage; insurance consultancy; insurance underwriting; providing insurance information; investment of funds; lending against security; loans [financing]; organization of monetary collections; mortgage banking; mutual funds; online banking; pawnbrokerage; processing of credit card payments; processing of debit card payments; provident fund services; preparation of quotes for cost estimation purposes; safe deposit services; savings bank services; securities brokerage; stock brokerage services; stock exchange quotations; stocks and bonds brokerage; issuance of tokens of value; trusteeship; fiduciary."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Artificial intelligence technology services; software as a service [SaaS]; artificial intelligence as a service [AIaaS] featuring software using artificial intelligence for business analytics; application service provider [ASP] services; consultancy relating to the design and development of information and communications technology; design and development of computer systems; design and development of operating system software; design, development and programming of computer software; computer software consulting; computer software design for others; computer website design; creating and designing web pages for others."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels informatiques; applications logicielles informatiques téléchargeables; logiciels informatiques pour l'analyse d'informations de marché; logiciels informatiques pour la gestion de bases de données; logiciels informatiques d'intégration d'applications et de bases de données; logiciels informatiques à usage commercial; logiciels informatiques téléchargeables; logiciels informatiques téléchargeables pour le traitement de données; logiciels téléchargeables de gestion d'entreprises; logiciels et applications pour dispositifs mobiles; logiciels d'intelligence artificielle; matériel informatiques et logiciels d'intelligence artificielle; logiciels d'intelligence artificielle téléchargeables; logiciels d'intelligence artificielle téléchargeables pour analyses; logiciels informatiques téléchargeables utilisant une intelligence artificielle pour l'analyse de données; logiciels informatiques téléchargeables à utiliser en tant que portefeuille numérique; logiciels informatiques téléchargeables pour la création, la gestion, le stockage, l'accès, l'envoi, la réception, l'échange, la validation et la vente d'actifs numériques."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Courtage de crédits carbone; courtage de devises; services financiers de liquidation d'entreprises; investissement de capitaux; collecte de fonds au profit d'oeuvres caritatives; opérations de compensation; services de bureaux de crédit; émission de cartes de crédit; services de financement participatif; services de dépôt de valeurs; services de paiement par portefeuille électronique; transfert électronique de fonds; transfert électronique de devises virtuelles; change de devises; affacturage; analyses financières; services d'estimations financières en matière de réponse à des appels d'offres; services d'estimations financières en matière de réponse à des demandes de propositions [RFP]; services de conseillers financiers; services financiers de courtage en douane; estimations financières [assurances, banque, immobilier]; évaluation financière de coûts de développement en lien avec les secteurs minier, gazier et pétrolier; services d'estimation de bois sur pied; estimation financière en matière de laine; échanges financiers de monnaies virtuelles; gestion financière; gestion financière de paiements de remboursements pour des tiers; recherches financières; services de parrainage financier; évaluations financières d'actifs de propriété intellectuelle; mise à disposition d'informations financières; mise à disposition d'informations financières par le biais d'un site Web; services de financement; évaluations fiscales; services de prêts à tempérament; courtage en assurances; services de conseillers en assurances; souscription d'assurances; fourniture d'informations en matière d'assurance; investissement de fonds; prêt sur nantissement; prêts [financement]; organisation de collectes monétaires; opérations bancaires hypothécaires; services de fonds communs de placement; services bancaires en ligne; prêts sur gage; traitement de paiements par cartes de crédit; traitement de paiements par cartes de débit; services de caisses de prévoyance; préparation de devis à des fins d'estimation de coûts; services de dépôt en coffres-forts; services de banques d'épargne; courtage de valeurs mobilières; services de courtage d'actions; cotations boursières; courtage d'actions et obligations; émissions de bons de valeur; services fiduciaires; services de fiducie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de technologie d'intelligence artificielle; logiciels en tant que service [SaaS]; intelligence artificielle en tant que service [AIaaS] proposant des logiciels utilisant l'intelligence artificielle pour l'analyse commerciale; prestations de fournisseurs de services d'application [FSA]; services de conseillers en matière de conception et développement de technologies de l'information et des communications; conception et développement de systèmes informatiques; conception et développement de logiciels de système d'exploitation; conception, développement et programmation de logiciels informatiques; services de conseillers en matière de logiciels informatiques; conception de logiciels informatiques pour des tiers; conception de sites Web informatiques; création et conception de pages Web pour des tiers."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software informático; aplicaciones de software informático descargables; software de análisis de información de mercados; software informático de gestión de bases de datos; software de aplicación e integración de bases de datos; software informático para uso empresarial; software informático descargable; software informático descargable de procesamiento de datos; software descargable de gestión empresarial; software y aplicaciones para dispositivos móviles; software de inteligencia artificial; hardware y software informáticos de inteligencia artificial; software de inteligencia artificial descargable; software de inteligencia artificial descargable para análisis; software informático descargable con inteligencia artificial para el análisis de datos; software informático descargable utilizado como cartera digital; software informático descargable para la creación, la gestión, el almacenamiento, el acceso, el envío, la recepción, el intercambio, la validación y la venta de activos digitales."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Corretaje de créditos de carbono; corretaje de divisas; servicios de liquidación de empresas [finanzas]; inversión de capital; recaudación de fondos de beneficencia; operaciones de cámaras de compensación; servicios de establecimientos crediticios; emisión de tarjetas de crédito; financiación colectiva; depósito de valores; servicios de pago con monederos electrónicos; transferencia electrónica de fondos; transferencia electrónica de divisas virtuales; operaciones de cambio; descuento de facturas [factoraje]; análisis financieros; estimaciones financieras en respuesta a convocatorias de licitación; valoraciones financieras en respuesta a solicitudes de propuestas [RFP]; consultoría financiera; servicios financieros de corretaje aduanero; evaluación financiera [seguros, bancos, bienes inmuebles]; evaluación financiera de costos de desarrollo relacionada con las industrias del petróleo, del gas y minera; valoración de la madera en pie; valoración financiera de lanas; intercambio financiero de monedas virtuales; gestión financiera; gestión financiera de pagos de reembolso para terceros; investigación financiera; patrocinio financiero; tasación financiera de activos de propiedad intelectual; suministro de información financiera; suministro de información financiera por sitios web; servicios de financiación; peritajes fiscales; préstamos a plazos; corretaje de seguros; consultoría sobre seguros; suscripción de seguros; suministro de información sobre seguros; inversión de fondos; préstamos prendarios; préstamos [financiación]; organización de colectas monetarias; servicios de banco hipotecario; fondos mutuos de inversión; servicios bancarios en línea; préstamos prendarios; procesamiento de transacciones con tarjetas de crédito; procesamiento de transacciones realizadas con tarjetas de débito; servicios de fondos de previsión; elaboración de presupuestos para la estimación de costos; servicios de depósito en cajas de seguridad; servicios de caja de ahorro; corretaje en bolsa (valores); servicios de corretaje de acciones; servicios de cotización en bolsa; corretaje de acciones y obligaciones; emisión de tókenes de valor; servicios fiduciarios; servicios fiduciarios."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de tecnología de inteligencia artificial; software como servicio [SaaS]; inteligencia artificial como servicio [AIaaS] con software de inteligencia artificial para análisis comerciales; servicios de proveedores de servicios de aplicaciones [ASP]; consultoría en diseño y desarrollo de las tecnologías de la información y la comunicación; diseño y desarrollo de sistemas informáticos; diseño y desarrollo de software de sistemas operativos; diseño, desarrollo y programación de software; consultoría sobre software informático; diseño de software para terceros; diseño de sitios web; creación y diseño de páginas web para terceros."
+        }
+      ]
+    },
+    "id": "52099c1c-231c-42d8-b50b-d3876dad7a40",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "SG",
+        "priorityCountryName": "Singapore",
+        "priorityDate": "20260605",
+        "priorityNumber": "40202614759U"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "30"
+      }
+    ],
+    "recordLastUpdated": "20260814",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "510 THOMSON ROAD, #08-00 SLF BUILDING SINGAPORE 298135",
+        "representativeAddressCountryCode": "SG",
+        "representativeAddressCountryName": "Singapore",
+        "representativeName": "QUAHE WOO & PALMER LLC"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360608",
+      "lastPublicationDate": "20260806",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260608",
+        "registrationNumber": "1931398"
+      }
+    },
+    "version": "20260814020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORE"
+    }
+  },
+  "_uri": "/mark/wo/52099c1c-231c-42d8-b50b-d3876dad7a40",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

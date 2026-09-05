@@ -1,0 +1,191 @@
+{
+  "uri": "/mark/ca/3efa4422-4526-45e5-8272-c764b6e0a02b",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "3efa4422-4526-45e5-8272-c764b6e0a02b",
+  "applicationNumber": "2058349",
+  "registrationNumber": "TMA1154153",
+  "applicationDate": "2020-10-19",
+  "registrationDate": "2022-11-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-09-07"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Inventive North",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    20
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        9,
+        20
+      ],
+      "language": "en",
+      "description": "(1) Automatic door openers \n(2) Charging stations for electric vehicles \n(3) Bottle racks",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Jenie Mercado-Barretto",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7030 Copenhagen Rd Unit 4, Mississauga, ONTARIO, L5N2P3",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "7030 Copenhagen Rd Unit 4",
+          "Mississauga",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "L5N2P3",
+        "applicantName": "Jenie Mercado-Barretto"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07,09,20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Automatic door openers \n(2) Charging stations for electric vehicles \n(3) Bottle racks"
+        }
+      ]
+    },
+    "id": "3efa4422-4526-45e5-8272-c764b6e0a02b",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20221130",
+        "descriptionText": "Registered",
+        "responseDate": "20321130"
+      },
+      {
+        "date": "20221130",
+        "descriptionText": "Registration Pending"
+      },
+      {
+        "date": "20220907",
+        "descriptionText": "Advertised",
+        "information": "Vol.69 Issue 3541"
+      },
+      {
+        "date": "20220815",
+        "descriptionText": "Approval Notice Sent",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20220815",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20220809",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20201019",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20201019",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20201019",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7030 Copenhagen Rd Unit 4, Mississauga, ONTARIO, L5N2P3",
+        "addressLines": [
+          "7030 Copenhagen Rd Unit 4",
+          "Mississauga",
+          "ONTARIO",
+          "L5N2P3"
+        ],
+        "countryName": "Canada",
+        "name": "Jenie Mercado-Barretto",
+        "postalCode": "L5N2P3"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3541",
+        "publicationVolume": "69"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20201019",
+        "applicationNumber": "2058349"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "formalisationDate": "20201019",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20321130",
+      "publicationDate": [
+        "20220907"
+      ],
+      "registration": {
+        "registrationDate": "20221130",
+        "registrationNumber": "TMA1154153"
+      }
+    },
+    "subjectHeadings": [
+      "INVENTIVE NORTH"
+    ],
+    "version": "20250625111038",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Inventive North",
+      "markVerbalElementTextFormal": "Inventive North"
+    }
+  },
+  "_uri": "/mark/ca/3efa4422-4526-45e5-8272-c764b6e0a02b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

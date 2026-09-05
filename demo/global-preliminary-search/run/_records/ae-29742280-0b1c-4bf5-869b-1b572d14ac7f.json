@@ -1,0 +1,110 @@
+{
+  "uri": "/mark/ae/29742280-0b1c-4bf5-869b-1b572d14ac7f",
+  "provider": "clarivate",
+  "office": "ae",
+  "guid": "29742280-0b1c-4bf5-869b-1b572d14ac7f",
+  "applicationNumber": "105580",
+  "registrationNumber": null,
+  "applicationDate": "2008-01-21",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "VONCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ar",
+      "description": "المنتجات ، اسطوانات واقراص التسجيل ، ماكينات البيع الاوتوماتيكية وآليات تشغيل الاجهزة العاملةبوضع قطعة نقدية فيها، اجهزة و ماكينات رصد وتسجيل النقد ، الالات الحاسبة ، اجهزة. وتجهيزات معالجة البيانات واجهزة الكومبيوتر ونحوها ، اجهزة اخماد الحرائق، في الفئة 09",
+      "translation_language": "en",
+      "translation": "Products, CD disks and the registry, automatic vending machines and mechanisms run setups where Amlhboda coins, devices and monitoring machines and cash registers, calculators, devices. And equipment data, computers and the like treatment, devices put out fires, in category 09"
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": "CH",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "8002 زوريخ سويسرا ، غوتهاردشتراسه 43",
+        "applicantAddressCountryCode": "CH",
+        "applicantAddressCountryName": "Switzerland",
+        "applicantNativeName": "فونتوبل هولدنغ أيه جي"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Products, CD disks and the registry, automatic vending machines and mechanisms run setups where Amlhboda coins, devices and monitoring machines and cash registers, calculators, devices. And equipment data, computers and the like treatment, devices put out fires, in category 09",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "المنتجات ، اسطوانات واقراص التسجيل ، ماكينات البيع الاوتوماتيكية وآليات تشغيل الاجهزة العاملةبوضع قطعة نقدية فيها، اجهزة و ماكينات رصد وتسجيل النقد ، الالات الحاسبة ، اجهزة. وتجهيزات معالجة البيانات واجهزة الكومبيوتر ونحوها ، اجهزة اخماد الحرائق، في الفئة 09"
+        }
+      ]
+    },
+    "id": "29742280-0b1c-4bf5-869b-1b572d14ac7f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "AE",
+    "registrationOfficeName": "United Arab Emirates",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "UAE",
+        "representativeAddressCountryName": "United Arab Emirates",
+        "representativeNativeName": "سابا و شركاهم- تي. ام. بي."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080121",
+        "applicationNumber": "105580"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427145041",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VONCORE"
+    }
+  },
+  "_uri": "/mark/ae/29742280-0b1c-4bf5-869b-1b572d14ac7f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

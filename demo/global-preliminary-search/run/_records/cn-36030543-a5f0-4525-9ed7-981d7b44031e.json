@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/36030543-a5f0-4525-9ed7-981d7b44031e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "36030543-a5f0-4525-9ed7-981d7b44031e",
+  "applicationNumber": "23963685",
+  "registrationNumber": "23963685",
+  "applicationDate": "2017-05-04",
+  "registrationDate": "2018-04-28",
+  "expiryDate": "2028-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "低压电源;电池充电器;调压器;集成电路;接线盒(电);控制板(电);逆变器(电);配电箱(电);稳压电源;整流器",
+      "translation_language": "en",
+      "translation": "Low-voltage power supply; battery charger; voltage regulator; integrated circuit; junction box (electric); control board (electric); inverter (electric); distribution box (electric); regulated power supply; rectifier"
+    }
+  ],
+  "owner": "Shenzhen Furui Electric Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市南山区桃源街道平山社区丽山路65号平山民企科技园2栋东521",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Furui Electric Co., Ltd",
+        "applicantNativeName": "深圳市福瑞电气有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Low-voltage power supply; battery charger; voltage regulator; integrated circuit; junction box (electric); control board (electric); inverter (electric); distribution box (electric); regulated power supply; rectifier",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "低压电源;电池充电器;调压器;集成电路;接线盒(电);控制板(电);逆变器(电);配电箱(电);稳压电源;整流器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "36030543-a5f0-4525-9ed7-981d7b44031e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1585"
+      }
+    ],
+    "recordLastUpdated": "20260719",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市联合捷威信息有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170504",
+        "applicationNumber": "23963685"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280427",
+      "lastPublicationDate": "20180127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180428",
+        "registrationNumber": "23963685"
+      }
+    },
+    "version": "20260719020213",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/cn/36030543-a5f0-4525-9ed7-981d7b44031e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

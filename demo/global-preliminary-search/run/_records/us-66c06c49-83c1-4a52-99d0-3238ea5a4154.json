@@ -1,0 +1,315 @@
+{
+  "uri": "/mark/us/66c06c49-83c1-4a52-99d0-3238ea5a4154",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "66c06c49-83c1-4a52-99d0-3238ea5a4154",
+  "applicationNumber": "99793843",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "RIVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11,
+    35,
+    37,
+    40,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Optical guidance and landing aid systems comprising computer hardware and software, electronic controllers, and lighting fixtures, for aircraft and aerial vehicles; Lighting controls; Lighting control apparatus; Lighting control panels; LED lighting controls for maritime vessel deck lighting, aircraft landing aid systems, and general illumination purposes in military and extreme environmental settings; Safety equipment, namely, beacon lights; Emergency warning lights; Signalling lights; Luminous beacons; Environmental monitoring system comprised of meters and sensors that measure pressure, humidity, temperature and includes alarm and reporting functions; Temperature sensors; Pressure sensors; Ultrasonic sensors; Electronic proximity sensors and switches; Sensors for determining position, velocity, acceleration and temperature; Electric or electronic sensors for measuring marine vessel speed; Speed measuring instruments; Meteorological instruments; Anodes; Electronic displays and computer displays specially adapted for use in military and extreme environmental settings; Cabinets, enclosures, cases for electronic communications systems, electronic and computer displays, weapons control systems, and computer hardware, specially adapted for use in military and extreme environmental settings; Electronic control and communication consoles for maritime vessels; Electronic system composed of computer hardware, computer software, anodes, controllers and/or meters for managing and; minimizing maritime vessel hull signatures and for corrosion protection",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": null,
+      "description": "INT. CL. 11 Lighting fixtures; Lighting installations; deck lighting for maritime vessels; Portable lights for use as aircraft landing aids; Portable lights for use as aircraft landing aids at airfields and airports in military and commercial environments; Emergency lighting apparatus and devices for use at military and commercial airfields and airports; Lighting fixtures, Lighting installations, and deck lighting for maritime vessels compatible with night vision goggles (NVG); Lighting apparatus for use in hazardous, military and extreme environmental conditions",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Advertising, marketing and promotional services; brand strategy and development services; business consultancy relating to branding, marketing and advertising; social media marketing and management services; preparation and dissemination of advertising and promotional materials; consultancy, advisory and support services relating to the foregoing; Organisation, management and conducting of trade shows, exhibitions and events for commercial, promotional and marketing purposes; organisation of exhibitions for business and commercial purposes",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "INT. CL. 37 Installation, maintenance and repair of lighting apparatus, aircraft landing aid systems, and maritime vessel lighting; Installation, maintenance and repair of meteorological sensors and monitoring equipment; Installation, maintenance and repair of electronic systems for managing and minimizing maritime vessel hull signatures and for corrosion protection; Installation, maintenance and repair of electronic cabinets, enclosures and cases for electronic, computer and communications; systems for use in military and extreme environmental settings",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": "INT. CL. 40 Custom manufacture of electronic cabinets, enclosures, control systems and electronic assemblies to customer specification for use in military and extreme environmental settings",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Providing technical training and instruction in the installation, operation and maintenance of aircraft landing aid systems, maritime vessel lighting, electronic enclosures, and systems for managing and minimizing maritime vessel hull signatures; Video production services; film production; multimedia production; audio and visual content creation; production of digital content; photography services",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Engineering; Marine engineering; Custom design and engineering of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Product testing; Testing, analysis, and evaluation of the goods and electronic systems of others to determine conformity with certification standards; Environmental testing of the goods and electronic systems of others to evaluate durability and reliability; Technical consultation in the fields of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Graphic design services; branding and visual identity design services; design and development of websites; consultancy, support and advisory services relating to graphic design, branding, visual identity and website design and development; all provided in-house and externally; Research and development of new products and technologies in the fields of aerospace, maritime and defence systems",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rivencore Global Solutions Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Paul C. Llewellyn",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Fleets Point, Willis Way, Poole, Dorset, BH15 3SS, GBRI",
+        "applicantAddressCity": "Poole, Dorset",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantAddressPostalCode": "BH15 3SS",
+        "applicantAddressStreet": "Fleets Point, Willis Way",
+        "applicantJurisdictionOfIncorporation": "UNITED KINGDOM",
+        "applicantName": "Rivencore Global Solutions Limited"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Optical guidance and landing aid systems comprising computer hardware and software, electronic controllers, and lighting fixtures, for aircraft and aerial vehicles; Lighting controls; Lighting control apparatus; Lighting control panels; LED lighting controls for maritime vessel deck lighting, aircraft landing aid systems, and general illumination purposes in military and extreme environmental settings; Safety equipment, namely, beacon lights; Emergency warning lights; Signalling lights; Luminous beacons; Environmental monitoring system comprised of meters and sensors that measure pressure, humidity, temperature and includes alarm and reporting functions; Temperature sensors; Pressure sensors; Ultrasonic sensors; Electronic proximity sensors and switches; Sensors for determining position, velocity, acceleration and temperature; Electric or electronic sensors for measuring marine vessel speed; Speed measuring instruments; Meteorological instruments; Anodes; Electronic displays and computer displays specially adapted for use in military and extreme environmental settings; Cabinets, enclosures, cases for electronic communications systems, electronic and computer displays, weapons control systems, and computer hardware, specially adapted for use in military and extreme environmental settings; Electronic control and communication consoles for maritime vessels; Electronic system composed of computer hardware, computer software, anodes, controllers and/or meters for managing and; minimizing maritime vessel hull signatures and for corrosion protection"
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsServicesDescription": "INT. CL. 11 Lighting fixtures; Lighting installations; deck lighting for maritime vessels; Portable lights for use as aircraft landing aids; Portable lights for use as aircraft landing aids at airfields and airports in military and commercial environments; Emergency lighting apparatus and devices for use at military and commercial airfields and airports; Lighting fixtures, Lighting installations, and deck lighting for maritime vessels compatible with night vision goggles (NVG); Lighting apparatus for use in hazardous, military and extreme environmental conditions"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Advertising, marketing and promotional services; brand strategy and development services; business consultancy relating to branding, marketing and advertising; social media marketing and management services; preparation and dissemination of advertising and promotional materials; consultancy, advisory and support services relating to the foregoing; Organisation, management and conducting of trade shows, exhibitions and events for commercial, promotional and marketing purposes; organisation of exhibitions for business and commercial purposes"
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "INT. CL. 37 Installation, maintenance and repair of lighting apparatus, aircraft landing aid systems, and maritime vessel lighting; Installation, maintenance and repair of meteorological sensors and monitoring equipment; Installation, maintenance and repair of electronic systems for managing and minimizing maritime vessel hull signatures and for corrosion protection; Installation, maintenance and repair of electronic cabinets, enclosures and cases for electronic, computer and communications; systems for use in military and extreme environmental settings"
+        },
+        {
+          "intClassNumber": "40",
+          "intGoodsServicesDescription": "INT. CL. 40 Custom manufacture of electronic cabinets, enclosures, control systems and electronic assemblies to customer specification for use in military and extreme environmental settings"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Providing technical training and instruction in the installation, operation and maintenance of aircraft landing aid systems, maritime vessel lighting, electronic enclosures, and systems for managing and minimizing maritime vessel hull signatures; Video production services; film production; multimedia production; audio and visual content creation; production of digital content; photography services"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Engineering; Marine engineering; Custom design and engineering of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Product testing; Testing, analysis, and evaluation of the goods and electronic systems of others to determine conformity with certification standards; Environmental testing of the goods and electronic systems of others to evaluate durability and reliability; Technical consultation in the fields of aircraft landing aid systems, maritime vessel lighting, electronic components for use in military and extreme environmental settings, systems for protecting maritime hulls and for managing and minimizing maritime vessel hull signatures; Graphic design services; branding and visual identity design services; design and development of websites; consultancy, support and advisory services relating to graphic design, branding, visual identity and website design and development; all provided in-house and externally; Research and development of new products and technologies in the fields of aerospace, maritime and defence systems"
+        }
+      ]
+    },
+    "id": "66c06c49-83c1-4a52-99d0-3238ea5a4154",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260730",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260429",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260429",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Fleets Point, Willis Way, Poole, Dorset, BH15 3SS, GBRI",
+        "city": "Poole, Dorset",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "Rivencore Global Solutions Limited",
+        "postalCode": "BH15 3SS",
+        "street": "Fleets Point, Willis Way"
+      },
+      {
+        "address": "Fleets Point, Willis Way, Poole, Dorset, BH15 3SS, GBRI",
+        "city": "Poole, Dorset",
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "jurisdictionOfIncorporation": "UNITED KINGDOM",
+        "name": "Rivencore Global Solutions Limited",
+        "postalCode": "BH15 3SS",
+        "street": "Fleets Point, Willis Way"
+      }
+    ],
+    "recordLastUpdated": "20260804",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "IP DOCKETING, Washington, DC 20001, United States",
+        "representativeCorrespondentAddressLines": [
+          "IP DOCKETING",
+          "Washington, DC 20001",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Paul C. Llewellyn Arnold & Porter Kaye Scholer LLP, 601 Massachusetts Ave., NW"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "IP DOCKETING, Washington, DC 20001, United States",
+        "representativeAddressLines": [
+          "IP DOCKETING",
+          "Washington, DC 20001",
+          "United States"
+        ],
+        "representativeName": "Paul C. Llewellyn"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260429",
+        "applicationNumber": "99793843"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202511"
+        },
+        {
+          "firstUsedClass": "11",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202511"
+        },
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202511"
+        },
+        {
+          "firstUsedClass": "37",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202511"
+        },
+        {
+          "firstUsedClass": "40",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "202511"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202511"
+        },
+        {
+          "firstUsedCommerceClass": "11",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202511"
+        },
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202511"
+        },
+        {
+          "firstUsedCommerceClass": "37",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202511"
+        },
+        {
+          "firstUsedCommerceClass": "40",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "202511"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260429",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use",
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260804121231",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "RIVEN CORE",
+      "markVerbalElementText": "RIVENCORE"
+    }
+  },
+  "_uri": "/mark/us/66c06c49-83c1-4a52-99d0-3238ea5a4154",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.729Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

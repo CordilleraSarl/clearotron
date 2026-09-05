@@ -1,0 +1,144 @@
+{
+  "uri": "/mark/cn/9c07a566-c77f-4605-8718-a3e614507650",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9c07a566-c77f-4605-8718-a3e614507650",
+  "applicationNumber": "86077472",
+  "registrationNumber": "86077472",
+  "applicationDate": "2025-06-23",
+  "registrationDate": "2026-01-21",
+  "expiryDate": "2036-01-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-10-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "STEVEN QZ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "USB读卡器;USB闪存盘;安全数码(SD)记忆卡;安全数字(SD)卡读卡器;电池;电池箱;发电用太阳能电池板;固态硬盘;光伏电池;计算机内存条;空白USB卡;空白USB闪存驱动器;能源管理用电气控制设备;太阳能充电电池;太阳能电池;太阳能供电的充电器;外接计算机硬盘驱动器;移动电源(可充电电池);硬盘驱动器",
+      "translation_language": "en",
+      "translation": "USB card reader; USB flash drive; Secure Digital (SD) memory card; Secure Digital (SD) card reader; battery; battery pack; solar panel for power generation; solid-state hard drive; photovoltaic cell; computer memory stick; blank USB card; blank USB flash drive; electrical control equipment for energy management; solar rechargeable battery; solar cell; solar-powered charger; external computer hard drive; mobile power supply (rechargeable battery); hard drive"
+    }
+  ],
+  "owner": "Hunan Chuangpu Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省湘潭市湘乡市经济开发区文昌路7号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hunan Chuangpu Technology Co., Ltd.",
+        "applicantNativeName": "湖南创普开业科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "USB card reader; USB flash drive; Secure Digital (SD) memory card; Secure Digital (SD) card reader; battery; battery pack; solar panel for power generation; solid-state hard drive; photovoltaic cell; computer memory stick; blank USB card; blank USB flash drive; electrical control equipment for energy management; solar rechargeable battery; solar cell; solar-powered charger; external computer hard drive; mobile power supply (rechargeable battery); hard drive",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "USB读卡器;USB闪存盘;安全数码(SD)记忆卡;安全数字(SD)卡读卡器;电池;电池箱;发电用太阳能电池板;固态硬盘;光伏电池;计算机内存条;空白USB卡;空白USB闪存驱动器;能源管理用电气控制设备;太阳能充电电池;太阳能电池;太阳能供电的充电器;外接计算机硬盘驱动器;移动电源(可充电电池);硬盘驱动器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Electrical controlling apparatus and equipments",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "9c07a566-c77f-4605-8718-a3e614507650",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.09.01",
+      "24.09.07"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1956"
+      }
+    ],
+    "recordLastUpdated": "20260317",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "广州本领知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250623",
+        "applicationNumber": "86077472"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360120",
+      "lastPublicationDate": "20251020",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260121",
+        "registrationNumber": "86077472"
+      }
+    },
+    "version": "20260317020525",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "STEVEN QZ"
+    }
+  },
+  "_uri": "/mark/cn/9c07a566-c77f-4605-8718-a3e614507650",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

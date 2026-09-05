@@ -1,0 +1,324 @@
+{
+  "uri": "/mark/us/88126d2f-3d10-42a9-a555-341a7226fca4",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "88126d2f-3d10-42a9-a555-341a7226fca4",
+  "applicationNumber": "98690479",
+  "registrationNumber": "7785192",
+  "applicationDate": "2024-08-09",
+  "registrationDate": "2025-05-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2025-03-18"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIXVIZI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Cases for mobile phones; Electronic numeric displays; Liquid crystal display (LCD) projectors; Memory cards; Mobile phone cases featuring rechargeable batteries; Navigation apparatus for vehicles in the nature of on-board computers; Safety and driving assistant system for mobile vehicles and vessels comprised of electronic proximity sensors and switches, high-resolution cameras, integrated circuits for the purpose of imaging processing, and display monitors; Secure Digital (SD) Memory Cards; Touchscreen monitors; Video display cards",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CHENGDU TAOYU TRADING CO., LTD.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": "Michael Bartholomew",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET, CHENGDU, 610599, CHIN",
+        "applicantAddressCity": "CHENGDU",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantAddressPostalCode": "610599",
+        "applicantAddressStreet": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET",
+        "applicantJurisdictionOfIncorporation": "CHINA",
+        "applicantLegalEntity": "LIMITED COMPANY",
+        "applicantName": "CHENGDU TAOYU TRADING CO., LTD.",
+        "applicantSecondaryAddressUnit": "XINDU STREET, XINDU DISTRICT"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET, CHENGDU, 610599, CHIN",
+            "city": "CHENGDU",
+            "countryCode": "CN",
+            "countryName": "China",
+            "jurisdictionOfIncorporation": "China",
+            "legalEntity": "LIMITED COMPANY",
+            "name": "CHENGDU TAOYU TRADING CO., LTD.",
+            "postalCode": "610599",
+            "secondaryAddressUnit": "XINDU STREET, XINDU DISTRICT",
+            "street": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "China",
+            "legalEntity": "INDIVIDUAL",
+            "name": "LIU, JIE"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "NO.501, FLOOR 5, UNIT 2, BUILDING 3,, NO.222 JUGUANG ROAD, XINDU DISTRICT,, CHENGDU,  610000 CHINA",
+            "addressLines": [
+              "JIE LIU",
+              "NO.501, FLOOR 5, UNIT 2, BUILDING 3,",
+              "NO.222 JUGUANG ROAD, XINDU DISTRICT,",
+              "CHENGDU,  610000 CHINA"
+            ],
+            "name": "JIE LIU"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20250227",
+        "recordedDate": "20250311",
+        "reelFrameNumber": "8776/0371"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Cases for mobile phones; Electronic numeric displays; Liquid crystal display (LCD) projectors; Memory cards; Mobile phone cases featuring rechargeable batteries; Navigation apparatus for vehicles in the nature of on-board computers; Safety and driving assistant system for mobile vehicles and vessels comprised of electronic proximity sensors and switches, high-resolution cameras, integrated circuits for the purpose of imaging processing, and display monitors; Secure Digital (SD) Memory Cards; Touchscreen monitors; Video display cards"
+        }
+      ]
+    },
+    "id": "88126d2f-3d10-42a9-a555-341a7226fca4",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20250506",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250506",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20250319",
+        "descriptionText": "AUTOMATIC UPDATE OF ASSIGNMENT OF OWNERSHIP"
+      },
+      {
+        "date": "20250318",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20250318",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20250312",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20250220",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20250218",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20250203",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20250203",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250203",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20250122",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20240812",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "No.501, Floor 5, Unit 2, Building 3, Chengdu, 610000, CHIN",
+        "city": "Chengdu",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Liu, Jie",
+        "postalCode": "610000",
+        "secondaryAddressUnit": "No.222 Juguang Road, Xindu District,",
+        "street": "No.501, Floor 5, Unit 2, Building 3,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET, CHENGDU, 610599, CHIN",
+        "city": "CHENGDU",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "CHENGDU TAOYU TRADING CO., LTD.",
+        "postalCode": "610599",
+        "secondaryAddressUnit": "XINDU STREET, XINDU DISTRICT",
+        "street": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET"
+      },
+      {
+        "address": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET, CHENGDU, 610599, CHIN",
+        "city": "CHENGDU",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "CHENGDU TAOYU TRADING CO., LTD.",
+        "postalCode": "610599",
+        "secondaryAddressUnit": "XINDU STREET, XINDU DISTRICT",
+        "street": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "No.501, Floor 5, Unit 2, Building 3, Chengdu, 610000, CHIN",
+        "city": "Chengdu",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Liu, Jie",
+        "postalCode": "610000",
+        "secondaryAddressUnit": "No.222 Juguang Road, Xindu District,",
+        "street": "No.501, Floor 5, Unit 2, Building 3,"
+      }
+    ],
+    "postPublicationOwners": [
+      {
+        "address": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET, CHENGDU, 610599, CHIN",
+        "city": "CHENGDU",
+        "countryCode": "CN",
+        "countryName": "China",
+        "jurisdictionOfIncorporation": "CHINA",
+        "legalEntity": "LIMITED COMPANY",
+        "name": "CHENGDU TAOYU TRADING CO., LTD.",
+        "postalCode": "610599",
+        "secondaryAddressUnit": "XINDU STREET, XINDU DISTRICT",
+        "street": "1ST FLOOR, NO. 38, LANE 2, XINXIN STREET"
+      }
+    ],
+    "recordLastUpdated": "20260128",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Highland, UT 84003, United States",
+        "representativeCorrespondentAddressLines": [
+          "Highland, UT 84003",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Michael Bartholomew, 5842 West Timber Ridge Lane"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Highland, UT 84003, United States",
+        "representativeAddressLines": [
+          "Highland, UT 84003",
+          "United States"
+        ],
+        "representativeName": "Michael Bartholomew"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240809",
+        "applicationNumber": "98690479"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20240305"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20240528"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20250506",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20250318"
+      ],
+      "registration": {
+        "registrationDate": "20250506",
+        "registrationNumber": "7785192"
+      }
+    },
+    "version": "20260128194748",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIXVIZI"
+    }
+  },
+  "_uri": "/mark/us/88126d2f-3d10-42a9-a555-341a7226fca4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

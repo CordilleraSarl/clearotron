@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/gb/8846023b-0dda-42e2-8b83-ccdd9f5a6854",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "8846023b-0dda-42e2-8b83-ccdd9f5a6854",
+  "applicationNumber": "3724502",
+  "registrationNumber": "3724502",
+  "applicationDate": "2021-11-23",
+  "registrationDate": "2022-04-01",
+  "expiryDate": "2031-11-23",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "origin CQ origin CQ origin CQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    36,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer hardware; Computer software; Downloadable software; Application software; Downloadable quantum computing software; Downloadable software in the field of finance; Downloadable software in the field of investment; Downloadable software for encrypting and decrypting data; Downloadable computer software for encrypting and decrypting data; Downloadable software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Downloadable computer software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Downloadable software for quantum programming and developing and testing quantum algorithms; Downloadable computer software for quantum programming and developing and testing quantum algorithms; Downloadable software for generating and distributing quantum keys; Downloadable computer software for generating and distributing quantum keys; Downloadable software designed to be deployed on web servers for encrypting and decrypting data; Downloadable computer software designed to be deployed on web servers for encrypting and decrypting data; All of the aforesaid for constructing, analysing and running quantum programs, quantum algorithms, and quantum instruction language, and/or for quantum programming and developing and testing quantum algorithms, and/or for generating and distributing quantum keys.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Investment services; Financial services; Investment services relating to securities; Investment services using machine learning systems to invest automatically in traded securities; Investment services using machine learning systems using deep learning models to predict intraday chart patterns; Investment services in equities, futures and options trading; Supporting automated investment using software; Devising trading strategies using neural network modelling using software; Providing trading signals using software; Services for transacting cryptocurrencies, digital cash, digital cash transfers; Information, consultancy and advisory relating to all of the aforesaid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Quantum computing; Quantum computing services; Consulting services in the field of quantum computing; Software design; Software development; Software implementation; Software maintenance; Providing temporary use of non-downloadable computer software for encrypting and decrypting data; Providing temporary use of nondownloadable computer software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Providing temporary use of non-downloadable computer software for quantum programming and developing and testing quantum algorithms; Providing temporary use of non-downloadable computer software for generating and distributing quantum keys; Software as a service (SAAS); Software as a service (SAAS) services; Software as a service (SAAS) services featuring software for encrypting and decrypting data; Software as a service (SAAS) services featuring software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Software as a service (SAAS) services featuring software for quantum programming and developing and testing quantum algorithms; Software as a service (SAAS) services featuring software for generating and distributing quantum keys; Software services for encrypting and decrypting trading signals, intraday price pattern data, and data used for equities, future and options trading using software; Software services for the development, implementation, support and maintenance of automated investment services; Software development services; Platform as a service (PAAS); Platform as a service (PAAS) services; Platform as a service (PAAS) services featuring software for encrypting and decrypting data; Platform as a service (PAAS) services featuring software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Platform as a service (PAAS) services featuring software for quantum programming and developing and testing quantum algorithms; Platform as a service (PAAS) services featuring software for generating and distributing quantum keys; Software services for devising trading strategies using neural network modelling; Software services for providing trading signals; Scientific research; All of the aforesaid for constructing, analysing and running quantum programs, quantum algorithms, and quantum instruction language, and/or for quantum programming and developing and testing quantum algorithms, and/or for generating and distributing quantum keys.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QUANTINUUM LTD",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Basck Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2nd Floor, Partnership House, Carlisle Place, London SW1P 1BX",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "QUANTINUUM LTD"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "24.17.01"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer hardware; Computer software; Downloadable software; Application software; Downloadable quantum computing software; Downloadable software in the field of finance; Downloadable software in the field of investment; Downloadable software for encrypting and decrypting data; Downloadable computer software for encrypting and decrypting data; Downloadable software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Downloadable computer software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Downloadable software for quantum programming and developing and testing quantum algorithms; Downloadable computer software for quantum programming and developing and testing quantum algorithms; Downloadable software for generating and distributing quantum keys; Downloadable computer software for generating and distributing quantum keys; Downloadable software designed to be deployed on web servers for encrypting and decrypting data; Downloadable computer software designed to be deployed on web servers for encrypting and decrypting data; All of the aforesaid for constructing, analysing and running quantum programs, quantum algorithms, and quantum instruction language, and/or for quantum programming and developing and testing quantum algorithms, and/or for generating and distributing quantum keys."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Investment services; Financial services; Investment services relating to securities; Investment services using machine learning systems to invest automatically in traded securities; Investment services using machine learning systems using deep learning models to predict intraday chart patterns; Investment services in equities, futures and options trading; Supporting automated investment using software; Devising trading strategies using neural network modelling using software; Providing trading signals using software; Services for transacting cryptocurrencies, digital cash, digital cash transfers; Information, consultancy and advisory relating to all of the aforesaid."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Quantum computing; Quantum computing services; Consulting services in the field of quantum computing; Software design; Software development; Software implementation; Software maintenance; Providing temporary use of non-downloadable computer software for encrypting and decrypting data; Providing temporary use of nondownloadable computer software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Providing temporary use of non-downloadable computer software for quantum programming and developing and testing quantum algorithms; Providing temporary use of non-downloadable computer software for generating and distributing quantum keys; Software as a service (SAAS); Software as a service (SAAS) services; Software as a service (SAAS) services featuring software for encrypting and decrypting data; Software as a service (SAAS) services featuring software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Software as a service (SAAS) services featuring software for quantum programming and developing and testing quantum algorithms; Software as a service (SAAS) services featuring software for generating and distributing quantum keys; Software services for encrypting and decrypting trading signals, intraday price pattern data, and data used for equities, future and options trading using software; Software services for the development, implementation, support and maintenance of automated investment services; Software development services; Platform as a service (PAAS); Platform as a service (PAAS) services; Platform as a service (PAAS) services featuring software for encrypting and decrypting data; Platform as a service (PAAS) services featuring software for constructing, analyzing and running quantum programs, quantum algorithms, and quantum instruction language; Platform as a service (PAAS) services featuring software for quantum programming and developing and testing quantum algorithms; Platform as a service (PAAS) services featuring software for generating and distributing quantum keys; Software services for devising trading strategies using neural network modelling; Software services for providing trading signals; Scientific research; All of the aforesaid for constructing, analysing and running quantum programs, quantum algorithms, and quantum instruction language, and/or for quantum programming and developing and testing quantum algorithms, and/or for generating and distributing quantum keys."
+        }
+      ]
+    },
+    "id": "8846023b-0dda-42e2-8b83-ccdd9f5a6854",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.11.00",
+      "27.08.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2021/051"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "9 Hills Rd, Cambridge CB2 1GE",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Basck Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211123",
+        "applicationNumber": "3724502"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311123",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20220401",
+        "registrationNumber": "3724502"
+      }
+    },
+    "version": "20250627221639",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "origin CQ origin CQ origin CQ"
+    }
+  },
+  "_uri": "/mark/gb/8846023b-0dda-42e2-8b83-ccdd9f5a6854",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "uri": "/mark/nz/2c28251e-0eb1-4522-b1c0-bf8b6c7112d0",
+  "provider": "clarivate",
+  "office": "nz",
+  "guid": "2c28251e-0eb1-4522-b1c0-bf8b6c7112d0",
+  "applicationNumber": "674978",
+  "registrationNumber": "674978",
+  "applicationDate": "2003-03-06",
+  "registrationDate": "2003-07-07",
+  "expiryDate": "2029-09-06",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "real estate and property development services in this class including designing and planning real estate subdivisions and developments; advisory and consultancy services in relation to designing and planning real estate subdivisions and developments",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Group Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": [
+    {
+      "priorityCountryCode": "AU",
+      "priorityCountryName": "Australia",
+      "priorityDate": "20020906",
+      "priorityNumber": "926317"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "70 Grosvenor Street, London W1K 3JP",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Group Limited"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "real estate and property development services in this class including designing and planning real estate subdivisions and developments; advisory and consultancy services in relation to designing and planning real estate subdivisions and developments"
+        }
+      ]
+    },
+    "id": "2c28251e-0eb1-4522-b1c0-bf8b6c7112d0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.07.02",
+      "26.01.05",
+      "26.11.03",
+      "26.11.12",
+      "27.05.25",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "AU",
+        "priorityCountryName": "Australia",
+        "priorityDate": "20020906",
+        "priorityNumber": "926317"
+      }
+    ],
+    "recordLastUpdated": "20250626",
+    "registrationOfficeCode": "NZ",
+    "registrationOfficeName": "New Zealand",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Level 23 PO Box A851 Sydney South NSW Sydney 1235",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "FB Rice Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20030306",
+        "applicationNumber": "674978"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290906",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20030707",
+        "registrationNumber": "674978"
+      }
+    },
+    "version": "20250626155107",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR"
+    }
+  },
+  "_uri": "/mark/nz/2c28251e-0eb1-4522-b1c0-bf8b6c7112d0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

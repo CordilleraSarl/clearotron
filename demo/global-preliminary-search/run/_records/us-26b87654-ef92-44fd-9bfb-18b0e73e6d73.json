@@ -1,0 +1,357 @@
+{
+  "uri": "/mark/us/26b87654-ef92-44fd-9bfb-18b0e73e6d73",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "26b87654-ef92-44fd-9bfb-18b0e73e6d73",
+  "applicationNumber": "79345979",
+  "registrationNumber": "7416133",
+  "applicationDate": "2022-05-27",
+  "registrationDate": "2024-06-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2024-04-02"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "WIRBEL- UND BANDSCHEIBENKORREKTUR NACH SCHMIEDECKE",
+  "markTransliteration": null,
+  "markTranslation": "VERTEBRA AND INTERVERTEBRAL DISCS CORRECTION ACCORDING TO SCHMIEDECKE",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": [
+    "\"WIRBEL- UND BANDSCHEIBENKORREKTUR\""
+  ],
+  "niceClasses": [
+    16,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Printed matter, namely, printed books, printed newsletters, printed articles, printed seminar materials, all in the field of back and intervertebral disc treatment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Coaching in the field of back and intervertebral disc treatment; providing instructions in the field of practical exercises; Educational services, namely, classes, seminars, workshops and teaching in the field of back and intervertebral disc treatment; Publication of texts, other than promotional texts; Arranging and conducting of seminars in the field of back and intervertebral disc treatment; Arranging and conducting of workshops in the field of back and intervertebral disc treatment",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "INT. CL. 44 Medical services; Providing health advice; Physiotherapeutic treatments, namely, back and intervertebral disc treatment; Therapeutic and medical care and support, namely, back and intervertebral disc treatment",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Werner Schmiedecke",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Aaron Y. Silverstein",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Lerchenweg 11, GERM",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantAddressStreet": "Lerchenweg 11",
+        "applicantJurisdictionOfIncorporation": "GERMANY",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Werner Schmiedecke",
+        "applicantSecondaryAddressUnit": "84048 Mainburg"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Printed matter, namely, printed books, printed newsletters, printed articles, printed seminar materials, all in the field of back and intervertebral disc treatment"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Coaching in the field of back and intervertebral disc treatment; providing instructions in the field of practical exercises; Educational services, namely, classes, seminars, workshops and teaching in the field of back and intervertebral disc treatment; Publication of texts, other than promotional texts; Arranging and conducting of seminars in the field of back and intervertebral disc treatment; Arranging and conducting of workshops in the field of back and intervertebral disc treatment"
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "INT. CL. 44 Medical services; Providing health advice; Physiotherapeutic treatments, namely, back and intervertebral disc treatment; Therapeutic and medical care and support, namely, back and intervertebral disc treatment"
+        }
+      ]
+    },
+    "id": "26b87654-ef92-44fd-9bfb-18b0e73e6d73",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1674418",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20220728",
+        "protectionGrantedDate": "20240128",
+        "publicationDate": "20220728",
+        "registrationDate": "20220527",
+        "renewalDate": "20320527"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"WIRBEL- UND BANDSCHEIBENKORREKTUR\""
+    ],
+    "markEvents": [
+      {
+        "date": "20241220",
+        "descriptionText": "NEW REPRESENTATIVE AT IB RECEIVED"
+      },
+      {
+        "date": "20241214",
+        "descriptionText": "FINAL DECISION TRANSACTION PROCESSED BY IB"
+      },
+      {
+        "date": "20241123",
+        "descriptionText": "FINAL DISPOSITION NOTICE SENT TO IB"
+      },
+      {
+        "date": "20241123",
+        "descriptionText": "FINAL DISPOSITION PROCESSED"
+      },
+      {
+        "date": "20240918",
+        "descriptionText": "FINAL DISPOSITION NOTICE CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240618",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240618",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20240408",
+        "descriptionText": "NOTIFICATION PROCESSED BY IB"
+      },
+      {
+        "date": "20240402",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20240402",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20240320",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20240320",
+        "descriptionText": "NOTICE OF START OF OPPOSITION PERIOD CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20240313",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20240226",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20240121",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20240103",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20240103",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20231023",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20231022",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20231022",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20230531",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20230508",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20230318",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20230317",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230315",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20220802",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20220729",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20220728",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Lerchenweg 11, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Werner Schmiedecke",
+        "secondaryAddressUnit": "84048 Mainburg",
+        "street": "Lerchenweg 11"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Lerchenweg 11, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Werner Schmiedecke",
+        "secondaryAddressUnit": "84048 Mainburg",
+        "street": "Lerchenweg 11"
+      },
+      {
+        "address": "Lerchenweg 11, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Werner Schmiedecke",
+        "secondaryAddressUnit": "84048 Mainburg",
+        "street": "Lerchenweg 11"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Lerchenweg 11, GERM",
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "jurisdictionOfIncorporation": "GERMANY",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Werner Schmiedecke",
+        "secondaryAddressUnit": "84048 Mainburg",
+        "street": "Lerchenweg 11"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Amesbury, MA 01913, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Amesbury, MA 01913",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Aaron Y. Silverstein Saunders & Silverstein LLP, 14 Cedar Street, Suite 224"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Amesbury, MA 01913, UNITED STATES",
+        "representativeAddressLines": [
+          "Amesbury, MA 01913",
+          "UNITED STATES"
+        ],
+        "representativeName": "Aaron Y. Silverstein"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220527",
+        "applicationNumber": "79345979"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20240618",
+        "markOfficialStatusEvents": [
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20240402"
+      ],
+      "registration": {
+        "registrationDate": "20240618",
+        "registrationNumber": "7416133"
+      }
+    },
+    "version": "20260110054113",
+    "wordMarkSpecification": {
+      "markTranslation": "VERTEBRA AND INTERVERTEBRAL DISCS CORRECTION ACCORDING TO SCHMIEDECKE",
+      "markTranslationDescription": "The English translation of \"WIRBEL- UND BANDSCHEIBENKORREKTUR NACH SCHMIEDECKE\" in the mark is \"vertebra and intervertebral discs correction according to Schmiedecke\".",
+      "markVerbalElementCrossReferences": "WIRBEL UND BANDSCHEIBENKORREKTUR NACH SCHMIEDECKE",
+      "markVerbalElementText": "WIRBEL- UND BANDSCHEIBENKORREKTUR NACH SCHMIEDECKE"
+    }
+  },
+  "_uri": "/mark/us/26b87654-ef92-44fd-9bfb-18b0e73e6d73",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:55.070Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

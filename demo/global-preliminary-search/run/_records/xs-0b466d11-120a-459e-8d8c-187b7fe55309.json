@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/xs/0b466d11-120a-459e-8d8c-187b7fe55309",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "0b466d11-120a-459e-8d8c-187b7fe55309",
+  "applicationNumber": null,
+  "registrationNumber": "1005018",
+  "applicationDate": null,
+  "registrationDate": "1993-03-17",
+  "expiryDate": "2001-06-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising and business/miscellaneous",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Advertising and business/miscellaneous",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QUALITY REVIEWS, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PO BOX 755, FALLING WATERS, WV, 25419",
+        "applicantAddressCity": "FALLING WATERS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "25419",
+        "applicantAddressStateName": "WEST VIRGINIA",
+        "applicantAddressStreet": "PO BOX 755",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "QUALITY REVIEWS, INC."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising and business/miscellaneous"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising and business/miscellaneous"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "101",
+          "natGoodsServicesDescription": "Advertising and business/miscellaneous"
+        }
+      ]
+    },
+    "id": "0b466d11-120a-459e-8d8c-187b7fe55309",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADEMARK",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "THE MARK CONSISTS OF A DESIGN OF RECTANGULAR BOX CONTAINING CURVED LINED PAPER WITH Q SUPERIMPOSED STAGGERED R AND I BESIDE",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "PO BOX 755, FALLING WATERS, WV, 25419",
+        "city": "FALLING WATERS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "QUALITY REVIEWS, INC.",
+        "postalCode": "25419",
+        "stateName": "WEST VIRGINIA",
+        "street": "PO BOX 755"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20010630",
+      "firstUsed": [
+        {
+          "firstUsedDate": "1989"
+        }
+      ],
+      "firstUsedAnywhereDate": "1989",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "19930317",
+        "registrationNumber": "1005018"
+      }
+    },
+    "usStateOfficeCode": "WV",
+    "usStateOfficeName": "WEST VIRGINIA",
+    "version": "20240320135956",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/xs/0b466d11-120a-459e-8d8c-187b7fe55309",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

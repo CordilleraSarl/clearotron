@@ -1,0 +1,285 @@
+{
+  "uri": "/mark/us/564873bd-5444-40a8-b2d4-b50f550f054e",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "564873bd-5444-40a8-b2d4-b50f550f054e",
+  "applicationNumber": "86400064",
+  "registrationNumber": null,
+  "applicationDate": "2014-09-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2017-07-06",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "Q.ORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of a web-based software application for collecting, managing, and analyzing healthcare data",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Healthcare Data Solutions, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "23464 Glenridge Drive, Newhall, CA, 91321",
+        "applicantAddressCity": "Newhall",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "91321",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "23464 Glenridge Drive",
+        "applicantJurisdictionOfIncorporation": "FLORIDA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Healthcare Data Solutions, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of a web-based software application for collecting, managing, and analyzing healthcare data"
+        }
+      ]
+    },
+    "id": "564873bd-5444-40a8-b2d4-b50f550f054e",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20170802",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20170802",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20170104",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20170104",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20170104",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20161222",
+        "descriptionText": "SUSPENSION CHECKED - TO ATTORNEY FOR ACTION"
+      },
+      {
+        "date": "20160622",
+        "descriptionText": "REPORT COMPLETED SUSPENSION CHECK CASE STILL SUSPENDED"
+      },
+      {
+        "date": "20151216",
+        "descriptionText": "REPORT COMPLETED SUSPENSION CHECK CASE STILL SUSPENDED"
+      },
+      {
+        "date": "20150603",
+        "descriptionText": "REPORT COMPLETED SUSPENSION CHECK CASE STILL SUSPENDED"
+      },
+      {
+        "date": "20150601",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20141107",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20141106",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140926",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20140923",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "23464 Glenridge Drive, Newhall, CA, 91321",
+        "city": "Newhall",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Healthcare Data Solutions, LLC",
+        "postalCode": "91321",
+        "stateName": "CALIFORNIA",
+        "street": "23464 Glenridge Drive"
+      },
+      {
+        "address": "23464 Glenridge Drive, Newhall, CA, 91321",
+        "city": "Newhall",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "FLORIDA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Healthcare Data Solutions, LLC",
+        "postalCode": "91321",
+        "stateName": "CALIFORNIA",
+        "street": "23464 Glenridge Drive"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "86029520",
+            "markCurrentStatus": "Registered",
+            "markVerbalElementText": "ORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "86029520",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "ORE",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "86029520",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "ORE",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEWHALL, CA 91321-3955, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEWHALL, CA 91321-3955",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "HEALTHCARE DATA SOLUTIONS, LLC HEALTHCARE DATA SOLUTIONS, LLC, 23464 GLENRIDGE DR"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEWHALL, CA 91321-3955, UNITED STATES",
+        "representativeAddressLines": [
+          "NEWHALL, CA 91321-3955",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20170706",
+      "active": false,
+      "application": {
+        "applicationDate": "20140919",
+        "applicationNumber": "86400064"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20140917"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20140918"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20170802",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260110231209",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "Q ORE",
+      "markVerbalElementText": "Q.ORE"
+    }
+  },
+  "_uri": "/mark/us/564873bd-5444-40a8-b2d4-b50f550f054e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:55.423Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

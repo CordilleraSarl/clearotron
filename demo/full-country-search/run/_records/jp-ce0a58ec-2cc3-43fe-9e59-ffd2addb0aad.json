@@ -1,0 +1,182 @@
+{
+  "uri": "/mark/jp/ce0a58ec-2cc3-43fe-9e59-ffd2addb0aad",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "ce0a58ec-2cc3-43fe-9e59-ffd2addb0aad",
+  "applicationNumber": "2023-001918",
+  "registrationNumber": "6748089",
+  "applicationDate": "2023-01-11",
+  "registrationDate": "2023-10-25",
+  "expiryDate": "2033-10-25",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-11-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＡＬＩＧＮ　ＤＩＧＩＴＡＬ　ＰＬＡＴＦＯＲＭ",
+  "markTransliteration": "ARAINDEJITARUPURATTOFOOMU",
+  "markTranslation": "ALIGN DIGITAL PLATFORM",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "歯科関連商品の販売に関する情報の提供，歯科及び矯正歯科医療の開発及び管理に関連する事業に関する指導及び助言並びにこれらに関する情報の提供，経営の診断又は経営に関する助言",
+      "translation_language": "en",
+      "translation": "Provision of information regarding sales of dental products, guidance and advice regarding businesses related to the development and management of dental and orthodontic care, and provision of information related to these, management diagnosis or management advice."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "矯正歯科及び歯科治療サービス用のアプリケーションサービスプロバイダー（ＡＳＰ）によるコンピュータソフトウェアの提供，医師・患者及び潜在患者の間のインスタントメッセージ通信用のアプリケーションソフトウェアの提供（ＳａａＳ），歯科及び矯正歯科用のオンラインによるダウンロードが不可能なアプリケーションソフトウェア及びコンピュータソフトウェアの提供，歯科治療・歯科に関する設計又は歯科に関するサービス用のオンラインによるダウンロードが不可能なアプリケーションソフトウェア及びコンピュータソフトウェアの提供，歯科用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，歯科及び矯正歯科治療の計画立案用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，コンピュータソフトウェアの設計，注文によるコンピュータソフトウェアの設計，コンピュータソフトウェアの設計・作成・保守及び提供に関する助言，歯科治療の計画立案の目的のコンピュータアプリケーションをホストするための、情報管理の分野におけるアプリケーションソフトウェア及びコンピュータソフトウェアの設計・作成又は保守，歯科治療の計画立案の目的のコンピュータアプリケーションをホストするための、情報管理の分野におけるアプリケーションソフトウェア及びコンピュータソフトウェアの提供，歯科及び矯正歯科医療の開発及び管理用のアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Provision of computer software by Application Service Providers (ASP) for orthodontics and dental treatment services, Provision of application software for instant message communication between doctors and patients and potential patients (SaaS), Online for dentistry and orthodontics Provision of non-downloadable application software and computer software, provision of non-downloadable online application software and computer software for dental treatment, dental design or dental services, temporary web-based software applications for dentistry provide temporary use of web-based software applications for dental and orthodontic treatment planning; design computer software; design computer software to order; design, create, maintain computer software; Application software in the field of information management and the design, creation or maintenance of computer software, for hosting computer applications for the purpose of planning dental treatment, for hosting computer applications for the purpose of planning dental treatment; Provision of application software and computer software in the field of information management, provision of application software for the development and management of dental and orthodontic care (SaaS), design, creation, or maintenance of computer programs, computer programs offer of"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": "医療及び矯正歯科医療，矯正歯科医療及び歯科医療，歯科・矯正歯科・歯周治療・歯内治療及び小児歯科に関する歯科治療，患者の歯列矯正治療計画を作成・提示する歯科医療，歯科医業及び矯正歯科医業に関する指導・助言，矯正歯科・歯内治療・小児歯科・歯周治療及び修復歯科治療に関する指導及び助言（インターネット又はエクストラネットを介してオンラインで提供されるものを含む。），医療情報の提供",
+      "translation_language": "en",
+      "translation": "Medical and orthodontic care, orthodontic care and dental care, dental care related to dentistry, orthodontics, periodontal treatment, endodontic treatment, and pediatric dentistry, dental care that creates and presents orthodontic treatment plans for patients, dental work, and Guidance and advice regarding orthodontics, guidance and advice regarding orthodontics, endodontics, pediatric dentistry, periodontal treatment, and restorative dentistry (including those provided online via the Internet or extranet), medical information offer of"
+    }
+  ],
+  "owner": "ALIGN  TECHNOLOGY , INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "YAMAMOTO HIDESAKU",
+  "priorities": [
+    {
+      "priorityDate": "20220908"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "ALIGN  TECHNOLOGY , INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "アライン　テクノロジー，　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of information regarding sales of dental products, guidance and advice regarding businesses related to the development and management of dental and orthodontic care, and provision of information related to these, management diagnosis or management advice.",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "歯科関連商品の販売に関する情報の提供，歯科及び矯正歯科医療の開発及び管理に関連する事業に関する指導及び助言並びにこれらに関する情報の提供，経営の診断又は経営に関する助言"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of computer software by Application Service Providers (ASP) for orthodontics and dental treatment services, Provision of application software for instant message communication between doctors and patients and potential patients (SaaS), Online for dentistry and orthodontics Provision of non-downloadable application software and computer software, provision of non-downloadable online application software and computer software for dental treatment, dental design or dental services, temporary web-based software applications for dentistry provide temporary use of web-based software applications for dental and orthodontic treatment planning; design computer software; design computer software to order; design, create, maintain computer software; Application software in the field of information management and the design, creation or maintenance of computer software, for hosting computer applications for the purpose of planning dental treatment, for hosting computer applications for the purpose of planning dental treatment; Provision of application software and computer software in the field of information management, provision of application software for the development and management of dental and orthodontic care (SaaS), design, creation, or maintenance of computer programs, computer programs offer of",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "矯正歯科及び歯科治療サービス用のアプリケーションサービスプロバイダー（ＡＳＰ）によるコンピュータソフトウェアの提供，医師・患者及び潜在患者の間のインスタントメッセージ通信用のアプリケーションソフトウェアの提供（ＳａａＳ），歯科及び矯正歯科用のオンラインによるダウンロードが不可能なアプリケーションソフトウェア及びコンピュータソフトウェアの提供，歯科治療・歯科に関する設計又は歯科に関するサービス用のオンラインによるダウンロードが不可能なアプリケーションソフトウェア及びコンピュータソフトウェアの提供，歯科用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，歯科及び矯正歯科治療の計画立案用のウェブベースのソフトウェアアプリケーションの一時的な使用の提供，コンピュータソフトウェアの設計，注文によるコンピュータソフトウェアの設計，コンピュータソフトウェアの設計・作成・保守及び提供に関する助言，歯科治療の計画立案の目的のコンピュータアプリケーションをホストするための、情報管理の分野におけるアプリケーションソフトウェア及びコンピュータソフトウェアの設計・作成又は保守，歯科治療の計画立案の目的のコンピュータアプリケーションをホストするための、情報管理の分野におけるアプリケーションソフトウェア及びコンピュータソフトウェアの提供，歯科及び矯正歯科医療の開発及び管理用のアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Medical and orthodontic care, orthodontic care and dental care, dental care related to dentistry, orthodontics, periodontal treatment, endodontic treatment, and pediatric dentistry, dental care that creates and presents orthodontic treatment plans for patients, dental work, and Guidance and advice regarding orthodontics, guidance and advice regarding orthodontics, endodontics, pediatric dentistry, periodontal treatment, and restorative dentistry (including those provided online via the Internet or extranet), medical information offer of",
+          "intClassNumber": "44",
+          "intGoodsServicesDescription": "医療及び矯正歯科医療，矯正歯科医療及び歯科医療，歯科・矯正歯科・歯周治療・歯内治療及び小児歯科に関する歯科治療，患者の歯列矯正治療計画を作成・提示する歯科医療，歯科医業及び矯正歯科医業に関する指導・助言，矯正歯科・歯内治療・小児歯科・歯周治療及び修復歯科治療に関する指導及び助言（インターネット又はエクストラネットを介してオンラインで提供されるものを含む。），医療情報の提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42V02",
+          "natGoodsServicesDescription": "Medical practice; Providing medical information; Physical examination; Dentistry services; Preparation and dispensing of medications"
+        }
+      ]
+    },
+    "id": "ce0a58ec-2cc3-43fe-9e59-ffd2addb0aad",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20220908"
+      }
+    ],
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230111",
+        "applicationNumber": "2023-001918"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20331025",
+      "lastPublicationDate": "20231102",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20231025",
+        "registrationNumber": "6748089"
+      }
+    },
+    "version": "20240320153104",
+    "wordMarkSpecification": {
+      "markTranslation": "ALIGN DIGITAL PLATFORM",
+      "markTransliteration": "ARAINDEJITARUPURATTOFOOMU",
+      "markVerbalElementText": "ＡＬＩＧＮ　ＤＩＧＩＴＡＬ　ＰＬＡＴＦＯＲＭ"
+    }
+  },
+  "_uri": "/mark/jp/ce0a58ec-2cc3-43fe-9e59-ffd2addb0aad",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:37.739Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/ec/a9856be2-028f-4b7b-b655-0b57a5636a3f",
+  "provider": "clarivate",
+  "office": "ec",
+  "guid": "a9856be2-028f-4b7b-b655-0b57a5636a3f",
+  "applicationNumber": "97744",
+  "registrationNumber": "527",
+  "applicationDate": "1999-08-04",
+  "registrationDate": "2000-10-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENEZOLANA DE COBERTURAS C A VENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "Actividades comeciales lícitas permitidas por la ley, especialmente comercialización de laminas para techos.",
+      "translation_language": "en",
+      "translation": "comeciales lawful activities permitted by law, especially marketing of roofing sheets."
+    }
+  ],
+  "owner": "VENEZOLANA DE COBERTURAS C. A. VENCOR",
+  "ownerNative": null,
+  "ownerCountry": "EC",
+  "representative": "MARIA CRISTINA DAVILA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CARABOBO, VENEZUELA",
+        "applicantAddressCountryCode": "EC",
+        "applicantAddressCountryName": "Ecuador",
+        "applicantName": "VENEZOLANA DE COBERTURAS C. A. VENCOR"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "comeciales lawful activities permitted by law, especially marketing of roofing sheets.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Actividades comeciales lícitas permitidas por la ley, especialmente comercialización de laminas para techos."
+        }
+      ]
+    },
+    "id": "a9856be2-028f-4b7b-b655-0b57a5636a3f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "EC",
+    "registrationOfficeName": "Ecuador",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "EC",
+        "representativeAddressCountryName": "Ecuador",
+        "representativeName": "MARIA CRISTINA DAVILA"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990804",
+        "applicationNumber": "97744"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20001019",
+        "registrationNumber": "527"
+      }
+    },
+    "version": "20240320141252",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENEZOLANA DE COBERTURAS C A VENCOR"
+    }
+  },
+  "_uri": "/mark/ec/a9856be2-028f-4b7b-b655-0b57a5636a3f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.742Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

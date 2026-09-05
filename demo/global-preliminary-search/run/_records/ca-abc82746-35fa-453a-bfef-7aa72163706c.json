@@ -1,0 +1,251 @@
+{
+  "uri": "/mark/ca/abc82746-35fa-453a-bfef-7aa72163706c",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "abc82746-35fa-453a-bfef-7aa72163706c",
+  "applicationNumber": "1596193",
+  "registrationNumber": "TMA861485",
+  "applicationDate": "2012-09-25",
+  "registrationDate": "2013-09-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-05-29"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Dori",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "DESIGN MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    9,
+    14,
+    16,
+    18,
+    20,
+    21,
+    25
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        9,
+        14,
+        16,
+        18,
+        20,
+        21,
+        25
+      ],
+      "language": "en",
+      "description": "(1) Men's and women's fine jewellery, namely necklaces, bracelets, rings, earrings, brooches and body jewellery, made from 14K gold, 18K gold, 24K gold, platinum, rodium, sterling silver, precious gems, semi-precious gems, diamonds and coloured diamonds \n(2) Men's and women's fashion jewellery, namely necklaces, bracelets, rings, earrings, brooches and body jewellery, made from base metal and alloy, base metal and alloy with plating, plastic, enamel, resin, acrylic, fibers, crystal and cubic zirconia \n(3) Men's and women's accessories, namely key chains, key rings, lockets, charms, luggage tags, body jewellery, wallets, cuff links, and tie clips, scarves, hats and gloves \n(4) Gift items, namely vases, candle holders, picture frames, jewellery boxes and cases; \n(5) Purses, handbags, clutches, satchels, metal purses and travel bags \n(6) Men's and women's business attire, namely briefcases, folios, laptop cases, pens, jewelled pens, business card holders \n(7) Men's and women's watches namely pocket watches, wrist watches, fine jewellery watches and fashion watches.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "DORIAN INC.",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "BENNETT JONES LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "28 Bridges Dr, Langdon, ALBERTA, T0J1X3",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "28 Bridges Dr",
+          "Langdon",
+          "ALBERTA"
+        ],
+        "applicantAddressPostalCode": "T0J1X3",
+        "applicantName": "DORIAN INC."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since January 01, 2008 on wares marked (1)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "footNotes": [
+      "Owner Address Change / Changement d'adresse du propriétaire",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 15 janv/Jan 2026"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "06,09,14,16,18,20,21,25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Men's and women's fine jewellery, namely necklaces, bracelets, rings, earrings, brooches and body jewellery, made from 14K gold, 18K gold, 24K gold, platinum, rodium, sterling silver, precious gems, semi-precious gems, diamonds and coloured diamonds \n(2) Men's and women's fashion jewellery, namely necklaces, bracelets, rings, earrings, brooches and body jewellery, made from base metal and alloy, base metal and alloy with plating, plastic, enamel, resin, acrylic, fibers, crystal and cubic zirconia \n(3) Men's and women's accessories, namely key chains, key rings, lockets, charms, luggage tags, body jewellery, wallets, cuff links, and tie clips, scarves, hats and gloves \n(4) Gift items, namely vases, candle holders, picture frames, jewellery boxes and cases; \n(5) Purses, handbags, clutches, satchels, metal purses and travel bags \n(6) Men's and women's business attire, namely briefcases, folios, laptop cases, pens, jewelled pens, business card holders \n(7) Men's and women's watches namely pocket watches, wrist watches, fine jewellery watches and fashion watches."
+        }
+      ]
+    },
+    "id": "abc82746-35fa-453a-bfef-7aa72163706c",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260115",
+        "descriptionText": "Amendment to Registration",
+        "information": "Address/address"
+      },
+      {
+        "date": "20260115",
+        "descriptionText": "Agent changed",
+        "information": "From/De: To/A: 9861"
+      },
+      {
+        "date": "20130930",
+        "descriptionText": "Registered",
+        "responseDate": "20280930"
+      },
+      {
+        "date": "20130913",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20140313"
+      },
+      {
+        "date": "20130913",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20130529",
+        "descriptionText": "Advertised",
+        "information": "Vol.60 Issue 3057"
+      },
+      {
+        "date": "20130523",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20130405",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20130503"
+      },
+      {
+        "date": "20130405",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20121001",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20120928",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20120925",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "DESIGN MARK",
+    "markImagesAvailable": true,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "28 Bridges Dr, Langdon, ALBERTA, T0J1X3",
+        "addressLines": [
+          "28 Bridges Dr",
+          "Langdon",
+          "ALBERTA",
+          "T0J1X3"
+        ],
+        "countryName": "Canada",
+        "name": "DORIAN INC.",
+        "postalCode": "T0J1X3"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3057",
+        "publicationVolume": "60"
+      }
+    ],
+    "recordLastUpdated": "20260121",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "BENNETT JONES LLP",
+          "4500 BANKERS HALL EAST",
+          "855 - 2ND STREET S.W.",
+          "CALGARY",
+          "ALBERTA T2P4K7"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "BENNETT JONES LLP",
+        "representativeReferenceNumber": "100750-1"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20130913"
+      ],
+      "application": {
+        "applicationDate": "20120925",
+        "applicationNumber": "1596193"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20080101",
+          "firstUsedText": "Used in CANADA since January 01, 2008 on wares marked (1)"
+        }
+      ],
+      "formalisationDate": "20121001",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20280930",
+      "publicationDate": [
+        "20130529"
+      ],
+      "registration": {
+        "registrationDate": "20130930",
+        "registrationNumber": "TMA861485"
+      }
+    },
+    "subjectHeadings": [
+      "DORI"
+    ],
+    "version": "20260121090107",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Dori",
+      "markVerbalElementTextFormal": "Dori & Design"
+    }
+  },
+  "_uri": "/mark/ca/abc82746-35fa-453a-bfef-7aa72163706c",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.998Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

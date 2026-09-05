@@ -1,0 +1,142 @@
+{
+  "uri": "/mark/xs/da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+  "applicationNumber": null,
+  "registrationNumber": "2007-000541196",
+  "applicationDate": null,
+  "registrationDate": "2007-07-26",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "S W WYOMING VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "EVANSTON CLINIC CORP.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "196 ARROWHEAD DR STE 9, EVANSTON, WY, 82930",
+        "applicantAddressCity": "EVANSTON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "82930",
+        "applicantAddressStateName": "WYOMING",
+        "applicantAddressStreet": "196 ARROWHEAD DR STE 9",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "EVANSTON CLINIC CORP."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "196 ARROWHEAD DR STE 9, EVANSTON, WY, 82930",
+        "city": "EVANSTON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "EVANSTON CLINIC CORP.",
+        "postalCode": "82930",
+        "stateName": "WYOMING",
+        "street": "196 ARROWHEAD DR STE 9"
+      }
+    ],
+    "recordLastUpdated": "20260626",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20070726",
+        "registrationNumber": "2007-000541196"
+      }
+    },
+    "usStateOfficeCode": "WY",
+    "usStateOfficeName": "WYOMING",
+    "version": "20260626152244",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "SW WYOMING VEIN CARE",
+      "markVerbalElementText": "S W WYOMING VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

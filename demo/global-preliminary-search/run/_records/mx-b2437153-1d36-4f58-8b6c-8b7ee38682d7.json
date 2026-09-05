@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/mx/b2437153-1d36-4f58-8b6c-8b7ee38682d7",
+  "provider": "clarivate",
+  "office": "mx",
+  "guid": "b2437153-1d36-4f58-8b6c-8b7ee38682d7",
+  "applicationNumber": "3395899",
+  "registrationNumber": "2941022",
+  "applicationDate": "2025-06-05",
+  "registrationDate": "2025-10-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software descargable para dispositivos móviles que permite el control de accesos físicos mediante tecnologías de identificación como códigos qr, nfc, rfid, tarjetas digitales o contraseñas electrónicas.",
+      "translation_language": "en",
+      "translation": "DOWNLOADABLE SOFTWARE FOR MOBILE DEVICES THAT ENABLES PHYSICAL ACCESS CONTROL USING IDENTIFICATION TECHNOLOGIES SUCH AS QR CODES, NFC, RFID, DIGITAL CARDS, OR ELECTRONIC PASSWORDS."
+    }
+  ],
+  "owner": "JULIO CESAR SALAZAR VILLA",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "JULIO CESAR SALAZAR VILLA",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PASEOS DEL REMANSO NUM. EXT. 1889, ALCAZAR DEL COUNTRY, AHOME, SINALOA 81278",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantName": "JULIO CESAR SALAZAR VILLA"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DOWNLOADABLE SOFTWARE FOR MOBILE DEVICES THAT ENABLES PHYSICAL ACCESS CONTROL USING IDENTIFICATION TECHNOLOGIES SUCH AS QR CODES, NFC, RFID, DIGITAL CARDS, OR ELECTRONIC PASSWORDS.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software descargable para dispositivos móviles que permite el control de accesos físicos mediante tecnologías de identificación como códigos qr, nfc, rfid, tarjetas digitales o contraseñas electrónicas."
+        }
+      ]
+    },
+    "id": "b2437153-1d36-4f58-8b6c-8b7ee38682d7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "55.00.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1103R1",
+        "publicationYear": "2025"
+      }
+    ],
+    "recordLastUpdated": "20251106",
+    "registrationOfficeCode": "MX",
+    "registrationOfficeName": "Mexico",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "VENUSTIANO CARRANZA NUM. EXT. 348, CENTRO, AHOME, SINALOA 81200, MEXICO"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "VENUSTIANO CARRANZA NUM. EXT. 348, CENTRO, AHOME, SINALOA 81200, MEXICO",
+        "representativeName": "JULIO CESAR SALAZAR VILLA"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250605",
+        "applicationNumber": "3395899"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20251024",
+        "registrationNumber": "2941022"
+      }
+    },
+    "version": "20251106020151",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RORI"
+    }
+  },
+  "_uri": "/mark/mx/b2437153-1d36-4f58-8b6c-8b7ee38682d7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:43.692Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

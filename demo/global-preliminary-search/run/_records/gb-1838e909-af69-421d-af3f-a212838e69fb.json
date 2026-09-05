@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/gb/1838e909-af69-421d-af3f-a212838e69fb",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "1838e909-af69-421d-af3f-a212838e69fb",
+  "applicationNumber": "3588996",
+  "registrationNumber": "3588996",
+  "applicationDate": "2021-02-02",
+  "registrationDate": "2021-08-27",
+  "expiryDate": "2031-02-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR TECHNOLOGY GROSVENOR TECHNOLOGY GROSVENOR TECHNOLOGY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Computer hardware and software for use in recording and managing employee time and attendance data; time and attendance clocks; time and attendance data-entry and display terminals; computer hardware and software for access control, namely, for controlling door and gate access in buildings and in outdoor sites; computer hardware and software for data collection, namely, electronic card and tag readers and software for decoding and compiling data from electronic cards and tags, biometric readers and software for decoding and compiling biometric data, and radio frequency identification (RFID) tag readers and software for decoding and compiling data from RFID tags; data collection systems comprising computer hardware and software for collecting personnel time and attendance data and building and outdoor site access control data; computer software for use in the field of asset management and tagging systems, namely, for inventory monitoring and for tracking radio frequency identification (RFID) tags; asset tagging and asset management apparatus, namely, radio frequency identification (RFID) tags and RFID readers; electronic card readers including proximity card readers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Software as a service (SaaS) featuring software for human capital management, time and attendance functions, security and inventory monitoring and tracking; design and development of computer software for human capital management, time and attendance functions, security and inventory monitoring and tracking; remote monitoring of computer systems by remote access, for human capital management, time and attendance functions, security and inventory monitoring and tracking.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Technology Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Reddie & Grose LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit S, The Fulcrum Centre, Vantage Way, Mannings Heath, Poole BH12 4NU, Dorset",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Grosvenor Technology Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.05.25",
+      "26.05.08",
+      "26.05.12"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer hardware and software for use in recording and managing employee time and attendance data; time and attendance clocks; time and attendance data-entry and display terminals; computer hardware and software for access control, namely, for controlling door and gate access in buildings and in outdoor sites; computer hardware and software for data collection, namely, electronic card and tag readers and software for decoding and compiling data from electronic cards and tags, biometric readers and software for decoding and compiling biometric data, and radio frequency identification (RFID) tag readers and software for decoding and compiling data from RFID tags; data collection systems comprising computer hardware and software for collecting personnel time and attendance data and building and outdoor site access control data; computer software for use in the field of asset management and tagging systems, namely, for inventory monitoring and for tracking radio frequency identification (RFID) tags; asset tagging and asset management apparatus, namely, radio frequency identification (RFID) tags and RFID readers; electronic card readers including proximity card readers."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software as a service (SaaS) featuring software for human capital management, time and attendance functions, security and inventory monitoring and tracking; design and development of computer software for human capital management, time and attendance functions, security and inventory monitoring and tracking; remote monitoring of computer systems by remote access, for human capital management, time and attendance functions, security and inventory monitoring and tracking."
+        }
+      ]
+    },
+    "id": "1838e909-af69-421d-af3f-a212838e69fb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.07.15"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2021/025"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The White Chapel Building, 10 Whitechapel High Street, London E1 8QS",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Reddie & Grose LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210202",
+        "applicationNumber": "3588996"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310202",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210827",
+        "registrationNumber": "3588996"
+      }
+    },
+    "version": "20250627201610",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR TECHNOLOGY GROSVENOR TECHNOLOGY GROSVENOR TECHNOLOGY"
+    }
+  },
+  "_uri": "/mark/gb/1838e909-af69-421d-af3f-a212838e69fb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

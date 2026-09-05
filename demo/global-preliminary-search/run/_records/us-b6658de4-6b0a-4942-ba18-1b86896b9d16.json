@@ -1,0 +1,307 @@
+{
+  "uri": "/mark/us/b6658de4-6b0a-4942-ba18-1b86896b9d16",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "b6658de4-6b0a-4942-ba18-1b86896b9d16",
+  "applicationNumber": "90648488",
+  "registrationNumber": "6842452",
+  "applicationDate": "2021-04-15",
+  "registrationDate": "2022-09-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2022-06-28"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable software in the nature of a mobile application to enable enterprise customers to review, access, order, manage and maintain grocery inventory for purposes of efficient purchasing of, and distribution and access to food supply and food inventory",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Providing temporary use of non-downloadable software to enable enterprise customers to review, access, order, manage and maintain grocery inventory for purposes of efficient purchasing of, and distribution and access to food supply and food inventory",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Vori, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Jessica L. Rothstein",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "311 Wisteria Drive, East Palo Alto, CA, 94303",
+        "applicantAddressCity": "East Palo Alto",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "94303",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "311 Wisteria Drive",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Vori, Inc."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable software in the nature of a mobile application to enable enterprise customers to review, access, order, manage and maintain grocery inventory for purposes of efficient purchasing of, and distribution and access to food supply and food inventory"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Providing temporary use of non-downloadable software to enable enterprise customers to review, access, order, manage and maintain grocery inventory for purposes of efficient purchasing of, and distribution and access to food supply and food inventory"
+        }
+      ]
+    },
+    "id": "b6658de4-6b0a-4942-ba18-1b86896b9d16",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20220913",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20220913",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20220628",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20220628",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20220608",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20220525",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20220525",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20220525",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20220525",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20220525",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20220412",
+        "descriptionText": "PREVIOUS ALLOWANCE COUNT WITHDRAWN"
+      },
+      {
+        "date": "20211221",
+        "descriptionText": "WITHDRAWN FROM PUB - OG REVIEW QUERY"
+      },
+      {
+        "date": "20211207",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20211207",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20210723",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20210419",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "311 Wisteria Drive, East Palo Alto, CA, 94303",
+        "city": "East Palo Alto",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vori, Inc.",
+        "postalCode": "94303",
+        "stateName": "CALIFORNIA",
+        "street": "311 Wisteria Drive"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "311 Wisteria Drive, East Palo Alto, CA, 94303",
+        "city": "East Palo Alto",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vori, Inc.",
+        "postalCode": "94303",
+        "stateName": "CALIFORNIA",
+        "street": "311 Wisteria Drive"
+      },
+      {
+        "address": "311 Wisteria Drive, East Palo Alto, CA, 94303",
+        "city": "East Palo Alto",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vori, Inc.",
+        "postalCode": "94303",
+        "stateName": "CALIFORNIA",
+        "street": "311 Wisteria Drive"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "311 Wisteria Drive, East Palo Alto, CA, 94303",
+        "city": "East Palo Alto",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Vori, Inc.",
+        "postalCode": "94303",
+        "stateName": "CALIFORNIA",
+        "street": "311 Wisteria Drive"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "NEW YORK, NY 10018, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "NEW YORK, NY 10018",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JESSICA L. ROTHSTEIN GOODWIN PROCTER LLP, 620 EIGHTH AVENUE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "NEW YORK, NY 10018, UNITED STATES",
+        "representativeAddressLines": [
+          "NEW YORK, NY 10018",
+          "UNITED STATES"
+        ],
+        "representativeName": "Jessica L. Rothstein"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210415",
+        "applicationNumber": "90648488"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "201908"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "201908"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "201908"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "201908"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20220913",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20220628"
+      ],
+      "registration": {
+        "registrationDate": "20220913",
+        "registrationNumber": "6842452"
+      },
+      "withdrawalDate": [
+        "20211221"
+      ]
+    },
+    "version": "20260113075502",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VORI"
+    }
+  },
+  "_uri": "/mark/us/b6658de4-6b0a-4942-ba18-1b86896b9d16",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:11.871Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

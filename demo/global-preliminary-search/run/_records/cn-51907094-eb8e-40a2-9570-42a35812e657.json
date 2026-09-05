@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/51907094-eb8e-40a2-9570-42a35812e657",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "51907094-eb8e-40a2-9570-42a35812e657",
+  "applicationNumber": "19392478",
+  "registrationNumber": "19392478",
+  "applicationDate": "2016-03-23",
+  "registrationDate": "2017-04-28",
+  "expiryDate": "2037-04-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "七叔",
+  "markTransliteration": "UNCLESEVEN qi shu",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "眼镜;太阳镜;夹鼻眼镜;隐形眼镜;眼镜框;眼镜架;眼镜片;擦眼镜布;眼镜盒;眼镜链",
+      "translation_language": "en",
+      "translation": "glasses; sunglasses; pinch glasses; contact lenses; glasses frames; glasses frames; glasses; wipe glasses; glasses boxes;"
+    }
+  ],
+  "owner": "Beijing Jinxi to Trading Company",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市西城区阜成门外大街1号四川大厦16层1602G室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Jinxi to Trading Company",
+        "applicantNativeName": "北京金喜来商贸有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "glasses; sunglasses; pinch glasses; contact lenses; glasses frames; glasses frames; glasses; wipe glasses; glasses boxes;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "眼镜;太阳镜;夹鼻眼镜;隐形眼镜;眼镜框;眼镜架;眼镜片;擦眼镜布;眼镜盒;眼镜链"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Glasses and those accessories"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        }
+      ]
+    },
+    "id": "51907094-eb8e-40a2-9570-42a35812e657",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1537"
+      }
+    ],
+    "recordLastUpdated": "20260728",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京市捷诚信通知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160323",
+        "applicationNumber": "19392478"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20370427",
+      "lastPublicationDate": "20170127",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170428",
+        "registrationNumber": "19392478"
+      },
+      "renewalPublishedDate": "20260606"
+    },
+    "version": "20260728020318",
+    "wordMarkSpecification": {
+      "markTransliteration": "UNCLESEVEN qi shu",
+      "markVerbalElementText": "七叔"
+    }
+  },
+  "_uri": "/mark/cn/51907094-eb8e-40a2-9570-42a35812e657",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

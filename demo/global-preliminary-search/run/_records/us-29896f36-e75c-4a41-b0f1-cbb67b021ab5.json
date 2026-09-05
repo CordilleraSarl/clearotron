@@ -1,0 +1,623 @@
+{
+  "uri": "/mark/us/29896f36-e75c-4a41-b0f1-cbb67b021ab5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "29896f36-e75c-4a41-b0f1-cbb67b021ab5",
+  "applicationNumber": "74361528",
+  "registrationNumber": "1988768",
+  "applicationDate": "1993-02-23",
+  "registrationDate": "1996-07-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1994-04-12"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2007-04-28",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "QORO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    16,
+    17,
+    21,
+    22,
+    23,
+    24,
+    25,
+    27
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": null,
+      "description": "INT. CL. 7 brushes for use with automation machines, industrial machine parts; namely, brushes and brushes for use in removal of static electricity for use with all automated equipment which would generate static field",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 grounding plate adapters for connecting grounds leads from various types of equipment; computer table top electrostatic grounding mats and computer dust covers",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 paper treated with materials for prevention of static electricity and electrostatic paper",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": null,
+      "description": "INT. CL. 17 adhesive fringe tapes treated with materials for preventation of static electricity for industrial and commercial use; static electricity dissapative and pressure sensitive adhesive tape for industrial and commercial use",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": null,
+      "description": "INT. CL. 21 clothes brushes; namely, coat brushes; dusting and cleaning brushes for cleaning electronic parts, computer assemblies, table tops, floors, paper and mylar drawings, leads for wires and areas for the construction of electronic parts in a manner that prevents the generation of static electricity not being parts of machines",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        22
+      ],
+      "language": null,
+      "description": "INT. CL. 22 synthetic fibers for use in textile materials, yarn and thread to prevent static electricity",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        23
+      ],
+      "language": null,
+      "description": "INT. CL. 23 yarn and thread treated to prevent static electricity",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": null,
+      "description": "INT. CL. 24 fabrics treated with materials for prevention of static electricity; conductive fabric shelf liners for dissipating static charges; electrically conductive fabric for use as shelf coverings, partition separations or curtains for use in discharging static electricity",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": "INT. CL. 25 gloves, working dresses, overalls, wrist bands, socks and uniforms",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        27
+      ],
+      "language": null,
+      "description": "INT. CL. 27 floor coverings; namely, carpets and mats for non-safety use treated with materials for prevention of static electricity",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORO, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Harold Pezzner",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20020920",
+      "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "NEW CASTLE, DELAWARE, 19720",
+        "applicantAddressCity": "NEW CASTLE",
+        "applicantAddressPostalCode": "19720",
+        "applicantAddressStateName": "DELAWARE",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "QORO, INC.",
+        "applicantSecondaryAddressUnit": "166-B SOUTH DUPONT HIGHWAY"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "NEW CASTLE, DELAWARE, 19720",
+            "city": "NEW CASTLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "QORO, INC.",
+            "postalCode": "19720",
+            "secondaryAddressUnit": "166-B SOUTH DUPONT HIGHWAY",
+            "stateName": "DELAWARE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "INDIVIDUAL",
+            "name": "JENSEN, ELMER WILLIAM"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "HAROLD PEZZNER, ESQ., P.O. BOX 2207, 1220 MARKET STREET",
+            "addressLines": [
+              "CONNOLLY BOVE LODGE & HUTZ LLP",
+              "HAROLD PEZZNER, ESQ.",
+              "P.O. BOX 2207",
+              "1220 MARKET STREET",
+              "WILMINGTON, DE  19899"
+            ],
+            "name": "CONNOLLY BOVE LODGE & HUTZ LLP"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20010905",
+        "recordedDate": "20020204",
+        "reelFrameNumber": "2435/0653"
+      },
+      {
+        "assignees": [
+          {
+            "address": "CHADDS FORD, PENNSYLVANIA, 19317",
+            "city": "CHADDS FORD",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "INDIVIDUAL",
+            "name": "ELMER WILLIAM JENSEN",
+            "postalCode": "19317",
+            "secondaryAddressUnit": "735 PADDOCK LANE",
+            "stateName": "PENNSYLVANIA"
+          }
+        ],
+        "assignors": [
+          {
+            "legalEntity": "CORPORATION",
+            "name": "RODEL, INC., A DELAWARE CORPORATION"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "HAROLD PEZZNER, 1220 MARKET STREET, WILMINGTON, DE 19801",
+            "addressLines": [
+              "CONNOLLY AND HUTZ",
+              "HAROLD PEZZNER",
+              "1220 MARKET STREET",
+              "WILMINGTON, DE 19801"
+            ],
+            "name": "CONNOLLY AND HUTZ"
+          }
+        ],
+        "descriptionText": "ASSIGNS THE ENTIRE INTEREST",
+        "executedDate": "20000323",
+        "recordedDate": "20000804",
+        "reelFrameNumber": "2128/0836"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07",
+          "intGoodsServicesDescription": "INT. CL. 7 brushes for use with automation machines, industrial machine parts; namely, brushes and brushes for use in removal of static electricity for use with all automated equipment which would generate static field"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 grounding plate adapters for connecting grounds leads from various types of equipment; computer table top electrostatic grounding mats and computer dust covers"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 paper treated with materials for prevention of static electricity and electrostatic paper"
+        },
+        {
+          "intClassNumber": "17",
+          "intGoodsServicesDescription": "INT. CL. 17 adhesive fringe tapes treated with materials for preventation of static electricity for industrial and commercial use; static electricity dissapative and pressure sensitive adhesive tape for industrial and commercial use"
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsServicesDescription": "INT. CL. 21 clothes brushes; namely, coat brushes; dusting and cleaning brushes for cleaning electronic parts, computer assemblies, table tops, floors, paper and mylar drawings, leads for wires and areas for the construction of electronic parts in a manner that prevents the generation of static electricity not being parts of machines"
+        },
+        {
+          "intClassNumber": "22",
+          "intGoodsServicesDescription": "INT. CL. 22 synthetic fibers for use in textile materials, yarn and thread to prevent static electricity"
+        },
+        {
+          "intClassNumber": "23",
+          "intGoodsServicesDescription": "INT. CL. 23 yarn and thread treated to prevent static electricity"
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsServicesDescription": "INT. CL. 24 fabrics treated with materials for prevention of static electricity; conductive fabric shelf liners for dissipating static charges; electrically conductive fabric for use as shelf coverings, partition separations or curtains for use in discharging static electricity"
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsServicesDescription": "INT. CL. 25 gloves, working dresses, overalls, wrist bands, socks and uniforms"
+        },
+        {
+          "intClassNumber": "27",
+          "intGoodsServicesDescription": "INT. CL. 27 floor coverings; namely, carpets and mats for non-safety use treated with materials for prevention of static electricity"
+        }
+      ]
+    },
+    "id": "29896f36-e75c-4a41-b0f1-cbb67b021ab5",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20070428",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20060711",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20031024",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20020920",
+        "descriptionText": "REGISTERED - PARTIAL SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20020813",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20020813",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "20020813",
+        "descriptionText": "RESPONSE RECEIVED TO POST REG. ACTION - SEC. 8 & 15"
+      },
+      {
+        "date": "20020808",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 8 & 15"
+      },
+      {
+        "date": "20020701",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20020701",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "19960723",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19960510",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "19960510",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "19960429",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "19950630",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "19950411",
+        "descriptionText": "SOU EXTENSION 1 GRANTED"
+      },
+      {
+        "date": "19941220",
+        "descriptionText": "SOU EXTENSION 1 FILED"
+      },
+      {
+        "date": "19940705",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "19940412",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19940311",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19940103",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19931209",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "19930610",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19930511",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Newark, DE, 19713",
+        "city": "Newark",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Rodel, Inc.",
+        "postalCode": "19713",
+        "secondaryAddressUnit": "451 Bellevue Road",
+        "stateName": "DELAWARE"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Newark, DE, 19713",
+        "city": "Newark",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Rodel, Inc.",
+        "postalCode": "19713",
+        "secondaryAddressUnit": "451 Bellevue Road",
+        "stateName": "DELAWARE"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Newark, DE, 19713",
+        "city": "Newark",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "Rodel, Inc.",
+        "postalCode": "19713",
+        "secondaryAddressUnit": "451 Bellevue Road",
+        "stateName": "DELAWARE"
+      }
+    ],
+    "postRegistrationOwners": [
+      {
+        "address": "166-B SOUTH DUPONT HIGHWAY, NEW CASTLE, DE, 19720",
+        "city": "NEW CASTLE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "QORO, INC.",
+        "postalCode": "19720",
+        "stateName": "DELAWARE",
+        "street": "166-B SOUTH DUPONT HIGHWAY"
+      }
+    ],
+    "recordLastUpdated": "20260108",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "WILMINGTON, DE 19899, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "WILMINGTON, DE 19899",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "HAROLD PEZZNER CONNOLLY BOVE LODGE & HUTZ, LLP, PO BOX 2207"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "WILMINGTON, DE 19899, UNITED STATES",
+        "representativeAddressLines": [
+          "WILMINGTON, DE 19899",
+          "UNITED STATES"
+        ],
+        "representativeName": "Harold Pezzner"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "19940705"
+      ],
+      "application": {
+        "applicationDate": "19930223",
+        "applicationNumber": "74361528"
+      },
+      "cancellationDate": "20070428",
+      "cancellationPublicationDate": "20070605",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "extension": {
+        "approvalDate": [
+          "19950411"
+        ]
+      },
+      "firstUsed": [
+        {
+          "firstUsedClass": "07",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19940903"
+        },
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19940607"
+        },
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19950601"
+        },
+        {
+          "firstUsedClass": "17",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19950210"
+        },
+        {
+          "firstUsedClass": "21",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19930210"
+        },
+        {
+          "firstUsedClass": "22",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19950425"
+        },
+        {
+          "firstUsedClass": "23",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19940421"
+        },
+        {
+          "firstUsedClass": "24",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19940601"
+        },
+        {
+          "firstUsedClass": "25",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19940601"
+        },
+        {
+          "firstUsedClass": "27",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19941209"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "07",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19940903"
+        },
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19940607"
+        },
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19950601"
+        },
+        {
+          "firstUsedCommerceClass": "17",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19950210"
+        },
+        {
+          "firstUsedCommerceClass": "21",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19930210"
+        },
+        {
+          "firstUsedCommerceClass": "22",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19950425"
+        },
+        {
+          "firstUsedCommerceClass": "23",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19940421"
+        },
+        {
+          "firstUsedCommerceClass": "24",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19940601"
+        },
+        {
+          "firstUsedCommerceClass": "25",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19940601"
+        },
+        {
+          "firstUsedCommerceClass": "27",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19941209"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusComments": [
+          "CANCELLED SECTION 8 IN INTL. CL. 7, 9, 22 & 23 ONLY O.G. 10-29-2002",
+          "CANCELLED SECTION 8 IN INT. CL. 9. SEP 20, 2002",
+          "CANCELLED SECTION 8 IN INT. CL. 22. SEP 20, 2002",
+          "CANCELLED SECTION 8 IN INT. CL. 23. SEP 20, 2002"
+        ],
+        "markOfficialStatusDate": "20070428",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "19940412"
+      ],
+      "registration": {
+        "registrationDate": "19960723",
+        "registrationNumber": "1988768"
+      }
+    },
+    "version": "20260108030302",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORO"
+    }
+  },
+  "_uri": "/mark/us/29896f36-e75c-4a41-b0f1-cbb67b021ab5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:17.666Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

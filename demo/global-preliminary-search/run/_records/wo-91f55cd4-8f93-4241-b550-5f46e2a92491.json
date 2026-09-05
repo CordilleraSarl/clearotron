@@ -1,0 +1,290 @@
+{
+  "uri": "/mark/wo/91f55cd4-8f93-4241-b550-5f46e2a92491",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "91f55cd4-8f93-4241-b550-5f46e2a92491",
+  "applicationNumber": null,
+  "registrationNumber": "1478028",
+  "applicationDate": null,
+  "registrationDate": "2019-05-15",
+  "expiryDate": "2029-05-15",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-07-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for recording, transmission, reproduction or processing of sound or images; magnetic recording media; acoustic, magnetic or optical discs; floppy disks; optical, magnetic data media; equipment for data processing and computers; game software; software (recorded programs); recorded computer programs; computer peripheral devices; integrated circuit cards [smart cards]; downloadable computer software applications; downloadable electronic publications; computer platforms in the form of recorded or downloadable software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business management assistance; business management and organization consultancy; business management consultancy; professional business consultancy; expertise in commercial affairs; business information; business investigations; business research; business inquiries; cost price analysis; price comparison services; procurement services for others [purchasing goods and services for other businesses]; assistance in business professional consultancy; management of commercial or industrial companies; advisory services for business management; commercial or industrial company management assistance; business appraisals; business project management; research of business information in computer files for others; market study; market research; commercial business appraisal; personnel recruitment; projects (business management assistance); company efficiency expert services; organization of exhibitions, trade fairs for commercial or advertising purposes; financial and accounting auditing; company auditing namely commercial analyses; compilation of information into computer databases; database management; collection of data in a central file; consultancy in improving performance and cost optimization of companies (business organization consultancy); on-line retail sale services of downloadable computer software; retail sale services for software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer system analysis; design and development of computers and software; computer system design; research and development of new products for third parties; design, installation, maintenance, updating, rental of computer software; programming for computers; computer and software consultancy; information technology (IT) consultancy; conversion of computer programs and data, other than physical conversion; conversion of data or documents from physical to electronic media; analysis for the installation of computer systems; rental of computer software; software as a service [SaaS]; electronic data storage; management of computer projects; quality control.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils pour l'enregistrement, la transmission, la reproduction ou le traitement du son ou des images; supports d'enregistrement magnétiques; disques acoustiques, magnétiques ou optiques; disquettes souples; supports de données optiques, magnétiques; équipement pour le traitement de l'information et les ordinateurs; logiciels de jeux; logiciels (programmes enregistrés); programmes d'ordinateurs enregistrés; périphériques d'ordinateurs; cartes à mémoire ou à microprocesseur; applications logicielles informatiques téléchargeables; publications électroniques téléchargeables; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Aide à la direction des affaires; conseils en organisation et direction des affaires; consultation pour la direction des affaires; consultation professionnelle d'affaires; expertises en affaires commerciales; informations d'affaires; investigations pour affaires; recherches pour affaires; renseignements d'affaires; analyse du prix de revient; services de comparaison de prix; services d'approvisionnement pour des tiers [achat de produits et de services pour d'autres entreprises]; aide à la consultation professionnelle d'affaires; direction d'entreprises commerciales ou industrielles; services de conseils pour la direction des affaires; aide à la direction d'entreprises commerciales ou industrielles; expertises en affaires; gestion de projets commerciaux; recherches d'informations commerciales dans des fichiers informatiques pour des tiers; étude de marché; recherche de marché; estimation en affaires commerciales; recrutement de personnel; projets (aide à la direction des affaires); services d'expertise en productivité d'entreprise; organisation d'expositions de foires à buts commerciaux ou de publicité; audit comptable et financier; audits d'entreprises à savoir analyses commerciales; compilation d'informations dans des bases de données informatiques; gestion de bases de données; recueil de données dans un fichier central; conseils en amélioration de la performance et en optimisation des coûts des entreprises (conseils en organisation des affaires); services de vente au détail en ligne de logiciels téléchargeables; services de vente au détail de logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Analyse de systèmes informatiques; conception et développement d'ordinateurs et de logiciels; conception de systèmes informatiques; recherche et développement de nouveaux produits pour des tiers; conception, installation, maintenance, mise à jour, location de logiciels; programmation pour ordinateurs; consultation en matière d'ordinateurs et de logiciels; conseils en technologie de l'information; conversion de données et de programmes informatiques autre que conversion physique; conversion de données ou de documents d'un support physique vers un support électronique; analyse pour l'implantation de systèmes d'ordinateur; location de logiciels informatiques; logiciel-service [SaaS]; stockage électronique de données; gestion de projets informatiques; contrôle de qualité.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de grabación, transmisión, reproducción o procesamiento de sonido o imágenes; soportes de registro magnéticos; discos acústicos, magnéticos u ópticos; disquetes; soportes de datos ópticos y magnéticos; equipos de procesamiento de datos, y ordenadores; programas de juegos informáticos; software (programas grabados); programas informáticos grabados; periféricos informáticos; tarjetas de memoria o de microprocesador; aplicaciones informáticas descargables; publicaciones electrónicas descargables; plataformas informáticas en forma de software grabado o descargable.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Asistencia en la dirección de negocios; consultoría sobre la organización y dirección de negocios; consultoría sobre la dirección de negocios; consultoría profesional sobre negocios; peritajes de negocios comerciales; información sobre negocios; investigación comercial; búsqueda de negocios; información de negocios; análisis del precio de costo; servicios de comparación de precios; servicios de abastecimiento para terceros [compra de productos y servicios para otras empresas]; asistencia sobre la consultoría profesional de negocios; dirección de empresas comerciales o industriales; asesoramiento sobre la dirección de negocios; asistencia en la dirección de empresas comerciales o industriales; peritajes comerciales; gestión comercial de proyectos; búsqueda de información comercial en archivos informáticos para terceros; estudio de mercados; búsqueda de mercados; valoración de negocios comerciales; selección de personal; proyectos (asistencia en la dirección de negocios); servicios de peritajes sobre productividad empresarial; organización de exposiciones y ferias con fines comerciales o publicitarios; auditoría contable y financiera; auditorías de empresas, a saber, análisis comerciales; compilación de información en bases de datos informáticas; gestión de bases de datos; compilación de información en bases de datos informáticas; consultoría sobre la mejora del rendimiento y la optimización de costos de empresas (consultoría sobre la organización de negocios); servicios de venta minorista en línea de software descargable; venta al por menor de software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Análisis de sistemas informáticos; diseño y desarrollo de equipos informáticos y de software; diseño de sistemas informáticos; investigación y desarrollo de nuevos productos para terceros; diseño, instalación, mantenimiento, actualización y alquiler de software; programación informática; consultoría sobre ordenadores y software; consultoría sobre tecnologías de la información; conversión de datos y programas informáticos (excepto conversión física); conversión de datos o documentos de un soporte físico a un soporte electrónico; análisis para la implementación de sistemas informáticos; alquiler de software; servicios de software como servicio [SAAS]; servicios de almacenamiento electrónico de datos; gestión de proyectos informáticos; control de calidad.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "AVENCORE",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "IPSIDE, Madame Frédérique CHINCHOLE",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "20181205",
+      "priorityNumber": "4505765"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20181205",
+          "basicApplicationNumber": "4505765"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "FR",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20190419",
+          "basicRegistrationNumber": "4505765"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "AU",
+      "CN",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "61-63 avenue des Champs-Élysées F-75008 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "AVENCORE"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20181205",
+            "basicApplicationNumber": "4505765"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "FR",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20190419",
+            "basicRegistrationNumber": "4505765"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "AU",
+      "CN",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for recording, transmission, reproduction or processing of sound or images; magnetic recording media; acoustic, magnetic or optical discs; floppy disks; optical, magnetic data media; equipment for data processing and computers; game software; software (recorded programs); recorded computer programs; computer peripheral devices; integrated circuit cards [smart cards]; downloadable computer software applications; downloadable electronic publications; computer platforms in the form of recorded or downloadable software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business management assistance; business management and organization consultancy; business management consultancy; professional business consultancy; expertise in commercial affairs; business information; business investigations; business research; business inquiries; cost price analysis; price comparison services; procurement services for others [purchasing goods and services for other businesses]; assistance in business professional consultancy; management of commercial or industrial companies; advisory services for business management; commercial or industrial company management assistance; business appraisals; business project management; research of business information in computer files for others; market study; market research; commercial business appraisal; personnel recruitment; projects (business management assistance); company efficiency expert services; organization of exhibitions, trade fairs for commercial or advertising purposes; financial and accounting auditing; company auditing namely commercial analyses; compilation of information into computer databases; database management; collection of data in a central file; consultancy in improving performance and cost optimization of companies (business organization consultancy); on-line retail sale services of downloadable computer software; retail sale services for software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer system analysis; design and development of computers and software; computer system design; research and development of new products for third parties; design, installation, maintenance, updating, rental of computer software; programming for computers; computer and software consultancy; information technology (IT) consultancy; conversion of computer programs and data, other than physical conversion; conversion of data or documents from physical to electronic media; analysis for the installation of computer systems; rental of computer software; software as a service [SaaS]; electronic data storage; management of computer projects; quality control."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils pour l'enregistrement, la transmission, la reproduction ou le traitement du son ou des images; supports d'enregistrement magnétiques; disques acoustiques, magnétiques ou optiques; disquettes souples; supports de données optiques, magnétiques; équipement pour le traitement de l'information et les ordinateurs; logiciels de jeux; logiciels (programmes enregistrés); programmes d'ordinateurs enregistrés; périphériques d'ordinateurs; cartes à mémoire ou à microprocesseur; applications logicielles informatiques téléchargeables; publications électroniques téléchargeables; plateformes informatiques sous forme de logiciels enregistrés ou téléchargeables."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Aide à la direction des affaires; conseils en organisation et direction des affaires; consultation pour la direction des affaires; consultation professionnelle d'affaires; expertises en affaires commerciales; informations d'affaires; investigations pour affaires; recherches pour affaires; renseignements d'affaires; analyse du prix de revient; services de comparaison de prix; services d'approvisionnement pour des tiers [achat de produits et de services pour d'autres entreprises]; aide à la consultation professionnelle d'affaires; direction d'entreprises commerciales ou industrielles; services de conseils pour la direction des affaires; aide à la direction d'entreprises commerciales ou industrielles; expertises en affaires; gestion de projets commerciaux; recherches d'informations commerciales dans des fichiers informatiques pour des tiers; étude de marché; recherche de marché; estimation en affaires commerciales; recrutement de personnel; projets (aide à la direction des affaires); services d'expertise en productivité d'entreprise; organisation d'expositions de foires à buts commerciaux ou de publicité; audit comptable et financier; audits d'entreprises à savoir analyses commerciales; compilation d'informations dans des bases de données informatiques; gestion de bases de données; recueil de données dans un fichier central; conseils en amélioration de la performance et en optimisation des coûts des entreprises (conseils en organisation des affaires); services de vente au détail en ligne de logiciels téléchargeables; services de vente au détail de logiciels."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Analyse de systèmes informatiques; conception et développement d'ordinateurs et de logiciels; conception de systèmes informatiques; recherche et développement de nouveaux produits pour des tiers; conception, installation, maintenance, mise à jour, location de logiciels; programmation pour ordinateurs; consultation en matière d'ordinateurs et de logiciels; conseils en technologie de l'information; conversion de données et de programmes informatiques autre que conversion physique; conversion de données ou de documents d'un support physique vers un support électronique; analyse pour l'implantation de systèmes d'ordinateur; location de logiciels informatiques; logiciel-service [SaaS]; stockage électronique de données; gestion de projets informatiques; contrôle de qualité."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de grabación, transmisión, reproducción o procesamiento de sonido o imágenes; soportes de registro magnéticos; discos acústicos, magnéticos u ópticos; disquetes; soportes de datos ópticos y magnéticos; equipos de procesamiento de datos, y ordenadores; programas de juegos informáticos; software (programas grabados); programas informáticos grabados; periféricos informáticos; tarjetas de memoria o de microprocesador; aplicaciones informáticas descargables; publicaciones electrónicas descargables; plataformas informáticas en forma de software grabado o descargable."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Asistencia en la dirección de negocios; consultoría sobre la organización y dirección de negocios; consultoría sobre la dirección de negocios; consultoría profesional sobre negocios; peritajes de negocios comerciales; información sobre negocios; investigación comercial; búsqueda de negocios; información de negocios; análisis del precio de costo; servicios de comparación de precios; servicios de abastecimiento para terceros [compra de productos y servicios para otras empresas]; asistencia sobre la consultoría profesional de negocios; dirección de empresas comerciales o industriales; asesoramiento sobre la dirección de negocios; asistencia en la dirección de empresas comerciales o industriales; peritajes comerciales; gestión comercial de proyectos; búsqueda de información comercial en archivos informáticos para terceros; estudio de mercados; búsqueda de mercados; valoración de negocios comerciales; selección de personal; proyectos (asistencia en la dirección de negocios); servicios de peritajes sobre productividad empresarial; organización de exposiciones y ferias con fines comerciales o publicitarios; auditoría contable y financiera; auditorías de empresas, a saber, análisis comerciales; compilación de información en bases de datos informáticas; gestión de bases de datos; compilación de información en bases de datos informáticas; consultoría sobre la mejora del rendimiento y la optimización de costos de empresas (consultoría sobre la organización de negocios); servicios de venta minorista en línea de software descargable; venta al por menor de software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Análisis de sistemas informáticos; diseño y desarrollo de equipos informáticos y de software; diseño de sistemas informáticos; investigación y desarrollo de nuevos productos para terceros; diseño, instalación, mantenimiento, actualización y alquiler de software; programación informática; consultoría sobre ordenadores y software; consultoría sobre tecnologías de la información; conversión de datos y programas informáticos (excepto conversión física); conversión de datos o documentos de un soporte físico a un soporte electrónico; análisis para la implementación de sistemas informáticos; alquiler de software; servicios de software como servicio [SAAS]; servicios de almacenamiento electrónico de datos; gestión de proyectos informáticos; control de calidad."
+        }
+      ]
+    },
+    "id": "91f55cd4-8f93-4241-b550-5f46e2a92491",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "20181205",
+        "priorityNumber": "4505765"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "27"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "29 rue de Lisbonne F-75008 PARIS",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "IPSIDE, Madame Frédérique CHINCHOLE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290515",
+      "lastPublicationDate": "20190718",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190515",
+        "registrationNumber": "1478028"
+      }
+    },
+    "version": "20250620190227",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/wo/91f55cd4-8f93-4241-b550-5f46e2a92491",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:47:33.731Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

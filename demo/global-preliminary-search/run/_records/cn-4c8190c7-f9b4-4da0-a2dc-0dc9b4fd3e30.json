@@ -1,0 +1,136 @@
+{
+  "uri": "/mark/cn/4c8190c7-f9b4-4da0-a2dc-0dc9b4fd3e30",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "4c8190c7-f9b4-4da0-a2dc-0dc9b4fd3e30",
+  "applicationNumber": "27167713",
+  "registrationNumber": "27167713",
+  "applicationDate": "2017-10-30",
+  "registrationDate": "2018-10-21",
+  "expiryDate": "2028-10-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-07-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "铂日",
+  "markTransliteration": "bo ri",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "逆变器(电);电开关;发光二极管(LED);插头、插座和其他接触器(电连接);视频显示屏;照明设备用镇流器;稳压电源;电源材料(电线、电缆);低压电源;变压器",
+      "translation_language": "en",
+      "translation": "Inverters (electricity); electric switches; light-emitting diodes (LEDs); plugs, sockets and other contacts (electrical connections); video displays; ballasts for lighting equipment; stabilized power supplies; power supply materials (wires, cables) ); low voltage power supply; transformer"
+    }
+  ],
+  "owner": "Guangdong Bori Lighting Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省中山市横栏镇茂辉工业区(三沙)乐丰六路22号C栋六楼之1",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Guangdong Bori Lighting Co., Ltd.",
+        "applicantNativeName": "广东铂日照明有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Inverters (electricity); electric switches; light-emitting diodes (LEDs); plugs, sockets and other contacts (electrical connections); video displays; ballasts for lighting equipment; stabilized power supplies; power supply materials (wires, cables) ); low voltage power supply; transformer",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "逆变器(电);电开关;发光二极管(LED);插头、插座和其他接触器(电连接);视频显示屏;照明设备用镇流器;稳压电源;电源材料(电线、电缆);低压电源;变压器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "4c8190c7-f9b4-4da0-a2dc-0dc9b4fd3e30",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1608"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "中山市众诚知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171030",
+        "applicationNumber": "27167713"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281020",
+      "lastPublicationDate": "20180720",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20181021",
+        "registrationNumber": "27167713"
+      }
+    },
+    "version": "20251003000808",
+    "wordMarkSpecification": {
+      "markTransliteration": "bo ri",
+      "markVerbalElementText": "铂日"
+    }
+  },
+  "_uri": "/mark/cn/4c8190c7-f9b4-4da0-a2dc-0dc9b4fd3e30",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

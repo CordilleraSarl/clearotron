@@ -1,0 +1,198 @@
+{
+  "uri": "/mark/wo/7cb7eca7-3fde-4081-be65-99c38b1262a1",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "7cb7eca7-3fde-4081-be65-99c38b1262a1",
+  "applicationNumber": null,
+  "registrationNumber": "1485635",
+  "applicationDate": null,
+  "registrationDate": "2019-07-04",
+  "expiryDate": "2029-07-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-09-05",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EdgeVerse",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors; semiconductor processors; semiconductor processor chips; integrated circuits; integrated circuit chips; circuit boards; microcomputers; microcontrollers; microprocessors; applications processors; programmable microprocessors; multicore processors; application-specific integrated circuits (asics); integrated circuits embedded with software; software; software systems; network processors used in network equipment smart cards; integrated circuits for smart cards; rfid chips and tags; hardware and software for facilitating network processing applications; downloadable computer security software; computer software for security solutions; computer software and programs for wireless device management; computer software for device on-boarding; computer software applications for managing processes; computer software applications for lifecycle management processes; artificial intelligence software applications; machine learning software applications; software and devices to develop software; computer system and software for connecting and provisioning iot applications; computer systems to collect, store, and process data from different sensors and iot devices; cloud computing software; cloud computing software systems; software for cloud infrastructure; cloud computing platform software; multi-cloud computing software, application software for multi-cloud computing software; cloud computing software, application software for cloud computing services; hybrid cloud computing software, application software for hybrid cloud computing services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Semi-conducteurs; processeurs à semi-conducteurs; puces de processeurs à semi-conducteurs; circuits intégrés; puces à circuits intégrés; cartes de circuits imprimés; micro-ordinateurs; microcontrôleurs; microprocesseurs; processeurs d'applications; microprocesseurs programmables; processeurs multicoeurs; circuits intégrés à application spécifique (ASIC); circuits intégrés incorporés dans des logiciels; logiciels; software Systems; processeurs de réseau utilisés dans des cartes à puce d'équipement de réseau; circuits intégrés pour cartes à puce; puces et étiquette RFID; matériel et logiciels informatiques pour faciliter les applications de traitement en réseau; logiciels de sécurité informatique téléchargeables; logiciels informatiques pour solutions de sécurité; programmes et logiciels informatiques pour la gestion de dispositifs sans fil; logiciels informatiques pour l'embarquement de dispositifs; applications logicielles informatiques pour la gestion de processus; applications logicielles informatiques pour processus de gestion du cycle de vie; applications logicielles d'intelligence artificielle; applications logicielles d'apprentissage automatique; logiciels et dispositifs pour le développement de logiciels; logiciels et systèmes informatiques pour la connexion et l'approvisionnement d'applications iot; systèmes informatiques pour la collecte, le stockage, et le traitement de données provenant de différents capteurs et dispositifs iot; logiciels d'informatique en nuage; systèmes logiciels d'informatique en nuage; logiciels pour infrastructures en nuage; logiciels de plates-formes d'informatique en nuage; logiciels d'informatique en multi-nuage, logiciels d'applications pour logiciels d'information en multi-nuage; logiciels d'informatique en nuage, logiciels d'applications pour services d'informatique en nuage; logiciels d'informatique en nuage de type hybride, logiciels d'applications pour services d'informatique en nuage de type hybride.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores; procesadores de semiconductores; chips de procesadores de semiconductores; circuitos integrados; chips de circuitos integrados; placas de circuitos impresos; microordenadores; microcontroladores; microprocesadores; procesadores de aplicaciones; microprocesadores programables; procesadores de varios núcleos; circuitos integrados específicos de aplicaciones (ASIC); circuitos integrados con software; software; sistemas de software; procesadores de red para tarjetas inteligentes de equipos de redes; circuitos integrados para tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; hardware y software para el suministro de aplicaciones de procesamiento en red; software de seguridad informática descargable; software informático para soluciones de seguridad; software y programas informáticos para la gestión de dispositivos inalámbricos; software informático para la incorporación de dispositivos; aplicaciones de software informático para la gestión de procesos; aplicaciones de software informático para procesos de gestión del ciclo de vida; aplicaciones de software de inteligencia artificial; aplicaciones de software de aprendizaje automático; software y dispositivos para desarrollar software; sistemas y software informáticos para conectar y suministrar aplicaciones del IoT; sistemas informáticos para recopilar, almacenar y procesar datos procedentes de distintos sensores y dispositivos del IoT; software de computación en nube; sistemas de software de informática en la nube; software para infraestructura en la nube; software de plataformas informáticas en la nube; software de informática multinube, software de aplicaciones para software de informática multinube; software para informática en la nube, software de aplicaciones para servicios de informática en la nube; software de informática en nube híbrida, software de aplicaciones para servicios de informática en nube híbrida.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20190523",
+      "priorityNumber": "1396260"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20190523",
+          "basicApplicationNumber": "1396260"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CA",
+      "GB",
+      "IN",
+      "JP",
+      "KR",
+      "TH",
+      "RU"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20190523",
+            "basicApplicationNumber": "1396260"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CA",
+      "GB",
+      "IN",
+      "JP",
+      "KR",
+      "TH",
+      "RU"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors; semiconductor processors; semiconductor processor chips; integrated circuits; integrated circuit chips; circuit boards; microcomputers; microcontrollers; microprocessors; applications processors; programmable microprocessors; multicore processors; application-specific integrated circuits (asics); integrated circuits embedded with software; software; software systems; network processors used in network equipment smart cards; integrated circuits for smart cards; rfid chips and tags; hardware and software for facilitating network processing applications; downloadable computer security software; computer software for security solutions; computer software and programs for wireless device management; computer software for device on-boarding; computer software applications for managing processes; computer software applications for lifecycle management processes; artificial intelligence software applications; machine learning software applications; software and devices to develop software; computer system and software for connecting and provisioning iot applications; computer systems to collect, store, and process data from different sensors and iot devices; cloud computing software; cloud computing software systems; software for cloud infrastructure; cloud computing platform software; multi-cloud computing software, application software for multi-cloud computing software; cloud computing software, application software for cloud computing services; hybrid cloud computing software, application software for hybrid cloud computing services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Semi-conducteurs; processeurs à semi-conducteurs; puces de processeurs à semi-conducteurs; circuits intégrés; puces à circuits intégrés; cartes de circuits imprimés; micro-ordinateurs; microcontrôleurs; microprocesseurs; processeurs d'applications; microprocesseurs programmables; processeurs multicoeurs; circuits intégrés à application spécifique (ASIC); circuits intégrés incorporés dans des logiciels; logiciels; software Systems; processeurs de réseau utilisés dans des cartes à puce d'équipement de réseau; circuits intégrés pour cartes à puce; puces et étiquette RFID; matériel et logiciels informatiques pour faciliter les applications de traitement en réseau; logiciels de sécurité informatique téléchargeables; logiciels informatiques pour solutions de sécurité; programmes et logiciels informatiques pour la gestion de dispositifs sans fil; logiciels informatiques pour l'embarquement de dispositifs; applications logicielles informatiques pour la gestion de processus; applications logicielles informatiques pour processus de gestion du cycle de vie; applications logicielles d'intelligence artificielle; applications logicielles d'apprentissage automatique; logiciels et dispositifs pour le développement de logiciels; logiciels et systèmes informatiques pour la connexion et l'approvisionnement d'applications iot; systèmes informatiques pour la collecte, le stockage, et le traitement de données provenant de différents capteurs et dispositifs iot; logiciels d'informatique en nuage; systèmes logiciels d'informatique en nuage; logiciels pour infrastructures en nuage; logiciels de plates-formes d'informatique en nuage; logiciels d'informatique en multi-nuage, logiciels d'applications pour logiciels d'information en multi-nuage; logiciels d'informatique en nuage, logiciels d'applications pour services d'informatique en nuage; logiciels d'informatique en nuage de type hybride, logiciels d'applications pour services d'informatique en nuage de type hybride."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores; procesadores de semiconductores; chips de procesadores de semiconductores; circuitos integrados; chips de circuitos integrados; placas de circuitos impresos; microordenadores; microcontroladores; microprocesadores; procesadores de aplicaciones; microprocesadores programables; procesadores de varios núcleos; circuitos integrados específicos de aplicaciones (ASIC); circuitos integrados con software; software; sistemas de software; procesadores de red para tarjetas inteligentes de equipos de redes; circuitos integrados para tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; hardware y software para el suministro de aplicaciones de procesamiento en red; software de seguridad informática descargable; software informático para soluciones de seguridad; software y programas informáticos para la gestión de dispositivos inalámbricos; software informático para la incorporación de dispositivos; aplicaciones de software informático para la gestión de procesos; aplicaciones de software informático para procesos de gestión del ciclo de vida; aplicaciones de software de inteligencia artificial; aplicaciones de software de aprendizaje automático; software y dispositivos para desarrollar software; sistemas y software informáticos para conectar y suministrar aplicaciones del IoT; sistemas informáticos para recopilar, almacenar y procesar datos procedentes de distintos sensores y dispositivos del IoT; software de computación en nube; sistemas de software de informática en la nube; software para infraestructura en la nube; software de plataformas informáticas en la nube; software de informática multinube, software de aplicaciones para software de informática multinube; software para informática en la nube, software de aplicaciones para servicios de informática en la nube; software de informática en nube híbrida, software de aplicaciones para servicios de informática en nube híbrida."
+        }
+      ]
+    },
+    "id": "7cb7eca7-3fde-4081-be65-99c38b1262a1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20190523",
+        "priorityNumber": "1396260"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "34"
+      }
+    ],
+    "recordLastUpdated": "20250713",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21a NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290704",
+      "lastPublicationDate": "20190905",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190704",
+        "registrationNumber": "1485635"
+      }
+    },
+    "version": "20250713020054",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EdgeVerse"
+    }
+  },
+  "_uri": "/mark/wo/7cb7eca7-3fde-4081-be65-99c38b1262a1",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

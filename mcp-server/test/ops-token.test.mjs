@@ -92,16 +92,41 @@ test("jti: every minted token carries one; a legacy token without jti still veri
   assert.equal(verifyToken(legacy).jti, null, "pre-jti tokens keep verifying");
 });
 
-test("revocation: a jti on the denylist is refused; others pass; comments + missing file are inert", () => {
+test("revocation: a jti on the denylist is refused; others pass; comments are inert; a MISSING list refuses", () => {
+  // THIS ARM USED TO ASSERT THE OPPOSITE OF ITS LAST CLAUSE, and the reversal was deliberate.
+  //
+  // It read "missing file are inert", with the reasoning in its own comment: "the denylist can never
+  // take all auth down". That is a real trade and it was chosen knowingly — availability over
+  // enforcement. bb8's F14 measured what it cost: on a default `clearotron start` install the door was
+  // pointed at a denylist nothing created, so EVERY revocation check silently passed and a revoked key
+  // completed a full handshake with nothing logged. The inert-missing-file rule is what made the hole
+  // invisible rather than loud.
+  //
+  // Overwatch ruling (recorded on 1889 for the owner's review, reversal path is isRevoked alone): fail
+  // CLOSED. `start` now creates the list before any door starts, so reaching the unreadable branch means
+  // an operator removed it under a running door — rare, and its cost is now a visible outage that names
+  // its own cause instead of a silent security hole.
+  //
+  // The other half of the old trade is preserved deliberately: an UNSET denylist is still inert, so a
+  // deployment that never asked for one cannot be taken down by this.
   const dir = mkdtempSync(join(tmpdir(), "tm-denylist-"));
   const listPath = join(dir, "denylist.txt");
   const dead = mintToken({ scope: "ops", sub: "compromised" });
   const alive = mintToken({ scope: "ops", sub: "healthy" });
   try {
     process.env.TRADEMARK_MCP_TOKEN_DENYLIST = listPath;
-    // file absent yet → nothing revoked (the denylist can never take all auth down)
-    assert.equal(verifyToken(dead).sub, "compromised");
-    writeFileSync(listPath, `# emergency kills\n${verifyToken(dead).jti}\n`);
+    // A CONFIGURED LIST THAT IS NOT THERE IS A CHECK THAT COULD NOT RUN, and it refuses.
+    assert.throws(() => verifyToken(dead), /revocation could not be checked/,
+      "a named-but-absent denylist must refuse — assuming 'not revoked' here is what let a revoked key "
+      + "keep answering 200 on every default install");
+    // AND WITH NO LIST CONFIGURED AT ALL, nothing is refused: the two absences are different.
+    delete process.env.TRADEMARK_MCP_TOKEN_DENYLIST;
+    assert.equal(verifyToken(dead).sub, "compromised", "an unset denylist is single-tenant trust, unchanged");
+    // The jti is read while NO denylist is configured — reading it under a configured-but-absent one
+    // would now refuse, which is the very behaviour being set up here.
+    const deadJti = verifyToken(dead).jti;
+    process.env.TRADEMARK_MCP_TOKEN_DENYLIST = listPath;
+    writeFileSync(listPath, `# emergency kills\n${deadJti}\n`);
     assert.throws(() => verifyToken(dead), /revoked/);
     assert.throws(() => resolveScope({ innerToken: dead }), /revoked/, "the session gate refuses it too");
     assert.equal(verifyToken(alive).sub, "healthy", "only the listed jti dies");

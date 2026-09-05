@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/fi/d1063dda-9c53-4fe0-aaba-a4af854caac5",
+  "provider": "clarivate",
+  "office": "fi",
+  "guid": "d1063dda-9c53-4fe0-aaba-a4af854caac5",
+  "applicationNumber": "198405509",
+  "registrationNumber": "96215",
+  "applicationDate": "1984-10-02",
+  "registrationDate": "1986-09-05",
+  "expiryDate": "2026-09-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    12,
+    17,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7
+      ],
+      "language": "fi",
+      "description": "Kaikki tavarat ja palvelut.",
+      "translation_language": "en",
+      "translation": "All goods and services."
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": "et",
+      "description": "Vesikulkuneuvot.",
+      "translation_language": "en",
+      "translation": "Water transport vehicle."
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "et",
+      "description": "Kaikki tavarat ja palvelut.",
+      "translation_language": "en",
+      "translation": "All goods and services."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Öljyntorjunnan suorittaminen, öljyntorjuntakaluston vuokraus, öljyntorjunta-alan tutkimus-, kehitys- ja asiantuntijatehtävät.",
+      "translation_language": "en",
+      "translation": "Performing oil response, renting oil response equipment, research, development and expert tasks in the oil response field."
+    }
+  ],
+  "owner": "Lamor Corporation Ab",
+  "ownerNative": null,
+  "ownerCountry": "FI",
+  "representative": "Asianajotoimisto Backström & Co Oy (1)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Porvoo",
+        "applicantAddressCountryCode": "FI",
+        "applicantAddressCountryName": "Finland",
+        "applicantName": "Lamor Corporation Ab"
+      }
+    ],
+    "applicationLanguageCode": "fi",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "All goods and services.",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Kaikki tavarat ja palvelut."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Water transport vehicle.",
+          "intClassNumber": "12",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Vesikulkuneuvot."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "All goods and services.",
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kaikki tavarat ja palvelut."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Performing oil response, renting oil response equipment, research, development and expert tasks in the oil response field.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Öljyntorjunnan suorittaminen, öljyntorjuntakaluston vuokraus, öljyntorjunta-alan tutkimus-, kehitys- ja asiantuntijatehtävät."
+        }
+      ]
+    },
+    "id": "d1063dda-9c53-4fe0-aaba-a4af854caac5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.18",
+      "26.04.05",
+      "26.04.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250624",
+    "registrationOfficeCode": "FI",
+    "registrationOfficeName": "Finland",
+    "representatives": [
+      {
+        "representativeName": "Asianajotoimisto Backström & Co Oy (1)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19841002",
+        "applicationNumber": "198405509"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260905",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19860905",
+        "registrationNumber": "96215"
+      }
+    },
+    "version": "20250624162005",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LORI"
+    }
+  },
+  "_uri": "/mark/fi/d1063dda-9c53-4fe0-aaba-a4af854caac5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:01.452Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

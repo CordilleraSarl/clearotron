@@ -1,0 +1,112 @@
+{
+  "uri": "/mark/es/991d3ea8-edd9-451d-88cf-c19a020fe115",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "991d3ea8-edd9-451d-88cf-c19a020fe115",
+  "applicationNumber": "3687039 M0",
+  "registrationNumber": "3687039 M0",
+  "applicationDate": "2017-10-17",
+  "registrationDate": "2018-04-19",
+  "expiryDate": "2027-10-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-11-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LPAJUVENCORTO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Celebracion de concursos por internet;organizacion de concursos;organizacion de concursos educativos o recreativos;organizacion de concursos por internet;servicios de organizacion de concursos;servicios de organizacion de concursos y entrega de premios;servicios de organizacion de concursos y premios",
+      "translation_language": "en",
+      "translation": "CELEBRATION OF COMPETITIONS ON THE INTERNET, ORGANIZATION OF CONTESTS, ORGANIZATION OF EDUCATIONAL OR RECREATIONAL COMPETITIONS, ORGANIZATION OF INTERNET CONTESTS, ORGANIZATION SERVICES OF CONTESTS, ORGANIZATION SERVICES OF COMPETITIONS AND DELIVERY OF AWARDS, ORGANIZATION SERVICES OF COMPETITIONS AND AWARDS"
+    }
+  ],
+  "owner": "RAMOS QUINTANILLA DANIEL",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "RAMOS QUINTANILLA DANIEL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CELEBRATION OF COMPETITIONS ON THE INTERNET, ORGANIZATION OF CONTESTS, ORGANIZATION OF EDUCATIONAL OR RECREATIONAL COMPETITIONS, ORGANIZATION OF INTERNET CONTESTS, ORGANIZATION SERVICES OF CONTESTS, ORGANIZATION SERVICES OF COMPETITIONS AND DELIVERY OF AWARDS, ORGANIZATION SERVICES OF COMPETITIONS AND AWARDS",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Celebracion de concursos por internet;organizacion de concursos;organizacion de concursos educativos o recreativos;organizacion de concursos por internet;servicios de organizacion de concursos;servicios de organizacion de concursos y entrega de premios;servicios de organizacion de concursos y premios"
+        }
+      ]
+    },
+    "id": "991d3ea8-edd9-451d-88cf-c19a020fe115",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "5048"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20171017",
+        "applicationNumber": "3687039 M0"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271016",
+      "lastPublicationDate": "20171110",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180419",
+        "registrationNumber": "3687039 M0"
+      }
+    },
+    "version": "20260427164715",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "LPAJUVENCORTO"
+    }
+  },
+  "_uri": "/mark/es/991d3ea8-edd9-451d-88cf-c19a020fe115",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "uri": "/mark/wo/502432bc-d774-491f-9452-c4c3a265f2ae",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "502432bc-d774-491f-9452-c4c3a265f2ae",
+  "applicationNumber": null,
+  "registrationNumber": "1111235",
+  "applicationDate": null,
+  "registrationDate": "2011-11-11",
+  "expiryDate": "2031-11-11",
+  "renewalDate": "2021-11-11",
+  "lastPublicationDate": "2022-06-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing consulting services to other in the field of engineering relating to efficient extraction of hydrocarbon resources, in the nature of analyzing critical information covering oil and gas reservoirs, namely, formation properties, geologic attributes, production histories, well design details and production facilities formation, by utilizing reservoir management metrics, analytical tools, and knowledge management instruments to guide the diagnostic and implementation phases of optimizing the efficient extraction of hydrocarbon resources from reservoirs of others.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Fourniture de services de conseillers pour des tiers dans le domaine de l'ingénierie en matière d'extraction durable de ressources d'hydrocarbures, sous forme d'analyse d'informations importantes sur les réservoirs de gaz et pétrole, à savoir propriétés de la formation, caractéristiques géologiques, antécédents de production, détails sur la conception de puits et formation d'installations de production, au moyen de la métrique de gestion de réservoirs, outils analytiques, ainsi qu'instruments de gestion des connaissances afin d'orienter les phases d'implémentation et de diagnostic pour optimiser l'extraction durable de ressources d'hydrocarbures à partir de réservoirs de tiers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Asesoramiento a terceros en el ámbito de la ingeniería para optimizar la explotación de recursos de hidrocarburos, a saber, análisis de información clave sobre yacimientos de petróleo y gas, a saber, propiedades de formación, características geológicas, antecedentes de producción, detalles acerca del diseño del pozo y formación de las instalaciones de producción mediante la utilización de dispositivos de medición para la gestión de depósitos, herramientas de análisis e instrumentos de gestión de conocimientos para guiar las fases de diagnóstico e implementación a fin de optimizar la extracción de hidrocarburos de yacimientos de terceros.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QRI Group, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Jonathan W. Richards, Workman Nydegger",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20080627",
+          "basicApplicationNumber": "77509735"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "US",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20090811",
+          "basicRegistrationNumber": "3665762"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2 Houston Center, 909 Fannin, Suite 2200 Houston TX 77010",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "QRI Group, LLC"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20080627",
+            "basicApplicationNumber": "77509735"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "US",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20090811",
+            "basicRegistrationNumber": "3665762"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing consulting services to other in the field of engineering relating to efficient extraction of hydrocarbon resources, in the nature of analyzing critical information covering oil and gas reservoirs, namely, formation properties, geologic attributes, production histories, well design details and production facilities formation, by utilizing reservoir management metrics, analytical tools, and knowledge management instruments to guide the diagnostic and implementation phases of optimizing the efficient extraction of hydrocarbon resources from reservoirs of others."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Fourniture de services de conseillers pour des tiers dans le domaine de l'ingénierie en matière d'extraction durable de ressources d'hydrocarbures, sous forme d'analyse d'informations importantes sur les réservoirs de gaz et pétrole, à savoir propriétés de la formation, caractéristiques géologiques, antécédents de production, détails sur la conception de puits et formation d'installations de production, au moyen de la métrique de gestion de réservoirs, outils analytiques, ainsi qu'instruments de gestion des connaissances afin d'orienter les phases d'implémentation et de diagnostic pour optimiser l'extraction durable de ressources d'hydrocarbures à partir de réservoirs de tiers."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Asesoramiento a terceros en el ámbito de la ingeniería para optimizar la explotación de recursos de hidrocarburos, a saber, análisis de información clave sobre yacimientos de petróleo y gas, a saber, propiedades de formación, características geológicas, antecedentes de producción, detalles acerca del diseño del pozo y formación de las instalaciones de producción mediante la utilización de dispositivos de medición para la gestión de depósitos, herramientas de análisis e instrumentos de gestión de conocimientos para guiar las fases de diagnóstico e implementación a fin de optimizar la extracción de hidrocarburos de yacimientos de terceros."
+        }
+      ]
+    },
+    "id": "502432bc-d774-491f-9452-c4c3a265f2ae",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "20"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "1000 Eagle Gate Tower, 60 East South Temple Salt Lake City UT 84111",
+        "representativeAddressCountryCode": "US",
+        "representativeAddressCountryName": "United States of America",
+        "representativeName": "Jonathan W. Richards, Workman Nydegger"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20311111",
+      "lastPublicationDate": "20220602",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20111111",
+        "registrationNumber": "1111235"
+      },
+      "renewalDate": "20211111",
+      "renewalPublishedDate": "20220602"
+    },
+    "version": "20250620171633",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QRI"
+    }
+  },
+  "_uri": "/mark/wo/502432bc-d774-491f-9452-c4c3a265f2ae",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:49.201Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

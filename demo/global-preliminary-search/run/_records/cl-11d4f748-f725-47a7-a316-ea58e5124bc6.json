@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/cl/11d4f748-f725-47a7-a316-ea58e5124bc6",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "11d4f748-f725-47a7-a316-ea58e5124bc6",
+  "applicationNumber": "1231912",
+  "registrationNumber": "1233009",
+  "applicationDate": "2016-11-29",
+  "registrationDate": "2016-11-29",
+  "expiryDate": "2026-11-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GEOVENOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "(Concedida) Investigaciones geológicas técnicas y químicas estudios de proyectos y asistencia profesional de ingenieros.",
+      "translation_language": "en",
+      "translation": "(Granted) Technical and chemical geological investigations, project studies and professional assistance from engineers."
+    }
+  ],
+  "owner": "VEIGA MARTÍNEZ JOSÉ FLOREAL",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "MANSILLA BARRIENTOS ESTEBAN",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PROVIDENCIA",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "VEIGA MARTÍNEZ JOSÉ FLOREAL"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Technical and chemical geological investigations, project studies and professional assistance from engineers.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Investigaciones geológicas técnicas y químicas estudios de proyectos y asistencia profesional de ingenieros."
+        }
+      ]
+    },
+    "id": "11d4f748-f725-47a7-a316-ea58e5124bc6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddress": "PROVIDENCIA",
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "MANSILLA BARRIENTOS ESTEBAN"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161129",
+        "applicationNumber": "1231912"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20261129",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20161129",
+        "registrationNumber": "1233009"
+      }
+    },
+    "version": "20260615155217",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GEOVENOR"
+    }
+  },
+  "_uri": "/mark/cl/11d4f748-f725-47a7-a316-ea58e5124bc6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

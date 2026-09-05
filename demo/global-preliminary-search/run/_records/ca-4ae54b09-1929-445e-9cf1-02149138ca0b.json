@@ -1,0 +1,294 @@
+{
+  "uri": "/mark/ca/4ae54b09-1929-445e-9cf1-02149138ca0b",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "4ae54b09-1929-445e-9cf1-02149138ca0b",
+  "applicationNumber": "1537965",
+  "registrationNumber": "TMA944093",
+  "applicationDate": "2011-08-02",
+  "registrationDate": "2016-07-25",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-10-28"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ QONVERGE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "(1) Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits, signal processors, digital signal processors, vector processors, wireless communication signal processors; application-specific computer hardware accelerators, namely, accelerators for use in processing dedicated and repetitive functions; wireless baseband processors; base stations on a chip, namely, integrated circuits comprised of digital signal processors, central processing units with vector processing units, and accelerators on a single chip; systems on a chip (SOC), namely, integrated circuits comprised of digital signal processors, central processing units, and accelerators on a single chip.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP USA Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "SMART & BIGGAR LP",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States",
+      "priorityDate": "20110203",
+      "priorityNumber": "85/233,451",
+      "priorityText": "Priority Filing Date: February 03, 2011, Country or Office: UNITED STATES OF AMERICA, Application No. 85/233,451 in association with the same kind on wares marked (1)"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 William Cannon Drive West, Austin, TX 78735",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, TX 78735"
+        ],
+        "applicantName": "NXP USA Inc."
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Priority Filing Date: February 03, 2011, Country or Office: UNITED STATES OF AMERICA, Application No. 85/233,451 in association with the same kind on wares marked (1)",
+        "typeDescription": "Priority"
+      },
+      {
+        "text": "Used in UNITED STATES OF AMERICA on wares marked (1)",
+        "typeDescription": "Foreign Usage"
+      },
+      {
+        "text": "Registered in or for UNITED STATES OF AMERICA on October 08, 2013, under No. 4,415,198 on wares marked (1)",
+        "typeDescription": "Foreign Registration"
+      },
+      {
+        "text": "Declaration of Use filed July 25, 2016 on wares marked (1)",
+        "typeDescription": "Declaration of Use Info"
+      }
+    ],
+    "footNotes": [
+      "Merger and Address / Fusionnement et adresse",
+      "DATE REGISTERED / DATE DE L'ENREGISTREMENT: 21 août/Aug 2017",
+      "DATE OF CHANGE / DATE DE CHANGEMENT: 07 nov/Nov 2016",
+      "COMMENTS / COMMENTAIRES: FROM: Freescale Semiconductor, Inc.",
+      "TO: NXP USA Inc.",
+      "Voir Preuve au dossier/See evidence on File No. 1663578"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Semiconductors, integrated circuits, microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits, signal processors, digital signal processors, vector processors, wireless communication signal processors; application-specific computer hardware accelerators, namely, accelerators for use in processing dedicated and repetitive functions; wireless baseband processors; base stations on a chip, namely, integrated circuits comprised of digital signal processors, central processing units with vector processing units, and accelerators on a single chip; systems on a chip (SOC), namely, integrated circuits comprised of digital signal processors, central processing units, and accelerators on a single chip."
+        }
+      ]
+    },
+    "id": "4ae54b09-1929-445e-9cf1-02149138ca0b",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markEvents": [
+      {
+        "date": "20260421",
+        "descriptionText": "Agent changed",
+        "information": "Transferred From: 2502 To: 59"
+      },
+      {
+        "date": "20170821",
+        "descriptionText": "Amendment to Registration",
+        "information": "Merger and address / Voir Preuve au dossier/See evidence on File No. 1663578"
+      },
+      {
+        "date": "20160725",
+        "descriptionText": "Registered",
+        "responseDate": "20310725"
+      },
+      {
+        "date": "20160212",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "20160812"
+      },
+      {
+        "date": "20160212",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "20151028",
+        "descriptionText": "Advertised",
+        "information": "Vol.62 Issue 3183"
+      },
+      {
+        "date": "20151008",
+        "descriptionText": "Approved",
+        "information": "APPROVED BY PROGRAM EX200M1"
+      },
+      {
+        "date": "20150817",
+        "descriptionText": "Approval Notice Sent",
+        "responseDate": "20150914"
+      },
+      {
+        "date": "20141202",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20150602"
+      },
+      {
+        "date": "20140217",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20140817"
+      },
+      {
+        "date": "20130419",
+        "descriptionText": "Extension of Time",
+        "information": "Request Letter Date: 2013/04/08",
+        "responseDate": "20131115"
+      },
+      {
+        "date": "20121115",
+        "descriptionText": "Correspondence Created",
+        "responseDate": "20130515"
+      },
+      {
+        "date": "20120207",
+        "descriptionText": "Examiner's First Report",
+        "responseDate": "20120807"
+      },
+      {
+        "date": "20120131",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "20110808",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20110802",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20110802",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6501 William Cannon Drive West, Austin, Texas 78735",
+        "addressLines": [
+          "6501 William Cannon Drive West",
+          "Austin, Texas 78735"
+        ],
+        "countryName": "United States",
+        "name": "Freescale Semiconductor, Inc."
+      }
+    ],
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States",
+        "priorityDate": "20110203",
+        "priorityNumber": "85/233,451",
+        "priorityText": "Priority Filing Date: February 03, 2011, Country or Office: UNITED STATES OF AMERICA, Application No. 85/233,451 in association with the same kind on wares marked (1)"
+      }
+    ],
+    "priorityDate": "20110203",
+    "publications": [
+      {
+        "publicationIssue": "3183",
+        "publicationVolume": "62"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "SMART & BIGGAR LP",
+          "Scotia Plaza, 40 King Street West",
+          "40th Floor",
+          "Toronto",
+          "ONTARIO M5H3Y2"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "SMART & BIGGAR LP",
+        "representativeReferenceNumber": "11548-393"
+      }
+    ],
+    "status": {
+      "active": true,
+      "allowanceDate": [
+        "20160212"
+      ],
+      "application": {
+        "applicationDate": "20110802",
+        "applicationNumber": "1537965"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "extension": {
+        "approvalDate": [
+          "20130419"
+        ],
+        "dueDate": "20131115"
+      },
+      "formalisationDate": "20110808",
+      "markCurrentStatus": "Registered",
+      "nextRenewalDate": "20310725",
+      "publicationDate": [
+        "20151028"
+      ],
+      "registration": {
+        "registrationDate": "20160725",
+        "registrationNumber": "TMA944093"
+      }
+    },
+    "subjectHeadings": [
+      "QORIQ QONVERGE",
+      "CONVERGE"
+    ],
+    "version": "20260429130604",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "QORIO CONVERGE",
+      "markVerbalElementText": "QORIQ QONVERGE",
+      "markVerbalElementTextFormal": "QORIQ QONVERGE"
+    }
+  },
+  "_uri": "/mark/ca/4ae54b09-1929-445e-9cf1-02149138ca0b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

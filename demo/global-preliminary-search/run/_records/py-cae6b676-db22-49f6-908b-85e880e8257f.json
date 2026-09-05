@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/py/cae6b676-db22-49f6-908b-85e880e8257f",
+  "provider": "clarivate",
+  "office": "py",
+  "guid": "cae6b676-db22-49f6-908b-85e880e8257f",
+  "applicationNumber": "9416783",
+  "registrationNumber": "176802",
+  "applicationDate": "1994-08-25",
+  "registrationDate": "1995-05-16",
+  "expiryDate": "2005-05-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Venturi S. r. l.",
+  "ownerNative": null,
+  "ownerCountry": "PY",
+  "representative": "José María Cardozo Saguier",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Carandayty 173 Asuncion",
+        "applicantAddressCountryCode": "PY",
+        "applicantAddressCountryName": "Paraguay",
+        "applicantName": "Venturi S. r. l."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "cae6b676-db22-49f6-908b-85e880e8257f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250925",
+    "registrationOfficeCode": "PY",
+    "registrationOfficeName": "Paraguay",
+    "representatives": [
+      {
+        "representativeAddress": "Avda. Perú N° 708 C/Tte. Ruíz",
+        "representativeAddressCountryCode": "PY",
+        "representativeAddressCountryName": "Paraguay",
+        "representativeName": "José María Cardozo Saguier"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19940825",
+        "applicationNumber": "9416783"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20050516",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19950516",
+        "registrationNumber": "176802"
+      }
+    },
+    "version": "20250925102908",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/py/cae6b676-db22-49f6-908b-85e880e8257f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.171Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

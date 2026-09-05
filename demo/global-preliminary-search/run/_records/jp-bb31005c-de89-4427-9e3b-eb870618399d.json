@@ -1,0 +1,149 @@
+{
+  "uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "bb31005c-de89-4427-9e3b-eb870618399d",
+  "applicationNumber": "2008-073466",
+  "registrationNumber": "5190666",
+  "applicationDate": "2008-09-05",
+  "registrationDate": "2008-12-19",
+  "expiryDate": "2028-12-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2009-01-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＱＯＲＩＱ",
+  "markTransliteration": "KOAAIKYUU KORIKU",
+  "markTranslation": "QORIQ",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "半導体，カスタマイズされたマイクロプロセッサ，コンピュータソフトウェアを記録可能なマイクロプロセッサ，その他のマイクロプロセッサ，マルチコアプロセッサ，特定用途向け集積回路，その他の集積回路，その他の電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Semiconductors, customized microprocessors, microprocessors capable of recording computer software, other microprocessors, multicore processors, application specific integrated circuits, other integrated circuits, other electronic applied equipment and parts thereof"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20080609"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Semiconductors, customized microprocessors, microprocessors capable of recording computer software, other microprocessors, multicore processors, application specific integrated circuits, other integrated circuits, other electronic applied equipment and parts thereof",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "半導体，カスタマイズされたマイクロプロセッサ，コンピュータソフトウェアを記録可能なマイクロプロセッサ，その他のマイクロプロセッサ，マルチコアプロセッサ，特定用途向け集積回路，その他の集積回路，その他の電子応用機械器具及びその部品"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        },
+        {
+          "natClassNumber": "11C02"
+        }
+      ]
+    },
+    "id": "bb31005c-de89-4427-9e3b-eb870618399d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20080609"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "MORI CHIKAKO",
+        "representativeNativeName": "森　智香子"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080905",
+        "applicationNumber": "2008-073466"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281219",
+      "lastPublicationDate": "20090127",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20081219",
+        "registrationNumber": "5190666"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "QORIQ",
+      "markTransliteration": "KOAAIKYUU KORIKU",
+      "markVerbalElementText": "ＱＯＲＩＱ"
+    }
+  },
+  "_uri": "/mark/jp/bb31005c-de89-4427-9e3b-eb870618399d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

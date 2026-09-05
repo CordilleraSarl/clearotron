@@ -9,7 +9,7 @@ demo twins, because this repo publishes.
 truncations, the odd casings and the wrong-looking spacing are all real and must be preserved — they
 are the fixture. The names, the mark, the transliteration and the run slugs are not real, and nothing
 about them should be treated as a fact about the world. Two identities were left as they are and are
-declared in `driver/test/no-client-identifiers.test.mjs`: public register proprietors cited as
+declared by the client-identifier guard in the driver suite: public register proprietors cited as
 third-party evidence, where renaming would rewrite what the fixture is evidence *of*.
 
 The substitution was mechanical and stem-based, so the relationships between the marks survive it — an

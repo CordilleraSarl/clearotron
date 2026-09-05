@@ -1,0 +1,81 @@
+{
+  "uri": "/mark/eu/W00904887",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "W00904887",
+  "applicationNumber": "W00904887",
+  "registrationNumber": "W00904887",
+  "applicationDate": null,
+  "registrationDate": "2006-06-02",
+  "expiryDate": "2036-06-02",
+  "statusClass": "live",
+  "statusText": "ACCEPTED",
+  "statusDate": "2016-09-28",
+  "markText": "FORI",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "INTERNATIONAL_TRADEMARK",
+  "niceClasses": [],
+  "owner": "Fori Automation, LLC",
+  "ownerCountry": null,
+  "representative": "Ross Kowalski,\nTucker Ellis LLP",
+  "goodsAndServices": [
+    {
+      "classNumber": 7,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Power-operated assembly line automation equipment, namely machines to move, assemble, and fasten automotive, defense and industrial parts."
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Machines to test and inspect automotive, defense and industrial parts."
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 40,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Custom manufacture of power-operated assembly line automation equipment."
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 42,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Custom design of power-operated assembly line automation equipment."
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/W00904887",
+  "_uri": "/mark/eu/w00904887",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:32.105Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

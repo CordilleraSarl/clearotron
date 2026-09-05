@@ -1,0 +1,183 @@
+{
+  "uri": "/mark/vn/a1d53055-f593-4c3a-a3ba-65626008febd",
+  "provider": "clarivate",
+  "office": "vn",
+  "guid": "a1d53055-f593-4c3a-a3ba-65626008febd",
+  "applicationNumber": "4201302816",
+  "registrationNumber": "40230244",
+  "applicationDate": "2013-02-05",
+  "registrationDate": "2014-08-20",
+  "expiryDate": "2023-02-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    25,
+    28,
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "vi",
+      "description": "Chương trình máy vi tính (phần mềm có thể tải xuống được); phần mềm ứng dụng máy tính dùng cho điện thoại di động; chương trình trò chơi trên máy vi tính; phương tiện điện tử đã ghi trước không chứa nhạc (loại trừ phần mềm máy tính); ấn phẩm điện tử có thể tải xuống được; mặt nạ bảo hiểm; mũ bảo hiểm xe máy; tấm chắn để bảo vệ mặt dùng cho mũ bảo hiểm.",
+      "translation_language": "en",
+      "translation": "Computer programs (downloadable software); computer application software for mobile phones; computer game programs; pre-recorded electronic media that does not contain music (computer software excluded); downloadable electronic publications; insurance mask; Motorcycle helmets; face shield used for helmets."
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "vi",
+      "description": "Đồ đi ở chân; đồ thể thao, cụ thể là giày thể thao, quần áo thể thao; quần áo trẻ em; quần áo trẻ sơ sinh; quần áo ngủ; tất ngắn cổ; mũ lưỡi trai [đồ đội đầu].",
+      "translation_language": "en",
+      "translation": "Footwear; sportswear, specifically sports shoes, sportswear; children&#39;s wear; Infant clothes; pyjama; short socks; cap [headgear]."
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "vi",
+      "description": "Búp bê; đồ chơi.",
+      "translation_language": "en",
+      "translation": "Doll; toy."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "vi",
+      "description": "Lập kế hoạch cho buổi biểu diễn; tổ chức trình diễn trò chơi với búp bê; cung cấp và vận hành tiện nghi thể thao; tổ chức sân chơi cho trẻ em; tổ chức công viên vui chơi giải trí; cung cấp và vận hành tiện nghi giải trí.",
+      "translation_language": "en",
+      "translation": "Plan the performance; organize demonstrations of games with dolls; provision and operation of sports facilities; organize playgrounds for children; organize amusement parks; provide and operate recreational facilities."
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "vi",
+      "description": "Dịch vụ quán cà phê; dịch vụ quán cà phê cho trẻ em; nhà hàng ăn uống; cho thuê chỗ ở tạm thời; cung cấp tiện nghi cho việc cắm trại; dịch vụ trông trẻ ban ngày [nhà trẻ].",
+      "translation_language": "en",
+      "translation": "Coffee shop services; cafe services for children; restaurant; temporary accommodation rental; provide camping facilities; day care service [kindergarten]."
+    }
+  ],
+  "owner": "NHC MEDIA Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "ACTIP IP LIMITED",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "#310, Digital Empire, 685, Beoman-ro, Geumcheon-gu, Seoul, Republic of Korea",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "NHC MEDIA Co., Ltd."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programs (downloadable software); computer application software for mobile phones; computer game programs; pre-recorded electronic media that does not contain music (computer software excluded); downloadable electronic publications; insurance mask; Motorcycle helmets; face shield used for helmets.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Chương trình máy vi tính (phần mềm có thể tải xuống được); phần mềm ứng dụng máy tính dùng cho điện thoại di động; chương trình trò chơi trên máy vi tính; phương tiện điện tử đã ghi trước không chứa nhạc (loại trừ phần mềm máy tính); ấn phẩm điện tử có thể tải xuống được; mặt nạ bảo hiểm; mũ bảo hiểm xe máy; tấm chắn để bảo vệ mặt dùng cho mũ bảo hiểm."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Footwear; sportswear, specifically sports shoes, sportswear; children&#39;s wear; Infant clothes; pyjama; short socks; cap [headgear].",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Đồ đi ở chân; đồ thể thao, cụ thể là giày thể thao, quần áo thể thao; quần áo trẻ em; quần áo trẻ sơ sinh; quần áo ngủ; tất ngắn cổ; mũ lưỡi trai [đồ đội đầu]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Doll; toy.",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Búp bê; đồ chơi."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Plan the performance; organize demonstrations of games with dolls; provision and operation of sports facilities; organize playgrounds for children; organize amusement parks; provide and operate recreational facilities.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Lập kế hoạch cho buổi biểu diễn; tổ chức trình diễn trò chơi với búp bê; cung cấp và vận hành tiện nghi thể thao; tổ chức sân chơi cho trẻ em; tổ chức công viên vui chơi giải trí; cung cấp và vận hành tiện nghi giải trí."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Coffee shop services; cafe services for children; restaurant; temporary accommodation rental; provide camping facilities; day care service [kindergarten].",
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "vi",
+          "intGoodsServicesDescription": "Dịch vụ quán cà phê; dịch vụ quán cà phê cho trẻ em; nhà hàng ăn uống; cho thuê chỗ ở tạm thời; cung cấp tiện nghi cho việc cắm trại; dịch vụ trông trẻ ban ngày [nhà trẻ]."
+        }
+      ]
+    },
+    "id": "a1d53055-f593-4c3a-a3ba-65626008febd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250517",
+    "registrationOfficeCode": "VN",
+    "registrationOfficeName": "Vietnam",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VN",
+        "representativeAddressCountryName": "Vietnam",
+        "representativeName": "ACTIP IP LIMITED"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130205",
+        "applicationNumber": "4201302816"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20230205",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140820",
+        "registrationNumber": "40230244"
+      }
+    },
+    "version": "20250517191922",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EORI"
+    }
+  },
+  "_uri": "/mark/vn/a1d53055-f593-4c3a-a3ba-65626008febd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:13.069Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

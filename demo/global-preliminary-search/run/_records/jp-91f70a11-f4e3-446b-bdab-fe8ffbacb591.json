@@ -1,0 +1,173 @@
+{
+  "uri": "/mark/jp/91f70a11-f4e3-446b-bdab-fe8ffbacb591",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "91f70a11-f4e3-446b-bdab-fe8ffbacb591",
+  "applicationNumber": "2021-089306",
+  "registrationNumber": null,
+  "applicationDate": "2021-07-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Ｑプリ",
+  "markTransliteration": "KYUUPURI",
+  "markTranslation": "Q PRI",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機の貸与，電子計算機用プログラムの提供，電子計算機のプログラムの設計・作成又は保守",
+      "translation_language": "en",
+      "translation": "Provision of application software online (SaaS), lending of computers, provision of computer programs, design / creation or maintenance of computer programs"
+    }
+  ],
+  "owner": "KK ILABO",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "YAMAMOTO SHOJI",
+  "priorities": [
+    {
+      "priorityDate": "20210716"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SETAGAYA TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "KK ILABO",
+        "applicantNativeAddress": "東京都世田谷区",
+        "applicantNativeName": "株式会社アイラボ"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of application software online (SaaS), lending of computers, provision of computer programs, design / creation or maintenance of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "オンラインによるアプリケーションソフトウェアの提供（ＳａａＳ），電子計算機の貸与，電子計算機用プログラムの提供，電子計算機のプログラムの設計・作成又は保守"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "91f70a11-f4e3-446b-bdab-fe8ffbacb591",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "16.03.01.00",
+      "25.07.01.00",
+      "25.07.03.00",
+      "25.07.04.00",
+      "26.04.01.00",
+      "26.04.04.00",
+      "26.04.07.00",
+      "26.04.08.00",
+      "26.04.09.00",
+      "27.03.01.00",
+      "27.03.15.00",
+      "27.05.01.17",
+      "27.05.08.00",
+      "27.05.21.00",
+      "29.01.01.03",
+      "29.01.01.04",
+      "29.01.04.01",
+      "29.01.04.02",
+      "29.01.11.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20210716"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO SHOJI",
+        "representativeNativeName": "山本　彰司"
+      },
+      {
+        "representativeName": "YAMAMOTO TATSURO",
+        "representativeNativeName": "山本　龍郎"
+      },
+      {
+        "representativeName": "SHIMIZU SADANOBU",
+        "representativeNativeName": "清水　定信"
+      },
+      {
+        "representativeName": "NAKANISHI YASUHIRO",
+        "representativeNativeName": "中西　康裕"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20210716",
+        "applicationNumber": "2021-089306"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427105811",
+    "wordMarkSpecification": {
+      "markTranslation": "Q PRI",
+      "markTransliteration": "KYUUPURI",
+      "markVerbalElementText": "Ｑプリ"
+    }
+  },
+  "_uri": "/mark/jp/91f70a11-f4e3-446b-bdab-fe8ffbacb591",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:45.991Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/50183de6-bcf9-48bd-a1ff-5a2b980255e7",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "50183de6-bcf9-48bd-a1ff-5a2b980255e7",
+  "applicationNumber": "3102388",
+  "registrationNumber": "3102388",
+  "applicationDate": "2015-04-02",
+  "registrationDate": "2015-07-03",
+  "expiryDate": "2035-04-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR G CASINOS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Casino services; gaming, gambling services; amusements; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; organisation of competitions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Restaurant, café and bar services, all provided from a casino.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.01.05",
+      "26.01.01",
+      "26.01.12",
+      "26.01.22",
+      "37.01.07"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Casino services; gaming, gambling services; amusements; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; organisation of competitions."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Restaurant, café and bar services, all provided from a casino."
+        }
+      ]
+    },
+    "id": "50183de6-bcf9-48bd-a1ff-5a2b980255e7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "21.01.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2015/017"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Chapel Quarter, Mount Street, Nottingham NG1 6HQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20150402",
+        "applicationNumber": "3102388"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350402",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20150703",
+        "registrationNumber": "3102388"
+      }
+    },
+    "version": "20250627194126",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR G CASINOS"
+    }
+  },
+  "_uri": "/mark/gb/50183de6-bcf9-48bd-a1ff-5a2b980255e7",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

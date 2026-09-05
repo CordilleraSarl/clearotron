@@ -1,0 +1,216 @@
+{
+  "uri": "/mark/gb/248bce27-09b6-47b6-b9fd-dbd7e85a8ad9",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "248bce27-09b6-47b6-b9fd-dbd7e85a8ad9",
+  "applicationNumber": "UK00914814552",
+  "registrationNumber": "UK00914814552",
+  "applicationDate": "2015-11-20",
+  "registrationDate": "2016-05-12",
+  "expiryDate": "2035-11-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MR. BAR-B-Q Original",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    3,
+    8,
+    9,
+    11,
+    20,
+    21,
+    24
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        3
+      ],
+      "language": "en",
+      "description": "Grill cleaner (liquid/chemical); grill stone cleaner.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": "en",
+      "description": "Cutlery, namely spoons and knives, sold separately, and hand operated meat tenderizing tools; barbecue utensils, namely, forks and tongs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Meat thermometers; barbecue thermometer gauges.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "en",
+      "description": "Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks, and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; jalapeño cooker; chicken roaster; electric bug zapper; ceramic briquettes; lava rocks; electric grill skillet; electric grill tray; grill irons.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Non-metal clips for holding table cloths on table.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": "en",
+      "description": "Barbecue utensils, namely, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks, and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters, and pots; corn cob holders; tableware, namely, paper plate holders not of precious metal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household use; grill covers; grill grids; basting spoons; and hand-operated burger presses, namely, presses for forming meat; spice arm; spice grinder; marinade injector; basting mop; food tent; bug zapper; grill dish; grill skillet; grill pan; grill tray; umbrellas for protecting food from insects and umbrella covers; barbecue mitts.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": "en",
+      "description": "Table cloths not made of paper; and unfitted fabric covers for outdoor furniture.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Mr. Bar-B-Q Products LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "GRÜNECKER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "375 Commerce Park Road, North Kingstown, Rhode Island 02852",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Mr. Bar-B-Q Products LLC"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.01.02",
+      "26.11.02",
+      "26.11.07"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "03",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Grill cleaner (liquid/chemical); grill stone cleaner."
+        },
+        {
+          "intClassNumber": "08",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Cutlery, namely spoons and knives, sold separately, and hand operated meat tenderizing tools; barbecue utensils, namely, forks and tongs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Meat thermometers; barbecue thermometer gauges."
+        },
+        {
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rotisserie kits consisting primarily of rod, fork, motor and balance weight; portable gas stoves; barbecue grill accessories, namely, rock grates, cooking racks, and cooking grids; barbecue grill replacement burners; barbecue grill replacement hoses and regulators and battery operated grill lights; jalapeño cooker; chicken roaster; electric bug zapper; ceramic briquettes; lava rocks; electric grill skillet; electric grill tray; grill irons."
+        },
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Non-metal clips for holding table cloths on table."
+        },
+        {
+          "intClassNumber": "21",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Barbecue utensils, namely, spatulas and turners, sold separately and prepackaged in carrying cases; non-electric toppers for barbecue grills, namely, woks, and griddles; grilling cookware, namely, cooking skewers, wire baskets, bowls, heat and serve platters, and pots; corn cob holders; tableware, namely, paper plate holders not of precious metal, bamboo plate holders, plastic plate holders and plastic serving trays; brushes for basting meat; bottles for basting foods; grill scrapers; grill brushes for cleaning barbecue grills; grill brush replacement parts for household use; grill covers; grill grids; basting spoons; and hand-operated burger presses, namely, presses for forming meat; spice arm; spice grinder; marinade injector; basting mop; food tent; bug zapper; grill dish; grill skillet; grill pan; grill tray; umbrellas for protecting food from insects and umbrella covers; barbecue mitts."
+        },
+        {
+          "intClassNumber": "24",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Table cloths not made of paper; and unfitted fabric covers for outdoor furniture."
+        }
+      ]
+    },
+    "id": "248bce27-09b6-47b6-b9fd-dbd7e85a8ad9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.01",
+      "26.11.05",
+      "26.11.08",
+      "26.11.98"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20251114",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Clubhouse, 20 St Andrew Street, London EC4A 3AG",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "GRÜNECKER"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151120",
+        "applicationNumber": "UK00914814552"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351120",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160512",
+        "registrationNumber": "UK00914814552"
+      }
+    },
+    "version": "20251114020016",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "MR. BAR-B-Q Original"
+    }
+  },
+  "_uri": "/mark/gb/248bce27-09b6-47b6-b9fd-dbd7e85a8ad9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.397Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

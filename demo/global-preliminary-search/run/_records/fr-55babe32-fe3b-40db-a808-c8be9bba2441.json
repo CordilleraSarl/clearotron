@@ -1,0 +1,173 @@
+{
+  "uri": "/mark/fr/55babe32-fe3b-40db-a808-c8be9bba2441",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "55babe32-fe3b-40db-a808-c8be9bba2441",
+  "applicationNumber": "13 4017392",
+  "registrationNumber": null,
+  "applicationDate": "2013-07-04",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-07-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "I LOVE NORD SHORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunication pour les tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; bureaux de placement ; gestion de fichiers informatiques ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; Audits d'entreprises (analyses commerciales) ",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment offices; computer file management; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; Business audits (business analysis)"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; communications radiophoniques ou téléphoniques ; services de radiotéléphonie mobile ; fourniture d'accès utilisateur à des réseaux informatiques mondiaux ; mise à disposition de forums en ligne ; fourniture d'accès à des bases de données ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; agences de presse ou d'informations (nouvelles) ; location d'appareils de télécommunication ; émissions radiophoniques ou télévisées ; services de téléconférences ou de visioconférences ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux ",
+      "translation_language": "en",
+      "translation": "Telecommunications; telecommunications information; communications by computer terminals or by fiber optic network; radio or telephone communications; mobile radiotelephone services; providing user access to global computer networks; provision of online forums; provision of access to databases; electronic display services (telecommunications); connection by telecommunications to a global computer network; press or information (news) agencies; rental of telecommunications apparatus; radio or television broadcasts; teleconferencing or videoconferencing services; electronic mail services; rental of access time to global computer networks"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; informations en matière de divertissement ou d'éducation ; recyclage professionnel ; mise à disposition d'installations de loisirs ; publication de livres ; prêts de livres ; production de films sur bandes vidéo ; location de films cinématographiques ; location d'enregistrements sonores ; location de magnétoscopes ou de postes de radio et de télévision ; location de décors de spectacles ; montage de bandes vidéo ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques, conférences ou congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; service de jeux d'argent ; publication électronique de livres et de périodiques en ligne ; micro-édition ",
+      "translation_language": "en",
+      "translation": "Education; training; entertainment ; sports and cultural activities; entertainment or educational information; vocational retraining; provision of leisure facilities; publication of books; book loans; production of films on videotape; rental of cinematographic films; rental of sound recordings; rental of video recorders or radio and television sets; rental of show sets; editing of videotapes; photography services; organization of competitions (education or entertainment); organization and conduct of colloquiums, conferences or congresses; organization of exhibitions for cultural or educational purposes; reservation of tickets for shows; gaming services provided online from a computer network; gambling service; electronic publication of books and periodicals online; micro-publishing"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Evaluations et estimations dans les domaines scientifiques et technologiques rendues par des ingénieurs ; recherches scientifiques et techniques ; conception et développement d'ordinateurs et de logiciels ; recherche et développement de nouveaux produits pour des tiers ; étude de projets techniques ; architecture ; décoration intérieure ; élaboration (conception), installation , maintenance, mise à jour ou location de logiciels ; programmation pour ordinateur ; analyse de systèmes informatiques ; conception de systèmes informatiques ; consultation en matière d'ordinateurs ; numérisation de documents ; logiciel-service (SaaS) ; conseils en technologie de l'information ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'oeuvres d'art ; audits en matière d'énergie.",
+      "translation_language": "en",
+      "translation": "Evaluations and estimates in the scientific and technological fields rendered by engineers; scientific and technical research; design and development of computers and software; research and development of new products for others; study of technical projects; architecture; interior decoration ; development (design), installation, maintenance, updating or rental of software; computer programming; analysis of computer systems; design of computer systems; computer consultancy; document scanning; software as a service (SaaS); information technology consulting; server hosting; technical control of motor vehicles; graphic art design services; styling (industrial aesthetics); authentication of works of art; energy audits."
+    }
+  ],
+  "owner": "M. Pascal SCHERER",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "M. Pascal SCHERER",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "9 rue du HEM, 62840 Laventie",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "M. Pascal SCHERER"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "02.09.01",
+      "26.01.16",
+      "29.02.00",
+      "37.01.09"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment offices; computer file management; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; Business audits (business analysis)",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunication pour les tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; bureaux de placement ; gestion de fichiers informatiques ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; Audits d'entreprises (analyses commerciales) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications; telecommunications information; communications by computer terminals or by fiber optic network; radio or telephone communications; mobile radiotelephone services; providing user access to global computer networks; provision of online forums; provision of access to databases; electronic display services (telecommunications); connection by telecommunications to a global computer network; press or information (news) agencies; rental of telecommunications apparatus; radio or television broadcasts; teleconferencing or videoconferencing services; electronic mail services; rental of access time to global computer networks",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ou par réseau de fibres optiques ; communications radiophoniques ou téléphoniques ; services de radiotéléphonie mobile ; fourniture d'accès utilisateur à des réseaux informatiques mondiaux ; mise à disposition de forums en ligne ; fourniture d'accès à des bases de données ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; agences de presse ou d'informations (nouvelles) ; location d'appareils de télécommunication ; émissions radiophoniques ou télévisées ; services de téléconférences ou de visioconférences ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; entertainment ; sports and cultural activities; entertainment or educational information; vocational retraining; provision of leisure facilities; publication of books; book loans; production of films on videotape; rental of cinematographic films; rental of sound recordings; rental of video recorders or radio and television sets; rental of show sets; editing of videotapes; photography services; organization of competitions (education or entertainment); organization and conduct of colloquiums, conferences or congresses; organization of exhibitions for cultural or educational purposes; reservation of tickets for shows; gaming services provided online from a computer network; gambling service; electronic publication of books and periodicals online; micro-publishing",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; informations en matière de divertissement ou d'éducation ; recyclage professionnel ; mise à disposition d'installations de loisirs ; publication de livres ; prêts de livres ; production de films sur bandes vidéo ; location de films cinématographiques ; location d'enregistrements sonores ; location de magnétoscopes ou de postes de radio et de télévision ; location de décors de spectacles ; montage de bandes vidéo ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques, conférences ou congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; service de jeux d'argent ; publication électronique de livres et de périodiques en ligne ; micro-édition "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Evaluations and estimates in the scientific and technological fields rendered by engineers; scientific and technical research; design and development of computers and software; research and development of new products for others; study of technical projects; architecture; interior decoration ; development (design), installation, maintenance, updating or rental of software; computer programming; analysis of computer systems; design of computer systems; computer consultancy; document scanning; software as a service (SaaS); information technology consulting; server hosting; technical control of motor vehicles; graphic art design services; styling (industrial aesthetics); authentication of works of art; energy audits.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Evaluations et estimations dans les domaines scientifiques et technologiques rendues par des ingénieurs ; recherches scientifiques et techniques ; conception et développement d'ordinateurs et de logiciels ; recherche et développement de nouveaux produits pour des tiers ; étude de projets techniques ; architecture ; décoration intérieure ; élaboration (conception), installation , maintenance, mise à jour ou location de logiciels ; programmation pour ordinateur ; analyse de systèmes informatiques ; conception de systèmes informatiques ; consultation en matière d'ordinateurs ; numérisation de documents ; logiciel-service (SaaS) ; conseils en technologie de l'information ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'oeuvres d'art ; audits en matière d'énergie."
+        }
+      ]
+    },
+    "id": "55babe32-fe3b-40db-a808-c8be9bba2441",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00350",
+        "publicationVolume": "30"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "M. Pascal SCHERER"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130704",
+        "applicationNumber": "13 4017392"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20130726",
+      "markCurrentStatus": "EXPIRED MARK"
+    },
+    "version": "20250426155804",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "I LOVE NORD SHORE"
+    }
+  },
+  "_uri": "/mark/fr/55babe32-fe3b-40db-a808-c8be9bba2441",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.817Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,294 @@
+{
+  "uri": "/mark/wo/ec6d33e5-7fd7-4a2a-a519-2531cd1c6bb0",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "ec6d33e5-7fd7-4a2a-a519-2531cd1c6bb0",
+  "applicationNumber": null,
+  "registrationNumber": "1217463",
+  "applicationDate": null,
+  "registrationDate": "2014-04-30",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2014-10-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-11-21",
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "NXP SECURE CONNECTIONS FOR A SMARTER WORLD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (ic's), high performance mixed signal ic's, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; interfaces, software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; data carriers, data processing equipment and computers.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification sheets and other data sheets in relation to integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consultancy, design, research, development and advisory services in relation to semiconductors; design of integrated circuits; design and development of software for semiconductor; providing information on the aforementioned services to designers and architects in the semiconductor industry; scientific and technological evaluation, testing, verification, accreditation and standardization of integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Modules électroniques, électrotechniques et électromagnétiques, leurs parties et composants, notamment circuits intégrés, circuits intégrés à signaux mixtes hautes performances, puces, diodes, transistors, processeurs, convertisseurs, semi-conducteurs et éléments à semi-conducteurs (analogiques et/ou numériques); interfaces, logiciels; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande d'électricité; appareils appareils pour enregistrer, transmettre ou reproduire des données, du son ou des images; supports de données, équipements de traitement de données et ordinateurs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Produits d'imprimerie; manuels scolaires; recueils de données; manuels d'instruction; manuels d'utilisation; catalogues de produits; fiches de spécifications de circuits et autres fiches techniques en matière de circuits intégrés, puces, semi-conducteurs, appareils semi-conducteurs, instruments et logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services de conseillers, conception, recherche, développement et services de conseils en matière de semi-conducteurs; conception de circuits intégrés; conception et développement de logiciels pour semi-conducteurs; mise à disposition d'informations concernant les services précités pour concepteurs et architectes dans l'industrie des semi-conducteurs; évaluation scientifique et technologique, essais, vérification, accréditation et standardisation de circuits intégrés, puces, semi-conducteurs, appareils semi-conducteurs, instruments et logiciels.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Módulos electrónicos, electrotécnicos y electromagnéticos y sus partes y componentes, incluidos circuitos integrados, circuitos integrados de señal mixta de alto rendimiento, chips, diodos, transistores, procesadores, convertidores (analógicos o digitales), semiconductores y elementos semiconductores; interfaces, software; aparatos e instrumentos de conducción, distribución, transformación, acumulación, regulación o control de la electricidad; aparatos de grabación, trasmisión o reproducción de datos, sonido o imágenes; soportes de datos, equipos de procesamiento de datos y ordenadores.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Productos de imprenta; libros de texto; libros de datos; manuales de instrucciones; manuales del usuario; catálogos de productos; hojas de especificaciones de circuitos y otras hojas de datos en relación con circuitos integrados, chips, semiconductores, aparatos de semiconducción, instrumentos y software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de consultoría, diseño, investigación, desarrollo y asesoramiento en relación con semiconductores; diseño de circuitos integrados; diseño y desarrollo de software para semiconductores; facilitación de información sobre los servicios antes mencionados para diseñadores y arquitectos del sector de los semiconductores; evaluación científica y tecnológica, pruebas, verificación, acreditación y estandarización de circuitos integrados, chips, semiconductores, aparatos de semiconducción, instrumentos y software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO SHIELDMARK B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20131120",
+      "priorityNumber": "1279204"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20131120",
+          "basicApplicationNumber": "01279204"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX",
+      "basicRegistrations": [
+        {
+          "basicRegistrationDate": "20140410",
+          "basicRegistrationNumber": "0950971"
+        }
+      ]
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "CN",
+      "JP",
+      "KR",
+      "SG",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG EINDHOVEN",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20131120",
+            "basicApplicationNumber": "01279204"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX",
+        "basicRegistrations": [
+          {
+            "basicRegistrationDate": "20140410",
+            "basicRegistrationNumber": "0950971"
+          }
+        ]
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "CN",
+      "JP",
+      "KR",
+      "SG",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Electronic, electro technical and electromagnetic modules, parts and components therefor including integrated circuits (ic's), high performance mixed signal ic's, chips, diodes, transistors, processors, converters, (analogue and/or digital) semiconductors and semiconductor elements; interfaces, software; apparatus and instruments for conducting, switching, transforming, accumulating, regulating and controlling electricity; apparatus for recording, transmission or reproduction of data, sound or images; data carriers, data processing equipment and computers."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Printed matter; textbooks; data books; instructional manuals; user manuals; product catalogues; circuit specification sheets and other data sheets in relation to integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consultancy, design, research, development and advisory services in relation to semiconductors; design of integrated circuits; design and development of software for semiconductor; providing information on the aforementioned services to designers and architects in the semiconductor industry; scientific and technological evaluation, testing, verification, accreditation and standardization of integrated circuits (ic's), chips, semiconductors, semiconducting apparatus, instruments and software."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Modules électroniques, électrotechniques et électromagnétiques, leurs parties et composants, notamment circuits intégrés, circuits intégrés à signaux mixtes hautes performances, puces, diodes, transistors, processeurs, convertisseurs, semi-conducteurs et éléments à semi-conducteurs (analogiques et/ou numériques); interfaces, logiciels; appareils et instruments pour la conduite, la distribution, la transformation, l'accumulation, le réglage ou la commande d'électricité; appareils appareils pour enregistrer, transmettre ou reproduire des données, du son ou des images; supports de données, équipements de traitement de données et ordinateurs."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Produits d'imprimerie; manuels scolaires; recueils de données; manuels d'instruction; manuels d'utilisation; catalogues de produits; fiches de spécifications de circuits et autres fiches techniques en matière de circuits intégrés, puces, semi-conducteurs, appareils semi-conducteurs, instruments et logiciels."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de conseillers, conception, recherche, développement et services de conseils en matière de semi-conducteurs; conception de circuits intégrés; conception et développement de logiciels pour semi-conducteurs; mise à disposition d'informations concernant les services précités pour concepteurs et architectes dans l'industrie des semi-conducteurs; évaluation scientifique et technologique, essais, vérification, accréditation et standardisation de circuits intégrés, puces, semi-conducteurs, appareils semi-conducteurs, instruments et logiciels."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Módulos electrónicos, electrotécnicos y electromagnéticos y sus partes y componentes, incluidos circuitos integrados, circuitos integrados de señal mixta de alto rendimiento, chips, diodos, transistores, procesadores, convertidores (analógicos o digitales), semiconductores y elementos semiconductores; interfaces, software; aparatos e instrumentos de conducción, distribución, transformación, acumulación, regulación o control de la electricidad; aparatos de grabación, trasmisión o reproducción de datos, sonido o imágenes; soportes de datos, equipos de procesamiento de datos y ordenadores."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Productos de imprenta; libros de texto; libros de datos; manuales de instrucciones; manuales del usuario; catálogos de productos; hojas de especificaciones de circuitos y otras hojas de datos en relación con circuitos integrados, chips, semiconductores, aparatos de semiconducción, instrumentos y software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de consultoría, diseño, investigación, desarrollo y asesoramiento en relación con semiconductores; diseño de circuitos integrados; diseño y desarrollo de software para semiconductores; facilitación de información sobre los servicios antes mencionados para diseñadores y arquitectos del sector de los semiconductores; evaluación científica y tecnológica, pruebas, verificación, acreditación y estandarización de circuitos integrados, chips, semiconductores, aparatos de semiconducción, instrumentos y software."
+        }
+      ]
+    },
+    "id": "ec6d33e5-7fd7-4a2a-a519-2531cd1c6bb0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20131120",
+        "priorityNumber": "1279204"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "38"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "Nachtwachtlaan 20 NL-1058 EA Amsterdam",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO SHIELDMARK B.V."
+      }
+    ],
+    "status": {
+      "active": false,
+      "cancellationDate": "20241121",
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20141002",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "20140430",
+        "registrationNumber": "1217463"
+      }
+    },
+    "version": "20250620175537",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "NXP SECURE CONNECTIONS FOR A SMARTER WORLD"
+    }
+  },
+  "_uri": "/mark/wo/ec6d33e5-7fd7-4a2a-a519-2531cd1c6bb0",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.460Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

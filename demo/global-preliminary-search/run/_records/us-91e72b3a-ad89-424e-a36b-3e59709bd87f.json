@@ -1,0 +1,226 @@
+{
+  "uri": "/mark/us/91e72b3a-ad89-424e-a36b-3e59709bd87f",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "91e72b3a-ad89-424e-a36b-3e59709bd87f",
+  "applicationNumber": "88189370",
+  "registrationNumber": null,
+  "applicationDate": "2018-11-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2019-04-02"
+  ],
+  "abandonmentDate": "2019-12-30",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Flow meters",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Nicolich, Franco",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Fort Myers, FL, 33966",
+        "applicantAddressCity": "Fort Myers",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "33966",
+        "applicantAddressStateName": "FLORIDA",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Nicolich, Franco",
+        "applicantSecondaryAddressUnit": "6619 Plantation Preserve Circle North"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Flow meters"
+        }
+      ]
+    },
+    "id": "91e72b3a-ad89-424e-a36b-3e59709bd87f",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20191230",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20191230",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20190528",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20190402",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20190402",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20190313",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20190215",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20190214",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20181128",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20181114",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Fort Myers, FL, 33966",
+        "city": "Fort Myers",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Nicolich, Franco",
+        "postalCode": "33966",
+        "secondaryAddressUnit": "6619 Plantation Preserve Circle North",
+        "stateName": "FLORIDA"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Fort Myers, FL, 33966",
+        "city": "Fort Myers",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Nicolich, Franco",
+        "postalCode": "33966",
+        "secondaryAddressUnit": "6619 Plantation Preserve Circle North",
+        "stateName": "FLORIDA"
+      },
+      {
+        "address": "Fort Myers, FL, 33966",
+        "city": "Fort Myers",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Nicolich, Franco",
+        "postalCode": "33966",
+        "secondaryAddressUnit": "6619 Plantation Preserve Circle North",
+        "stateName": "FLORIDA"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "6619 PLANTATION PRESERVE CIRCLE NORTH, FORT MYERS, FL 33966, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "6619 PLANTATION PRESERVE CIRCLE NORTH",
+          "FORT MYERS, FL 33966",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "NICOLICH, FRANCO, 6619 PLANTATION PRESERVE CIRCLE NORTH"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "6619 PLANTATION PRESERVE CIRCLE NORTH, FORT MYERS, FL 33966, UNITED STATES",
+        "representativeAddressLines": [
+          "6619 PLANTATION PRESERVE CIRCLE NORTH",
+          "FORT MYERS, FL 33966",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20191230",
+      "active": false,
+      "application": {
+        "applicationDate": "20181111",
+        "applicationNumber": "88189370"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20191230",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20190402"
+      ]
+    },
+    "version": "20260113072005",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/us/91e72b3a-ad89-424e-a36b-3e59709bd87f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.179Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "uri": "/mark/xs/c3e44eb0-98b1-41ba-8687-76945bd11379",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "c3e44eb0-98b1-41ba-8687-76945bd11379",
+  "applicationNumber": null,
+  "registrationNumber": "101677",
+  "applicationDate": null,
+  "registrationDate": "1983-03-10",
+  "expiryDate": null,
+  "renewalDate": "2017-11-03",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "THE SOUTH HAVEN CORPORATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising rendered in the course of maintaining, operating and managing a nursing home",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Advertising rendered in the course of maintaining, operating and managing a nursing home",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "THE SOUTH HAVEN CORPORATION",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3572 LORNA RIDGE DRIVE, HOOVER, AL, 35216",
+        "applicantAddressCity": "HOOVER",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "35216",
+        "applicantAddressStateName": "ALABAMA",
+        "applicantAddressStreet": "3572 LORNA RIDGE DRIVE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "THE SOUTH HAVEN CORPORATION",
+        "applicantStateOfIncorporation": "ALABAMA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising rendered in the course of maintaining, operating and managing a nursing home"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising rendered in the course of maintaining, operating and managing a nursing home"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42",
+          "natGoodsServicesDescription": "Advertising rendered in the course of maintaining, operating and managing a nursing home"
+        }
+      ]
+    },
+    "id": "c3e44eb0-98b1-41ba-8687-76945bd11379",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "ADVERTISING AND PRINTED MATERIALS",
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "TWO (2) CLASPING HANDS WITH \"THE SOUTH HAVEN CORPORATION \"TO THE RIGHT",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "3141 OLD COLUMBIANA ROAD, BIRMINGHAM, AL, 35226",
+        "city": "BIRMINGHAM",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "county": "JEFFERSON",
+        "legalEntity": "CORPORATION",
+        "name": "THE SOUTH HAVEN CORPORATION",
+        "phoneNumber": "205-822-1580",
+        "postalCode": "35226",
+        "stateName": "ALABAMA",
+        "stateOfIncorporation": "ALABAMA",
+        "street": "3141 OLD COLUMBIANA ROAD"
+      }
+    ],
+    "recordLastUpdated": "20251202",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "3141 OLD COLUMBIANA ROAD, HOOVER, AL, 35226",
+        "city": "HOOVER",
+        "county": "JEFFERSON",
+        "name": "THE SOUTH HAVEN CORPORATION",
+        "phoneNumber": "205-822-1580",
+        "postalCode": "35226",
+        "renewalDate": "19920519",
+        "stateName": "ALABAMA",
+        "stateOfIncorporation": "ALABAMA",
+        "street": "3141 OLD COLUMBIANA ROAD"
+      },
+      {
+        "address": "3141 OLD COLUMBIANA ROAD, HOVER, AL, 35226",
+        "city": "HOVER",
+        "legalEntity": "CORPORATION",
+        "name": "THE SOUTH HAVEN CORPORATION",
+        "postalCode": "35226",
+        "renewalDate": "20030404",
+        "stateName": "ALABAMA",
+        "stateOfIncorporation": "ALABAMA",
+        "street": "3141 OLD COLUMBIANA ROAD"
+      },
+      {
+        "address": "P.O. BOX 660009, BIRMINGHAM, AL, 35266",
+        "city": "BIRMINGHAM",
+        "legalEntity": "CORPORATION",
+        "name": "THE SOUTH HAVEN CORPORATION",
+        "postalCode": "35266",
+        "renewalDate": "20121022",
+        "stateName": "ALABAMA",
+        "stateOfIncorporation": "ALABAMA",
+        "street": "P.O. BOX 660009"
+      },
+      {
+        "address": "3572 LORNA RIDGE DRIVE, HOOVER, AL, 35216",
+        "city": "HOOVER",
+        "legalEntity": "CORPORATION",
+        "name": "THE SOUTH HAVEN CORPORATION",
+        "postalCode": "35216",
+        "renewalDate": "20171103",
+        "stateName": "ALABAMA",
+        "stateOfIncorporation": "ALABAMA",
+        "street": "3572 LORNA RIDGE DRIVE"
+      }
+    ],
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "425 FIRST ALABAMA BANK BUILDING, BIRMINGHAM, AL, 35203",
+        "representativeCorrespondentAddressCity": "BIRMINGHAM",
+        "representativeCorrespondentAddressPostalCode": "35203",
+        "representativeCorrespondentAddressStateName": "ALABAMA",
+        "representativeCorrespondentAddressStreet": "425 FIRST ALABAMA BANK BUILDING",
+        "representativeCorrespondentFirmName": "LEITMAN, SIEGAL & PAYNE, P.A.",
+        "representativeCorrespondentName": "W. CLARK WATSON"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "19830201"
+        }
+      ],
+      "firstUsedAnywhereDate": "19830201",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "19830310",
+        "registrationNumber": "101677"
+      },
+      "renewalDate": "20171103"
+    },
+    "usStateOfficeCode": "AL",
+    "usStateOfficeName": "ALABAMA",
+    "version": "20251202120154",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE SOUTH HAVEN CORPORATION"
+    }
+  },
+  "_uri": "/mark/xs/c3e44eb0-98b1-41ba-8687-76945bd11379",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

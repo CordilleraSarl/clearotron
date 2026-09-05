@@ -1,0 +1,178 @@
+{
+  "uri": "/mark/jp/4d71035f-b041-4758-bd6e-7e80eb8e06ff",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "4d71035f-b041-4758-bd6e-7e80eb8e06ff",
+  "applicationNumber": "2022-051805",
+  "registrationNumber": "6635172",
+  "applicationDate": "2022-05-09",
+  "registrationDate": "2022-11-01",
+  "expiryDate": "2032-11-01",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-11-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＱＯＲＶＯ",
+  "markTransliteration": "KORUBO KUORUBO",
+  "markTranslation": "QORVO",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの分野における、電気通信機械器具及び電子応用機械器具に関する技術情報の提供並びにコンピュータソフトウェアプラットフォームの提供（ＰａａＳ），無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの分野における、科学技術情報の提供並びにコンピュータソフトウェアプラットフォームの提供（ＰａａＳ），無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野におけるコンピュータソフトウェアの設計及び開発に関する情報の提供，無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野における機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計に関する情報の提供，無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野における通信技術の設計及び開発に関する情報の提供，無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野における科学技術情報の提供，ネットワーク・装置及びソフトウェアセキュリティの分野における科学技術情報の提供，他人のための電気及び電子回路・集積回路モジュール・集積回路・半導体及び関連するコンピュータソフトウェアの設計・開発及び試験，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，電子計算機のプログラムの設計・作成又は保守，電気に関する試験又は研究，機械器具に関する試験又は研究，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Provision of technical information on electrical communication equipment and electronic application equipment in the fields of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related systems, software and networks; Provision of computer software platforms (PaaS), provision of scientific and technological information in the fields of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related systems, software and networks; Providing computer software platforms (PaaS), computer software in the field of design and development of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related system software and networks. Provision of information on design and development, machinery and equipment in the field of design and development of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related systems, software and networks; Provision of information on the design of equipment (including these parts) or equipment composed of these machines, etc., wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology, and Provision of information on the design and development of communication technology in the field of design and development of related systems, software and networks, wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related provision of scientific and technical information in the field of design and development of systems, software and networks for the development of systems, software and networks; provision of scientific and technological information in the field of network, equipment and software security; Design, development and testing of semiconductors and related computer software, design of machines, devices or instruments (including their parts) or facilities composed of these machines, etc., design, creation or maintenance of computer programs, Testing or research on electricity, testing or research on machinery, provision of computer programs"
+    }
+  ],
+  "owner": "QORVO US INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IDAKA MASATO",
+  "priorities": [
+    {
+      "priorityDate": "20211111"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "QORVO US INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "コルボ　ユーエス　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provision of technical information on electrical communication equipment and electronic application equipment in the fields of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related systems, software and networks; Provision of computer software platforms (PaaS), provision of scientific and technological information in the fields of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related systems, software and networks; Providing computer software platforms (PaaS), computer software in the field of design and development of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related system software and networks. Provision of information on design and development, machinery and equipment in the field of design and development of wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related systems, software and networks; Provision of information on the design of equipment (including these parts) or equipment composed of these machines, etc., wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology, and Provision of information on the design and development of communication technology in the field of design and development of related systems, software and networks, wireless communication amplifiers, electrical and electronic circuits, integrated circuit modules, integrated circuits, semiconductors, RF and MEMs technology and related provision of scientific and technical information in the field of design and development of systems, software and networks for the development of systems, software and networks; provision of scientific and technological information in the field of network, equipment and software security; Design, development and testing of semiconductors and related computer software, design of machines, devices or instruments (including their parts) or facilities composed of these machines, etc., design, creation or maintenance of computer programs, Testing or research on electricity, testing or research on machinery, provision of computer programs",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの分野における、電気通信機械器具及び電子応用機械器具に関する技術情報の提供並びにコンピュータソフトウェアプラットフォームの提供（ＰａａＳ），無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの分野における、科学技術情報の提供並びにコンピュータソフトウェアプラットフォームの提供（ＰａａＳ），無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野におけるコンピュータソフトウェアの設計及び開発に関する情報の提供，無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野における機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計に関する情報の提供，無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野における通信技術の設計及び開発に関する情報の提供，無線通信用増幅器・電気及び電子回路・集積回路モジュール・集積回路・半導体・ＲＦ及びＭＥＭｓ技術並びに関連するシステム・ソフトウェア及びネットワークの設計及び開発の分野における科学技術情報の提供，ネットワーク・装置及びソフトウェアセキュリティの分野における科学技術情報の提供，他人のための電気及び電子回路・集積回路モジュール・集積回路・半導体及び関連するコンピュータソフトウェアの設計・開発及び試験，機械・装置若しくは器具（これらの部品を含む。）又はこれらの機械等により構成される設備の設計，電子計算機のプログラムの設計・作成又は保守，電気に関する試験又は研究，機械器具に関する試験又は研究，電子計算機用プログラムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42N03",
+          "natGoodsServicesDescription": "Designing of machines, apparatus, instruments [including their parts] or systems composed of such machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42Q01",
+          "natGoodsServicesDescription": "Testing, inspection or research of pharmaceuticals, cosmetics or foodstuffs"
+        },
+        {
+          "natClassNumber": "42Q02",
+          "natGoodsServicesDescription": "Research on building construction or city planning; Testing or research on prevention of pollution; Testing or research on electricity; Testing or research on civil engineering"
+        },
+        {
+          "natClassNumber": "42Q03",
+          "natGoodsServicesDescription": "Testing, inspection or research on agriculture, livestock breeding or fisheries"
+        },
+        {
+          "natClassNumber": "42Q99",
+          "natGoodsServicesDescription": "Testing or research on machines, apparatus and instruments"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "4d71035f-b041-4758-bd6e-7e80eb8e06ff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20211111"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IDAKA MASATO",
+        "representativeNativeName": "井▲高▼　将斗"
+      },
+      {
+        "representativeName": "YAMAMOTO KENSAKU",
+        "representativeNativeName": "山本　健策"
+      },
+      {
+        "representativeName": "YAMAMOTO HIDESAKU",
+        "representativeNativeName": "山本　秀策"
+      },
+      {
+        "representativeName": "MORISHITA NATSUKI",
+        "representativeNativeName": "森下　夏樹"
+      },
+      {
+        "representativeName": "ISHIKAWA DAISUKE",
+        "representativeNativeName": "石川　大輔"
+      },
+      {
+        "representativeName": "IIDA TAKATOSHI",
+        "representativeNativeName": "飯田　貴敏"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220509",
+        "applicationNumber": "2022-051805"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321101",
+      "lastPublicationDate": "20221110",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20221101",
+        "registrationNumber": "6635172"
+      }
+    },
+    "version": "20240213103642",
+    "wordMarkSpecification": {
+      "markTranslation": "QORVO",
+      "markTransliteration": "KORUBO KUORUBO",
+      "markVerbalElementText": "ＱＯＲＶＯ"
+    }
+  },
+  "_uri": "/mark/jp/4d71035f-b041-4758-bd6e-7e80eb8e06ff",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "uri": "/mark/de/53ae4738-045b-464f-91ac-1bdfbfdec9fa",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "53ae4738-045b-464f-91ac-1bdfbfdec9fa",
+  "applicationNumber": "302008076511.9",
+  "registrationNumber": "302008076511",
+  "applicationDate": "2008-12-03",
+  "registrationDate": "2009-03-03",
+  "expiryDate": "2028-12-31",
+  "renewalDate": "2019-01-01",
+  "lastPublicationDate": "2009-04-03",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "posi TV perspektiven orientierung strategien ideen Tatsachen Visionen",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung; Geschäftsführung; Unternehmensverwaltung; Büroarbeiten",
+      "translation_language": "en",
+      "translation": "advertising; Managing directors; Business administration; Office functions"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Telekommunikation",
+      "translation_language": "en",
+      "translation": "Telecommunications"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Erziehung; Ausbildung; Unterhaltung; kulturelle Aktivitäten",
+      "translation_language": "en",
+      "translation": "Education; Training; Entertainment; cultural activities"
+    }
+  ],
+  "owner": "Johanna Frank",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Dudenhofen",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Johanna Frank"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "cmMarkImageEUclassification": [
+      "26.04.01",
+      "26.04.22",
+      "26.11.22",
+      "29.02.00",
+      "37.02.20",
+      "37.02.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "advertising; Managing directors; Business administration; Office functions",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung; Geschäftsführung; Unternehmensverwaltung; Büroarbeiten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Telekommunikation"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; Training; Entertainment; cultural activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Erziehung; Ausbildung; Unterhaltung; kulturelle Aktivitäten"
+        }
+      ]
+    },
+    "id": "53ae4738-045b-464f-91ac-1bdfbfdec9fa",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "rot, schwarz, weiß"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.04.18",
+      "26.11.21",
+      "27.05.10",
+      "29.01.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "14"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Am Woogbach 4, 67373 Dudenhofen",
+        "representativeCorrespondentName": "Kultur- und Bildungsagentur Johanna Frank"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20081203",
+        "applicationNumber": "302008076511.9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281231",
+      "lastPublicationDate": "20090403",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090303",
+        "registrationNumber": "302008076511"
+      },
+      "renewalDate": "20190101",
+      "renewalPublishedDate": "20190329"
+    },
+    "version": "20250627151315",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "posi TV perspektiven orientierung strategien ideen Tatsachen Visionen"
+    }
+  },
+  "_uri": "/mark/de/53ae4738-045b-464f-91ac-1bdfbfdec9fa",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

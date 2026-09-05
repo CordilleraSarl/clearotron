@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/cn/c4388f88-67e6-4943-a724-a8a26c0e10d0",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "c4388f88-67e6-4943-a724-a8a26c0e10d0",
+  "applicationNumber": "62097796",
+  "registrationNumber": "62097796",
+  "applicationDate": "2022-01-12",
+  "registrationDate": "2022-07-07",
+  "expiryDate": "2032-07-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-04-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "凯文克里斯",
+  "markTransliteration": "KAI WEN KE LI SI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "包装设计,计算机软件设计,计算机硬件设计和开发咨询,研究和开发新产品,信息技术咨询服务,为第三人创建、设计、开发和维护网站,提供互联网搜索引擎,技术研究,服装设计,计算机编程",
+      "translation_language": "en",
+      "translation": "Packaging design, computer software design, computer hardware design and development consulting, research and development of new products, information technology consulting services, creation, design, development and maintenance of websites for third parties, provision of Internet search engines, technical research, clothing design, Computer Programming"
+    }
+  ],
+  "owner": "Wuhan Kevin Kris Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖北省武汉市江夏区文化大道111号通达广场21层2103室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Wuhan Kevin Kris Technology Co., Ltd.",
+        "applicantNativeName": "武汉凯文克里斯科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Packaging design, computer software design, computer hardware design and development consulting, research and development of new products, information technology consulting services, creation, design, development and maintenance of websites for third parties, provision of Internet search engines, technical research, clothing design, Computer Programming",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "包装设计,计算机软件设计,计算机硬件设计和开发咨询,研究和开发新产品,信息技术咨询服务,为第三人创建、设计、开发和维护网站,提供互联网搜索引擎,技术研究,服装设计,计算机编程"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Registered design service",
+        "Dress designing service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4218",
+          "subNatGoodsServicesDescription": "Dress designing service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "c4388f88-67e6-4943-a724-a8a26c0e10d0",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1786"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京细软智谷知识产权代理有限责任公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220112",
+        "applicationNumber": "62097796"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320706",
+      "lastPublicationDate": "20220406",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220707",
+        "registrationNumber": "62097796"
+      }
+    },
+    "version": "20251004185625",
+    "wordMarkSpecification": {
+      "markTransliteration": "KAI WEN KE LI SI",
+      "markVerbalElementText": "凯文克里斯"
+    }
+  },
+  "_uri": "/mark/cn/c4388f88-67e6-4943-a724-a8a26c0e10d0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:58.825Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-transliteration-numeric"
+  }
+}

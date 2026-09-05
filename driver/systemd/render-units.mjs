@@ -44,6 +44,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSy
 import { SERVER_INSTALL_SET } from "../../shared/server-units.mjs";   // — one authority, two callers
 import { join, dirname, basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { defaultDenylistPath } from "../../shared/client-door.mjs";
 import { homedir } from "node:os";
 import { envFrom } from "../../shared/env-aliases.mjs";
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";
@@ -318,7 +319,7 @@ export async function writeInstallEnv(envFile) {
     identity: null,
     issuesKey: false,
     checkoutDir: ROOT,
-    denylistPath: join(homedir(), ".config", "clearotron", "token-denylist"),
+    denylistPath: defaultDenylistPath(homedir()),   // — one owner for this path
     // The unit reads the FILE, never this shell. `want` is what is about to be written to it, so this
     // is true iff the door will find a secret where it looks — which is the exact question the blocker
     // asks, and the one a shell-exported secret answers wrongly.

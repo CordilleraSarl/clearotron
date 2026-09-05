@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/ir/39b5f7d9-e098-43f9-9063-175b3f6d9e27",
+  "provider": "clarivate",
+  "office": "ir",
+  "guid": "39b5f7d9-e098-43f9-9063-175b3f6d9e27",
+  "applicationNumber": "140150140001039340",
+  "registrationNumber": null,
+  "applicationDate": "2022-08-09",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    42,
+    43,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SHERKAT KALA AVIJHE LOTOUS ARMAN",
+  "ownerNative": null,
+  "ownerCountry": "IR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TEHRAN",
+        "applicantAddressCountryCode": "IR",
+        "applicantAddressCountryName": "Iran",
+        "applicantName": "SHERKAT KALA AVIJHE LOTOUS ARMAN"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41"
+        },
+        {
+          "intClassNumber": "42"
+        },
+        {
+          "intClassNumber": "43"
+        },
+        {
+          "intClassNumber": "45"
+        }
+      ]
+    },
+    "id": "39b5f7d9-e098-43f9-9063-175b3f6d9e27",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "IR",
+    "registrationOfficeName": "Iran",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220809",
+        "applicationNumber": "140150140001039340"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20230427182118",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/ir/39b5f7d9-e098-43f9-9063-175b3f6d9e27",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

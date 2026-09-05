@@ -1,0 +1,355 @@
+{
+  "uri": "/mark/us/9f649be8-7fbc-438e-8a0c-58828a3ff592",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "9f649be8-7fbc-438e-8a0c-58828a3ff592",
+  "applicationNumber": "75664942",
+  "registrationNumber": "2443794",
+  "applicationDate": "1999-03-22",
+  "registrationDate": "2001-04-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2000-12-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2008-01-19",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "XORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    25,
+    28,
+    29,
+    33,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 PRE-RECORDED VIDEO TAPES FEATURING STORIES OF CARTOON CHARACTERS AND BLANK VIDEO TAPES, AUDIO TAPES AND COMPACT DISKS FEATURING MUSIC AND STORIES; APPARATUS FOR RECORDING, TRANSMISSION OR REPRODUCTION OF SOUND AND IMAGES, NAMELY, VCRs, STEREO AMPLIFIERS, RECEIVERS AND TUNERS, SLIDE PROJECTORS, PHONOGRAPH RECORD PLAYERS, CD PLAYERS, AUDIO CASSETTE PLAYERS AND RECORDERS, AND BASEBALL BATING HELMETS",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Printed matter; namely, books, magazines, pamphlets, and newsletters featuring an animated science fiction character; playing cards; posters; cartoon prints; mounted and unmounted photographs",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": "INT. CL. 25 Clothing; namely, shirts, footwear, headwear, coats, jackets and slacks",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": "INT. CL. 28 Games and playthings; namely, board games, puzzles, plush toys, mechanical action toys, rubber and plastic character toys, inflatable toys, wooden character toys, toy action figures, wind-up toys, stuffed toys gymnastic and sporting articles, namely, cycling equipment and accessories, namely, stationary cycles, football equipment and accessories, namely, footballs, soccer equipment and accessories, namely soccer balls baseball equipment and accessories, namely, baseballs, baseball bats, baseball bases, baseball mitts, baseball gloves, basketball equipment and accessories, namely, basketballs, basketball goals, basketball mitts, golf equipment, namely, golf balls golf bags, and golf clubs, volleyball equipment namely, volleyballs, volleyball nets, volleyball standards, tennis racquets, and tennis balls, roller-skates, ice-skates, skipping ropes, jump ropes, surfboards, and swim boards for recreational use",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": null,
+      "description": "INT. CL. 29 Meat, fish, poultry and game and dishes prepared from these; meat extracts; preserved, dried and cooked fruits and vegetables; jellies, jams, fruit sauces; eggs, milk and milk products, namely cheese, butter, yogurt, dairy whipped products, edible oils and fats",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": null,
+      "description": "INT. CL. 33 Alcoholic beverages, namely, aperitif bitters, prepared cocktails, liqueurs, meads, spirits, and wines",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Amusement park services, amusement arcade services, pleasure ground transportation services, theme park services, providing leisure center services, provision of recreational activities, namely, sporting camps, nightclubs, dance halls video and computer came venues, simulators; cinema theatre; production of theatre; conducting fun fairs in the nature of theme and educational events; motion picture and television production and distribution services; publication of books, magazines, posters, puzzles, comic books, school project material",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Restaurant services; cafes, cafeterias, canteens, snack bars and catering services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "180 Gorge Road, South Australia, AUST",
+        "applicantAddressCity": "South Australia",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantAddressStreet": "180 Gorge Road",
+        "applicantJurisdictionOfIncorporation": "AUSTRALIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+        "applicantSecondaryAddressUnit": "Newton 5074"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 PRE-RECORDED VIDEO TAPES FEATURING STORIES OF CARTOON CHARACTERS AND BLANK VIDEO TAPES, AUDIO TAPES AND COMPACT DISKS FEATURING MUSIC AND STORIES; APPARATUS FOR RECORDING, TRANSMISSION OR REPRODUCTION OF SOUND AND IMAGES, NAMELY, VCRs, STEREO AMPLIFIERS, RECEIVERS AND TUNERS, SLIDE PROJECTORS, PHONOGRAPH RECORD PLAYERS, CD PLAYERS, AUDIO CASSETTE PLAYERS AND RECORDERS, AND BASEBALL BATING HELMETS"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Printed matter; namely, books, magazines, pamphlets, and newsletters featuring an animated science fiction character; playing cards; posters; cartoon prints; mounted and unmounted photographs"
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsServicesDescription": "INT. CL. 25 Clothing; namely, shirts, footwear, headwear, coats, jackets and slacks"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsServicesDescription": "INT. CL. 28 Games and playthings; namely, board games, puzzles, plush toys, mechanical action toys, rubber and plastic character toys, inflatable toys, wooden character toys, toy action figures, wind-up toys, stuffed toys gymnastic and sporting articles, namely, cycling equipment and accessories, namely, stationary cycles, football equipment and accessories, namely, footballs, soccer equipment and accessories, namely soccer balls baseball equipment and accessories, namely, baseballs, baseball bats, baseball bases, baseball mitts, baseball gloves, basketball equipment and accessories, namely, basketballs, basketball goals, basketball mitts, golf equipment, namely, golf balls golf bags, and golf clubs, volleyball equipment namely, volleyballs, volleyball nets, volleyball standards, tennis racquets, and tennis balls, roller-skates, ice-skates, skipping ropes, jump ropes, surfboards, and swim boards for recreational use"
+        },
+        {
+          "intClassNumber": "29",
+          "intGoodsServicesDescription": "INT. CL. 29 Meat, fish, poultry and game and dishes prepared from these; meat extracts; preserved, dried and cooked fruits and vegetables; jellies, jams, fruit sauces; eggs, milk and milk products, namely cheese, butter, yogurt, dairy whipped products, edible oils and fats"
+        },
+        {
+          "intClassNumber": "33",
+          "intGoodsServicesDescription": "INT. CL. 33 Alcoholic beverages, namely, aperitif bitters, prepared cocktails, liqueurs, meads, spirits, and wines"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Amusement park services, amusement arcade services, pleasure ground transportation services, theme park services, providing leisure center services, provision of recreational activities, namely, sporting camps, nightclubs, dance halls video and computer came venues, simulators; cinema theatre; production of theatre; conducting fun fairs in the nature of theme and educational events; motion picture and television production and distribution services; publication of books, magazines, posters, puzzles, comic books, school project material"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Restaurant services; cafes, cafeterias, canteens, snack bars and catering services"
+        }
+      ]
+    },
+    "id": "9f649be8-7fbc-438e-8a0c-58828a3ff592",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20080119",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20070516",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20061114",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20010417",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20001226",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20001124",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20000825",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20000810",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20000802",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20000512",
+        "descriptionText": "LETTER OF SUSPENSION MAILED"
+      },
+      {
+        "date": "20000428",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20000225",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "19990826",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "19990824",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "180 Gorge Road, South Australia, AUST",
+        "city": "South Australia",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "CORPORATION",
+        "name": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+        "secondaryAddressUnit": "Newton 5074",
+        "street": "180 Gorge Road"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "180 Gorge Road, South Australia, AUST",
+        "city": "South Australia",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "CORPORATION",
+        "name": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+        "secondaryAddressUnit": "Newton 5074",
+        "street": "180 Gorge Road"
+      },
+      {
+        "address": "180 Gorge Road, South Australia, AUST",
+        "city": "South Australia",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "CORPORATION",
+        "name": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+        "secondaryAddressUnit": "Newton 5074",
+        "street": "180 Gorge Road"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "180 Gorge Road, South Australia, AUST",
+        "city": "South Australia",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "legalEntity": "CORPORATION",
+        "name": "PERFECT STRANGER ENTERPRISES PTY LTD.",
+        "secondaryAddressUnit": "Newton 5074",
+        "street": "180 Gorge Road"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Aegis Tower, Suite 1100, Canton, OH 44718-3615, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Aegis Tower, Suite 1100",
+          "Canton, OH 44718-3615",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Joseph A. Sebolt SAND & SEBOLT, 4940 Munson St., NW"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "JOSEPH A. SEBOLT",
+        "representativeAddress": "Aegis Tower, Suite 1100, Canton, OH 44718-3615, UNITED STATES",
+        "representativeAddressLines": [
+          "Aegis Tower, Suite 1100",
+          "Canton, OH 44718-3615",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19990322",
+        "applicationNumber": "75664942"
+      },
+      "cancellationDate": "20080119",
+      "cancellationPublicationDate": "20080226",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20080119",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Section 44(d) Filed",
+          "Section 44(e) Currently"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20001226"
+      ],
+      "registration": {
+        "registrationDate": "20010417",
+        "registrationNumber": "2443794"
+      }
+    },
+    "version": "20260109051429",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "XORI"
+    }
+  },
+  "_uri": "/mark/us/9f649be8-7fbc-438e-8a0c-58828a3ff592",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:18.948Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

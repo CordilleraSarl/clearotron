@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/es/ed81391b-6932-48b4-834a-38472202da5b",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "ed81391b-6932-48b4-834a-38472202da5b",
+  "applicationNumber": "2450423 M8",
+  "registrationNumber": "2450423 M8",
+  "applicationDate": "2002-01-23",
+  "registrationDate": "2002-06-20",
+  "expiryDate": null,
+  "renewalDate": "2012-02-23",
+  "lastPublicationDate": "2002-04-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-01-25",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "CYBER JOVEN.ORG",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios de diseño y desarrollo de software y ordenadores.",
+      "translation_language": "en",
+      "translation": "SERVICES DESIGN AND DEVELOPMENT OF SOFTWARE AND COMPUTERS."
+    }
+  ],
+  "owner": "INSTITUTO DE LA JUVENTUD DE CASTILLA Y LEON",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Manzano Cantos, Gregorio",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "INSTITUTO DE LA JUVENTUD DE CASTILLA Y LEON"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "25.05.25",
+      "26.01.01",
+      "26.01.02",
+      "26.01.04",
+      "26.01.06",
+      "26.01.07",
+      "26.01.10",
+      "26.01.11",
+      "26.01.12",
+      "26.01.22",
+      "27.01.02"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES DESIGN AND DEVELOPMENT OF SOFTWARE AND COMPUTERS.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de diseño y desarrollo de software y ordenadores."
+        }
+      ]
+    },
+    "id": "ed81391b-6932-48b4-834a-38472202da5b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.01",
+      "26.01.21",
+      "26.01.24",
+      "26.01.03",
+      "27.01.06",
+      "25.05.25",
+      "26.01.18"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2760"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "Manzano Cantos, Gregorio"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20020123",
+        "applicationNumber": "2450423 M8"
+      },
+      "cancellationDate": "20240125",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20020401",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20020620",
+        "registrationNumber": "2450423 M8"
+      },
+      "renewalDate": "20120223",
+      "renewalPublishedDate": "20120306"
+    },
+    "version": "20260427153221",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "CYBER JOVEN.ORG"
+    }
+  },
+  "_uri": "/mark/es/ed81391b-6932-48b4-834a-38472202da5b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

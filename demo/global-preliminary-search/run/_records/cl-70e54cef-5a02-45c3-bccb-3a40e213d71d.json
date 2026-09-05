@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/cl/70e54cef-5a02-45c3-bccb-3a40e213d71d",
+  "provider": "clarivate",
+  "office": "cl",
+  "guid": "70e54cef-5a02-45c3-bccb-3a40e213d71d",
+  "applicationNumber": "1174250",
+  "registrationNumber": "1211169",
+  "applicationDate": "2015-10-14",
+  "registrationDate": "2016-06-30",
+  "expiryDate": "2026-06-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Esta es la historia de un joven que soñó con un país más justo. Esta es la historia de la UCSH. Universidad Católica Silva Henríquez",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "(Concedida) Servicios educacionales y de enseñanza en todos sus niveles. Desarrollo de actividades culturales, educativas, esparcimiento, entretenimiento y deportivas. Asesorías en materias educacionales y de enseñanza en todos sus niveles. Publicaciones de textos no publicitarios.",
+      "translation_language": "en",
+      "translation": "(Granted) Educational and teaching services at all levels. Development of cultural, educational, leisure, entertainment and sports activities. Advice on educational and teaching matters at all levels. Publications of non-advertising texts."
+    }
+  ],
+  "owner": "UNIVERSIDAD CATOLICA CARDENAL RAUL SILVA HENRIQUEZ",
+  "ownerNative": null,
+  "ownerCountry": "CL",
+  "representative": "PATRICIO ROSENDE LYNCH",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SANTIAGO",
+        "applicantAddressCountryCode": "CL",
+        "applicantAddressCountryName": "Chile",
+        "applicantName": "UNIVERSIDAD CATOLICA CARDENAL RAUL SILVA HENRIQUEZ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "(Granted) Educational and teaching services at all levels. Development of cultural, educational, leisure, entertainment and sports activities. Advice on educational and teaching matters at all levels. Publications of non-advertising texts.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "(Concedida) Servicios educacionales y de enseñanza en todos sus niveles. Desarrollo de actividades culturales, educativas, esparcimiento, entretenimiento y deportivas. Asesorías en materias educacionales y de enseñanza en todos sus niveles. Publicaciones de textos no publicitarios."
+        }
+      ]
+    },
+    "id": "70e54cef-5a02-45c3-bccb-3a40e213d71d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20260615",
+    "registrationOfficeCode": "CL",
+    "registrationOfficeName": "Chile",
+    "representatives": [
+      {
+        "representativeAddress": "SANTIAGO",
+        "representativeAddressCountryCode": "CL",
+        "representativeAddressCountryName": "Chile",
+        "representativeName": "PATRICIO ROSENDE LYNCH"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151014",
+        "applicationNumber": "1174250"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260630",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20160630",
+        "registrationNumber": "1211169"
+      }
+    },
+    "version": "20260615153907",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Esta es la historia de un joven que soñó con un país más justo. Esta es la historia de la UCSH. Universidad Católica Silva Henríquez"
+    }
+  },
+  "_uri": "/mark/cl/70e54cef-5a02-45c3-bccb-3a40e213d71d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

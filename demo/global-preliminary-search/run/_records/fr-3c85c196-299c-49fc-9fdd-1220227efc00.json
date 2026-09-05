@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/fr/3c85c196-299c-49fc-9fdd-1220227efc00",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "3c85c196-299c-49fc-9fdd-1220227efc00",
+  "applicationNumber": "D 26 5281046",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-23",
+  "registrationDate": null,
+  "expiryDate": "2036-07-23",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-08-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AIvenqo",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; Optimisation du trafic pour des sites internet ; Publicité en ligne sur un réseau informatique ; Diffusion d'annonces publicitaires ; Publication de textes publicitaires ; Conseils en communication (publicité) ; Audits d'entreprises (analyses commerciales) ; Gestion, organisation et administration des affaires commerciales ; Marketing ; Marketing numérique ; Services de marketing en matière de moteurs de recherche ; Services de marketing dans le domaine de l'optimisation du trafic sur les sites web ; Marketing en matière immobilière ; Services d'agences de marketing ; Services de publicité et de marketing fournis par le biais du blogage ; Services de publicité et de marketing fournis par le biais de médias sociaux",
+      "translation_language": "en",
+      "translation": "Advertising; Website traffic optimization; Online advertising on a computer network; Advertising distribution; Publication of advertising copy; Communication consulting (advertising); Business audits (commercial analysis); Management, organization, and administration of business affairs; Marketing; Digital marketing; Search engine marketing services; Website traffic optimization marketing services; Real estate marketing; Marketing agency services; Advertising and marketing services provided through blogging; Advertising and marketing services provided through social media"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Elaboration (conception) de logiciels ; Développement de logiciels ; Programmation informatique ; Conception de systèmes informatiques ; Analyse de systèmes informatiques ; Maintenance de logiciels ; Mise à jour de logiciels ; Services de conception d'art graphique ; Planification, conception, développement et maintenance de sites web en ligne pour le compte de tiers ; Création, maintenance et hébergement de sites Web de tiers ; Mise à jour de sites Web pour le compte de tiers ; Conception de sites Web à des fins publicitaires ; Design et conception d'arts graphiques pour la création de sites Web ; Services de conseils en matière de création et de conception de sites Web ; Services d'essai du temps de chargement de sites web.",
+      "translation_language": "en",
+      "translation": "Software design; Software development; Computer programming; Computer systems design; Computer systems analysis; Software maintenance; Software updates; Graphic design services; Planning, design, development and maintenance of online websites for third parties; Creation, maintenance and hosting of third-party websites; Website updates for third parties; Website design for advertising purposes; Graphic design and creation of websites; Website creation and design consulting services; Website loading time testing services."
+    }
+  ],
+  "owner": "KIA ENZO Heydari",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "61470 Sap-en-Auge",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "KIA ENZO Heydari"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; Website traffic optimization; Online advertising on a computer network; Advertising distribution; Publication of advertising copy; Communication consulting (advertising); Business audits (commercial analysis); Management, organization, and administration of business affairs; Marketing; Digital marketing; Search engine marketing services; Website traffic optimization marketing services; Real estate marketing; Marketing agency services; Advertising and marketing services provided through blogging; Advertising and marketing services provided through social media",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; Optimisation du trafic pour des sites internet ; Publicité en ligne sur un réseau informatique ; Diffusion d'annonces publicitaires ; Publication de textes publicitaires ; Conseils en communication (publicité) ; Audits d'entreprises (analyses commerciales) ; Gestion, organisation et administration des affaires commerciales ; Marketing ; Marketing numérique ; Services de marketing en matière de moteurs de recherche ; Services de marketing dans le domaine de l'optimisation du trafic sur les sites web ; Marketing en matière immobilière ; Services d'agences de marketing ; Services de publicité et de marketing fournis par le biais du blogage ; Services de publicité et de marketing fournis par le biais de médias sociaux"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software design; Software development; Computer programming; Computer systems design; Computer systems analysis; Software maintenance; Software updates; Graphic design services; Planning, design, development and maintenance of online websites for third parties; Creation, maintenance and hosting of third-party websites; Website updates for third parties; Website design for advertising purposes; Graphic design and creation of websites; Website creation and design consulting services; Website loading time testing services.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Elaboration (conception) de logiciels ; Développement de logiciels ; Programmation informatique ; Conception de systèmes informatiques ; Analyse de systèmes informatiques ; Maintenance de logiciels ; Mise à jour de logiciels ; Services de conception d'art graphique ; Planification, conception, développement et maintenance de sites web en ligne pour le compte de tiers ; Création, maintenance et hébergement de sites Web de tiers ; Mise à jour de sites Web pour le compte de tiers ; Conception de sites Web à des fins publicitaires ; Design et conception d'arts graphiques pour la création de sites Web ; Services de conseils en matière de création et de conception de sites Web ; Services d'essai du temps de chargement de sites web."
+        }
+      ]
+    },
+    "id": "3c85c196-299c-49fc-9fdd-1220227efc00",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "33"
+      }
+    ],
+    "recordLastUpdated": "20260820",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260723",
+        "applicationNumber": "D 26 5281046"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360723",
+      "lastPublicationDate": "20260814",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260820020004",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AIvenqo"
+    }
+  },
+  "_uri": "/mark/fr/3c85c196-299c-49fc-9fdd-1220227efc00",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.565Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

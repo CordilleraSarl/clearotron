@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/kr/6461b5ca-7281-44cf-a190-b28bf61f3091",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "6461b5ca-7281-44cf-a190-b28bf61f3091",
+  "applicationNumber": "42-2022-0000426",
+  "registrationNumber": null,
+  "applicationDate": "2022-10-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "도리 (Dori)",
+  "markTransliteration": "Dori",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "ko",
+      "description": "관광객 유치 촉진에 관한 업무, 관광객의 편의증진에 관한 업무, 관광기반시설 확충 및 여건 개선에 관한 업무, 관광상품 개발에 관한 업무, 관광인력 육성 및 활용에 관한 업무, 관광자원 발굴 및 활용에 관한 업무, 관광정보와 자료의 수집/관리 및 제공에 관한 업무, 관광진흥에 관한 업무, 그 밖에 관광진흥을 위하여 필요한 업무, 지역 관광기념품 및 특산품의 전시 판매/홍보에 관한 업무, 지역 관광안내 및 홍보에 관한 업무",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": null,
+      "translation_language": "en",
+      "translation": "Work related to the promotion of tourist attraction, work related to the improvement of tourist convenience, work related to the expansion and improvement of tourism infrastructure, work related to the development of tourism products, work related to the development and utilization of tourism manpower, work related to the discovery and utilization of tourism resources, work related to the collection/management and provision of tourism information and data, work related to tourism promotion, other work necessary for tourism promotion, work related to the display and sale/promotion of local tourism souvenirs and special products, work related to local tourism guidance and publicity."
+    }
+  ],
+  "owner": "Ulsan Metropplitan Office of DongGu",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "특허법인수 (SU Intellectual Property)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "울산광역시 동구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Ulsan Metropplitan Office of DongGu",
+        "applicantNativeName": "울산광역시 동구"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "관광객 유치 촉진에 관한 업무, 관광객의 편의증진에 관한 업무, 관광기반시설 확충 및 여건 개선에 관한 업무, 관광상품 개발에 관한 업무, 관광인력 육성 및 활용에 관한 업무, 관광자원 발굴 및 활용에 관한 업무, 관광정보와 자료의 수집/관리 및 제공에 관한 업무, 관광진흥에 관한 업무, 그 밖에 관광진흥을 위하여 필요한 업무, 지역 관광기념품 및 특산품의 전시 판매/홍보에 관한 업무, 지역 관광안내 및 홍보에 관한 업무"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Work related to the promotion of tourist attraction, work related to the improvement of tourist convenience, work related to the expansion and improvement of tourism infrastructure, work related to the development of tourism products, work related to the development and utilization of tourism manpower, work related to the discovery and utilization of tourism resources, work related to the collection/management and provision of tourism information and data, work related to tourism promotion, other work necessary for tourism promotion, work related to the display and sale/promotion of local tourism souvenirs and special products, work related to local tourism guidance and publicity.",
+          "intClassNumber": "35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en"
+        }
+      ]
+    },
+    "id": "6461b5ca-7281-44cf-a190-b28bf61f3091",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "04.05.02",
+      "05.05.20",
+      "06.01.01",
+      "09.01.10",
+      "22.01.21"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260617",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 강남구 강남대로**길 **, *층(역삼동, 케이앤와이빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "특허법인수 (SU Intellectual Property)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20221006",
+        "applicationNumber": "42-2022-0000426"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260617021603",
+    "wordMarkSpecification": {
+      "markTransliteration": "Dori",
+      "markVerbalElementText": "도리 (Dori)"
+    }
+  },
+  "_uri": "/mark/kr/6461b5ca-7281-44cf-a190-b28bf61f3091",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

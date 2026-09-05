@@ -1,0 +1,239 @@
+{
+  "uri": "/mark/us/9b7cbfd9-c4be-4187-af51-f5b660d1da01",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "9b7cbfd9-c4be-4187-af51-f5b660d1da01",
+  "applicationNumber": "99297269",
+  "registrationNumber": null,
+  "applicationDate": "2025-07-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AUTHORITATIVE NORTH AMERICAN BARCODE VERIFY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 downloadable mobile software application for use in electronic authentication of identification documentation, for fraud detection, namely, credit application, age verification, facility access control, law enforcement, and government compliance, and to determine the trustworthiness of the presented identification document",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Intellicheck, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Lauri S. Thompson",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "200 Broad Hollow Road, Melville, NY, 11747, USAM",
+        "applicantAddressCity": "Melville",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "11747",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "200 Broad Hollow Road",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Intellicheck, Inc.",
+        "applicantSecondaryAddressUnit": "Suite 207"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 downloadable mobile software application for use in electronic authentication of identification documentation, for fraud detection, namely, credit application, age verification, facility access control, law enforcement, and government compliance, and to determine the trustworthiness of the presented identification document"
+        }
+      ]
+    },
+    "id": "9b7cbfd9-c4be-4187-af51-f5b660d1da01",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260717",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20260717",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20260716",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20260716",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20260716",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20260610",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20260610",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20260610",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20251211",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20251211",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251211",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20251211",
+        "descriptionText": "APPLICATION EXTENSION TO RESPONSE PERIOD - RECEIVED"
+      },
+      {
+        "date": "20251211",
+        "descriptionText": "APPLICATION EXTENSION GRANTED/RECEIPT PROVIDED"
+      },
+      {
+        "date": "20251209",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20251130",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20250722",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20250722",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "200 Broad Hollow Road, Melville, NY, 11747, USAM",
+        "city": "Melville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Intellicheck, Inc.",
+        "postalCode": "11747",
+        "secondaryAddressUnit": "Suite 207",
+        "stateName": "NEW YORK",
+        "street": "200 Broad Hollow Road"
+      },
+      {
+        "address": "200 Broad Hollow Road, Melville, NY, 11747, USAM",
+        "city": "Melville",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "Intellicheck, Inc.",
+        "postalCode": "11747",
+        "secondaryAddressUnit": "Suite 207",
+        "stateName": "NEW YORK",
+        "street": "200 Broad Hollow Road"
+      }
+    ],
+    "recordLastUpdated": "20260720",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 600, Las Vegas, NV 89135, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 600",
+          "Las Vegas, NV 89135",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Lauri S. Thompson Greenberg Traurig, LLP, 10845 Griffith Peak Drive"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 600, Las Vegas, NV 89135, United States",
+        "representativeAddressLines": [
+          "Suite 600",
+          "Las Vegas, NV 89135",
+          "United States"
+        ],
+        "representativeName": "Lauri S. Thompson"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250722",
+        "applicationNumber": "99297269"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "FINAL REFUSAL - MAILED",
+        "markOfficialStatusCode": "645",
+        "markOfficialStatusDate": "20260716",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260720061133",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AUTHORITATIVE NORTH AMERICAN BARCODE VERIFY"
+    }
+  },
+  "_uri": "/mark/us/9b7cbfd9-c4be-4187-af51-f5b660d1da01",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

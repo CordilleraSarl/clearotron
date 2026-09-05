@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/kr/eb0562ab-ebe3-4539-b528-d006bc75c332",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "eb0562ab-ebe3-4539-b528-d006bc75c332",
+  "applicationNumber": "41-1998-0008058",
+  "registrationNumber": "4100582390000",
+  "applicationDate": "1998-10-02",
+  "registrationDate": "1999-12-06",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "도리",
+  "markTransliteration": "DORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "건강관리업,병원업,실내장식디자인업,약제연구업,요양소업,의료업,컴퓨터소프트웨어유지관리업,한의원업,호스피스업",
+      "translation_language": "en",
+      "translation": "Health care business, hospital business, interior design business, pharmaceutical research business, nursing home business, medical business, computer software maintenance business, oriental medicine business, hospice business"
+    }
+  ],
+  "owner": "SON Yeon Ju",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "신관호 (SHINN, Kwan Ho)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 강남구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "SON Yeon Ju",
+        "applicantNativeName": "손영주"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Health care business, hospital business, interior design business, pharmaceutical research business, nursing home business, medical business, computer software maintenance business, oriental medicine business, hospice business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "건강관리업,병원업,실내장식디자인업,약제연구업,요양소업,의료업,컴퓨터소프트웨어유지관리업,한의원업,호스피스업"
+        }
+      ]
+    },
+    "id": "eb0562ab-ebe3-4539-b528-d006bc75c332",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "04.01.04",
+      "23.01.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(Seocho-Dong, Seocho World Officetel) Rm. , Seoun-ro, Seocho-Ku, Seoul, - Republic of Korea(SHINN & PARK)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "신관호 (SHINN, Kwan Ho)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19981002",
+        "applicationNumber": "41-1998-0008058"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19991206",
+        "registrationNumber": "4100582390000"
+      }
+    },
+    "version": "20250625155012",
+    "wordMarkSpecification": {
+      "markTransliteration": "DORI",
+      "markVerbalElementText": "도리"
+    }
+  },
+  "_uri": "/mark/kr/eb0562ab-ebe3-4539-b528-d006bc75c332",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:03.999Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

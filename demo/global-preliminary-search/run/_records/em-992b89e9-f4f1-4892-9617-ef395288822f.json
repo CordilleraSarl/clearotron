@@ -1,0 +1,430 @@
+{
+  "uri": "/mark/em/992b89e9-f4f1-4892-9617-ef395288822f",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "992b89e9-f4f1-4892-9617-ef395288822f",
+  "applicationNumber": "14636724",
+  "registrationNumber": "14636724",
+  "applicationDate": "2015-10-05",
+  "registrationDate": "2016-01-29",
+  "expiryDate": "2035-10-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2015-10-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Optovláknové prístroje; Optovláknové konektory; Rozhraní z optických vláken; Kabely z optických vláken; Cásti a vybavení výse uvedeného; Zádné z výse uvedeného zbozí nemá vlastnosti urcené pro pouzití ve vozidlech.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Fiberoptiske apparater; Fiberoptiske konnektorer; Optiske fibergrænseflader; Lyslederkabler; Dele og tilbehør til alle ovennævnte varer; Alle ovennævnte varer ikke beregnet til køretøjer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Glasvezelapparatuur; Glasvezelconnectors; Glasvezelverbindingen; Vezeloptische kabels; Delen en onderdelen voor alle voornoemde goederen; Geen van de voornoemde goederen is bedoeld voor voertuigen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Optical fibre apparatus; optical fibre connectors; optical fibre interfaces; optical fibre cables; parts and fittings for all the aforementioned; all the aforesaid goods not being able to be intended for the vehicles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Kiudoptikaseadmed; Kiudoptilised konnektorid; Optilised kiudliidesed; Kiudoptilised kaablid; Osad ja lisaseadmed kõigile eelpoolmainitud toodetele; Ükski eelmainitud toode ei ole sobiv sõidukitesse paigaldamiseks.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Valokuitulaitteet; Kuituoptiset liittimet; Valokuituliittymät; Kuituoptiset kaapelit; Kaikkien edellä mainittujen tavaroiden osat ja tarvikkeet; Mitään edellä mainituista tavaroista ei ole tarkoitettu asennettaviksi ajoneuvoihin.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils à fibres optiques; Connecteurs à fibres optiques; Connexions à fibres optiques; Câbles à fibres optiques; Pièces et parties constitutives de tous les produits précités; Aucun des produits précités n'étant conçu pour les véhicules.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Faseroptische Apparate; Faseroptische Verbindungselemente; Glasfaseranschlüsse; Optische Faserkabel; Teile und Zubehör für alle vorgenannten Waren; Keine der vorstehend genannten Waren für Fahrzeuge einsetzbar.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Svjetlovodna optika; Svjetlovodni konektori; Sucelja za svjetlovodna vlakna; Kablovi od optickih vlakana; Dijelovi i oprema za sve prethodno navedene proizvode; Svi prethodno navedeni proizvodi koji ne mogu biti namijenjeni vozilima.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Száloptikás készülékek; Száloptikás csatlakozók; Optikai szálas interfészek; Száloptikás kábelek; A fent említett áruk alkatrészei és szerelvényei; A fenti árucikkek egyike sem jármuvek számára készült.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchi in fibre ottiche; Connettori in fibre ottiche; Connessioni a fibre ottiche; Cavi in fibra ottica; Componenti ed accessori per tutti i suddetti articoli; Tutti i suddetti articoli non sono destinati a veicoli.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Pluostiniai optiniai aparatai; Pluostiniai optiniai sujungejai; Optinio pluosto sasajos; Optiniu pluostu kabeliai; Visu, auksciau nurodytu prekiu, dalys ir reikmenys; Visu isvardintu prekiu negalima naudoti transporto priemonems.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Optisko skiedru iekartas; Optisko skiedru savienotaji; Optisko skiedru saskarnes; Optiskas skiedras kabeli; Visu ieprieks mineto precu dalas un armatura; Neviena no ieprieks minetajam precem nav paredzeta transportlidzekliem.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Apparat tal-fibri ottici; Konnekters tal-fibri ottici; Interfaces tal-fibra ottika; Kejbils tal-fibra ottika; Partijiet u fittings ghall-oggetti kollha msemmija qabel; L-oggetti kollha msemmija hawn qabel mhux intizi ghall-vetturi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Urzadzenia swiatlowodowe; Zlacza swiatlowodowe; Interfejsy swiatlowodów; Kable swiatlowodowe; Czesci i osprzet do wszystkich uprzednio wymienionych towarów; Wszystkie wyzej wymienione towary nie sa przeznaczone do pojazdów.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aparelhos de fibras ópticas; Dispositivos de ligação de fibras ópticas; Conexões de fibra óptica; Cabos de fibra ótica; Peças e acessórios para todos os artigos atrás referidos; Nenhum dos produtos atrás referidos destinado a veículos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Aparate pentru fibra optica; Dispozitive de conectare de fibra optica; Interfete din fibra optica; Fibra optica (Cabluri de -); Piese si accesorii pentru bunurile mentionate anterior; Toate produsele de mai sus nefiind destinate pentru vehicule.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Optické vláknové prístroje; Optické vláknové konektory; Rozhrania pre optické vlákna; Káble z optických vlákien; Súciastky a armatúry pre vsetky vyssie uvedené tovary; Ziadne z uvedených výrobkov nie sú urcené pre vozidlá.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Aparati iz opticnih vlaken; Konektorji iz opticnih vlaken; Vmesniki iz opticnih vlaken; Kabli iz opticnih vlaken; Deli in pribor za vse omenjeno blago; Navedeni izdelki niso namenjeni za vozila.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos de fibra óptica; Conectores de fibra óptica; Conexiones de fibra óptica; Cables de fibra óptica; Partes y piezas de todos los productos mencionados; Ninguno de los productos mencionados puede destinarse a vehículos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Fiberoptiska apparater; Fiberoptiska anslutningsdon; Fiberoptiska kopplingar; Fiberoptiska kablar; Delar och tillbehör till samtliga nämnda varor; Ingen av dessa varor för fordon och farkoster.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Ridgemount Technologies Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "RGTH PATENTANWÄLTE PARTGMBB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Unit 5, Field Farm Business Centre, Launton,Bicester,Oxfordshire, OX26 5EL",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Ridgemount Technologies Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Optovláknové prístroje; Optovláknové konektory; Rozhraní z optických vláken; Kabely z optických vláken; Cásti a vybavení výse uvedeného; Zádné z výse uvedeného zbozí nemá vlastnosti urcené pro pouzití ve vozidlech."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Fiberoptiske apparater; Fiberoptiske konnektorer; Optiske fibergrænseflader; Lyslederkabler; Dele og tilbehør til alle ovennævnte varer; Alle ovennævnte varer ikke beregnet til køretøjer."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Glasvezelapparatuur; Glasvezelconnectors; Glasvezelverbindingen; Vezeloptische kabels; Delen en onderdelen voor alle voornoemde goederen; Geen van de voornoemde goederen is bedoeld voor voertuigen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Optical fibre apparatus; optical fibre connectors; optical fibre interfaces; optical fibre cables; parts and fittings for all the aforementioned; all the aforesaid goods not being able to be intended for the vehicles."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Kiudoptikaseadmed; Kiudoptilised konnektorid; Optilised kiudliidesed; Kiudoptilised kaablid; Osad ja lisaseadmed kõigile eelpoolmainitud toodetele; Ükski eelmainitud toode ei ole sobiv sõidukitesse paigaldamiseks."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Valokuitulaitteet; Kuituoptiset liittimet; Valokuituliittymät; Kuituoptiset kaapelit; Kaikkien edellä mainittujen tavaroiden osat ja tarvikkeet; Mitään edellä mainituista tavaroista ei ole tarkoitettu asennettaviksi ajoneuvoihin."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils à fibres optiques; Connecteurs à fibres optiques; Connexions à fibres optiques; Câbles à fibres optiques; Pièces et parties constitutives de tous les produits précités; Aucun des produits précités n'étant conçu pour les véhicules."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Faseroptische Apparate; Faseroptische Verbindungselemente; Glasfaseranschlüsse; Optische Faserkabel; Teile und Zubehör für alle vorgenannten Waren; Keine der vorstehend genannten Waren für Fahrzeuge einsetzbar."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Svjetlovodna optika; Svjetlovodni konektori; Sucelja za svjetlovodna vlakna; Kablovi od optickih vlakana; Dijelovi i oprema za sve prethodno navedene proizvode; Svi prethodno navedeni proizvodi koji ne mogu biti namijenjeni vozilima."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Száloptikás készülékek; Száloptikás csatlakozók; Optikai szálas interfészek; Száloptikás kábelek; A fent említett áruk alkatrészei és szerelvényei; A fenti árucikkek egyike sem jármuvek számára készült."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi in fibre ottiche; Connettori in fibre ottiche; Connessioni a fibre ottiche; Cavi in fibra ottica; Componenti ed accessori per tutti i suddetti articoli; Tutti i suddetti articoli non sono destinati a veicoli."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Pluostiniai optiniai aparatai; Pluostiniai optiniai sujungejai; Optinio pluosto sasajos; Optiniu pluostu kabeliai; Visu, auksciau nurodytu prekiu, dalys ir reikmenys; Visu isvardintu prekiu negalima naudoti transporto priemonems."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Optisko skiedru iekartas; Optisko skiedru savienotaji; Optisko skiedru saskarnes; Optiskas skiedras kabeli; Visu ieprieks mineto precu dalas un armatura; Neviena no ieprieks minetajam precem nav paredzeta transportlidzekliem."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Apparat tal-fibri ottici; Konnekters tal-fibri ottici; Interfaces tal-fibra ottika; Kejbils tal-fibra ottika; Partijiet u fittings ghall-oggetti kollha msemmija qabel; L-oggetti kollha msemmija hawn qabel mhux intizi ghall-vetturi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Urzadzenia swiatlowodowe; Zlacza swiatlowodowe; Interfejsy swiatlowodów; Kable swiatlowodowe; Czesci i osprzet do wszystkich uprzednio wymienionych towarów; Wszystkie wyzej wymienione towary nie sa przeznaczone do pojazdów."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos de fibras ópticas; Dispositivos de ligação de fibras ópticas; Conexões de fibra óptica; Cabos de fibra ótica; Peças e acessórios para todos os artigos atrás referidos; Nenhum dos produtos atrás referidos destinado a veículos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Aparate pentru fibra optica; Dispozitive de conectare de fibra optica; Interfete din fibra optica; Fibra optica (Cabluri de -); Piese si accesorii pentru bunurile mentionate anterior; Toate produsele de mai sus nefiind destinate pentru vehicule."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Optické vláknové prístroje; Optické vláknové konektory; Rozhrania pre optické vlákna; Káble z optických vlákien; Súciastky a armatúry pre vsetky vyssie uvedené tovary; Ziadne z uvedených výrobkov nie sú urcené pre vozidlá."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Aparati iz opticnih vlaken; Konektorji iz opticnih vlaken; Vmesniki iz opticnih vlaken; Kabli iz opticnih vlaken; Deli in pribor za vse omenjeno blago; Navedeni izdelki niso namenjeni za vozila."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos de fibra óptica; Conectores de fibra óptica; Conexiones de fibra óptica; Cables de fibra óptica; Partes y piezas de todos los productos mencionados; Ninguno de los productos mencionados puede destinarse a vehículos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Fiberoptiska apparater; Fiberoptiska anslutningsdon; Fiberoptiska kopplingar; Fiberoptiska kablar; Delar och tillbehör till samtliga nämnda varor; Ingen av dessa varor för fordon och farkoster."
+        }
+      ]
+    },
+    "id": "992b89e9-f4f1-4892-9617-ef395288822f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "200"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Berliner Freiheit 2,Berlin, 10785",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "RGTH PATENTANWÄLTE PARTGMBB"
+      }
+    ],
+    "secondLanguageCode": "it",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20151005",
+        "applicationNumber": "14636724"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351005",
+      "lastPublicationDate": "20151022",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160129",
+        "registrationNumber": "14636724"
+      }
+    },
+    "version": "20260511180022",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/em/992b89e9-f4f1-4892-9617-ef395288822f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.175Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

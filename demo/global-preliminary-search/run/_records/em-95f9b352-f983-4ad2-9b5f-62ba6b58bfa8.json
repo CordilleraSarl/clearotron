@@ -1,0 +1,603 @@
+{
+  "uri": "/mark/em/95f9b352-f983-4ad2-9b5f-62ba6b58bfa8",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "95f9b352-f983-4ad2-9b5f-62ba6b58bfa8",
+  "applicationNumber": "692913",
+  "registrationNumber": "692913",
+  "applicationDate": "1997-12-02",
+  "registrationDate": "1999-10-01",
+  "expiryDate": "2027-12-02",
+  "renewalDate": null,
+  "lastPublicationDate": "1999-02-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "sevenOrients",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Apparater til optagelse, transmission og gengivelse af lyd eller billede; magnetiske databærere, lydplader; videokameraer; kameraer (kinematografiske apparater); film til lydoptagelser; lydbærere, fotoapparater; videoplader; optiske diske; fjernsynsapparater; videobånd; cd'er (lyd/billede); cd-rommer; magnetiske databærere; belyste kinematografiske film; apparater til montage af kinematografiske film; skærme (fotografiske artikler); lysbilledskærme; software (optagne programmer).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "da",
+      "description": "Fotografier; artikler til brug for kunstnere; plakater, albummer, tidsskrifter, aviser, bøger, lommebøger, almanakker; indekser; postkort; plakater; tryksager; tryksager.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Fjernsyns- og radiounderholdning; produktion af film og videofilm; information om underholdning; udlejning af teaterdekorationer; udlejning af kinematografiske film; montage af videobånd; produktion af radio- og tv-programmer; organisering af udstillinger med kulturelt eller undervisningsmæssigt sigte; organisering af konkurrencer med et uddannelsessmæssigt eller underholdningsmæssigt formål; organisering og afholdelse af kollokvier, konferencer, kongresser, seminarer og symposier; udgivelse af bøger; produktion af radio- og tv-programmer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Apparaten voor het opnemen, het overbrengen en het weergeven van geluid of beeld; magnetische gegevensdragers, schijfvormige geluidsdragers; videocamera's; camera's (filmapparaten); films voor het opnemen van geluid; dragers van geluidsopnamen, fototoestellen; videodiscs; optische schijven; televisieapparaten; videobanden; compactdiscs (audio-video); cd-roms; magnetische gegevensdragers; cinematografische films (belicht); filmmontage-apparatuur; schermen (fotografie); projectieschermen; software (geregistreerde programma's).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "nl",
+      "description": "Foto's; materiaal voor kunstenaars; aanplakbiljetten, albums, tijdschriften, kranten, boeken, boekjes, almanakken; registers (bestanden); briefkaarten; posters; drukwerken; drukwerken.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Ontspanning via televisie en radio; productie van films en videofilms; inlichtingen op het gebied van ontspanning; verhuur van theaterdecors; verhuur van films; montage van videobanden; samenstelling van radio- en televisieprogramma's; organisatie van tentoonstellingen voor culturele of educatieve doeleinden; organisatie van wedstrijden (opvoeding en ontspanning); het organiseren en houden van colloquia, conferenties, congressen, seminars, symposia; uitgave van boeken; samenstelling van radio- en televisieprogramma's.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; camcorders, cinematographic cameras; sound recording strips; sound recording carriers; cameras (photography); videodisks; optical discs; television apparatus; videotapes; compact discs (audio, video); CDroms; magnetic data medias; exposed cinematographic films; editing appliances for cinematographic films; screens (photography); projection screen; computer software (recorded).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "en",
+      "description": "Photographs; artists' materials; posters; albums; magazine; newspapers; books; booklets; almanacs; indexes; postcards; printer's type; printed paper; printed matter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Radio and television entertainment; film production and videdotape film production; entertainment information; rental of show scenery; rental of motion pictures; videotape editing; production of radio and television programs; organisation of exhibitions for cultural or educational purposes; organisation of competitions (education or entertainment); arranging and conducting of colloquiums, conferences, congresses, seminars, symposiums; publication of books; production of radio and television programs.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Äänen ja kuvien tallennus-, siirto- ja toistolaitteet; magneettiset tietovälineet, tallennelevyt; videokamerat; elokuvakamerat; äänien tallentamiseen tarkoitetut filmit; äänen tallennukseen tarkoitetut tietovälineet, valokuvauslaitteet; videolevyt; optiset levyt; televisiolaitteet; videonauhat; cd-levyt (audio-video); cd-romit; magneettiset tietovälineet; valotetut elokuvafilmit; elokuvafilmien editointilaitteet; valkokankaat (valokuvaus); valkokankaat; ohjelmistot (tallennetut ohjelmat).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fi",
+      "description": "Valokuvat; taiteilijantarvikkeet; julisteet, albumit, aikakauslehdet, sanomalehdet, kirjat, kirjaset, almanakat; hakemistot; postikortit; julisteet; painotuotteet; painotuotteet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Televisio- ja radioviihde; elokuvien ja videoelokuvien tuotanto; tiedotus ajanvietteen alalla; lavasteiden vuokraus; elokuvafilmien vuokraus; videonauhojen koostaminen; radio- ja televisio-ohjelmien leikkaus; näyttelyjen järjestäminen kulttuuri- tai koulutustarkoituksiin; kilpailujen järjestäminen (koulutus ja ajanviete); kollokvioiden, konferenssien, kongressien, seminaarien ja symposiumien järjestäminen ja toteutus; kirjojen julkaiseminen; radio- ja televisio-ohjelmien koostaminen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrements magnétiques, disques acoustiques; caméras video; caméras (appareils cinématographiques); films pour l'enregistrement des sons; supports d'enregistrements sonores, appareils photographiques; vidéo disques; disques optiques; appareils de télévision; bandes vidéo; disques compacts (audio, vidéo); cédéroms; supports de données magnétiques; films cinématographiques impressionnés; dispositifs pour le montage des films cinématographiques; écrans (photographie); écrans de projection; logiciels (programmes enregistrés).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": "Photographies; matériel pour les artistes; affiches, albums, revues, journaux, livres, livrets, almanachs; répertoires; cartes postales; posters; imprimés; produits de l'imprimerie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Divertisements télévisés et radiophoniques; production de films et production de fims sur bandes vidéo; informations en matière de divertissements; location de décors de spectacles; location de films cinématographiques; montage de bandes vidéo; montage de programmes radiophoniques et de télévision; organisation d'expositions à but culturel ou éducatif; organisation de concours (éducation et divertissement); organisation et conduite de colloques, conférences, congrès, séminaires, symposiums; publication de livres; montage de programmes radiophoniques et de télévision.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Ton und Bild; Magnetaufzeichnungsträger, Schallplatten; Videokameras; Filmkameras; Tonaufzeichnungsfilme; Tonaufzeichnungsträger, Photoapparate; Videoplatten; optische Platten; Fernsehapparate; Videobänder; CDs (Ton, Bild); CD-ROMs; Magnetdatenträger; belichtete Kinofilme; Schneidevorrichtungen für kinematographische Filme; Schirme (Photographie); Projektionsschirme; gespeicherte Computersoftware.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Photographien; Künstlerbedarfsartikel; Plakate, Alben, Zeitschriften, Zeitungen, Bücher, Hefte, Almanache; Sachregister; Postkarten; Poster; Drucksachen; Druckereierzeugnisse.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Fernseh- und Rundfunkunterhaltung; Produktion von Filmen und Produktion von Videofilmen; Information über Veranstaltungen (Unterhaltung); Vermietung von Bühnendekoration; Vermietung von Kinofilmen (Filmverleih); Montage (Bearbeitung) von Videobändern; Zusammenstellung von Rundfunk- und Fernsehprogrammen; Veranstaltung von Ausstellungen für kulturelle oder Unterrichtszwecke; Veranstaltung von Wettbewerben im Bereich Bildung und Unterhaltung; Organisation und Durchführung von Kolloquien, Konferenzen, Kongressen, Seminaren, Symposien; Veröffentlichung von Büchern; Zusammenstellung von Rundfunk- und Fernsehprogrammen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Apparecchi per la registrazione, la trasmissione, la riproduzione del suono o di immagini; supporti di registrazione magnetica, dischi acustici; videocamere; cineprese (apparecchi cinematografici); nastri per la registrazione di suoni; supporti per registrazioni sonore, apparecchi fotografici; videodischi; dischi ottici; televisori; videonastri; compact disc (audio-video); CD-ROM; supporti magnetici per dati; pellicole cinematografiche impressionate; dispositivi per il montaggio di film cinematografici; schermi (fotografia); schermi di proiezione; software (programmi registrati).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "it",
+      "description": "Fotografie; materiale per artisti; manifesti, album, riviste, giornali, libri, opuscoli, almanacchi; elenchi; cartoline postali; poster; lavori di tipografia; stampati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Divertimento televisivo e radiofonico; produzione di film e di film su videonastri; informazioni in materia di divertimento; affitto di arredi per spettacoli; noleggio di pellicole cinematografiche; montaggio di videonastri; montaggio di programmi televisivi e radiofonici; organizzazione di esposizioni per scopi culturali o educativi; organizzazione di concorsi (istruzione e divertimento); organizzazione e direzione di convegni, conferenze, congressi, seminari e simposi; pubblicazione di libri; montaggio di programmi televisivi e radiofonici.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Aparelhos para o registo, a transmissão, a reprodução do som ou das imagens; suportes de registo magnético, discos acústicos; câmaras de vídeo; câmaras (aparelhos cinematográficos); filmes para o registo de sons; suportes de registo sonoro, aparelhos fotográficos; discos de vídeo; discos ópticos; aparelhos de televisão; fitas de vídeo; discos compactos (áudio, vídeo); CD-ROM; suportes de dados magnéticos; filmes cinematográficos impressionados; dispositivos para a montagem de filmes cinematográficos; telas (fotografia); telas de projecção; software (programas registados).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "pt",
+      "description": "fotografias; material para artistas; cartazes, álbuns, revistas, jornais, livros, livretes, almanaques; repertórios; postais ilustrados; cartazes; impressos; produtos de impressão.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Divertimentos televisivos e radiofónicos; produção de filmes e produção de filmes em fitas de vídeo; informações sobre actividades de diversão; aluguer de cenários de espectáculos; aluguer de filmes cinematográficos; montagem de fitas de vídeo; montagem de programas radiofónicos e de televisão; organização de exposições com fins culturais ou educativos; organização de concursos (educação e divertimento); organização e direcção de colóquios, conferências, congressos, seminários, simpósios; publicação de livros; montagem de programas radiofónicos e de televisão.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Aparatos para el registro, transmisión, reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; cámaras de vídeo; cámaras (aparatos cinematográficos); películas para el registro de sonidos; soportes de registros sonoros, aparatos fotográficos; videodiscos; discos ópticos; aparatos de televisión; cintas de vídeo; discos compactos (audio, vídeo); CD ROM; soportes de datos magnéticos; películas cinematográficas impresionadas; dispositivos para el montaje de películas cinematográficas; pantallas (fotografía); pantallas de proyección; programas de ordenador (programas grabados).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "es",
+      "description": "Fotografías; material para artistas; carteles, álbumes, revistas, diarios, libros, cartillas, almanaques; repertorio; tarjetas postales; carteles; impresos; productos de imprenta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Esparcimientos televisados y radiofónicos; producción de películas y producción de películas en cintas de vídeo; informaciones en materia de esparcimiento; alquiler de decorados de espectáculos; alquiler de películas cinematográficas; montaje de cintas de vídeo; montaje de programas radiofónicos y de televisión; organización de exposiciones con fines culturales o educativos; organización de concursos (educación y esparcimiento); organización y moderación de coloquios, conferencias, congresos, seminarios, simposios; publicación de libros; montaje de programas radiofónicos y de televisión.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Apparater för inspelning, upptagning, sändning eller återgivning av ljud och bilder; magnetiska databärare, grammofonskivor; videokameror; filmkameror; band för ljudregistrering; ljudinspelningsbärare, kameror; videoskivor; optiska skivor; televisionsapparater; videoband; cd-skivor (ljud-video); cd-romskivor; magnetiska datamedia; biograffilm, exponerad; redigeringsapparater för film; filmdukar; projektionsdukar; programvara (registrerade program).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "sw",
+      "description": "Fotografier; konstnärsmaterial; affischer, urklippsböcker, tidskrifter, tidningar, böcker, häften, almanackor; register; vykort; affischer; trycksaker; tryckeriprodukter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Radio- och tv-underhållning; produktion av filmer och videofilmer; nöjes- och underhållningsinformation; scendekorationer, uthyrning av; uthyrning av spelfilmer; redigering av videoband; produktion av radio- och televisionsprogram; anordnande av utställningar för kultur- eller utbildningsändamål; anordnande av tävlingar (utbildning eller underhållning); anordnade och ledning av kollokvier, konferenser, seminarier, kongresser, symposier; utgivning av böcker; produktion av radio- och televisionsprogram.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENORIENTS, Société à Responsabilité Limitée",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "SANTARELLI (IPSIDE)",
+  "priorities": [
+    {
+      "priorityCountryCode": "FR",
+      "priorityCountryName": "France",
+      "priorityDate": "19970604",
+      "priorityNumber": "97680976"
+    }
+  ],
+  "seniorities": [
+    {
+      "seniorityApplicationDate": "19970604",
+      "seniorityCountryCode": "FR",
+      "seniorityCountryName": "France",
+      "seniorityRegistrationNumber": "97680976"
+    }
+  ],
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "76, avenue de Saint Mandé,Paris, 75012",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "SEVENORIENTS, Société à Responsabilité Limitée"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Apparater til optagelse, transmission og gengivelse af lyd eller billede; magnetiske databærere, lydplader; videokameraer; kameraer (kinematografiske apparater); film til lydoptagelser; lydbærere, fotoapparater; videoplader; optiske diske; fjernsynsapparater; videobånd; cd'er (lyd/billede); cd-rommer; magnetiske databærere; belyste kinematografiske film; apparater til montage af kinematografiske film; skærme (fotografiske artikler); lysbilledskærme; software (optagne programmer)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Fotografier; artikler til brug for kunstnere; plakater, albummer, tidsskrifter, aviser, bøger, lommebøger, almanakker; indekser; postkort; plakater; tryksager; tryksager."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Fjernsyns- og radiounderholdning; produktion af film og videofilm; information om underholdning; udlejning af teaterdekorationer; udlejning af kinematografiske film; montage af videobånd; produktion af radio- og tv-programmer; organisering af udstillinger med kulturelt eller undervisningsmæssigt sigte; organisering af konkurrencer med et uddannelsessmæssigt eller underholdningsmæssigt formål; organisering og afholdelse af kollokvier, konferencer, kongresser, seminarer og symposier; udgivelse af bøger; produktion af radio- og tv-programmer."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Apparaten voor het opnemen, het overbrengen en het weergeven van geluid of beeld; magnetische gegevensdragers, schijfvormige geluidsdragers; videocamera's; camera's (filmapparaten); films voor het opnemen van geluid; dragers van geluidsopnamen, fototoestellen; videodiscs; optische schijven; televisieapparaten; videobanden; compactdiscs (audio-video); cd-roms; magnetische gegevensdragers; cinematografische films (belicht); filmmontage-apparatuur; schermen (fotografie); projectieschermen; software (geregistreerde programma's)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Foto's; materiaal voor kunstenaars; aanplakbiljetten, albums, tijdschriften, kranten, boeken, boekjes, almanakken; registers (bestanden); briefkaarten; posters; drukwerken; drukwerken."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontspanning via televisie en radio; productie van films en videofilms; inlichtingen op het gebied van ontspanning; verhuur van theaterdecors; verhuur van films; montage van videobanden; samenstelling van radio- en televisieprogramma's; organisatie van tentoonstellingen voor culturele of educatieve doeleinden; organisatie van wedstrijden (opvoeding en ontspanning); het organiseren en houden van colloquia, conferenties, congressen, seminars, symposia; uitgave van boeken; samenstelling van radio- en televisieprogramma's."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Apparatus for recording, transmission or reproduction of sound or images; magnetic data carriers, recording discs; camcorders, cinematographic cameras; sound recording strips; sound recording carriers; cameras (photography); videodisks; optical discs; television apparatus; videotapes; compact discs (audio, video); CDroms; magnetic data medias; exposed cinematographic films; editing appliances for cinematographic films; screens (photography); projection screen; computer software (recorded)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Photographs; artists' materials; posters; albums; magazine; newspapers; books; booklets; almanacs; indexes; postcards; printer's type; printed paper; printed matter."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Radio and television entertainment; film production and videdotape film production; entertainment information; rental of show scenery; rental of motion pictures; videotape editing; production of radio and television programs; organisation of exhibitions for cultural or educational purposes; organisation of competitions (education or entertainment); arranging and conducting of colloquiums, conferences, congresses, seminars, symposiums; publication of books; production of radio and television programs."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Äänen ja kuvien tallennus-, siirto- ja toistolaitteet; magneettiset tietovälineet, tallennelevyt; videokamerat; elokuvakamerat; äänien tallentamiseen tarkoitetut filmit; äänen tallennukseen tarkoitetut tietovälineet, valokuvauslaitteet; videolevyt; optiset levyt; televisiolaitteet; videonauhat; cd-levyt (audio-video); cd-romit; magneettiset tietovälineet; valotetut elokuvafilmit; elokuvafilmien editointilaitteet; valkokankaat (valokuvaus); valkokankaat; ohjelmistot (tallennetut ohjelmat)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Valokuvat; taiteilijantarvikkeet; julisteet, albumit, aikakauslehdet, sanomalehdet, kirjat, kirjaset, almanakat; hakemistot; postikortit; julisteet; painotuotteet; painotuotteet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Televisio- ja radioviihde; elokuvien ja videoelokuvien tuotanto; tiedotus ajanvietteen alalla; lavasteiden vuokraus; elokuvafilmien vuokraus; videonauhojen koostaminen; radio- ja televisio-ohjelmien leikkaus; näyttelyjen järjestäminen kulttuuri- tai koulutustarkoituksiin; kilpailujen järjestäminen (koulutus ja ajanviete); kollokvioiden, konferenssien, kongressien, seminaarien ja symposiumien järjestäminen ja toteutus; kirjojen julkaiseminen; radio- ja televisio-ohjelmien koostaminen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Appareils pour l'enregistrement, la transmission, la reproduction du son ou des images; supports d'enregistrements magnétiques, disques acoustiques; caméras video; caméras (appareils cinématographiques); films pour l'enregistrement des sons; supports d'enregistrements sonores, appareils photographiques; vidéo disques; disques optiques; appareils de télévision; bandes vidéo; disques compacts (audio, vidéo); cédéroms; supports de données magnétiques; films cinématographiques impressionnés; dispositifs pour le montage des films cinématographiques; écrans (photographie); écrans de projection; logiciels (programmes enregistrés)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Photographies; matériel pour les artistes; affiches, albums, revues, journaux, livres, livrets, almanachs; répertoires; cartes postales; posters; imprimés; produits de l'imprimerie."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Divertisements télévisés et radiophoniques; production de films et production de fims sur bandes vidéo; informations en matière de divertissements; location de décors de spectacles; location de films cinématographiques; montage de bandes vidéo; montage de programmes radiophoniques et de télévision; organisation d'expositions à but culturel ou éducatif; organisation de concours (éducation et divertissement); organisation et conduite de colloques, conférences, congrès, séminaires, symposiums; publication de livres; montage de programmes radiophoniques et de télévision."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Geräte zur Aufzeichnung, Übertragung und Wiedergabe von Ton und Bild; Magnetaufzeichnungsträger, Schallplatten; Videokameras; Filmkameras; Tonaufzeichnungsfilme; Tonaufzeichnungsträger, Photoapparate; Videoplatten; optische Platten; Fernsehapparate; Videobänder; CDs (Ton, Bild); CD-ROMs; Magnetdatenträger; belichtete Kinofilme; Schneidevorrichtungen für kinematographische Filme; Schirme (Photographie); Projektionsschirme; gespeicherte Computersoftware."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Photographien; Künstlerbedarfsartikel; Plakate, Alben, Zeitschriften, Zeitungen, Bücher, Hefte, Almanache; Sachregister; Postkarten; Poster; Drucksachen; Druckereierzeugnisse."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Fernseh- und Rundfunkunterhaltung; Produktion von Filmen und Produktion von Videofilmen; Information über Veranstaltungen (Unterhaltung); Vermietung von Bühnendekoration; Vermietung von Kinofilmen (Filmverleih); Montage (Bearbeitung) von Videobändern; Zusammenstellung von Rundfunk- und Fernsehprogrammen; Veranstaltung von Ausstellungen für kulturelle oder Unterrichtszwecke; Veranstaltung von Wettbewerben im Bereich Bildung und Unterhaltung; Organisation und Durchführung von Kolloquien, Konferenzen, Kongressen, Seminaren, Symposien; Veröffentlichung von Büchern; Zusammenstellung von Rundfunk- und Fernsehprogrammen."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Apparecchi per la registrazione, la trasmissione, la riproduzione del suono o di immagini; supporti di registrazione magnetica, dischi acustici; videocamere; cineprese (apparecchi cinematografici); nastri per la registrazione di suoni; supporti per registrazioni sonore, apparecchi fotografici; videodischi; dischi ottici; televisori; videonastri; compact disc (audio-video); CD-ROM; supporti magnetici per dati; pellicole cinematografiche impressionate; dispositivi per il montaggio di film cinematografici; schermi (fotografia); schermi di proiezione; software (programmi registrati)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Fotografie; materiale per artisti; manifesti, album, riviste, giornali, libri, opuscoli, almanacchi; elenchi; cartoline postali; poster; lavori di tipografia; stampati."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Divertimento televisivo e radiofonico; produzione di film e di film su videonastri; informazioni in materia di divertimento; affitto di arredi per spettacoli; noleggio di pellicole cinematografiche; montaggio di videonastri; montaggio di programmi televisivi e radiofonici; organizzazione di esposizioni per scopi culturali o educativi; organizzazione di concorsi (istruzione e divertimento); organizzazione e direzione di convegni, conferenze, congressi, seminari e simposi; pubblicazione di libri; montaggio di programmi televisivi e radiofonici."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Aparelhos para o registo, a transmissão, a reprodução do som ou das imagens; suportes de registo magnético, discos acústicos; câmaras de vídeo; câmaras (aparelhos cinematográficos); filmes para o registo de sons; suportes de registo sonoro, aparelhos fotográficos; discos de vídeo; discos ópticos; aparelhos de televisão; fitas de vídeo; discos compactos (áudio, vídeo); CD-ROM; suportes de dados magnéticos; filmes cinematográficos impressionados; dispositivos para a montagem de filmes cinematográficos; telas (fotografia); telas de projecção; software (programas registados)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "fotografias; material para artistas; cartazes, álbuns, revistas, jornais, livros, livretes, almanaques; repertórios; postais ilustrados; cartazes; impressos; produtos de impressão."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Divertimentos televisivos e radiofónicos; produção de filmes e produção de filmes em fitas de vídeo; informações sobre actividades de diversão; aluguer de cenários de espectáculos; aluguer de filmes cinematográficos; montagem de fitas de vídeo; montagem de programas radiofónicos e de televisão; organização de exposições com fins culturais ou educativos; organização de concursos (educação e divertimento); organização e direcção de colóquios, conferências, congressos, seminários, simpósios; publicação de livros; montagem de programas radiofónicos e de televisão."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Aparatos para el registro, transmisión, reproducción de sonido o imágenes; soportes de registro magnéticos, discos acústicos; cámaras de vídeo; cámaras (aparatos cinematográficos); películas para el registro de sonidos; soportes de registros sonoros, aparatos fotográficos; videodiscos; discos ópticos; aparatos de televisión; cintas de vídeo; discos compactos (audio, vídeo); CD ROM; soportes de datos magnéticos; películas cinematográficas impresionadas; dispositivos para el montaje de películas cinematográficas; pantallas (fotografía); pantallas de proyección; programas de ordenador (programas grabados)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Fotografías; material para artistas; carteles, álbumes, revistas, diarios, libros, cartillas, almanaques; repertorio; tarjetas postales; carteles; impresos; productos de imprenta."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Esparcimientos televisados y radiofónicos; producción de películas y producción de películas en cintas de vídeo; informaciones en materia de esparcimiento; alquiler de decorados de espectáculos; alquiler de películas cinematográficas; montaje de cintas de vídeo; montaje de programas radiofónicos y de televisión; organización de exposiciones con fines culturales o educativos; organización de concursos (educación y esparcimiento); organización y moderación de coloquios, conferencias, congresos, seminarios, simposios; publicación de libros; montaje de programas radiofónicos y de televisión."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Apparater för inspelning, upptagning, sändning eller återgivning av ljud och bilder; magnetiska databärare, grammofonskivor; videokameror; filmkameror; band för ljudregistrering; ljudinspelningsbärare, kameror; videoskivor; optiska skivor; televisionsapparater; videoband; cd-skivor (ljud-video); cd-romskivor; magnetiska datamedia; biograffilm, exponerad; redigeringsapparater för film; filmdukar; projektionsdukar; programvara (registrerade program)."
+        },
+        {
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Fotografier; konstnärsmaterial; affischer, urklippsböcker, tidskrifter, tidningar, böcker, häften, almanackor; register; vykort; affischer; trycksaker; tryckeriprodukter."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Radio- och tv-underhållning; produktion av filmer och videofilmer; nöjes- och underhållningsinformation; scendekorationer, uthyrning av; uthyrning av spelfilmer; redigering av videoband; produktion av radio- och televisionsprogram; anordnande av utställningar för kultur- eller utbildningsändamål; anordnande av tävlingar (utbildning eller underhållning); anordnade och ledning av kollokvier, konferenser, seminarier, kongresser, symposier; utgivning av böcker; produktion av radio- och televisionsprogram."
+        }
+      ]
+    },
+    "id": "95f9b352-f983-4ad2-9b5f-62ba6b58bfa8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "FR",
+        "priorityCountryName": "France",
+        "priorityDate": "19970604",
+        "priorityNumber": "97680976"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "00180",
+        "publicationVolume": "11"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Tour TRINITY - 1 Bis, place de la Défense,COURBEVOIE, 92400",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "SANTARELLI (IPSIDE)"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "seniorities": [
+      {
+        "seniorityApplicationDate": "19970604",
+        "seniorityCountryCode": "FR",
+        "seniorityCountryName": "France",
+        "seniorityRegistrationNumber": "97680976"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19971202",
+        "applicationNumber": "692913"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271202",
+      "lastPublicationDate": "19990222",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "19991001",
+        "registrationNumber": "692913"
+      }
+    },
+    "version": "20260511114456",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "sevenOrients"
+    }
+  },
+  "_uri": "/mark/em/95f9b352-f983-4ad2-9b5f-62ba6b58bfa8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.822Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

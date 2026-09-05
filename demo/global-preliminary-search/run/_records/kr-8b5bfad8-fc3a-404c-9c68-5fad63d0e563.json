@@ -1,0 +1,198 @@
+{
+  "uri": "/mark/kr/8b5bfad8-fc3a-404c-9c68-5fad63d0e563",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "8b5bfad8-fc3a-404c-9c68-5fad63d0e563",
+  "applicationNumber": "40-2026-0100187",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "PORI",
+  "markTransliteration": "PORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    38,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 모바일게임 소프트웨어, 내려받기 가능한 전자 출판물, 내려받기 가능한 전자지갑용 컴퓨터 소프트웨어, 내려받기 가능한 전자화폐용 소프트웨어, 내려받기 가능한 컴퓨터 게임 소프트웨어, 음성메시지용 컴퓨터 애플리케이션 소프트웨어, 음성인식용 소프트웨어, 음향 및 비디오 메시지 송신용 컴퓨터 소프트웨어, 인스턴트 메시징 및 전자우편용 내려받기 가능한 소프트웨어, 인스턴트 메시징 소프트웨어",
+      "translation_language": "en",
+      "translation": "Downloadable mobile game software, downloadable electronic publications, downloadable computer software for electronic wallets, downloadable electronic money software, downloadable computer game software, computer application software for voice messages, voice recognition software, computer software for transmitting sound and video messages, downloadable software for instant messaging and e-mail, instant messaging software."
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ko",
+      "description": "광고기획업, 광고대행업, 광고반응분석업, 마케팅 분석업, 배너 광고업, 상업적/홍보목적/광고목적의 이벤트 조직업, 온라인 광고공간 임대업, 온라인 마케팅 서비스업, 인터넷 광고업, 인터넷을 통한 사업정보제공업, 클릭당 과금 광고업",
+      "translation_language": "en",
+      "translation": "Advertising planning business, advertising agency business, advertising response analysis business, marketing analysis business, banner advertising business, event organization business for commercial/promotional/advertising purposes, online advertising space rental business, online marketing service business, internet advertising business, business information provision business through the internet, pay-per-click advertising business."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ko",
+      "description": "블로그/대화방/게시판 또는 토론서비스 접속제공업, 사용자간 메시지/코멘트/멀티미디어 콘텐츠 전송용 온라인 채팅룸 제공업, 소셜 네트워크 서비스용 전자게시판제공업, 소셜네트워크용 대화방제공업, 소셜네트워킹서비스 를 위한 데이터/음향 및 영상 송신업, 스마트폰 애플리케이션을 통한 모바일 채팅 서비스제공업, 온라인 소셜 네트워킹과 관련된 컴퓨터 데이터베이스 접속제공업, 인스턴트메시지 전송업, 인터넷을 통한 전자게임 스트리밍업, 전자게시판 서비스업, 컴퓨터사용자간 메시지전송용 온라인 채팅룸 및 전자게시판 제공업",
+      "translation_language": "en",
+      "translation": "Business of providing access to blogs/chat rooms/bulletin boards or discussion services, business of providing online chat rooms for transmitting messages/comments/multimedia content between users, business of providing electronic bulletin boards for social networking services, business of providing chat rooms for social networks, data/audio and video transmission business for social networking services, business of providing mobile chatting services through smartphone applications, business of providing access to computer databases related to online social networking, instant message transmission business, electronic games through the Internet. Streaming business, electronic bulletin board service business, online chat room and electronic bulletin board provision business for sending messages between computer users"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "게임 관련 교육 및 훈련업, 게임 대회와 관련된 정보 및 해설 제공업, 뉴스보도서비스업, 연예오락 또는 문화목적의 사용자 리뷰제공업, 연예오락 또는 문화목적의 사용자 순위제공업, 오락 또는 문화목적의 사용자 등급제공업, 온라인 게임대회 및 기타 게임대회의 기획 및 개최업, 온라인을 통한 게임관련 콘텐츠 제공업, 전자 게임 서비스 관련 정보제공업, 전자 스포츠 대회 조직업, 전자출판업, 컴퓨터 데이터베이스 또는 글로벌 통신 네트워크로부터 온라인으로 제공되는 컴퓨터 게임오락 관련 정보제공업",
+      "translation_language": "en",
+      "translation": "Game-related education and training, providing information and commentary related to game competitions, news reporting service, providing user reviews for entertainment, entertainment or cultural purposes, providing user rankings for entertainment or cultural purposes, providing user ratings for entertainment or cultural purposes, planning and holding online game competitions and other game competitions, providing game-related content online, providing information related to electronic game services, organizing electronic sports competitions, electronic publishing, online from a computer database or global communication network. Business that provides information related to computer game entertainment provided"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "게임 소프트웨어 개발업, 데이터 마이닝업, 서비스형 소프트웨어업, 서비스형 인공지능업 , 온라인 소셜 네트워킹 소프트웨어 설계업, 온라인 콘텐츠 제공을 위한 플랫폼 제공업, 웹사이트 호스팅업, 웹사이트를 통한 인공지능 서비스 제공업, 인공지능기술분야의 연구업, 인터넷 웹사이트 제작업, 컴퓨터 소프트웨어 설계 및 개발업, 클라우드 컴퓨팅 서비스업",
+      "translation_language": "en",
+      "translation": "Game software development business, data mining business, service-type software business, service-type artificial intelligence business, online social networking software design business, platform provision business for providing online content, website hosting business, artificial intelligence service provision business through websites, research business in the field of artificial intelligence technology, internet website production business, computer software design and development business, cloud computing service business."
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 이동통신 애플리케이션 수단에 의해 접근 가능한 온라인 소셜 네트워킹 서비스업, 사교소개업, 온라인 데이트클럽업, 온라인 사교소개업, 온라인 소셜 네트워킹 서비스업, 온라인을 통한 이성소개업, 인터넷기반 결혼중개업, 인터넷기반의 사교소개업, 인터넷을 통한 소셜 네트워킹 서비스업, 컴퓨터에 의한 개인소개 서비스업",
+      "translation_language": "en",
+      "translation": "Online social networking service business, social introduction business, online dating club business, online social introduction business, online social networking service business, online opposite-sex introduction business, Internet-based marriage brokerage business, Internet-based social introduction business, internet-based social networking service business, computer-based personal introduction service business accessible through downloadable mobile communication applications."
+    }
+  ],
+  "owner": "Lee Dasol",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "부산광역시 금정구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Lee Dasol",
+        "applicantNativeName": "이다솔"
+      },
+      {
+        "applicantAddress": "부산광역시 금정구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "LEE, Jeong-Seok",
+        "applicantNativeName": "이정석"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable mobile game software, downloadable electronic publications, downloadable computer software for electronic wallets, downloadable electronic money software, downloadable computer game software, computer application software for voice messages, voice recognition software, computer software for transmitting sound and video messages, downloadable software for instant messaging and e-mail, instant messaging software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 모바일게임 소프트웨어, 내려받기 가능한 전자 출판물, 내려받기 가능한 전자지갑용 컴퓨터 소프트웨어, 내려받기 가능한 전자화폐용 소프트웨어, 내려받기 가능한 컴퓨터 게임 소프트웨어, 음성메시지용 컴퓨터 애플리케이션 소프트웨어, 음성인식용 소프트웨어, 음향 및 비디오 메시지 송신용 컴퓨터 소프트웨어, 인스턴트 메시징 및 전자우편용 내려받기 가능한 소프트웨어, 인스턴트 메시징 소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising planning business, advertising agency business, advertising response analysis business, marketing analysis business, banner advertising business, event organization business for commercial/promotional/advertising purposes, online advertising space rental business, online marketing service business, internet advertising business, business information provision business through the internet, pay-per-click advertising business.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광고기획업, 광고대행업, 광고반응분석업, 마케팅 분석업, 배너 광고업, 상업적/홍보목적/광고목적의 이벤트 조직업, 온라인 광고공간 임대업, 온라인 마케팅 서비스업, 인터넷 광고업, 인터넷을 통한 사업정보제공업, 클릭당 과금 광고업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Business of providing access to blogs/chat rooms/bulletin boards or discussion services, business of providing online chat rooms for transmitting messages/comments/multimedia content between users, business of providing electronic bulletin boards for social networking services, business of providing chat rooms for social networks, data/audio and video transmission business for social networking services, business of providing mobile chatting services through smartphone applications, business of providing access to computer databases related to online social networking, instant message transmission business, electronic games through the Internet. Streaming business, electronic bulletin board service business, online chat room and electronic bulletin board provision business for sending messages between computer users",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "블로그/대화방/게시판 또는 토론서비스 접속제공업, 사용자간 메시지/코멘트/멀티미디어 콘텐츠 전송용 온라인 채팅룸 제공업, 소셜 네트워크 서비스용 전자게시판제공업, 소셜네트워크용 대화방제공업, 소셜네트워킹서비스 를 위한 데이터/음향 및 영상 송신업, 스마트폰 애플리케이션을 통한 모바일 채팅 서비스제공업, 온라인 소셜 네트워킹과 관련된 컴퓨터 데이터베이스 접속제공업, 인스턴트메시지 전송업, 인터넷을 통한 전자게임 스트리밍업, 전자게시판 서비스업, 컴퓨터사용자간 메시지전송용 온라인 채팅룸 및 전자게시판 제공업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Game-related education and training, providing information and commentary related to game competitions, news reporting service, providing user reviews for entertainment, entertainment or cultural purposes, providing user rankings for entertainment or cultural purposes, providing user ratings for entertainment or cultural purposes, planning and holding online game competitions and other game competitions, providing game-related content online, providing information related to electronic game services, organizing electronic sports competitions, electronic publishing, online from a computer database or global communication network. Business that provides information related to computer game entertainment provided",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "게임 관련 교육 및 훈련업, 게임 대회와 관련된 정보 및 해설 제공업, 뉴스보도서비스업, 연예오락 또는 문화목적의 사용자 리뷰제공업, 연예오락 또는 문화목적의 사용자 순위제공업, 오락 또는 문화목적의 사용자 등급제공업, 온라인 게임대회 및 기타 게임대회의 기획 및 개최업, 온라인을 통한 게임관련 콘텐츠 제공업, 전자 게임 서비스 관련 정보제공업, 전자 스포츠 대회 조직업, 전자출판업, 컴퓨터 데이터베이스 또는 글로벌 통신 네트워크로부터 온라인으로 제공되는 컴퓨터 게임오락 관련 정보제공업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Game software development business, data mining business, service-type software business, service-type artificial intelligence business, online social networking software design business, platform provision business for providing online content, website hosting business, artificial intelligence service provision business through websites, research business in the field of artificial intelligence technology, internet website production business, computer software design and development business, cloud computing service business.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "게임 소프트웨어 개발업, 데이터 마이닝업, 서비스형 소프트웨어업, 서비스형 인공지능업 , 온라인 소셜 네트워킹 소프트웨어 설계업, 온라인 콘텐츠 제공을 위한 플랫폼 제공업, 웹사이트 호스팅업, 웹사이트를 통한 인공지능 서비스 제공업, 인공지능기술분야의 연구업, 인터넷 웹사이트 제작업, 컴퓨터 소프트웨어 설계 및 개발업, 클라우드 컴퓨팅 서비스업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Online social networking service business, social introduction business, online dating club business, online social introduction business, online social networking service business, online opposite-sex introduction business, Internet-based marriage brokerage business, Internet-based social introduction business, internet-based social networking service business, computer-based personal introduction service business accessible through downloadable mobile communication applications.",
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 이동통신 애플리케이션 수단에 의해 접근 가능한 온라인 소셜 네트워킹 서비스업, 사교소개업, 온라인 데이트클럽업, 온라인 사교소개업, 온라인 소셜 네트워킹 서비스업, 온라인을 통한 이성소개업, 인터넷기반 결혼중개업, 인터넷기반의 사교소개업, 인터넷을 통한 소셜 네트워킹 서비스업, 컴퓨터에 의한 개인소개 서비스업"
+        }
+      ]
+    },
+    "id": "8b5bfad8-fc3a-404c-9c68-5fad63d0e563",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260609",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260519",
+        "applicationNumber": "40-2026-0100187"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20260609020321",
+    "wordMarkSpecification": {
+      "markTransliteration": "PORI",
+      "markVerbalElementText": "PORI"
+    }
+  },
+  "_uri": "/mark/kr/8b5bfad8-fc3a-404c-9c68-5fad63d0e563",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:33.543Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

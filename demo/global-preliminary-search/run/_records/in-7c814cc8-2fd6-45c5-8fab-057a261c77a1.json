@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/7c814cc8-2fd6-45c5-8fab-057a261c77a1",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "7c814cc8-2fd6-45c5-8fab-057a261c77a1",
+  "applicationNumber": "4353326",
+  "registrationNumber": null,
+  "applicationDate": "2019-11-20",
+  "registrationDate": null,
+  "expiryDate": "2029-11-20",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Scientific and technological services and research and design relating thereto; Industrial analysis and industrial research services; Design and development of computer hardware and software.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "UDBHATA TECHNOLOGIES PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "C. PRAKASH[32253]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "91 Springboard, LVS Arcade, Plot No 71, Jubilee Enclave, Hitec City, Madhapur Hyderabad Rangareddi TG 500081 IN",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "UDBHATA TECHNOLOGIES PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scientific and technological services and research and design relating thereto; Industrial analysis and industrial research services; Design and development of computer hardware and software."
+        }
+      ]
+    },
+    "id": "7c814cc8-2fd6-45c5-8fab-057a261c77a1",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1933"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "558E, V.M. COMPLEX, ERODE ROAD, VELLAKOVIL - 638 111, DIST. - TIRUPUR.",
+        "representativeName": "C. PRAKASH[32253]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191120",
+        "applicationNumber": "4353326"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20291120",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710145326",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIS"
+    }
+  },
+  "_uri": "/mark/in/7c814cc8-2fd6-45c5-8fab-057a261c77a1",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.394Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

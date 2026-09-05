@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/bx/5d05b8a4-8082-474b-a089-debec0c4e64a",
+  "provider": "clarivate",
+  "office": "bx",
+  "guid": "5d05b8a4-8082-474b-a089-debec0c4e64a",
+  "applicationNumber": "1523128",
+  "registrationNumber": "1523128",
+  "applicationDate": "2025-04-14",
+  "registrationDate": "2025-07-01",
+  "expiryDate": "2035-04-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-07-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Kwaliteitsbeoordeling; Controleren van de kwaliteit; Kwaliteitsbewaking; Kwaliteitscontrole",
+      "translation_language": "en",
+      "translation": "Quality assessment; Quality control; Quality assurance; Quality control"
+    }
+  ],
+  "owner": "Qualitier BV",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Cuneraweg 322, 3911 RT Rhenen",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "Qualitier BV"
+      }
+    ],
+    "applicationLanguageCode": "nl",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Quality assessment; Quality control; Quality assurance; Quality control",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kwaliteitsbeoordeling; Controleren van de kwaliteit; Kwaliteitsbewaking; Kwaliteitscontrole"
+        }
+      ]
+    },
+    "id": "5d05b8a4-8082-474b-a089-debec0c4e64a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "0701"
+      }
+    ],
+    "recordLastUpdated": "20250708",
+    "registrationOfficeCode": "BX",
+    "registrationOfficeName": "Benelux",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250414",
+        "applicationNumber": "1523128"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350414",
+      "lastPublicationDate": "20250701",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250701",
+        "registrationNumber": "1523128"
+      }
+    },
+    "version": "20250708020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORA"
+    }
+  },
+  "_uri": "/mark/bx/5d05b8a4-8082-474b-a089-debec0c4e64a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.683Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

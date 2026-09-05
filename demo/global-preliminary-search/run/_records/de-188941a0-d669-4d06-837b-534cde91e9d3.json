@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/de/188941a0-d669-4d06-837b-534cde91e9d3",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "188941a0-d669-4d06-837b-534cde91e9d3",
+  "applicationNumber": "302015103079.5",
+  "registrationNumber": "302015103079",
+  "applicationDate": "2015-06-02",
+  "registrationDate": "2015-09-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2015-10-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2025-07-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ITS Automotive Nord",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    16,
+    35,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "aufgezeichnete Daten; Navigations-, Orientierungs-, Standortverfolgungs-, Zielverfolgungs- und Kartierungsgeräte; Mess-, Erkennungs- und Überwachungsinstrumente, -vorrichtungen sowie –regler; Apparate für wissenschaftliche Forschung und Labor, Unterrichtsapparate und Simulatoren; Teile und Zubehör für alle vorgenannten Waren, soweit in dieser Klasse enthalten",
+      "translation_language": "en",
+      "translation": "recorded data; Navigation, orientation, location tracking, tracking and mapping devices; Measuring, detecting and monitoring instruments, devices and regulators; Scientific research and laboratory apparatus, teaching apparatus and simulators; Parts and accessories for all the aforesaid goods, included in this"
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": "de",
+      "description": "Druckereierzeugnisse, insbesondere Broschüren, Bücher, Zeitschriften, Zeitungen",
+      "translation_language": "en",
+      "translation": "Printed matter, in particular brochures, books, periodicals, newspapers"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung, Marketing und Verkaufsförderung; kaufmännische Dienstleistungen und Verbraucherinformationsdienste, nämlich Auktions- und Versteigerungsdienste, Vermittlungsdienstleistungen, Organisieren von Geschäftskontakten, Sammeleinkaufsdienste, kaufmännische Bewertungsdienste, Vorbereitung von Wettbewerben, Agenturgeschäfte, Import- und Exportdienste, Verhandlungs- und Vermittlungsdienste, Bestelldienste, Preisvergleichsdienste, Beschaffungsdienste für Dritte; Hilfe in Geschäftsangelegenheiten, Geschäftsführung und administrative Dienstleistungen; betriebswirtschaftliche Anlayse-, Recherche- und Informationsdienstleistungen; Verleih, Vermietung und Verpachtung von Gegenständen im Zusammenhang mit der Erbringung der vorgenannten Dienstleistungen, soweit in dieser Klasse enthalten; Beratung und Information in Bezug auf vorgenannte Dienstleistungen, soweit in dieser Klasse enthalten",
+      "translation_language": "en",
+      "translation": "Advertising, marketing and promotional services; business services and consumer information services, namely auction and auction services, brokerage services, business contact brokerage, group purchasing services, business evaluation services, competition preparation, agency business, import and export services, negotiation and brokerage, order services, price comparison services, procurement services for others; Business assistance, business management and administrative services; Business analysis, research and information services; Rental, rental and leasing of goods in connection with the provision of the aforesaid services, included in this class; Consultancy and information in relation to the aforesaid services, included in this"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "de",
+      "description": "Beratung und Information in Bezug auf Telekommunikationsdienste, soweit in dieser Klasse enthalten",
+      "translation_language": "en",
+      "translation": "Consultancy and information in relation to telecommunications services, included in this"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "wissenschaftliche und technologische Dienstleistungen; Prüfung, Authentifizierung und Qualitätskontrolle; Designdienstleistungen; Verleih, Vermietung und Verpachtung von Gegenständen im Zusammenhang mit der Erbringung der vorgenannten Dienstleistungen, soweit in dieser Klasse enthalten; Beratung und Information in Bezug auf vorgenannte Dienstleistungen, soweit in dieser Klasse enthalten",
+      "translation_language": "en",
+      "translation": "Scientific and technological services; Testing, authentication and quality control; Design services; Rental, rental and leasing of goods in connection with the provision of the aforesaid services, included in this class; Advice and information relating to the aforesaid services, included in this class"
+    }
+  ],
+  "owner": "Wolfsburg AG",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "Gramm, Lins & Partner Patent- und Rechtsanwälte PartGmbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "38442 Wolfsburg",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Wolfsburg AG"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "recorded data; Navigation, orientation, location tracking, tracking and mapping devices; Measuring, detecting and monitoring instruments, devices and regulators; Scientific research and laboratory apparatus, teaching apparatus and simulators; Parts and accessories for all the aforesaid goods, included in this",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "aufgezeichnete Daten; Navigations-, Orientierungs-, Standortverfolgungs-, Zielverfolgungs- und Kartierungsgeräte; Mess-, Erkennungs- und Überwachungsinstrumente, -vorrichtungen sowie –regler; Apparate für wissenschaftliche Forschung und Labor, Unterrichtsapparate und Simulatoren; Teile und Zubehör für alle vorgenannten Waren, soweit in dieser Klasse enthalten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter, in particular brochures, books, periodicals, newspapers",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Druckereierzeugnisse, insbesondere Broschüren, Bücher, Zeitschriften, Zeitungen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, marketing and promotional services; business services and consumer information services, namely auction and auction services, brokerage services, business contact brokerage, group purchasing services, business evaluation services, competition preparation, agency business, import and export services, negotiation and brokerage, order services, price comparison services, procurement services for others; Business assistance, business management and administrative services; Business analysis, research and information services; Rental, rental and leasing of goods in connection with the provision of the aforesaid services, included in this class; Consultancy and information in relation to the aforesaid services, included in this",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung, Marketing und Verkaufsförderung; kaufmännische Dienstleistungen und Verbraucherinformationsdienste, nämlich Auktions- und Versteigerungsdienste, Vermittlungsdienstleistungen, Organisieren von Geschäftskontakten, Sammeleinkaufsdienste, kaufmännische Bewertungsdienste, Vorbereitung von Wettbewerben, Agenturgeschäfte, Import- und Exportdienste, Verhandlungs- und Vermittlungsdienste, Bestelldienste, Preisvergleichsdienste, Beschaffungsdienste für Dritte; Hilfe in Geschäftsangelegenheiten, Geschäftsführung und administrative Dienstleistungen; betriebswirtschaftliche Anlayse-, Recherche- und Informationsdienstleistungen; Verleih, Vermietung und Verpachtung von Gegenständen im Zusammenhang mit der Erbringung der vorgenannten Dienstleistungen, soweit in dieser Klasse enthalten; Beratung und Information in Bezug auf vorgenannte Dienstleistungen, soweit in dieser Klasse enthalten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Consultancy and information in relation to telecommunications services, included in this",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Beratung und Information in Bezug auf Telekommunikationsdienste, soweit in dieser Klasse enthalten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific and technological services; Testing, authentication and quality control; Design services; Rental, rental and leasing of goods in connection with the provision of the aforesaid services, included in this class; Advice and information relating to the aforesaid services, included in this class",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "wissenschaftliche und technologische Dienstleistungen; Prüfung, Authentifizierung und Qualitätskontrolle; Designdienstleistungen; Verleih, Vermietung und Verpachtung von Gegenständen im Zusammenhang mit der Erbringung der vorgenannten Dienstleistungen, soweit in dieser Klasse enthalten; Beratung und Information in Bezug auf vorgenannte Dienstleistungen, soweit in dieser Klasse enthalten"
+        }
+      ]
+    },
+    "id": "188941a0-d669-4d06-837b-534cde91e9d3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "42"
+      }
+    ],
+    "recordLastUpdated": "20260405",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Gramm, Lins & Partner Patent- und Rechtsanwälte PartGmbB, Frankfurter Str. 3c, 38122 Braunschweig"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "38122 Braunschweig",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "Gramm, Lins & Partner Patent- und Rechtsanwälte PartGmbB"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150602",
+        "applicationNumber": "302015103079.5"
+      },
+      "cancellationDate": "20250701",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20151016",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20150914",
+        "registrationNumber": "302015103079"
+      }
+    },
+    "version": "20260405020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ITS Automotive Nord"
+    }
+  },
+  "_uri": "/mark/de/188941a0-d669-4d06-837b-534cde91e9d3",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

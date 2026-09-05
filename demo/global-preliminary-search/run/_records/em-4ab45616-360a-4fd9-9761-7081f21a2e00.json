@@ -1,0 +1,749 @@
+{
+  "uri": "/mark/em/4ab45616-360a-4fd9-9761-7081f21a2e00",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "4ab45616-360a-4fd9-9761-7081f21a2e00",
+  "applicationNumber": "19366872",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-19",
+  "registrationDate": null,
+  "expiryDate": "2036-05-19",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-06-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Qoridian",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Pocítacové sluzby pro analýzu dat; Sluzby v oblasti analýzy technických dat; Sluzby v oblasti analýzy technických dat; Software jako sluzba [SaaS]; Webhostingové sluzby a software jako sluzba a pronájem softwaru; Pocítacem podporovaná vedecká analýza.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Computerydelser til dataanalyse; Analyse af tekniske data; Analyse af tekniske data; Software as a service [saas]; Hostingtjenesteydelser og software as a service og udlejning af software; Computerstøttet videnskabelig analysevirksomhed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Computerdiensten voor de analyse van gegevens; Analyseren van technische gegevens; Analyseren van technische gegevens; Ter beschikking stellen van software [SaaS]; Hostingdiensten en ter beschikking stellen van software (Saas) en verhuur van software; Computerondersteunde wetenschappelijke analysediensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Computer services for the analysis of data; Technical data analysis services; Software as a service [SaaS]; Hosting services, software as a service, and rental of software; Computer aided scientific analysis services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Tarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Andmeanalüüsiks vajalikud IT-teenused; Tehniliste andmete analüüsimise teenused; Tehniliste andmete analüüsimise teenused; Pilveteenused [SaaS]; Hostimine ja pilveteenused (SaaS) ning tarkvara rent; Arvutipõhise teadusanalüüsi teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Ohjelmistot.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Tietokonepalvelut datan analysointiin; Teknisten tietojen analysointipalvelut; Teknisten tietojen analysointipalvelut; Verkkosovelluspalvelut [SaaS]; Verkkoisännöintipalvelut ja verkkosovelluspalvelut (SaaS) sekä ohjelmistojen vuokraus; Tietokoneavusteiset tieteelliset analysointipalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciel.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Services informatiques d'analyse de données; Services d'analyse de données techniques; Services d'analyse de données techniques; Logiciels en tant que service [SaaS]; Services d'hébergement et logiciel en tant que service, et location de logiciel; Services d'analyses scientifiques assistées par ordinateur.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Computerdienstleistungen für Datenanalysen; Technische Datenanalysedienste; Durchführung technischer Datenanalysen; Software as a Service [SaaS]; Hosting-Dienste, Software as a Service [SaaS] und Vermietung von Software; Computergestützte wissenschaftliche Analyse.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Racunalne usluge za analizu podataka; Usluge analize tehnickih podataka; Usluge analize tehnickih podataka; Softver kao usluga [SaaS]; Usluge hostinga i softver kao usluga te iznajmljivanje softvera; Usluge racunalno potpomognute znanstvene analize.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Szoftverek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Számítógépes adatelemzési szolgáltatások; Muszaki adatelemzési szolgáltatások; Muszaki adatelemzési szolgáltatások; Szoftver mint szolgáltatás [SaaS]; Webtárhely és szoftver szolgáltatások, szoftver bérlés; Számítógéppel segített tudományos elemzés.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Servizi informatici d'analisi di dati; Servizi di analisi di dati tecnici; Servizi di analisi di dati tecnici; Software come servizio [SaaS]; Servizi di hosting e software come servizio e noleggio di software; Analisi scientifiche con supporto informatico.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Kompiuterines duomenu analizes paslaugos; Techniniu duomenu analizes paslaugos; Techniniu duomenu analizes paslaugos; Programine iranga kaip paslauga [SaaS]; Prieglobos (talpinimo) paslaugos ir programine iranga kaip paslauga bei programines irangos nuoma; Kompiuterines mokslines analizes paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Programmatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Datoru datu analizes pakalpojumi; Tehnisko datu analizes pakalpojumi; Tehnisko datu analizes pakalpojumi; Programmatura ka pakalpojums (SaaS); Datnu izvietosanas un uzturesanas pakalpojumi, ari programmaturas izvietosana un uzturesana makoni un programmaturas iznomasana; Datorizeti zinatniskas analizes pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Servizzi tal-kompjuter ghall-analizi ta' data; Servizzi ta' analizi ta' data teknika; Servizzi ta' analizi ta' data teknika; Softwer bhala servizz [SaaS]; Servizzi ta' hosting u softwer bhala servizz u kiri ta' softwer; Servizzi ta' analizi xjentifika bl-ghajnuna tal-kompjuter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Uslugi komputerowe do analizy danych; Uslugi w zakresie analizy danych technicznych; Uslugi w zakresie analizy danych technicznych; Oprogramowanie jako usluga [SaaS]; Hosting, oprogramowanie jako usluga oraz wypozyczanie oprogramowania komputerowego; Analizy naukowe wspomagane komputerowo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços informáticos de análise de dados; Serviços de análise de dados técnicos; Serviços de análise de dados técnicos; Software como serviço [SaaS]; Serviços de alojamento de sites de Internet e software como serviço e aluguer de software; Análise científica assistida por computador.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Servicii informatice de analiza de date; Servicii de analiza de date tehnice; Servicii de analiza de date tehnice; Software ca serviciu [SaaS]; Servicii de gazduire, software ca si serviciu si închiriere de software; Servicii de analize stiintifice asistate de calculator.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Pocítacové sluzby na analýzu údajov; Sluzby analýzy technických dát; Sluzby analýzy technických dát; Poskytovanie softvéru prostredníctvom internetu (SaaS); Hostovanie na internetových stránkach, softvérové sluzby, prenájom softvéru; Pocítacom podporované vedecké analytické sluzby.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Racunalniske storitve za analizo podatkov; Storitve analize tehnicnih podatkov; Storitve analize tehnicnih podatkov; Programska oprema kot storitev [SaaS]; Storitve gostovanja in nudenje programske opreme preko spleta ter dajanje programske opreme v najem; Racunalnisko podprte znanstvene analize.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios informáticos de análisis de datos; Servicios de análisis de datos técnicos; Servicios de análisis de datos técnicos; Software como servicio [SaaS]; Servicios de alojamientos de sitios web y alquiler de software; Servicios de análisis científicos asistidos por ordenador.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Mjukvaror.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Datortjänster för dataanalys; Tekniska dataanalystjänster; Tekniska dataanalystjänster; Molntjänster [SaaS]; Hostingtjänster, molntjänster (SaaS) och uthyrning av mjukvara; Datorstödda vetenskapliga analystjänster.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Hottes NextGen GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": "GREYHILLS RECHTSANWÄLTE PARTNERSCHAFTSGESELLSCHAFT mbB",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Hemmingstedter Weg 123 f,Hamburg, 22609",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Hottes NextGen GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Pocítacové sluzby pro analýzu dat; Sluzby v oblasti analýzy technických dat; Sluzby v oblasti analýzy technických dat; Software jako sluzba [SaaS]; Webhostingové sluzby a software jako sluzba a pronájem softwaru; Pocítacem podporovaná vedecká analýza."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Computerydelser til dataanalyse; Analyse af tekniske data; Analyse af tekniske data; Software as a service [saas]; Hostingtjenesteydelser og software as a service og udlejning af software; Computerstøttet videnskabelig analysevirksomhed."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Computerdiensten voor de analyse van gegevens; Analyseren van technische gegevens; Analyseren van technische gegevens; Ter beschikking stellen van software [SaaS]; Hostingdiensten en ter beschikking stellen van software (Saas) en verhuur van software; Computerondersteunde wetenschappelijke analysediensten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Computer services for the analysis of data; Technical data analysis services; Software as a service [SaaS]; Hosting services, software as a service, and rental of software; Computer aided scientific analysis services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Tarkvara."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Andmeanalüüsiks vajalikud IT-teenused; Tehniliste andmete analüüsimise teenused; Tehniliste andmete analüüsimise teenused; Pilveteenused [SaaS]; Hostimine ja pilveteenused (SaaS) ning tarkvara rent; Arvutipõhise teadusanalüüsi teenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Ohjelmistot."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Tietokonepalvelut datan analysointiin; Teknisten tietojen analysointipalvelut; Teknisten tietojen analysointipalvelut; Verkkosovelluspalvelut [SaaS]; Verkkoisännöintipalvelut ja verkkosovelluspalvelut (SaaS) sekä ohjelmistojen vuokraus; Tietokoneavusteiset tieteelliset analysointipalvelut."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciel."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services informatiques d'analyse de données; Services d'analyse de données techniques; Services d'analyse de données techniques; Logiciels en tant que service [SaaS]; Services d'hébergement et logiciel en tant que service, et location de logiciel; Services d'analyses scientifiques assistées par ordinateur."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Computerdienstleistungen für Datenanalysen; Technische Datenanalysedienste; Durchführung technischer Datenanalysen; Software as a Service [SaaS]; Hosting-Dienste, Software as a Service [SaaS] und Vermietung von Software; Computergestützte wissenschaftliche Analyse."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Racunalne usluge za analizu podataka; Usluge analize tehnickih podataka; Usluge analize tehnickih podataka; Softver kao usluga [SaaS]; Usluge hostinga i softver kao usluga te iznajmljivanje softvera; Usluge racunalno potpomognute znanstvene analize."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Szoftverek."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Számítógépes adatelemzési szolgáltatások; Muszaki adatelemzési szolgáltatások; Muszaki adatelemzési szolgáltatások; Szoftver mint szolgáltatás [SaaS]; Webtárhely és szoftver szolgáltatások, szoftver bérlés; Számítógéppel segített tudományos elemzés."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi informatici d'analisi di dati; Servizi di analisi di dati tecnici; Servizi di analisi di dati tecnici; Software come servizio [SaaS]; Servizi di hosting e software come servizio e noleggio di software; Analisi scientifiche con supporto informatico."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Programine iranga."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Kompiuterines duomenu analizes paslaugos; Techniniu duomenu analizes paslaugos; Techniniu duomenu analizes paslaugos; Programine iranga kaip paslauga [SaaS]; Prieglobos (talpinimo) paslaugos ir programine iranga kaip paslauga bei programines irangos nuoma; Kompiuterines mokslines analizes paslaugos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Programmatura."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Datoru datu analizes pakalpojumi; Tehnisko datu analizes pakalpojumi; Tehnisko datu analizes pakalpojumi; Programmatura ka pakalpojums (SaaS); Datnu izvietosanas un uzturesanas pakalpojumi, ari programmaturas izvietosana un uzturesana makoni un programmaturas iznomasana; Datorizeti zinatniskas analizes pakalpojumi."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi tal-kompjuter ghall-analizi ta' data; Servizzi ta' analizi ta' data teknika; Servizzi ta' analizi ta' data teknika; Softwer bhala servizz [SaaS]; Servizzi ta' hosting u softwer bhala servizz u kiri ta' softwer; Servizzi ta' analizi xjentifika bl-ghajnuna tal-kompjuter."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi komputerowe do analizy danych; Uslugi w zakresie analizy danych technicznych; Uslugi w zakresie analizy danych technicznych; Oprogramowanie jako usluga [SaaS]; Hosting, oprogramowanie jako usluga oraz wypozyczanie oprogramowania komputerowego; Analizy naukowe wspomagane komputerowo."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços informáticos de análise de dados; Serviços de análise de dados técnicos; Serviços de análise de dados técnicos; Software como serviço [SaaS]; Serviços de alojamento de sites de Internet e software como serviço e aluguer de software; Análise científica assistida por computador."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii informatice de analiza de date; Servicii de analiza de date tehnice; Servicii de analiza de date tehnice; Software ca serviciu [SaaS]; Servicii de gazduire, software ca si serviciu si închiriere de software; Servicii de analize stiintifice asistate de calculator."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Pocítacové sluzby na analýzu údajov; Sluzby analýzy technických dát; Sluzby analýzy technických dát; Poskytovanie softvéru prostredníctvom internetu (SaaS); Hostovanie na internetových stránkach, softvérové sluzby, prenájom softvéru; Pocítacom podporované vedecké analytické sluzby."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Racunalniske storitve za analizo podatkov; Storitve analize tehnicnih podatkov; Storitve analize tehnicnih podatkov; Programska oprema kot storitev [SaaS]; Storitve gostovanja in nudenje programske opreme preko spleta ter dajanje programske opreme v najem; Racunalnisko podprte znanstvene analize."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios informáticos de análisis de datos; Servicios de análisis de datos técnicos; Servicios de análisis de datos técnicos; Software como servicio [SaaS]; Servicios de alojamientos de sitios web y alquiler de software; Servicios de análisis científicos asistidos por ordenador."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Mjukvaror."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Datortjänster för dataanalys; Tekniska dataanalystjänster; Tekniska dataanalystjänster; Molntjänster [SaaS]; Hostingtjänster, molntjänster (SaaS) och uthyrning av mjukvara; Datorstödda vetenskapliga analystjänster."
+        }
+      ]
+    },
+    "id": "4ab45616-360a-4fd9-9761-7081f21a2e00",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "107"
+      }
+    ],
+    "recordLastUpdated": "20260618",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Severinskloster 5,Köln, 50678",
+        "representativeAddressCountryCode": "DE",
+        "representativeAddressCountryName": "Germany",
+        "representativeName": "GREYHILLS RECHTSANWÄLTE PARTNERSCHAFTSGESELLSCHAFT mbB"
+      }
+    ],
+    "secondLanguageCode": "en",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260519",
+        "applicationNumber": "19366872"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360519",
+      "lastPublicationDate": "20260610",
+      "markCurrentStatus": "APPLICATION PUBLISHED"
+    },
+    "version": "20260618020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Qoridian"
+    }
+  },
+  "_uri": "/mark/em/4ab45616-360a-4fd9-9761-7081f21a2e00",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.396Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

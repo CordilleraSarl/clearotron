@@ -1,0 +1,22 @@
+{
+  "profileKey": "generic",
+  "name": "Generic default",
+  "industry": "",
+  "platforms": [
+    "amazon.com",
+    "apps.apple.com",
+    "play.google.com"
+  ],
+  "minCellsPerVariant": 4,
+  "batchSize": 4,
+  "defaultClasses": [],
+  "defaultJurisdictions": [],
+  "selfExclusionOwners": [],
+  "delivery": {
+    "email": "summary",
+    "privileged": false
+  },
+  "riskAppetite": "",
+  "contextPack": "",
+  "profileSha": "d37721cda8994463952c8916d541338a1b21ffdb27b1d3c4a564b6439004e644"
+}

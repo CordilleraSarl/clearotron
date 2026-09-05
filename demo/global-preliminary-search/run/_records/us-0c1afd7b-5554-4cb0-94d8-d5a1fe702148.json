@@ -1,0 +1,230 @@
+{
+  "uri": "/mark/us/0c1afd7b-5554-4cb0-94d8-d5a1fe702148",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0c1afd7b-5554-4cb0-94d8-d5a1fe702148",
+  "applicationNumber": "99688682",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "CLAVE NORTEÑA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment, namely, live performances by a musical band",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Luis Alejandro Arellano",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1120 Neatherly cir, Corona, CA, 92878, USAM",
+        "applicantAddressCity": "Corona",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "92878",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "1120 Neatherly cir",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Luis Alejandro Arellano"
+      },
+      {
+        "applicantAddress": "1120 Neatherly cir, Corona, CA, 92880, USAM",
+        "applicantAddressCity": "Corona",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "92880",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "1120 Neatherly cir",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Gustavo Alejandro Arellano"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment, namely, live performances by a musical band"
+        }
+      ]
+    },
+    "id": "0c1afd7b-5554-4cb0-94d8-d5a1fe702148",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260713",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20260713",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260713",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20260708",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260705",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260307",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260307",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1120 Neatherly cir, Corona, CA, 92878, USAM",
+        "city": "Corona",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Luis Alejandro Arellano",
+        "postalCode": "92878",
+        "stateName": "CALIFORNIA",
+        "street": "1120 Neatherly cir"
+      },
+      {
+        "address": "1120 Neatherly cir, Corona, CA, 92880, USAM",
+        "city": "Corona",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Gustavo Alejandro Arellano",
+        "postalCode": "92880",
+        "stateName": "CALIFORNIA",
+        "street": "1120 Neatherly cir"
+      },
+      {
+        "address": "1120 Neatherly cir, Corona, CA, 92878, USAM",
+        "city": "Corona",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Luis Alejandro Arellano",
+        "postalCode": "92878",
+        "stateName": "CALIFORNIA",
+        "street": "1120 Neatherly cir"
+      },
+      {
+        "address": "1120 Neatherly cir, Corona, CA, 92880, USAM",
+        "city": "Corona",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Gustavo Alejandro Arellano",
+        "postalCode": "92880",
+        "stateName": "CALIFORNIA",
+        "street": "1120 Neatherly cir"
+      }
+    ],
+    "recordLastUpdated": "20260715",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Corona, CA 92878, United States",
+        "representativeCorrespondentAddressLines": [
+          "Corona, CA 92878",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Luis Alejandro Arellano, 1120 Neatherly cir"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Corona, CA 92878, United States",
+        "representativeAddressLines": [
+          "Corona, CA 92878",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260307",
+        "applicationNumber": "99688682"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NON-FINAL ACTION - MAILED",
+        "markOfficialStatusCode": "641",
+        "markOfficialStatusDate": "20260713",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260715104246",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "CLAVE NORTEnA",
+      "markVerbalElementText": "CLAVE NORTEÑA"
+    }
+  },
+  "_uri": "/mark/us/0c1afd7b-5554-4cb0-94d8-d5a1fe702148",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

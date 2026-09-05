@@ -1,0 +1,117 @@
+{
+  "uri": "/mark/xs/0c4525a0-d686-49ee-b649-d39b6d192ff8",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "0c4525a0-d686-49ee-b649-d39b6d192ff8",
+  "applicationNumber": null,
+  "registrationNumber": "5072185",
+  "applicationDate": null,
+  "registrationDate": "2023-06-27",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "LAWSON HEMPHILL, INC. T/A THE ZEVEN CORPORATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": null,
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "0c4525a0-d686-49ee-b649-d39b6d192ff8",
+    "ipRightKind": "tmk",
+    "kindMark": "FICTITIOUS NAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250712",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230627",
+        "registrationNumber": "5072185"
+      }
+    },
+    "usStateOfficeCode": "OH",
+    "usStateOfficeName": "OHIO",
+    "version": "20250712102225",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "LAWSON HEMP HILL INC TA THE ZEVEN CORPORATION, LAWSON HEMOP HILLINC TASEVEN CORPORATION",
+      "markVerbalElementText": "LAWSON HEMPHILL, INC. T/A THE ZEVEN CORPORATION"
+    }
+  },
+  "_uri": "/mark/xs/0c4525a0-d686-49ee-b649-d39b6d192ff8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.743Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/cn/2c7a8322-bcde-4ade-a2cc-9b3250b7c417",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "2c7a8322-bcde-4ade-a2cc-9b3250b7c417",
+  "applicationNumber": "85989296",
+  "registrationNumber": "85989296",
+  "applicationDate": "2025-06-18",
+  "registrationDate": "2026-03-14",
+  "expiryDate": "2036-03-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电池;电开关;电源材料(电线、电缆);计数器;手机充电器;眼镜;照相机(摄影)",
+      "translation_language": "en",
+      "translation": "Batteries; electrical switches; power supply materials (wires, cables); counters; mobile phone chargers; eyeglasses; cameras (photography)"
+    }
+  ],
+  "owner": "Ren Lanying",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "黑龙江省哈尔滨市呼兰区利民镇裕强村二十里屯",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Ren Lanying",
+        "applicantNativeName": "任兰英"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Batteries; electrical switches; power supply materials (wires, cables); counters; mobile phone chargers; eyeglasses; cameras (photography)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电池;电开关;电源材料(电线、电缆);计数器;手机充电器;眼镜;照相机(摄影)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Cables",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0912",
+          "subNatGoodsServicesDescription": "Cables"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "2c7a8322-bcde-4ade-a2cc-9b3250b7c417",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "05.03.11",
+      "A261112",
+      "26.11.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1963"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海联汤科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250618",
+        "applicationNumber": "85989296"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360313",
+      "lastPublicationDate": "20251213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260314",
+        "registrationNumber": "85989296"
+      }
+    },
+    "version": "20260429020225",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORA"
+    }
+  },
+  "_uri": "/mark/cn/2c7a8322-bcde-4ade-a2cc-9b3250b7c417",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.683Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

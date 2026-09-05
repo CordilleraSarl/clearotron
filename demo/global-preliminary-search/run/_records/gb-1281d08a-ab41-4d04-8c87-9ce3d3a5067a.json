@@ -1,0 +1,122 @@
+{
+  "uri": "/mark/gb/1281d08a-ab41-4d04-8c87-9ce3d3a5067a",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "1281d08a-ab41-4d04-8c87-9ce3d3a5067a",
+  "applicationNumber": "4263440",
+  "registrationNumber": "4263440",
+  "applicationDate": "2025-09-12",
+  "registrationDate": "2025-12-19",
+  "expiryDate": "2035-09-12",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RAVEN CORE CONSULTING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services; Educational services for providing courses of education; Education and training consultancy; Education services relating to health; Career counselling [training and education advice]; Education services relating to industry; Education in the field of computing science; Educational and training services relating to healthcare; Training or education services in the field of life coaching; Educational and teaching services; Research in the field of education; Educational services provided by institutes of higher education; Career counselling relating to education and training; Education services relating to nutrition; Online education services; Technological education services; Provision of education courses; Educational services for providing courses of education; Teaching of diet education; Career counseling [education];Higher education services; Provision of training and education; Provision of education and training; Providing of education; Vocational education and training services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Mary Wahito Kangere",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5 Broughton Place, NORTHAMPTON NN3 2RS",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Mary Wahito Kangere"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "25.05.25",
+      "26.04.02",
+      "26.04.12",
+      "26.04.22",
+      "28.19.00"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services; Educational services for providing courses of education; Education and training consultancy; Education services relating to health; Career counselling [training and education advice]; Education services relating to industry; Education in the field of computing science; Educational and training services relating to healthcare; Training or education services in the field of life coaching; Educational and teaching services; Research in the field of education; Educational services provided by institutes of higher education; Career counselling relating to education and training; Education services relating to nutrition; Online education services; Technological education services; Provision of education courses; Educational services for providing courses of education; Teaching of diet education; Career counseling [education];Higher education services; Provision of training and education; Provision of education and training; Providing of education; Vocational education and training services."
+        }
+      ]
+    },
+    "id": "1281d08a-ab41-4d04-8c87-9ce3d3a5067a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.99.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2025/041"
+      }
+    ],
+    "recordLastUpdated": "20251228",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250912",
+        "applicationNumber": "4263440"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350912",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20251219",
+        "registrationNumber": "4263440"
+      }
+    },
+    "version": "20251228020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN CORE CONSULTING"
+    }
+  },
+  "_uri": "/mark/gb/1281d08a-ab41-4d04-8c87-9ce3d3a5067a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.746Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

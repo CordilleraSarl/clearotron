@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/cn/42a7cb81-0d81-4041-9326-e586f0493e1e",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "42a7cb81-0d81-4041-9326-e586f0493e1e",
+  "applicationNumber": "48331173",
+  "registrationNumber": "48331173",
+  "applicationDate": "2020-07-23",
+  "registrationDate": "2021-03-14",
+  "expiryDate": "2031-03-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "拨日",
+  "markTransliteration": "BO RI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "计算机编程,计算机软件设计,计算机软件咨询,软件即服务(SaaS),信息技术咨询服务,云计算,计算机技术咨询,软件出版框架下的软件开发,平台即服务(PaaS),计算机平台的开发",
+      "translation_language": "en",
+      "translation": "Computer programming, computer software design, computer software consulting, software as a service (SaaS), information technology consulting services, cloud computing, computer technology consulting, software development under the framework of software publishing, platform as a service (PaaS), computer platform development"
+    }
+  ],
+  "owner": "Shanghai Farri Internet Information Service Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市普陀区真南路708 号5 层",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Farri Internet Information Service Co., Ltd.",
+        "applicantNativeName": "上海拨日互联网信息服务有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer programming, computer software design, computer software consulting, software as a service (SaaS), information technology consulting services, cloud computing, computer technology consulting, software development under the framework of software publishing, platform as a service (PaaS), computer platform development",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机编程,计算机软件设计,计算机软件咨询,软件即服务(SaaS),信息技术咨询服务,云计算,计算机技术咨询,软件出版框架下的软件开发,平台即服务(PaaS),计算机平台的开发"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "42a7cb81-0d81-4041-9326-e586f0493e1e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1723"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "上海凯创知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200723",
+        "applicationNumber": "48331173"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310313",
+      "lastPublicationDate": "20201213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210314",
+        "registrationNumber": "48331173"
+      }
+    },
+    "version": "20251004050547",
+    "wordMarkSpecification": {
+      "markTransliteration": "BO RI",
+      "markVerbalElementText": "拨日"
+    }
+  },
+  "_uri": "/mark/cn/42a7cb81-0d81-4041-9326-e586f0493e1e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.211Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

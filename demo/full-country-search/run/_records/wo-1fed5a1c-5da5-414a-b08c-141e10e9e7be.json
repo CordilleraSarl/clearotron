@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/wo/1fed5a1c-5da5-414a-b08c-141e10e9e7be",
+  "provider": "clarivate",
+  "office": "wo",
+  "guid": "1fed5a1c-5da5-414a-b08c-141e10e9e7be",
+  "applicationNumber": null,
+  "registrationNumber": "1473494",
+  "applicationDate": null,
+  "registrationDate": "2018-12-12",
+  "expiryDate": "2028-12-12",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-06-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors; semiconductor processors; semiconductor processor chips; integrated circuits; integrated circuit chips; circuit boards; microcomputers; microcontrollers; microprocessors; applications processors; programmable microprocessors; multicore processors; application-specific integrated circuits (asics); integrated circuits embedded with software; software; software systems; network processors used in network equipment; smart cards; smart card integrated circuits; RFID chips and tags; artificial intelligence tools, namely computer software for artificial intelligence; machine learning tools, namely computer software for machine learning; cloud software tools; SDK (software development kit); Internet of things (IoT) applications; Internet of things (IoT) devices consisting of smart TVs, speaker systems, toys, wearables, smart meters, thermostats, connected security systems, smart home devices; downloadable cloud computing software; computer systems for cloud computing; cloud infrastructure, namely computer hardware and software for cloud computing; cloud computing software; hybrid cloud; multi-cloud.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Semi-conducteurs; processeurs à semi-conducteurs; puces de processeurs à semi-conducteurs; circuits intégrés; puces à circuits intégrés; cartes de circuits imprimés; micro-ordinateurs; microcontrôleurs; microprocesseurs; processeurs d'applications; microprocesseurs programmables; processeurs multicoeurs; circuits intégrés à application spécifique (ASIC); circuits intégrés incorporés dans des logiciels; logiciels; software Systems; processeurs de réseau utilisés dans des équipements de réseau; cartes à puce; circuits intégrés de cartes à puce; puces et étiquette RFID; outils d'intelligence artificielle, à savoir logiciels informatiques pour l'intelligence artificielle; outils d'apprentissage automatique, à savoir logiciels informatiques d'apprentissage automatique; outils de logiciels d'informatique en nuage; Kits de développement logiciel (SDK); applications pour l'Internet des Objets (IdO); Internet des Objets (IdO), dispositifs composés de téléviseurs intelligents, d'enceintes acoustiques, de jouets, dispositifs portatifs, compteurs intelligents, thermostats, systèmes de sécurité connectés, dispositifs pour maisons intelligentes; logiciels d'informatique en nuage téléchargeables; systèmes informatiques pour l'informatique en nuage; infrastructures d'informatique en nuage, à savoir matériel informatique et logiciels pour informatique en nuage; logiciels d'informatique en nuage; informatique en nuage hybride; informatique en nuage à nuages multiples.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Semiconductores; procesadores de semiconductores; chips de procesadores de semiconductores; circuitos integrados; chips de circuitos integrados; placas de circuitos impresos; microordenadores; microcontroladores; microprocesadores; procesadores de aplicaciones; microprocesadores programables; procesadores de varios núcleos; circuitos integrados específicos de aplicaciones (ASIC); circuitos integrados con software; software; sistemas de software; procesadores de red para equipos de red; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; herramientas de inteligencia artificial, a saber, software informático para inteligencia artificial; herramientas de aprendizaje automático, a saber, software informático para aprendizaje automático; herramientas de software en la nube; SDK (kits de desarrollo de software); aplicaciones de Internet de las cosas (IdC); dispositivos de Internet de las cosas (IdC) compuestos de televisores inteligentes, sistemas de altavoces, juguetes, dispositivos ponibles, contadores inteligentes, termostatos conectados a sistemas de seguridad, dispositivos inteligentes para el hogar; software descargable de informática en la nube; sistemas informáticos de informática en la nube; infraestructuras en la nube, a saber, hardware y software informáticos para la informática en la nube; software de computación en nube; nube híbrida; multinube.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "NXP B.V.",
+  "ownerNative": null,
+  "ownerCountry": "NL",
+  "representative": "NLO Shieldmark B.V.",
+  "priorities": [
+    {
+      "priorityCountryCode": "BX",
+      "priorityCountryName": "Benelux",
+      "priorityDate": "20181207",
+      "priorityNumber": "1386574"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": [
+    {
+      "basicApplications": [
+        {
+          "basicApplicationDate": "20181207",
+          "basicApplicationNumber": "01386574"
+        }
+      ],
+      "basicRegistrationApplicationOfficeCode": "BX"
+    }
+  ],
+  "madridDesignations": {
+    "protocol": [
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "US",
+      "EM"
+    ],
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "High Tech Campus 60 NL-5656 AG Eindhoven",
+        "applicantAddressCountryCode": "NL",
+        "applicantAddressCountryName": "Netherlands",
+        "applicantName": "NXP B.V."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "basicRegistrationApplications": [
+      {
+        "basicApplications": [
+          {
+            "basicApplicationDate": "20181207",
+            "basicApplicationNumber": "01386574"
+          }
+        ],
+        "basicRegistrationApplicationOfficeCode": "BX"
+      }
+    ],
+    "designatedCountryCodeMadridProtocol": [
+      "IN",
+      "JP",
+      "KR",
+      "MX",
+      "US",
+      "EM"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors; semiconductor processors; semiconductor processor chips; integrated circuits; integrated circuit chips; circuit boards; microcomputers; microcontrollers; microprocessors; applications processors; programmable microprocessors; multicore processors; application-specific integrated circuits (asics); integrated circuits embedded with software; software; software systems; network processors used in network equipment; smart cards; smart card integrated circuits; RFID chips and tags; artificial intelligence tools, namely computer software for artificial intelligence; machine learning tools, namely computer software for machine learning; cloud software tools; SDK (software development kit); Internet of things (IoT) applications; Internet of things (IoT) devices consisting of smart TVs, speaker systems, toys, wearables, smart meters, thermostats, connected security systems, smart home devices; downloadable cloud computing software; computer systems for cloud computing; cloud infrastructure, namely computer hardware and software for cloud computing; cloud computing software; hybrid cloud; multi-cloud."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Semi-conducteurs; processeurs à semi-conducteurs; puces de processeurs à semi-conducteurs; circuits intégrés; puces à circuits intégrés; cartes de circuits imprimés; micro-ordinateurs; microcontrôleurs; microprocesseurs; processeurs d'applications; microprocesseurs programmables; processeurs multicoeurs; circuits intégrés à application spécifique (ASIC); circuits intégrés incorporés dans des logiciels; logiciels; software Systems; processeurs de réseau utilisés dans des équipements de réseau; cartes à puce; circuits intégrés de cartes à puce; puces et étiquette RFID; outils d'intelligence artificielle, à savoir logiciels informatiques pour l'intelligence artificielle; outils d'apprentissage automatique, à savoir logiciels informatiques d'apprentissage automatique; outils de logiciels d'informatique en nuage; Kits de développement logiciel (SDK); applications pour l'Internet des Objets (IdO); Internet des Objets (IdO), dispositifs composés de téléviseurs intelligents, d'enceintes acoustiques, de jouets, dispositifs portatifs, compteurs intelligents, thermostats, systèmes de sécurité connectés, dispositifs pour maisons intelligentes; logiciels d'informatique en nuage téléchargeables; systèmes informatiques pour l'informatique en nuage; infrastructures d'informatique en nuage, à savoir matériel informatique et logiciels pour informatique en nuage; logiciels d'informatique en nuage; informatique en nuage hybride; informatique en nuage à nuages multiples."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Semiconductores; procesadores de semiconductores; chips de procesadores de semiconductores; circuitos integrados; chips de circuitos integrados; placas de circuitos impresos; microordenadores; microcontroladores; microprocesadores; procesadores de aplicaciones; microprocesadores programables; procesadores de varios núcleos; circuitos integrados específicos de aplicaciones (ASIC); circuitos integrados con software; software; sistemas de software; procesadores de red para equipos de red; tarjetas inteligentes; circuitos integrados de tarjetas inteligentes; chips y etiquetas de identificación por radiofrecuencia; herramientas de inteligencia artificial, a saber, software informático para inteligencia artificial; herramientas de aprendizaje automático, a saber, software informático para aprendizaje automático; herramientas de software en la nube; SDK (kits de desarrollo de software); aplicaciones de Internet de las cosas (IdC); dispositivos de Internet de las cosas (IdC) compuestos de televisores inteligentes, sistemas de altavoces, juguetes, dispositivos ponibles, contadores inteligentes, termostatos conectados a sistemas de seguridad, dispositivos inteligentes para el hogar; software descargable de informática en la nube; sistemas informáticos de informática en la nube; infraestructuras en la nube, a saber, hardware y software informáticos para la informática en la nube; software de computación en nube; nube híbrida; multinube."
+        }
+      ]
+    },
+    "id": "1fed5a1c-5da5-414a-b08c-141e10e9e7be",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "BX",
+        "priorityCountryName": "Benelux",
+        "priorityDate": "20181207",
+        "priorityNumber": "1386574"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "23"
+      }
+    ],
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "WO",
+    "registrationOfficeName": "International Register",
+    "representatives": [
+      {
+        "representativeAddress": "New Babylon City Offices, Anna van Buerenplein 21 A NL-2595 DA Den Haag",
+        "representativeAddressCountryCode": "NL",
+        "representativeAddressCountryName": "Netherlands",
+        "representativeName": "NLO Shieldmark B.V."
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20281212",
+      "lastPublicationDate": "20190620",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20181212",
+        "registrationNumber": "1473494"
+      }
+    },
+    "version": "20250620190227",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EIQ"
+    }
+  },
+  "_uri": "/mark/wo/1fed5a1c-5da5-414a-b08c-141e10e9e7be",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.459Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "uri": "/mark/br/f6c49d81-b42e-45a8-8270-a58ca60083fc",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "f6c49d81-b42e-45a8-8270-a58ca60083fc",
+  "applicationNumber": "919672639",
+  "registrationNumber": null,
+  "applicationDate": "2020-05-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Elaboração [concepção], desenvolvimento, instalação e manutenção de software de gestão; Software como serviço [SaaS].",
+      "translation_language": "en",
+      "translation": "Creation [design], development, installation and maintenance of management software; Software as a Service [SaaS]."
+    }
+  ],
+  "owner": "RAFAEL DAL MOLIN",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "SKO OYARZÁBAL MARCAS E PATENTES SOCIEDADE SIMPLES LTDA.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "RAFAEL DAL MOLIN"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Creation [design], development, installation and maintenance of management software; Software as a Service [SaaS].",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Elaboração [concepção], desenvolvimento, instalação e manutenção de software de gestão; Software como serviço [SaaS]."
+        }
+      ]
+    },
+    "id": "f6c49d81-b42e-45a8-8270-a58ca60083fc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250701",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "SKO OYARZÁBAL MARCAS E PATENTES SOCIEDADE SIMPLES LTDA."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200508",
+        "applicationNumber": "919672639"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20250701001022",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOR"
+    }
+  },
+  "_uri": "/mark/br/f6c49d81-b42e-45a8-8270-a58ca60083fc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:24.142Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

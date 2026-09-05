@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/71246c53-f5f7-44ab-ac9d-730dffd96771",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "71246c53-f5f7-44ab-ac9d-730dffd96771",
+  "applicationNumber": "21506438",
+  "registrationNumber": "21506438",
+  "applicationDate": "2016-10-09",
+  "registrationDate": "2017-11-28",
+  "expiryDate": "2027-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VANCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "包装设计;建筑学服务;造型（工业品外观设计）;建筑学咨询;室内设计;室内装饰设计;建筑制图;替他人研究和开发新产品;计算机软件咨询;提供互联网搜索引擎",
+      "translation_language": "en",
+      "translation": "Packaging design; architectural services; modeling (industrial design); architectural consulting; interior design; interior design; architectural drawings; for others to research and develop new products; computer software consulting; provide Internet search engine"
+    }
+  ],
+  "owner": "Zhuzhou City Van Gogh Decoration Engineering Co., Ltd",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "湖南省株洲市天元区长江北路保利大厦2105、2106号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Zhuzhou City Van Gogh Decoration Engineering Co., Ltd",
+        "applicantNativeName": "株洲市梵高装饰工程有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Packaging design; architectural services; modeling (industrial design); architectural consulting; interior design; interior design; architectural drawings; for others to research and develop new products; computer software consulting; provide Internet search engine",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "包装设计;建筑学服务;造型（工业品外观设计）;建筑学咨询;室内设计;室内装饰设计;建筑制图;替他人研究和开发新产品;计算机软件咨询;提供互联网搜索引擎"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Registered design service",
+        "Design and information service for architecture",
+        "Research and development service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "71246c53-f5f7-44ab-ac9d-730dffd96771",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1565"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "宁波市万文知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161009",
+        "applicationNumber": "21506438"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20271127",
+      "lastPublicationDate": "20170827",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20171128",
+        "registrationNumber": "21506438"
+      }
+    },
+    "version": "20251002172117",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCORE"
+    }
+  },
+  "_uri": "/mark/cn/71246c53-f5f7-44ab-ac9d-730dffd96771",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

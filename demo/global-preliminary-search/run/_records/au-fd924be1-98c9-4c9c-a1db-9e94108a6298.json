@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/au/fd924be1-98c9-4c9c-a1db-9e94108a6298",
+  "provider": "clarivate",
+  "office": "au",
+  "guid": "fd924be1-98c9-4c9c-a1db-9e94108a6298",
+  "applicationNumber": "1525599",
+  "registrationNumber": "1525599",
+  "applicationDate": "2012-11-14",
+  "registrationDate": "2012-11-14",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-10-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "GROSVENOR MANAGEMENT CONSULTING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "Provisions of paragraph 44(3)(b) and/or Reg 4.15A(3)(b) applied.",
+    "The Trade Mark consists of The LOGO including TEXT and the COMBINED COLOURS of LIGHT BLUE: RED:0 GREEN: 146 BLUE: 207 AND DARK BLUE RED: 17 GREEN: 94 BLUE: 149."
+  ],
+  "niceClasses": [
+    35,
+    41,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Business organisation consulting; Advisory services for business management; Advisory services relating to business management; Advisory services relating to business organisation; Advisory services relating to business risk management; Advisory services relating to commercial planning; Business administration advisory services; Business advisory services relating to the management of businesses; Business management advisory services; Commercial management advisory services; Management advisory services for businesses; Advisory services relating to data processing; Business administration consultancy; Business consultancy; Business consultancy services relating to data processing; Business consultancy services relating to the supply of quality management systems; Business consultancy to firms; Business management and organization consultancy; Business management consultancy; Business management organisation consultancy; Business organization consultancy; Commercial management consultancy; Consultancy relating to business management; Consultancy relating to data processing; Consultancy relating to personnel management; Consultancy relating to the management of personnel; Corporate management consultancy; Data management consultancy; Management consultancy in information analysis; Personnel management consultancy; Professional business consultancy; Risk management consultancy (business); Strategic business consultancy; Business analysis services; Business data analysis services; Business statistical analysis; Collection of information relating to market analysis; Cost analysis; Cost price analysis; Data analysis; Market analysis reporting services; Market analysis services; Price analysis services; Consultancy relating to auditing; Efficiency or process auditing (examining, reviewing or assessing the working of a business or organization); Benchmarking (evaluation of business organisation practices); Business evaluation services; Evaluation of personnel requirements; Procurement of contracts (for others); Administration of business affairs; Administration of businesses; Advice relating to business management; Advice relating to business organisation; Business administration; Business advice; Business advisory services; Business consultation; Business efficiency studies; Business project management; Business statistical information services; Business statistical studies; Business strategic planning; Business strategy services; Collecting business information; Collecting business statistics; Collecting information for business; Collection of statistics for business; Commercial business management; Compilation of business data; Compilation of business information; Compilation of business statistics; Consultancy relating to business document management; Consultancy relating to business efficiency; Consultancy relating to business organisation; Consultancy relating to business planning; Consultancy relating to the preparation of business statistics; Data processing for businesses; Data processing for the collection of data for business purposes; Management assistance in business affairs; Management consultations relating to business; Management of business projects (for others); Obtaining business statistics (for others); Preparation of business reports; Preparation of documents relating to business; Preparation of statistics (business); Processing of business survey results; Project business management and administration; Provision of business assistance; Writing of business reports; Negotiation of contracts (for others)",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Business educational services; Business training consultancy services; Business training services; Conducting of business conferences; Advisory services relating to training; Arranging and conducting of workshops (training); Association services being the provision of training and education to members of the association; Commercial training services; Conducting training seminars; Conducting workshops (training); Consultancy services relating to training; Organisation of training courses; Providing courses of training; Providing information, including online, about education, training, entertainment, sporting and cultural activities; Provision of information relating to training; Provision of training; Provision of training courses; Provision of training facilities; Setting of training standards; Training consultancy",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Compilation of legal information; Information services relating to legal matters; Legal consultancy services; Legal information research services; Legal information services; Legal research; Legal services; Provision of legal information; Provision of legal research; Provision of legal services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Grosvenor Management Consulting Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "L15/379 Collins St MELBOURNE 3000, VIC",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantName": "Grosvenor Management Consulting Pty Ltd"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business organisation consulting; Advisory services for business management; Advisory services relating to business management; Advisory services relating to business organisation; Advisory services relating to business risk management; Advisory services relating to commercial planning; Business administration advisory services; Business advisory services relating to the management of businesses; Business management advisory services; Commercial management advisory services; Management advisory services for businesses; Advisory services relating to data processing; Business administration consultancy; Business consultancy; Business consultancy services relating to data processing; Business consultancy services relating to the supply of quality management systems; Business consultancy to firms; Business management and organization consultancy; Business management consultancy; Business management organisation consultancy; Business organization consultancy; Commercial management consultancy; Consultancy relating to business management; Consultancy relating to data processing; Consultancy relating to personnel management; Consultancy relating to the management of personnel; Corporate management consultancy; Data management consultancy; Management consultancy in information analysis; Personnel management consultancy; Professional business consultancy; Risk management consultancy (business); Strategic business consultancy; Business analysis services; Business data analysis services; Business statistical analysis; Collection of information relating to market analysis; Cost analysis; Cost price analysis; Data analysis; Market analysis reporting services; Market analysis services; Price analysis services; Consultancy relating to auditing; Efficiency or process auditing (examining, reviewing or assessing the working of a business or organization); Benchmarking (evaluation of business organisation practices); Business evaluation services; Evaluation of personnel requirements; Procurement of contracts (for others); Administration of business affairs; Administration of businesses; Advice relating to business management; Advice relating to business organisation; Business administration; Business advice; Business advisory services; Business consultation; Business efficiency studies; Business project management; Business statistical information services; Business statistical studies; Business strategic planning; Business strategy services; Collecting business information; Collecting business statistics; Collecting information for business; Collection of statistics for business; Commercial business management; Compilation of business data; Compilation of business information; Compilation of business statistics; Consultancy relating to business document management; Consultancy relating to business efficiency; Consultancy relating to business organisation; Consultancy relating to business planning; Consultancy relating to the preparation of business statistics; Data processing for businesses; Data processing for the collection of data for business purposes; Management assistance in business affairs; Management consultations relating to business; Management of business projects (for others); Obtaining business statistics (for others); Preparation of business reports; Preparation of documents relating to business; Preparation of statistics (business); Processing of business survey results; Project business management and administration; Provision of business assistance; Writing of business reports; Negotiation of contracts (for others)"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Business educational services; Business training consultancy services; Business training services; Conducting of business conferences; Advisory services relating to training; Arranging and conducting of workshops (training); Association services being the provision of training and education to members of the association; Commercial training services; Conducting training seminars; Conducting workshops (training); Consultancy services relating to training; Organisation of training courses; Providing courses of training; Providing information, including online, about education, training, entertainment, sporting and cultural activities; Provision of information relating to training; Provision of training; Provision of training courses; Provision of training facilities; Setting of training standards; Training consultancy"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Compilation of legal information; Information services relating to legal matters; Legal consultancy services; Legal information research services; Legal information services; Legal research; Legal services; Provision of legal information; Provision of legal research; Provision of legal services"
+        }
+      ]
+    },
+    "id": "fd924be1-98c9-4c9c-a1db-9e94108a6298",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "Provisions of paragraph 44(3)(b) and/or Reg 4.15A(3)(b) applied.",
+      "The Trade Mark consists of The LOGO including TEXT and the COMBINED COLOURS of LIGHT BLUE: RED:0 GREEN: 146 BLUE: 207 AND DARK BLUE RED: 17 GREEN: 94 BLUE: 149."
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "2 DISC-HEADS"
+      }
+    ],
+    "markImageViennaClassification": [
+      "04.05.05",
+      "26.04.24",
+      "26.04.18",
+      "27.05.24",
+      "26.04.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "AU",
+    "registrationOfficeName": "Australia",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "L15/379 Collins St MELBOURNE 3000 VIC",
+        "representativeCorrespondentAddressCountryCode": "AU",
+        "representativeCorrespondentAddressCountryName": "Australia",
+        "representativeCorrespondentName": "Grosvenor Management Consulting Pty Ltd"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121114",
+        "applicationNumber": "1525599"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20131024",
+      "markCurrentStatus": "REMOVED - NOT RENEWED: RENEWAL FEE NOT PAID",
+      "registration": {
+        "registrationDate": "20121114",
+        "registrationNumber": "1525599"
+      }
+    },
+    "version": "20250625154343",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR MANAGEMENT CONSULTING"
+    }
+  },
+  "_uri": "/mark/au/fd924be1-98c9-4c9c-a1db-9e94108a6298",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

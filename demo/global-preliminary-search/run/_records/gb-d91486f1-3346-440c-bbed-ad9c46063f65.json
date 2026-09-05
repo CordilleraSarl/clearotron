@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/gb/d91486f1-3346-440c-bbed-ad9c46063f65",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "d91486f1-3346-440c-bbed-ad9c46063f65",
+  "applicationNumber": "3019226",
+  "registrationNumber": "3019226",
+  "applicationDate": "2013-08-22",
+  "registrationDate": "2013-12-13",
+  "expiryDate": "2033-08-22",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ST GILES CASINO Grosvenor Casinos",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41,
+    43
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Casino services; gaming, gambling services; amusements; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; organisation of competitions.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": "en",
+      "description": "Restaurant, café and bar services, all provided from a casino.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.01.01",
+      "26.01.04",
+      "26.01.22",
+      "37.02.03",
+      "37.02.07",
+      "37.05.19"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Casino services; gaming, gambling services; amusements; recreational services; club entertainment services; entertainment services provided at casinos including cabaret entertainment services and the provision of live and recorded music; organisation of competitions."
+        },
+        {
+          "intClassNumber": "43",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Restaurant, café and bar services, all provided from a casino."
+        }
+      ]
+    },
+    "id": "d91486f1-3346-440c-bbed-ad9c46063f65",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.99.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2013/040"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Chapel Quarter, Mount Street, Nottingham NG1 6HQ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130822",
+        "applicationNumber": "3019226"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330822",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20131213",
+        "registrationNumber": "3019226"
+      }
+    },
+    "version": "20250627193420",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ST GILES CASINO Grosvenor Casinos"
+    }
+  },
+  "_uri": "/mark/gb/d91486f1-3346-440c-bbed-ad9c46063f65",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

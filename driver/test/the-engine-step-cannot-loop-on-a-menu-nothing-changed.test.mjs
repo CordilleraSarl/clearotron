@@ -292,3 +292,35 @@ test("tracker issue 1907 no askValue can be entered with an empty default and no
     + "shape that trapped a reader on the engine menu, and again on the pool URL one merge after the "
     + "menu was fixed.");
 });
+
+// ── 2191 F9 · THE SAME TRAP, ONE PROMPT OVER ────────────────────────────────────────────────────────
+//
+// closed the engine MENU against a reader pressing Enter. The re-probe prompt below it kept the
+// shape: "Fixed it? Run the turn again" defaulted to YES, and the probe cannot succeed until the reader
+// has signed in on another machine — so Enter re-ran a failing check forever. Measured at 19 attempts,
+// no cap, in a wizard whose header says everything here is skippable.
+
+const RETRY = 'confirm("Fixed it? Run the turn again"';
+
+test("2191-F9 the re-probe's default is NO, because a YES default is the trap #1907 closed", () => {
+  const at = src.indexOf(RETRY);
+  // Anchor discipline, as above: a moved anchor ABORTS. A block that is not there reads as a block
+  // containing nothing, and passes every assertion made over it.
+  assert.notEqual(at, -1, `anchor missing: ${RETRY} is not in bin/onboard.mjs`);
+  const call = src.slice(at, src.indexOf(")", at) + 1);
+  assert.match(call, /,\s*false\s*\)/,
+    "Enter must decline the retry. The probe cannot succeed until the reader signs in elsewhere, so a "
+    + "YES default re-runs a check that is guaranteed to fail — and the header tells them Enter is safe");
+});
+
+test("2191-F9 declining says what it costs, and lands on the menu that has the way out", () => {
+  const at = src.indexOf(RETRY);
+  assert.notEqual(at, -1, `anchor missing: ${RETRY} is not in bin/onboard.mjs`);
+  const branch = src.slice(at, at + 700);
+  assert.match(branch, /continue engine/, "declining must return to the menu, not fall through as if proven");
+  assert.match(branch, /no engine/,
+    "and it must name the exit that already exists there — a reader who has just failed a probe twice "
+    + "needs to be told they may stop, not left to find the last menu row themselves");
+  assert.match(branch, /refuses by name/,
+    "with what it costs stated where they decide, not discovered on a first real run");
+});

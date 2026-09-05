@@ -1,0 +1,154 @@
+{
+  "uri": "/mark/de/3a84a67f-3d62-436a-adbb-0061231b92e4",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "3a84a67f-3d62-436a-adbb-0061231b92e4",
+  "applicationNumber": "302014022016.4",
+  "registrationNumber": "302014022016",
+  "applicationDate": "2014-01-27",
+  "registrationDate": "2014-04-01",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2014-05-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2024-02-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "KOR-I",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "aufgezeichnete Daten; Magnetaufzeichnungsträger; Schallplatten; CDs; DVDs; andere digitale Aufzeichnungsträger; informationstechnische und audiovisuelle Geräte; Magnete; Magnetisierungs- und Entmagnetisierungsvorrichtungen; Teile und Zubehör für alle vorgenannten Waren, soweit in dieser Klasse enthalten",
+      "translation_language": "en",
+      "translation": "recorded data; Magnetic data carriers; records; CDs; DVDs; other digital record carriers; information technology and audiovisual equipment; magnets; Magnetizing and demagnetizing devices; Parts and accessories for all the aforesaid goods, included in this"
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "de",
+      "description": "Kopfbedeckungen; Bekleidungsstücke; Schuhwaren; Teile und Zubehör für alle vorgenannten Waren, soweit in dieser Klasse enthalten",
+      "translation_language": "en",
+      "translation": "headgear; Clothing; Footwear; Parts and accessories for all the aforesaid goods, included in this"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Verlags- und Berichtswesen; Bildung; Erziehung; Unterhaltung; Sport; sportliche und kulturelle Aktivitäten",
+      "translation_language": "en",
+      "translation": "Publishing and reporting; Education; Education; Entertainment; Sports; sporting and cultural activities"
+    }
+  ],
+  "owner": "Kelahmetöglu, Koray",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10777 Berlin",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Kelahmetöglu, Koray"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "recorded data; Magnetic data carriers; records; CDs; DVDs; other digital record carriers; information technology and audiovisual equipment; magnets; Magnetizing and demagnetizing devices; Parts and accessories for all the aforesaid goods, included in this",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "aufgezeichnete Daten; Magnetaufzeichnungsträger; Schallplatten; CDs; DVDs; andere digitale Aufzeichnungsträger; informationstechnische und audiovisuelle Geräte; Magnete; Magnetisierungs- und Entmagnetisierungsvorrichtungen; Teile und Zubehör für alle vorgenannten Waren, soweit in dieser Klasse enthalten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "headgear; Clothing; Footwear; Parts and accessories for all the aforesaid goods, included in this",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Kopfbedeckungen; Bekleidungsstücke; Schuhwaren; Teile und Zubehör für alle vorgenannten Waren, soweit in dieser Klasse enthalten"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Publishing and reporting; Education; Education; Entertainment; Sports; sporting and cultural activities",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Verlags- und Berichtswesen; Bildung; Erziehung; Unterhaltung; Sport; sportliche und kulturelle Aktivitäten"
+        }
+      ]
+    },
+    "id": "3a84a67f-3d62-436a-adbb-0061231b92e4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "18"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Kelahmetöglu, Geisbergstr. 22, 10777 Berlin"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20140127",
+        "applicationNumber": "302014022016.4"
+      },
+      "cancellationDate": "20240201",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20140502",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20140401",
+        "registrationNumber": "302014022016"
+      }
+    },
+    "version": "20250627155735",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KOR-I"
+    }
+  },
+  "_uri": "/mark/de/3a84a67f-3d62-436a-adbb-0061231b92e4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:12.792Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

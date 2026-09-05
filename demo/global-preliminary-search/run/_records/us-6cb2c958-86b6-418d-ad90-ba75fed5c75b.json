@@ -1,0 +1,1136 @@
+{
+  "uri": "/mark/us/6cb2c958-86b6-418d-ad90-ba75fed5c75b",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6cb2c958-86b6-418d-ad90-ba75fed5c75b",
+  "applicationNumber": "73834447",
+  "registrationNumber": "1599033",
+  "applicationDate": "1989-10-27",
+  "registrationDate": "1990-05-29",
+  "expiryDate": null,
+  "renewalDate": "2000-05-29",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1990-03-06"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2016-01-15",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENCOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Hospital health care services, including the care of medically complex long-termhospital patients",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "KINDRED HEALTHCARE, INC.",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20010106",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "680 SOUTH FOURTH AVENUE, LOUISVILLE, KENTUCKY, 40202",
+        "applicantAddressCity": "LOUISVILLE",
+        "applicantAddressPostalCode": "40202",
+        "applicantAddressStateName": "KENTUCKY",
+        "applicantAddressStreet": "680 SOUTH FOURTH AVENUE",
+        "applicantJurisdictionOfIncorporation": "DELAWARE",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "KINDRED HEALTHCARE, INC.",
+        "applicantSecondaryAddressUnit": "ONE VENCOR PLACE"
+      }
+    ],
+    "assignments": [
+      {
+        "assignees": [
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP MANAGEMENT SERVICES, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP EAST, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "AMERICAN VITALCARE LLC",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRIUMPH HEALTHCARE HOLDINGS, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "INTEGRACARE HOLDINGS, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "THEREX, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "CORPORATION",
+            "name": "SENIOR HOME CARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "UTAH",
+            "legalEntity": "CORPORATION",
+            "name": "HOME HEALTH SERVICES, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "CENTERRE HEALTHCARE CORPORATION",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "GENTIVA HEALTH SERVICES, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "GENTIVE HEALTH SERVICES HOLDING CORP.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "CORPORATION",
+            "name": "GIRLING HEALTH CARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "HARDEN HEALTHCARE, LLC",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LIGHTHOUSE HOSPICE PARTNERS, LLC",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "MISSOURI",
+            "legalEntity": "CORPORATION",
+            "name": "THE AMERICAN HEARTLAND HOSPICE CORP.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VOYAGER HOSPICECARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "ODYSSEY HEALTHCARE INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "HEALTHFIELD, LLC",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "CORPORATION",
+            "name": "GIRLING HEALTHCARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20180702",
+        "recordedDate": "20180705",
+        "reelFrameNumber": "6372/0380"
+      },
+      {
+        "assignees": [
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP MANAGEMENT SERVICES, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP EAST, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "AMERICAN VITALCARE LLC",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRIUMPH HEALTHCARE HOLDINGS, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "INTEGRACARE HOLDINGS, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "THEREX, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "FLORIDA",
+            "legalEntity": "CORPORATION",
+            "name": "SENIOR HOME CARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "UTAH",
+            "legalEntity": "CORPORATION",
+            "name": "HOME HEALTH SERVICES, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "CENTERRE HEALTHCARE CORPORATION",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "GENTIVA HEALTH SERVICES, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "GENTIVE HEALTH SERVICES HOLDING CORP.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "CORPORATION",
+            "name": "GIRLING HEALTH CARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "HARDEN HEALTHCARE, LLC",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "LIGHTHOUSE HOSPICE PARTNERS, LLC",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "MISSOURI",
+            "legalEntity": "CORPORATION",
+            "name": "THE AMERICAN HEARTLAND HOSPICE CORP.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VOYAGER HOSPICECARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "ODYSSEY HEALTHCARE INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "HEALTHFIELD, LLC",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          },
+          {
+            "address": "3350 RIVERWOOD PARKWAY, ATLANTA, GEORGIA, 30339",
+            "city": "ATLANTA",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "CORPORATION",
+            "name": "GIRLING HEALTHCARE, INC.",
+            "postalCode": "30339",
+            "stateName": "GEORGIA",
+            "street": "3350 RIVERWOOD PARKWAY"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, COLUMBUS, OH 43219",
+            "addressLines": [
+              "CT CORPORATION",
+              "4400 EASTON COMMONS WAY",
+              "SUITE 125",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "CT CORPORATION"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20180702",
+        "recordedDate": "20180705",
+        "reelFrameNumber": "6372/0588"
+      },
+      {
+        "assignees": [
+          {
+            "address": "1111 FANNIN STREET, 10TH FLOOR, HOUSTON, TEXAS, 77002",
+            "city": "HOUSTON",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, N.A., AS COLLATERAL AGENT",
+            "postalCode": "77002",
+            "stateName": "TEXAS",
+            "street": "1111 FANNIN STREET, 10TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP MANAGEMENT SERVICES, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP EAST, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "CANNON & ASSOCIATES, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "AMERICAN VITALCARE LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRIUMPH HEALTHCARE HOLDINGS, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, CT CORPORATION, COLUMBUS, OH 43219",
+            "addressLines": [
+              "MICHAEL VIOLET",
+              "4400 EASTON COMMONS WAY, SUITE 125",
+              "CT CORPORATION",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "MICHAEL VIOLET"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20110601",
+        "recordedDate": "20110603",
+        "reelFrameNumber": "4553/0385"
+      },
+      {
+        "assignees": [
+          {
+            "address": "1111 FANNIN STREET, 10TH FLOOR, HOUSTON, TEXAS, 77002",
+            "city": "HOUSTON",
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, NA, AS COLLATERAL AGENT",
+            "postalCode": "77002",
+            "stateName": "TEXAS",
+            "street": "1111 FANNIN STREET, 10TH FLOOR"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP MANAGEMENT SERVICES, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "REHABCARE GROUP EAST, INC."
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "CANON & ASSOCIATES, LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "CALIFORNIA",
+            "legalEntity": "LIMITED LIABILITY COMPANY",
+            "name": "AMERICAN VITALCARE LLC"
+          },
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "TRIUMPH HEALTHCARE HOLDINGS, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, CT CORPORATION, COLUMBUS, OH 43219",
+            "addressLines": [
+              "MICHAEL VIOLET",
+              "4400 EASTON COMMONS WAY, SUITE 125",
+              "CT CORPORATION",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "MICHAEL VIOLET"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20110601",
+        "recordedDate": "20110602",
+        "reelFrameNumber": "4552/0523"
+      },
+      {
+        "assignees": [
+          {
+            "address": "680 SOUTH FOURTH STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC.",
+            "postalCode": "40202",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "United States",
+            "legalEntity": "NATIONAL ASSOCIATION",
+            "name": "JPMORGAN CHASE BANK, NA, AS COLLATERAL AGENT"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "4400 EASTON COMMONS WAY, SUITE 125, CT CORPORATION, COLUMBUS, OH 43219",
+            "addressLines": [
+              "MICHAEL VIOLET",
+              "4400 EASTON COMMONS WAY, SUITE 125",
+              "CT CORPORATION",
+              "COLUMBUS, OH 43219"
+            ],
+            "name": "MICHAEL VIOLET"
+          }
+        ],
+        "descriptionText": "RELEASE BY SECURED PARTY",
+        "executedDate": "20110601",
+        "recordedDate": "20110601",
+        "reelFrameNumber": "4552/0271"
+      },
+      {
+        "assignees": [
+          {
+            "address": "PO BOX 2558, HOUSTON, TEXAS, 77252-8301",
+            "city": "HOUSTON",
+            "jurisdictionOfIncorporation": "TEXAS",
+            "legalEntity": "BANK",
+            "name": "JPMORGAN CHASE BANK, AS COLLATERAL AGENT",
+            "postalCode": "77252-8301",
+            "stateName": "TEXAS",
+            "street": "PO BOX 2558"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "1773 WESTERN AVE, ALBANY, NY 12203",
+            "addressLines": [
+              "JACKIE LEE",
+              "1773 WESTERN AVE",
+              "ALBANY, NY 12203"
+            ],
+            "name": "JACKIE LEE"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "20040628",
+        "recordedDate": "20060330",
+        "reelFrameNumber": "3279/0468"
+      },
+      {
+        "assignees": [
+          {
+            "address": "680 SOUTH FOURTH AVENUE, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "KINDRED HEALTHCARE, INC.",
+            "postalCode": "40202",
+            "secondaryAddressUnit": "ONE VENCOR PLACE",
+            "stateName": "KENTUCKY",
+            "street": "680 SOUTH FOURTH AVENUE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "JOEL T. BERES, 400 WEST MARKET STREET, SUITE 1800",
+            "addressLines": [
+              "STITES & HARBISON",
+              "JOEL T. BERES",
+              "400 WEST MARKET STREET",
+              "SUITE 1800",
+              "LOUISVILLE, KY  40202"
+            ],
+            "name": "STITES & HARBISON"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "20010420",
+        "recordedDate": "20011002",
+        "reelFrameNumber": "2379/0707"
+      },
+      {
+        "assignees": [
+          {
+            "address": "NEWARK, DELAWARE, 19713",
+            "city": "NEWARK",
+            "jurisdictionOfIncorporation": "NEW YORK",
+            "legalEntity": "CORPORATION",
+            "name": "MORGAN GUARANTY TRUST COMPANY OF NEW YORK, AS AGENT",
+            "postalCode": "19713",
+            "secondaryAddressUnit": "500 STANTON CHRISTIANA ROAD",
+            "stateName": "DELAWARE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCOR INVESTMENT COMPANY"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ANDREW C. AMBRUOSO, ESQUIRE, 153 EAST 53RD STREET, NEW YORK, NY 10022",
+            "addressLines": [
+              "O'MELVENY & MYERS",
+              "ANDREW C. AMBRUOSO, ESQUIRE",
+              "153 EAST 53RD STREET",
+              "NEW YORK, NY 10022"
+            ],
+            "name": "O'MELVENY & MYERS"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "19990913",
+        "recordedDate": "19990929",
+        "reelFrameNumber": "1962/0158"
+      },
+      {
+        "assignees": [
+          {
+            "address": "NEWARK, DELAWARE, 19713",
+            "city": "NEWARK",
+            "jurisdictionOfIncorporation": "NEW YORK",
+            "name": "MORGAN GUARANTY TRUST COMPANY OF NEW YORK, AS AGENT",
+            "postalCode": "19713",
+            "secondaryAddressUnit": "500 STANTON CHRISTIANA ROAD",
+            "stateName": "DELAWARE"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCOR, INC."
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "ANDREW C. AMBRUOSO, 153 EAST 53RD STREET, NEW YORK, NY 10022",
+            "addressLines": [
+              "O'MELVENY & MYERS",
+              "ANDREW C. AMBRUOSO",
+              "153 EAST 53RD STREET",
+              "NEW YORK, NY 10022"
+            ],
+            "name": "O'MELVENY & MYERS"
+          }
+        ],
+        "descriptionText": "SECURITY INTEREST",
+        "executedDate": "19990913",
+        "recordedDate": "19990929",
+        "reelFrameNumber": "1968/0028"
+      },
+      {
+        "assignees": [
+          {
+            "address": "NEW YORK, NEW YORK, 10260",
+            "city": "NEW YORK",
+            "legalEntity": "LENDING INSTITUTION",
+            "name": "MORGAN GUARANTY TRUST COMPANY OF NEW YORK, AS COLLATERAL AGENT",
+            "postalCode": "10260",
+            "secondaryAddressUnit": "60 WALL STREET",
+            "stateName": "NEW YORK"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCOR INVESTMENT COMPANY"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "JACKIE LEE, 1773 WESTERN AVENUE, ALBANY, NY  12203",
+            "addressLines": [
+              "ACCESS INFORMATION SERVICES, INC.",
+              "JACKIE LEE",
+              "1773 WESTERN AVENUE",
+              "ALBANY, NY  12203"
+            ],
+            "name": "ACCESS INFORMATION SERVICES, INC."
+          }
+        ],
+        "descriptionText": "SECURITY AGREEMENT",
+        "executedDate": "19980429",
+        "recordedDate": "19980813",
+        "reelFrameNumber": "1773/0638"
+      },
+      {
+        "assignees": [
+          {
+            "address": "400 WEST MARKET STREET, LOUISVILLE, KENTUCKY, 40202",
+            "city": "LOUISVILLE",
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCOR, INC.",
+            "postalCode": "40202",
+            "secondaryAddressUnit": "3300 PROVIDIAN CENTER",
+            "stateName": "KENTUCKY",
+            "street": "400 WEST MARKET STREET"
+          }
+        ],
+        "assignors": [
+          {
+            "jurisdictionOfIncorporation": "DELAWARE",
+            "legalEntity": "CORPORATION",
+            "name": "VENCOR, INCORPORATED"
+          }
+        ],
+        "correspondents": [
+          {
+            "address": "CARMIN D. GRANDINETTI, 3300 NATIONAL CITY TOWER, LOUISVILLE, KY  40202",
+            "addressLines": [
+              "GREENEBAUM DOLL & MCDONALD PLLC",
+              "CARMIN D. GRANDINETTI",
+              "3300 NATIONAL CITY TOWER",
+              "LOUISVILLE, KY  40202"
+            ],
+            "name": "GREENEBAUM DOLL & MCDONALD PLLC"
+          }
+        ],
+        "descriptionText": "CHANGE OF NAME",
+        "executedDate": "19960803",
+        "recordedDate": "19961129",
+        "reelFrameNumber": "1538/0524"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Hospital health care services, including the care of medically complex long-termhospital patients"
+        }
+      ]
+    },
+    "id": "6cb2c958-86b6-418d-ad90-ba75fed5c75b",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20160115",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20081230",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20010106",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20010106",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20000525",
+        "descriptionText": "REGISTERED - COMBINED SECTION 8 (10-YR) & SEC. 9 FILED"
+      },
+      {
+        "date": "19970130",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "19961125",
+        "descriptionText": "RESPONSE RECEIVED TO POST REG. ACTION"
+      },
+      {
+        "date": "19960821",
+        "descriptionText": "POST REGISTRATION ACTION MAILED - SEC. 8 & 15"
+      },
+      {
+        "date": "19960528",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) & SEC. 15 FILED"
+      },
+      {
+        "date": "19900529",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19900306",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "19900208",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "19891227",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "19891218",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "BROWN & WILLIAMSON TOWER, SUITE 700, LOUISVILLE, KY, 40202",
+        "city": "LOUISVILLE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCOR, INCORPORATED",
+        "postalCode": "40202",
+        "stateName": "KENTUCKY",
+        "street": "BROWN & WILLIAMSON TOWER, SUITE 700"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "ONE VENCOR PLACE, LOUISVILLE, KY, 40202",
+        "city": "LOUISVILLE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCOR, INCORPORATED",
+        "postalCode": "40202",
+        "secondaryAddressUnit": "680 SOUTH FOURTH AVENUE",
+        "stateName": "KENTUCKY",
+        "street": "ONE VENCOR PLACE"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "BROWN & WILLIAMSON TOWER, SUITE 700, LOUISVILLE, KY, 40202",
+        "city": "LOUISVILLE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "DELAWARE",
+        "legalEntity": "CORPORATION",
+        "name": "VENCOR, INCORPORATED",
+        "postalCode": "40202",
+        "stateName": "KENTUCKY",
+        "street": "BROWN & WILLIAMSON TOWER, SUITE 700"
+      }
+    ],
+    "recordLastUpdated": "20260107",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "STE 1600, LOUISVILLE, KY 40202, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "STE 1600",
+          "LOUISVILLE, KY 40202",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "JOEL T BERES STITES & HARBISON, 400 W MARKET"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "STE 1600, LOUISVILLE, KY 40202, UNITED STATES",
+        "representativeAddressLines": [
+          "STE 1600",
+          "LOUISVILLE, KY 40202",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19891027",
+        "applicationNumber": "73834447"
+      },
+      "cancellationDate": "20160115",
+      "cancellationPublicationDate": "20160223",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19890302"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19890302"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20160115",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "19900306"
+      ],
+      "registration": {
+        "registrationDate": "19900529",
+        "registrationNumber": "1599033"
+      },
+      "renewalDate": "20000529"
+    },
+    "version": "20260107094619",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENCOR"
+    }
+  },
+  "_uri": "/mark/us/6cb2c958-86b6-418d-ad90-ba75fed5c75b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

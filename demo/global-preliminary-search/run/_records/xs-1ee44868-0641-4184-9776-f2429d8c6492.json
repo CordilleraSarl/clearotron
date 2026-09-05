@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/xs/1ee44868-0641-4184-9776-f2429d8c6492",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "1ee44868-0641-4184-9776-f2429d8c6492",
+  "applicationNumber": null,
+  "registrationNumber": "605416",
+  "applicationDate": null,
+  "registrationDate": "2014-09-08",
+  "expiryDate": null,
+  "renewalDate": "2019-06-05",
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AGAVE NORTH PEDIATRICS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SCOTTSDALE PEDIATRICS & PEDIATRIC NEPHROLOGY PLLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7010 E CHAUNCEY LN, SUITE 225, PHOENIX, AZ, 85054",
+        "applicantAddressCity": "PHOENIX",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "85054",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "7010 E CHAUNCEY LN, SUITE 225",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "SCOTTSDALE PEDIATRICS & PEDIATRIC NEPHROLOGY PLLC",
+        "applicantPhoneNumber": "480-585-5200"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "1ee44868-0641-4184-9776-f2429d8c6492",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "7010 E. CHAUNCEY LANE, SUITE 225, PHOENIX, AZ, 85054",
+        "city": "PHOENIX",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "SCOTTSDALE PEDIATRICS & PEDIATRIC NEPHROLOGY PLLC",
+        "phoneNumber": "480-585-5200",
+        "postalCode": "85054",
+        "stateName": "ARIZONA",
+        "street": "7010 E. CHAUNCEY LANE, SUITE 225"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "renewalOwners": [
+      {
+        "address": "7010 E CHAUNCEY LN, SUITE 225, PHOENIX, AZ, 85054",
+        "city": "PHOENIX",
+        "legalEntity": "CORPORATION",
+        "name": "SCOTTSDALE PEDIATRICS & PEDIATRIC NEPHROLOGY PLLC",
+        "phoneNumber": "480-585-5200",
+        "postalCode": "85054",
+        "renewalDate": "20190605",
+        "stateName": "ARIZONA",
+        "street": "7010 E CHAUNCEY LN, SUITE 225"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "20120326",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "RENEWED"
+        ]
+      },
+      "markCurrentStatus": "RENEWED",
+      "registration": {
+        "registrationDate": "20140908",
+        "registrationNumber": "605416"
+      },
+      "renewalDate": "20190605"
+    },
+    "usStateOfficeCode": "AZ",
+    "usStateOfficeName": "ARIZONA",
+    "version": "20241213180403",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AGAVE NORTH PEDIATRICS"
+    }
+  },
+  "_uri": "/mark/xs/1ee44868-0641-4184-9776-f2429d8c6492",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.833Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

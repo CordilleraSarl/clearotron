@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/cn/9f7fa25c-8448-4f6d-b0e7-bc2d08dc0ab8",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "9f7fa25c-8448-4f6d-b0e7-bc2d08dc0ab8",
+  "applicationNumber": "43889460",
+  "registrationNumber": "43889460",
+  "applicationDate": "2020-01-17",
+  "registrationDate": "2020-10-07",
+  "expiryDate": "2030-10-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-07-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QVRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "教育,培训,教育信息,辅导(培训),通过模拟装置进行的培训服务,组织文化或教育展览,安排和组织培训班,安排和组织会议,提供不可下载在线视频,视频制作",
+      "translation_language": "en",
+      "translation": "Education, training, educational information, counseling (training), training services through simulation devices, organizing cultural or educational exhibitions, arranging and organizing training courses, arranging and organizing meetings, providing non-downloadable online videos, video production"
+    }
+  ],
+  "owner": "Qingdao Virtual Reality Research Institute Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "山东省青岛市崂山区松岭路369号108室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Qingdao Virtual Reality Research Institute Co., Ltd.",
+        "applicantNativeName": "青岛虚拟现实研究院有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education, training, educational information, counseling (training), training services through simulation devices, organizing cultural or educational exhibitions, arranging and organizing training courses, arranging and organizing meetings, providing non-downloadable online videos, video production",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "教育,培训,教育信息,辅导(培训),通过模拟装置进行的培训服务,组织文化或教育展览,安排和组织培训班,安排和组织会议,提供不可下载在线视频,视频制作"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "9f7fa25c-8448-4f6d-b0e7-bc2d08dc0ab8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.31.2a",
+      "26.03.02",
+      "26.07.25"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1702"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "博雅智泉(北京)知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200117",
+        "applicationNumber": "43889460"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20301006",
+      "lastPublicationDate": "20200706",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20201007",
+        "registrationNumber": "43889460"
+      }
+    },
+    "version": "20251004002030",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QVRI"
+    }
+  },
+  "_uri": "/mark/cn/9f7fa25c-8448-4f6d-b0e7-bc2d08dc0ab8",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:57.806Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/kr/e8d27ca9-a8be-492a-8f1e-d789c0cb9b37",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e8d27ca9-a8be-492a-8f1e-d789c0cb9b37",
+  "applicationNumber": "40-1999-0045478",
+  "registrationNumber": null,
+  "applicationDate": "1999-11-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SORI",
+  "markTransliteration": "SORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "녹음된테이프(음악이 아닌것), 녹음디스크, 녹음테이프, 녹화된 테이프(음악이 아닌것), 비디오용 콤팩트디스크, 오디오용 콤팩트디스크, 음악이 녹음된 컴팩트디스크, 인터폰, 전화기, 학습용 녹음된 테이프",
+      "translation_language": "en",
+      "translation": "Recorded tapes (non-music), recording discs, recorded tapes, recorded tapes (non-music), compact discs for video, compact discs for audio, compact discs with music recorded, intercoms, telephones, recorded tapes for learning"
+    }
+  ],
+  "owner": "LEE, JAE-HWAN",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "박길임 (PARK, GilEem)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울특별시 동작구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "LEE, JAE-HWAN",
+        "applicantNativeName": "이재환"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Recorded tapes (non-music), recording discs, recorded tapes, recorded tapes (non-music), compact discs for video, compact discs for audio, compact discs with music recorded, intercoms, telephones, recorded tapes for learning",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "녹음된테이프(음악이 아닌것), 녹음디스크, 녹음테이프, 녹화된 테이프(음악이 아닌것), 비디오용 콤팩트디스크, 오디오용 콤팩트디스크, 음악이 녹음된 컴팩트디스크, 인터폰, 전화기, 학습용 녹음된 테이프"
+        }
+      ]
+    },
+    "id": "e8d27ca9-a8be-492a-8f1e-d789c0cb9b37",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260623",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 논현로 ** (양재동) A동 *호(엘케이국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "박길임 (PARK, GilEem)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19991129",
+        "applicationNumber": "40-1999-0045478"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260623020426",
+    "wordMarkSpecification": {
+      "markTransliteration": "SORI",
+      "markVerbalElementText": "SORI"
+    }
+  },
+  "_uri": "/mark/kr/e8d27ca9-a8be-492a-8f1e-d789c0cb9b37",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

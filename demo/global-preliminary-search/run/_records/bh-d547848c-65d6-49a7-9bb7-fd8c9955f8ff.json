@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/bh/d547848c-65d6-49a7-9bb7-fd8c9955f8ff",
+  "provider": "clarivate",
+  "office": "bh",
+  "guid": "d547848c-65d6-49a7-9bb7-fd8c9955f8ff",
+  "applicationNumber": "4895",
+  "registrationNumber": null,
+  "applicationDate": "2002-04-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GROSVENOR HOUSE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ar",
+      "description": "خدمات الفنادق والخدمات( خدمات طريق السفر)، حجوزات غرف الفنادق والخانات، خدمات المطاعم والكفتيريات والخدمات، خدمات التموين، خدمات التأجير للإقامات المؤقتة وغرف الاجتماعات، خدمات رعاية الأطفال",
+      "translation_language": "en",
+      "translation": "Hotels and services (through travel services), booking hotel rooms and fields, catering and Ulkipteriaat services, catering services, leasing services for temporary accommodation and meeting rooms, child care services"
+    }
+  ],
+  "owner": "MERIDIEN S. A",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "10, RUE VERCINGETORIX, 75015 PARIS",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "MERIDIEN S. A"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Hotels and services (through travel services), booking hotel rooms and fields, catering and Ulkipteriaat services, catering services, leasing services for temporary accommodation and meeting rooms, child care services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ar",
+          "intGoodsServicesDescription": "خدمات الفنادق والخدمات( خدمات طريق السفر)، حجوزات غرف الفنادق والخانات، خدمات المطاعم والكفتيريات والخدمات، خدمات التموين، خدمات التأجير للإقامات المؤقتة وغرف الاجتماعات، خدمات رعاية الأطفال"
+        }
+      ]
+    },
+    "id": "d547848c-65d6-49a7-9bb7-fd8c9955f8ff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240320",
+    "registrationOfficeCode": "BH",
+    "registrationOfficeName": "Bahrain",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "BH",
+        "representativeAddressCountryName": "Bahrain",
+        "representativeNativeAddress": "ص. ب 421، المنامة",
+        "representativeNativeName": "سابا وشركاهم"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20020407",
+        "applicationNumber": "4895"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED MARK"
+    },
+    "version": "20240320161746",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR HOUSE"
+    }
+  },
+  "_uri": "/mark/bh/d547848c-65d6-49a7-9bb7-fd8c9955f8ff",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.811Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

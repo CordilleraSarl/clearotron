@@ -1,0 +1,120 @@
+{
+  "uri": "/mark/de/1e39e95c-4b45-46e8-8e71-16fb97a848a4",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "1e39e95c-4b45-46e8-8e71-16fb97a848a4",
+  "applicationNumber": "302025004917.6",
+  "registrationNumber": "302025004917",
+  "applicationDate": "2025-05-22",
+  "registrationDate": "2025-06-18",
+  "expiryDate": "2035-05-22",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-07-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENCORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "wissenschaftliche Forschung auf dem Gebiet der Vorsorge und Behandlung von Nierenerkrankungen und inflammatorischen Erkrankungen; Bereitstellung von medizinischen und wissenschaftlichen Forschungsinformationen im Bereich Nierenerkrankungen und inflammatorischen Erkrankungen",
+      "translation_language": "en",
+      "translation": "Scientific research in the field of prevention and treatment of kidney diseases and inflammatory diseases; provision of medical and scientific research information in the field of kidney diseases and inflammatory diseases"
+    }
+  ],
+  "owner": "Boehringer Ingelheim International GmbH",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "55218 Ingelheim",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Boehringer Ingelheim International GmbH"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific research in the field of prevention and treatment of kidney diseases and inflammatory diseases; provision of medical and scientific research information in the field of kidney diseases and inflammatory diseases",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "wissenschaftliche Forschung auf dem Gebiet der Vorsorge und Behandlung von Nierenerkrankungen und inflammatorischen Erkrankungen; Bereitstellung von medizinischen und wissenschaftlichen Forschungsinformationen im Bereich Nierenerkrankungen und inflammatorischen Erkrankungen"
+        }
+      ]
+    },
+    "id": "1e39e95c-4b45-46e8-8e71-16fb97a848a4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "29"
+      }
+    ],
+    "recordLastUpdated": "20251221",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentName": "Boehringer Ingelheim Corporate Center GmbH, Binger Str. 173, 55218 Ingelheim"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250522",
+        "applicationNumber": "302025004917.6"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350522",
+      "lastPublicationDate": "20250718",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250618",
+        "registrationNumber": "302025004917"
+      }
+    },
+    "version": "20251221020023",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORA"
+    }
+  },
+  "_uri": "/mark/de/1e39e95c-4b45-46e8-8e71-16fb97a848a4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.747Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -118,7 +118,7 @@ export function findingsDocFor(runDir, ordinal) {
 // its own, which is what makes the divergence provable rather than a matter of taste.
 //
 // IT SHIPPED BECAUSE THE CONVERSION WAS NEVER CHECKED AGAINST THE ARTIFACT. asked for exactly that
-// check — "recompose the bullet for every card in examples/sample-run and assert byte-equality with the
+// check — "recompose the bullet for every card in demo and assert byte-equality with the
 // delivered report.md" — and writing it is what caught this. The guard now lives beside 's, and
 // this is the argument for building the guard an issue asks for even when the code already looks done.
 //

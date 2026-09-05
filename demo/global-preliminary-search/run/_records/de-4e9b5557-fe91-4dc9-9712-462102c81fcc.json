@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/de/4e9b5557-fe91-4dc9-9712-462102c81fcc",
+  "provider": "clarivate",
+  "office": "de",
+  "guid": "4e9b5557-fe91-4dc9-9712-462102c81fcc",
+  "applicationNumber": "302013050958.7",
+  "registrationNumber": "302013050958",
+  "applicationDate": "2013-09-12",
+  "registrationDate": "2013-11-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": "2023-10-01",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "FORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    11,
+    35
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Dimmer [Lichtregler], Leuchtdioden [LEDs]",
+      "translation_language": "en",
+      "translation": "Dimmers [light-emitting diodes], light-emitting diodes [LEDs]"
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": "de",
+      "description": "Beleuchtungsapparate und -anlagen, Beleuchtungsgeräte mit Leuchtdioden [LEDs], Beleuchtungslampen, Deckenlampen, Kronleuchte, Lampen [elektrisch], Lampenschirme, Lampenschirmhalter, Lichtverteiler, Reflektoren für Lampen, Stehlampen, Straßenlampen",
+      "translation_language": "en",
+      "translation": "Lighting apparatus and installations, lighting apparatus with light-emitting diodes [LEDs], lighting lamps, ceiling lamps, chandeliers, lamps [electric], lampshades, lampshade holders, light distributors, reflectors for lamps, floor lamps, street lamps"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Marketing, Online-Werbung in einem Computernetzwerk, Organisation von Ausstellungen und Messen für wirtschaftliche und Werbezwecke, Plakatanschlagwerbung, Präsentation von Waren in Kommunikations-Medien, für den Einzelhandel, Telemarketing, Verkaufsförderung [Sales Promotion] [für Dritte], Versandwerbung, Werbung, Werbung durch Werbeschriften, Betrieb einer Im- und Exportagentur",
+      "translation_language": "en",
+      "translation": ": Marketing, online advertising on a computer network, organization of exhibitions and trade fairs for commercial and advertising purposes, billboard advertising, presentation of goods in communications media, for retail sale, telemarketing, sales promotion [for others], mail order advertising, advertising, Advertising by advertising leaflets, operating an import and export agency"
+    }
+  ],
+  "owner": "Knebel, Michael",
+  "ownerNative": null,
+  "ownerCountry": "DE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "01591 Riesa",
+        "applicantAddressCountryCode": "DE",
+        "applicantAddressCountryName": "Germany",
+        "applicantName": "Knebel, Michael"
+      }
+    ],
+    "applicationLanguageCode": "de",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dimmers [light-emitting diodes], light-emitting diodes [LEDs]",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Dimmer [Lichtregler], Leuchtdioden [LEDs]"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Lighting apparatus and installations, lighting apparatus with light-emitting diodes [LEDs], lighting lamps, ceiling lamps, chandeliers, lamps [electric], lampshades, lampshade holders, light distributors, reflectors for lamps, floor lamps, street lamps",
+          "intClassNumber": "11",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Beleuchtungsapparate und -anlagen, Beleuchtungsgeräte mit Leuchtdioden [LEDs], Beleuchtungslampen, Deckenlampen, Kronleuchte, Lampen [elektrisch], Lampenschirme, Lampenschirmhalter, Lichtverteiler, Reflektoren für Lampen, Stehlampen, Straßenlampen"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": ": Marketing, online advertising on a computer network, organization of exhibitions and trade fairs for commercial and advertising purposes, billboard advertising, presentation of goods in communications media, for retail sale, telemarketing, sales promotion [for others], mail order advertising, advertising, Advertising by advertising leaflets, operating an import and export agency",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Marketing, Online-Werbung in einem Computernetzwerk, Organisation von Ausstellungen und Messen für wirtschaftliche und Werbezwecke, Plakatanschlagwerbung, Präsentation von Waren in Kommunikations-Medien, für den Einzelhandel, Telemarketing, Verkaufsförderung [Sales Promotion] [für Dritte], Versandwerbung, Werbung, Werbung durch Werbeschriften, Betrieb einer Im- und Exportagentur"
+        }
+      ]
+    },
+    "id": "4e9b5557-fe91-4dc9-9712-462102c81fcc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "50"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "DE",
+    "registrationOfficeName": "Germany",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Zaußwitzer Str. 4, 01591 Riesa",
+        "representativeCorrespondentName": "Knebel"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130912",
+        "applicationNumber": "302013050958.7"
+      },
+      "cancellationDate": "20231001",
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20131213",
+      "markCurrentStatus": "CANCELLED MARK",
+      "registration": {
+        "registrationDate": "20131112",
+        "registrationNumber": "302013050958"
+      }
+    },
+    "version": "20250627154641",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FORI"
+    }
+  },
+  "_uri": "/mark/de/4e9b5557-fe91-4dc9-9712-462102c81fcc",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:53.083Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

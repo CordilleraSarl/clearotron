@@ -1,0 +1,165 @@
+{
+  "uri": "/mark/cn/2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+  "applicationNumber": "31669506",
+  "registrationNumber": "31669506",
+  "applicationDate": "2018-06-16",
+  "registrationDate": "2019-07-21",
+  "expiryDate": "2029-07-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2019-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VANCARO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "计算机软件(已录制);计算机游戏软件;可下载的手机应用软件;人脸识别设备;手机;摄像机;放映设备;电子芯片;动画片;电池",
+      "translation_language": "en",
+      "translation": "computer software (recorded); computer game software; downloadable mobile application software; face recognition device; mobile phone; camera; projection equipment; electronic chip;"
+    }
+  ],
+  "owner": "Beijing Wanrun Chengda Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市通州区中关村科技园区通州园光机电一体化产业基地政府路2号144室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Wanrun Chengda Technology Co., Ltd.",
+        "applicantNativeName": "北京万润诚达科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "computer software (recorded); computer game software; downloadable mobile application software; face recognition device; mobile phone; camera; projection equipment; electronic chip;",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机软件(已录制);计算机游戏软件;可下载的手机应用软件;人脸识别设备;手机;摄像机;放映设备;电子芯片;动画片;电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Batteries, chargers",
+        "Films, exposed materials"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        },
+        {
+          "subNatClassNumber": "0923",
+          "subNatGoodsServicesDescription": "Films, exposed materials"
+        }
+      ]
+    },
+    "id": "2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1644"
+      }
+    ],
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "财宝知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180616",
+        "applicationNumber": "31669506"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290720",
+      "lastPublicationDate": "20190420",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20190721",
+        "registrationNumber": "31669506"
+      }
+    },
+    "version": "20251003052448",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VANCARO"
+    }
+  },
+  "_uri": "/mark/cn/2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.819Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

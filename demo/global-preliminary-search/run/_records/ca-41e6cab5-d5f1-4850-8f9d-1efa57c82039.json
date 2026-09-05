@@ -1,0 +1,773 @@
+{
+  "uri": "/mark/ca/41e6cab5-d5f1-4850-8f9d-1efa57c82039",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "41e6cab5-d5f1-4850-8f9d-1efa57c82039",
+  "applicationNumber": "924573",
+  "registrationNumber": null,
+  "applicationDate": "2017-04-21",
+  "registrationDate": "2017-05-17",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2017-05-17"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "RESEAU SANTE RIVE NORD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    57
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        2
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        3
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        4
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        5
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        6
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        8
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        11
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        12
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        13
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        14
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        15
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        18
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        19
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        20
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        21
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        22
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        23
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        24
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        26
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        27
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        29
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        30
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        31
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        32
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        33
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        34
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        43
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        57
+      ],
+      "language": null,
+      "description": null,
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "North Shore Health Network",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": "MILLER THOMSON LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "525 Causley Street, Blind River, ONTARIO, P0R1B0",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "525 Causley Street",
+          "Blind River",
+          "ONTARIO"
+        ],
+        "applicantAddressPostalCode": "P0R1B0",
+        "applicantName": "North Shore Health Network"
+      }
+    ],
+    "categorizedTexts": {},
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01"
+        },
+        {
+          "intClassNumber": "02"
+        },
+        {
+          "intClassNumber": "03"
+        },
+        {
+          "intClassNumber": "04"
+        },
+        {
+          "intClassNumber": "05"
+        },
+        {
+          "intClassNumber": "06"
+        },
+        {
+          "intClassNumber": "07"
+        },
+        {
+          "intClassNumber": "08"
+        },
+        {
+          "intClassNumber": "09"
+        },
+        {
+          "intClassNumber": "10"
+        },
+        {
+          "intClassNumber": "11"
+        },
+        {
+          "intClassNumber": "12"
+        },
+        {
+          "intClassNumber": "13"
+        },
+        {
+          "intClassNumber": "14"
+        },
+        {
+          "intClassNumber": "15"
+        },
+        {
+          "intClassNumber": "16"
+        },
+        {
+          "intClassNumber": "17"
+        },
+        {
+          "intClassNumber": "18"
+        },
+        {
+          "intClassNumber": "19"
+        },
+        {
+          "intClassNumber": "20"
+        },
+        {
+          "intClassNumber": "21"
+        },
+        {
+          "intClassNumber": "22"
+        },
+        {
+          "intClassNumber": "23"
+        },
+        {
+          "intClassNumber": "24"
+        },
+        {
+          "intClassNumber": "25"
+        },
+        {
+          "intClassNumber": "26"
+        },
+        {
+          "intClassNumber": "27"
+        },
+        {
+          "intClassNumber": "28"
+        },
+        {
+          "intClassNumber": "29"
+        },
+        {
+          "intClassNumber": "30"
+        },
+        {
+          "intClassNumber": "31"
+        },
+        {
+          "intClassNumber": "32"
+        },
+        {
+          "intClassNumber": "33"
+        },
+        {
+          "intClassNumber": "34"
+        },
+        {
+          "intClassNumber": "35"
+        },
+        {
+          "intClassNumber": "36"
+        },
+        {
+          "intClassNumber": "37"
+        },
+        {
+          "intClassNumber": "38"
+        },
+        {
+          "intClassNumber": "39"
+        },
+        {
+          "intClassNumber": "40"
+        },
+        {
+          "intClassNumber": "41"
+        },
+        {
+          "intClassNumber": "42"
+        },
+        {
+          "intClassNumber": "43"
+        },
+        {
+          "intClassNumber": "44"
+        },
+        {
+          "intClassNumber": "45"
+        },
+        {
+          "intClassNumber": "57"
+        }
+      ]
+    },
+    "id": "41e6cab5-d5f1-4850-8f9d-1efa57c82039",
+    "ipRightKind": "tmk",
+    "kindMark": "Official Mark",
+    "markEvents": [
+      {
+        "date": "20170517",
+        "descriptionText": "Advertised",
+        "information": "Vol.64 Issue 3264"
+      },
+      {
+        "date": "20170510",
+        "descriptionText": "Accepted for Publication"
+      },
+      {
+        "date": "20170501",
+        "descriptionText": "Correspondence Created",
+        "information": "Avis de réception / Filing Notice"
+      },
+      {
+        "date": "20170501",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "20170501",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "20170421",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "525 Causley Street, Blind River, ONTARIO, P0R1B0",
+        "addressLines": [
+          "525 Causley Street",
+          "Blind River",
+          "ONTARIO",
+          "P0R1B0"
+        ],
+        "countryName": "Canada",
+        "name": "North Shore Health Network",
+        "postalCode": "P0R1B0"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "3264",
+        "publicationVolume": "64"
+      }
+    ],
+    "recordLastUpdated": "20250623",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "CA",
+        "representativeAddressCountryName": "Canada",
+        "representativeAddressLines": [
+          "MILLER THOMSON LLP",
+          "40 KING STREET W., SUITE 6600,",
+          "TORONTO,",
+          "ONTARIO M5H3S1"
+        ],
+        "representativeKind": "Trademark Agent",
+        "representativeName": "MILLER THOMSON LLP",
+        "representativeReferenceNumber": "0042368.21"
+      }
+    ],
+    "section9": {
+      "description": "Section 9(1)(n)(iii) Public Authorities in Canada for specific wares and services"
+    },
+    "status": {
+      "acceptanceDate": "20170510",
+      "active": true,
+      "application": {
+        "applicationDate": "20170421",
+        "applicationNumber": "924573"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "formalisationDate": "20170501",
+      "markCurrentStatus": "Advertised",
+      "publicationDate": [
+        "20170517"
+      ],
+      "registration": {
+        "registrationDate": "20170517"
+      }
+    },
+    "subjectHeadings": [
+      "RÉSEAU SANTÉ RIVE NORD"
+    ],
+    "version": "20250623060308",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RESEAU SANTE RIVE NORD",
+      "markVerbalElementTextFormal": "RÉSEAU SANTÉ RIVE NORD"
+    }
+  },
+  "_uri": "/mark/ca/41e6cab5-d5f1-4850-8f9d-1efa57c82039",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

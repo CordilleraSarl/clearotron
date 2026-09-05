@@ -1,0 +1,1048 @@
+{
+  "uri": "/mark/em/82614711-0c22-46db-8980-e8c62167f668",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "82614711-0c22-46db-8980-e8c62167f668",
+  "applicationNumber": "11813813",
+  "registrationNumber": null,
+  "applicationDate": "2013-05-14",
+  "registrationDate": "2013-11-08",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2013-08-01",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RAVEN QUEEN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    28,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "cs",
+      "description": "Odevy, obuv, kloboucnické zbozí; Maskarní kostýmy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "cs",
+      "description": "Hry, hracky; Potreby pro gymnastiku a sport, které nejsou uvedeny v jiných trídách; Vánocní ozdoby; Vánocní prskavky; Karnevalové masky a divadelní masky; Papírové party cepice; Pinatas [hra]; Automobilové modely zmensené; Kaleidoskopy; Drobné zbozí; Stroje na videohry.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "cs",
+      "description": "Výchova; Vzdelávání; Zábava; Sportovní a kulturní aktivity.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "da",
+      "description": "Beklædningsgenstande, fodtøj og hovedbeklædning; Karnevalskostumer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "da",
+      "description": "Spil og legetøj; Gymnastik- og sportsartikler (ikke indeholdt i andre klasser); Juletræspynt; Knallerter (julepynt); Karnevalsmasker og teatermasker; Festhatte af papir; Piñatas; Modelkøretøjer [målestokstro]; Kalejdoskoper; Småtingsartikler af lille værdi; Apparater til videospil.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "da",
+      "description": "Uddannelsesvirksomhed; Undervisningsvirksomhed; Underholdningsvirksomhed; Sportsarrangementer og kulturelle arrangementer.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "nl",
+      "description": "Kledingstukken, schoeisel, hoofddeksels; Verkleedkostuums.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "nl",
+      "description": "Spellen, speelgoederen; Gymnastiek- en sportartikelen voor zover niet begrepen in andere klassen; Versierselen voor kerstbomen; Knalbonbons; Carnavalsmaskers en toneelmaskers; Feesthoedjes van papier; Pinatas; Schaalmodellen van voertuigen; Kaleidoscopen; Noviteiten; Videospelapparatuur.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "nl",
+      "description": "Opvoeding; Opleiding; Ontspanning; Sportieve en culturele activiteiten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "en",
+      "description": "Clothing, footwear, headgear; masquerade costumes\\.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "en",
+      "description": "Games and playthings; gymnastic and sporting articles not included in other classes; decorations for Christmas trees; Christmas crackers; toy masks, theatrical masks; paper party hats; piñatas; scale model vehicles; kaleidoscopes; novelties; video game apparatus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; Providing of training; Entertainment; Sporting and cultural activities.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "et",
+      "description": "Rõivad, jalatsid, peakatted; Maskeraadikostüümid.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "et",
+      "description": "Mängud, mänguasjad; Sporditarbed ja võimlemisriistad, mis ei kuulu teistesse klassidesse; Jõulukuuseehted; Pihkarid; Karnevalimaskid ja teatrimaskid; Paberist peomütsid; Pinjaatad; Sõidukimudelid; Kaleidoskoobid; Uudistooted jõuludeks, mis kuuluvad siia klassi; Videomänguseadmed.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Haridus; Väljaõpe; Meelelahutus; Spordi- ja kultuurialane tegevus.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "fi",
+      "description": "Vaatteet, jalkineet, päähineet; Naamiaispuvut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fi",
+      "description": "Pelit ja leikkikalut; Voimistelu- ja urheiluvälineet, jotka eivät sisälly muihin luokkiin; Joulukuusenkoristeet; Paukkukaramellit joulunviettoon; Leikkinaamiot ja teatterinaamiot; Paperiset juhlahatut; Ripustettavat makeispallot [pinjatat]; Pienoismalliajoneuvot; Kaleidoskoopit; Pienet lahjaesineet; Videopelilaitteet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fi",
+      "description": "Koulutus; Koulutuksen järjestäminen; Ajanviete; Urheilu- ja kulttuuritoiminnat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "fr",
+      "description": "Vêtements, chaussures, chapellerie; Costumes de mascarade.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": "Jeux, jouets; Articles de gymnastique et de sport non compris dans d'autres classes; Décorations pour arbres de Noël; Bonbons explosifs de Noël; Masques de carnaval et masques de théâtre; Chapeaux de cotillon en papier; Piñatas; Modèles réduits de véhicules; Kaléidoscopes; Objets fantaisie; Appareils de jeux vidéo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": "Éducation; Formation; Divertissement; Activités sportives et culturelles.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "de",
+      "description": "Bekleidungsstücke, Schuhwaren, Kopfbedeckungen; Faschings-, Karnevalskostüme.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "de",
+      "description": "Spiele, Spielzeug; Turn- und Sportartikel, so weit sie nicht in anderen Klassen enthalten sind; Christbaumschmuck; Knallbonbons; Faschingsmasken und Theatermasken; Partyhüte aus Papier; Piñatas; Fahrzeugmodelle [verkleinert]; Kaleidoskope; Billige Neuheiten; Videospielapparate.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "de",
+      "description": "Erziehung; Ausbildung; Unterhaltung; Sportliche und kulturelle Aktivitäten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "hu",
+      "description": "Ruházati cikkek, cipok, kalapáruk; Jelmezek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "hu",
+      "description": "Játékok, játékszerek; Testnevelési és sportcikkek, amelyek nem tartoznak más osztályokba; Karácsonyfadíszek; Karácsonyi sós kekszek; Farsangi és színházi maszkok; Papírkalapok partikra; Pinata [zsákbamcska-játék sajátos figurákkal]; Méretarányosan kicsinyített jármumodellek; Kaleidoszkópok; Játékok; Video játékgépek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "hu",
+      "description": "Nevelés; Szakmai képzés; Szórakoztatás; Sport- és kulturális tevékenységek.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "it",
+      "description": "Articoli di abbigliamento, scarpe, cappelleria; Costumi in maschera.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "it",
+      "description": "Giochi, giocattoli; Articoli per la ginnastica e lo sport non compresi in altre classi; Decorazioni per alberi di Natale; Confetti detonanti; Maschere giocattolo e maschere teatrali; Cappellini in carta per le feste; Piñatas; Modellini di veicoli; Caleidoscopi; Oggetti di moda; Apparecchi per videogiochi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "it",
+      "description": "Educazione; Formazione; Divertimento; Attività sportive e culturali.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "lt",
+      "description": "Drabuziai, apranga, avalyne, galvos apdangalai; Maskarado kostiumai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lt",
+      "description": "Zaidimai ir zaislai; Gimnastikos ir sporto reikmenys, nepriskirti prie kitu klasiu; Kaledu egluciu papuosalai; Kaledines papliauskos; Uzgaveniu ir teatro kaukes; Popierines pobuviu kepures; Pinatai [dekoruoti zaidimu indai]; Sumazinti transporto priemoniu modeliai; Kaleidoskopai; Niekuciai; Vaizdo zaidimu automatas.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lt",
+      "description": "Svietimas; Mokymas; Pramogos; Sportine ir kulturine veikla.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "lv",
+      "description": "Apgerbi, apavi, galvassegas; Karnevala terpi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "lv",
+      "description": "Speles un rotallietas; Vingrosanas un sporta preces, kas nav ietvertas citas klases; Eglisu rotajumi; Ziemassvetku petardes; Karnevalu un teatra maskas; Papira cepures viesibam; Pinjatas [ballisu rotajums pildits ar konfektem un konfeti]; Transportlidzeklu modeli; Kaleidoskopi; Ziemassvetku eglisu rotajumi; Videospelu aparati.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "lv",
+      "description": "Audzinasana; Apmaciba; Izpriecas; Sporta un kulturas pasakumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "mt",
+      "description": "Hwejjeg, xedd tas-saqajn u xedd ir-ras; Kostumi tal-karnival.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "mt",
+      "description": "Loghob u gugarelli; Oggetti tal-ginnastika u sport mhux inkluzi fi klassijiet ohra; Dekorazzjonijiet ghas-sigar tal-Milied; Trikkitrakk tal-Milied; Maskri tal-wicc bhala gugarell u ornamentali; Kpiepel tal-karti ghal waqt il-festini; Piñatas; Mudelli ta' karrozzi mahdumin skond l-iskala ta' qisien; Kalejdoskopji; Innovazzjonijiet; Magni tal-loghob tal-vidjo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "mt",
+      "description": "Edukazzjoni; Provvediment ta' tahrig; Divertiment; Attivitajiet kulturali u sportivi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "pl",
+      "description": "Odziez, obuwie, nakrycia glowy; Stroje na maskarade.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pl",
+      "description": "Gry i zabawki; Artykuly sportowe i gimnastyczne nie ujete w innych klasach; Ozdoby choinkowe; Kolorowe walce z papieru, otwierane na Boze Narodzenie, eksplodujace przy otwarciu i zawierajace niespodzianke [tzw Christmas crackers]; Maski karnawalowe i maski teatralne; Czapeczki na przyjecia (Papierowe -); Piniaty; Modele pojazdów przeskalowane; Kalejdoskopy; Zabawki - nowosci; Sprzet do gier wideo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pl",
+      "description": "Nauczanie; Ksztalcenie; Rozrywka; Dzialalnosc sportowa i kulturalna.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "pt",
+      "description": "Vestuário, calçado, chapelaria; Fatos de carnaval.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "pt",
+      "description": "Jogos e brinquedos; Artigos de ginástica e de desporto não incluídos noutras classes; Decorações para árvores de natal; Bombons explosivos de Natal; Máscaras de carnaval e máscaras de teatro; Chapéus de festa em papel; Pinhatas [piñatas]; Modelos de veículos à escala; Caleidoscópios; Novidades em brinquedos; Aparelhos de jogos de vídeo.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "pt",
+      "description": "Educação; Formação; Divertimento; Actividades desportivas e culturais.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "ro",
+      "description": "Îmbracaminte, încaltaminte, articole care servesc la acoperirea capului; Costume de bal mascat.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "ro",
+      "description": "Jocuri, jucarii; Articole de gimnastica si de sport necuprinse in alte clase; Decoratiuni (ornamente) pentru pomul de Craciun; Pocnitori de Craciun; Masti de carnaval si masti de teatru; Palarii din hârtie pentru petreceri; Pinatas; Modele de vehicule la scara redusa [miniaturi]; Caleidoscoape; Jucarioare-suvenir sau ornamentale pentru petreceri; Aparate pentru jocuri video.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ro",
+      "description": "Educatie; Instruire; Divertisment; Activitati sportive si culturale.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "sk",
+      "description": "Odevy, obuv a pokrývky hlavy; Maskarné kostýmy.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sk",
+      "description": "Hry a hracky; Telocvicné a sportové potreby, ktoré nie sú zahrnuté v iných triedach; Ozdoby na vianocný stromcek; Vianocné prskavky; Karnevalové masky a divadelné masky; Papierové karnevalové ciapky; Pinatas; Modely automobilov; Kaleidoskopy; Drobné tovary; Video hracie automaty.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sk",
+      "description": "Vzdelávanie; Zabezpecovanie výcvikov, kurzov a skolení; Zábava; Sportová a kultúrna cinnost.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "sl",
+      "description": "Oblacila, obutev, pokrivala; Maskeradni kostumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sl",
+      "description": "Igre, igrace; Izdelki za gimnastiko in sport, ki jih ne obsegajo drugi razredi; Okraski za novoletno jelko; Bozicni zvitki; Otroske in okrasne obrazne maske; Klobucki iz papirja za zabave; Pinjata (vrsta igre); Avtomobilski modelcki; Kalejdoskopi; Saljive igrace,igre; Naprave za video igre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sl",
+      "description": "Izobrazevanje; Pouk; Razvedrilo; Sportne in kulturne dejavnosti.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "es",
+      "description": "Prendas de vestir, calzado, artículos de sombrerería; Disfraces [trajes].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "es",
+      "description": "Juegos y juguetes; Artículos de gimnasia y deporte no comprendidos en otras clases; Adornos para árboles de Navidad; Caramelos explosivos de Navidad; Máscaras de juguete y máscaras de teatro; Sombreros de cotillón de papel; Piñatas; Modelos de vehículos a escala; Caleidoscopios; Baratijas; Aparatos de videojuegos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educación; Formación; Servicios de entretenimiento; Actividades deportivas y culturales.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        25
+      ],
+      "language": "sw",
+      "description": "Kläder, fotbeklädnader, huvudbonader; Maskeraddräkter.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "sw",
+      "description": "Spel och leksaker; Gymnastik- och sportartiklar, ej ingående i andra klasser; Julgransprydnader; Smällkarameller; Lekmasker och teatermasker; Kickboards för simmare; Piñatas; Skalmodeller av fordon och farkoster; Kalejdoskop; Småsaker av ringa värde; Videospelapparater.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "sw",
+      "description": "Undervisning/utbildning; Anordnande av handledning/instruktion; Underhållning; Sport- och idrottsaktiviteter, kulturverksamhet.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Mattel, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Keltie Limited",
+  "priorities": [
+    {
+      "priorityCountryCode": "LC",
+      "priorityCountryName": "Saint Lucia",
+      "priorityDate": "20121116",
+      "priorityNumber": "TM/T/2013/363"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "333 Continental Boulevard,El Segundo,California, 90245-5012",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Mattel, Inc."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Odevy, obuv, kloboucnické zbozí; Maskarní kostýmy."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Hry, hracky; Potreby pro gymnastiku a sport, které nejsou uvedeny v jiných trídách; Vánocní ozdoby; Vánocní prskavky; Karnevalové masky a divadelní masky; Papírové party cepice; Pinatas [hra]; Automobilové modely zmensené; Kaleidoskopy; Drobné zbozí; Stroje na videohry."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Výchova; Vzdelávání; Zábava; Sportovní a kulturní aktivity."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Beklædningsgenstande, fodtøj og hovedbeklædning; Karnevalskostumer."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Spil og legetøj; Gymnastik- og sportsartikler (ikke indeholdt i andre klasser); Juletræspynt; Knallerter (julepynt); Karnevalsmasker og teatermasker; Festhatte af papir; Piñatas; Modelkøretøjer [målestokstro]; Kalejdoskoper; Småtingsartikler af lille værdi; Apparater til videospil."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Uddannelsesvirksomhed; Undervisningsvirksomhed; Underholdningsvirksomhed; Sportsarrangementer og kulturelle arrangementer."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Kledingstukken, schoeisel, hoofddeksels; Verkleedkostuums."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Spellen, speelgoederen; Gymnastiek- en sportartikelen voor zover niet begrepen in andere klassen; Versierselen voor kerstbomen; Knalbonbons; Carnavalsmaskers en toneelmaskers; Feesthoedjes van papier; Pinatas; Schaalmodellen van voertuigen; Kaleidoscopen; Noviteiten; Videospelapparatuur."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Opvoeding; Opleiding; Ontspanning; Sportieve en culturele activiteiten."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Clothing, footwear, headgear; masquerade costumes\\."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Games and playthings; gymnastic and sporting articles not included in other classes; decorations for Christmas trees; Christmas crackers; toy masks, theatrical masks; paper party hats; piñatas; scale model vehicles; kaleidoscopes; novelties; video game apparatus."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; Providing of training; Entertainment; Sporting and cultural activities."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Rõivad, jalatsid, peakatted; Maskeraadikostüümid."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Mängud, mänguasjad; Sporditarbed ja võimlemisriistad, mis ei kuulu teistesse klassidesse; Jõulukuuseehted; Pihkarid; Karnevalimaskid ja teatrimaskid; Paberist peomütsid; Pinjaatad; Sõidukimudelid; Kaleidoskoobid; Uudistooted jõuludeks, mis kuuluvad siia klassi; Videomänguseadmed."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Haridus; Väljaõpe; Meelelahutus; Spordi- ja kultuurialane tegevus."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Vaatteet, jalkineet, päähineet; Naamiaispuvut."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Pelit ja leikkikalut; Voimistelu- ja urheiluvälineet, jotka eivät sisälly muihin luokkiin; Joulukuusenkoristeet; Paukkukaramellit joulunviettoon; Leikkinaamiot ja teatterinaamiot; Paperiset juhlahatut; Ripustettavat makeispallot [pinjatat]; Pienoismalliajoneuvot; Kaleidoskoopit; Pienet lahjaesineet; Videopelilaitteet."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Koulutus; Koulutuksen järjestäminen; Ajanviete; Urheilu- ja kulttuuritoiminnat."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Vêtements, chaussures, chapellerie; Costumes de mascarade."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Jeux, jouets; Articles de gymnastique et de sport non compris dans d'autres classes; Décorations pour arbres de Noël; Bonbons explosifs de Noël; Masques de carnaval et masques de théâtre; Chapeaux de cotillon en papier; Piñatas; Modèles réduits de véhicules; Kaléidoscopes; Objets fantaisie; Appareils de jeux vidéo."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Éducation; Formation; Divertissement; Activités sportives et culturelles."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Bekleidungsstücke, Schuhwaren, Kopfbedeckungen; Faschings-, Karnevalskostüme."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Spiele, Spielzeug; Turn- und Sportartikel, so weit sie nicht in anderen Klassen enthalten sind; Christbaumschmuck; Knallbonbons; Faschingsmasken und Theatermasken; Partyhüte aus Papier; Piñatas; Fahrzeugmodelle [verkleinert]; Kaleidoskope; Billige Neuheiten; Videospielapparate."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Erziehung; Ausbildung; Unterhaltung; Sportliche und kulturelle Aktivitäten."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Ruházati cikkek, cipok, kalapáruk; Jelmezek."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Játékok, játékszerek; Testnevelési és sportcikkek, amelyek nem tartoznak más osztályokba; Karácsonyfadíszek; Karácsonyi sós kekszek; Farsangi és színházi maszkok; Papírkalapok partikra; Pinata [zsákbamcska-játék sajátos figurákkal]; Méretarányosan kicsinyített jármumodellek; Kaleidoszkópok; Játékok; Video játékgépek."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Nevelés; Szakmai képzés; Szórakoztatás; Sport- és kulturális tevékenységek."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Articoli di abbigliamento, scarpe, cappelleria; Costumi in maschera."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Giochi, giocattoli; Articoli per la ginnastica e lo sport non compresi in altre classi; Decorazioni per alberi di Natale; Confetti detonanti; Maschere giocattolo e maschere teatrali; Cappellini in carta per le feste; Piñatas; Modellini di veicoli; Caleidoscopi; Oggetti di moda; Apparecchi per videogiochi."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Educazione; Formazione; Divertimento; Attività sportive e culturali."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Drabuziai, apranga, avalyne, galvos apdangalai; Maskarado kostiumai."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Zaidimai ir zaislai; Gimnastikos ir sporto reikmenys, nepriskirti prie kitu klasiu; Kaledu egluciu papuosalai; Kaledines papliauskos; Uzgaveniu ir teatro kaukes; Popierines pobuviu kepures; Pinatai [dekoruoti zaidimu indai]; Sumazinti transporto priemoniu modeliai; Kaleidoskopai; Niekuciai; Vaizdo zaidimu automatas."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Svietimas; Mokymas; Pramogos; Sportine ir kulturine veikla."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Apgerbi, apavi, galvassegas; Karnevala terpi."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Speles un rotallietas; Vingrosanas un sporta preces, kas nav ietvertas citas klases; Eglisu rotajumi; Ziemassvetku petardes; Karnevalu un teatra maskas; Papira cepures viesibam; Pinjatas [ballisu rotajums pildits ar konfektem un konfeti]; Transportlidzeklu modeli; Kaleidoskopi; Ziemassvetku eglisu rotajumi; Videospelu aparati."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Audzinasana; Apmaciba; Izpriecas; Sporta un kulturas pasakumi."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Hwejjeg, xedd tas-saqajn u xedd ir-ras; Kostumi tal-karnival."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Loghob u gugarelli; Oggetti tal-ginnastika u sport mhux inkluzi fi klassijiet ohra; Dekorazzjonijiet ghas-sigar tal-Milied; Trikkitrakk tal-Milied; Maskri tal-wicc bhala gugarell u ornamentali; Kpiepel tal-karti ghal waqt il-festini; Piñatas; Mudelli ta' karrozzi mahdumin skond l-iskala ta' qisien; Kalejdoskopji; Innovazzjonijiet; Magni tal-loghob tal-vidjo."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Edukazzjoni; Provvediment ta' tahrig; Divertiment; Attivitajiet kulturali u sportivi."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Odziez, obuwie, nakrycia glowy; Stroje na maskarade."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Gry i zabawki; Artykuly sportowe i gimnastyczne nie ujete w innych klasach; Ozdoby choinkowe; Kolorowe walce z papieru, otwierane na Boze Narodzenie, eksplodujace przy otwarciu i zawierajace niespodzianke [tzw Christmas crackers]; Maski karnawalowe i maski teatralne; Czapeczki na przyjecia (Papierowe -); Piniaty; Modele pojazdów przeskalowane; Kalejdoskopy; Zabawki - nowosci; Sprzet do gier wideo."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Nauczanie; Ksztalcenie; Rozrywka; Dzialalnosc sportowa i kulturalna."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Vestuário, calçado, chapelaria; Fatos de carnaval."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Jogos e brinquedos; Artigos de ginástica e de desporto não incluídos noutras classes; Decorações para árvores de natal; Bombons explosivos de Natal; Máscaras de carnaval e máscaras de teatro; Chapéus de festa em papel; Pinhatas [piñatas]; Modelos de veículos à escala; Caleidoscópios; Novidades em brinquedos; Aparelhos de jogos de vídeo."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Educação; Formação; Divertimento; Actividades desportivas e culturais."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Îmbracaminte, încaltaminte, articole care servesc la acoperirea capului; Costume de bal mascat."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Jocuri, jucarii; Articole de gimnastica si de sport necuprinse in alte clase; Decoratiuni (ornamente) pentru pomul de Craciun; Pocnitori de Craciun; Masti de carnaval si masti de teatru; Palarii din hârtie pentru petreceri; Pinatas; Modele de vehicule la scara redusa [miniaturi]; Caleidoscoape; Jucarioare-suvenir sau ornamentale pentru petreceri; Aparate pentru jocuri video."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Educatie; Instruire; Divertisment; Activitati sportive si culturale."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Odevy, obuv a pokrývky hlavy; Maskarné kostýmy."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Hry a hracky; Telocvicné a sportové potreby, ktoré nie sú zahrnuté v iných triedach; Ozdoby na vianocný stromcek; Vianocné prskavky; Karnevalové masky a divadelné masky; Papierové karnevalové ciapky; Pinatas; Modely automobilov; Kaleidoskopy; Drobné tovary; Video hracie automaty."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Vzdelávanie; Zabezpecovanie výcvikov, kurzov a skolení; Zábava; Sportová a kultúrna cinnost."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oblacila, obutev, pokrivala; Maskeradni kostumi."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Igre, igrace; Izdelki za gimnastiko in sport, ki jih ne obsegajo drugi razredi; Okraski za novoletno jelko; Bozicni zvitki; Otroske in okrasne obrazne maske; Klobucki iz papirja za zabave; Pinjata (vrsta igre); Avtomobilski modelcki; Kalejdoskopi; Saljive igrace,igre; Naprave za video igre."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Izobrazevanje; Pouk; Razvedrilo; Sportne in kulturne dejavnosti."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Prendas de vestir, calzado, artículos de sombrerería; Disfraces [trajes]."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Juegos y juguetes; Artículos de gimnasia y deporte no comprendidos en otras clases; Adornos para árboles de Navidad; Caramelos explosivos de Navidad; Máscaras de juguete y máscaras de teatro; Sombreros de cotillón de papel; Piñatas; Modelos de vehículos a escala; Caleidoscopios; Baratijas; Aparatos de videojuegos."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educación; Formación; Servicios de entretenimiento; Actividades deportivas y culturales."
+        },
+        {
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Kläder, fotbeklädnader, huvudbonader; Maskeraddräkter."
+        },
+        {
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Spel och leksaker; Gymnastik- och sportartiklar, ej ingående i andra klasser; Julgransprydnader; Smällkarameller; Lekmasker och teatermasker; Kickboards för simmare; Piñatas; Skalmodeller av fordon och farkoster; Kalejdoskop; Småsaker av ringa värde; Videospelapparater."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Undervisning/utbildning; Anordnande av handledning/instruktion; Underhållning; Sport- och idrottsaktiviteter, kulturverksamhet."
+        }
+      ]
+    },
+    "id": "82614711-0c22-46db-8980-e8c62167f668",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "priorities": [
+      {
+        "priorityCountryCode": "LC",
+        "priorityCountryName": "Saint Lucia",
+        "priorityDate": "20121116",
+        "priorityNumber": "TM/T/2013/363"
+      }
+    ],
+    "publications": [
+      {
+        "publicationPage": "00043",
+        "publicationVolume": "144"
+      }
+    ],
+    "recordLastUpdated": "20260511",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "Portershed a Dó, 15 Market Street,Galway,Galway, H91 TCX3",
+        "representativeAddressCountryCode": "IE",
+        "representativeAddressCountryName": "Ireland",
+        "representativeName": "Keltie Limited"
+      }
+    ],
+    "secondLanguageCode": "de",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130514",
+        "applicationNumber": "11813813"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "lastPublicationDate": "20130801",
+      "markCurrentStatus": "REGISTRATION EXPIRED",
+      "registration": {
+        "registrationDate": "20131108"
+      }
+    },
+    "version": "20260511163717",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN QUEEN"
+    }
+  },
+  "_uri": "/mark/em/82614711-0c22-46db-8980-e8c62167f668",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.559Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

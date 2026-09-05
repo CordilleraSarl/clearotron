@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/jp/134e1630-4a45-4509-9b0a-f733300ff45e",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "134e1630-4a45-4509-9b0a-f733300ff45e",
+  "applicationNumber": "2013-058383",
+  "registrationNumber": "5638263",
+  "applicationDate": "2013-07-26",
+  "registrationDate": "2013-12-20",
+  "expiryDate": "2023-12-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-01-28",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＺＯＲＩ",
+  "markTransliteration": "ZOORI ZORI",
+  "markTranslation": "ZORI",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "スピーカー，ステレオ及びサラウンド音声用アンプリファイア，マイクロホン，音響機械器具，電気通信機械器具，デジタルシグナルプロセッサ，電子応用機械器具及びその部品，電子計算機用プログラム，メトロノーム，電子楽器用自動演奏プログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，家庭用テレビゲーム機用プログラム，携帯用液晶画面ゲーム機用のプログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，業務用テレビゲーム機用プログラム，電線及びケーブル",
+      "translation_language": "en",
+      "translation": "Memorized automatic performance programs for speakers, stereo and surround sound amplifiers, microphones, acoustic machines, telecommunications equipment, digital signal processors, electronic appliances appliances and parts thereof, programs for electronic computers, metronomes and electronic musical instruments Electronic circuits and CD-ROM, programs for home video game machines, electronic circuits storing programs for portable liquid crystal screen game machines and CD-ROMs, programs for professional video game machines, electric cables and cables"
+    }
+  ],
+  "owner": "TOKYO RAMSASOUND K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "KATO TAKASHI",
+  "priorities": [
+    {
+      "priorityDate": "20130726"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HIGASHIKURUME TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "TOKYO RAMSASOUND K.K.",
+        "applicantNativeAddress": "東京都東久留米市",
+        "applicantNativeName": "東京ＲａｍｓａＳｏｕｎｄ株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Memorized automatic performance programs for speakers, stereo and surround sound amplifiers, microphones, acoustic machines, telecommunications equipment, digital signal processors, electronic appliances appliances and parts thereof, programs for electronic computers, metronomes and electronic musical instruments Electronic circuits and CD-ROM, programs for home video game machines, electronic circuits storing programs for portable liquid crystal screen game machines and CD-ROMs, programs for professional video game machines, electric cables and cables",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "スピーカー，ステレオ及びサラウンド音声用アンプリファイア，マイクロホン，音響機械器具，電気通信機械器具，デジタルシグナルプロセッサ，電子応用機械器具及びその部品，電子計算機用プログラム，メトロノーム，電子楽器用自動演奏プログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，家庭用テレビゲーム機用プログラム，携帯用液晶画面ゲーム機用のプログラムを記憶させた電子回路及びＣＤ－ＲＯＭ，業務用テレビゲーム機用プログラム，電線及びケーブル"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "09G53",
+          "natGoodsServicesDescription": "Game programs for arcade video game machines"
+        },
+        {
+          "natClassNumber": "11A05",
+          "natGoodsServicesDescription": "Electric wires and cables"
+        },
+        {
+          "natClassNumber": "11B01",
+          "natGoodsServicesDescription": "Telecommunication machines and apparatus; Personal digital assistants"
+        },
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, high frequency apparatus for welding, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; High frequency apparatus for welding; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "24A01",
+          "natGoodsServicesDescription": "Game programs for home video game machines; Electronic circuits and CD-ROMs recorded with programs for hand-held games with liquid crystal displays"
+        },
+        {
+          "natClassNumber": "24E01",
+          "natGoodsServicesDescription": "Metronomes; Electronic circuits and CD-ROMs recorded with automatic performance programs for electronic musical instruments; Electric and electronic effects units for musical instruments"
+        }
+      ]
+    },
+    "id": "134e1630-4a45-4509-9b0a-f733300ff45e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20130726"
+      }
+    ],
+    "recordLastUpdated": "20250110",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KATO TAKASHI",
+        "representativeNativeName": "加藤　恭"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20130726",
+        "applicationNumber": "2013-058383"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20231220",
+      "lastPublicationDate": "20140128",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20131220",
+        "registrationNumber": "5638263"
+      }
+    },
+    "version": "20250110084559",
+    "wordMarkSpecification": {
+      "markTranslation": "ZORI",
+      "markTransliteration": "ZOORI ZORI",
+      "markVerbalElementText": "ＺＯＲＩ"
+    }
+  },
+  "_uri": "/mark/jp/134e1630-4a45-4509-9b0a-f733300ff45e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

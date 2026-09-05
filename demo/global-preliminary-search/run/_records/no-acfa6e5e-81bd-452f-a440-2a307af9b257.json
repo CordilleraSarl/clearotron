@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/no/acfa6e5e-81bd-452f-a440-2a307af9b257",
+  "provider": "clarivate",
+  "office": "no",
+  "guid": "acfa6e5e-81bd-452f-a440-2a307af9b257",
+  "applicationNumber": "202412363",
+  "registrationNumber": "334201",
+  "applicationDate": "2024-11-05",
+  "registrationDate": "2024-11-12",
+  "expiryDate": "2034-11-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-11-18",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Move Norway",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "no",
+      "description": "Opplæring; organisering av webinarer; organisering og ledelse av kongresser; tilrettelegging og utførelse av arbeidsgrupper, opplæringsprogrammer, seminarer og konferanser; utgivelse av tekster, andre enn reklametekster.",
+      "translation_language": "en",
+      "translation": "Training; organization of webinars; organization and management of congresses; organization and execution of working groups, training programs, seminars and conferences; publication of texts, other than advertising texts."
+    }
+  ],
+  "owner": "ITS NORWAY",
+  "ownerNative": null,
+  "ownerCountry": "NO",
+  "representative": "NORSK PATENTBYRÅ AS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "0201 OSLO",
+        "applicantAddressCountryCode": "NO",
+        "applicantAddressCountryName": "Norway",
+        "applicantName": "ITS NORWAY"
+      }
+    ],
+    "applicationLanguageCode": "no",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training; organization of webinars; organization and management of congresses; organization and execution of working groups, training programs, seminars and conferences; publication of texts, other than advertising texts.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "no",
+          "intGoodsServicesDescription": "Opplæring; organisering av webinarer; organisering og ledelse av kongresser; tilrettelegging og utførelse av arbeidsgrupper, opplæringsprogrammer, seminarer og konferanser; utgivelse av tekster, andre enn reklametekster."
+        }
+      ]
+    },
+    "id": "acfa6e5e-81bd-452f-a440-2a307af9b257",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250807",
+    "registrationOfficeCode": "NO",
+    "registrationOfficeName": "Norway",
+    "representatives": [
+      {
+        "representativeAddress": "0255 OSLO",
+        "representativeAddressCountryCode": "NO",
+        "representativeAddressCountryName": "Norway",
+        "representativeName": "NORSK PATENTBYRÅ AS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20241105",
+        "applicationNumber": "202412363"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20341105",
+      "lastPublicationDate": "20241118",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20241112",
+        "registrationNumber": "334201"
+      }
+    },
+    "version": "20250807020033",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Move Norway"
+    }
+  },
+  "_uri": "/mark/no/acfa6e5e-81bd-452f-a440-2a307af9b257",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.830Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

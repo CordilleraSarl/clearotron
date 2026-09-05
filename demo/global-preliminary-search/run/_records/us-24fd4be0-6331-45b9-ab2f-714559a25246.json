@@ -1,0 +1,193 @@
+{
+  "uri": "/mark/us/24fd4be0-6331-45b9-ab2f-714559a25246",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "24fd4be0-6331-45b9-ab2f-714559a25246",
+  "applicationNumber": "50012214",
+  "registrationNumber": null,
+  "applicationDate": "2026-07-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENOR MAISON",
+  "markTransliteration": null,
+  "markTranslation": "AVENOR House",
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Interior design; Design of specialty interior and exterior environment settings",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Avenor Maison LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "26 Woodbrook Rd, Voorhees, NJ, 08043, USAM",
+        "applicantAddressCity": "Voorhees",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "08043",
+        "applicantAddressStateName": "NEW JERSEY",
+        "applicantAddressStreet": "26 Woodbrook Rd",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Avenor Maison LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Interior design; Design of specialty interior and exterior environment settings"
+        }
+      ]
+    },
+    "id": "24fd4be0-6331-45b9-ab2f-714559a25246",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260727",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260724",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260724",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "26 Woodbrook Rd, Voorhees, NJ, 08043, USAM",
+        "city": "Voorhees",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Avenor Maison LLC",
+        "postalCode": "08043",
+        "stateName": "NEW JERSEY",
+        "street": "26 Woodbrook Rd"
+      },
+      {
+        "address": "26 Woodbrook Rd, Voorhees, NJ, 08043, USAM",
+        "city": "Voorhees",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Avenor Maison LLC",
+        "postalCode": "08043",
+        "stateName": "NEW JERSEY",
+        "street": "26 Woodbrook Rd"
+      }
+    ],
+    "recordLastUpdated": "20260810",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Voorhees, NJ 08043, United States",
+        "representativeCorrespondentAddressLines": [
+          "Voorhees, NJ 08043",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Avenor Maison LLC, 26 Woodbrook Rd"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Voorhees, NJ 08043, United States",
+        "representativeAddressLines": [
+          "Voorhees, NJ 08043",
+          "United States"
+        ]
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260724",
+        "applicationNumber": "50012214"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "firstUsed": [
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20260415"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20260609"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20260724",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260810151040",
+    "wordMarkSpecification": {
+      "markTranslation": "AVENOR House",
+      "markTranslationDescription": "The English translation of the French wording Maison in the mark is House.",
+      "markVerbalElementText": "AVENOR MAISON"
+    }
+  },
+  "_uri": "/mark/us/24fd4be0-6331-45b9-ab2f-714559a25246",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

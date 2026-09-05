@@ -1,0 +1,312 @@
+{
+  "uri": "/mark/ca/de1db2bc-c955-47d0-b784-73d1836d5e71",
+  "provider": "clarivate",
+  "office": "ca",
+  "guid": "de1db2bc-c955-47d0-b784-73d1836d5e71",
+  "applicationNumber": "754062",
+  "registrationNumber": "TMA443516",
+  "applicationDate": "1994-05-11",
+  "registrationDate": "1995-06-02",
+  "expiryDate": null,
+  "renewalDate": "2010-06-02",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "1994-12-28"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "ALARMES RIVE-NORD",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD MARK",
+  "markDisclaimers": [
+    "The right to the exclusive use of the word ALARMES is disclaimed apart from the trademark."
+  ],
+  "niceClasses": [
+    9,
+    35,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9,
+        35,
+        37,
+        38,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Systèmes de sécurité, surveillance et d'alarme sur place ou par télécommunication.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        37,
+        38,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Security systems, monitoring and alarm on site or by telecommunication.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        37,
+        38,
+        42
+      ],
+      "language": "fr",
+      "description": "(1) Vente, location, installation, entretien, réparation et exploitation de systèmes de sécurité, surveillance et d'alarme sur place ou par télécommunication.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9,
+        35,
+        37,
+        38,
+        42
+      ],
+      "language": "en",
+      "description": "(1) Sale, rental, facility, maintenance, repair and operation of security systems, monitoring and alarm on site or by telecommunication.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "DOMO-SIGNAL INC.,",
+  "ownerNative": null,
+  "ownerCountry": "CA",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7400, BOUL. LES GALERIES D'ANJOU, BUREAU 390, ANJOU, QUÉBEC, H1M3M2",
+        "applicantAddressCountryCode": "CA",
+        "applicantAddressCountryName": "Canada",
+        "applicantAddressLines": [
+          "7400, BOUL. LES GALERIES D'ANJOU,",
+          "BUREAU 390,",
+          "ANJOU,",
+          "QUÉBEC"
+        ],
+        "applicantAddressPostalCode": "H1M3M2",
+        "applicantName": "DOMO-SIGNAL INC.,"
+      }
+    ],
+    "categorizedTexts": {},
+    "claims": [
+      {
+        "text": "Used in CANADA since at least as early as January 1986 on wares marked (1) on services (1)",
+        "typeDescription": "First Use"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09,35,37,38,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Systèmes de sécurité, surveillance et d'alarme sur place ou par télécommunication."
+        },
+        {
+          "intClassNumber": "09,35,37,38,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Security systems, monitoring and alarm on site or by telecommunication."
+        },
+        {
+          "intClassNumber": "09,35,37,38,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "(1) Vente, location, installation, entretien, réparation et exploitation de systèmes de sécurité, surveillance et d'alarme sur place ou par télécommunication."
+        },
+        {
+          "intClassNumber": "09,35,37,38,42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "(1) Sale, rental, facility, maintenance, repair and operation of security systems, monitoring and alarm on site or by telecommunication."
+        }
+      ]
+    },
+    "id": "de1db2bc-c955-47d0-b784-73d1836d5e71",
+    "ipRightKind": "tmk",
+    "kindMark": "Trade-Mark",
+    "markDisclaimers": [
+      "The right to the exclusive use of the word ALARMES is disclaimed apart from the trademark."
+    ],
+    "markEvents": [
+      {
+        "date": "20251219",
+        "descriptionText": "Expunged - Failure to Renew",
+        "information": "DP: 2025/12/19"
+      },
+      {
+        "date": "20250619",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20251202"
+      },
+      {
+        "date": "20200817",
+        "descriptionText": "Agent changed",
+        "information": "From: 5727 To: / Voir Preuve au dossier/See evidence on File No. 1375400"
+      },
+      {
+        "date": "20160225",
+        "descriptionText": "Rep for Service Name Changed"
+      },
+      {
+        "date": "20100820",
+        "descriptionText": "Rep for Service Changed",
+        "information": "From: 8519 To: 5727 / Voir Preuve au dossier/See evidence on File No. 754062"
+      },
+      {
+        "date": "20100623",
+        "descriptionText": "Renewal Notice Sent",
+        "responseDate": "20101223"
+      },
+      {
+        "date": "20100602",
+        "descriptionText": "Renewed",
+        "information": "DP:2010/08/17 RD:2010/08/12 RR:(5727) GOWLING LAFLEUR HENDERSON LLP",
+        "responseDate": "20250602"
+      },
+      {
+        "date": "19950602",
+        "descriptionText": "Registered",
+        "responseDate": "20100602"
+      },
+      {
+        "date": "19950324",
+        "descriptionText": "Allowance Notice Sent",
+        "responseDate": "19950924"
+      },
+      {
+        "date": "19950324",
+        "descriptionText": "Allowed"
+      },
+      {
+        "date": "19941228",
+        "descriptionText": "Advertised",
+        "information": "Vol.41 Issue 2096"
+      },
+      {
+        "date": "19941114",
+        "descriptionText": "Approved"
+      },
+      {
+        "date": "19940927",
+        "descriptionText": "Correspondence Created"
+      },
+      {
+        "date": "19940902",
+        "descriptionText": "Search Recorded"
+      },
+      {
+        "date": "19940610",
+        "descriptionText": "Formalized"
+      },
+      {
+        "date": "19940511",
+        "descriptionText": "Created"
+      },
+      {
+        "date": "19940511",
+        "descriptionText": "Filed"
+      }
+    ],
+    "markFeature": "WORD MARK",
+    "markImagesAvailable": false,
+    "markLegislationType": "TMA - Trademark Act",
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "7400, BOUL. LES GALERIES D'ANJOU, BUREAU 390, ANJOU, QUÉBEC, H1M3M2",
+        "addressLines": [
+          "7400, BOUL. LES GALERIES D'ANJOU,",
+          "BUREAU 390,",
+          "ANJOU,",
+          "QUÉBEC",
+          "H1M3M2"
+        ],
+        "countryName": "Canada",
+        "name": "DOMO-SIGNAL INC.,",
+        "postalCode": "H1M3M2"
+      }
+    ],
+    "publications": [
+      {
+        "publicationIssue": "2096",
+        "publicationVolume": "41"
+      }
+    ],
+    "recordLastUpdated": "20251224",
+    "registrationOfficeCode": "CA",
+    "registrationOfficeName": "Canada",
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "19950324"
+      ],
+      "application": {
+        "applicationDate": "19940511",
+        "applicationNumber": "754062"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "expungementDate": "20251219",
+      "firstUsed": [
+        {
+          "firstUsedDate": "198601",
+          "firstUsedText": "Used in CANADA since at least as early as January 1986 on wares marked (1) on services (1)"
+        }
+      ],
+      "formalisationDate": "19940610",
+      "markCurrentStatus": "Expunged",
+      "nextRenewalDate": "20250602",
+      "publicationDate": [
+        "19941228"
+      ],
+      "registration": {
+        "registrationDate": "19950602",
+        "registrationNumber": "TMA443516"
+      },
+      "renewalDate": "20100602"
+    },
+    "subjectHeadings": [
+      "ALARMES RIVE-NORD"
+    ],
+    "version": "20251224090009",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "ALARMS RIVE NORD",
+      "markVerbalElementText": "ALARMES RIVE-NORD",
+      "markVerbalElementTextFormal": "ALARMES RIVE-NORD"
+    }
+  },
+  "_uri": "/mark/ca/de1db2bc-c955-47d0-b784-73d1836d5e71",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

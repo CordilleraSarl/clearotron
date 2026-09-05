@@ -1,0 +1,113 @@
+{
+  "uri": "/mark/in/a4a7d356-5f02-4a72-be2c-e6aca1628c45",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "a4a7d356-5f02-4a72-be2c-e6aca1628c45",
+  "applicationNumber": "1736504",
+  "registrationNumber": null,
+  "applicationDate": "2008-09-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORIQ",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Semiconductors, integrated circuits, microprocessors, customized microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Freescale Semiconductor, Inc. Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "REMFRY SAGAR[269]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "6501 WILLIAM CANNON DRIVE WEST, AUSTIN, TEXAS 78735, USA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Freescale Semiconductor, Inc. Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Semiconductors, integrated circuits, microprocessors, customized microprocessors, software programmable microprocessors, multicore processors, application-specific integrated circuits."
+        }
+      ]
+    },
+    "id": "a4a7d356-5f02-4a72-be2c-e6aca1628c45",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "1440"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "MILLENIUM PLAZA, SECTOR 27, GURGAON- 122002.",
+        "representativeName": "REMFRY SAGAR[269]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20080924",
+        "applicationNumber": "1736504"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTERED"
+    },
+    "version": "20250710110224",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIQ"
+    }
+  },
+  "_uri": "/mark/in/a4a7d356-5f02-4a72-be2c-e6aca1628c45",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.394Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

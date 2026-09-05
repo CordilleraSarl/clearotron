@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "d4702fdd-f353-476c-8874-eedc36d6a582",
+  "applicationNumber": "7594453",
+  "registrationNumber": null,
+  "applicationDate": "2026-03-14",
+  "registrationDate": null,
+  "expiryDate": "2036-03-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Vincora",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Website development services,  Website design consultancy,  Website design,  Webpage design,  Provision of information relating to computer technology and programming via a web site,  Providing online non-downloadable web-based software,  Providing information relating to computer programming via a website,  Programming of web pages,  Hosting web portals,  Hosting the websites of others on a computer server for a global computer network,  Hosting the web sites of others,  Design of websites,  Design of web sites,  Design of computer web sites,  Design, creation, hosting and maintenance of websites,  Design and graphic arts design for the creation of web sites,  Design and development of computer software for process control,  Design and development of operating software for accessing and using a cloud computing network,  Design and development of computer hardware,  Design and development of quantum computer hardware and software,  Design and development of computer software for the collection, transmission and analysis of data,  Design and development of software and hardware for digital signal processing,  Design and construction of homepages and websites,  Creation of web pages for others,  Creation and hosting of web sites,  Creation and design of web pages for others,  Creating and maintaining websites,  Creating and maintaining web sites for cellular phones,  New product design services, Fashion accessory design services, Custom design services, Consumer product design services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SETHULAKSHMI K B Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "VANCHINATHAN[15659]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "KALLOOPARAMPIL, KOLAPRA, KUDAYATHOOR P O, KUDAYATHUR, IDUKKI, KERALA - 685590",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SETHULAKSHMI K B Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Website development services,  Website design consultancy,  Website design,  Webpage design,  Provision of information relating to computer technology and programming via a web site,  Providing online non-downloadable web-based software,  Providing information relating to computer programming via a website,  Programming of web pages,  Hosting web portals,  Hosting the websites of others on a computer server for a global computer network,  Hosting the web sites of others,  Design of websites,  Design of web sites,  Design of computer web sites,  Design, creation, hosting and maintenance of websites,  Design and graphic arts design for the creation of web sites,  Design and development of computer software for process control,  Design and development of operating software for accessing and using a cloud computing network,  Design and development of computer hardware,  Design and development of quantum computer hardware and software,  Design and development of computer software for the collection, transmission and analysis of data,  Design and development of software and hardware for digital signal processing,  Design and construction of homepages and websites,  Creation of web pages for others,  Creation and hosting of web sites,  Creation and design of web pages for others,  Creating and maintaining websites,  Creating and maintaining web sites for cellular phones,  New product design services, Fashion accessory design services, Custom design services, Consumer product design services"
+        }
+      ]
+    },
+    "id": "d4702fdd-f353-476c-8874-eedc36d6a582",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260402",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "8th Floor, RR Tower 4 Guindy Industrial Estate Thiru Vi Ka Industrial Estate Guindy Chennai -600032",
+        "representativeName": "VANCHINATHAN[15659]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260314",
+        "applicationNumber": "7594453"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360314",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20260402020035",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Vincora"
+    }
+  },
+  "_uri": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

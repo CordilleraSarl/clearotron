@@ -1,0 +1,378 @@
+{
+  "schema": 1,
+  "provider": "clarivate",
+  "providerLabel": "Clarivate Compumark",
+  "takenAt": "2026-09-02T21:43:48.513Z",
+  "basis": "Filings on the register of any status, counted by name only — “identical” is the name itself; “containing” is the register's broad name match for it; “close variations” is the same exact search run again over a bounded list of classic near-forms of the name (spelling, doubling and letter-swap variants), generated in code and listed with the figure. A count is not an assessment: it rates nothing and decides nothing.",
+  "predicates": [
+    {
+      "key": "identical",
+      "label": "Identical",
+      "column": "Identical filings",
+      "matchMode": "exact"
+    },
+    {
+      "key": "containing",
+      "label": "Containing",
+      "column": "Filings containing the name",
+      "matchMode": "default"
+    },
+    {
+      "key": "close",
+      "label": "Close variations",
+      "column": "Filings on close variations",
+      "matchMode": "exact",
+      "expansion": "variants"
+    }
+  ],
+  "variantRules": [
+    {
+      "id": "collapse-separators",
+      "label": "spacing/hyphen collapse"
+    },
+    {
+      "id": "doubled-to-single",
+      "label": "doubled consonant → single"
+    },
+    {
+      "id": "single-to-doubled",
+      "label": "single consonant → doubled"
+    },
+    {
+      "id": "ch-to-k",
+      "label": "CH → K"
+    },
+    {
+      "id": "k-to-ch",
+      "label": "K → CH"
+    },
+    {
+      "id": "c-to-k",
+      "label": "C → K"
+    },
+    {
+      "id": "k-to-c",
+      "label": "K → C"
+    },
+    {
+      "id": "ck-to-k",
+      "label": "CK → K"
+    },
+    {
+      "id": "s-to-z",
+      "label": "S → Z"
+    },
+    {
+      "id": "z-to-s",
+      "label": "Z → S"
+    },
+    {
+      "id": "ph-to-f",
+      "label": "PH → F"
+    },
+    {
+      "id": "f-to-ph",
+      "label": "F → PH"
+    },
+    {
+      "id": "y-to-i",
+      "label": "Y → I"
+    },
+    {
+      "id": "i-to-y",
+      "label": "I → Y"
+    },
+    {
+      "id": "x-to-ks",
+      "label": "X → KS"
+    },
+    {
+      "id": "e-to-a",
+      "label": "first E → A"
+    },
+    {
+      "id": "a-to-e",
+      "label": "first A → E"
+    },
+    {
+      "id": "o-to-u",
+      "label": "first O → U"
+    },
+    {
+      "id": "u-to-o",
+      "label": "first U → O"
+    },
+    {
+      "id": "trim-plural",
+      "label": "plural/suffix trim"
+    },
+    {
+      "id": "trim-trailing-e",
+      "label": "trailing E trim"
+    }
+  ],
+  "variantCap": 12,
+  "scope": {
+    "jurisdictions": null,
+    "regions": [
+      "AD",
+      "AE",
+      "AF",
+      "AG",
+      "AI",
+      "AL",
+      "AM",
+      "AO",
+      "AP",
+      "AR",
+      "AT",
+      "AU",
+      "AW",
+      "AZ",
+      "BA",
+      "BB",
+      "BD",
+      "BG",
+      "BH",
+      "BI",
+      "BM",
+      "BN",
+      "BO",
+      "BQ",
+      "BR",
+      "BS",
+      "BT",
+      "BW",
+      "BX",
+      "BY",
+      "BZ",
+      "CA",
+      "CD",
+      "CH",
+      "CL",
+      "CN",
+      "CO",
+      "CR",
+      "CU",
+      "CV",
+      "CW",
+      "CY",
+      "CZ",
+      "DE",
+      "DK",
+      "DM",
+      "DO",
+      "DZ",
+      "EC",
+      "EE",
+      "EG",
+      "EM",
+      "ES",
+      "ET",
+      "FI",
+      "FJ",
+      "FR",
+      "GB",
+      "GD",
+      "GE",
+      "GG",
+      "GH",
+      "GI",
+      "GM",
+      "GR",
+      "GT",
+      "GY",
+      "HK",
+      "HN",
+      "HR",
+      "HT",
+      "HU",
+      "ID",
+      "IE",
+      "IL",
+      "IN",
+      "IQ",
+      "IR",
+      "IS",
+      "IT",
+      "JE",
+      "JM",
+      "JO",
+      "JP",
+      "KE",
+      "KG",
+      "KH",
+      "KN",
+      "KR",
+      "KW",
+      "KY",
+      "KZ",
+      "LA",
+      "LB",
+      "LC",
+      "LI",
+      "LK",
+      "LR",
+      "LS",
+      "LT",
+      "LV",
+      "LY",
+      "MA",
+      "MC",
+      "MD",
+      "ME",
+      "MG",
+      "MK",
+      "MM",
+      "MN",
+      "MO",
+      "MS",
+      "MT",
+      "MU",
+      "MV",
+      "MW",
+      "MX",
+      "MY",
+      "MZ",
+      "NA",
+      "NG",
+      "NI",
+      "NO",
+      "NP",
+      "NZ",
+      "OA",
+      "OM",
+      "PA",
+      "PE",
+      "PG",
+      "PH",
+      "PK",
+      "PL",
+      "PT",
+      "PY",
+      "QA",
+      "RO",
+      "RS",
+      "RU",
+      "RW",
+      "SA",
+      "SB",
+      "SC",
+      "SD",
+      "SE",
+      "SG",
+      "SI",
+      "SK",
+      "SL",
+      "SR",
+      "ST",
+      "SV",
+      "SX",
+      "SY",
+      "SZ",
+      "TC",
+      "TH",
+      "TJ",
+      "TM",
+      "TN",
+      "TO",
+      "TR",
+      "TT",
+      "TW",
+      "TZ",
+      "UA",
+      "UG",
+      "US",
+      "UY",
+      "UZ",
+      "VC",
+      "VE",
+      "VG",
+      "VN",
+      "WO",
+      "WS",
+      "XA",
+      "XG",
+      "XK",
+      "XS",
+      "XW",
+      "YE",
+      "ZA",
+      "ZM",
+      "ZW",
+      "ZZ"
+    ],
+    "deferredJurisdictions": null,
+    "classes": [
+      9,
+      42,
+      41
+    ]
+  },
+  "marks": [
+    {
+      "name": "VENQORI",
+      "classes": [
+        9,
+        42,
+        41
+      ],
+      "classScope": "mark",
+      "counts": {
+        "identical": {
+          "total": 0
+        },
+        "containing": {
+          "total": 0
+        },
+        "close": {
+          "forms": [
+            {
+              "form": "VENQORRI",
+              "rules": [
+                "single-to-doubled"
+              ],
+              "total": 0
+            },
+            {
+              "form": "VENQORY",
+              "rules": [
+                "i-to-y"
+              ],
+              "total": 0
+            },
+            {
+              "form": "VANQORI",
+              "rules": [
+                "e-to-a"
+              ],
+              "total": 0
+            },
+            {
+              "form": "VENQURI",
+              "rules": [
+                "o-to-u"
+              ],
+              "total": 0
+            }
+          ],
+          "generated": 4,
+          "counted": 4,
+          "truncated": false,
+          "total": 0
+        }
+      },
+      "variants": {
+        "cap": 12,
+        "generated": 4,
+        "truncated": false,
+        "forms": [
+          "VENQORRI",
+          "VENQORY",
+          "VANQORI",
+          "VENQURI"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/in/9a4da9fc-31e6-4792-95aa-7fede639efe2",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "9a4da9fc-31e6-4792-95aa-7fede639efe2",
+  "applicationNumber": "6794381",
+  "registrationNumber": null,
+  "applicationDate": "2025-01-08",
+  "registrationDate": null,
+  "expiryDate": "2035-01-08",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Avenor",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Battery chargers for mobile phones, Battery chargers, USB chargers included in class 9",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SATISH KUMAR Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "MEHWISH KHAN[41505]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "26/181 D BABA FARID PURI WEST PATEL NAGAR NEW DELHI 110008",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SATISH KUMAR Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Battery chargers for mobile phones, Battery chargers, USB chargers included in class 9"
+        }
+      ]
+    },
+    "id": "9a4da9fc-31e6-4792-95aa-7fede639efe2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "33H/3 Mominpore Road, Kolkata, West Bengal 700023",
+        "representativeName": "MEHWISH KHAN[41505]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250108",
+        "applicationNumber": "6794381"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350108",
+      "markCurrentStatus": "FORMALITIES COMPLETED"
+    },
+    "version": "20250710173809",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Avenor"
+    }
+  },
+  "_uri": "/mark/in/9a4da9fc-31e6-4792-95aa-7fede639efe2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.828Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

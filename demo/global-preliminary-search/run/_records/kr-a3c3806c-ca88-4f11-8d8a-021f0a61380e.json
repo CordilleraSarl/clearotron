@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/kr/a3c3806c-ca88-4f11-8d8a-021f0a61380e",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a3c3806c-ca88-4f11-8d8a-021f0a61380e",
+  "applicationNumber": "40-1984-0019328",
+  "registrationNumber": "4001171000000",
+  "applicationDate": "1984-12-28",
+  "registrationDate": "1985-09-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "sori 소리",
+  "markTransliteration": "SORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    7,
+    9,
+    11,
+    12,
+    13,
+    19,
+    20,
+    22,
+    28
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        7,
+        9,
+        11,
+        12,
+        13,
+        19,
+        20,
+        22,
+        28
+      ],
+      "language": "ko",
+      "description": "자동차용에어콘",
+      "translation_language": "en",
+      "translation": "Automotive air conditioner"
+    }
+  ],
+  "owner": "Park Jo",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "배동훈 (BAE, Dong Hoon)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울시성북구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Park Jo",
+        "applicantNativeName": "박조"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Automotive air conditioner",
+          "intClassNumber": "06,07,09,11,12,13,19,20,22,28",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "자동차용에어콘"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "037"
+        }
+      ]
+    },
+    "id": "a3c3806c-ca88-4f11-8d8a-021f0a61380e",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Rm No. B-dong Jaeil Bldg., -, Yeoksam-dong, Kangnam-gu, Seoul Republic of KOREA (UNION International Patent Office)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "배동훈 (BAE, Dong Hoon)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19841228",
+        "applicationNumber": "40-1984-0019328"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19850919",
+        "registrationNumber": "4001171000000"
+      }
+    },
+    "version": "20250625142943",
+    "wordMarkSpecification": {
+      "markTransliteration": "SORI",
+      "markVerbalElementText": "sori 소리"
+    }
+  },
+  "_uri": "/mark/kr/a3c3806c-ca88-4f11-8d8a-021f0a61380e",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:58.878Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

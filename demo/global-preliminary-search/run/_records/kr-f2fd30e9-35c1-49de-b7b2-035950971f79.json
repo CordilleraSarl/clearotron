@@ -1,0 +1,157 @@
+{
+  "uri": "/mark/kr/f2fd30e9-35c1-49de-b7b2-035950971f79",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "f2fd30e9-35c1-49de-b7b2-035950971f79",
+  "applicationNumber": "42-2006-0000457",
+  "registrationNumber": null,
+  "applicationDate": "2006-10-24",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "bori",
+  "markTransliteration": "BORI",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "ko",
+      "description": "대기/ 물/ 토양/ 동식물 등 자연환경 보전에 관한 사무, 대기/ 물/ 토양의 오염방지에 관한 사무, 사회복지서비스 및 보건의료서비스의 연계/ 협력에 필요한 사무, 야생동/식물의 보전 및 생물종 다양성의 확보 등 지역여건에 적합한 자연생태계 보전에 관한 사무, 인간과 자연의 공존/ 양호한 경관의 보전/ 역사적 문화적 유산의 보전 등에 관한 사무, 자원의 순환적 이용/ 에너지의 효율적인 이용 및 폐기물의 적정처리와 감량에 관한 사무, 지구환경보전에 관한 사무, 지역사회복지계획의 수립/ 시행/ 평가에 관한 사무, 지역주민의 복지욕구조사/ 지역내 복지자원조사 및 개발에 관한 사무, 진도군 체육진흥 계획의 수립에 관한 사무, 체육진흥에 필요한 경비의 확보 활용에 관한 사무, 향토문화유산 보호구역의 지정과 해제에 관한 사무, 향토문화유산의 지정과 해제에 관한 사무, 향토문화유산의 환경보존을 위한 시설의 설치/제거/ 이전등의 명령에 관한 사무, 환경보전을 위한 군민의 참여와 협력강화에 관한 사무",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "en",
+      "description": null,
+      "translation_language": "en",
+      "translation": "Affairs related to the conservation of the natural environment such as air/water/soil/animals and plants, affairs related to the prevention of pollution of the air/water/soil, affairs necessary for linkage/cooperation of social welfare services and health and medical services, affairs related to the preservation of natural ecosystems suitable for local conditions such as conservation of wild animals/plants and securing biodiversity, affairs related to the coexistence of humans and nature/preservation of good landscapes/preservation of historical and cultural heritage, etc., affairs related to circular use of resources/efficient use of energy and appropriate treatment and reduction of waste. Affairs, affairs related to global environmental conservation, affairs related to establishment/implementation/evaluation of local social welfare plans, affairs related to local residents' welfare needs survey/investigation and development of welfare resources in the region, affairs related to establishment of Jindo-gun sports promotion plan, affairs related to securing and utilizing expenses necessary for sports promotion, affairs related to designation and cancellation of local cultural heritage protection areas, affairs related to designation and cancellation of local cultural heritage, installation/removal of facilities for environmental preservation of local cultural heritage/ Affairs related to orders for relocation, etc., affairs related to strengthening the participation and cooperation of citizens for environmental conservation"
+    }
+  ],
+  "owner": "JIN-DO COUNTY .",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "최석원 (CHOE SUK WON)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "전라남도 진도군",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "JIN-DO COUNTY .",
+        "applicantNativeName": "진도군"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "대기/ 물/ 토양/ 동식물 등 자연환경 보전에 관한 사무, 대기/ 물/ 토양의 오염방지에 관한 사무, 사회복지서비스 및 보건의료서비스의 연계/ 협력에 필요한 사무, 야생동/식물의 보전 및 생물종 다양성의 확보 등 지역여건에 적합한 자연생태계 보전에 관한 사무, 인간과 자연의 공존/ 양호한 경관의 보전/ 역사적 문화적 유산의 보전 등에 관한 사무, 자원의 순환적 이용/ 에너지의 효율적인 이용 및 폐기물의 적정처리와 감량에 관한 사무, 지구환경보전에 관한 사무, 지역사회복지계획의 수립/ 시행/ 평가에 관한 사무, 지역주민의 복지욕구조사/ 지역내 복지자원조사 및 개발에 관한 사무, 진도군 체육진흥 계획의 수립에 관한 사무, 체육진흥에 필요한 경비의 확보 활용에 관한 사무, 향토문화유산 보호구역의 지정과 해제에 관한 사무, 향토문화유산의 지정과 해제에 관한 사무, 향토문화유산의 환경보존을 위한 시설의 설치/제거/ 이전등의 명령에 관한 사무, 환경보전을 위한 군민의 참여와 협력강화에 관한 사무"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Affairs related to the conservation of the natural environment such as air/water/soil/animals and plants, affairs related to the prevention of pollution of the air/water/soil, affairs necessary for linkage/cooperation of social welfare services and health and medical services, affairs related to the preservation of natural ecosystems suitable for local conditions such as conservation of wild animals/plants and securing biodiversity, affairs related to the coexistence of humans and nature/preservation of good landscapes/preservation of historical and cultural heritage, etc., affairs related to circular use of resources/efficient use of energy and appropriate treatment and reduction of waste. Affairs, affairs related to global environmental conservation, affairs related to establishment/implementation/evaluation of local social welfare plans, affairs related to local residents' welfare needs survey/investigation and development of welfare resources in the region, affairs related to establishment of Jindo-gun sports promotion plan, affairs related to securing and utilizing expenses necessary for sports promotion, affairs related to designation and cancellation of local cultural heritage protection areas, affairs related to designation and cancellation of local cultural heritage, installation/removal of facilities for environmental preservation of local cultural heritage/ Affairs related to orders for relocation, etc., affairs related to strengthening the participation and cooperation of citizens for environmental conservation",
+          "intClassNumber": "35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "en"
+        }
+      ]
+    },
+    "id": "f2fd30e9-35c1-49de-b7b2-035950971f79",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 금천구 디지털로*길 **, 호 (가산동, 이앤씨드림타워*차)(씨앤엘국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "최석원 (CHOE SUK WON)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20061024",
+        "applicationNumber": "42-2006-0000457"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260625021117",
+    "wordMarkSpecification": {
+      "markTransliteration": "BORI",
+      "markVerbalElementText": "bori"
+    }
+  },
+  "_uri": "/mark/kr/f2fd30e9-35c1-49de-b7b2-035950971f79",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:57.212Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

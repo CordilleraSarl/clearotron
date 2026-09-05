@@ -1,0 +1,428 @@
+{
+  "uri": "/mark/us/1066cb93-713a-40fe-8ea2-3d99db6326e0",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "1066cb93-713a-40fe-8ea2-3d99db6326e0",
+  "applicationNumber": "86523036",
+  "registrationNumber": "5301925",
+  "applicationDate": "2015-02-03",
+  "registrationDate": "2017-10-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2016-11-01"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2024-04-19",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "KNOWLEDGE LIBATION 1865 13TH AMENDMENT AARON ABBOTT ALEXANDER ALI BAILEY BAKER BECKWOURTH BENNETT CALE CALLOWAY CARMICHAEL CARTER ELLINGTON EVERS FARMER FAUSET FLIPPER GAINES GREGORY HALEY HOLMES JACKSON JASPER KING KNOX LEE LOUIS LOVE; NORRIS O'NEAL PAYNE PROCTOR QUINN RANGEL ROBESON SAMPSON SLEET SMALLS SPELLMAN TANNER TURNER VASHON WALKER WASHINGTON WHEATLEY WILKINS WRIGHT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": [
+    "\"KNOWLEDGE\", \"1865 13TH AMENDMENT\" AND THE DEPICTION OF THE MAP OF USA"
+  ],
+  "niceClasses": [
+    25,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": null,
+      "description": "INT. CL. 25 shirts",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 educational services, namely, providing classes and historical materials in the field of history and social studies, and printed materials distributed therewith; educational services, namely, developing curriculum for others in the field of history and social studies, and printed materials distributed therewith",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "T'S BY EXTREME, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Erik M. Pelton",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "{P Bpx 25741, Richmond, VA, 23260",
+        "applicantAddressCity": "Richmond",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "23260",
+        "applicantAddressStateName": "VIRGINIA",
+        "applicantAddressStreet": "{P Bpx 25741",
+        "applicantJurisdictionOfIncorporation": "VIRGINIA",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "T'S BY EXTREME, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "01.15.25",
+      "01.17.08",
+      "02.01.01",
+      "02.03.04",
+      "02.07.91",
+      "02.09.02",
+      "02.09.13",
+      "11.03.04",
+      "14.01.05"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "25",
+          "intGoodsServicesDescription": "INT. CL. 25 shirts"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 educational services, namely, providing classes and historical materials in the field of history and social studies, and printed materials distributed therewith; educational services, namely, developing curriculum for others in the field of history and social studies, and printed materials distributed therewith"
+        }
+      ]
+    },
+    "id": "1066cb93-713a-40fe-8ea2-3d99db6326e0",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"KNOWLEDGE\", \"1865 13TH AMENDMENT\" AND THE DEPICTION OF THE MAP OF USA"
+    ],
+    "markEvents": [
+      {
+        "date": "20240419",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20221003",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20171003",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20170826",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20170825",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20170808",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20170721",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20170626",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20170626",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20161227",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20161101",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20161101",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20161012",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20160926",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20160926",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20160923",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20160919",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160908",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20160907",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20160907",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20160325",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20160325",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20160325",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20160308",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20160308",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20160301",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20151103",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20151103",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20151103",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20151016",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20151016",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20151009",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20150922",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20150511",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20150511",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150511",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150508",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20150213",
+        "descriptionText": "NOTICE OF DESIGN SEARCH CODE E-MAILED"
+      },
+      {
+        "date": "20150212",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20150206",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "The color(s) black, white, gray, green, red and brown is/are claimed as a feature of the mark.",
+        "markImageColourClaimedTextLanguageCode": "en"
+      }
+    ],
+    "markImageDescriptions": [
+      {
+        "markImageDescription": "The mark consists of a man with black hair, brown skin tone and a white shirt drinking out of a bottle in black with the wording \"Aaron\"; \"Abbott\"; \"Alexander\"; \"Ali\"; \"Bailey\"; \"Baker\"; \"Beckwourth\"; \"Bennett\"; \"Cale\"; \"Calloway\"; \"Carmichael\"; \"Carter\"; \"Ellington\"; \"Evers\"; \"Farmer\"; \"Fauset\"; \"Flipper\"; \"Gaines\"; \"Gregory\"; \"Haley\"; \"Holmes\"; \"Jackson\"; \"Jasper\"; \"King\"; \"Knox\"; \"Lee\"; \"Louis\"; \"Love\"; \"Norris\"; \"O'Neal\"; \"Payne\"; \"Proctor\"; \"Quinn\"; \"Robeson\"; \"Sampson\"; \"Sleet\"; \"Smalls\"; \"Spellman\"; \"Tanner\"; \"Turner\"; \"Vashon\"; \"Walker\"; \"Washington\"; \"Wheatley\"; \"Wilkins\"; \"Wright\" all in black lettering with a chain in grey and black hanging from his wrist. A stylized map of USA in red, black and green is in the background. The wording \"KNOWLEDGE LIBATION\" in black on top and the wording \"1865 13th Amendment\" in black on the bottom right hand corner.",
+        "markImageDescriptionLanguageCode": "en"
+      }
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "{P Bpx 25741, Richmond, VA, 23260",
+        "city": "Richmond",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "T'S BY EXTREME, LLC",
+        "postalCode": "23260",
+        "stateName": "VIRGINIA",
+        "street": "{P Bpx 25741"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "{P Bpx 25741, Richmond, VA, 23260",
+        "city": "Richmond",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "T'S BY EXTREME, LLC",
+        "postalCode": "23260",
+        "stateName": "VIRGINIA",
+        "street": "{P Bpx 25741"
+      },
+      {
+        "address": "{P Bpx 25741, Richmond, VA, 23260",
+        "city": "Richmond",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "T'S BY EXTREME, LLC",
+        "postalCode": "23260",
+        "stateName": "VIRGINIA",
+        "street": "{P Bpx 25741"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "{P Bpx 25741, Richmond, VA, 23260",
+        "city": "Richmond",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "T'S BY EXTREME, LLC",
+        "postalCode": "23260",
+        "stateName": "VIRGINIA",
+        "street": "{P Bpx 25741"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Arlington, VA 22210-3637, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "Arlington, VA 22210-3637",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "ERIK M. PELTON Erik M Pelton & Associates Pllc, PO Box 100637"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Arlington, VA 22210-3637, UNITED STATES",
+        "representativeAddressLines": [
+          "Arlington, VA 22210-3637",
+          "UNITED STATES"
+        ],
+        "representativeName": "Erik M. Pelton"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20150203",
+        "applicationNumber": "86523036"
+      },
+      "cancellationDate": "20240419",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "25",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "201503"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "201502"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "25",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "201503"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "201502"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20240419",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT",
+          "Color Drawing Filed",
+          "Color Drawing Currently"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20161101"
+      ],
+      "registration": {
+        "registrationDate": "20171003",
+        "registrationNumber": "5301925"
+      }
+    },
+    "version": "20260110231023",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "KNOWLEDGE LIBATION 1865 13TH AMENDMENT AARON ABBOTT ALEXANDER ALI BAILEY BAKER BECKWOURTH BENNETT CALE CALLOWAY CARMICHAEL CARTER ELLINGTON EVERS FARMER FAUSET FLIPPER GAINES GREGORY HALEY HOLMES JACKSON JASPER KING KNOX LEE LOUIS LOVE; NORRIS O'NEAL PAYNE PROCTOR QUINN RANGEL ROBESON SAMPSON SLEET SMALLS SPELLMAN TANNER TURNER VASHON WALKER WASHINGTON WHEATLEY WILKINS WRIGHT"
+    }
+  },
+  "_uri": "/mark/us/1066cb93-713a-40fe-8ea2-3d99db6326e0",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.832Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/gb/3c3d9e31-c815-4031-848a-f349a22d5b42",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "3c3d9e31-c815-4031-848a-f349a22d5b42",
+  "applicationNumber": "UK00917208455",
+  "registrationNumber": "UK00917208455",
+  "applicationDate": "2017-09-14",
+  "registrationDate": "2018-02-19",
+  "expiryDate": "2027-09-14",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GROSVENOR 1",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    36
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Credit cards, debit cards, bank cards, cash cards and cheque cards; encoded magnetic prepaid cards.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Loyalty card services; loyalty scheme services; loyalty, incentive and bonus program services; organization, operation and supervision of customer loyalty schemes and incentive schemes; management of customer loyalty, incentive or promotional schemes; customer loyalty services for commercial, promotional and/or advertising purposes; promoting the sale of payment card accounts through the administration of incentive award programmes, awarding purchase points, discounts, rebates, valued added offers and coupons; excluding the provision of these services in connection with chemicals and consumables for the production of electrical and electronic equipment.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Credit card and credit services; bank card, debit card and electronic payment card services; charge card services, pre-paid card services; stored value electronic purse services; electronic wallet services (payment services); processing electronic payments made through prepaid cards; automated payment services; payment processing; payment administration services; electronic payment services; remote payment services; online payment services; electronic fund transfer services; issuance of prepaid payment cards; issue and redemption of vouchers, coupons, cards, tokens and points; providing customer incentives, credits, payments and transfers in the form of money, economic value or points; discount card services; issuing of tokens of value in relation to customer loyalty schemes.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Rank Leisure Holdings Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Potter Clarkson LLP",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "TOR, Saint-Cloud Way, Maidenhead SL6 8BN, Berkshire",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Rank Leisure Holdings Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Credit cards, debit cards, bank cards, cash cards and cheque cards; encoded magnetic prepaid cards."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Loyalty card services; loyalty scheme services; loyalty, incentive and bonus program services; organization, operation and supervision of customer loyalty schemes and incentive schemes; management of customer loyalty, incentive or promotional schemes; customer loyalty services for commercial, promotional and/or advertising purposes; promoting the sale of payment card accounts through the administration of incentive award programmes, awarding purchase points, discounts, rebates, valued added offers and coupons; excluding the provision of these services in connection with chemicals and consumables for the production of electrical and electronic equipment."
+        },
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Credit card and credit services; bank card, debit card and electronic payment card services; charge card services, pre-paid card services; stored value electronic purse services; electronic wallet services (payment services); processing electronic payments made through prepaid cards; automated payment services; payment processing; payment administration services; electronic payment services; remote payment services; online payment services; electronic fund transfer services; issuance of prepaid payment cards; issue and redemption of vouchers, coupons, cards, tokens and points; providing customer incentives, credits, payments and transfers in the form of money, economic value or points; discount card services; issuing of tokens of value in relation to customer loyalty schemes."
+        }
+      ]
+    },
+    "id": "3c3d9e31-c815-4031-848a-f349a22d5b42",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "The Belgrave Centre, Talbot Street, Nottingham NG1 5GG",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Potter Clarkson LLP"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170914",
+        "applicationNumber": "UK00917208455"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270914",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180219",
+        "registrationNumber": "UK00917208455"
+      }
+    },
+    "version": "20250627212330",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GROSVENOR 1"
+    }
+  },
+  "_uri": "/mark/gb/3c3d9e31-c815-4031-848a-f349a22d5b42",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

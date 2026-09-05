@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/bo/5ed47764-4e7a-454a-9c1c-163b7ad4205d",
+  "provider": "clarivate",
+  "office": "bo",
+  "guid": "5ed47764-4e7a-454a-9c1c-163b7ad4205d",
+  "applicationNumber": "4661-2019",
+  "registrationNumber": "194243 C",
+  "applicationDate": "2019-10-14",
+  "registrationDate": "2021-08-26",
+  "expiryDate": "2031-08-26",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Entrenamiento, educación y entretenimiento; Realización de exposiciones con fines de esparcimiento; Organización de competiciones de carreras; Organización de competiciones relacionadas con vehículos de motor; Organización de seminarios y conferencias; Organización y dirección de competiciones deportivas; Seminarios; Organización y realización de concursos; Entrenador de deportes; Suministro de información sobre carreras; Organización de competiciones de automovilismo; Entrenamiento para competiciones de automóviles; Organización de carreras de automóviles; organización de carreras de motos; Entretenimiento en forma de carreras de automóviles y motocicletas; Servicios de club de fans; Organización de caravanas de demostración de automóviles, giras y eventos de carreras; Organización de caravanas de demostración de motocicletas, giras y eventos de carreras; cronometraje de eventos deportivos, en la clase 41, de la Clasificación Internacional.",
+      "translation_language": "en",
+      "translation": "Training, education and entertainment; Holding of exhibitions for entertainment purposes; Organization of racing competitions; Organization of competitions relating to motor vehicles; Organization of seminars and conferences; Organization and management of sports competitions; Seminars; Organization and conducting of contests; Sports coach; Provision of career information; Organization of motor racing competitions; Training for automobile competitions; Organization of automobile races; organization of motorcycle races; Entertainment in the nature of automobile and motorcycle racing; Fan club services; Organization of automobile demonstration caravans, tours and racing events; Organization of motorcycle demonstration caravans, tours and racing events; timing of sporting events, in class 41, of the International Classification."
+    }
+  ],
+  "owner": "Venturi Automobiles",
+  "ownerNative": null,
+  "ownerCountry": "MC",
+  "representative": "Roberto Roque",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "7 rue du Gabian - 98000 Monaco, MONACO",
+        "applicantAddressCountryCode": "MC",
+        "applicantAddressCountryName": "Monaco",
+        "applicantName": "Venturi Automobiles"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Training, education and entertainment; Holding of exhibitions for entertainment purposes; Organization of racing competitions; Organization of competitions relating to motor vehicles; Organization of seminars and conferences; Organization and management of sports competitions; Seminars; Organization and conducting of contests; Sports coach; Provision of career information; Organization of motor racing competitions; Training for automobile competitions; Organization of automobile races; organization of motorcycle races; Entertainment in the nature of automobile and motorcycle racing; Fan club services; Organization of automobile demonstration caravans, tours and racing events; Organization of motorcycle demonstration caravans, tours and racing events; timing of sporting events, in class 41, of the International Classification.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Entrenamiento, educación y entretenimiento; Realización de exposiciones con fines de esparcimiento; Organización de competiciones de carreras; Organización de competiciones relacionadas con vehículos de motor; Organización de seminarios y conferencias; Organización y dirección de competiciones deportivas; Seminarios; Organización y realización de concursos; Entrenador de deportes; Suministro de información sobre carreras; Organización de competiciones de automovilismo; Entrenamiento para competiciones de automóviles; Organización de carreras de automóviles; organización de carreras de motos; Entretenimiento en forma de carreras de automóviles y motocicletas; Servicios de club de fans; Organización de caravanas de demostración de automóviles, giras y eventos de carreras; Organización de caravanas de demostración de motocicletas, giras y eventos de carreras; cronometraje de eventos deportivos, en la clase 41, de la Clasificación Internacional."
+        }
+      ]
+    },
+    "id": "5ed47764-4e7a-454a-9c1c-163b7ad4205d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20240212",
+    "registrationOfficeCode": "BO",
+    "registrationOfficeName": "Bolivia",
+    "representatives": [
+      {
+        "representativeAddress": "Edificio Parque 18, No. 8022 Piso 6, Of. 602, calle 18, Calacoto",
+        "representativeAddressCountryCode": "BO",
+        "representativeAddressCountryName": "Bolivia",
+        "representativeName": "Roberto Roque"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20191014",
+        "applicationNumber": "4661-2019"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310826",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20210826",
+        "registrationNumber": "194243 C"
+      }
+    },
+    "version": "20240212154528",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/bo/5ed47764-4e7a-454a-9c1c-163b7ad4205d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

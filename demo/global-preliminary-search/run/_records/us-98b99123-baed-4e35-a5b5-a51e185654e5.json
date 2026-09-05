@@ -1,0 +1,439 @@
+{
+  "uri": "/mark/us/98b99123-baed-4e35-a5b5-a51e185654e5",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "98b99123-baed-4e35-a5b5-a51e185654e5",
+  "applicationNumber": "86462511",
+  "registrationNumber": "4860973",
+  "applicationDate": "2014-11-24",
+  "registrationDate": "2015-11-24",
+  "expiryDate": null,
+  "renewalDate": "2025-11-24",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-05-26"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EMPOWERING THE DATA DRIVEN ORGANIZATION",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"DATA\""
+  ],
+  "niceClasses": [
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Business data analysis; Business information management; Compiling and analyzing statistics, data and other sources of information for business purposes; Cost analyses; Cost containment in the field of health care, education, and government; Providing business intelligence services; Statistical analysis and reporting services for business purposes",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for use in data integration, data management, data analysis, data cleansing, business process management, cost management, and workflow management, in order to provide businesses, hospitals, educational institutions, and government agencies with visibility and insight into their financial, administration, operating and employee performance, allowing users to make predictions and recommendations on optimizing current and future performance and outcomes",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Innovu, LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Victoria D. Summerfield",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20260214",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "Pittsburgh, PA, 15222, USAM",
+        "applicantAddressCity": "Pittsburgh",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "15222",
+        "applicantAddressStateName": "PENNSYLVANIA",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Innovu, LLC",
+        "applicantSecondaryAddressUnit": "1250 Penn Avenue, Suite 300"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Business data analysis; Business information management; Compiling and analyzing statistics, data and other sources of information for business purposes; Cost analyses; Cost containment in the field of health care, education, and government; Providing business intelligence services; Statistical analysis and reporting services for business purposes"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for use in data integration, data management, data analysis, data cleansing, business process management, cost management, and workflow management, in order to provide businesses, hospitals, educational institutions, and government agencies with visibility and insight into their financial, administration, operating and employee performance, allowing users to make predictions and recommendations on optimizing current and future performance and outcomes"
+        }
+      ]
+    },
+    "id": "98b99123-baed-4e35-a5b5-a51e185654e5",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"DATA\""
+    ],
+    "markEvents": [
+      {
+        "date": "20260214",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20260214",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20260214",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20260214",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20251113",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20241124",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20220513",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20220513",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 15 - E-MAILED"
+      },
+      {
+        "date": "20220510",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20211117",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20211101",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20211101",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20211101",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED-FIRM RETAINS"
+      },
+      {
+        "date": "20211101",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20210729",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20210729",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20210729",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20210729",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20210729",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20201124",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20190610",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20190610",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20181121",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20151124",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20151023",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20151022",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20151008",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20151008",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20151001",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20151001",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20150721",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20150526",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20150526",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20150506",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20150417",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20150414",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20150325",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20150319",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20150318",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20150318",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150313",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20150313",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20150313",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20150313",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20141202",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20141127",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "127 Beaver Creek Court, Sewickley, PA, 15143, USAM",
+        "city": "Sewickley",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Innovu, LLC",
+        "postalCode": "15143",
+        "stateName": "PENNSYLVANIA",
+        "street": "127 Beaver Creek Court"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Pittsburgh, PA, 15222, USAM",
+        "city": "Pittsburgh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Innovu, LLC",
+        "postalCode": "15222",
+        "secondaryAddressUnit": "1250 Penn Avenue, Suite 300",
+        "stateName": "PENNSYLVANIA"
+      },
+      {
+        "address": "Pittsburgh, PA, 15222, USAM",
+        "city": "Pittsburgh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Innovu, LLC",
+        "postalCode": "15222",
+        "secondaryAddressUnit": "1250 Penn Avenue, Suite 300",
+        "stateName": "PENNSYLVANIA"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Landmarks Building, Suite 500, Pittsburgh, PA, 15219, USAM",
+        "city": "Pittsburgh",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Innovu, LLC",
+        "postalCode": "15219",
+        "secondaryAddressUnit": "100 West Station Square Drive",
+        "stateName": "PENNSYLVANIA",
+        "street": "Landmarks Building, Suite 500"
+      }
+    ],
+    "recordLastUpdated": "20260311",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 300, Pittsburgh, PA 15219, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 300",
+          "Pittsburgh, PA 15219",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Victoria D. Summerfield Troutman Pepper Locke LLP, Union Trust Building, 501 Grant Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 300, Pittsburgh, PA 15219, United States",
+        "representativeAddressLines": [
+          "Suite 300",
+          "Pittsburgh, PA 15219",
+          "United States"
+        ],
+        "representativeName": "Victoria D. Summerfield"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20141124",
+        "applicationNumber": "86462511"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20141109"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20141109"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20141109"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20141109"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20260214",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20150526"
+      ],
+      "registration": {
+        "registrationDate": "20151124",
+        "registrationNumber": "4860973"
+      },
+      "renewalDate": "20251124"
+    },
+    "version": "20260311074229",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "EMPOWERING THE DATA DRIVEN ORGANIZATION",
+      "markVerbalElementText": "EMPOWERING THE DATA DRIVEN ORGANIZATION"
+    }
+  },
+  "_uri": "/mark/us/98b99123-baed-4e35-a5b5-a51e185654e5",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.831Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

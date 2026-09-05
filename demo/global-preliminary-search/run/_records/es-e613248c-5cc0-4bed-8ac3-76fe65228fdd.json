@@ -1,0 +1,127 @@
+{
+  "uri": "/mark/es/e613248c-5cc0-4bed-8ac3-76fe65228fdd",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "e613248c-5cc0-4bed-8ac3-76fe65228fdd",
+  "applicationNumber": "4324387 M8",
+  "registrationNumber": "4324387 M8",
+  "applicationDate": "2025-06-17",
+  "registrationDate": "2026-04-14",
+  "expiryDate": "2035-06-16",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-10-23",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "JOS Joven Orquesta de Segovia",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales",
+      "translation_language": "en",
+      "translation": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES"
+    }
+  ],
+  "owner": "Fernández Benito Francisco",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Fernández Benito Francisco"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "cmMarkImageEUclassification": [
+      "25.01.05",
+      "26.01.01",
+      "26.01.06",
+      "29.02.00",
+      "37.01.10"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "EDUCATION; TRAINING; ENTERTAINMENT SERVICES; SPORTS AND CULTURAL ACTIVITIES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Educacion; formacion; servicios de entretenimiento; actividades deportivas y culturales"
+        }
+      ]
+    },
+    "id": "e613248c-5cc0-4bed-8ac3-76fe65228fdd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.17.02",
+      "27.05.01",
+      "27.05.17",
+      "27.05.23",
+      "29.01.03",
+      "29.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "7016"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250617",
+        "applicationNumber": "4324387 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350616",
+      "lastPublicationDate": "20251023",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260414",
+        "registrationNumber": "4324387 M8"
+      }
+    },
+    "version": "20260427172013",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "JOS Joven Orquesta de Segovia"
+    }
+  },
+  "_uri": "/mark/es/e613248c-5cc0-4bed-8ac3-76fe65228fdd",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

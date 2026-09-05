@@ -1,0 +1,143 @@
+{
+  "uri": "/mark/xs/9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+  "applicationNumber": null,
+  "registrationNumber": "S12711",
+  "applicationDate": null,
+  "registrationDate": "1991-08-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RYE VEIN CARE CENTER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Medical treatment and care of dilated veins (spiders - varicosities)",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HESHMAT MAJLESSI, M.D., P.C.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "33 CEDAR STREET, RYE, NY, 10580",
+        "applicantAddressCity": "RYE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCounty": "WESTCHESTER",
+        "applicantAddressPostalCode": "10580",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "33 CEDAR STREET",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "HESHMAT MAJLESSI, M.D., P.C.",
+        "applicantStateOfIncorporation": "NEW YORK"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical treatment and care of dilated veins (spiders - varicosities)"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "100",
+          "natGoodsServicesDescription": "Medical treatment and care of dilated veins (spiders - varicosities)"
+        }
+      ]
+    },
+    "id": "9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "SIGN IN FRONT OF OFFICE; ADVERTISEMENTS; STATIONERY",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "33 CEDAR STREET, RYE, NY, 10580",
+        "city": "RYE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "county": "WESTCHESTER",
+        "legalEntity": "CORPORATION",
+        "name": "HESHMAT MAJLESSI, M.D., P.C.",
+        "postalCode": "10580",
+        "stateName": "NEW YORK",
+        "stateOfIncorporation": "NEW YORK",
+        "street": "33 CEDAR STREET"
+      }
+    ],
+    "recordLastUpdated": "20251202",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "19900813"
+        }
+      ],
+      "firstUsedAnywhereDate": "19900813",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "NONRENEWED"
+        ]
+      },
+      "markCurrentStatus": "NONRENEWED",
+      "registration": {
+        "registrationDate": "19910816",
+        "registrationNumber": "S12711"
+      }
+    },
+    "usStateOfficeCode": "NY",
+    "usStateOfficeName": "NEW YORK",
+    "version": "20251202120305",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RYE VEIN CARE CENTER"
+    }
+  },
+  "_uri": "/mark/xs/9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

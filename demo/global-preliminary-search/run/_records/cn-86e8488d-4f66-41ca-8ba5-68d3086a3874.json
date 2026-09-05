@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/86e8488d-4f66-41ca-8ba5-68d3086a3874",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "86e8488d-4f66-41ca-8ba5-68d3086a3874",
+  "applicationNumber": "87673843",
+  "registrationNumber": "87673843",
+  "applicationDate": "2025-09-18",
+  "registrationDate": "2026-03-14",
+  "expiryDate": "2036-03-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "包装设计;工业品外观设计;计算机软件设计;技术研究;科学实验室服务;科学研究;平台即服务(PaaS);软件即服务(SaaS);校准(测量);云计算",
+      "translation_language": "en",
+      "translation": "Packaging design; Industrial product appearance design; Computer software design; Technological research; Scientific laboratory services; Scientific research; Platform as a Service (PaaS); Software as a Service (SaaS); Calibration (measurement); Cloud computing"
+    }
+  ],
+  "owner": "Shenzhen Kick Sports Culture Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区南湾街道布沙路78号樟树布商业大厦503室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Kick Sports Culture Co., Ltd.",
+        "applicantNativeName": "深圳一起踢体育文化有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Packaging design; Industrial product appearance design; Computer software design; Technological research; Scientific laboratory services; Scientific research; Platform as a Service (PaaS); Software as a Service (SaaS); Calibration (measurement); Cloud computing",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "包装设计;工业品外观设计;计算机软件设计;技术研究;科学实验室服务;科学研究;平台即服务(PaaS);软件即服务(SaaS);校准(测量);云计算"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Registered design service",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "86e8488d-4f66-41ca-8ba5-68d3086a3874",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1963"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳翼盛智成知识产权事务所(普通合伙)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250918",
+        "applicationNumber": "87673843"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360313",
+      "lastPublicationDate": "20251213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260314",
+        "registrationNumber": "87673843"
+      }
+    },
+    "version": "20260429020225",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/cn/86e8488d-4f66-41ca-8ba5-68d3086a3874",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

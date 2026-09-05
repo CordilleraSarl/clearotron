@@ -1,0 +1,115 @@
+{
+  "uri": "/mark/pe/20e5d56f-281a-432d-8566-8ae9d19d5b75",
+  "provider": "clarivate",
+  "office": "pe",
+  "guid": "20e5d56f-281a-432d-8566-8ae9d19d5b75",
+  "applicationNumber": "837208-2020",
+  "registrationNumber": "S00122551",
+  "applicationDate": "2020-02-12",
+  "registrationDate": "2020-07-02",
+  "expiryDate": "2030-07-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SENTIR QORILAZO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "servicios de entretenimiento, actividades deportivas y culturales destinadas a cultivar, rescatar, revalorar promover y difundir la cultura viva del perú.",
+      "translation_language": "en",
+      "translation": "entertainment services, sports and cultural activities aimed at cultivating, rescuing, revaluing, promoting and spreading the living culture of Peru."
+    }
+  ],
+  "owner": "PACCO CCAHUANA WILGEN AMERICO",
+  "ownerNative": null,
+  "ownerCountry": "UNKN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "AREQUIPA - AREQUIPA - JOSE LUIS BUSTAMANT",
+        "applicantAddressCountryCode": "UNKN",
+        "applicantAddressCountryName": "Unknown Applicant Country/Region",
+        "applicantName": "PACCO CCAHUANA WILGEN AMERICO"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "entertainment services, sports and cultural activities aimed at cultivating, rescuing, revaluing, promoting and spreading the living culture of Peru.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "servicios de entretenimiento, actividades deportivas y culturales destinadas a cultivar, rescatar, revalorar promover y difundir la cultura viva del perú."
+        }
+      ]
+    },
+    "id": "20e5d56f-281a-432d-8566-8ae9d19d5b75",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "22.01.15",
+      "27.03.15",
+      "27.05.11",
+      "27.05.13"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260812",
+    "registrationOfficeCode": "PE",
+    "registrationOfficeName": "Peru",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200212",
+        "applicationNumber": "837208-2020"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300702",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20200702",
+        "registrationNumber": "S00122551"
+      }
+    },
+    "version": "20260812020607",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SENTIR QORILAZO"
+    }
+  },
+  "_uri": "/mark/pe/20e5d56f-281a-432d-8566-8ae9d19d5b75",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.399Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

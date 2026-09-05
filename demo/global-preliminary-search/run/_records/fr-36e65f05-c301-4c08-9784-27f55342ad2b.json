@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/fr/36e65f05-c301-4c08-9784-27f55342ad2b",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "36e65f05-c301-4c08-9784-27f55342ad2b",
+  "applicationNumber": "241428",
+  "registrationNumber": "N 1643291",
+  "applicationDate": "1990-10-01",
+  "registrationDate": null,
+  "expiryDate": "2030-09-30",
+  "renewalDate": "2020-08-03",
+  "lastPublicationDate": "1991-07-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    4,
+    8,
+    9,
+    11,
+    12,
+    27,
+    36,
+    37,
+    39,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        4,
+        8,
+        9,
+        11,
+        12,
+        27,
+        36,
+        37,
+        39,
+        41,
+        42
+      ],
+      "language": "fr",
+      "description": "Huiles et graisses industrielles, en particulier pour véhicules automobiles, lubrifiants, combustibles, essences pour moteurs d'automobiles. Outils en particulier outils pour véhicules automobiles. Appareils de protection contre le vol, alarmes en particulier pour automobiles, appareils de reproduction du son et des images destinés notamment aux automobiles, équipements électriques pour véhicules automobiles, extincteurs, fils et prolongateurs d'antennes d'automobiles. Installations d'éclairage, de chauffage, de ventilation, de climatisation pour véhicules. Véhicules automobiles. Services d'assurances et de finances, en particulier services d'assurances en matières automobiles et de financement de véhicules automobiles, Tapis et revêtements de sol pour véhicules automobiles. Tous services d'entretien de réparation, de nettoyage de véhicules automobiles, services de transformation d'automobiles. Services de location d'automobiles, services de transport en automobiles. Services d'organisation de manifestations sportives, notamment services d'organisation de compétitions automobiles. Services de bureaux d'étude, de recherche en matière de stylisme, travaux d'ingénieurs, services de mise au point de véhicules automobiles.",
+      "translation_language": "en",
+      "translation": "Industrial oils and greases, in particular for motor vehicles, lubricants, fuels, gasoline for automobile engines. Tools, in particular tools for motor vehicles. Devices for protection against theft, alarms in particular for motor vehicles, sound and image reproduction apparatus intended in particular for motor vehicles, electrical equipment for motor vehicles, fire extinguishers, motor vehicle antenna wires and extensions. Lighting, heating, ventilation and air conditioning installations for vehicles. Motor vehicles. Insurance and financial services, in particular motor insurance and motor vehicle financing services, Carpets and floor coverings for motor vehicles. All maintenance and repair services, motor vehicle cleaning, automobile transformation services. Automobile rental services, automobile transportation services. Services for the organization of sporting events, in particular services for the organization of automobile competitions. Design office services, styling research, engineering work, motor vehicle development services."
+    }
+  ],
+  "owner": "VENTURI, Société Anonyme Monégasque",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "BBLM Avocats, Mme ANGELIER Myriam",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "VENTURI, Société Anonyme Monégasque"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "01.03.02",
+      "01.03.08",
+      "03.07.01",
+      "03.07.16",
+      "24.01.07",
+      "24.01.09",
+      "26.01.16"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Industrial oils and greases, in particular for motor vehicles, lubricants, fuels, gasoline for automobile engines. Tools, in particular tools for motor vehicles. Devices for protection against theft, alarms in particular for motor vehicles, sound and image reproduction apparatus intended in particular for motor vehicles, electrical equipment for motor vehicles, fire extinguishers, motor vehicle antenna wires and extensions. Lighting, heating, ventilation and air conditioning installations for vehicles. Motor vehicles. Insurance and financial services, in particular motor insurance and motor vehicle financing services, Carpets and floor coverings for motor vehicles. All maintenance and repair services, motor vehicle cleaning, automobile transformation services. Automobile rental services, automobile transportation services. Services for the organization of sporting events, in particular services for the organization of automobile competitions. Design office services, styling research, engineering work, motor vehicle development services.",
+          "intClassNumber": "04,08,09,11,12,27,36,37,39,41,42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Huiles et graisses industrielles, en particulier pour véhicules automobiles, lubrifiants, combustibles, essences pour moteurs d'automobiles. Outils en particulier outils pour véhicules automobiles. Appareils de protection contre le vol, alarmes en particulier pour automobiles, appareils de reproduction du son et des images destinés notamment aux automobiles, équipements électriques pour véhicules automobiles, extincteurs, fils et prolongateurs d'antennes d'automobiles. Installations d'éclairage, de chauffage, de ventilation, de climatisation pour véhicules. Véhicules automobiles. Services d'assurances et de finances, en particulier services d'assurances en matières automobiles et de financement de véhicules automobiles, Tapis et revêtements de sol pour véhicules automobiles. Tous services d'entretien de réparation, de nettoyage de véhicules automobiles, services de transformation d'automobiles. Services de location d'automobiles, services de transport en automobiles. Services d'organisation de manifestations sportives, notamment services d'organisation de compétitions automobiles. Services de bureaux d'étude, de recherche en matière de stylisme, travaux d'ingénieurs, services de mise au point de véhicules automobiles."
+        }
+      ]
+    },
+    "id": "36e65f05-c301-4c08-9784-27f55342ad2b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00268",
+        "publicationVolume": "28"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "BBLM Avocats, Mme ANGELIER Myriam"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19901001",
+        "applicationNumber": "241428"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300930",
+      "lastPublicationDate": "19910709",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "N 1643291"
+      },
+      "renewalDate": "20200803",
+      "renewalPublishedDate": "20201127"
+    },
+    "version": "20250426135412",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/fr/36e65f05-c301-4c08-9784-27f55342ad2b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.178Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

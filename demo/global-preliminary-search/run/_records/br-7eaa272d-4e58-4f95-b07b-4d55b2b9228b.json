@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/br/7eaa272d-4e58-4f95-b07b-4d55b2b9228b",
+  "provider": "clarivate",
+  "office": "br",
+  "guid": "7eaa272d-4e58-4f95-b07b-4d55b2b9228b",
+  "applicationNumber": "826878504",
+  "registrationNumber": null,
+  "applicationDate": "2004-09-08",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Discos, fitas e cds.",
+      "translation_language": "en",
+      "translation": "DISCS, TAPES AND CDS."
+    }
+  ],
+  "owner": "YAHOO PRODUÇÕES E PROMOÇÕES ARTÍSTICAS LTDA",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "ARIBONI, FABBRI E SCHMIDT SOCIEDADE DE ADVOGADOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "YAHOO PRODUÇÕES E PROMOÇÕES ARTÍSTICAS LTDA"
+      }
+    ],
+    "applicationLanguageCode": "pt",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "DISCS, TAPES AND CDS.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Discos, fitas e cds."
+        }
+      ]
+    },
+    "id": "7eaa272d-4e58-4f95-b07b-4d55b2b9228b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "27.05.01"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "BR",
+    "registrationOfficeName": "Brazil",
+    "representatives": [
+      {
+        "representativeName": "ARIBONI, FABBRI E SCHMIDT SOCIEDADE DE ADVOGADOS"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20040908",
+        "applicationNumber": "826878504"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630212421",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/br/7eaa272d-4e58-4f95-b07b-4d55b2b9228b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.048Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

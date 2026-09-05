@@ -1,0 +1,362 @@
+{
+  "uri": "/mark/us/f5f5c031-4519-4308-bec1-5837aa3c773a",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f5f5c031-4519-4308-bec1-5837aa3c773a",
+  "applicationNumber": "76319064",
+  "registrationNumber": "2813591",
+  "applicationDate": "2001-10-01",
+  "registrationDate": "2004-02-10",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2002-12-31"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2014-09-12",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENKOR",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    5,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": null,
+      "description": "INT. CL. 1 Sustained, immediate, controlled, and extended release agents in miniature tablet form for use in the manufacture of pharmaceuticals, confections, and chewing gums; encapsulated ingredients sold in bulk for use in the manufacture of pharmaceuticals, confections and chewing gums, namely, bioadhesive ingredients, taste improvement ingredients, and ph control and stability ingredients; drug delivery and release systems comprised of excipients, pharmaceuticals and polymer matrices for use in the manufacture of pharmaceuticals, confections, and chewing gums",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        5
+      ],
+      "language": null,
+      "description": "INT. CL. 5 Drug delivery and release systems comprised of excipients, pharmaceuticals and polymer matrices sold as integral components of pharmaceutical preparations for use in the treatment of cough, cold, flu, indigestion, weight control, oral hygiene; pharmaceutical preparations for use in the treatment of cough, cold, flu, indigestion, weight control, oral hygiene, osteoporosis and joint pain, diabetes; medicated chewing gum for breath freshening, plaque reduction and teeth whitening applications; encapsulated ingredients, namely, taste improvement ingredients sold as integral components of pharmaceutical preparations for use in the treatment of cough, cold, flu, indigestion, weight control, oral hygiene, osteoporosis and joint pain, diabetes",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Product research and development in the field of drug delivery and release systems, tablets and capsules, confections and chewing gums",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "CAPRICORN PHARMA INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Gary M. Nath",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20100208",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+    },
+    "applicants": [
+      {
+        "applicantAddress": "6900 English Muffin Way, Frederick, MD, 21703",
+        "applicantAddressCity": "Frederick",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "21703",
+        "applicantAddressStateName": "MARYLAND",
+        "applicantAddressStreet": "6900 English Muffin Way",
+        "applicantJurisdictionOfIncorporation": "MARYLAND",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "CAPRICORN PHARMA INC.",
+        "applicantSecondaryAddressUnit": "Unit A"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "01",
+          "intGoodsServicesDescription": "INT. CL. 1 Sustained, immediate, controlled, and extended release agents in miniature tablet form for use in the manufacture of pharmaceuticals, confections, and chewing gums; encapsulated ingredients sold in bulk for use in the manufacture of pharmaceuticals, confections and chewing gums, namely, bioadhesive ingredients, taste improvement ingredients, and ph control and stability ingredients; drug delivery and release systems comprised of excipients, pharmaceuticals and polymer matrices for use in the manufacture of pharmaceuticals, confections, and chewing gums"
+        },
+        {
+          "intClassNumber": "05",
+          "intGoodsServicesDescription": "INT. CL. 5 Drug delivery and release systems comprised of excipients, pharmaceuticals and polymer matrices sold as integral components of pharmaceutical preparations for use in the treatment of cough, cold, flu, indigestion, weight control, oral hygiene; pharmaceutical preparations for use in the treatment of cough, cold, flu, indigestion, weight control, oral hygiene, osteoporosis and joint pain, diabetes; medicated chewing gum for breath freshening, plaque reduction and teeth whitening applications; encapsulated ingredients, namely, taste improvement ingredients sold as integral components of pharmaceutical preparations for use in the treatment of cough, cold, flu, indigestion, weight control, oral hygiene, osteoporosis and joint pain, diabetes"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Product research and development in the field of drug delivery and release systems, tablets and capsules, confections and chewing gums"
+        }
+      ]
+    },
+    "id": "f5f5c031-4519-4308-bec1-5837aa3c773a",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20140912",
+        "descriptionText": "CANCELLED SEC. 8 (10-YR)/EXPIRED SECTION 9"
+      },
+      {
+        "date": "20100208",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20100208",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED & SEC. 15 ACK."
+      },
+      {
+        "date": "20100129",
+        "descriptionText": "TEAS SECTION 8 & 15 RECEIVED"
+      },
+      {
+        "date": "20051125",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20040210",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20031105",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20031105",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20031104",
+        "descriptionText": "CASE FILE IN TICRS"
+      },
+      {
+        "date": "20031023",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20030925",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20030924",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20030325",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20021231",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20021211",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20021021",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20021017",
+        "descriptionText": "EXAMINERS AMENDMENT MAILED"
+      },
+      {
+        "date": "20020815",
+        "descriptionText": "FINAL REFUSAL MAILED"
+      },
+      {
+        "date": "20020805",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20020611",
+        "descriptionText": "PAPER RECEIVED"
+      },
+      {
+        "date": "20011211",
+        "descriptionText": "NON-FINAL ACTION MAILED"
+      },
+      {
+        "date": "20011204",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "6900 English Muffin Way, Frederick, MD, 21703",
+        "city": "Frederick",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MARYLAND",
+        "legalEntity": "CORPORATION",
+        "name": "CAPRICORN PHARMA INC.",
+        "postalCode": "21703",
+        "stateName": "MARYLAND",
+        "street": "6900 English Muffin Way"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "6900 English Muffin Way, Frederick, MD, 21703",
+        "city": "Frederick",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MARYLAND",
+        "legalEntity": "CORPORATION",
+        "name": "CAPRICORN PHARMA INC.",
+        "postalCode": "21703",
+        "secondaryAddressUnit": "Unit A",
+        "stateName": "MARYLAND",
+        "street": "6900 English Muffin Way"
+      },
+      {
+        "address": "6900 English Muffin Way, Frederick, MD, 21703",
+        "city": "Frederick",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MARYLAND",
+        "legalEntity": "CORPORATION",
+        "name": "CAPRICORN PHARMA INC.",
+        "postalCode": "21703",
+        "secondaryAddressUnit": "Unit A",
+        "stateName": "MARYLAND",
+        "street": "6900 English Muffin Way"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "6900 English Muffin Way, Frederick, MD, 21703",
+        "city": "Frederick",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "MARYLAND",
+        "legalEntity": "CORPORATION",
+        "name": "CAPRICORN PHARMA INC.",
+        "postalCode": "21703",
+        "stateName": "MARYLAND",
+        "street": "6900 English Muffin Way"
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "ALEXANDRIA, VA 22314, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "ALEXANDRIA, VA 22314",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "GARY M NATH NATH & ASSOCIATES PLLC, 112 S W ST"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "ALEXANDRIA, VA 22314, UNITED STATES",
+        "representativeAddressLines": [
+          "ALEXANDRIA, VA 22314",
+          "UNITED STATES"
+        ],
+        "representativeName": "Gary M. Nath"
+      }
+    ],
+    "status": {
+      "active": false,
+      "allowanceDate": [
+        "20030325"
+      ],
+      "application": {
+        "applicationDate": "20011001",
+        "applicationNumber": "76319064"
+      },
+      "cancellationDate": "20140912",
+      "cancellationPublicationDate": "20141021",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "01",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200004"
+        },
+        {
+          "firstUsedClass": "05",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200004"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "200004"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "01",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200012"
+        },
+        {
+          "firstUsedCommerceClass": "05",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200012"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "200102"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20140912",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20021231"
+      ],
+      "registration": {
+        "registrationDate": "20040210",
+        "registrationNumber": "2813591"
+      }
+    },
+    "version": "20260109052920",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENKOR"
+    }
+  },
+  "_uri": "/mark/us/f5f5c031-4519-4308-bec1-5837aa3c773a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:48.776Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

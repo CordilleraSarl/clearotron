@@ -1,0 +1,219 @@
+{
+  "uri": "/mark/jp/84d208be-9afa-4d84-8551-c620dfd4c6f7",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "84d208be-9afa-4d84-8551-c620dfd4c6f7",
+  "applicationNumber": "2025-138903",
+  "registrationNumber": null,
+  "applicationDate": "2025-12-03",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Ｑ　ＱＯＲＴＥＸ",
+  "markTransliteration": "KOATEKKUSU KORUTEKKUSU KYUU",
+  "markTranslation": "Q QORTEX",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンピュータソフトウェア，コンピュータプログラム，人工知能の機能を有する電子計算機用プログラム，電子応用機械器具及びその部品",
+      "translation_language": "en",
+      "translation": "Computer software, computer programs, computer programs with artificial intelligence functions, electronic application machines and devices and their parts"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "広告業，経営の診断又は経営に関する助言，事業の管理，市場調査又は分析，商品の販売に関する情報の提供，デジタルトランスフォーメーションのための事業に関する助言，インターネットその他の通信ネットワークを利用したソーシャルネットワーク及びビジネスネットワークを提供するための管理情報に関する文書の管理，インターネットその他の通信ネットワークを利用したソーシャルネットワーク及びビジネスネットワークを構築するための管理情報データファイルの管理，コンピュータデータベースの情報構築・情報編集，インターネットによりデータベースを利用させる事業の管理，文書又は磁気テープのファイリング及びコンピュータデータベースによるファイルの管理",
+      "translation_language": "en",
+      "translation": "Advertising, business diagnosis or management advice, business management, market research or analysis, provision of information on product sales, business advice for digital transformation, management of documents related to management information for providing social networks and business networks using the Internet and other communication networks, management of management information data files for building social networks and business networks using the Internet and other communication networks, information construction and editing for computer databases, management of businesses that make databases available via the Internet, filing of documents or magnetic tapes and management of files using computer databases"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "コンピュータシステムの設計，電子計算機のプログラムの設計・作成又は保守並びにこれらに関する助言，人工知能の機能を有する電子計算機用プログラムの提供，オンラインによるアプリケーションソフトウェアの提供，コンピュータ用プログラムの提供，インターネット上での電子商取引のプラットフォームのホスティング，電子商取引プラットフォーム用ソフトウェアの設計・作成又は保守，クラウドコンピューティングを介した仮想コンピュータシステムの提供",
+      "translation_language": "en",
+      "translation": "Design of computer systems, design, creation or maintenance of computer programs and advice on these, provision of computer programs with artificial intelligence functions, provision of online application software, provision of computer programs, hosting of e-commerce platforms on the Internet, design, creation or maintenance of software for e-commerce platforms, provision of virtual computer systems via cloud computing"
+    }
+  ],
+  "owner": "Coretex KK",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "SHIBUYA HARUKA",
+  "priorities": [
+    {
+      "priorityDate": "20251203"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "MINATO-KU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Coretex KK",
+        "applicantNativeAddress": "東京都港区",
+        "applicantNativeName": "コアテックス株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software, computer programs, computer programs with artificial intelligence functions, electronic application machines and devices and their parts",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンピュータソフトウェア，コンピュータプログラム，人工知能の機能を有する電子計算機用プログラム，電子応用機械器具及びその部品"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising, business diagnosis or management advice, business management, market research or analysis, provision of information on product sales, business advice for digital transformation, management of documents related to management information for providing social networks and business networks using the Internet and other communication networks, management of management information data files for building social networks and business networks using the Internet and other communication networks, information construction and editing for computer databases, management of businesses that make databases available via the Internet, filing of documents or magnetic tapes and management of files using computer databases",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "広告業，経営の診断又は経営に関する助言，事業の管理，市場調査又は分析，商品の販売に関する情報の提供，デジタルトランスフォーメーションのための事業に関する助言，インターネットその他の通信ネットワークを利用したソーシャルネットワーク及びビジネスネットワークを提供するための管理情報に関する文書の管理，インターネットその他の通信ネットワークを利用したソーシャルネットワーク及びビジネスネットワークを構築するための管理情報データファイルの管理，コンピュータデータベースの情報構築・情報編集，インターネットによりデータベースを利用させる事業の管理，文書又は磁気テープのファイリング及びコンピュータデータベースによるファイルの管理"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Design of computer systems, design, creation or maintenance of computer programs and advice on these, provision of computer programs with artificial intelligence functions, provision of online application software, provision of computer programs, hosting of e-commerce platforms on the Internet, design, creation or maintenance of software for e-commerce platforms, provision of virtual computer systems via cloud computing",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "コンピュータシステムの設計，電子計算機のプログラムの設計・作成又は保守並びにこれらに関する助言，人工知能の機能を有する電子計算機用プログラムの提供，オンラインによるアプリケーションソフトウェアの提供，コンピュータ用プログラムの提供，インターネット上での電子商取引のプラットフォームのホスティング，電子商取引プラットフォーム用ソフトウェアの設計・作成又は保守，クラウドコンピューティングを介した仮想コンピュータシステムの提供"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Personal digital assistants; Electronic machines [not including geiger counters, cyclotrons [not for medical purposes], industrial X-ray machines and apparatus [not for medical use],industrial betatrons [not for medical use],magnetic prospecting machines, magnetic object detectors, seismic exploration machines and apparatus, hydrophone machines and apparatus, echo sounders, ultrasonic flaw detectors, ultrasonic sensors, electronic door closing control systems and electron microscopes]; Electron tubes; Semi-conductor elements; Electronic circuits, not including those recorded with computer programs; Computer programs"
+        },
+        {
+          "natClassNumber": "11C02",
+          "natGoodsServicesDescription": "Geiger counters; Cyclotrons, not for medical purposes; Industrial X-ray machines and apparatus, not for medical use; Industrial betatrons, not for medical use; Magnetic prospecting machines; Magnetic object detectors; Seismic exploration machines and apparatus; Hydrophone machines and apparatus; Echo sounders; Ultrasonic flaw detectors; Ultrasonic sensors; Electronic door opening and closing control systems; Electron microscopes"
+        },
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        }
+      ]
+    },
+    "id": "84d208be-9afa-4d84-8551-c620dfd4c6f7",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "25.07.01.00",
+      "25.07.08.00",
+      "26.04.04.00",
+      "26.04.08.00",
+      "26.04.09.00",
+      "26.05.01.00",
+      "26.05.01.01",
+      "26.07.25.00",
+      "26.13.25.92",
+      "27.01.01.00",
+      "27.01.04.00",
+      "27.05.01.17",
+      "27.05.21.00",
+      "29.01.04.01",
+      "29.01.04.02",
+      "29.01.11.00",
+      "29.01.15.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20251203"
+      }
+    ],
+    "recordLastUpdated": "20260828",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "SHIBUYA HARUKA",
+        "representativeNativeName": "渋谷　治香"
+      },
+      {
+        "representativeName": "TAMURA YUICHI",
+        "representativeNativeName": "田村　祐一"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20251203",
+        "applicationNumber": "2025-138903"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20260828085941",
+    "wordMarkSpecification": {
+      "markTranslation": "Q QORTEX",
+      "markTransliteration": "KOATEKKUSU KORUTEKKUSU KYUU",
+      "markVerbalElementText": "Ｑ　ＱＯＲＴＥＸ"
+    }
+  },
+  "_uri": "/mark/jp/84d208be-9afa-4d84-8551-c620dfd4c6f7",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

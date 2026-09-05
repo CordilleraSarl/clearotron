@@ -1,0 +1,134 @@
+{
+  "uri": "/mark/cn/0486d737-fef2-4013-a2a5-c6b19cb0b997",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "0486d737-fef2-4013-a2a5-c6b19cb0b997",
+  "applicationNumber": "49860614",
+  "registrationNumber": null,
+  "applicationDate": "2020-09-18",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "ZORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "智能手机用保护套,智能手机用键盘,智能手机用无线耳机,智能手机或相机用自拍单脚架,USB充电器,移动电源(可充电电池)",
+      "translation_language": "en",
+      "translation": "Protective case for smartphone, keyboard for smartphone, wireless earphone for smartphone, selfie monopod for smartphone or camera, USB charger, power bank (rechargeable battery)"
+    }
+  ],
+  "owner": "Fuzhou Wanrui Electronic Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省福州市台江区鳌峰街道连江中路318号9#楼二层-02",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Fuzhou Wanrui Electronic Technology Co., Ltd.",
+        "applicantNativeName": "福州万锐电子科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Protective case for smartphone, keyboard for smartphone, wireless earphone for smartphone, selfie monopod for smartphone or camera, USB charger, power bank (rechargeable battery)",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "智能手机用保护套,智能手机用键盘,智能手机用无线耳机,智能手机或相机用自拍单脚架,USB充电器,移动电源(可充电电池)"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "0486d737-fef2-4013-a2a5-c6b19cb0b997",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "知域互联科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200918",
+        "applicationNumber": "49860614"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251004064905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "ZORI"
+    }
+  },
+  "_uri": "/mark/cn/0486d737-fef2-4013-a2a5-c6b19cb0b997",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:32.138Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

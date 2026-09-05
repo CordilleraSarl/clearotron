@@ -1,0 +1,124 @@
+{
+  "uri": "/mark/ee/ddec123b-3cac-4ebf-90ea-9e6ad7f12335",
+  "provider": "clarivate",
+  "office": "ee",
+  "guid": "ddec123b-3cac-4ebf-90ea-9e6ad7f12335",
+  "applicationNumber": "M201300443",
+  "registrationNumber": "51746",
+  "applicationDate": "2013-04-25",
+  "registrationDate": "2014-07-11",
+  "expiryDate": "2034-07-11",
+  "renewalDate": null,
+  "lastPublicationDate": "2014-05-02",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Evenor International Language and Education Centre",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "et",
+      "description": "Haridusteave, -info.",
+      "translation_language": "en",
+      "translation": "Educational information, information."
+    }
+  ],
+  "owner": "OÜ International Language and Education Centre Evenor",
+  "ownerNative": null,
+  "ownerCountry": "EE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "F.R. Kreutzwaldi 24, 10147 Tallinn",
+        "applicantAddressCountryCode": "EE",
+        "applicantAddressCountryName": "Estonia",
+        "applicantName": "OÜ International Language and Education Centre Evenor"
+      }
+    ],
+    "applicationLanguageCode": "et",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Educational information, information.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Haridusteave, -info."
+        }
+      ]
+    },
+    "id": "ddec123b-3cac-4ebf-90ea-9e6ad7f12335",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "sinine, roheline"
+      }
+    ],
+    "markImageViennaClassification": [
+      "26.02.01",
+      "26.11.12",
+      "27.05.10",
+      "27.05.11",
+      "29.01.03",
+      "29.01.04",
+      "29.01.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250620",
+    "registrationOfficeCode": "EE",
+    "registrationOfficeName": "Estonia",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20130425",
+        "applicationNumber": "M201300443"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340711",
+      "lastPublicationDate": "20140502",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20140711",
+        "registrationNumber": "51746"
+      }
+    },
+    "version": "20250620094627",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Evenor International Language and Education Centre"
+    }
+  },
+  "_uri": "/mark/ee/ddec123b-3cac-4ebf-90ea-9e6ad7f12335",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.808Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

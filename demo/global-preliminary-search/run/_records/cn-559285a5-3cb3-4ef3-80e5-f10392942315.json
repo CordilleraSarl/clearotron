@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/cn/559285a5-3cb3-4ef3-80e5-f10392942315",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "559285a5-3cb3-4ef3-80e5-f10392942315",
+  "applicationNumber": "77588761",
+  "registrationNumber": null,
+  "applicationDate": "2024-03-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七智慧心",
+  "markTransliteration": "ZENSEVEN QI ZHI HUI XIN",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电子出版物(可下载);个人数字助理(PDA);可下载的计算机应用软件;可下载的手机应用软件;录音装置;麦克风;平板电脑用套;声音传送装置;声音复制装置;已录制的或可下载的计算机软件平台",
+      "translation_language": "en",
+      "translation": "Electronic publications (downloadable); personal digital assistants (PDAs); downloadable computer applications; downloadable mobile phone applications; recording devices; microphones; cases for tablet computers; sound transmission devices; sound reproduction devices; recorded or downloadable computer software platforms"
+    }
+  ],
+  "owner": "Hangzhou Qizhixin Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "浙江省杭州市西湖区紫宣路18号浙谷深蓝中心7号楼312室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Hangzhou Qizhixin Technology Co., Ltd.",
+        "applicantNativeName": "杭州七智慧心科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic publications (downloadable); personal digital assistants (PDAs); downloadable computer applications; downloadable mobile phone applications; recording devices; microphones; cases for tablet computers; sound transmission devices; sound reproduction devices; recorded or downloadable computer software platforms",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电子出版物(可下载);个人数字助理(PDA);可下载的计算机应用软件;可下载的手机应用软件;录音装置;麦克风;平板电脑用套;声音传送装置;声音复制装置;已录制的或可下载的计算机软件平台"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Apparatus for sound and images"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        }
+      ]
+    },
+    "id": "559285a5-3cb3-4ef3-80e5-f10392942315",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251005",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "合肥北极牛科技有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240327",
+        "applicationNumber": "77588761"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251005090756",
+    "wordMarkSpecification": {
+      "markTransliteration": "ZENSEVEN QI ZHI HUI XIN",
+      "markVerbalElementText": "七智慧心"
+    }
+  },
+  "_uri": "/mark/cn/559285a5-3cb3-4ef3-80e5-f10392942315",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.563Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

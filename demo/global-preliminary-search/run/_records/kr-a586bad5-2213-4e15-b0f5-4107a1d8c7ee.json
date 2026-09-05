@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/kr/a586bad5-2213-4e15-b0f5-4107a1d8c7ee",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "a586bad5-2213-4e15-b0f5-4107a1d8c7ee",
+  "applicationNumber": "40-2021-0218114",
+  "registrationNumber": null,
+  "applicationDate": "2021-10-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "GORI",
+  "markTransliteration": "GORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "내려받기 가능한 멀티미디어파일, 내려받기 가능한 무선단말기용 지능형애플리케이션프로그램, 내려받기 가능한 스마트폰용 애플리케이션(소프트웨어), 내려받기 가능한 전자 상품권, 내려받기 가능한 컴퓨터소프트웨어 애플리케이션, 내려받기 가능한 쿠폰, 내려받기 가능한 티켓, 스마트폰, 스마트폰용 애플리케이션 소프트웨어, 음향 또는 영상의 방송/기록/전송 또는 재생용 장치, 이동전화기용 컴퓨터 응용소프트웨어, 컴퓨터 게임 소프트웨어, 컴퓨터 애플리케이션 소프트웨어, 컴퓨터 프로그램 및 소프트웨어, 컴퓨터소프트웨어 플랫폼, 컴퓨터소프트웨어",
+      "translation_language": "en",
+      "translation": "Downloadable multimedia files, downloadable intelligent application programs for wireless terminals, downloadable smartphone applications (software), downloadable electronic gift certificates, downloadable computer software applications, downloadable coupons, downloadable tickets, smartphones, application software for smartphones, devices for broadcasting/recording/transmission or playback of sound or video, computer application software for mobile phones, computer game software, computer application software, computer programs and software, computer software platform, computer software"
+    }
+  ],
+  "owner": "YooGilHo",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "김능균 (KIM, Nung Kyun)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "경기도 광주시",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "YooGilHo",
+        "applicantNativeName": "유길호"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable multimedia files, downloadable intelligent application programs for wireless terminals, downloadable smartphone applications (software), downloadable electronic gift certificates, downloadable computer software applications, downloadable coupons, downloadable tickets, smartphones, application software for smartphones, devices for broadcasting/recording/transmission or playback of sound or video, computer application software for mobile phones, computer game software, computer application software, computer programs and software, computer software platform, computer software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 가능한 멀티미디어파일, 내려받기 가능한 무선단말기용 지능형애플리케이션프로그램, 내려받기 가능한 스마트폰용 애플리케이션(소프트웨어), 내려받기 가능한 전자 상품권, 내려받기 가능한 컴퓨터소프트웨어 애플리케이션, 내려받기 가능한 쿠폰, 내려받기 가능한 티켓, 스마트폰, 스마트폰용 애플리케이션 소프트웨어, 음향 또는 영상의 방송/기록/전송 또는 재생용 장치, 이동전화기용 컴퓨터 응용소프트웨어, 컴퓨터 게임 소프트웨어, 컴퓨터 애플리케이션 소프트웨어, 컴퓨터 프로그램 및 소프트웨어, 컴퓨터소프트웨어 플랫폼, 컴퓨터소프트웨어"
+        }
+      ]
+    },
+    "id": "a586bad5-2213-4e15-b0f5-4107a1d8c7ee",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "02.07.23",
+      "09.07.19",
+      "16.03.13",
+      "20.01.03",
+      "20.01.11",
+      "21.03.07",
+      "24.17.12"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260825",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울 강남구 논현로 ** (개포동) *층(지혜국제특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김능균 (KIM, Nung Kyun)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20211027",
+        "applicationNumber": "40-2021-0218114"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260825022014",
+    "wordMarkSpecification": {
+      "markTransliteration": "GORI",
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/kr/a586bad5-2213-4e15-b0f5-4107a1d8c7ee",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

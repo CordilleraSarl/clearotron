@@ -1,0 +1,116 @@
+{
+  "uri": "/mark/id/0a951816-e044-4185-8ee7-4eeadeaad3af",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "0a951816-e044-4185-8ee7-4eeadeaad3af",
+  "applicationNumber": "JID2020026104",
+  "registrationNumber": "IDM000907603",
+  "applicationDate": "2020-05-29",
+  "registrationDate": "2021-11-03",
+  "expiryDate": "2030-05-29",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QOQI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "id",
+      "description": "Administrasi server jarak jauh, desain dan pembuatan homepage dan halaman web, desain dan pembuatan homepage dan situs web, desain dan pembuatan situs web, desain dan pengembangan database komputer, desain dan pengembangan homepage dan situs web, desain dan pengembangan perangkat lunak database komputer, desain dan pengembangan perangkat lunak operasi untuk jaringan komputer dan server, desain dan pengembangan program basis data komputer, instalasi dan pemeliharaan perangkat lunak basis data, jasa bantuan teknis mengenai pengoperasian dan pengelolaan situs web untuk orang lain, jasa layanan perangkat lunak komputer dan aplikasi perangkat lunak untuk digunakan dalam verifikasi dan otentikasi transaksi melalui blockchain (sistem pencatatan transaksi digital yang terdesentralisasi), jasa layanan perangkat lunak komputer dan aplikasi perangkat lunak untuk digunakan dalam verifikasi otentikasi transaksi melalui blockchain (sistem pencatatan transaksi digital yang terdesentralisasi), jasa penyediaan informasi dalam bentuk data, file, aplikasi dan informasi yang terkomputerisasi melalui sebuah halaman situs web online yang disesuaikan, konsultasi dan saran dalam desain dan pengembangan perangkat keras dan perangkat lunak komputer, konsultasi yang berkaitan dengan pembuatan dan desain situs web untuk e - commerce, layanan komputer yang bersifat perangkat lunak sebagai layanan (saas), yaitu hosting perangkat lunak komputer dan layanan yang memanfaatkan perangkat lunak untuk diakses oleh, atau mengunduh oleh, atau digunakan oleh, orang lain di bidang analisis bisnis, pengembangan strategi bisnis, analisis data, data besar, sistem pengujian, sistem pemodelan, sistem dan layanan simulasi dan di bidang penerapan internet of things (iot), layanan konsultasi dan informasi yang berkaitan dengan desain, pemrograman, dan pemeliharaan perangkat lunak komputer, layanan konsultasi dan informasi yang berkaitan dengan integrasi sistem komputer, memberikan informasi tentang pemrograman komputer melalui situs web, memberikan informasi tentang teknologi komputer dan pemrograman melalui situs web, menyediakan penggunaan sementara perangkat lunak berbasis web, menyediakan perangkat lunak yang tidak dapat diunduh secara online untuk digunakan dalam perencanaan sumber daya perusahaan, pemrograman perangkat lunak untuk pengembangan situs web, pengembangan dan pemeliharaan perangkat lunak basis data komputer, pengembangan perangkat lunak basis data komputer, pengembangan, pembaruan, dan pemeliharaan perangkat lunak dan sistem basis data, penyediaan informasi mengenai teknologi dan pemrograman komputer melalui suatu situs web, penyediaan penggunaan sementara piranti lunak komputer yang tidak dapat diunduh untuk digunakan di komputer pribadi, laptop, pda, pim, telepon seluler, peralatan digital, mesin virtual, peralatan virtual, komputasi seluler lainnya dan piranti komunikasi, dan mobil dan kendaraan lain atau alat transportasi, untuk mengelola, meningkatkan, dan mengoptimalkan sumber daya komputasi perangkat tersebut, penyewaan perangkat lunak aplikasi, penyewaan perangkat lunak basis data komputer, situs web.",
+      "translation_language": "en",
+      "translation": "Remote server administration, homepage and web page design and creation, homepage and website design and creation, website design and creation, computer database design and development, homepage and website design and development, computer database software design and development, design and development of operating software for computer networks and servers, design and development of computer database programs, installation and maintenance of database software, technical assistance services regarding the operation and management of websites for others, computer software services and software applications for used in verification and authentication of transactions through blockchain (decentralized digital transaction recording system), computer software services and software applications for use in verification of transaction authentication via blockchain (decentralized digital transaction recording system), security services provision of information in the form of computerized data, files, applications and information through a customized online website page, consulting and advice in the design and development of computer hardware and software, consulting related to the creation and design of websites for e-commerce, computer services of a software-as-a-service (saas) nature, i.e. hosting of computer software and services that make use of the software to be accessed by, or downloaded by, or used by, others in the fields of business analysis, business strategy development, data analysis, data large, testing systems, modeling systems, simulation systems and services and in the field of internet of things (iot) application, consulting and information services relating to the design, programming and maintenance of computer software, consulting and information services relating to computer system integration , provides information about programming com puter through websites, providing information about computer technology and programming through websites, providing temporary use of web-based software, providing non-downloadable software online for use in enterprise resource planning, software programming for website development, development and maintenance of computer database software, development of computer database software, development, updating and maintenance of database software and systems, provision of information on computer technology and programming through a website, provision of temporary use of non-downloadable computer software for use in personal computers, laptops, PDAs, PIMs, cellular phones, digital devices, virtual machines, virtual devices, other mobile computing and communication devices, and cars and other vehicles or means of transportation, to manage, improve and optimize computing resources of such devices, rental of application software, rental of computer database software, websites."
+    }
+  ],
+  "owner": "QOQI INDONESIA DIGITAL",
+  "ownerNative": null,
+  "ownerCountry": "ID",
+  "representative": "CESAR RESHA, S. E, S. H.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "OFFICE BUILDING DE PLOEIT CENTRALE LT. 2 UNIT 202, JL. PLUIT SELATAN RAYA BLOK Q, PLUIT, PENJARINGAN; ID",
+        "applicantAddressCountryCode": "ID",
+        "applicantAddressCountryName": "Indonesia",
+        "applicantName": "QOQI INDONESIA DIGITAL"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Remote server administration, homepage and web page design and creation, homepage and website design and creation, website design and creation, computer database design and development, homepage and website design and development, computer database software design and development, design and development of operating software for computer networks and servers, design and development of computer database programs, installation and maintenance of database software, technical assistance services regarding the operation and management of websites for others, computer software services and software applications for used in verification and authentication of transactions through blockchain (decentralized digital transaction recording system), computer software services and software applications for use in verification of transaction authentication via blockchain (decentralized digital transaction recording system), security services provision of information in the form of computerized data, files, applications and information through a customized online website page, consulting and advice in the design and development of computer hardware and software, consulting related to the creation and design of websites for e-commerce, computer services of a software-as-a-service (saas) nature, i.e. hosting of computer software and services that make use of the software to be accessed by, or downloaded by, or used by, others in the fields of business analysis, business strategy development, data analysis, data large, testing systems, modeling systems, simulation systems and services and in the field of internet of things (iot) application, consulting and information services relating to the design, programming and maintenance of computer software, consulting and information services relating to computer system integration , provides information about programming com puter through websites, providing information about computer technology and programming through websites, providing temporary use of web-based software, providing non-downloadable software online for use in enterprise resource planning, software programming for website development, development and maintenance of computer database software, development of computer database software, development, updating and maintenance of database software and systems, provision of information on computer technology and programming through a website, provision of temporary use of non-downloadable computer software for use in personal computers, laptops, PDAs, PIMs, cellular phones, digital devices, virtual machines, virtual devices, other mobile computing and communication devices, and cars and other vehicles or means of transportation, to manage, improve and optimize computing resources of such devices, rental of application software, rental of computer database software, websites.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Administrasi server jarak jauh, desain dan pembuatan homepage dan halaman web, desain dan pembuatan homepage dan situs web, desain dan pembuatan situs web, desain dan pengembangan database komputer, desain dan pengembangan homepage dan situs web, desain dan pengembangan perangkat lunak database komputer, desain dan pengembangan perangkat lunak operasi untuk jaringan komputer dan server, desain dan pengembangan program basis data komputer, instalasi dan pemeliharaan perangkat lunak basis data, jasa bantuan teknis mengenai pengoperasian dan pengelolaan situs web untuk orang lain, jasa layanan perangkat lunak komputer dan aplikasi perangkat lunak untuk digunakan dalam verifikasi dan otentikasi transaksi melalui blockchain (sistem pencatatan transaksi digital yang terdesentralisasi), jasa layanan perangkat lunak komputer dan aplikasi perangkat lunak untuk digunakan dalam verifikasi otentikasi transaksi melalui blockchain (sistem pencatatan transaksi digital yang terdesentralisasi), jasa penyediaan informasi dalam bentuk data, file, aplikasi dan informasi yang terkomputerisasi melalui sebuah halaman situs web online yang disesuaikan, konsultasi dan saran dalam desain dan pengembangan perangkat keras dan perangkat lunak komputer, konsultasi yang berkaitan dengan pembuatan dan desain situs web untuk e - commerce, layanan komputer yang bersifat perangkat lunak sebagai layanan (saas), yaitu hosting perangkat lunak komputer dan layanan yang memanfaatkan perangkat lunak untuk diakses oleh, atau mengunduh oleh, atau digunakan oleh, orang lain di bidang analisis bisnis, pengembangan strategi bisnis, analisis data, data besar, sistem pengujian, sistem pemodelan, sistem dan layanan simulasi dan di bidang penerapan internet of things (iot), layanan konsultasi dan informasi yang berkaitan dengan desain, pemrograman, dan pemeliharaan perangkat lunak komputer, layanan konsultasi dan informasi yang berkaitan dengan integrasi sistem komputer, memberikan informasi tentang pemrograman komputer melalui situs web, memberikan informasi tentang teknologi komputer dan pemrograman melalui situs web, menyediakan penggunaan sementara perangkat lunak berbasis web, menyediakan perangkat lunak yang tidak dapat diunduh secara online untuk digunakan dalam perencanaan sumber daya perusahaan, pemrograman perangkat lunak untuk pengembangan situs web, pengembangan dan pemeliharaan perangkat lunak basis data komputer, pengembangan perangkat lunak basis data komputer, pengembangan, pembaruan, dan pemeliharaan perangkat lunak dan sistem basis data, penyediaan informasi mengenai teknologi dan pemrograman komputer melalui suatu situs web, penyediaan penggunaan sementara piranti lunak komputer yang tidak dapat diunduh untuk digunakan di komputer pribadi, laptop, pda, pim, telepon seluler, peralatan digital, mesin virtual, peralatan virtual, komputasi seluler lainnya dan piranti komunikasi, dan mobil dan kendaraan lain atau alat transportasi, untuk mengelola, meningkatkan, dan mengoptimalkan sumber daya komputasi perangkat tersebut, penyewaan perangkat lunak aplikasi, penyewaan perangkat lunak basis data komputer, situs web."
+        }
+      ]
+    },
+    "id": "0a951816-e044-4185-8ee7-4eeadeaad3af",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "representatives": [
+      {
+        "representativeAddress": "D MANSION @JATINEGARA INDAH BLOK A - 4, JL. KRT RADJIMAN WIDYODININGRAT; ID",
+        "representativeAddressCountryCode": "ID",
+        "representativeAddressCountryName": "Indonesia",
+        "representativeName": "CESAR RESHA, S. E, S. H."
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20200529",
+        "applicationNumber": "JID2020026104"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300529",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20211103",
+        "registrationNumber": "IDM000907603"
+      }
+    },
+    "version": "20250105123800",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QOQI"
+    }
+  },
+  "_uri": "/mark/id/0a951816-e044-4185-8ee7-4eeadeaad3af",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:48.754Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

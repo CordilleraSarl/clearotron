@@ -1,0 +1,151 @@
+{
+  "uri": "/mark/jp/2a8fdaa3-717a-4e0f-851b-92c637f415db",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "2a8fdaa3-717a-4e0f-851b-92c637f415db",
+  "applicationNumber": "2003-037144",
+  "registrationNumber": "4726628",
+  "applicationDate": "2003-05-08",
+  "registrationDate": "2003-11-14",
+  "expiryDate": "2013-11-14",
+  "renewalDate": null,
+  "lastPublicationDate": "2003-12-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＮｉＱｏｒ",
+  "markTransliteration": "NIKOORU",
+  "markTranslation": "NIQOR",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "コンバーター，その他の配電用・制御用機械器具",
+      "translation_language": "en",
+      "translation": "Converter, other distribution equipment · control equipment"
+    }
+  ],
+  "owner": "SYNQOR INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "KURAUCHI MOTOHIRO",
+  "priorities": [
+    {
+      "priorityDate": "20021220"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "HUDSON MASSACHUSETTS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "SYNQOR INC.",
+        "applicantNativeAddress": "アメリカ合衆国０１７４９－１３２０マサチューセッツ州ハドソン、セントラル・ストリート１８８",
+        "applicantNativeName": "シンカー・インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Converter, other distribution equipment · control equipment",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "コンバーター，その他の配電用・制御用機械器具"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11A01",
+          "natGoodsServicesDescription": "Electrical distribution or control machines, Rotary converters, Phase modifiers"
+        }
+      ]
+    },
+    "id": "2a8fdaa3-717a-4e0f-851b-92c637f415db",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "29.01.01.01",
+      "29.01.08.01",
+      "29.01.12.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20021220"
+      }
+    ],
+    "recordLastUpdated": "20240213",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "KURAUCHI MOTOHIRO",
+        "representativeNativeName": "倉内　基弘"
+      },
+      {
+        "representativeName": "KAZAMA HIROSHI",
+        "representativeNativeName": "風間　弘志"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20030508",
+        "applicationNumber": "2003-037144"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "expiryDate": "20131114",
+      "lastPublicationDate": "20031216",
+      "markCurrentStatus": "LAPSED [EXPIRED]",
+      "registration": {
+        "registrationDate": "20031114",
+        "registrationNumber": "4726628"
+      }
+    },
+    "version": "20240213112926",
+    "wordMarkSpecification": {
+      "markTranslation": "NIQOR",
+      "markTransliteration": "NIKOORU",
+      "markVerbalElementText": "ＮｉＱｏｒ"
+    }
+  },
+  "_uri": "/mark/jp/2a8fdaa3-717a-4e0f-851b-92c637f415db",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:28.709Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

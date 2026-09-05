@@ -16,6 +16,8 @@
 
 import { fileURLToPath } from "node:url";
 import { mintToken, verifyToken, TOOL_SCOPES } from "../shared/scope.mjs";
+import { homedir } from "node:os";
+import { defaultDenylistPath } from "../shared/client-door.mjs";   // — one owner for the path
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 
 function fail(msg, code = 1) { process.stderr.write(`mint-token: ${msg}\n`); process.exit(code); }
@@ -52,6 +54,15 @@ const USAGE = `usage: node mint-token.mjs --scope ops|user|account [options]
  * Refusals are thrown, so the caller decides how to say them — a CLI verb and a script have different
  * voices and the same rules.
  */
+/** The denylist path this install's door actually reads, resolved rather than described.
+ *
+ * — the note used to name the VARIABLE. An operator who has never set it reads
+ *  that as "some file I am supposed to know about"; what they need is the path. */
+function denylistFile() {
+  const set = String(process.env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim();
+  return set || defaultDenylistPath(homedir());
+}
+
 export function mintFromOptions({ scope, sub = null, runId = null, ttlDays, verbs = null, accounts = null } = {}) {
   if (!process.env.TRADEMARK_MCP_TOKEN_SECRET)
     throw new Error("TRADEMARK_MCP_TOKEN_SECRET is unset — refusing (fail-closed)");
@@ -80,12 +91,25 @@ export function mintFromOptions({ scope, sub = null, runId = null, ttlDays, verb
       : scope === "account" ? "(n/a — the fixed account tool set)"
         : "(n/a — read-only, one run)";
   const acctEcho = t.accounts ? t.accounts.join(",") : scope === "account" ? "(whatever the grants file grants this identity)" : "(all)";
+  // THE LEVERS, IN THE ORDER THAT WORKS ( — bb8's F14).
+  //
+  // The denylist was named FIRST and named without a path — "the TRADEMARK_MCP_TOKEN_DENYLIST file",
+  // a variable an operator never set and a file that, on a default install, did not exist. Since
+  // `isRevoked` treats an unreadable list as "not revoked", following that instruction produced a
+  // revocation that changed nothing, with the key still answering 200 and nothing logged.
+  //
+  // `grant remove` is first now because it is the lever that works on any install, takes effect on the
+  // next request with no restart, and is a command rather than a hand-edit. The denylist is still named
+  // — it revokes the TOKEN rather than the identity's reach, which is the right tool when a key leaks —
+  // but with its path resolved so the reader is told where the file actually is.
   const notes = [
     `minted: scope=${t.scope} sub=${t.sub ?? "-"} run=${t.runId ?? "-"} verbs=${verbsEcho} accounts=${acctEcho} expires=${new Date(t.exp * 1000).toISOString()} jti=${t.jti}`,
-    `revoke: add "${t.jti}" as a line in the TRADEMARK_MCP_TOKEN_DENYLIST file`,
   ];
+  if (scope === "account" && t.sub)
+    notes.push(`revoke (first lever, takes effect on the next request, no restart): clearotron grant remove ${t.sub}`);
+  notes.push(`revoke this TOKEN specifically: add "${t.jti}" as a line in ${denylistFile()}`);
   if (scope === "account")
-    notes.push(`revoke (second lever): remove "${t.sub}" from the grants file — an account key reads its accounts there on every request, so the row IS the reach`);
+    notes.push(`the grants row IS the reach — an account key reads its accounts from the grants file on every request`);
   if (scope === "ops" && !verbs) {
     const writable = Object.keys(TOOL_SCOPES).filter((k) => TOOL_SCOPES[k].write);
     notes.push(`note: FULL ops authority (${writable.join(", ")}) — consider --verbs for automation principals`);

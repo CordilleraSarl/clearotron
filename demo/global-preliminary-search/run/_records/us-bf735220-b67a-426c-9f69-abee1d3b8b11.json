@@ -1,0 +1,236 @@
+{
+  "uri": "/mark/us/bf735220-b67a-426c-9f69-abee1d3b8b11",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "bf735220-b67a-426c-9f69-abee1d3b8b11",
+  "applicationNumber": "97806343",
+  "registrationNumber": null,
+  "applicationDate": "2023-02-22",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2024-01-02"
+  ],
+  "abandonmentDate": "2024-09-30",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QORA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Downloadable software for use within the medical field for remotely monitoring of vital signs and lab signs",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Software as a service (SAAS) services featuring software for the medical field for remotely monitoring of vital signs and lab signs",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "COALA-LIFE AB",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Kålsängsgränd 10 B, UPPSALA, 75319, SWED",
+        "applicantAddressCity": "UPPSALA",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantAddressPostalCode": "75319",
+        "applicantAddressStreet": "Kålsängsgränd 10 B",
+        "applicantJurisdictionOfIncorporation": "SWEDEN",
+        "applicantLegalEntity": "aktiebolag (ab)",
+        "applicantName": "COALA-LIFE AB"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Downloadable software for use within the medical field for remotely monitoring of vital signs and lab signs"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Software as a service (SAAS) services featuring software for the medical field for remotely monitoring of vital signs and lab signs"
+        }
+      ]
+    },
+    "id": "bf735220-b67a-426c-9f69-abee1d3b8b11",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20240930",
+        "descriptionText": "ABANDONMENT - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20240930",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - NO USE STATEMENT FILED"
+      },
+      {
+        "date": "20240227",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20240102",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20240102",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20231213",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20231129",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20231121",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20230313",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20230225",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Kålsängsgränd 10 B, UPPSALA, 75319, SWED",
+        "city": "UPPSALA",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "legalEntity": "aktiebolag (ab)",
+        "name": "COALA-LIFE AB",
+        "postalCode": "75319",
+        "street": "Kålsängsgränd 10 B"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Kålsängsgränd 10 B, UPPSALA, 75319, SWED",
+        "city": "UPPSALA",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "legalEntity": "aktiebolag (ab)",
+        "name": "COALA-LIFE AB",
+        "postalCode": "75319",
+        "street": "Kålsängsgränd 10 B"
+      },
+      {
+        "address": "Kålsängsgränd 10 B, UPPSALA, 75319, SWED",
+        "city": "UPPSALA",
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "jurisdictionOfIncorporation": "SWEDEN",
+        "legalEntity": "aktiebolag (ab)",
+        "name": "COALA-LIFE AB",
+        "postalCode": "75319",
+        "street": "Kålsängsgränd 10 B"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "TROY, MI 48098, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "TROY, MI 48098",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "LISA M. DUROSS HARNESS, DICKEY & PIERCE, P.L.C., 5445 CORPORATE DRIVE, SUITE 200"
+      }
+    ],
+    "representatives": [
+      {
+        "domesticRepresentativeName": "Lisa M. DuRoss",
+        "representativeAddress": "TROY, MI 48098, UNITED STATES",
+        "representativeAddressLines": [
+          "TROY, MI 48098",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20240930",
+      "active": false,
+      "application": {
+        "applicationDate": "20230222",
+        "applicationNumber": "97806343"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-NO STATEMENT OF USE FILED",
+        "markOfficialStatusCode": "606",
+        "markOfficialStatusDate": "20240930",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20240102"
+      ]
+    },
+    "version": "20260113184325",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORA"
+    }
+  },
+  "_uri": "/mark/us/bf735220-b67a-426c-9f69-abee1d3b8b11",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:27.679Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

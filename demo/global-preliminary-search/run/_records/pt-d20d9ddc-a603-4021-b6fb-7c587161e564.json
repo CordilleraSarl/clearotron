@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/pt/d20d9ddc-a603-4021-b6fb-7c587161e564",
+  "provider": "clarivate",
+  "office": "pt",
+  "guid": "d20d9ddc-a603-4021-b6fb-7c587161e564",
+  "applicationNumber": "768290 MNA",
+  "registrationNumber": null,
+  "applicationDate": "2026-05-06",
+  "registrationDate": null,
+  "expiryDate": "2036-05-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-05-22",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "INVENCORP",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "aparelhos de pesquisa científica e de laboratório, aparelhos educacionais e simuladores; equipamentos de tecnologia da informação, audiovisuais, multimédia e fotográficos; software.",
+      "translation_language": "en",
+      "translation": "scientific and laboratory research equipment, educational equipment and simulators; information technology, audiovisual, multimedia and photographic equipment; software."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "serviços científicos e tecnológicos; serviços de ti (tecnologias de informação); serviços de ciência e tecnologia; testes, autenticação e controlo de qualidade.",
+      "translation_language": "en",
+      "translation": "scientific and technological services; IT services (information technologies); science and technology services; testing, authentication and quality control."
+    }
+  ],
+  "owner": "Invencorp, Lda",
+  "ownerNative": null,
+  "ownerCountry": "PT",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Bairro São José Operário, N.º 142, 3.º Esq. 2205-057 Abrantes - Portugal",
+        "applicantAddressCountryCode": "PT",
+        "applicantAddressCountryName": "Portugal",
+        "applicantName": "Invencorp, Lda"
+      }
+    ],
+    "applicationLanguageCode": "po",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific and laboratory research equipment, educational equipment and simulators; information technology, audiovisual, multimedia and photographic equipment; software.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "aparelhos de pesquisa científica e de laboratório, aparelhos educacionais e simuladores; equipamentos de tecnologia da informação, audiovisuais, multimédia e fotográficos; software."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "scientific and technological services; IT services (information technologies); science and technology services; testing, authentication and quality control.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "serviços científicos e tecnológicos; serviços de ti (tecnologias de informação); serviços de ciência e tecnologia; testes, autenticação e controlo de qualidade."
+        }
+      ]
+    },
+    "id": "d20d9ddc-a603-4021-b6fb-7c587161e564",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "99/2026"
+      }
+    ],
+    "recordLastUpdated": "20260804",
+    "registrationOfficeCode": "PT",
+    "registrationOfficeName": "Portugal",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260506",
+        "applicationNumber": "768290 MNA"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360506",
+      "lastPublicationDate": "20260522",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260804020036",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "INVENCORP"
+    }
+  },
+  "_uri": "/mark/pt/d20d9ddc-a603-4021-b6fb-7c587161e564",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

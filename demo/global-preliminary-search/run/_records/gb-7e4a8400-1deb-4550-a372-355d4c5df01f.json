@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/gb/7e4a8400-1deb-4550-a372-355d4c5df01f",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "7e4a8400-1deb-4550-a372-355d4c5df01f",
+  "applicationNumber": "4083801",
+  "registrationNumber": "4083801",
+  "applicationDate": "2024-08-05",
+  "registrationDate": "2024-10-25",
+  "expiryDate": "2034-08-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Grosvenor Nursing",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Professional staffing services;Employment staffing consultation services;Personnel recruitment agency services;Personnel recruitment services and employment agencies;Recruitment and personnel management services;Staff recruitment services;Personnel recruitment services;Recruitment of temporary personnel;Consultancy of personnel recruitment;Personnel recruitment consultancy;Staff recruitment consultancy services;Personnel management and employment consultancy;Interviewing services [for personnel recruitment];Personnel recruitment;Recruitment of personnel;Staff recruitment;Personnel placement and recruitment;Personnel management consulting;Job agency services for para-medical personnel;Temporary personnel employment services;Recruitment of high-level management personnel;Job agency services for medical personnel;Recruitment of executive staff;Employment agency services relating to placement of medical and nursing personnel;Personnel management consultancy services;Personnel management services;Temporary personnel placement services;Management consultancy (Personnel -);Personnel management consultancy;Personnel placement consultancy;Personnel recruitment advertising;Clerical employment agency services;Executive recruitment services;Personnel resources management;Temporary personnel services;Permanent staff recruitment;Employment recruiting services;Consultancy relating to personnel recruitment;Personnel placement services;Employment agency services relating to nurses;Staff placement services;Personnel consultancy;Personnel management;Executive recruiting services;Consultancy and advisory services relating to personnel recruitment;Employment recruiting consultancy;Employment agency services for temporary work assignments;Advisory services relating to personnel recruitment;Personnel management assistance services;Business organization and management consultancy including personnel management;Employment agency services;Temporary placement of employees (Services for the -);Recruitment services;Advertising services relating to the recruitment of personnel;Recruitment and placement services;Outsourced administrative management for companies;Recruitment consultancy services;Personnel management consultation;Placement of temporary personnel;Job and personnel placement;Personnel services;Assistance relating to recruitment and placement of staff;Consulting services in business organization and management;Personnel management assistance;Temporary employment agencies;Payroll advisory services;Administrative management of hospitals;Personnel placement;Job agency services;Consultancy and advisory services relating to personnel management;Employment outplacement services;Business organisation and management consultancy in the field of personnel management;Consultancy relating to personnel management;Consultancy relating to the management of personnel;Business organisation and management consulting services;Management advice relating to the recruitment of staff;Administrative services relating to the relocation of personnel;Employment recruitment;Employee relocation services;Consultancy and advisory services relating to personnel placement;Business management and organization consultancy services;Personnel relocation;Professional recruitment services;Placement of staff;Professional consultancy relating to personnel management;Temporary assignment of personnel;Employment recruiting consultation;Employment agencies;Business assistance, management and administrative services;Business organization and management consulting;Staff utilisation planning;Business management and consulting services;Business management consulting services;Business recruitment consultancy;Corporate management consultancy services;Executive placement services;Advisory services relating to personnel placement.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education services for managerial staff;Training services for personnel;Training services for nurses;Management training consultancy services;Management training services;Provision of facilities for employment skills training;Training of personnel in skills relating to office systems;Consultancy services relating to the training of employees.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "en",
+      "description": "Health care;Home health care services;Medical care;Provision of health care services;Medical care services;Nursing care;Mental health services;Advisory services relating to health care;Consulting services relating to health care;Nursing care services;Nursing care (Provision of -);Provision of nursing care;Health care services offered through a network of health care providers on a contract basis;Home-visit nursing care;Medical and healthcare services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "GROSVENOR STAFFING LIMITED",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "92 - 96 Lind Road, Sutton SM1 4PL, Surrey",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "GROSVENOR STAFFING LIMITED"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.04.01",
+      "26.04.07",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Professional staffing services;Employment staffing consultation services;Personnel recruitment agency services;Personnel recruitment services and employment agencies;Recruitment and personnel management services;Staff recruitment services;Personnel recruitment services;Recruitment of temporary personnel;Consultancy of personnel recruitment;Personnel recruitment consultancy;Staff recruitment consultancy services;Personnel management and employment consultancy;Interviewing services [for personnel recruitment];Personnel recruitment;Recruitment of personnel;Staff recruitment;Personnel placement and recruitment;Personnel management consulting;Job agency services for para-medical personnel;Temporary personnel employment services;Recruitment of high-level management personnel;Job agency services for medical personnel;Recruitment of executive staff;Employment agency services relating to placement of medical and nursing personnel;Personnel management consultancy services;Personnel management services;Temporary personnel placement services;Management consultancy (Personnel -);Personnel management consultancy;Personnel placement consultancy;Personnel recruitment advertising;Clerical employment agency services;Executive recruitment services;Personnel resources management;Temporary personnel services;Permanent staff recruitment;Employment recruiting services;Consultancy relating to personnel recruitment;Personnel placement services;Employment agency services relating to nurses;Staff placement services;Personnel consultancy;Personnel management;Executive recruiting services;Consultancy and advisory services relating to personnel recruitment;Employment recruiting consultancy;Employment agency services for temporary work assignments;Advisory services relating to personnel recruitment;Personnel management assistance services;Business organization and management consultancy including personnel management;Employment agency services;Temporary placement of employees (Services for the -);Recruitment services;Advertising services relating to the recruitment of personnel;Recruitment and placement services;Outsourced administrative management for companies;Recruitment consultancy services;Personnel management consultation;Placement of temporary personnel;Job and personnel placement;Personnel services;Assistance relating to recruitment and placement of staff;Consulting services in business organization and management;Personnel management assistance;Temporary employment agencies;Payroll advisory services;Administrative management of hospitals;Personnel placement;Job agency services;Consultancy and advisory services relating to personnel management;Employment outplacement services;Business organisation and management consultancy in the field of personnel management;Consultancy relating to personnel management;Consultancy relating to the management of personnel;Business organisation and management consulting services;Management advice relating to the recruitment of staff;Administrative services relating to the relocation of personnel;Employment recruitment;Employee relocation services;Consultancy and advisory services relating to personnel placement;Business management and organization consultancy services;Personnel relocation;Professional recruitment services;Placement of staff;Professional consultancy relating to personnel management;Temporary assignment of personnel;Employment recruiting consultation;Employment agencies;Business assistance, management and administrative services;Business organization and management consulting;Staff utilisation planning;Business management and consulting services;Business management consulting services;Business recruitment consultancy;Corporate management consultancy services;Executive placement services;Advisory services relating to personnel placement."
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education services for managerial staff;Training services for personnel;Training services for nurses;Management training consultancy services;Management training services;Provision of facilities for employment skills training;Training of personnel in skills relating to office systems;Consultancy services relating to the training of employees."
+        },
+        {
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Health care;Home health care services;Medical care;Provision of health care services;Medical care services;Nursing care;Mental health services;Advisory services relating to health care;Consulting services relating to health care;Nursing care services;Nursing care (Provision of -);Provision of nursing care;Health care services offered through a network of health care providers on a contract basis;Home-visit nursing care;Medical and healthcare services."
+        }
+      ]
+    },
+    "id": "7e4a8400-1deb-4550-a372-355d4c5df01f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.04.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2024/033"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240805",
+        "applicationNumber": "4083801"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340805",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20241025",
+        "registrationNumber": "4083801"
+      }
+    },
+    "version": "20250627223606",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Grosvenor Nursing"
+    }
+  },
+  "_uri": "/mark/gb/7e4a8400-1deb-4550-a372-355d4c5df01f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.814Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

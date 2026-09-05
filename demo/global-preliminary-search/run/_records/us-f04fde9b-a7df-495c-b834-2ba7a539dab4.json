@@ -1,0 +1,247 @@
+{
+  "uri": "/mark/us/f04fde9b-a7df-495c-b834-2ba7a539dab4",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f04fde9b-a7df-495c-b834-2ba7a539dab4",
+  "applicationNumber": "87014766",
+  "registrationNumber": null,
+  "applicationDate": "2016-04-26",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2017-02-14",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "VENCORPS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Computer software platforms for Venture Capital through social networking",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Spencer Trask Innovations, LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1700 E. Putnam Avenue, Old Greenwich, CT, 06870",
+        "applicantAddressCity": "Old Greenwich",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "06870",
+        "applicantAddressStateName": "CONNECTICUT",
+        "applicantAddressStreet": "1700 E. Putnam Avenue",
+        "applicantJurisdictionOfIncorporation": "CONNECTICUT",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Spencer Trask Innovations, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Computer software platforms for Venture Capital through social networking"
+        }
+      ]
+    },
+    "id": "f04fde9b-a7df-495c-b834-2ba7a539dab4",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20170316",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20170316",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20160813",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20160813",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20160813",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20160810",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20160430",
+        "descriptionText": "NOTICE OF PSEUDO MARK E-MAILED"
+      },
+      {
+        "date": "20160429",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20160429",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1700 E. Putnam Avenue, Old Greenwich, CT, 06870",
+        "city": "Old Greenwich",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Spencer Trask Innovations, LLC",
+        "postalCode": "06870",
+        "stateName": "CONNECTICUT",
+        "street": "1700 E. Putnam Avenue"
+      },
+      {
+        "address": "1700 E. Putnam Avenue, Old Greenwich, CT, 06870",
+        "city": "Old Greenwich",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "CONNECTICUT",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Spencer Trask Innovations, LLC",
+        "postalCode": "06870",
+        "stateName": "CONNECTICUT",
+        "street": "1700 E. Putnam Avenue"
+      }
+    ],
+    "recordLastUpdated": "20260111",
+    "refusalInformation": [
+      {
+        "referencedMarks": [
+          {
+            "applicationNumber": "75428685",
+            "markCurrentStatus": "Renewed",
+            "markVerbalElementText": "VENTURE CORPS",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "75428685",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURE CORPS",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "75428685",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURE CORPS",
+            "refusalStatus": "Cited"
+          },
+          {
+            "applicationNumber": "75428685",
+            "markCurrentStatus": "Cancelled",
+            "markVerbalElementText": "VENTURE CORPS",
+            "refusalStatus": "Cited"
+          }
+        ],
+        "refusalStatus": "Refused"
+      }
+    ],
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "OLD GREENWICH, CT 06870, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "OLD GREENWICH, CT 06870",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "SPENCER TRASK INNOVATIONS, LLC, 1700 E. PUTNAM AVENUE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "OLD GREENWICH, CT 06870, UNITED STATES",
+        "representativeAddressLines": [
+          "OLD GREENWICH, CT 06870",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20170214",
+      "active": false,
+      "application": {
+        "applicationDate": "20160426",
+        "applicationNumber": "87014766"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20080101"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20080101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20170316",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260111034414",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "VEN CORPS",
+      "markVerbalElementText": "VENCORPS"
+    }
+  },
+  "_uri": "/mark/us/f04fde9b-a7df-495c-b834-2ba7a539dab4",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:46.745Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

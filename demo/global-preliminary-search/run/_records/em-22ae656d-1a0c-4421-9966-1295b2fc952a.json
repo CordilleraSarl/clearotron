@@ -1,0 +1,1399 @@
+{
+  "uri": "/mark/em/22ae656d-1a0c-4421-9966-1295b2fc952a",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "22ae656d-1a0c-4421-9966-1295b2fc952a",
+  "applicationNumber": "19341901",
+  "registrationNumber": "19341901",
+  "applicationDate": "2026-04-02",
+  "registrationDate": "2026-07-19",
+  "expiryDate": "2036-04-02",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-04-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "QORO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "cs",
+      "description": "Software pro komunikaci, vytvárení sítí a sociální síte; Pocítacové softwarové platformy pro navazování spolecenských vztahu; Mobilní aplikace; Sociální software; Software pro streaming médií; Software na posílání on line zpráv; Komunitní software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "cs",
+      "description": "Reklamní, marketingové a propagacní sluzby; Sluzby zamerené na správu on-line komunity; Event marketing (získávání zákazníku porádáním akcí); Sluzby v oblasti obchodních sítí; Sluzby v oblasti obchodních sítí online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Navrhování softwaru pro on-line navazování sociálních kontaktu; Software jako sluzba [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "cs",
+      "description": "Sluzby navazování sociálních kontaktu na internetu.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "da",
+      "description": "Software til kommunikation, netværk og social networking; Computersoftwareplatforme til social networking; Mobilapplikationer; Social software; Software til mediestreaming; Software til onlinetransmission af meddelelser; Software til sociale netværk.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "da",
+      "description": "Virksomhed vedrørende reklame, marketing og salgsfremstød; Online community Manager; Event marketing; Forretningsmæssige netværkstjenester; Online forretningsmæssige netværkstjenester.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Design af software til online social networking; Software as a service [saas].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "da",
+      "description": "Online sociale netværkstjenester.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "nl",
+      "description": "Communicatie-, netwerking- en sociaal networkingssoftware; Computer softwareplatforms voor sociale netwerken; Mobiele applicaties; Sociale software; Software voor mediastreaming; Software voor on-lineboodschappen; Software voor gemeenschappen.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "nl",
+      "description": "Reclame, marketing en promotionele diensten; Online community management; Eventmarketing; Commerciële netwerkdiensten; Online communicatienetwerkdiensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Ontwerp van software voor sociale onlinenetwerken; Ter beschikking stellen van software [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "nl",
+      "description": "Online sociale netwerkdiensten.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Communication, networking and social networking software; Computer software platforms for social networking; Mobile apps; Social software; Media streaming software; Internet messaging software; Community software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Advertising, marketing and promotional services; Online community management services; Event marketing; Business networking services; Online business networking services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Design of online social networking software; Software as a service.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "en",
+      "description": "Online social networking services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "et",
+      "description": "Suhtlus-, võrgustus- ja sotsiaalvõrgustustarkvara; Sotsiaalse võrgustumise tarkvaraplatvormid; Mobiilirakendused; Sotsiaaltarkvara; Meedia voogedastustarkvara; Tarkavara veebis sõnumite vahetamiseks; Kogukonnatarkvara.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "et",
+      "description": "Reklaam ja turundus; Veebis kommuunide haldamise teenused; Ürituste turundamine; Ärikontaktide võrgustiku loomise teenused; Sidusad ärivõrguteenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Sidusa sotsiaalvõrgustumise tarkvara projekteerimine; Pilveteenused [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "et",
+      "description": "On-line-suhtlusvõrgustike teenused.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fi",
+      "description": "Viestinnän, verkostoitumisen ja sosiaalisen verkostoitumisen ohjelmistot; Tietokoneohjelmistoalustat sosiaalista verkostoitumista varten; Mobiilisovellukset; Sosiaaliset ohjelmistot; Median suoratoisto-ohjelmistot; Ohjelmistot online-viestintään; Yhteisöohjelmisto.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fi",
+      "description": "Mainonta-, markkinointi- ja myynninedistämispalvelut; Tietokoneistetut yhteisönjohtopalvelut; Tapahtumien markkinointi; Liiketoimintaan liittyvät verkostoitumispalvelut; Liiketoimintaan liittyvät online-verkostoitumispalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Verkossa toimivan sosiaalisen verkostoitumisohjelmiston suunnittelu; Verkkosovelluspalvelut [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fi",
+      "description": "Online-muotoiset sosiaaliset verkostoitumispalvelut.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": "Logiciels de communication, de réseautage et de réseautage social; Plateformes logicielles informatiques pour le réseautage social; Applications logicielles pour téléphones mobiles; Logiciels sociaux; Logiciels de diffusion de médias en continu; Logiciels de messagerie en ligne; Logiciels communautaires.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": "Services de publicité, de marketing et de promotion; Services d'un animateur de communauté en ligne; Services de marketing événementiel; Services de réseautage d'affaires; Services de réseautage commercial en ligne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Conception de logiciels de réseautage social en ligne; Logiciels en tant que service [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "fr",
+      "description": "Services de réseautage social en ligne.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "de",
+      "description": "Kommunikations- und Netzwerksoftware sowie Software für soziale Netzwerke; Computersoftwareplattformen für soziale Netzwerke; Mobile Apps; Social Software; Medien-Streaming-Software; Software für Online-Nachrichtenübermittlung; Software für virtuelle soziale Netzwerke.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "de",
+      "description": "Werbung, Marketing und Verkaufsförderung; Verwaltung von Internet-Communities; Event-Marketing; Dienstleistungen in Bezug auf Unternehmens-Networking; Online-Dienstleistungen in Bezug auf Unternehmens-Networking.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Entwurf von Software für soziale Online-Netzwerke; Software as a Service [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "de",
+      "description": "Knüpfen von sozialen Kontakten im Internet.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hr",
+      "description": "Softver za komunikaciju, umrezavanje i drustveno umrezavanje; Racunalne softverske platforme za drustveno umrezavanje; Mobilne aplikacije; Drustveni softver; Softver za strujanje medija; Racunalni programi za online slanje poruka; Zajednicki softver.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hr",
+      "description": "Usluge oglasavanja, marketinga i promidzbe; Usluge upravljanja virtualnim zajednicama; Event marketing; Usluge poslovnog umrezavanja; Usluge online poslovnog umrezavanja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Dizajn online softvera za drustvene mreze; Softver kao usluga [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hr",
+      "description": "Usluge online drustvene mreze.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "hu",
+      "description": "Kommunikációs, hálózatépíto és közösségi hálózati szoftverek; Számítógépes szoftver-platformok szociális hálózatépítés céljából; Mobil alkalmazások; Közösségi szoftverek; Média streaming szoftverek; Szoftverek on-line üzenetküldéshez.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "hu",
+      "description": "Reklámozási, marketing és promóciós szolgáltatások; Online közösségi gazdálkodási szolgáltatások; Eseménymarketing; Üzleti hálózati szolgáltatások; Online üzleti hálózati szolgáltatások.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Online közösségi hálózati szoftverek tervezése; Szoftver mint szolgáltatás [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "hu",
+      "description": "Online közösségi hálózatok szolgáltatásai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "it",
+      "description": "Software per comunicazione, reti e reti sociali; Piattaforme software informatiche per socializzazione in rete; Applicazioni per cellulari; Software sociale; Software per lo streaming di contenuti multimediali; Software per l'invio di messaggi on-line; Software per comunità.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "it",
+      "description": "Servizi pubblicitari, di marketing e promozionali; Servizi di gestione di comunità online; Marketing degli eventi; Servizi di networking aziendale; Servizi di networking aziendale online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Progettazione di software online di social networking; Software come servizio [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "it",
+      "description": "Servizi online di social networking.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lt",
+      "description": "Komunikacijos, tinklaveikos ir socialines tinklaveikos programine iranga; Kompiuteriu programines irangos platformos socialines tinklaveikos reikmems; Mobiliuju irenginiu taikomoji programine iranga; Socialine programine iranga; Mediju srautinio transliavimo programine iranga; Tiesioginiu pranesimu internetu programine iranga; Virtualiuju socialiniu tinklu programine iranga.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lt",
+      "description": "Reklamos, rinkodaros ir pardavimu skatinimo paslaugos; Internetines bendruomenes valdymo paslaugos; Renginiu rinkodaros paslaugos; Verslo tinklu paslaugos; Internetines verslo tinklu paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Internetines socialines tinklaveikos programines irangos dizainas; Programine iranga kaip paslauga [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lt",
+      "description": "Internetiniu socialiniu tinklu paslaugos.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "lv",
+      "description": "Sakaru, tiklosanas un socialas tiklosanas programmatura; Datoru programmaturas platformas socialai tiklosanai; Mobilas lietotnes; Sociala programmatura; Programmatura plassazinas lidzeklu satura straumesanai; Programmatura zinojumu apmainas nodrosinasanai tiessaistes rezima; Kopienu programmatura.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "lv",
+      "description": "Reklamas, tirgvedibas un precu noieta veicinasanas pakalpojumi; Tiessaistes kopienu vadibas pakalpojumi; Pasakumu marketinga pakalpojumi; Uznemumu sakaru veidosana; Tiessaistes uznemejdarbibas tiklosanas pakalpojumi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Tiessaistes socialo tiklu programmaturas izstrade; Programmatura ka pakalpojums (SaaS).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "lv",
+      "description": "Socialas tiklosanas pakalpojumi tiessaiste.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "mt",
+      "description": "Softwer tal-komunikazzjoni, tan-netwerking u ta' netwerking socjali; Pjattaformi tas-softwer tal-kompjuter ghan-netwerking socjali; Applikazzjoni tat-taghmir cellulari; Softwer socjali; Softwer ghall-istrijming tal-midja; Softwer ghall-messaggi bl-internet; Softwer ghall-komunità.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' reklamar, kummercjalizzazzjoni u promozzjonali; Servizzi ta' gestjoni tal-komunità online; Marketing b'uzu ta' eventi; Servizzi ta' netwerking ta' negozji; Servizzi ta' netwerking tan-negozju onlajn.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Tfassil ta' software tan-networking socjali online; Softwer bhala servizz [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "mt",
+      "description": "Servizzi ta' netwerking socjali online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pl",
+      "description": "Oprogramowanie komunikacyjne, sieciowe i do sieci spolecznosciowych; Platformy oprogramowania komputerowego dla sieci spolecznosciowych; Mobilne aplikacje; Oprogramowanie spoleczne; Oprogramowanie do transmisji strumieniowej mediów; Oprogramowanie do przesylania wiadomosci on-line; Oprogramowanie spolecznosciowe.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pl",
+      "description": "Uslugi reklamowe, marketingowe i promocyjne; Uslugi zarzadzania spolecznoscia online; Marketing imprez i wydarzen; Uslugi w zakresie nawiazywania kontaktów miedzy przedsiebiorstwami gospodarczymi; Uslugi online z zakresu nawiazywania kontaktów biznesowych.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Projektowanie oprogramowania do sieci spolecznosciowych online; Oprogramowanie jako usluga [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pl",
+      "description": "Uslugi serwisów spolecznosciowych online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "pt",
+      "description": "Software de comunicação, redes e redes sociais; Plataformas de software para atividades de rede social; Aplicações móveis; Software social; Software para transmissão contínua de conteúdos multimédia; Software para transmissão de mensagens em linha (online); Software comunitário.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "pt",
+      "description": "Serviços de publicidade, de marketing e de promoção; Serviços de gestão de comunidades em linha; Marketing sob a forma de eventos; Serviços de redes empresariais; Serviços de redes comerciais em linha.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Conceção de software para atividades de rede social em linha; Software como serviço [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "pt",
+      "description": "Serviços de redes sociais on-line.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "ro",
+      "description": "Software de comunicare, retelizare si retele sociale; Platforme de software de calculator pentru retele sociale; Aplicatii mobile; Software social; Software pentru streaming de multimedia; Software pentru mesagerie on-line; Software pentru comunitati de utilizatori.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "ro",
+      "description": "Servicii de publicitate, marketing si promovare; Servicii de administrare a comunitatilor online; Marketing pentru evenimente; Servicii de colaborari de afaceri în retea; Servicii on-line de colaborari de afaceri în retea.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Design de software pentru retele de socializare online; Software ca serviciu [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "ro",
+      "description": "Servicii de retele de socializare on-line.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sk",
+      "description": "Softvér na komunikáciu, vytváranie sietí a sociálne siete; Pocítacové softvérové platformy pre nadväzovanie spolocenských vztahov; Mobilné aplikácie; Sociálny softvér; Softvér na mediálny prenos v reálnom case; Softvér pre online posielanie správ; Komunitný softvér.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sk",
+      "description": "Reklamné, marketingové a propagacné sluzby; Sluzby riadenia online komunity; Získavanie zákazníkov usporadúvaním reklamných podujatí (event marketing); Sluzby v oblasti obchodných sietí; Online sluzby v oblasti získavania obchodných kontaktov.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Navrhovanie softvéru pre nadväzovanie kontaktov online; Poskytovanie softvéru prostredníctvom internetu (SaaS).",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sk",
+      "description": "Online sluzby sociálnych sietí.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sl",
+      "description": "Programska oprema za komuniciranje, mrezenje in druzbeno mrezenje; Platforme racunalniske programske opreme za druzbeno mrezenje; Mobilna aplikacija; Druzabna programska oprema; Programska oprema za pretocni prenos predstavnosti; Programska oprema za spletno posiljanje sporocil; Programska oprema za skupnost.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sl",
+      "description": "Oglasevalske, trzne in promocijske storitve; Storitve upravljanja spletne skupnosti; Trzenje dogodkov; Storitve poslovnega mrezenja; Storitve spletnega poslovnega mrezenja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Oblikovanje programske opreme za spletno druzbeno mrezenje; Programska oprema kot storitev [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sl",
+      "description": "Spletne storitve druzabnega mrezenja.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Software para la comunicación, las redes y las redes sociales; Plataformas de software para establecer relaciones sociales; Aplicaciones de móviles; Software social; Software de emisión en continuo de medios; Programas para mensajes en línea (online); Software comunitario.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "es",
+      "description": "Servicios promocionales, de marketing y publicidad; Servicios de gestion de comunidad en línea; Marketing mediante eventos; Servicios de negocios en red; Servicios de conexión en red de negocios en línea.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Diseño de software de redes sociales en línea; Software como servicio [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "es",
+      "description": "Servicios de redes sociales en línea.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        9
+      ],
+      "language": "sw",
+      "description": "Programvaror för kommunikation, nätverkande och socialt nätverkande; Programvaruplattformar för sociala nätverk; Mobilappar; Sociala programvaror; Programvara för mediastreaming; Programvara för online-överföring av meddelanden; Mjukvaror för sociala nätverk.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "sw",
+      "description": "Reklam, marknadsföring och säljfrämjande tjänster; Online community management; Evenemangsmarknadsföring; Skapande av affärskontakter; Företagsnätverkstjänster online.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Design av programvara för socialt nätverkande online; Molntjänster [SaaS].",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": "sw",
+      "description": "Sociala nätverkstjänster online.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "QORO LTD",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Javier Serrano Irurzun",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "128 City Road,London, EC1V 2NJ",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "QORO LTD"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Software pro komunikaci, vytvárení sítí a sociální síte; Pocítacové softwarové platformy pro navazování spolecenských vztahu; Mobilní aplikace; Sociální software; Software pro streaming médií; Software na posílání on line zpráv; Komunitní software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Reklamní, marketingové a propagacní sluzby; Sluzby zamerené na správu on-line komunity; Event marketing (získávání zákazníku porádáním akcí); Sluzby v oblasti obchodních sítí; Sluzby v oblasti obchodních sítí online."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Navrhování softwaru pro on-line navazování sociálních kontaktu; Software jako sluzba [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Sluzby navazování sociálních kontaktu na internetu."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Software til kommunikation, netværk og social networking; Computersoftwareplatforme til social networking; Mobilapplikationer; Social software; Software til mediestreaming; Software til onlinetransmission af meddelelser; Software til sociale netværk."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Virksomhed vedrørende reklame, marketing og salgsfremstød; Online community Manager; Event marketing; Forretningsmæssige netværkstjenester; Online forretningsmæssige netværkstjenester."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Design af software til online social networking; Software as a service [saas]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Online sociale netværkstjenester."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Communicatie-, netwerking- en sociaal networkingssoftware; Computer softwareplatforms voor sociale netwerken; Mobiele applicaties; Sociale software; Software voor mediastreaming; Software voor on-lineboodschappen; Software voor gemeenschappen."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Reclame, marketing en promotionele diensten; Online community management; Eventmarketing; Commerciële netwerkdiensten; Online communicatienetwerkdiensten."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Ontwerp van software voor sociale onlinenetwerken; Ter beschikking stellen van software [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Online sociale netwerkdiensten."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Communication, networking and social networking software; Computer software platforms for social networking; Mobile apps; Social software; Media streaming software; Internet messaging software; Community software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Advertising, marketing and promotional services; Online community management services; Event marketing; Business networking services; Online business networking services."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Design of online social networking software; Software as a service."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online social networking services."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Suhtlus-, võrgustus- ja sotsiaalvõrgustustarkvara; Sotsiaalse võrgustumise tarkvaraplatvormid; Mobiilirakendused; Sotsiaaltarkvara; Meedia voogedastustarkvara; Tarkavara veebis sõnumite vahetamiseks; Kogukonnatarkvara."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Reklaam ja turundus; Veebis kommuunide haldamise teenused; Ürituste turundamine; Ärikontaktide võrgustiku loomise teenused; Sidusad ärivõrguteenused."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Sidusa sotsiaalvõrgustumise tarkvara projekteerimine; Pilveteenused [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "On-line-suhtlusvõrgustike teenused."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Viestinnän, verkostoitumisen ja sosiaalisen verkostoitumisen ohjelmistot; Tietokoneohjelmistoalustat sosiaalista verkostoitumista varten; Mobiilisovellukset; Sosiaaliset ohjelmistot; Median suoratoisto-ohjelmistot; Ohjelmistot online-viestintään; Yhteisöohjelmisto."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Mainonta-, markkinointi- ja myynninedistämispalvelut; Tietokoneistetut yhteisönjohtopalvelut; Tapahtumien markkinointi; Liiketoimintaan liittyvät verkostoitumispalvelut; Liiketoimintaan liittyvät online-verkostoitumispalvelut."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Verkossa toimivan sosiaalisen verkostoitumisohjelmiston suunnittelu; Verkkosovelluspalvelut [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Online-muotoiset sosiaaliset verkostoitumispalvelut."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Logiciels de communication, de réseautage et de réseautage social; Plateformes logicielles informatiques pour le réseautage social; Applications logicielles pour téléphones mobiles; Logiciels sociaux; Logiciels de diffusion de médias en continu; Logiciels de messagerie en ligne; Logiciels communautaires."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de publicité, de marketing et de promotion; Services d'un animateur de communauté en ligne; Services de marketing événementiel; Services de réseautage d'affaires; Services de réseautage commercial en ligne."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Conception de logiciels de réseautage social en ligne; Logiciels en tant que service [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Services de réseautage social en ligne."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Kommunikations- und Netzwerksoftware sowie Software für soziale Netzwerke; Computersoftwareplattformen für soziale Netzwerke; Mobile Apps; Social Software; Medien-Streaming-Software; Software für Online-Nachrichtenübermittlung; Software für virtuelle soziale Netzwerke."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Werbung, Marketing und Verkaufsförderung; Verwaltung von Internet-Communities; Event-Marketing; Dienstleistungen in Bezug auf Unternehmens-Networking; Online-Dienstleistungen in Bezug auf Unternehmens-Networking."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Entwurf von Software für soziale Online-Netzwerke; Software as a Service [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Knüpfen von sozialen Kontakten im Internet."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Softver za komunikaciju, umrezavanje i drustveno umrezavanje; Racunalne softverske platforme za drustveno umrezavanje; Mobilne aplikacije; Drustveni softver; Softver za strujanje medija; Racunalni programi za online slanje poruka; Zajednicki softver."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge oglasavanja, marketinga i promidzbe; Usluge upravljanja virtualnim zajednicama; Event marketing; Usluge poslovnog umrezavanja; Usluge online poslovnog umrezavanja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Dizajn online softvera za drustvene mreze; Softver kao usluga [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Usluge online drustvene mreze."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Kommunikációs, hálózatépíto és közösségi hálózati szoftverek; Számítógépes szoftver-platformok szociális hálózatépítés céljából; Mobil alkalmazások; Közösségi szoftverek; Média streaming szoftverek; Szoftverek on-line üzenetküldéshez."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Reklámozási, marketing és promóciós szolgáltatások; Online közösségi gazdálkodási szolgáltatások; Eseménymarketing; Üzleti hálózati szolgáltatások; Online üzleti hálózati szolgáltatások."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Online közösségi hálózati szoftverek tervezése; Szoftver mint szolgáltatás [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Online közösségi hálózatok szolgáltatásai."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Software per comunicazione, reti e reti sociali; Piattaforme software informatiche per socializzazione in rete; Applicazioni per cellulari; Software sociale; Software per lo streaming di contenuti multimediali; Software per l'invio di messaggi on-line; Software per comunità."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi pubblicitari, di marketing e promozionali; Servizi di gestione di comunità online; Marketing degli eventi; Servizi di networking aziendale; Servizi di networking aziendale online."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Progettazione di software online di social networking; Software come servizio [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Servizi online di social networking."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Komunikacijos, tinklaveikos ir socialines tinklaveikos programine iranga; Kompiuteriu programines irangos platformos socialines tinklaveikos reikmems; Mobiliuju irenginiu taikomoji programine iranga; Socialine programine iranga; Mediju srautinio transliavimo programine iranga; Tiesioginiu pranesimu internetu programine iranga; Virtualiuju socialiniu tinklu programine iranga."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Reklamos, rinkodaros ir pardavimu skatinimo paslaugos; Internetines bendruomenes valdymo paslaugos; Renginiu rinkodaros paslaugos; Verslo tinklu paslaugos; Internetines verslo tinklu paslaugos."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Internetines socialines tinklaveikos programines irangos dizainas; Programine iranga kaip paslauga [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Internetiniu socialiniu tinklu paslaugos."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Sakaru, tiklosanas un socialas tiklosanas programmatura; Datoru programmaturas platformas socialai tiklosanai; Mobilas lietotnes; Sociala programmatura; Programmatura plassazinas lidzeklu satura straumesanai; Programmatura zinojumu apmainas nodrosinasanai tiessaistes rezima; Kopienu programmatura."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Reklamas, tirgvedibas un precu noieta veicinasanas pakalpojumi; Tiessaistes kopienu vadibas pakalpojumi; Pasakumu marketinga pakalpojumi; Uznemumu sakaru veidosana; Tiessaistes uznemejdarbibas tiklosanas pakalpojumi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Tiessaistes socialo tiklu programmaturas izstrade; Programmatura ka pakalpojums (SaaS)."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Socialas tiklosanas pakalpojumi tiessaiste."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Softwer tal-komunikazzjoni, tan-netwerking u ta' netwerking socjali; Pjattaformi tas-softwer tal-kompjuter ghan-netwerking socjali; Applikazzjoni tat-taghmir cellulari; Softwer socjali; Softwer ghall-istrijming tal-midja; Softwer ghall-messaggi bl-internet; Softwer ghall-komunità."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' reklamar, kummercjalizzazzjoni u promozzjonali; Servizzi ta' gestjoni tal-komunità online; Marketing b'uzu ta' eventi; Servizzi ta' netwerking ta' negozji; Servizzi ta' netwerking tan-negozju onlajn."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Tfassil ta' software tan-networking socjali online; Softwer bhala servizz [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Servizzi ta' netwerking socjali online."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Oprogramowanie komunikacyjne, sieciowe i do sieci spolecznosciowych; Platformy oprogramowania komputerowego dla sieci spolecznosciowych; Mobilne aplikacje; Oprogramowanie spoleczne; Oprogramowanie do transmisji strumieniowej mediów; Oprogramowanie do przesylania wiadomosci on-line; Oprogramowanie spolecznosciowe."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi reklamowe, marketingowe i promocyjne; Uslugi zarzadzania spolecznoscia online; Marketing imprez i wydarzen; Uslugi w zakresie nawiazywania kontaktów miedzy przedsiebiorstwami gospodarczymi; Uslugi online z zakresu nawiazywania kontaktów biznesowych."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Projektowanie oprogramowania do sieci spolecznosciowych online; Oprogramowanie jako usluga [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Uslugi serwisów spolecznosciowych online."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Software de comunicação, redes e redes sociais; Plataformas de software para atividades de rede social; Aplicações móveis; Software social; Software para transmissão contínua de conteúdos multimédia; Software para transmissão de mensagens em linha (online); Software comunitário."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de publicidade, de marketing e de promoção; Serviços de gestão de comunidades em linha; Marketing sob a forma de eventos; Serviços de redes empresariais; Serviços de redes comerciais em linha."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Conceção de software para atividades de rede social em linha; Software como serviço [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de redes sociais on-line."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Software de comunicare, retelizare si retele sociale; Platforme de software de calculator pentru retele sociale; Aplicatii mobile; Software social; Software pentru streaming de multimedia; Software pentru mesagerie on-line; Software pentru comunitati de utilizatori."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de publicitate, marketing si promovare; Servicii de administrare a comunitatilor online; Marketing pentru evenimente; Servicii de colaborari de afaceri în retea; Servicii on-line de colaborari de afaceri în retea."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Design de software pentru retele de socializare online; Software ca serviciu [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Servicii de retele de socializare on-line."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Softvér na komunikáciu, vytváranie sietí a sociálne siete; Pocítacové softvérové platformy pre nadväzovanie spolocenských vztahov; Mobilné aplikácie; Sociálny softvér; Softvér na mediálny prenos v reálnom case; Softvér pre online posielanie správ; Komunitný softvér."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Reklamné, marketingové a propagacné sluzby; Sluzby riadenia online komunity; Získavanie zákazníkov usporadúvaním reklamných podujatí (event marketing); Sluzby v oblasti obchodných sietí; Online sluzby v oblasti získavania obchodných kontaktov."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Navrhovanie softvéru pre nadväzovanie kontaktov online; Poskytovanie softvéru prostredníctvom internetu (SaaS)."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Online sluzby sociálnych sietí."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Programska oprema za komuniciranje, mrezenje in druzbeno mrezenje; Platforme racunalniske programske opreme za druzbeno mrezenje; Mobilna aplikacija; Druzabna programska oprema; Programska oprema za pretocni prenos predstavnosti; Programska oprema za spletno posiljanje sporocil; Programska oprema za skupnost."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oglasevalske, trzne in promocijske storitve; Storitve upravljanja spletne skupnosti; Trzenje dogodkov; Storitve poslovnega mrezenja; Storitve spletnega poslovnega mrezenja."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Oblikovanje programske opreme za spletno druzbeno mrezenje; Programska oprema kot storitev [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Spletne storitve druzabnega mrezenja."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Software para la comunicación, las redes y las redes sociales; Plataformas de software para establecer relaciones sociales; Aplicaciones de móviles; Software social; Software de emisión en continuo de medios; Programas para mensajes en línea (online); Software comunitario."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios promocionales, de marketing y publicidad; Servicios de gestion de comunidad en línea; Marketing mediante eventos; Servicios de negocios en red; Servicios de conexión en red de negocios en línea."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Diseño de software de redes sociales en línea; Software como servicio [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de redes sociales en línea."
+        },
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Programvaror för kommunikation, nätverkande och socialt nätverkande; Programvaruplattformar för sociala nätverk; Mobilappar; Sociala programvaror; Programvara för mediastreaming; Programvara för online-överföring av meddelanden; Mjukvaror för sociala nätverk."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Reklam, marknadsföring och säljfrämjande tjänster; Online community management; Evenemangsmarknadsföring; Skapande av affärskontakter; Företagsnätverkstjänster online."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Design av programvara för socialt nätverkande online; Molntjänster [SaaS]."
+        },
+        {
+          "intClassNumber": "45",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Sociala nätverkstjänster online."
+        }
+      ]
+    },
+    "id": "22ae656d-1a0c-4421-9966-1295b2fc952a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "67"
+      }
+    ],
+    "recordLastUpdated": "20260726",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "C/ Fernández de los Ríos, 87, bajo dcha. interior,Madrid, 28015",
+        "representativeAddressCountryCode": "ES",
+        "representativeAddressCountryName": "Spain",
+        "representativeName": "Javier Serrano Irurzun"
+      }
+    ],
+    "secondLanguageCode": "es",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260402",
+        "applicationNumber": "19341901"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360402",
+      "lastPublicationDate": "20260410",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260719",
+        "registrationNumber": "19341901"
+      }
+    },
+    "version": "20260726020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORO"
+    }
+  },
+  "_uri": "/mark/em/22ae656d-1a0c-4421-9966-1295b2fc952a",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:17.666Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

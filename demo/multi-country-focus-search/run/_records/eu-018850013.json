@@ -1,0 +1,196 @@
+{
+  "uri": "/mark/eu/018850013",
+  "provider": "euipo",
+  "office": "EU",
+  "id": "018850013",
+  "applicationNumber": "018850013",
+  "registrationNumber": "018850013",
+  "applicationDate": "2023-03-17",
+  "registrationDate": "2024-03-06",
+  "expiryDate": "2033-03-17",
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "statusDate": "2024-03-07",
+  "markText": "Ori",
+  "markFeature": "WORD",
+  "markKind": "INDIVIDUAL",
+  "markBasis": "EU_TRADEMARK",
+  "niceClasses": [],
+  "owner": "Oribiotech Limited",
+  "ownerCountry": null,
+  "representative": "HGF B.V.",
+  "goodsAndServices": [
+    {
+      "classNumber": 1,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Chemical, biological and biochemical preparations for industrial and scientific purposes, other than for medical purposes",
+            " chemicals and reagents for industrial and scientific purposes, other than for medical purposes",
+            " cell culture media for scientific use",
+            " biological tissue and cell cultures for industrial and scientific purposes chemicals, biochemical and biological preparations for cell culture, cell therapy or gene therapy",
+            " cell growth media for cell culture, cell therapy or gene therapy",
+            " biological tissue, namely, cultures, human tissue, animal tissue and cell cultures for industrial and scientific purposes"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 7,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Industrial machines and manufacturing equipment, namely, electric and gas operated tube welders",
+            " Industrial machines and manufacturing equipment, namely, electric and gas operated tube welders for cell culture, cell therapy or gene therapy",
+            " Industrial machines in the nature of industrial bioreactors for manufacturing scientific and pharmaceutical preparations employing cell cultures",
+            " racking specially adapted for bioreactors",
+            " racks sold as components of industrial machines for use in manufacturing biopharmaceuticals used for holding cell culture, cell therapy or gene therapy manufacturing equipment",
+            " bellows, bags, vessels, bottles and containers for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from bioreactors being industrial machines for manufacturing",
+            " bellows being parts of machines for dispensing fluids, stem cells, cell cultures or cell culture media to or from bioreactors being industrial machines for manufacturing",
+            " cassettes for industrial bioreactors and disposable cassettes for industrial bioreactors, each specifically adapted for bioreactors in the nature of manufacturing equipment for cell cultures",
+            " parts, including disposable parts, for industrial manufacturing equipment for cell culture, cell therapy or gene therapy, namely plastic connectors",
+            " structural replacement parts, including disposable parts, specifically adapted for bioreactors in the nature of industrial manufacturing equipment for cell culture, cell therapy or gene therapy",
+            " connectors for industrial manufacturing apparatus for cell culture, cell therapy or gene therapy, namely plastic pipe connectors",
+            " sterile connector, namely, needle based connectors made of plastic being parts for industrial manufacturing apparatus for cell culture, cell therapy or gene therapy",
+            " industrial incubators for cell culture, cell therapy or gene therapy",
+            " industrial incubators for maintaining cell cultures",
+            " industrial apparatus [consisting of a handling unit], namely, bioreactors for creating a controlled environment for cell therapy and gene therapy manufacturing",
+            " machines for adding or removing fluids to or from industrial manufacturing equipment, being bioreactors, for cell and gene therapies",
+            " parts fittings and accessories for all the aforesaid"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 9,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Downloadable computer software and application software for operating bioreactors in the field of cell culture, cell therapy, gene therapy",
+            " downloadable computer software and application software for controlling, monitoring, programming, communicating with, operating and adjusting apparatus and equipment for cell culture, cell therapy or gene therapy",
+            " downloadable computer software and application software for controlling, monitoring, programming and adjusting environmental conditions for cell culture, cell therapy or gene therapy",
+            " downloadable computer software and application software for logging data in relation to cell culture, cell therapy or gene therapy",
+            " downloadable computer communication software and application software for monitoring patient health",
+            " downloadable computer software and application software for uploading data to remote computers to provide information on cell culture, cell therapy or gene therapy",
+            " downloadable databases of data relating to cell culture, cell therapy or gene therapy",
+            " disposable parts for bioreactors",
+            " disposable parts for bioreactors, namely plastic, glass, silicon, rubber, thermoplastic and polymer bioreactors for cell culturing",
+            " cassettes for bioreactors and disposable cassettes for bioreactors, each specially adapted for bioreactors in the nature of laboratory equipment for cell culturing",
+            " scientific equipment and apparatus for cell culture, cell therapy or gene therapy",
+            " disposable scientific equipment and apparatus for cell culture, cell therapy or gene therapy",
+            " disposable scientific equipment and apparatus for cell culture, cell therapy or gene therapy, namely, plastic bioreactors for cell culturing",
+            " connectors for scientific apparatus and equipment",
+            " connectors for scientific apparatus for cell culture, cell therapy or gene therapy",
+            " connectors in the nature of manual valves specially adapted for bioreactors for scientific and research use in developing cell culture, cell therapy or gene therapy products sterile connectors for scientific apparatus and equipment",
+            " sterile connectors for scientific apparatus for cell culture, cell therapy or gene therapy",
+            " bellows for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment",
+            " bellows specially adapted for bioreactors for laboratory scientific and research use",
+            " bellows for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment for cell culture, cell therapy or gene therapy",
+            " bellows made out of thermoplastic elastomers, rubber, and plastic",
+            " bags specially adapted for bioreactors for laboratory scientific and research use for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment",
+            " Laboratory bags for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment for cell culture, cell therapy or gene therapy",
+            " Laboratory flexible containers for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment",
+            " Laboratory flexible containers for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment for cell culture, cell therapy or gene therapy",
+            " Laboratory compressible containers for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment",
+            " Laboratory compressible containers for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment for cell culture, cell therapy or gene therapy",
+            " vessels, bottles and containers being scientific equipment for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment",
+            " vessels, bottles and containers being scientific equipment for storing, containing, dispensing or extracting fluids, stem cells, cell cultures or cell culture media to or from scientific apparatus and equipment for cell culture, cell therapy or gene therapy",
+            " incubators for cell culture, cell therapy or gene therapy",
+            " incubators for maintaining cell cultures",
+            " bioreactor arrays, multiplexed bioreactor systems, aseptic filing and sealing apparatus for bioreactors",
+            " bioreactors for cell culture",
+            " bioreactors for cell and gene therapy scientific apparatus consisting of a handling unit for creating a controlled environment for cell culture, cell therapy or gene therapy processing",
+            " cell culture hood, bio-safety cabinets, water baths, cell culture vessels for cell culture, cell therapy or gene therapy being laboratory instruments",
+            " disposable bioreactors for cell culture",
+            " scientific equipment for filling bioreactors",
+            " parts fittings and accessories for all the aforesaid",
+            " electrical scientific apparatus and instruments for cell culture, cell therapy or gene therapy",
+            " electrical equipment, namely, industrial scientific apparatus and instruments for drying and cleaning components in the pharmaceutical industry"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 11,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Electrical heating and cooling equipment for medical storage purposes",
+            " Electrical cooling equipment, namely, refrigerators, cooling apparatus and freezers for medical storage purposes",
+            " electrical cooling equipment being laboratory freezers"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 17,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Flexible pipes, tubes and hoses, not of metal",
+            " plastic connectors for pipes",
+            " tubes and hoses",
+            " connectors of plastic",
+            " terile connectors of plastic",
+            " plastic connectors and couplings for use in bioprocessing products or for use in cell culture, cell therapy or gene therapy processing",
+            " packing, and insulating materials",
+            " parts, fitting and accessories for flexible pipes, tubes and hoses, not of metal",
+            " plastic connectors for pipes, tubes and hoses",
+            " sterile connectors of plastic",
+            " plastic connectors and couplings for use with pipes, hosing and tubing"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 37,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Installation, repair, maintenance, cleaning of scientific apparatus and equipment used for cell culture, cell therapy and gene therapy",
+            " installation, repair, maintenance, cleaning of industrial machines and manufacturing equipment for cell culture, cell therapy or gene therapy",
+            " installation, repair, maintenance, cleaning of bioreactors, filing machines for bioreactors, racking for bioreactors, bags, bellows, vessels, bottles and containers, incubators, cell culture hood, bio-safety cabinets and water baths"
+          ]
+        }
+      ]
+    },
+    {
+      "classNumber": 40,
+      "description": [
+        {
+          "language": "en",
+          "terms": [
+            "Manufacturing of cell culture, cell therapy and gene therapy apparatus and equipment for others",
+            " custom manufacture of cell culture, cell therapy and gene therapy apparatus and equipment for others, namely, bioreactors, filing machines for bioreactors, bags, bellows, vessels, bottles and containers, incubators, cell culture hood, bio-safety cabinets, water baths",
+            " manufacturing of industrial cell culture, cell therapy and gene therapy manufacturing equipment for others",
+            " cell culture, cell therapy and gene therapy manufacturing services for others",
+            " custom manufacture of therapeutic drugs, medicines, cell therapies and gene therapies for others",
+            " custom manufacture of cell culture products for others",
+            " custom manufacture of artificial meat and meat substitutes for others",
+            " rental and leasing of cell culture, cell therapy and gene therapy manufacturing apparatus",
+            " information, advice and consultancy in relation to all the aforesaid"
+          ]
+        }
+      ]
+    }
+  ],
+  "oppositions": [],
+  "cancellations": [],
+  "appeals": [],
+  "decisions": [],
+  "_provenance": {
+    "proceedings": "detail record — an empty list means none are recorded on the register"
+  },
+  "resolved_link": "https://euipo.europa.eu/eSearch/#details/trademarks/018850013",
+  "_uri": "/mark/eu/018850013",
+  "_receipt": {
+    "fetched_at": "2026-08-11T07:53:32.661Z",
+    "context": "prelim-tmp0001-venqori-sample-capture-screen-gate-refetch"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "uri": "/mark/es/aad2c22e-b6a6-4f33-982f-5e5b2e9dc4bb",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "aad2c22e-b6a6-4f33-982f-5e5b2e9dc4bb",
+  "applicationNumber": "2875317 M8",
+  "registrationNumber": "2875317 M8",
+  "applicationDate": "2009-05-12",
+  "registrationDate": "2009-09-28",
+  "expiryDate": "2029-05-11",
+  "renewalDate": "2019-04-04",
+  "lastPublicationDate": "2009-05-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "\"JOVEN ORQUESTA DE NAVARRA\"",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Servicios de una orquesta y servicios de formacion musical.",
+      "translation_language": "en",
+      "translation": "SERVICES OF AN ORCHESTRA MUSICAL TRAINING AND SERVICES."
+    }
+  ],
+  "owner": "FUNDACIÓN BALUARTE",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "VEIGA SERRANO, MIKEL",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "FUNDACIÓN BALUARTE"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SERVICES OF AN ORCHESTRA MUSICAL TRAINING AND SERVICES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de una orquesta y servicios de formacion musical."
+        }
+      ]
+    },
+    "id": "aad2c22e-b6a6-4f33-982f-5e5b2e9dc4bb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2947"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeName": "VEIGA SERRANO, MIKEL"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20090512",
+        "applicationNumber": "2875317 M8"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20290511",
+      "lastPublicationDate": "20090527",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20090928",
+        "registrationNumber": "2875317 M8"
+      },
+      "renewalDate": "20190404",
+      "renewalPublishedDate": "20190410"
+    },
+    "version": "20260427161413",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "\"JOVEN ORQUESTA DE NAVARRA\""
+    }
+  },
+  "_uri": "/mark/es/aad2c22e-b6a6-4f33-982f-5e5b2e9dc4bb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "uri": "/mark/cn/aa75872d-f8cd-460e-b6f6-574bd753b51f",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "aa75872d-f8cd-460e-b6f6-574bd753b51f",
+  "applicationNumber": "87683704",
+  "registrationNumber": "87683704",
+  "applicationDate": "2025-09-18",
+  "registrationDate": "2026-03-14",
+  "expiryDate": "2036-03-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-12-13",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "IORI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "厨房计时器;防无线电干扰设备(电子);计步器;计量仪表;计时器(时间记录装置);计数器;量具;数量显示器;芯片(集成电路);信号灯",
+      "translation_language": "en",
+      "translation": "Kitchen timer; anti-radio interference equipment (electronic); pedometer; measuring instrument; timer (time recording device); counter; measuring tool; quantity display; chip (integrated circuit); signal light"
+    }
+  ],
+  "owner": "Shenzhen Kick Sports Culture Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市龙岗区南湾街道布沙路78号樟树布商业大厦503室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Kick Sports Culture Co., Ltd.",
+        "applicantNativeName": "深圳一起踢体育文化有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Kitchen timer; anti-radio interference equipment (electronic); pedometer; measuring instrument; timer (time recording device); counter; measuring tool; quantity display; chip (integrated circuit); signal light",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "厨房计时器;防无线电干扰设备(电子);计步器;计量仪表;计时器(时间记录装置);计数器;量具;数量显示器;芯片(集成电路);信号灯"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Data-processing equipments used in recording and automatic vending machines",
+        "Measures",
+        "Signalling apparatus and instruments",
+        "Equipments used in communication and navigation",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0902",
+          "subNatGoodsServicesDescription": "Data-processing equipments used in recording and automatic vending machines"
+        },
+        {
+          "subNatClassNumber": "0905",
+          "subNatGoodsServicesDescription": "Measures"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "aa75872d-f8cd-460e-b6f6-574bd753b51f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1963"
+      }
+    ],
+    "recordLastUpdated": "20260429",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳翼盛智成知识产权事务所(普通合伙)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250918",
+        "applicationNumber": "87683704"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20360313",
+      "lastPublicationDate": "20251213",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20260314",
+        "registrationNumber": "87683704"
+      }
+    },
+    "version": "20260429020225",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "IORI"
+    }
+  },
+  "_uri": "/mark/cn/aa75872d-f8cd-460e-b6f6-574bd753b51f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:28:47.226Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

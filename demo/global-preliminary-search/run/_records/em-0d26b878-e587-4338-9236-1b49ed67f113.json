@@ -1,0 +1,445 @@
+{
+  "uri": "/mark/em/0d26b878-e587-4338-9236-1b49ed67f113",
+  "provider": "clarivate",
+  "office": "em",
+  "guid": "0d26b878-e587-4338-9236-1b49ed67f113",
+  "applicationNumber": "18786501",
+  "registrationNumber": "18786501",
+  "applicationDate": "2022-10-27",
+  "registrationDate": "2023-03-03",
+  "expiryDate": "2032-10-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-11-24",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENTURI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "bg",
+      "description": "No bulgarian supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "cs",
+      "description": "Platforma jako sluzba (PaaS) zamerená na pocítacové softwarové platformy k pouzití v oboru cenných papíru a obchodování s cennými papíry, pro sluzby financní, pro správu hotovosti, pro analýzu nákladu na financní transakce, pro správu a vykazování dat v souvislosti s dodrzováním predpisu a pro správu dat v souvislosti s pujcováním hotovosti nebo cenných papíru proti zástave od jedné strany druhé strane.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "da",
+      "description": "Platform som en tjeneste (PaaS) med computersoftwareplatforme til anvendelse inden for værdipapirer og omsættelige værdipapirer, finansielle tjenester, likviditetsstyring, omkostningsanalyse i forbindelse med finansielle transaktioner, datastyring og rapportering i forbindelse med overholdelse af lovgivning samt datastyring i forbindelse med udlån af kontanter eller værdipapirer mod sikkerhedsstillelse fra en part til en anden.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "nl",
+      "description": "Platforms-als-een-dienst (PaaS) met softwareplatforms voor gebruik op het gebied van effecten en effectenhandel, voor financiële diensten, voor kasbeheer, voor analyse van kosten van financiële transacties, voor gegevensbeheer en -rapportage met betrekking tot de naleving van regelgeving, en voor gegevensbeheer met betrekking tot het lenen van geld of effecten tegen onderpand van de ene partij aan de andere.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "et",
+      "description": "Teenusplatvorm (PAAS) arvutitarkvaraplatvormidega kasutamiseks väärtpaberite valdkonnas ja väärtpaberitega kaubitsemiseks, finantsteenusteks, sularahahalduseks, finantstehingute kuluanalüüsiks, andmehalduseks ja aruandluseks seoses nõuetele vastavusega ning andmehalduseks seoses sularaha või väärtpaberite tagatise vastu ühelt isikult teisele laenamisega.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fi",
+      "description": "Sovellusympäristöpalvelut (PaaS) seuraavilla aloilla käytettävillä tietokoneohjelmistoympäristöillä: arvopaperit ja arvopaperikauppa, finanssipalvelut, käteisen hallinta, rahoitustoimien kustannusanalyysit, tiedonhallinta ja raportointi säädöstenmukaisuuden yhteydessä ja tiedonhallinta käteisen tai arvopaperien yhden osapuolen toiselle myöntämää takuuta vastaan tapahtuvan lainaamisen yhteydessä.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": "Plateformes en tant que services (PAAS) proposant des plates-formes logicielles informatiques destinées au domaine des titres et du négoce de titres, des services financiers, pour la gestion de liquidités, pour l'analyse des coûts de transactions financières, pour la gestion et le compte rendu de données en rapport avec la conformité réglementaire, et pour la gestion de données en rapport avec le prêt de liquidités ou de titres contre ,nantissement entre une partie et une autre.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "de",
+      "description": "Platform as a Service [PaaS] mit Computersoftwareplattformen zur Verwendung im Bereich Wertpapiere und Wertpapierhandel, für Finanzdienstleistungen, für Kassenführung, für Kostenanalysen in Bezug auf Finanzierungsgeschäfte, für Datenverwaltung und -berichterstattung in Verbindung mit der Einhaltung von regulatorischen Bestimmungen und für Datenverwaltung in Verbindung mit Kreditvergabe und Wertpapierleihe gegen Sicherheitsleistungen von einer Partei an eine andere.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "el",
+      "description": "No greek supported",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hr",
+      "description": "Platforma kao usluga s racunalnim softverskim platformama za upotrebu u podrucju vrijednosnih papira i trgovanja vrijednosnim papirima, za financijske usluge, za upravljanje gotovinom, za analizu troskova financijskih transakcija, za upravljanje podacima i izvjescivanje u vezi s regulatornom uskladenoscu i za upravljanje podacima u vezi s posudivanjem gotovine ili vrijednosnih papira uz kolateral jedne strane drugoj.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "hu",
+      "description": "Platform-mint-szolgáltatás (PaaS), amely számítógépes szoftverplatformokat kínál az értékpapírok és az értékpapír-kereskedelem, a pénzügyi szolgáltatások, a készpénzkezelés, a pénzügyi tranzakciók költségelemzése, a szabályozási megfeleléssel kapcsolatos adatkezelés és jelentéstétel, valamint a készpénz vagy értékpapírok egyik féltol a másiknak történo biztosíték ellenében történo kölcsönzésével kapcsolatos adatkezelés területén.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "it",
+      "description": "Piattaforma come servizio (PAAS) con piattaforme software per l'utilizzo in materia di titoli e compravendita di titoli, per servizi finanziari, per la gestione di contante, per analisi dei costi di transazioni finanziarie, per la gestione e comunicazione di dati in relazione alla conformità normativa e per la gestione di dati in relazione al prestito di denaro contante o titoli dietro garanzia da una parte all'altra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lt",
+      "description": "Platforma kaip paslauga (PAAS), apimanti kompiuteriu programines irangos platformas, skirtas naudoti tokiose srityse kaip vertybiniai popieriai ir prekybos vertybiniai popieriai, skirti finansinems paslaugoms, grynuju pinigu valdymui, finansiniu operaciju sanaudu analizei, duomenu tvarkymui ir ataskaitoms, susijusioms su teises aktu laikymusi, ir duomenu valdymui, susijusiam su grynuju pinigu ar vertybiniu popieriu skolinimu uz uzstata is vienos salies kitai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "lv",
+      "description": "Platforma ka pakalpojums [PaaS], kas ietver datoru programmaturas platformas izmantosanai vertspapiru un vertspapiru tirdzniecibas joma, finansu pakalpojumiem, skaidras naudas parvaldibai, finansu darijumu izmaksu analizei, datu parvaldibai un zinosanai saistiba ar normativo aktu ieverosanu un datu parvaldibai saistiba ar kreditesanu skaidras naudas vai vertspapiru nodrosinajuma no vienas puses otrai.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "mt",
+      "description": "Pjattaforma bhala servizz (PaaS) li tinkludi pjattaformi ta' software tal-kompjuter ghall-uzu fil-qasam tas-sigurtajiet u s-sigurtajiet tal-kummerc, ghal servizzi finanzjarji, ghall-gestjoni ta' flus kontanti, ghall-analizi tal-ispejjez marbuta mat-tranzazzjonijiet finanzjarji, ghall-gestjoni tad-data u r-rappurtar b'konnessjoni mal-konformità regolatorja, u ghall-gestjoni tad-data b'konnessjoni mas-self ta' flus kontanti jew sigurtajiet kontra kollaterali minn parti ghall-ohra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pl",
+      "description": "Platforma jako usluga (PaaS) obejmujaca platformy oprogramowania komputerowego do uzytku w zakresie papierów wartosciowych i uslug obrotu odnosnie do papierów wartosciowych, w celu uslug finansowych, do zarzadzania gotówka, do analizy kosztów transakcji finansowych, do zarzadzania danymi i tworzenia raportów w zwiazku ze zgodnoscia z przepisami oraz do zarzadzania danymi w zwiazku z pozyczaniem gotówki lub papierów wartosciowych pod zastaw przez jedna strone innej stronie.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "pt",
+      "description": "Serviços de plataforma como serviço (PaaS) que incluem plataformas de software para uso no domínio de títulos e transações de títulos para serviços financeiros, gestão de numerário, análise de custos de transações financeiras, gestão e comunicação de dados relativos à conformidade regulamentar, e para gestão de dados relacionados com o empréstimo de dinheiro ou de títulos contra garantias entre partes.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ro",
+      "description": "Platforma ca un serviciu (PAAS) care ofera platforme software de calculator destinate utilizarii în domeniul titlurilor de valoare si tranzactionarii de titluri de valoare, pentru servicii financiare, pentru administrarea de numerar, pentru analiza costurilor tranzactiilor financiare, pentru administrarea si raportarea datelor în legatura cu conformitatea cu reglementarile si pentru administrarea datelor în legatura cu împrumutul de numerar sau titluri de valoare cu garantii colaterale, de la o parte la alta.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sk",
+      "description": "Platforma ako sluzba (PaaS) s pocítacovými softvérovými platformami na pouzitie v oblasti cenných papierov a obchodovania s cennými papiermi, financných sluzieb, na správu hotovosti, na analýzu nákladov na financné transakcie, na správu a vykazovanie údajov v súvislosti s dodrziavaním právnych predpisov a na správu údajov v súvislosti s poziciavaním hotovosti alebo cenných papierov na záruku medzi dvoma stranami.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sl",
+      "description": "Platforma kot storitev (PAAS) s platformami racunalniske programske opreme za uporabo na podrocju vrednostnih papirjev in vrednostnih papirjev za trgovanje, za financne storitve, za upravljanje z denarnimi sredstvi, za analizo stroskov financnih transakcij, za upravljanje podatkov in porocanje v zvezi s skladnostjo z zakonodajo ter za upravljanje podatkov v zvezi s posojanjem gotovine ali vrednostnih papirjev proti zavarovanju ene stranke drugi.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Plataforma como servicio (PaaS) con plataformas de software para su uso en el ámbito de los valores y los valores negociables, para servicios financieros, para la gestión de caja, para el análisis de costes de transacciones financieras, para la gestión de datos y la realización de informes en relación con el cumplimiento normativo y para la gestión de datos en relación con el préstamo de efectivo o valores con garantía de una parte a otra.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "sw",
+      "description": "Plattform som en tjänst med programvaruplattformar för att användas inom området värdepapper och handelsvärdepapper för finansiella tjänster, hantering av kontanter, kostnadsanalys gällande finansiella transaktioner, datahantering och -rapportering kopplad till regelefterlevnad, samt för datahantering kopplad till utlåning av kontanter eller värdepapper mot säkerheter från en part till en annan.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "State Street Bank and Trust Company",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "AREOPAGE",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20221025",
+      "priorityNumber": "97646208"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "One Congress Street,Boston,Massachusetts, 02114",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "State Street Bank and Trust Company"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "bg",
+          "intGoodsServicesDescription": "No bulgarian supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cs",
+          "intGoodsServicesDescription": "Platforma jako sluzba (PaaS) zamerená na pocítacové softwarové platformy k pouzití v oboru cenných papíru a obchodování s cennými papíry, pro sluzby financní, pro správu hotovosti, pro analýzu nákladu na financní transakce, pro správu a vykazování dat v souvislosti s dodrzováním predpisu a pro správu dat v souvislosti s pujcováním hotovosti nebo cenných papíru proti zástave od jedné strany druhé strane."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "da",
+          "intGoodsServicesDescription": "Platform som en tjeneste (PaaS) med computersoftwareplatforme til anvendelse inden for værdipapirer og omsættelige værdipapirer, finansielle tjenester, likviditetsstyring, omkostningsanalyse i forbindelse med finansielle transaktioner, datastyring og rapportering i forbindelse med overholdelse af lovgivning samt datastyring i forbindelse med udlån af kontanter eller værdipapirer mod sikkerhedsstillelse fra en part til en anden."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "nl",
+          "intGoodsServicesDescription": "Platforms-als-een-dienst (PaaS) met softwareplatforms voor gebruik op het gebied van effecten en effectenhandel, voor financiële diensten, voor kasbeheer, voor analyse van kosten van financiële transacties, voor gegevensbeheer en -rapportage met betrekking tot de naleving van regelgeving, en voor gegevensbeheer met betrekking tot het lenen van geld of effecten tegen onderpand van de ene partij aan de andere."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Platform as a service (PAAS) featuring computer software platforms for use in the field of securities and trading securities, for financial services, for cash management, for financial transaction cost analysis, for data management and reporting in connection with regulatory compliance, and for data management in connection with the lending of cash or securities against collateral from one party to another."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "et",
+          "intGoodsServicesDescription": "Teenusplatvorm (PAAS) arvutitarkvaraplatvormidega kasutamiseks väärtpaberite valdkonnas ja väärtpaberitega kaubitsemiseks, finantsteenusteks, sularahahalduseks, finantstehingute kuluanalüüsiks, andmehalduseks ja aruandluseks seoses nõuetele vastavusega ning andmehalduseks seoses sularaha või väärtpaberite tagatise vastu ühelt isikult teisele laenamisega."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fi",
+          "intGoodsServicesDescription": "Sovellusympäristöpalvelut (PaaS) seuraavilla aloilla käytettävillä tietokoneohjelmistoympäristöillä: arvopaperit ja arvopaperikauppa, finanssipalvelut, käteisen hallinta, rahoitustoimien kustannusanalyysit, tiedonhallinta ja raportointi säädöstenmukaisuuden yhteydessä ja tiedonhallinta käteisen tai arvopaperien yhden osapuolen toiselle myöntämää takuuta vastaan tapahtuvan lainaamisen yhteydessä."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": "Plateformes en tant que services (PAAS) proposant des plates-formes logicielles informatiques destinées au domaine des titres et du négoce de titres, des services financiers, pour la gestion de liquidités, pour l'analyse des coûts de transactions financières, pour la gestion et le compte rendu de données en rapport avec la conformité réglementaire, et pour la gestion de données en rapport avec le prêt de liquidités ou de titres contre ,nantissement entre une partie et une autre."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "de",
+          "intGoodsServicesDescription": "Platform as a Service [PaaS] mit Computersoftwareplattformen zur Verwendung im Bereich Wertpapiere und Wertpapierhandel, für Finanzdienstleistungen, für Kassenführung, für Kostenanalysen in Bezug auf Finanzierungsgeschäfte, für Datenverwaltung und -berichterstattung in Verbindung mit der Einhaltung von regulatorischen Bestimmungen und für Datenverwaltung in Verbindung mit Kreditvergabe und Wertpapierleihe gegen Sicherheitsleistungen von einer Partei an eine andere."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "el",
+          "intGoodsServicesDescription": "No greek supported"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hr",
+          "intGoodsServicesDescription": "Platforma kao usluga s racunalnim softverskim platformama za upotrebu u podrucju vrijednosnih papira i trgovanja vrijednosnim papirima, za financijske usluge, za upravljanje gotovinom, za analizu troskova financijskih transakcija, za upravljanje podacima i izvjescivanje u vezi s regulatornom uskladenoscu i za upravljanje podacima u vezi s posudivanjem gotovine ili vrijednosnih papira uz kolateral jedne strane drugoj."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "hu",
+          "intGoodsServicesDescription": "Platform-mint-szolgáltatás (PaaS), amely számítógépes szoftverplatformokat kínál az értékpapírok és az értékpapír-kereskedelem, a pénzügyi szolgáltatások, a készpénzkezelés, a pénzügyi tranzakciók költségelemzése, a szabályozási megfeleléssel kapcsolatos adatkezelés és jelentéstétel, valamint a készpénz vagy értékpapírok egyik féltol a másiknak történo biztosíték ellenében történo kölcsönzésével kapcsolatos adatkezelés területén."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "it",
+          "intGoodsServicesDescription": "Piattaforma come servizio (PAAS) con piattaforme software per l'utilizzo in materia di titoli e compravendita di titoli, per servizi finanziari, per la gestione di contante, per analisi dei costi di transazioni finanziarie, per la gestione e comunicazione di dati in relazione alla conformità normativa e per la gestione di dati in relazione al prestito di denaro contante o titoli dietro garanzia da una parte all'altra."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lt",
+          "intGoodsServicesDescription": "Platforma kaip paslauga (PAAS), apimanti kompiuteriu programines irangos platformas, skirtas naudoti tokiose srityse kaip vertybiniai popieriai ir prekybos vertybiniai popieriai, skirti finansinems paslaugoms, grynuju pinigu valdymui, finansiniu operaciju sanaudu analizei, duomenu tvarkymui ir ataskaitoms, susijusioms su teises aktu laikymusi, ir duomenu valdymui, susijusiam su grynuju pinigu ar vertybiniu popieriu skolinimu uz uzstata is vienos salies kitai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "lv",
+          "intGoodsServicesDescription": "Platforma ka pakalpojums [PaaS], kas ietver datoru programmaturas platformas izmantosanai vertspapiru un vertspapiru tirdzniecibas joma, finansu pakalpojumiem, skaidras naudas parvaldibai, finansu darijumu izmaksu analizei, datu parvaldibai un zinosanai saistiba ar normativo aktu ieverosanu un datu parvaldibai saistiba ar kreditesanu skaidras naudas vai vertspapiru nodrosinajuma no vienas puses otrai."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "mt",
+          "intGoodsServicesDescription": "Pjattaforma bhala servizz (PaaS) li tinkludi pjattaformi ta' software tal-kompjuter ghall-uzu fil-qasam tas-sigurtajiet u s-sigurtajiet tal-kummerc, ghal servizzi finanzjarji, ghall-gestjoni ta' flus kontanti, ghall-analizi tal-ispejjez marbuta mat-tranzazzjonijiet finanzjarji, ghall-gestjoni tad-data u r-rappurtar b'konnessjoni mal-konformità regolatorja, u ghall-gestjoni tad-data b'konnessjoni mas-self ta' flus kontanti jew sigurtajiet kontra kollaterali minn parti ghall-ohra."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pl",
+          "intGoodsServicesDescription": "Platforma jako usluga (PaaS) obejmujaca platformy oprogramowania komputerowego do uzytku w zakresie papierów wartosciowych i uslug obrotu odnosnie do papierów wartosciowych, w celu uslug finansowych, do zarzadzania gotówka, do analizy kosztów transakcji finansowych, do zarzadzania danymi i tworzenia raportów w zwiazku ze zgodnoscia z przepisami oraz do zarzadzania danymi w zwiazku z pozyczaniem gotówki lub papierów wartosciowych pod zastaw przez jedna strone innej stronie."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "pt",
+          "intGoodsServicesDescription": "Serviços de plataforma como serviço (PaaS) que incluem plataformas de software para uso no domínio de títulos e transações de títulos para serviços financeiros, gestão de numerário, análise de custos de transações financeiras, gestão e comunicação de dados relativos à conformidade regulamentar, e para gestão de dados relacionados com o empréstimo de dinheiro ou de títulos contra garantias entre partes."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ro",
+          "intGoodsServicesDescription": "Platforma ca un serviciu (PAAS) care ofera platforme software de calculator destinate utilizarii în domeniul titlurilor de valoare si tranzactionarii de titluri de valoare, pentru servicii financiare, pentru administrarea de numerar, pentru analiza costurilor tranzactiilor financiare, pentru administrarea si raportarea datelor în legatura cu conformitatea cu reglementarile si pentru administrarea datelor în legatura cu împrumutul de numerar sau titluri de valoare cu garantii colaterale, de la o parte la alta."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sk",
+          "intGoodsServicesDescription": "Platforma ako sluzba (PaaS) s pocítacovými softvérovými platformami na pouzitie v oblasti cenných papierov a obchodovania s cennými papiermi, financných sluzieb, na správu hotovosti, na analýzu nákladov na financné transakcie, na správu a vykazovanie údajov v súvislosti s dodrziavaním právnych predpisov a na správu údajov v súvislosti s poziciavaním hotovosti alebo cenných papierov na záruku medzi dvoma stranami."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sl",
+          "intGoodsServicesDescription": "Platforma kot storitev (PAAS) s platformami racunalniske programske opreme za uporabo na podrocju vrednostnih papirjev in vrednostnih papirjev za trgovanje, za financne storitve, za upravljanje z denarnimi sredstvi, za analizo stroskov financnih transakcij, za upravljanje podatkov in porocanje v zvezi s skladnostjo z zakonodajo ter za upravljanje podatkov v zvezi s posojanjem gotovine ali vrednostnih papirjev proti zavarovanju ene stranke drugi."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Plataforma como servicio (PaaS) con plataformas de software para su uso en el ámbito de los valores y los valores negociables, para servicios financieros, para la gestión de caja, para el análisis de costes de transacciones financieras, para la gestión de datos y la realización de informes en relación con el cumplimiento normativo y para la gestión de datos en relación con el préstamo de efectivo o valores con garantía de una parte a otra."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "sw",
+          "intGoodsServicesDescription": "Plattform som en tjänst med programvaruplattformar för att användas inom området värdepapper och handelsvärdepapper för finansiella tjänster, hantering av kontanter, kostnadsanalys gällande finansiella transaktioner, datahantering och -rapportering kopplad till regelefterlevnad, samt för datahantering kopplad till utlåning av kontanter eller värdepapper mot säkerheter från en part till en annan."
+        }
+      ]
+    },
+    "id": "0d26b878-e587-4338-9236-1b49ed67f113",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20221025",
+        "priorityNumber": "97646208"
+      }
+    ],
+    "publications": [
+      {
+        "publicationVolume": "223"
+      }
+    ],
+    "recordLastUpdated": "20260701",
+    "registrationOfficeCode": "EM",
+    "registrationOfficeName": "EU trade marks",
+    "representatives": [
+      {
+        "representativeAddress": "1 bis rue de Pongerville,Nanterre, 92000",
+        "representativeAddressCountryCode": "FR",
+        "representativeAddressCountryName": "France",
+        "representativeName": "AREOPAGE"
+      }
+    ],
+    "secondLanguageCode": "fr",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221027",
+        "applicationNumber": "18786501"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20321027",
+      "lastPublicationDate": "20221124",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230303",
+        "registrationNumber": "18786501"
+      }
+    },
+    "version": "20260701020003",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENTURI"
+    }
+  },
+  "_uri": "/mark/em/0d26b878-e587-4338-9236-1b49ed67f113",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:25.171Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/xs/d23b00de-ac64-4c21-8642-88df9e5b41ed",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "d23b00de-ac64-4c21-8642-88df9e5b41ed",
+  "applicationNumber": null,
+  "registrationNumber": "S22760",
+  "applicationDate": null,
+  "registrationDate": "2013-12-20",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SUTTON PLACE LASER VEIN CARE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Medical services",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RICHARD L. MUELLER, M.D. P.C.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "401 E. 55TH STREET, NEW YORK, NY, 10022",
+        "applicantAddressCity": "NEW YORK",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "10022",
+        "applicantAddressStateName": "NEW YORK",
+        "applicantAddressStreet": "401 E. 55TH STREET",
+        "applicantLegalEntity": "PROFESSIONAL CORPORATION",
+        "applicantName": "RICHARD L. MUELLER, M.D. P.C."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Medical services"
+        }
+      ]
+    },
+    "id": "d23b00de-ac64-4c21-8642-88df9e5b41ed",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "WEBSITE, TATIONERY, EMAIL SIGNATURE, FACSIMILE COVER SHEET",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "401 E. 55TH STREET, NEW YORK, NY, 10022",
+        "city": "NEW YORK",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "PROFESSIONAL CORPORATION",
+        "name": "RICHARD L. MUELLER, M.D. P.C.",
+        "postalCode": "10022",
+        "stateName": "NEW YORK",
+        "street": "401 E. 55TH STREET"
+      }
+    ],
+    "recordLastUpdated": "20251202",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20131010"
+        }
+      ],
+      "firstUsedAnywhereDate": "20131010",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20131220",
+        "registrationNumber": "S22760"
+      }
+    },
+    "usStateOfficeCode": "NY",
+    "usStateOfficeName": "NEW YORK",
+    "version": "20251202115332",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SUTTON PLACE LASER VEIN CARE"
+    }
+  },
+  "_uri": "/mark/xs/d23b00de-ac64-4c21-8642-88df9e5b41ed",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:33:18.820Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

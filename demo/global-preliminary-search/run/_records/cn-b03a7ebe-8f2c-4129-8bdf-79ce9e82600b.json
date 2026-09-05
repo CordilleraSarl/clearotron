@@ -1,0 +1,166 @@
+{
+  "uri": "/mark/cn/b03a7ebe-8f2c-4129-8bdf-79ce9e82600b",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "b03a7ebe-8f2c-4129-8bdf-79ce9e82600b",
+  "applicationNumber": "19460183",
+  "registrationNumber": "19460183",
+  "applicationDate": "2016-03-29",
+  "registrationDate": "2017-05-07",
+  "expiryDate": "2027-05-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2017-02-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "汽车行家",
+  "markTransliteration": "AUTO MAVEN qi che xing jia",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "已录制的计算机程序（程序）;计算机程序（可下载软件）;可下载的计算机应用软件;电子公告牌;手机;学习机;放大设备（摄影）;探测器;眼镜;移动电源（可充电电池）",
+      "translation_language": "en",
+      "translation": "Computer program (downloadable software); downloadable computer application software; electronic bulletin board; mobile phone; learning machine; magnification equipment (photography); detector; glasses; mobile power (rechargeable battery )"
+    }
+  ],
+  "owner": "Beijing Information Technology Co., mini-car sector",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区信息路甲28号C座(二层)02C室-081号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Information Technology Co., mini-car sector",
+        "applicantNativeName": "北京微车界信息技术有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer program (downloadable software); downloadable computer application software; electronic bulletin board; mobile phone; learning machine; magnification equipment (photography); detector; glasses; mobile power (rechargeable battery )",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "已录制的计算机程序（程序）;计算机程序（可下载软件）;可下载的计算机应用软件;电子公告牌;手机;学习机;放大设备（摄影）;探测器;眼镜;移动电源（可充电电池）"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computers and their external equipments",
+        "Signalling apparatus and instruments",
+        "Equipments used in communication and navigation",
+        "Apparatus for sound and images",
+        "Apparatus and instruments for photographic and cinematographic",
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Glasses and those accessories",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0906",
+          "subNatGoodsServicesDescription": "Signalling apparatus and instruments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        },
+        {
+          "subNatClassNumber": "0908",
+          "subNatGoodsServicesDescription": "Apparatus for sound and images"
+        },
+        {
+          "subNatClassNumber": "0909",
+          "subNatGoodsServicesDescription": "Apparatus and instruments for photographic and cinematographic"
+        },
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0921",
+          "subNatGoodsServicesDescription": "Glasses and those accessories"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "b03a7ebe-8f2c-4129-8bdf-79ce9e82600b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1538"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "扶友（北京）知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160329",
+        "applicationNumber": "19460183"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270506",
+      "lastPublicationDate": "20170206",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170507",
+        "registrationNumber": "19460183"
+      }
+    },
+    "version": "20251002143104",
+    "wordMarkSpecification": {
+      "markTransliteration": "AUTO MAVEN qi che xing jia",
+      "markVerbalElementText": "汽车行家"
+    }
+  },
+  "_uri": "/mark/cn/b03a7ebe-8f2c-4129-8bdf-79ce9e82600b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:25:41.564Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

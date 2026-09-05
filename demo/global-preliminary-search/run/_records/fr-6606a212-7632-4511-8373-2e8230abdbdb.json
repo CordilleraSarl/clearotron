@@ -1,0 +1,145 @@
+{
+  "uri": "/mark/fr/6606a212-7632-4511-8373-2e8230abdbdb",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "6606a212-7632-4511-8373-2e8230abdbdb",
+  "applicationNumber": "D 26 5272554",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-26",
+  "registrationDate": null,
+  "expiryDate": "2036-06-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-17",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "QORB",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils et instruments scientifiques ; Appareils et instruments nautiques ; Appareils et instruments géodésiques ; Appareils et instruments photographiques ; Appareils cinématographiques ; Appareils et instruments optiques ; Appareils et instruments de pesage ; Instruments et appareils de mesure ; Appareils et instruments de signalisation ; Appareils et instruments de vérification (contrôle) ; Appareils et instruments pour l'enseignement ; Appareils pour l'enregistrement du son ; Appareils pour la transmission du son ; Appareils pour la reproduction du son ; Appareils d'enregistrement d'images ; Appareils de transmission d'images ; Appareils de reproduction d'images ; Supports d'enregistrement numériques ; Mécanismes pour appareils à prépaiement ; Caisses enregistreuses ; Machines à calculer ; Porte-monnaies électroniques téléchargeables ; Equipements de traitement de données ; Ordinateurs ; Tablettes électroniques ; Ordiphones [smartphones] ; Liseuses électroniques ; Logiciels de jeux téléchargeables ; Logiciels enregistrés ; Périphériques d'ordinateurs ; Détecteurs ; Fils électriques ; Relais électriques ; Combinaisons de plongée ; Gants de plongée ; Masques de plongée ; Vêtements de protection contre les accidents, les radiations et le feu ; Extincteurs ; Lunettes 3D ; Casques de réalité virtuelle ; Cartes à mémoire ou à microprocesseur ; Sacoches conçues pour ordinateurs portables ; Montres intelligentes ; Batteries électriques ; Batteries pour cigarettes électroniques ; Bornes de recharge pour véhicules électriques ; Appareils pour le diagnostic non à usage médical",
+      "translation_language": "en",
+      "translation": "Scientific apparatus and instruments; Nautical apparatus and instruments; Surveying apparatus and instruments; Photographic apparatus and instruments; Cinematographic apparatus; Optical apparatus and instruments; Weighing apparatus and instruments; Measuring instruments and apparatus; Signaling apparatus and instruments; Verification (control) apparatus and instruments; Teaching apparatus and instruments; Sound recording apparatus; Sound transmission apparatus; Sound reproduction apparatus; Image recording apparatus; Image transmission apparatus; Image reproduction apparatus; Digital recording media; Mechanisms for coin-operated devices; Cash registers; Calculating machines; Downloadable electronic wallets; Data processing equipment; Computers; Electronic tablets; Smartphones; E-readers; Downloadable game software; Recorded software; Computer peripherals; Detectors; Electrical wires; Electrical relays; Diving suits; Diving gloves; Diving masks; Protective clothing against accidents, radiation, and fire; Fire extinguishers; 3D glasses; Virtual reality headsets; Memory or microprocessor cards; Laptop bags; Smartwatches; Electric batteries; E-cigarette batteries; Electric vehicle charging stations; Non-medical diagnostic devices"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; Gestion, organisation et administration des affaires commerciales ; Travaux de bureau ; Services de publipostage ; Services d'abonnement à des journaux pour des tiers ; Services d'abonnement à des services de télécommunications pour des tiers ; Comptabilité ; Services de photocopie ; Services de bureaux de placement ; Portage salarial ; Service de gestion informatisée de fichiers ; Optimisation du trafic pour des sites internet ; Organisation d'expositions à des fins commerciales ou publicitaires ; Publicité en ligne sur un réseau informatique ; Location de temps publicitaire sur tout moyen de communication ; Publication de textes publicitaires ; Location d'espaces publicitaires ; Diffusion d'annonces publicitaires ; Conseils en communication (publicité) ; Relations publiques ; Conseils en communication (relations publiques) ; Audits d'entreprises (analyses commerciales) ; Services d'intermédiation commerciale",
+      "translation_language": "en",
+      "translation": "Advertising; Management, organization, and administration of business affairs; Office work; Direct mail services; Newspaper subscription services for third parties; Telecommunications subscription services for third parties; Accounting; Photocopying services; Employment agency services; Payroll services; Computerized file management services; Website traffic optimization; Organization of exhibitions for commercial or advertising purposes; Online advertising on a computer network; Rental of advertising time on any means of communication; Publication of advertising texts; Rental of advertising space; Dissemination of advertising; Communication consulting (advertising); Public relations; Communication consulting (public relations); Business audits (commercial analyses); Commercial intermediation services"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Expertises (travaux d'ingénieurs) ; Recherches scientifiques ; Recherches technologiques ; Développement de logiciels ; Recherche et développement de nouveaux produits pour des tiers ; Conduite d'études de projets techniques ; Architecture ; Décoration intèrieure ; Elaboration (conception) de logiciels ; Installation de logiciels ; Maintenance de logiciels ; Mise à jour de logiciels ; Location de logiciels ; Fourniture de logiciels non téléchargeables en ligne ; Programmation informatique ; Analyse de systèmes informatiques ; Conception de systèmes informatiques ; Services de conseillers en matière de conception et de développement de matériel informatique ; Numérisation de documents ; Logiciels en tant que services (SaaS) ; Mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; Services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; Hébergement de serveurs ; Contrôle technique de véhicules automobiles ; Services de conception d'art graphique ; Stylisme (esthétique industrielle) ; Authentification d'oeuvres d'art ; Audits en matière d'énergie ; Stockage électronique de données.",
+      "translation_language": "en",
+      "translation": "Expertise (engineering work); Scientific research; Technological research; Software development; Research and development of new products for third parties; Conducting technical project studies; Architecture; Interior design; Software development (design); Software installation; Software maintenance; Software updates; Software rental; Provision of software not available for online download; Computer programming; Computer systems analysis; Computer systems design; Consulting services for the design and development of computer hardware; Document digitization; Software as a Service (SaaS); Provisioning of virtual computer systems via cloud computing; Information technology (IT) support services (software troubleshooting); Server hosting; Technical inspection of motor vehicles; Graphic art design services; Styling (industrial aesthetics); Authentication of works of art; Energy audits; Electronic data storage."
+    }
+  ],
+  "owner": "EDWARD VERMONT",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "95100 ARGENTEUIL",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "EDWARD VERMONT"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific apparatus and instruments; Nautical apparatus and instruments; Surveying apparatus and instruments; Photographic apparatus and instruments; Cinematographic apparatus; Optical apparatus and instruments; Weighing apparatus and instruments; Measuring instruments and apparatus; Signaling apparatus and instruments; Verification (control) apparatus and instruments; Teaching apparatus and instruments; Sound recording apparatus; Sound transmission apparatus; Sound reproduction apparatus; Image recording apparatus; Image transmission apparatus; Image reproduction apparatus; Digital recording media; Mechanisms for coin-operated devices; Cash registers; Calculating machines; Downloadable electronic wallets; Data processing equipment; Computers; Electronic tablets; Smartphones; E-readers; Downloadable game software; Recorded software; Computer peripherals; Detectors; Electrical wires; Electrical relays; Diving suits; Diving gloves; Diving masks; Protective clothing against accidents, radiation, and fire; Fire extinguishers; 3D glasses; Virtual reality headsets; Memory or microprocessor cards; Laptop bags; Smartwatches; Electric batteries; E-cigarette batteries; Electric vehicle charging stations; Non-medical diagnostic devices",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et instruments scientifiques ; Appareils et instruments nautiques ; Appareils et instruments géodésiques ; Appareils et instruments photographiques ; Appareils cinématographiques ; Appareils et instruments optiques ; Appareils et instruments de pesage ; Instruments et appareils de mesure ; Appareils et instruments de signalisation ; Appareils et instruments de vérification (contrôle) ; Appareils et instruments pour l'enseignement ; Appareils pour l'enregistrement du son ; Appareils pour la transmission du son ; Appareils pour la reproduction du son ; Appareils d'enregistrement d'images ; Appareils de transmission d'images ; Appareils de reproduction d'images ; Supports d'enregistrement numériques ; Mécanismes pour appareils à prépaiement ; Caisses enregistreuses ; Machines à calculer ; Porte-monnaies électroniques téléchargeables ; Equipements de traitement de données ; Ordinateurs ; Tablettes électroniques ; Ordiphones [smartphones] ; Liseuses électroniques ; Logiciels de jeux téléchargeables ; Logiciels enregistrés ; Périphériques d'ordinateurs ; Détecteurs ; Fils électriques ; Relais électriques ; Combinaisons de plongée ; Gants de plongée ; Masques de plongée ; Vêtements de protection contre les accidents, les radiations et le feu ; Extincteurs ; Lunettes 3D ; Casques de réalité virtuelle ; Cartes à mémoire ou à microprocesseur ; Sacoches conçues pour ordinateurs portables ; Montres intelligentes ; Batteries électriques ; Batteries pour cigarettes électroniques ; Bornes de recharge pour véhicules électriques ; Appareils pour le diagnostic non à usage médical"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; Management, organization, and administration of business affairs; Office work; Direct mail services; Newspaper subscription services for third parties; Telecommunications subscription services for third parties; Accounting; Photocopying services; Employment agency services; Payroll services; Computerized file management services; Website traffic optimization; Organization of exhibitions for commercial or advertising purposes; Online advertising on a computer network; Rental of advertising time on any means of communication; Publication of advertising texts; Rental of advertising space; Dissemination of advertising; Communication consulting (advertising); Public relations; Communication consulting (public relations); Business audits (commercial analyses); Commercial intermediation services",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; Gestion, organisation et administration des affaires commerciales ; Travaux de bureau ; Services de publipostage ; Services d'abonnement à des journaux pour des tiers ; Services d'abonnement à des services de télécommunications pour des tiers ; Comptabilité ; Services de photocopie ; Services de bureaux de placement ; Portage salarial ; Service de gestion informatisée de fichiers ; Optimisation du trafic pour des sites internet ; Organisation d'expositions à des fins commerciales ou publicitaires ; Publicité en ligne sur un réseau informatique ; Location de temps publicitaire sur tout moyen de communication ; Publication de textes publicitaires ; Location d'espaces publicitaires ; Diffusion d'annonces publicitaires ; Conseils en communication (publicité) ; Relations publiques ; Conseils en communication (relations publiques) ; Audits d'entreprises (analyses commerciales) ; Services d'intermédiation commerciale"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Expertise (engineering work); Scientific research; Technological research; Software development; Research and development of new products for third parties; Conducting technical project studies; Architecture; Interior design; Software development (design); Software installation; Software maintenance; Software updates; Software rental; Provision of software not available for online download; Computer programming; Computer systems analysis; Computer systems design; Consulting services for the design and development of computer hardware; Document digitization; Software as a Service (SaaS); Provisioning of virtual computer systems via cloud computing; Information technology (IT) support services (software troubleshooting); Server hosting; Technical inspection of motor vehicles; Graphic art design services; Styling (industrial aesthetics); Authentication of works of art; Energy audits; Electronic data storage.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Expertises (travaux d'ingénieurs) ; Recherches scientifiques ; Recherches technologiques ; Développement de logiciels ; Recherche et développement de nouveaux produits pour des tiers ; Conduite d'études de projets techniques ; Architecture ; Décoration intèrieure ; Elaboration (conception) de logiciels ; Installation de logiciels ; Maintenance de logiciels ; Mise à jour de logiciels ; Location de logiciels ; Fourniture de logiciels non téléchargeables en ligne ; Programmation informatique ; Analyse de systèmes informatiques ; Conception de systèmes informatiques ; Services de conseillers en matière de conception et de développement de matériel informatique ; Numérisation de documents ; Logiciels en tant que services (SaaS) ; Mise à disposition de systèmes informatiques virtuels par l'informatique en nuage ; Services d'assistance en technologie de l'information (TI) (dépannage de logiciels) ; Hébergement de serveurs ; Contrôle technique de véhicules automobiles ; Services de conception d'art graphique ; Stylisme (esthétique industrielle) ; Authentification d'oeuvres d'art ; Audits en matière d'énergie ; Stockage électronique de données."
+        }
+      ]
+    },
+    "id": "6606a212-7632-4511-8373-2e8230abdbdb",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "29"
+      }
+    ],
+    "recordLastUpdated": "20260724",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260626",
+        "applicationNumber": "D 26 5272554"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360626",
+      "lastPublicationDate": "20260717",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260724020017",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORB"
+    }
+  },
+  "_uri": "/mark/fr/6606a212-7632-4511-8373-2e8230abdbdb",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:27:49.815Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

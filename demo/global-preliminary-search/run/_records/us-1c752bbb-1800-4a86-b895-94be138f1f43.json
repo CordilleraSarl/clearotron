@@ -1,0 +1,424 @@
+{
+  "uri": "/mark/us/1c752bbb-1800-4a86-b895-94be138f1f43",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "1c752bbb-1800-4a86-b895-94be138f1f43",
+  "applicationNumber": "79391194",
+  "registrationNumber": null,
+  "applicationDate": "2023-09-28",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2026-04-13",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "QORIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Computer services, namely, providing virtual and non-virtual application servers to others in the field of education; educational technology services, namely, computer programming and software design; classroom management software services, namely, computer programming and software design in the field of classroom management software; parental control software service, namely, computer programing and software design in the field of parental control software; cyber safety software services, namely, computer programing and software design in the field of cyber safety; hosting services, namely, hosting of websites and server hosting; software as a service (SAAS) services featuring software for use in classroom management; rental of software for use in classroom management; monitoring of computer systems to detect breaches in computer security; computer technology and information technology services, namely, installation, maintenance and repair of computer software and related software consultancy services; computer security system monitoring services to detect system security breaches; computer security system monitoring services for the protection against illegal network access; computer security consultancy; consultancy in the field of computer security; technological consultancy in the field of security software; data security and firewalls, namely design and development of computer software for the creation off firewalls; data security consultancy; design and development of internet security computer program; hosting multimedia educational content, namely, providing an educational interactive web site featuring technology that allows visitors to improve student safety and wellbeing; internet security consultancy; IT consultancy, advisory and information services relating to installation, maintenance and repair of computer software; IT services, namely, installation, maintenance and repair of computer software; computer technology support services being help desk services and on-site management of information technology (IT) systems for others; programming of educational software; programming of internet security computer programs; provision of computer security risk management programs, namely, design and development of computer security risk management software and hardware; rental of internet security computer programs; software development, programming and implementation; IT filtering and monitoring systems, namely, monitoring of computer systems for detecting unauthorized access or data breach; IT filtering and monitoring services for educational institutions, namely, monitoring of computer systems for detecting unauthorized access or data breach; content control IT services, namely, monitoring, testing, analyzing, and reporting on the Internet traffic control and content control of the web sites of others; Monitoring of computer systems for detecting unauthorized access or data breach",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Qoria Holdings Pty Ltd",
+  "ownerNative": null,
+  "ownerCountry": "AU",
+  "representative": "Caleb L. Green",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "945 Wellington Street, AUST",
+        "applicantAddressCountryCode": "AU",
+        "applicantAddressCountryName": "Australia",
+        "applicantAddressStreet": "945 Wellington Street,",
+        "applicantJurisdictionOfIncorporation": "AUSTRALIA",
+        "applicantName": "Qoria Holdings Pty Ltd"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Computer services, namely, providing virtual and non-virtual application servers to others in the field of education; educational technology services, namely, computer programming and software design; classroom management software services, namely, computer programming and software design in the field of classroom management software; parental control software service, namely, computer programing and software design in the field of parental control software; cyber safety software services, namely, computer programing and software design in the field of cyber safety; hosting services, namely, hosting of websites and server hosting; software as a service (SAAS) services featuring software for use in classroom management; rental of software for use in classroom management; monitoring of computer systems to detect breaches in computer security; computer technology and information technology services, namely, installation, maintenance and repair of computer software and related software consultancy services; computer security system monitoring services to detect system security breaches; computer security system monitoring services for the protection against illegal network access; computer security consultancy; consultancy in the field of computer security; technological consultancy in the field of security software; data security and firewalls, namely design and development of computer software for the creation off firewalls; data security consultancy; design and development of internet security computer program; hosting multimedia educational content, namely, providing an educational interactive web site featuring technology that allows visitors to improve student safety and wellbeing; internet security consultancy; IT consultancy, advisory and information services relating to installation, maintenance and repair of computer software; IT services, namely, installation, maintenance and repair of computer software; computer technology support services being help desk services and on-site management of information technology (IT) systems for others; programming of educational software; programming of internet security computer programs; provision of computer security risk management programs, namely, design and development of computer security risk management software and hardware; rental of internet security computer programs; software development, programming and implementation; IT filtering and monitoring systems, namely, monitoring of computer systems for detecting unauthorized access or data breach; IT filtering and monitoring services for educational institutions, namely, monitoring of computer systems for detecting unauthorized access or data breach; content control IT services, namely, monitoring, testing, analyzing, and reporting on the Internet traffic control and content control of the web sites of others; Monitoring of computer systems for detecting unauthorized access or data breach"
+        }
+      ]
+    },
+    "id": "1c752bbb-1800-4a86-b895-94be138f1f43",
+    "internationalMarkKeys": [
+      {
+        "internationalRegistrationNumber": "1779808",
+        "markCurrentStatus": "REQUEST FOR EXTENSION OF PROTECTION ESTABLISHED",
+        "markCurrentStatusDate": "20240314",
+        "priorityClaimDate": "20230628",
+        "protectionGrantedDate": "20250914",
+        "publicationDate": "20240314",
+        "registrationDate": "20230928",
+        "renewalDate": "20330928"
+      }
+    ],
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20260413",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20250826",
+          "identifier": "79391194",
+          "kind": "Ex Parte Appeal",
+          "kindCode": "EXP",
+          "litigationParties": [
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "Qoria Holdings Pty Ltd.",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "79391194",
+                  "markVerbalElementText": "QORIA",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "LAS VEGAS",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "89169",
+                  "addressState": "NV",
+                  "addressStreet": "3883 HOWARD HUGHES PARKWAY, SUITE 800",
+                  "companyName": "DICKINSON WRIGHT PLLC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "CALEB L. GREEN"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "N",
+              "eventDate": "20260413",
+              "text": "#7 TERMINATED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20260225",
+              "text": "#6 BD'S DECISION: DISMISSED FOR FAILURE TO FILE BRIEF"
+            },
+            {
+              "code": "X",
+              "eventDate": "20251204",
+              "text": "#5 PROCEEDINGS RESUMED"
+            },
+            {
+              "code": "P",
+              "eventDate": "20251202",
+              "text": "#4 RECONSIDERATION DENIED"
+            },
+            {
+              "code": "T",
+              "eventDate": "20250826",
+              "text": "#3 PENDING, INSTITUTED"
+            },
+            {
+              "code": "X",
+              "eventDate": "20250826",
+              "text": "#2 APPEAL ACKNOWLEDGED: CASE REMANDED"
+            },
+            {
+              "code": "X",
+              "eventDate": "20250826",
+              "text": "#1 APPEAL TO BOARD"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20260423",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - AFTER EX PARTE APPEAL"
+      },
+      {
+        "date": "20260413",
+        "descriptionText": "EXPARTE APPEAL TERMINATED"
+      },
+      {
+        "date": "20260413",
+        "descriptionText": "ABANDONMENT - AFTER EX PARTE APPEAL"
+      },
+      {
+        "date": "20260225",
+        "descriptionText": "EXPARTE APPEAL DISMISSED - FAILURE TO FILE BRIEF"
+      },
+      {
+        "date": "20251202",
+        "descriptionText": "ACTION CONTINUING FINAL - COMPLETED"
+      },
+      {
+        "date": "20251202",
+        "descriptionText": "ACTION DENYING REQ FOR RECON E-MAILED"
+      },
+      {
+        "date": "20251202",
+        "descriptionText": "NOTIFICATION OF ACTION DENYING REQ FOR RECON E-MAILED"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20251126",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20251119",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20251119",
+        "descriptionText": "DIVISIONAL PROCESSING COMPLETE"
+      },
+      {
+        "date": "20250829",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION -  PROCESSED BY IB"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "EXPARTE APPEAL RECEIVED AT TTAB"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "EX PARTE APPEAL-INSTITUTED"
+      },
+      {
+        "date": "20250826",
+        "descriptionText": "JURISDICTION RESTORED TO EXAMINING ATTORNEY"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "TEAS REQUEST TO DIVIDE RECEIVED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "TEAS REQUEST FOR RECONSIDERATION RECEIVED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "TEAS CHANGE OF OWNER ADDRESS RECEIVED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "APPLICANT/CORRESPONDENCE CHANGES (NON-RESPONSIVE) ENTERED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "TEAS REVOKE/APP/CHANGE ADDR OF ATTY/DOM REP RECEIVED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "ATTORNEY/DOM.REP.REVOKED AND/OR APPOINTED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "TEAS CHANGE OF CORRESPONDENCE RECEIVED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20250825",
+        "descriptionText": "DIVISIONAL REQUEST RECEIVED"
+      },
+      {
+        "date": "20250813",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION CREATED, TO BE SENT TO IB"
+      },
+      {
+        "date": "20250813",
+        "descriptionText": "NOTIFICATION OF POSSIBLE OPPOSITION SENT TO IB"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "FINAL REFUSAL  WRITTEN"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "FINAL REFUSAL E-MAILED"
+      },
+      {
+        "date": "20250226",
+        "descriptionText": "NOTIFICATION OF FINAL REFUSAL EMAILED"
+      },
+      {
+        "date": "20250115",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20250115",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20250115",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20240804",
+        "descriptionText": "REFUSAL PROCESSED BY IB"
+      },
+      {
+        "date": "20240716",
+        "descriptionText": "NON-FINAL ACTION MAILED - REFUSAL SENT TO IB"
+      },
+      {
+        "date": "20240715",
+        "descriptionText": "REFUSAL PROCESSED BY MPU"
+      },
+      {
+        "date": "20240625",
+        "descriptionText": "NON-FINAL ACTION (IB REFUSAL) PREPARED FOR REVIEW"
+      },
+      {
+        "date": "20240624",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20240520",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20240424",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      },
+      {
+        "date": "20240321",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20240314",
+        "descriptionText": "SN ASSIGNED FOR SECT 66A APPL FROM IB"
+      }
+    ],
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "945 Wellington Street, AUST",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "name": "Qoria Holdings Pty Ltd",
+        "street": "945 Wellington Street,"
+      },
+      {
+        "address": "945 Wellington Street, AUST",
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "jurisdictionOfIncorporation": "AUSTRALIA",
+        "name": "Qoria Holdings Pty Ltd",
+        "street": "945 Wellington Street,"
+      }
+    ],
+    "recordLastUpdated": "20260428",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Royal Oak, MI 48067",
+        "representativeCorrespondentAddressLines": [
+          "Royal Oak, MI 48067"
+        ],
+        "representativeCorrespondentName": "Caleb L. Green Howard & Howard Attorneys PLLC, 450 West Fourth Street"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Royal Oak, MI 48067",
+        "representativeAddressLines": [
+          "Royal Oak, MI 48067"
+        ],
+        "representativeName": "Caleb L. Green"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20260413",
+      "active": false,
+      "application": {
+        "applicationDate": "20230928",
+        "applicationNumber": "79391194"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-AFTER EX PARTE APPEAL",
+        "markOfficialStatusCode": "603",
+        "markOfficialStatusDate": "20260413",
+        "markOfficialStatusEvents": [
+          "3d Drawing Currently",
+          "Section 66(a) (Madrid Protocol) - Filed",
+          "Section 66(a) (Madrid Protocol) - Current",
+          "International Priority Claimed",
+          "Notice of First Refusal"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260428055340",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "QORIA"
+    }
+  },
+  "_uri": "/mark/us/1c752bbb-1800-4a86-b895-94be138f1f43",
+  "_receipt": {
+    "fetched_at": "2026-09-02T16:25:36.393Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

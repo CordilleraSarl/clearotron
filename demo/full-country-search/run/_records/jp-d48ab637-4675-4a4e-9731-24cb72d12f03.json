@@ -1,0 +1,146 @@
+{
+  "uri": "/mark/jp/d48ab637-4675-4a4e-9731-24cb72d12f03",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "d48ab637-4675-4a4e-9731-24cb72d12f03",
+  "applicationNumber": "2009-086677",
+  "registrationNumber": "5320081",
+  "applicationDate": "2009-11-16",
+  "registrationDate": "2010-04-30",
+  "expiryDate": "2030-04-30",
+  "renewalDate": null,
+  "lastPublicationDate": "2010-06-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＰＲＯＣＥＳＳＯＲ　ＥＸＰＥＲＴ",
+  "markTransliteration": "PUROSESSAAEKISUPAATO",
+  "markTranslation": "PROCESSOR EXPERT",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "埋め込みアプリケーションを迅速に設計・開発・実装・検証・最適化するために用いるグラフィックユーザインターフェース・ソースコード生成機能・ナレッジベースを備えたソフトウェア開発用コンピュータソフトウェア，その他のコンピュータソフトウェア",
+      "translation_language": "en",
+      "translation": "Graphic user interface · source code generation function used to quickly design, develop, implement, verify and optimize embedded applications · source code generation function · software development computer software with knowledge base, other computer software"
+    }
+  ],
+  "owner": "NXP USA, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "IWASE YOSHIKAZU",
+  "priorities": [
+    {
+      "priorityDate": "20091110"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "UNKNOWN",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "NXP USA, INC.",
+        "applicantNativeAddress": "アメリカ合衆国",
+        "applicantNativeName": "エヌエックスピー　ユーエスエー　インコーポレイテッド"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Graphic user interface · source code generation function used to quickly design, develop, implement, verify and optimize embedded applications · source code generation function · software development computer software with knowledge base, other computer software",
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "埋め込みアプリケーションを迅速に設計・開発・実装・検証・最適化するために用いるグラフィックユーザインターフェース・ソースコード生成機能・ナレッジベースを備えたソフトウェア開発用コンピュータソフトウェア，その他のコンピュータソフトウェア"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "11C01",
+          "natGoodsServicesDescription": "Electronic machines, apparatus and their parts"
+        }
+      ]
+    },
+    "id": "d48ab637-4675-4a4e-9731-24cb72d12f03",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20091110"
+      }
+    ],
+    "recordLastUpdated": "20240321",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "IWASE YOSHIKAZU",
+        "representativeNativeName": "岩瀬　吉和"
+      },
+      {
+        "representativeName": "SHIROYAMA YASUFUMI",
+        "representativeNativeName": "城山　康文"
+      },
+      {
+        "representativeName": "MORI CHIKAKO",
+        "representativeNativeName": "森　智香子"
+      },
+      {
+        "representativeName": "KITAGUCHI TAKAHIRO",
+        "representativeNativeName": "北口　貴大"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20091116",
+        "applicationNumber": "2009-086677"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300430",
+      "lastPublicationDate": "20100608",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20100430",
+        "registrationNumber": "5320081"
+      }
+    },
+    "version": "20240321121007",
+    "wordMarkSpecification": {
+      "markTranslation": "PROCESSOR EXPERT",
+      "markTransliteration": "PUROSESSAAEKISUPAATO",
+      "markVerbalElementText": "ＰＲＯＣＥＳＳＯＲ　ＥＸＰＥＲＴ"
+    }
+  },
+  "_uri": "/mark/jp/d48ab637-4675-4a4e-9731-24cb72d12f03",
+  "_receipt": {
+    "fetched_at": "2026-09-03T16:38:35.462Z",
+    "context": "prelim-tmpdemo2014fullcountrysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

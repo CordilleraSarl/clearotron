@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/5d23e95b-d102-4c4e-a33f-7e9122aa22f6",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "5d23e95b-d102-4c4e-a33f-7e9122aa22f6",
+  "applicationNumber": "91438149",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-07-06",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENORIS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "避雷针;变流器;变压器(电);电插头;电动调节装置;调压器;酒精比重计;稳压电源;阳极;整流器",
+      "translation_language": "en",
+      "translation": "Lightning rod; converter; transformer (electric); electrical plug; electric regulating device; voltage regulator; alcohol hydrometer; regulated power supply; anode; rectifier"
+    }
+  ],
+  "owner": "Shanghai Domanni Industrial Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "上海市虹口区四川北路1318号2203室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shanghai Domanni Industrial Co., Ltd.",
+        "applicantNativeName": "上海朵曼旎实业有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Lightning rod; converter; transformer (electric); electrical plug; electric regulating device; voltage regulator; alcohol hydrometer; regulated power supply; anode; rectifier",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "避雷针;变流器;变压器(电);电插头;电动调节装置;调压器;酒精比重计;稳压电源;阳极;整流器"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories",
+        "Transistors and carbons used in electrical equipments; components of electron and electricity",
+        "Electrical controlling apparatus and equipments",
+        "Batteries, chargers"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0910",
+          "subNatGoodsServicesDescription": "Instruments and meters for measuring and electric measuring; apparatus and instruments for scientific research in laboratories"
+        },
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        },
+        {
+          "subNatClassNumber": "0914",
+          "subNatGoodsServicesDescription": "Electrical controlling apparatus and equipments"
+        },
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        }
+      ]
+    },
+    "id": "5d23e95b-d102-4c4e-a33f-7e9122aa22f6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1990"
+      }
+    ],
+    "recordLastUpdated": "20260726",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市快马后溪知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260427",
+        "applicationNumber": "91438149"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20260706",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260726020310",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENORIS"
+    }
+  },
+  "_uri": "/mark/cn/5d23e95b-d102-4c4e-a33f-7e9122aa22f6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

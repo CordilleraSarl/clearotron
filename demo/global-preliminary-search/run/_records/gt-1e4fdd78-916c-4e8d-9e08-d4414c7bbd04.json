@@ -1,0 +1,202 @@
+{
+  "uri": "/mark/gt/1e4fdd78-916c-4e8d-9e08-d4414c7bbd04",
+  "provider": "clarivate",
+  "office": "gt",
+  "guid": "1e4fdd78-916c-4e8d-9e08-d4414c7bbd04",
+  "applicationNumber": "2016010153",
+  "registrationNumber": "17779",
+  "applicationDate": "2016-10-12",
+  "registrationDate": "2017-06-12",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "FIVE NORDEN SCANDINAVIAN DESIGN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "El nombre comercial solicitado, ampara un establecimiento comercialdedicado: a) diseño, produccion, comercializacion, importacion, exportacion, compra venta y representacion de productos de maderaprincipalmente muebles, articulos decorativos para el hogar, accesorios para construccion y productos afines; b) diseño, fabricacion, comercializacion, venta, importacion, exportacion demaletines de fibra sintetica y de cuero.",
+      "translation_language": "en",
+      "translation": "The requested trade name covers a commercial establishment dedicated to: a) the design, production, marketing, import, export, purchase and sale, and representation of wood products, primarily furniture, home decor items, construction accessories, and related products; b) the design, manufacturing, marketing, sale, import, and export of synthetic fiber and leather briefcases."
+    }
+  ],
+  "owner": "GRUPO ESCANMAYA, SOCIEDAD ANONIMA",
+  "ownerNative": null,
+  "ownerCountry": "GT",
+  "representative": "RICARDO XAVIER IGNACIO MAZARIEGOS PALACIOS",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Guatemala",
+        "applicantAddressCountryCode": "GT",
+        "applicantAddressCountryName": "Guatemala",
+        "applicantName": "GRUPO ESCANMAYA, SOCIEDAD ANONIMA"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "The requested trade name covers a commercial establishment dedicated to: a) the design, production, marketing, import, export, purchase and sale, and representation of wood products, primarily furniture, home decor items, construction accessories, and related products; b) the design, manufacturing, marketing, sale, import, and export of synthetic fiber and leather briefcases.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "El nombre comercial solicitado, ampara un establecimiento comercialdedicado: a) diseño, produccion, comercializacion, importacion, exportacion, compra venta y representacion de productos de maderaprincipalmente muebles, articulos decorativos para el hogar, accesorios para construccion y productos afines; b) diseño, fabricacion, comercializacion, venta, importacion, exportacion demaletines de fibra sintetica y de cuero."
+        }
+      ]
+    },
+    "id": "1e4fdd78-916c-4e8d-9e08-d4414c7bbd04",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260818",
+    "registrationOfficeCode": "GT",
+    "registrationOfficeName": "Guatemala",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "GT",
+        "representativeAddressCountryName": "Guatemala",
+        "representativeName": "RICARDO XAVIER IGNACIO MAZARIEGOS PALACIOS"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20161012",
+        "applicationNumber": "2016010153"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20170612",
+        "registrationNumber": "17779"
+      }
+    },
+    "version": "20260818124732",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "FIVE NORDEN SCANDINAVIAN DESIGN"
+    }
+  },
+  "_uri": "/mark/gt/1e4fdd78-916c-4e8d-9e08-d4414c7bbd04",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.827Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

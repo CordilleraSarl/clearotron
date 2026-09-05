@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/es/2e505c99-4c19-46dd-b63a-a6bc32ae2be9",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "2e505c99-4c19-46dd-b63a-a6bc32ae2be9",
+  "applicationNumber": "4183819 MX",
+  "registrationNumber": null,
+  "applicationDate": "2022-09-13",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2022-10-07",
+  "publicationDates": null,
+  "abandonmentDate": "2023-06-01",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Joven Orquesta Internacional de Sevilla",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Actividades culturales; actuaciones en directo por parte de un grupo musical; actuaciones musicales; actuaciones musicales en directo; actuaciones musicales ofrecidas en salas de espectaculos; conciertos de musica; conciertos musicales en vivo; entretenimiento por medio de conciertos; espectaculos de musica en directo; servicios de actuaciones en directo; servicios de composicion musical; servicios de entretenimiento musical; servicios de entretenimiento musical por parte de grupos instrumentales; servicios de orquestas",
+      "translation_language": "en",
+      "translation": "CULTURAL ACTIVITIES; LIVE PERFORMANCES BY A MUSICAL GROUP; MUSICAL PERFORMANCES; LIVE MUSICAL PERFORMANCES; MUSICAL PERFORMANCES OFFERED IN SHOWROOMS; MUSIC CONCERTS; LIVE MUSICAL CONCERTS; ENTERTAINMENT THROUGH CONCERTS; LIVE MUSIC SHOWS; LIVE PERFORMANCE SERVICES; MUSICAL COMPOSITION SERVICES; MUSIC ENTERTAINMENT SERVICES; MUSICAL ENTERTAINMENT SERVICES BY INSTRUMENTAL GROUPS; ORCHESTRA SERVICES"
+    }
+  ],
+  "owner": "Fundación Goñi y Rey",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "Cristina Casas Feu",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Fundación Goñi y Rey"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "CULTURAL ACTIVITIES; LIVE PERFORMANCES BY A MUSICAL GROUP; MUSICAL PERFORMANCES; LIVE MUSICAL PERFORMANCES; MUSICAL PERFORMANCES OFFERED IN SHOWROOMS; MUSIC CONCERTS; LIVE MUSICAL CONCERTS; ENTERTAINMENT THROUGH CONCERTS; LIVE MUSIC SHOWS; LIVE PERFORMANCE SERVICES; MUSICAL COMPOSITION SERVICES; MUSIC ENTERTAINMENT SERVICES; MUSICAL ENTERTAINMENT SERVICES BY INSTRUMENTAL GROUPS; ORCHESTRA SERVICES",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Actividades culturales; actuaciones en directo por parte de un grupo musical; actuaciones musicales; actuaciones musicales en directo; actuaciones musicales ofrecidas en salas de espectaculos; conciertos de musica; conciertos musicales en vivo; entretenimiento por medio de conciertos; espectaculos de musica en directo; servicios de actuaciones en directo; servicios de composicion musical; servicios de entretenimiento musical; servicios de entretenimiento musical por parte de grupos instrumentales; servicios de orquestas"
+        }
+      ]
+    },
+    "id": "2e505c99-4c19-46dd-b63a-a6bc32ae2be9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6264"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "Avenida República Argentina 27- B, 2º B 41011 Sevilla SEVILLA",
+        "representativeName": "Cristina Casas Feu"
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20230601",
+      "active": false,
+      "application": {
+        "applicationDate": "20220913",
+        "applicationNumber": "4183819 MX"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "lastPublicationDate": "20221007",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20260427170613",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Joven Orquesta Internacional de Sevilla"
+    }
+  },
+  "_uri": "/mark/es/2e505c99-4c19-46dd-b63a-a6bc32ae2be9",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.816Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

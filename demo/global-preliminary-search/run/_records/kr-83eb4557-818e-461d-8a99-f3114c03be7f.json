@@ -1,0 +1,118 @@
+{
+  "uri": "/mark/kr/83eb4557-818e-461d-8a99-f3114c03be7f",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "83eb4557-818e-461d-8a99-f3114c03be7f",
+  "applicationNumber": "40-2025-0110326",
+  "registrationNumber": null,
+  "applicationDate": "2025-06-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "GORI",
+  "markTransliteration": "GORI",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "광고 및 홍보목적의 스마트폰용 애플리케이션 소프트웨어 프로그램, 광고중개용 스마트폰 앱 애플리케이션(소프트웨어), 글로벌 컴퓨터 네트워크의 내려받기 가능한 정보디렉토리 접속용 컴퓨터 소프트웨어, 글로벌 컴퓨터네트워크 다중 사용자 접속 제공용 컴퓨터 소프트웨어, 글로벌 통신망을 통한 상업용 소프트웨어, 금융거래취급에 관한 컴퓨터 소프트웨어, 내려받기 가능한 멀티미디어 파일, 내려받기 가능한 쿠폰, 네트워크운영시스템용 프로그램, 데이터 및 문서 캡처/전송/저장/표시용 컴퓨터 소프트웨어, 데이터베이스 관리용 소프트웨어, 디지털 정보/데이터 접속용 컴퓨터 소프트웨어, 리워드 제공을 위한 데이터베이스 생성용 컴퓨터 소프트웨어, 리워드 제공을 위한 플랫폼용 소프트웨어, 무선콘텐츠 전송용 컴퓨터 소프트웨어, 사업 관리 소프트웨어, 서비스 제공을 위한 매칭용 소프트웨어, 수요조사/온라인투표/이벤트기획/티켓 예매/문화산업홍보를 위한 모바일폰용 통신 소프트웨어, 엔터테이너/아티스트/연예인 또는 인플루언서 응원제안을 위한 스마트폰용 통신 소프트웨어, 엔터테이너/아티스트/연예인 또는 인플루언서 후원중개 플랫폼용 소프트웨어, 연예인 팬클럽 커뮤니티 활동을 목적으로 한 내려받기 가능한 컴퓨터 소프트웨어 애플리케이션, 영상/그래픽 및 텍스트 처리용 소프트웨어, 컴퓨터 운영시스템 소프트웨어, 컴퓨터 전자 상거래 소프트웨어, 크라우드펀딩 서비스 제공용 컴퓨터 응용 소프트웨어, 판매자와 수요자 간의 거래 매칭을 위한 소프트웨어, 팬덤 관련 콘텐츠 공유 및 소셜 네트워크용 컴퓨터 응용 소프트웨어, 푸드트럭 및 이동형차량 예약용 애플리케이션 소프트웨어, 푸드트럭 예약을 위한 스마트폰용 통신 소프트웨어, 푸드트럭/캠핑카/분장차량/휴게차량과 수요자를 매칭하기 위한 스마트폰용 통신 소프트웨어",
+      "translation_language": "en",
+      "translation": "Application software program for smartphones for advertising and promotional purposes, smartphone app application (software) for advertising brokerage, computer software for accessing downloadable information directories of global computer networks, computer software for providing multi-user access to global computer networks, commercial software through global communication networks, computer software for handling financial transactions, downloadable multimedia files, downloadable coupons, programs for network operating systems, computer software for capturing/transferring/storing/displaying data and documents, software for database management, digital information/data access. Computer software, computer software for creating a database for providing rewards, platform software for providing rewards, computer software for wireless content transmission, business management software, matching software for service provision, communication software for mobile phones for demand surveys/online voting/event planning/ticket reservations/cultural industry promotion, communication software for smartphones for cheering suggestions for entertainers/artists/celebrities or influencers, entertainers/artists/celebrities or Software for influencer sponsorship brokerage platforms, downloadable computer software applications for celebrity fan club community activities, software for video/graphics and text processing, computer operating system software, computer e-commerce software, computer application software for providing crowdfunding services, software for transaction matching between sellers and consumers, computer application software for fandom-related content sharing and social networks, application software for food truck and mobile vehicle reservations, communication software for smartphones for food truck reservations, Communication software for smartphones to match food trucks/camping cars/makeup vehicles/rest vehicles with consumers"
+    }
+  ],
+  "owner": "Mora. Corp",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": "이재량 (Lee Jae Ryang)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "전남광주통합특별시 광산구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "Mora. Corp",
+        "applicantNativeName": "주식회사 모라"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Application software program for smartphones for advertising and promotional purposes, smartphone app application (software) for advertising brokerage, computer software for accessing downloadable information directories of global computer networks, computer software for providing multi-user access to global computer networks, commercial software through global communication networks, computer software for handling financial transactions, downloadable multimedia files, downloadable coupons, programs for network operating systems, computer software for capturing/transferring/storing/displaying data and documents, software for database management, digital information/data access. Computer software, computer software for creating a database for providing rewards, platform software for providing rewards, computer software for wireless content transmission, business management software, matching software for service provision, communication software for mobile phones for demand surveys/online voting/event planning/ticket reservations/cultural industry promotion, communication software for smartphones for cheering suggestions for entertainers/artists/celebrities or influencers, entertainers/artists/celebrities or Software for influencer sponsorship brokerage platforms, downloadable computer software applications for celebrity fan club community activities, software for video/graphics and text processing, computer operating system software, computer e-commerce software, computer application software for providing crowdfunding services, software for transaction matching between sellers and consumers, computer application software for fandom-related content sharing and social networks, application software for food truck and mobile vehicle reservations, communication software for smartphones for food truck reservations, Communication software for smartphones to match food trucks/camping cars/makeup vehicles/rest vehicles with consumers",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "광고 및 홍보목적의 스마트폰용 애플리케이션 소프트웨어 프로그램, 광고중개용 스마트폰 앱 애플리케이션(소프트웨어), 글로벌 컴퓨터 네트워크의 내려받기 가능한 정보디렉토리 접속용 컴퓨터 소프트웨어, 글로벌 컴퓨터네트워크 다중 사용자 접속 제공용 컴퓨터 소프트웨어, 글로벌 통신망을 통한 상업용 소프트웨어, 금융거래취급에 관한 컴퓨터 소프트웨어, 내려받기 가능한 멀티미디어 파일, 내려받기 가능한 쿠폰, 네트워크운영시스템용 프로그램, 데이터 및 문서 캡처/전송/저장/표시용 컴퓨터 소프트웨어, 데이터베이스 관리용 소프트웨어, 디지털 정보/데이터 접속용 컴퓨터 소프트웨어, 리워드 제공을 위한 데이터베이스 생성용 컴퓨터 소프트웨어, 리워드 제공을 위한 플랫폼용 소프트웨어, 무선콘텐츠 전송용 컴퓨터 소프트웨어, 사업 관리 소프트웨어, 서비스 제공을 위한 매칭용 소프트웨어, 수요조사/온라인투표/이벤트기획/티켓 예매/문화산업홍보를 위한 모바일폰용 통신 소프트웨어, 엔터테이너/아티스트/연예인 또는 인플루언서 응원제안을 위한 스마트폰용 통신 소프트웨어, 엔터테이너/아티스트/연예인 또는 인플루언서 후원중개 플랫폼용 소프트웨어, 연예인 팬클럽 커뮤니티 활동을 목적으로 한 내려받기 가능한 컴퓨터 소프트웨어 애플리케이션, 영상/그래픽 및 텍스트 처리용 소프트웨어, 컴퓨터 운영시스템 소프트웨어, 컴퓨터 전자 상거래 소프트웨어, 크라우드펀딩 서비스 제공용 컴퓨터 응용 소프트웨어, 판매자와 수요자 간의 거래 매칭을 위한 소프트웨어, 팬덤 관련 콘텐츠 공유 및 소셜 네트워크용 컴퓨터 응용 소프트웨어, 푸드트럭 및 이동형차량 예약용 애플리케이션 소프트웨어, 푸드트럭 예약을 위한 스마트폰용 통신 소프트웨어, 푸드트럭/캠핑카/분장차량/휴게차량과 수요자를 매칭하기 위한 스마트폰용 통신 소프트웨어"
+        }
+      ]
+    },
+    "id": "83eb4557-818e-461d-8a99-f3114c03be7f",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "14.01.15",
+      "26.01.06"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260823",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "전남광주통합특별시 광산구 하남산단*번로 *층(도천동, 광주경제고용진흥원)(가온특허법률사무소)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "이재량 (Lee Jae Ryang)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250625",
+        "applicationNumber": "40-2025-0110326"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PUBLISHED"
+    },
+    "version": "20260823021135",
+    "wordMarkSpecification": {
+      "markTransliteration": "GORI",
+      "markVerbalElementText": "GORI"
+    }
+  },
+  "_uri": "/mark/kr/83eb4557-818e-461d-8a99-f3114c03be7f",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:29:06.049Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

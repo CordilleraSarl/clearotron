@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/d6574f17-abd4-46f9-bc3f-e1d19bdd3b9b",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "d6574f17-abd4-46f9-bc3f-e1d19bdd3b9b",
+  "applicationNumber": "29456233",
+  "registrationNumber": null,
+  "applicationDate": "2018-03-06",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "七个橙子",
+  "markTransliteration": "SEVEN ORANGE qi ge cheng zi",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "cn",
+      "description": "组织教育或娱乐竞赛;艺术品出租;教育;组织文化或教育展览;寄宿学校教育服务;流动图书馆;书籍出版;电子书籍和杂志的在线出版;在计算机网络上提供在线游戏;广播和电视节目制作",
+      "translation_language": "en",
+      "translation": "Organizing educational or recreational competitions; art rentals; education; organizational culture or educational exhibitions; boarding school education services; mobile libraries; book publishing; online publishing of e-books and magazines; online games on computer networks; Production"
+    }
+  ],
+  "owner": "Xiamen, wind Culture Communication Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "福建省厦门市思明区莲坂商业广场中区226号之二",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Xiamen, wind Culture Communication Co., Ltd.",
+        "applicantNativeName": "厦门合风文化传播有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Organizing educational or recreational competitions; art rentals; education; organizational culture or educational exhibitions; boarding school education services; mobile libraries; book publishing; online publishing of e-books and magazines; online games on computer networks; Production",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "组织教育或娱乐竞赛;艺术品出租;教育;组织文化或教育展览;寄宿学校教育服务;流动图书馆;书籍出版;电子书籍和杂志的在线出版;在计算机网络上提供在线游戏;广播和电视节目制作"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Education",
+        "Arranging and conducting service of events",
+        "Library service",
+        "Publishing service",
+        "Amusement and sports service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4101",
+          "subNatGoodsServicesDescription": "Education"
+        },
+        {
+          "subNatClassNumber": "4102",
+          "subNatGoodsServicesDescription": "Arranging and conducting service of events"
+        },
+        {
+          "subNatClassNumber": "4103",
+          "subNatGoodsServicesDescription": "Library service"
+        },
+        {
+          "subNatClassNumber": "4104",
+          "subNatGoodsServicesDescription": "Publishing service"
+        },
+        {
+          "subNatClassNumber": "4105",
+          "subNatGoodsServicesDescription": "Amusement and sports service"
+        }
+      ]
+    },
+    "id": "d6574f17-abd4-46f9-bc3f-e1d19bdd3b9b",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20251003",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "厦门思义商标代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20180306",
+        "applicationNumber": "29456233"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "UNPUBLISHED APPLICATION"
+    },
+    "version": "20251003030411",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN ORANGE qi ge cheng zi",
+      "markVerbalElementText": "七个橙子"
+    }
+  },
+  "_uri": "/mark/cn/d6574f17-abd4-46f9-bc3f-e1d19bdd3b9b",
+  "_receipt": {
+    "fetched_at": "2026-09-02T14:26:07.810Z",
+    "context": "prelim-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
