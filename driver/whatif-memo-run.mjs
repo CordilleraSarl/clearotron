@@ -286,7 +286,7 @@ export async function askArchivedRun({ runId, question, requestedBy = null } = {
   if (!composed.ok)
     return { ok: false, fail: MEMO_FAILS.COMPOSE_REFUSED, detail: composed.reason, missing: composed.missing };
 
-  const memoId = `memo-${sha(`${run.runId} ${assumption} ${now()}`).slice(0, 12)}`;
+  const memoId = `memo-${sha(`${run.runId}\u0000${assumption}\u0000${now()}`).slice(0, 12)}`;
   const dir = join(run.runDir, MEMO_DIR);
   try {
     mkdirSync(dir, { recursive: true });

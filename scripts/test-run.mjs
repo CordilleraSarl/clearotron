@@ -129,6 +129,46 @@ if (!argv.length) {
   process.exit(2);
 }
 
+// ── A NAMED TEST FILE THAT IS NOT THERE IS A REFUSAL, NOT A PASS ────────────────────────────────
+//
+// `node --test a.test.mjs absent.test.mjs` exits 0 and prints `# pass N` / `# fail 0`, and says
+// NOTHING about the file it could not find. It refuses only when every path it was handed is missing.
+// So the one thing this repository asks of a contributor — derive the arms your change touches and
+// run them by name — goes green over every arm that is not there, and reports the same green as full
+// coverage.
+//
+// This is not hypothetical on this tree. The public cut withholds test files that exist privately,
+// and the withheld one is often the file named after the module somebody just changed. Two arms were
+// run by name on a fresh clone, came back clean, and neither existed.
+//
+// SUFFIX, NOT SHAPE. Only an argument ending in a test-file suffix is checked. Flags, a flag's value,
+// the command itself and directories are left alone: guessing which arguments are paths is how a
+// guard starts refusing invocations that were fine, and this one has to be safe enough to sit in
+// front of every suite run on the box.
+//
+// AND A FLAG'S VALUE IS NOT A PATH. The first cut of this guard refused
+// `--test-name-pattern 'nothing.test.mjs'` — a legitimate invocation, caught by its own control before
+// it shipped. Anything beginning with a dash is skipped, and so is the argument straight after a flag
+// that takes a value. `--test` is not in that set, because the file list follows it and that list is
+// the whole point.
+const TAKES_A_VALUE = new Set([
+  "--test-name-pattern", "--test-skip-pattern", "--test-reporter", "--test-reporter-destination",
+  "--test-shard", "--test-concurrency", "--test-timeout", "--import", "--require", "-r",
+  "--loader", "--experimental-loader", "--conditions", "-C", "--env-file",
+]);
+const namedButAbsent = argv.filter((a, i) =>
+  !a.startsWith("-")
+  && !TAKES_A_VALUE.has(argv[i - 1])
+  && /\.(test|spec)\.[cm]?[jt]sx?$/.test(a)
+  && !existsSync(a));
+if (namedButAbsent.length) {
+  console.error("[test-run] named on the command line and not on disk:\n  "
+    + namedButAbsent.join("\n  ")
+    + "\n\nRefusing rather than running the rest. `node --test` would have run the files that DO exist "
+    + "and reported `# fail 0`, which reads as coverage of everything you asked for.");
+  process.exit(2);
+}
+
 // ── — COVERAGE ON REQUEST, SO THE FIFTH MEMBER CAN BE ASKED ABOUT ─────────────────────────────
 //
 // A GATED arm — `if (!process.env.X) return;` at the top of a test body — moves no token, so the suite
