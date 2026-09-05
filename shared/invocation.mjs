@@ -92,11 +92,59 @@ export function standFrom(dir) {
   return at === -1 ? s : s.slice(0, at);
 }
 
-export function invocationForm(env = process.env, io = FS) {
+/**
+ * WHERE npm PUT THE EXECUTABLE for a GLOBAL install of this package —.
+ *
+ * ✕ AND THIS IS STILL NOT `which`, FOR THE SAME REASON THE HEADER GIVES. Read the prohibition above
+ * before touching this: a PATH lookup answers "is some clearotron installed", and on a box with a
+ * stale global install beside this one it answers YES about somebody else's copy. Nothing here looks
+ * up a name. This derives, from THIS module's own location, the single path npm would have written
+ * for THIS install and no other — and the caller then asks only whether that exact path is on PATH.
+ * Identity, not availability, arrived at by a second route.
+ *
+ * THE SECOND ROUTE IS NECESSARY BECAUSE inspectShim CANNOT ANSWER HERE. Everywhere else in this file
+ * identity comes from reading the shim and finding our marker in it. A global install's executable is
+ * npm's own wrapper, not a file this product ever wrote, so `inspectShim` correctly reports it
+ * `foreign` — and a global install, which is the eventual public route, was therefore told it had no
+ * `clearotron` on its PATH while the bare name worked perfectly. The identity has to come from the
+ * path instead, so it comes from the layout, which npm fixes:
+ *
+ *     <prefix>/lib/node_modules/clearotron      ← this module's install directory
+ *     <prefix>/bin/clearotron                   ← the executable npm links for it
+ *
+ * Measured on the reporter's box: `/home/hardening-b/.npm-global/lib/node_modules/clearotron` and
+ * `/home/hardening-b/.npm-global/bin/clearotron`. A LOCAL install — `<project>/node_modules/clearotron`,
+ * no `lib` segment — is deliberately NOT matched: npm links those into `<project>/node_modules/.bin`,
+ * which is not on anybody's PATH, and `standFrom` already gives that case its correct answer.
+ *
+ * POSIX ONLY. npm's global layout on Windows is `<prefix>/node_modules/<pkg>` with a `.cmd` beside it,
+ * a different shape; `installShim` already refuses that platform by name and this returns null there
+ * rather than deriving a path that does not exist.
+ *
+ * PURE, like `standFrom` above it, so both the matching and the non-matching layouts are drivable
+ * without building a global install per assertion.
+ *
+ * @returns {string|null} the directory npm put the executable in, or null when this is not that layout
+ */
+export function globalBinDirFrom(dir, platform = process.platform) {
+  if (platform === "win32") return null;
+  const s = String(dir ?? "");
+  const tail = `${sep}lib${sep}node_modules${sep}clearotron`;
+  // The basename must be OUR package name: this is the identity half of the derivation, and without it
+  // the function would happily name a bin directory for any package that happens to sit in a global root.
+  if (!s.endsWith(tail)) return null;
+  return `${s.slice(0, -tail.length)}${sep}bin`;
+}
+
+export function invocationForm(env = process.env, io = FS, installDir = INSTALL_DIR) {
   const dir = shimDir(env);
   const path = shimPath(env);
   const shim = path
-    ? inspectShim(path, io.read ? { read: io.read } : {})
+    // installDir travels WITH the read. `inspectShim` decides "ours" by comparing the install the shim
+    // names against this one, and leaving it to default while the caller has injected a different
+    // installDir would judge a fixture's shim against the real checkout — the two halves of one
+    // identity question answered about two different installs.
+    ? inspectShim(path, io.read ? { installDir, read: io.read } : { installDir })
     : { kind: "absent-or-unreadable", installDir: null };
   if (shim.kind === "ours" && shim.interpreterMissing !== true) {
     const { onPath, shadowedBy } = pathPosition(dir, env, { exists: io.exists });
@@ -105,12 +153,35 @@ export function invocationForm(env = process.env, io = FS) {
     }
     return { form: "shim-path", prefix: `${dir}${sep}`, shim: path, dir, onPath, shadowedBy, staleInterpreter: null };
   }
+  // A GLOBAL INSTALL IS ASKED SECOND, AND ONLY SECOND. `~/.local/bin` is where this product writes its
+  // own shim, so a shim of ours there is the stronger evidence and keeps its precedence; this branch is
+  // for the install that never wrote one because npm had already put the name on PATH itself. It is
+  // below the broken-shim note deliberately: a shim of ours that is BROKEN must still not be handed
+  // back as the form, and a global executable is a genuine way around it.
+  const globalDir = globalBinDirFrom(installDir);
+  const globalExe = globalDir ? `${globalDir}${sep}clearotron` : null;
+  // io.exists, not a bare existsSync: an arm that pinned PATH but let this read fall through to the real
+  // disk would answer differently on a box that really has a global install — the reason the FS note at
+  // the top of this file gives for injecting both halves.
+  if (globalExe && shim.kind !== "ours" && io.exists(globalExe)) {
+    const { onPath, shadowedBy } = pathPosition(globalDir, env, { exists: io.exists });
+    if (onPath && !shadowedBy) {
+      return { form: "bare", prefix: "", shim: globalExe, dir: globalDir, onPath: true, shadowedBy: null, staleInterpreter: null, via: "global" };
+    }
+    // NOT ON PATH IS ALSO ANSWERED HERE, AND THIS IS THE HALF THAT WAS ACTIVELY WRONG. Falling through
+    // to `in-place` hands back `cd ${standFrom(INSTALL_DIR)} && npx clearotron` — and for this layout
+    // `standFrom` names `<prefix>/lib`, a directory with no package.json in it, so npx there reports
+    // "could not determine executable to run": the exact failure the tracker-1916 block above this
+    // file's imports was written to end, reached by the one layout it did not cover. The executable is
+    // right there and naming it in full is true from any directory.
+    return { form: "shim-path", prefix: `${globalDir}${sep}`, shim: globalExe, dir: globalDir, onPath, shadowedBy, staleInterpreter: null, via: "global" };
+  }
   // ✕ A BROKEN SHIM MUST NOT BE THE FORM WE HAND BACK, however well it identifies itself. Driven and
   // caught: doctor reported the stale interpreter and then told the reader to run `clearotron install`
   // to fix it — through the very shim it had just called broken. The advice for repairing a route
   // cannot travel that route. Both remaining forms go around it.
   return {
-    form: "in-place", prefix: `cd ${standFrom(INSTALL_DIR)} && npx `, shim: path, dir,
+    form: "in-place", prefix: `cd ${standFrom(installDir)} && npx `, shim: path, dir,
     onPath: false, shadowedBy: null, shimKind: shim.kind, otherInstall: shim.installDir,
     staleInterpreter: shim.interpreterMissing === true ? shim.interpreter : null,
   };
@@ -121,7 +192,7 @@ export function invocationForm(env = process.env, io = FS) {
  *
  * @param argv1  process.argv[1] — the script node was asked to run
  */
-export function invocationPrefix(argv1 = process.argv[1] ?? "", env = process.env, io = FS) {
+export function invocationPrefix(argv1 = process.argv[1] ?? "", env = process.env, io = FS, installDir = INSTALL_DIR) {
   // THE DISPATCHER SPAWNS ITS VERBS AS SEPARATE PROCESSES, so a child's argv[1] is `bin/onboard.mjs`
   // however the reader started it — and reading argv[1] alone would tell every spawned verb to print
   // `npx` even for somebody who typed a bare `clearotron`. bin/clearotron.mjs therefore hands its OWN
@@ -146,12 +217,12 @@ export function invocationPrefix(argv1 = process.argv[1] ?? "", env = process.en
   // What these two return is no longer the literal string `npx `: arriving BY npx tells us the bare name
   // did not get the reader here, which is a fact about the spelling and says nothing about where they
   // will be standing when they type the next one. That is invocationForm()'s question now.
-  if (String(env?.npm_command ?? "") === "exec") return invocationForm(env, io).prefix;
+  if (String(env?.npm_command ?? "") === "exec") return invocationForm(env, io, installDir).prefix;
   // AND THE PATH, INDEPENDENTLY OF THE ENVIRONMENT. npx keeps its materialised trees under `_npx/` in
   // the npm cache. This catches a recorded or replayed argv that arrives without npm's env — which is
   // how the case above was driven when it was found, and a discriminator that only worked when the
   // environment cooperated would go quiet exactly where a test could reach it.
-  if (/[\\/]_npx[\\/]/.test(s)) return invocationForm(env, io).prefix;
+  if (/[\\/]_npx[\\/]/.test(s)) return invocationForm(env, io, installDir).prefix;
   // ── THE ONE CASE THAT NEEDS NO FILESYSTEM AT ALL ────────────────────────────────────────────────
   //
   // Started through a bin shim named `clearotron` — a global install, or our own shim on PATH. The
@@ -162,12 +233,12 @@ export function invocationPrefix(argv1 = process.argv[1] ?? "", env = process.en
   if (basename(s) === "clearotron") return "";
   // `node bin/clearotron.mjs`, a direct file run, a spawned verb with no handed-down argv. The bare name
   // is not what got them here, so ask what would.
-  return invocationForm(env, io).prefix;
+  return invocationForm(env, io, installDir).prefix;
 }
 
 /** `clearotron doctor` or whatever the reader can actually type from where they are. */
-export const invoke = (verb, argv1 = process.argv[1] ?? "", env = process.env, io = FS) =>
-  `${invocationPrefix(argv1, env, io)}clearotron ${verb}`;
+export const invoke = (verb, argv1 = process.argv[1] ?? "", env = process.env, io = FS, installDir = INSTALL_DIR) =>
+  `${invocationPrefix(argv1, env, io, installDir)}clearotron ${verb}`;
 
 /**
  * The verb by NAME ONLY — no prefix, no path, no `npx`.

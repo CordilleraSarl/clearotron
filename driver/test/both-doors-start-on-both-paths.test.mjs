@@ -88,6 +88,23 @@ test("2176-F26 the summary names BOTH doors, their ports, and who each is for", 
     "the not-running branch must read child.exitCode, which the runtime sets when the process is reaped");
 });
 
+/**
+ * A port the kernel says is free right now —.
+ *
+ * Bind :0, read what was assigned, release it. The window between release and the door's own bind is
+ * milliseconds and it is the only race left; a hardcoded port is not a race but a standing appointment,
+ * held for as long as any other lane's copy of this suite runs. Where an arm can keep the socket instead
+ * of releasing it — the squatter below — it does, and has no window at all.
+ */
+async function freePort() {
+  const { createServer } = await import("node:net");
+  const s = createServer();
+  await new Promise((r) => s.listen(0, "127.0.0.1", r));
+  const { port } = s.address();
+  await new Promise((r) => s.close(r));
+  return port;
+}
+
 test("2176-F26 THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the same as starting", async () => {
   // THIS ARM EXISTS BECAUSE THE OTHERS PASSED WHILE THE DOOR DIED AT BIRTH. Every assertion above was
   // green on an environment that made the door exit 1 on its first line:
@@ -101,7 +118,23 @@ test("2176-F26 THE DOOR ACTUALLY BOOTS on the composed environment — shape is 
   const { spawn } = await import("node:child_process");
   const { mkdtempSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
-  const PORT = 18947;   // NOT 18811: that is the door's default and a real install may hold it.
+  // ── ✕ A FIXED PORT IS A COLLISION BETWEEN LANES, NOT A CONSTANT ─────────
+  //
+  // This was `const PORT = 18947`, chosen to avoid the door's own default 18811 because a real install
+  // may hold that. Right about the install and wrong about the box: 18947 is fixed too, so it belongs to
+  // whichever copy of this suite binds it first. Measured 2026-09-05 — this arm red during one lane's
+  // guard run while another lane ran the same suite in its own checkout, and the product refused exactly
+  // as it should ("the product's ports are fixed defaults, so two checkouts on one box collide"). It was
+  // NOT a leaked process: nothing held the port seconds later, only this file in the whole set binds it,
+  // and the file passed alone. Two concurrent lanes are enough on their own, and the export lane runs
+  // this suite in a second checkout BY DESIGN.
+  //
+  // The cost is not the minute. The lane that loses the race gets a red it cannot tell apart from its own
+  // regression, and "known flake" is how a real failure hides.
+  //
+  // The PRODUCT's fixed default stays untouched — a door that quietly moved to another port would be a
+  // worse product, and its refusal here is correct behaviour being reported. What changes is the arm.
+  const PORT = await freePort();
   const base = mkdtempSync(join(tmpdir(), "f26-boot-"));
   writeFileSync(join(base, "grants.json"), `${JSON.stringify({ tenants: {} }, null, 2)}\n`);
   const envs = childEnv({ ...BASE,
@@ -138,9 +171,13 @@ test("2176-F26 a door that CANNOT bind is reported as not running — driven, no
   const { spawn } = await import("node:child_process");
   const { mkdtempSync, writeFileSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
-  const PORT = 18948;
+  // The squatter asks the KERNEL for the port rather than naming one (, same class as
+  // the arm above). Here there is no race left at all: this arm's whole purpose is to hold the port, so
+  // binding :0 and reading back what it was given is both collision-free and a more honest expression of
+  // "a port something else already has".
   const squatter = createServer();
-  await new Promise((r) => squatter.listen(PORT, "127.0.0.1", r));
+  await new Promise((r) => squatter.listen(0, "127.0.0.1", r));
+  const PORT = squatter.address().port;
   const base = mkdtempSync(join(tmpdir(), "f26-busy-"));
   writeFileSync(join(base, "grants.json"), `${JSON.stringify({ tenants: {} }, null, 2)}\n`);
   const envs = childEnv({ ...BASE,

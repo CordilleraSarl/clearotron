@@ -73,7 +73,7 @@
 // The ops key is deliberately NOT persisted. It is minted fresh, in memory, at every start, so no
 // long-lived engine credential is written to disk by a command whose job is to show you the product.
 
-import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
+import { envLocalPath } from "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
 // — ONE AUTHORITY for what a clearance needs from its environment, used twice
 // below: to COMPOSE the units' environment and to GUARD it before this command reports success. The
 // tables are handed in rather than imported by it, because the register table lives in a CLI entry and
@@ -127,7 +127,7 @@ import { pinEnvAll } from "../shared/env-aliases.mjs";   // — a pin that names
 import { BRAND } from "../shared/brand.mjs";   // — the installer's own name, from the tenant seam
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ENV_PATH = join(REPO, ".env");
+const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 /** Where `render-units.mjs --apply` installs, and therefore where "this box is a server" is visible. */
 export const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 /** The shipped units that make this box a server. A door unit alone is enough; so is the drain. */

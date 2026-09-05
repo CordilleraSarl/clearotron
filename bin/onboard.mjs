@@ -60,10 +60,11 @@ import { spawnSync, execFileSync } from "node:child_process";   // — the wizar
                                                                 // execFileSync is doctor's read-only `systemctl show`
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { accessSync, constants, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync, chmodSync } from "node:fs";   // read the process table here; moved that to shared/process-table.mjs
+import { accessSync, constants, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync, chmodSync } from "node:fs";   // read the process table here; moved that to shared/process-table.mjs
 import { homedir, userInfo } from "node:os";
 import { invocationPrefix } from "../shared/invocation.mjs";   // — one rule for how the reader invokes us
 import { invocationForm } from "../shared/invocation.mjs";   // — and WHY that form
+import { standFrom } from "../shared/invocation.mjs";   // is this tree one npm replaces?
 import { installShim } from "../shared/verb-shim.mjs";   // — the verb goes on PATH
 import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight where the meaning is
 import { bracketAsciiCells } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
@@ -72,7 +73,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
 import { Writable } from "node:stream";
 
-import { loadEnvLocal } from "../shared/env-local.mjs";
+import { envLocalPath, loadEnvLocal } from "../shared/env-local.mjs";
 import {
   USPTO_ARCHIVE_GB, USPTO_INDEX_GB, USPTO_INGEST_GB_PER_HOUR, USPTO_DAILY_TOPUP_MB,
   usptoBuildHours, usptoProvisionGB,
@@ -108,7 +109,7 @@ function readIfPresent(path) {
 }
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ENV_PATH = join(REPO, ".env");
+const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 const NODE_FLOOR = 22;
 
 const argv = process.argv.slice(2);
@@ -205,6 +206,186 @@ const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWi
  * @param {Record<string,string>} candidate what setup collected — always wins
  * @param {Record<string,string>} existing  the file as it stands
  */
+/**
+ * ── IS THE PORTAL BUNDLE THE ONE ITS SOURCES WOULD BUILD? — ─────────────────
+ *
+ * `git pull` CANNOT UPDATE `portal-ui/dist` ON THE PUBLIC TREE, because the cut withholds it: the
+ * bundle is untracked there and must be built by hand. So a pull that changes `portal-ui/src` leaves
+ * the built bundle behind, the portal serves the old UI, and every surface says it is fine —
+ * `/portal/health` has exactly two states for `ui`, present and absent, and there is no third for
+ * present-and-older-than-its-sources. The operator ran the documented upgrade, it exited 0, nothing
+ * warned, and the screen they serve is from before it.
+ *
+ * ✕ mtimes ARE NOT SAFE EVERYWHERE, WHICH IS WHY THIS DISCRIMINATES THE ROUTE FIRST. The issue proposes
+ * "two mtimes and the product already knows both paths", and that is right on exactly one of the three
+ * routes. Measured on this tree, all three states are distinguishable and only one of them is
+ * comparable:
+ *
+ *   src ABSENT              the tarball. `package.json`'s `files` ships `portal-ui/dist/` and NOT
+ *                           `portal-ui/src`, so there is nothing to compare against — and npm normalises
+ *                           mtimes when it extracts, so comparing anyway would report a false stale on a
+ *                           correct install. Nothing is claimed here on purpose.
+ *   dist TRACKED, AND THE GATE IS IN THIS TREE   `portal-ui/dist` is committed and CI
+ *                           rebuilds it and fails on any byte of difference, so freshness is already
+ *                           enforced by a stronger check than a timestamp. And git does not preserve
+ *                           mtimes: a checkout stamps whatever it wrote with the time it wrote it, so a
+ *                           branch switch that touches one src file makes it "newer" than a dist that is
+ *                           byte-perfect. Comparing here would be noise over a guarantee.
+ *   dist TRACKED, NO GATE   ✕ AND THIS ROW IS WHY TRACKED-NESS IS NOT THE TEST. An earlier cut of this
+ *                           read "tracked" as "guaranteed" and said so to the reader. Measured on the
+ *                           exported tree: `.gitignore` ships a comment saying dist is committed on
+ *                           purpose and does NOT ignore it, the cut withholds dist itself, and there is
+ *                           no `.github/workflows` at all. So a public reader who builds the bundle and
+ *                           runs `git add -A` — the ordinary thing — makes it tracked, and this cell
+ *                           would have told them CI was checking it against its sources when nothing
+ *                           was. That is worse than the silence this issue was opened about: it is the
+ *                           same staleness, now with a tick over it. The guarantee comes from THE GATE,
+ *                           so the gate is what is measured, by its own refusal text rather than by the
+ *                           presence of a file that might be somebody else's workflow.
+ *   NOT A GIT CHECKOUT      an extracted archive or a copied tree. `git pull` is the whole mechanism of
+ *                           this defect and there is none here, so nothing can have gone stale by it —
+ *                           and with no git there is no way to tell a copied dist from a built one.
+ *                           Found by building the fixture: a hermetic root symlinks the real tree's
+ *                           portal-ui and has no `.git`, so the comparison ran against a checkout whose
+ *                           mtimes are all its checkout time in arbitrary order, and the arm would have
+ *                           flipped verdict between runs. The flake was the measurement telling us the
+ *                           comparison did not belong there.
+ *   dist UNTRACKED IN A CHECKOUT, src present   the public source route, and the one this issue is
+ *                           about. git never writes an untracked file, so dist's mtime really is when
+ *                           it was built, and src's really is when the pull wrote it. Both are local
+ *                           wall-clock events and the comparison means what it says.
+ *
+ * ✕ AND THE FIX IS NOT A HASH BAKED INTO THE BUNDLE. `shared/product-identity.mjs` states why in its own
+ * words — a build-time define is circular against a committed dist, "and the tempting fix at that point
+ * is to weaken the freshness check, which is worse than having no About page." Everything below is
+ * outside the bundle.
+ *
+ * PURE. The three routes are drivable without building a portal.
+ *
+ * @returns {"no-sources"|"unbuilt"|"unversioned"|"guarded"|"tracked-unguarded"|"unmeasured"|"current"|"stale"}
+ */
+export function bundleFreshness({ srcPresent, distPresent, isGitCheckout, distTracked, distGated, distMtime, newestSrcMtime }) {
+  // ✕ ABSENT COMES FIRST, AND IT USED TO COME SECOND. The route rows below all describe a bundle that
+  // EXISTS; asking which route we are on before asking whether there is anything to serve meant a tree
+  // with neither a bundle nor sources — a packaged install missing its own dist, and the fixture that
+  // drives doctor's absent-bundle branch — answered "no sources, so the bundle ships with them" and
+  // printed a tick over an empty directory. It lost the one condition that stops /portal rendering,
+  // which is the finding this whole cell exists to carry. Nothing to serve is the strongest fact about
+  // a bundle and it is reported before anything else is decided.
+  if (!distPresent) return "unbuilt";
+  if (!srcPresent) return "no-sources";
+  if (!isGitCheckout) return "unversioned";
+  if (distTracked) return distGated ? "guarded" : "tracked-unguarded";
+  // A COULD-NOT-LOOK IS NOT A PASS, and it is not a stale bundle either. Both trees are here and one of
+  // them read back no timestamp at all — an unreadable directory, or one whose every stat threw. Ticking
+  // would be absence-as-pass on the one branch this cell exists to answer; calling it stale would send an
+  // operator to rebuild a bundle nobody has shown to be old. It is reported as what it is, which is the
+  // same treatment the catch around this whole section already gives a bundle it cannot read.
+  if (!(distMtime > 0) || !(newestSrcMtime > 0)) return "unmeasured";
+  return newestSrcMtime > distMtime ? "stale" : "current";
+}
+
+/** Newest mtime under `dir`, or 0. Best-effort: an unreadable tree answers 0, and 0 makes no claim. */
+function newestMtimeUnder(dir, exists = existsSync) {
+  if (!exists(dir)) return 0;
+  let newest = 0;
+  const walk = (d) => {
+    let entries;
+    try { entries = readdirSync(d, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      const full = join(d, e.name);
+      if (e.isDirectory()) { walk(full); continue; }
+      try { newest = Math.max(newest, statSync(full).mtimeMs); } catch { /* raced or unreadable */ }
+    }
+  };
+  walk(dir);
+  return newest;
+}
+
+/**
+ * Does a workflow IN THIS TREE rebuild the bundle and refuse on a difference?
+ *
+ * Measured by the gate's own refusal text, not by the presence of `.github/workflows/ci.yml`: a tree can
+ * carry a workflow of that name that does something else entirely, and what this cell goes on to claim
+ * to the reader is specifically that a difference would be caught. A missing directory answers false,
+ * which is the exported tree's state and the correct answer for it.
+ */
+function distGateInTree(repo) {
+  const dir = join(repo, ".github", "workflows");
+  let entries;
+  try { entries = readdirSync(dir); } catch { return false; }
+  for (const name of entries) {
+    if (!/\.ya?ml$/.test(name)) continue;
+    try {
+      if (readFileSync(join(dir, name), "utf8").includes("portal-ui/dist does not match a fresh build")) return true;
+    } catch { /* unreadable — it certifies nothing, so it is not the gate */ }
+  }
+  return false;
+}
+
+/** Is `repo` a git checkout, and is `rel` tracked in it? Two questions because they mean different things. */
+function gitStanding(rel, repo) {
+  const git = (args) => {
+    try { execFileSync("git", ["-C", repo, ...args], { stdio: "ignore" }); return true; } catch { return false; }
+  };
+  if (!git(["rev-parse", "--is-inside-work-tree"])) return { isGitCheckout: false, tracked: false };
+  return { isGitCheckout: true, tracked: git(["ls-files", "--error-unmatch", "--", rel]) };
+}
+
+/**
+ * The five directories the wizard creates for the data plane, relative to the base it asks for.
+ * One list, so the check below and step 7 that creates them cannot drift about what a wizard run leaves.
+ */
+export const DATA_DIRS = Object.freeze({
+  CLEAROTRON_REPORTS_DIR: "pool", CLEAROTRON_WORK_DIR: "workspace", CLEAROTRON_QUEUE_DIR: "queue",
+  CLEAROTRON_OUTBOX_DIR: "outbox", CLEAROTRON_RUN_LOCK_DIR: "locks",
+});
+
+/**
+ * ── DID AN UPGRADE EAT THE CONFIGURATION? — ─────────────────────────────────
+ *
+ * A MISSING `.env` USED TO BE ONE STATE AND IT IS TWO. On a fresh machine it means "not set up yet",
+ * which is a fine thing to be and doctor says so at rc 0. On a PACKAGED install it also means something
+ * else entirely: the wizard ran, wrote `.env` into `<project>/node_modules/clearotron`, and a later
+ * `npm install` replaced that tree the way npm is entitled to — so a working install became an
+ * unconfigured one during a documented upgrade that exited 0 and warned about nothing. The operator's
+ * reports, workspaces and queues are all still there. Only the file naming them is gone, and the two
+ * states print the same line.
+ *
+ * THE EXIT CONTRACT IS WHY THIS NEEDED A DISCRIMINATOR RATHER THAN A LOUDER MESSAGE. `--check`
+ * separates an ABSENCE (reported, rc 0) from a MISCONFIGURATION (rc 1) — see the arm of that name in
+ * driver/test/onboard-wizard.test.mjs. Making every missing `.env` rc 1 would fail a fresh machine for
+ * being fresh, which is the contract's whole subject. What is reported here is not an absence: the
+ * install is HALF present, and half an install is a misconfiguration by any reading. So this is
+ * `problem()` and rc 1, deliberately, and the neighbouring stale-shim branch is the precedent.
+ *
+ * THE EVIDENCE IS THE DATA DIRECTORIES, and all five of them. The wizard creates them together in one
+ * loop, so the full set is the signature of a completed run; any one of them alone could be somebody's
+ * unrelated `~/trademark/pool`. A developer's checkout is excluded twice over — by the packaged test,
+ * and because a source tree is not what `npm install` replaces.
+ *
+ * KNOWN LIMIT, STATED RATHER THAN HIDDEN: an operator who gave the wizard a base directory that is not
+ * the default is not detected, because with `.env` gone there is nothing left that names their choice.
+ * They get the old absence line. That is a miss, never a false alarm, and closing it means reading the
+ * rendered systemd units — a bigger change than this issue asked for.
+ *
+ * PURE, every input injected, so both halves of the discriminator are drivable without a global install.
+ */
+export function configurationLostToUpgrade({
+  envPath, installDir, env = process.env, home = homedir(), exists = existsSync,
+} = {}) {
+  if (exists(envPath)) return null;
+  // Not packaged — a git checkout is not a tree npm replaces, and `standFrom` returns it unchanged.
+  if (standFrom(installDir) === installDir) return null;
+  // The ENVIRONMENT STILL CARRYING THE CONFIGURATION IS NOT THIS FAULT. A shell or a service file that
+  // sets these is a configured install with no `.env`, which is a supported shape and says nothing about
+  // an upgrade. Only when nothing else supplies them is the missing file the reason the install is down.
+  if (Object.keys(DATA_DIRS).some((k) => String(env?.[k] ?? "").trim())) return null;
+  const base = join(home, "trademark");
+  const dirs = Object.values(DATA_DIRS).map((sub) => join(base, sub));
+  return dirs.every((d) => exists(d)) ? { base, dirs, installDir } : null;
+}
+
 export function composeEnvBody(candidate, existing = {}) {
   // Setup's own answers win: the reader just typed them, and this run is the newer statement.
   const carried = Object.entries(existing).filter(([k]) => !(k in candidate));
@@ -816,13 +997,13 @@ export async function runCheck() {
   const diverged = (() => {
     try {
       return doorDivergence({
-        repoText: readFileSync(join(REPO, ".env"), "utf8"),
+        repoText: readFileSync(ENV_PATH, "utf8"),
         homeText: readFileSync(join(homedir(), ".env"), "utf8"),
       });
     } catch { return []; }   // one file absent is the ordinary case and says nothing
   })();
   for (const d of diverged)
-    warn(`${d.key} differs between this checkout's .env (${d.checkout}) and ${join(homedir(), ".env")} `
+    warn(`${d.key} differs between ${ENV_PATH} (${d.checkout}) and ${join(homedir(), ".env")} `
       + `(${d.units}). Those two files configure different processes, and the second is what the `
       + "services run with — so the door a caller meets depends on which one answered.");
   // — a current checkout is not a current deployment. Reported separately because it is a
@@ -1062,8 +1243,17 @@ export async function runCheck() {
   }
 
   say("\n  .env");
-  if (!existsSync(ENV_PATH)) info(`none at ${ENV_PATH} — run: ${invoke("install")}`);
-  else {
+  if (!existsSync(ENV_PATH)) {
+    const lost = configurationLostToUpgrade({ envPath: ENV_PATH, installDir: resolve(REPO) });
+    if (lost) {
+      problem(`no .env at ${ENV_PATH}, and this install's data directories are all present under ${lost.base}`);
+      info("an `npm install` in this project replaced the package tree and took the configuration with it — "
+        + "npm owns that directory and makes no promise about files written into it. Nothing in "
+        + `${lost.base} was touched: the reports, workspaces and queues are all still there.`);
+      info(`re-run \`${invoke("install")}\` to write a new .env — it will ask the same questions, and the `
+        + "answers that name those directories are the paths above");
+    } else info(`none at ${ENV_PATH} — run: ${invoke("install")}`);
+  } else {
     ok(`${ENV_PATH}`);
     const mode = statSync(ENV_PATH).mode & 0o777;
     if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
@@ -1347,8 +1537,51 @@ export async function runCheck() {
   try {
     const { makeStaticHandler } = await import("../driver/portal-static.mjs");
     const distDir = join(REPO, "portal-ui", "dist");
-    if (makeStaticHandler({ distDir }).present()) ok(`portal-ui/dist is present — /portal has something to serve`);
-    else blocking(`no UI bundle at ${distDir} — /portal answers 503 until one is built. Build it: \`npm run build:ui\``);
+    const srcDir = join(REPO, "portal-ui", "src");
+    const distPresent = makeStaticHandler({ distDir }).present();
+    // PRESENT WAS NEVER THE WHOLE QUESTION. See bundleFreshness for why the
+    // route is decided before any timestamp is read, and why only one of the three routes may be judged
+    // on one. The presence half still comes from the service's own predicate rather than a second
+    // existence check written here, so the two cannot drift about what "present" means.
+    const standing = gitStanding("portal-ui/dist", REPO);
+    const verdict = bundleFreshness({
+      srcPresent: existsSync(srcDir),
+      distPresent,
+      isGitCheckout: standing.isGitCheckout,
+      distTracked: standing.tracked,
+      distGated: distGateInTree(REPO),
+      distMtime: distPresent ? newestMtimeUnder(distDir) : 0,
+      newestSrcMtime: newestMtimeUnder(srcDir),
+    });
+    if (verdict === "stale") {
+      // A MISCONFIGURATION, NOT AN ABSENCE, and rc 1 for the same reason the .env branch above gives:
+      // nothing is missing here. What is present is WRONG, the product will serve it without complaint,
+      // and the reader has no other surface that would tell them — /portal/health reads "built".
+      problem(`the bundle at ${distDir} is OLDER than the sources it was built from (${srcDir})`);
+      info("`git pull` cannot update it — the bundle is not tracked here, so an upgrade moves the sources "
+        + "and leaves the build behind, and /portal serves the previous screen and reports itself healthy");
+      info("rebuild it: `npm run build:ui`");
+    } else if (verdict === "unbuilt") {
+      blocking(`no UI bundle at ${distDir} — /portal answers 503 until one is built. Build it: \`npm run build:ui\``);
+    } else if (verdict === "no-sources") {
+      // The tarball. The bundle ships inside it and portal-ui/src does not, so there is nothing to be
+      // stale against and an upgrade replaces both together. Said, rather than left as a silent pass.
+      ok(`portal-ui/dist is present — this is a packaged install, so the bundle ships with the sources it was built from`);
+    } else if (verdict === "tracked-unguarded") {
+      // Reported, rc 0: nothing is misconfigured and nothing is known to be stale. What is missing is the
+      // check, and a reader who committed the bundle has every reason to believe committing was enough.
+      blocking(`portal-ui/dist is committed here, but nothing in this tree rebuilds it to check it still matches ${srcDir}`);
+      info("a pull that changes the sources will not show up here — rebuild after one: `npm run build:ui`");
+    } else if (verdict === "unmeasured") {
+      blocking(`portal-ui/dist is present, but its age could not be read against ${srcDir} — whether it is current is unknown`);
+      info("if /portal is serving a screen you do not recognise, rebuild before looking further: `npm run build:ui`");
+    } else if (verdict === "unversioned") {
+      ok(`portal-ui/dist is present — this tree is not a git checkout, so no pull can have left it behind`);
+    } else if (verdict === "guarded") {
+      ok(`portal-ui/dist is present and tracked here — CI rebuilds it and fails on any difference, so it matches ${srcDir}`);
+    } else {
+      ok(`portal-ui/dist is present and newer than ${srcDir} — /portal has the current screen to serve`);
+    }
   } catch (e) {
     // A could-not-look, and it is NOT a pass: the reader learns nothing about whether the portal can
     // render, which is the same position they were in before this section existed.

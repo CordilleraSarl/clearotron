@@ -45,7 +45,7 @@
 // `driver.config.mjs` below captures at module top, and this verb resolves three configuration variables
 // to decide whether to REFUSE. Translate late and an operator using the current spellings reads as
 // having set nothing, so the refusal that protects their files never fires.
-import "../shared/env-local.mjs";
+import { envLocalPath } from "../shared/env-local.mjs";
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
@@ -60,7 +60,7 @@ import { readEnvFile } from "./onboard.mjs";
 import { invoke, invocationPrefix } from "../shared/invocation.mjs";   // — name a command the reader can actually type
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ENV_PATH = join(REPO, ".env");
+const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 
 // The three variables that name where a user's own material lives. Same list, same order and the same
 // prose as the doctor's "Configuration store" section — a variable that is a hazard there and absent
