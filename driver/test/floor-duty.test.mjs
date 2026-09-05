@@ -339,12 +339,23 @@ test("tracker 1988 the floor DELIVERS AND CLAMPS at the site, and no longer thro
   //
   // Read off the source because the routing is the CALLER's, and carried with the control that the
   // right block was isolated.
-  const FLOOR = PIPELINE.slice(PIPELINE.indexOf("// ── #1955 — THE FLOOR DUTY, DISCLOSED AND CLAMPED"),
-    // A UNIQUE end marker, and the first attempt was not one: "// PR-3 (report voice)" also appears at
-    // pipeline.mjs:6998, so indexOf found THAT one, the slice ran backwards and returned 0 characters.
-    // The isolation control below caught it, which is exactly what it is for — a source scan whose
-    // markers are not unique reads the wrong text and asserts confidently about it.
-    PIPELINE.indexOf("// PR-3 (report voice) — the factual open-state clause per reason"));
+  //
+  // ANCHORED ON THE PROSE, NOT ON THE ISSUE NUMBER. The heading carried a bare issue reference and the
+  // public cut strips those from comments, so the old anchor stopped existing and `indexOf` returned -1
+  // — and `slice(-1, …)` is not an error, it is a window measured from the END of the file. The length
+  // control below is the only reason this arm went red rather than asserting confidently about unrelated
+  // text. Both markers now refuse by name first, so the reason is legible without reading a char count.
+  const FLOOR_AT = PIPELINE.indexOf("THE FLOOR DUTY, DISCLOSED AND CLAMPED AT DELIVERY");
+  assert.notEqual(FLOOR_AT, -1,
+    "the floor block's heading is gone from pipeline.mjs — a missing anchor is a refusal here, never a "
+    + "window from the end of the file that the arms below would then read as the floor");
+  // A UNIQUE end marker, and the first attempt was not one: the bare "// PR-3 (report voice)" occurs
+  // again further down the file, so indexOf found THAT one, the slice ran backwards and returned 0
+  // characters. A source scan whose markers are not unique reads the wrong text and asserts confidently
+  // about it.
+  const FLOOR_END = PIPELINE.indexOf("// PR-3 (report voice) — the factual open-state clause per reason");
+  assert.notEqual(FLOOR_END, -1, "the floor block's end marker is gone, so the block has no bound");
+  const FLOOR = PIPELINE.slice(FLOOR_AT, FLOOR_END);
   assert.ok(FLOOR.length > 800 && FLOOR.length < 9000,
     `the floor block was not isolated (got ${FLOOR.length} chars) — the arms below would read the wrong text`);
   assert.match(FLOOR, /floor_duty_undischarged:/, "and it is the block that names the floor's defect token");
