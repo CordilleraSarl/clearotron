@@ -435,6 +435,17 @@ test("tracker 97 the pipeline asks whether the version pull request's checks sta
   assert.match(workflow, /run: node scripts\/release-version-pr-checks\.mjs/,
     "the pipeline enables auto-merge without checking that anything will ever run for it to wait on");
   const lines = workflow.split("\n");
+  // AND THE TOKEN CAN ACTUALLY SEE THOSE SURFACES. Spelling out any permission in a job sets every
+  // other one to `none`, so the two read scopes are what stand between the step and a 403 from both
+  // endpoints — `checks: read` for `commits/{sha}/check-runs`, `actions: read` for `actions/runs`, which
+  // is the only one that carries `action_required`. The step would fail loudly rather than pass
+  // vacuously, but it would fail on every push, and only on main.
+  const versionJob = workflow.slice(workflow.indexOf("  version:"), workflow.indexOf("  publish:"));
+  for (const scope of ["checks: read", "actions: read"]) {
+    assert.ok(versionJob.includes(scope),
+      `the version job does not grant \`${scope}\`, so the step that reads whether its checks started `
+      + "gets a 403 — and naming any permission sets every unnamed one to `none`");
+  }
   const auto = lines.findIndex((l) => /gh pr merge .*--auto/.test(l));
   const asks = lines.findIndex((l) => /release-version-pr-checks\.mjs/.test(l) && /run:/.test(l));
   assert.ok(auto > -1 && asks > auto,

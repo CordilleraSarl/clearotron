@@ -63,6 +63,12 @@ jobs:
     permissions:
       contents: write         # the version commit
       pull-requests: write    # the standing version pull request
+      # SPELLING OUT ANY PERMISSION SETS EVERY OTHER ONE TO `none`, so these two are not decoration:
+      # without them the step that asks whether the version pull request's checks started gets a 403 from
+      # both endpoints it reads. `checks: read` is `commits/{sha}/check-runs`; `actions: read` is
+      # `actions/runs`, which is the only surface that carries `action_required`.
+      checks: read
+      actions: read
     outputs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
