@@ -441,6 +441,41 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   assert.equal(parkedBeside.state, WAITING_FOR_A_PERSON);
   assert.deepEqual(parkedBeside.blocked, ["Release"]);
 
+  // ── AND PARKED BESIDE A GREEN RUN OF THE SAME WORKFLOW, WHICH LOOKS LIKE A RESCUE AND IS NOT ─────
+  // The version job dispatches `ci.yml` on the version branch, because a dispatch is not a fork event
+  // and needs no approval. Its run turns both required checks green on the pull request's head commit.
+  // It reads like the park has been routed around, and this arm exists because it was read that way and
+  // the exemption was built.
+  //
+  // MEASURED ON PULL REQUEST 32, 2026-09-05, AND THE TWO SURFACES DISAGREE:
+  //
+  //   commits/{sha}/check-runs   both required checks, success, 16:37:29Z
+  //   the pull request's rollup  EMPTY
+  //   mergeStateStatus           BLOCKED, unchanged for four minutes
+  //
+  // Then the parked run was approved by hand and the rollup filled with the same two names. One
+  // intervention between two readings of the same pull request at the same commit. A dispatched run's
+  // checks are not credited to the pull request; only the `pull_request` run's are, and that is the run
+  // sitting parked. The commit that claimed otherwise checked `check-runs` and never opened the
+  // pull request.
+  //
+  // So a park is a refusal whatever else is green on the commit, and this arm pins the shape that
+  // argued otherwise so the next reader finds the measurement instead of rebuilding the reasoning.
+  const parkedBesideItsOwnWorkflow = checksVerdict({
+    checkRuns: [
+      { name: "Lint, licences, tokens and the built bundle", status: "completed", conclusion: "success" },
+      { name: "The offline suites", status: "completed", conclusion: "success" },
+    ],
+    workflowRuns: [
+      { name: "CI", status: "completed", conclusion: "success" },
+      { name: "CI", status: "completed", conclusion: "action_required" },
+    ],
+  });
+  assert.equal(parkedBesideItsOwnWorkflow.state, WAITING_FOR_A_PERSON,
+    "a dispatched run of the same workflow going green does not unblock the pull request — its checks "
+    + "never enter the rollup that auto-merge reads, which was measured on pull request 32");
+  assert.deepEqual(parkedBesideItsOwnWorkflow.blocked, ["CI"]);
+
   // A check RUN can carry it too, and the verdict reads both surfaces rather than trusting one.
   assert.equal(checksVerdict({
     checkRuns: [{ name: "The offline suites", status: "completed", conclusion: "action_required" }],
