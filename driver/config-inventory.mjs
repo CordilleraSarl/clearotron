@@ -203,6 +203,50 @@ export function providerInventory(env = process.env) {
   return rows;
 }
 
+// ── THE TWO TABLES BELOW SIT ABOVE `caseLawInventory` ON PURPOSE ────────────────────────────────────
+//
+// `a-capability-is-named-before-the-report-names-it` asserts, over the SOURCE from that function to the
+// end of the file, that no URL and no `fetch(` appears — because a doctor that reaches the network hangs
+// on a box with no route, and that is a call somebody adds later which nothing offline can observe. A
+// URL written in a sentence is not a fetch, but the guard cannot tell the two apart and should not have
+// to: loosening it to allow "the harmless kind" of URL is how the check it performs stops meaning
+// anything. So the strings live above the line it draws, and the function holds only lookups.
+
+/** What each case-law source is CALLED on a page a person reads. Never the bridge's key alone. */
+const CASELAW_LABELS = Object.freeze({
+  courtlistener: "CourtListener (US federal case law)",
+  legaldatahunter: "Legal Data Hunter (statutes and case law, 108 countries)",
+  // Listed with its site like the others. It needs no enrolment, but a reader counting the gaps a
+  // report disclosed still wants to be able to open it.
+  "eur-lex": "EUR-Lex (EU judgments, https://eur-lex.europa.eu/) — read through the engine's own fetch tool",
+});
+
+/**
+ * WHERE A READER GOES TO GET AN ACCOUNT, beside the name they were told to get one for.
+ *
+ * F16, the case-law half. The owner's words about the register that had the
+ * same defect: "I should not have to google for signa and find it (and they are hard to find)." Every
+ * other credential this product asks for now carries a URL; these did not, and the remedy sent the
+ * reader to `providers/oauth-mcp-bridge/README.md` — a document that DOES carry CourtListener's
+ * endpoints, in a shell transcript, five screens down. Being reachable is not the same as being told.
+ *
+ * ONE TABLE, beside the labels, for the reason the finding gives: a URL kept in the document and not in
+ * the registry is a URL that drifts from the registry, which is the failure item 11 already
+ * produced once.
+ *
+ * `null` IS A VALUE HERE AND IT IS NOT A GAP IN THE TABLE. Legal Data Hunter's site appears NOWHERE in
+ * this repository — not as a URL, not as a bare domain, in any of the eleven places the source is named
+ * (measured 2026-09-05). Writing a plausible one here would be worse than the silence it replaces: the
+ * reader would follow it, and an invented domain in a shipping document is a defect nobody can see. So
+ * the row says what is true — this build does not record where to enrol — and the remedy sends them to
+ * whoever provisioned the bridge instead of to a search engine. That is a finding to raise, not a blank
+ * to fill in.
+ */
+const CASELAW_SITES = Object.freeze({
+  courtlistener: "https://www.courtlistener.com/",
+  legaldatahunter: null,
+});
+
 /**
  * ── — THE LANES A PRODUCT DECLARES IT NEEDS, and whether this box has them ──
  *
@@ -263,7 +307,11 @@ export function caseLawInventory(env = process.env) {
       // defect, and it is the one this row would most easily introduce.
       remedy: configured
         ? null
-        : `Not set up. It is a one-time OAuth sign-in rather than a variable to set: follow `
+        : `Not set up. It is a one-time OAuth sign-in rather than a variable to set: `
+          + (CASELAW_SITES[id]
+              ? `create an account at ${CASELAW_SITES[id]}, then follow `
+              : `this build records no site to create an account at — ask whoever provisioned the `
+                + `bridge for it rather than searching, then follow `)
           + `providers/oauth-mcp-bridge/README.md, which ends by writing ${tokenFile}. Until then a `
           + `Full country search still runs, and its report discloses the case-law gap instead of `
           + `reporting no adverse case law.`,
@@ -276,7 +324,7 @@ export function caseLawInventory(env = process.env) {
   // indistinguishable from one nobody has heard of. 's fifth criterion.
   rows.push({
     key: "caselaw", label: "Case law and oppositions", provider: "eur-lex",
-    providerLabel: "EUR-Lex (EU judgments) — read through the engine's own fetch tool",
+    providerLabel: CASELAW_LABELS["eur-lex"],
     known: true, enrolment: "built-in", configured: true, missing: [],
     remedy: null,
   });
@@ -308,8 +356,3 @@ export function caseLawInventory(env = process.env) {
   return rows;
 }
 
-/** What each case-law source is CALLED on a page a person reads. Never the bridge's key alone. */
-const CASELAW_LABELS = Object.freeze({
-  courtlistener: "CourtListener (US federal case law)",
-  legaldatahunter: "Legal Data Hunter (statutes and case law, 108 countries)",
-});
