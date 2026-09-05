@@ -35,7 +35,7 @@ import "../shared/env-local.mjs";   // step 4 / — FIRST: this program read a
 // handed it nothing and the read fell through to a default. Proven both ways from one
 // environment: without this import the value is invisible, with it the retired spelling is
 // back-filled. Placed above every other import because a side-effecting import runs in order.
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { invoke } from "../shared/invocation.mjs";   // — the printed command is resolved once, for the reader who is actually standing there
 import { join, resolve, dirname, sep } from "node:path";
@@ -106,6 +106,32 @@ if (!isFrozen(sampleDir)) {
     `Or point at any frozen run:  ${invoke("demo")} --run-dir <dir>`,
   );
 }
+// ── PUBLISH FROM A COPY WHEN THE DEMO IS PART OF THIS TREE (tracker issue 157) ──────────────────────
+//
+// Publishing writes a receipt into the run directory — deliberately; it records that the publish
+// happened, and where the store is read-only it simply does not land. For an archived run that is
+// right. `demo/` is not an archived run: it is a TRACKED directory in this repository, so replaying it
+// rewrote a committed file's timestamp. A reader who only READ the demo — ran the command the front
+// page gives them — then had a dirty checkout and an engine reporting `engineState: dirty`, which is
+// the signal they use to decide whether they are running the shipped thing. It is invisible in an
+// installed package, where there is no git, so it hit exactly the audience most likely to be
+// evaluating the code.
+//
+// The copy is made when the demo lies inside this tree, whether it was named by `--product` or handed
+// over with `--run-dir`: the hazard is that the directory is tracked, not which flag found it. A demo
+// somewhere else is somebody's own copy already and is left where it is.
+const insideThisTree = (dir) => {
+  const root = resolve(REPO);
+  return resolve(dir) === root || resolve(dir).startsWith(root + sep);
+};
+const publishFrom = insideThisTree(sampleDir)
+  ? (() => {
+      const copy = join(mkdtempSync(join(tmpdir(), "clearotron-demo-")), "sample");
+      cpSync(sampleDir, copy, { recursive: true });
+      return copy;
+    })()
+  : sampleDir;
+
 const meta = JSON.parse(readFileSync(join(sampleDir, "meta.json"), "utf8"));
 if (!meta?.runId) die(`example: ${join(sampleDir, "meta.json")} names no runId — it is not a frozen example manifest.`);
 
@@ -177,7 +203,7 @@ let published;
 try {
   // poolUrl "" on purpose: the report's own link block is for a deployment that serves the pool at a
   // public URL. This one is served from this process, at a port picked below.
-  published = await republishRun({ runId: meta.runId, meta, pool: poolRoot, poolUrl: "", runDir: join(sampleDir, "run") });
+  published = await republishRun({ runId: meta.runId, meta, pool: poolRoot, poolUrl: "", runDir: join(publishFrom, "run") });
 } catch (e) {
   die(`demo: replaying the sample failed: ${String(e?.message ?? e)}`);
 }
