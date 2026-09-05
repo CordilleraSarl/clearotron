@@ -37,18 +37,24 @@ Environment=CLEAROTRON_NO_ENV_FILE=1
 # NO WorkingDirectory=, deliberately — systemd does not expand variables there, only in ExecStart
 # arguments, and nothing here reads the working directory: the code finds itself from its own file URL.
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/portal-service.mjs
-# ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START (tracker issue 170) ─────────────────────────
-# The capability page renders `pool/_state/prelim-flag-snapshot.json`, and until this line its only
-# writers were a RUN and the `clearotron start` launcher. A hosted box runs neither: these units are the
-# entrypoint, and a deployment being CONFIGURED runs nothing by definition. So the page reported the old
-# configuration as current fact for exactly as long as somebody was working on the configuration, which
-# is exactly when they were reading it. Measured live 2026-09-05: the register was moved to clarivate and
-# every service restarted, and the page still said Signa.
+# ── THIS UNIT DELIBERATELY DOES NOT WRITE THE CONFIGURATION CAPTURE ──────────────────────────────────
 #
-# This unit can write it because it carries `EnvironmentFile=%h/.env` — one configuration per server box,
-# owner ruling 2026-08-26, which removed the second source of truth rather than defending against it.
-# `-` prefix: a snapshot is a diagnostic surface, and failing to write one must never fail the service.
-ExecStartPost=-/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/flag-snapshot.mjs
+# It did, for about an hour, and that was a defect worth recording rather than quietly deleting.
+#
+# Under the design where the page RENDERED the capture, having the portal refresh it at start was the fix
+# — it made the page current after a restart. The owner's 2026-09-05 ruling inverted that: the page now
+# answers LIVE, and the capture's only remaining job is to be an INDEPENDENT WITNESS of what the engine
+# last ran under, so the page can say when the two disagree.
+#
+# A witness the portal writes is not independent of the portal. The portal would capture its own
+# environment at its own start and then, at request time, compare its own environment against it — two
+# readings of one value, which agree by construction and always will. The row would render green on every
+# box forever while measuring nothing, and the label the page gives it ("what the last run recorded")
+# would be false as well.
+#
+# So the worker unit writes it and this one does not. `clearotron-worker.service` carries the
+# ExecStartPost, and a run refreshes it after every drain — both of those are the engine, which is whose
+# posture the row claims to report.
 Restart=on-failure
 RestartSec=10
 

@@ -28,6 +28,8 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { buildFlagSnapshot, postureDisagreement, snapshotPath } from "../flag-snapshot.mjs";
 import { flagView } from "../portal-config-view.mjs";
@@ -157,4 +159,42 @@ test("the engine and the billing mode are compared too, because both change the 
   const named = rows.map((r) => r.what);
   assert.ok(named.includes("engine"), `engine change not reported: ${JSON.stringify(named)}`);
   assert.ok(named.includes("billing mode"), `billing change not reported: ${JSON.stringify(named)}`);
+});
+
+// ── THE COMPARISON IS ONLY WORTH THE INDEPENDENCE OF ITS TWO SIDES ──────────────────────────────────
+//
+// Raised by role-e2e before driving it, and it was a live defect for about an hour: "a page that reports
+// two sources agreeing is the easiest thing in the world to pass by accident — if both halves read the
+// same underlying value, they agree by construction and the row certifies nothing."
+//
+// That is exactly what had happened. Under the design where the page RENDERED the capture, refreshing it
+// from the portal at start was the fix. Under the ruling the page answers live and the capture's whole
+// remaining job is to be an INDEPENDENT witness of what the engine ran under — so a portal that writes
+// the capture is comparing its own environment against its own environment. Green on every box forever,
+// measuring nothing, under a label ("what the last run recorded") that would also be false.
+const UNITS = join(dirname(fileURLToPath(import.meta.url)), "..", "systemd");
+const directives = (unit) => readFileSync(join(UNITS, unit), "utf8")
+  .split("\n").filter((l) => !l.trimStart().startsWith("#"));
+
+test("the ENGINE writes the capture, so the page has something independent to disagree with", () => {
+  const worker = directives("clearotron-worker.service");
+  assert.ok(worker.some((l) => /^ExecStartPost=.*flag-snapshot\.mjs/.test(l)),
+    "the worker no longer refreshes the capture at start, so the last-run row goes stale the moment a "
+    + "deployment stops draining — which is every deployment being configured");
+});
+
+test("the PORTAL does not write it — a witness the portal wrote is not independent of the portal", () => {
+  const portal = directives("clearotron-portal.service");
+  assert.ok(!portal.some((l) => /^ExecStartPost=.*flag-snapshot\.mjs/.test(l)),
+    "the portal writes the capture again. It then compares its own environment against its own "
+    + "environment at request time: the two agree by construction, the disagreement row can never fire, "
+    + "and it renders green while measuring nothing");
+});
+
+test("…and the comment saying so survives, because the next person will read the worker unit and copy it", () => {
+  // The removal is the kind that looks like an omission. Without the reason beside it, the obvious
+  // "fix" is to add the line back — which is how this defect returns.
+  const raw = readFileSync(join(UNITS, "clearotron-portal.service"), "utf8");
+  assert.match(raw, /not independent of the portal|DELIBERATELY DOES NOT WRITE/,
+    "nothing in the portal unit says why it does not refresh the capture when its sibling does");
 });
