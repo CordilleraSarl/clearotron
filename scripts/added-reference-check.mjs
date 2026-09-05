@@ -56,11 +56,23 @@ const RESTORED_VERBATIM = new Set([
 
 const TOKEN = /#[0-9]{3,}/g;
 
+// A `#` COMMENT IS A COMMENT WHEREVER THE FILE FORMAT SAYS SO, not only in YAML (tracker issue 188).
+//
+// This read `#` as a comment for YAML alone, so the same sentence was refused in a .yml file and waved
+// through in .env.example, a systemd unit or a shell script. Those comments are exactly as publicly
+// visible, and `# REQUIRED — #774 removed the code default` was sitting in .env.example on the public
+// tree while this guard reported the tree clean. Found while measuring the class for the retirement pass:
+// the guard's own rule flagged 359 tokens, and thousands more sat in files it had never classified.
+//
+// Extensionless is deliberate: a systemd unit or a dotfile often has no extension worth matching, so the
+// KNOWN `#`-comment names are listed and everything else keeps the source rule.
+const HASH_COMMENT = /(^|\/)(\.env[^/]*|[^/]*\.(ya?ml|sh|bash|service|timer|path|socket|conf|ini|toml|properties)|Dockerfile[^/]*|Makefile|\.gitignore|\.gitattributes)$/;
+
 /** Is this added line one the check reads at all? Comments in source, everything in markdown. */
 export const isProse = (path, line) => {
   if (/\.mde?$/.test(path) || path.endsWith(".md")) return true;
   const t = line.trim();
-  if (/\.(ya?ml)$/.test(path)) return t.startsWith("#");
+  if (HASH_COMMENT.test(path)) return t.startsWith("#");
   return t.startsWith("//") || t.startsWith("*") || t.startsWith("/*");
 };
 

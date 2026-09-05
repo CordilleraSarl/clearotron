@@ -87,3 +87,39 @@ test("the parse has a floor — a diff that adds lines must yield lines", () => 
   const added = addedLines("--- a/x\n+++ b/x\n@@ -0,0 +1 @@\n+one\n+two\n");
   assert.equal(added.length, 2, "the added-line parse returned nothing over a diff that adds two lines");
 });
+
+// ── A `#` COMMENT IS A COMMENT WHEREVER THE FILE FORMAT SAYS SO (tracker issue 188) ─────────────────
+//
+// `isProse` read `#` as a comment for YAML alone. The same sentence was therefore refused in a .yml file
+// and waved through in .env.example, a systemd unit or a shell script — and those comments are exactly
+// as publicly visible as a `//` one. Measured while sizing the retirement pass: the guard flagged 359
+// tokens on the tree, and `# REQUIRED — #774 removed the code default` was sitting in .env.example the
+// whole time with the guard reporting clean.
+//
+// The arms below pin BOTH directions, because widening a classifier is the kind of change that quietly
+// starts reading code as prose.
+test("a bare reference in a hash-comment file is refused, in every format that uses one", () => {
+  for (const path of [".env.example", "deploy.sh", "driver/systemd/clearotron-worker.service",
+                      "driver/systemd/clearotron-deploy.timer", "x.path", "app.conf", "config.toml"]) {
+    assert.deepEqual(offendingTokens(path, "# REQUIRED — #774 removed the code default."), ["#774"],
+      `${path} carries # comments and the guard is not reading them`);
+  }
+});
+
+test("…and the source rule still governs files whose # is not a comment", () => {
+  // A `#` at the start of a JS line is not a comment — it is a private field, or nothing. Reading it as
+  // prose would make the guard refuse code, which is how a widened classifier gets switched off.
+  assert.deepEqual(offendingTokens("driver/x.mjs", "  #count = 404"), [],
+    "a JS private field was read as a comment");
+  assert.deepEqual(offendingTokens("driver/x.mjs", "// see #404"), ["#404"],
+    "and the real source comment rule still applies");
+});
+
+test("the classes the ruling leaves ALONE are still left alone", () => {
+  // Test names and user-facing strings are a different change with a different risk — they are asserted
+  // by other tests and read by clients — and widening the comment rule must not have reached them.
+  assert.deepEqual(offendingTokens("driver/test/x.test.mjs", 'test("#1720 the launcher writes it", () => {'), [],
+    "a test NAME was flagged; renaming 2,650 test titles is not this guard's business");
+  assert.deepEqual(offendingTokens("driver/x.mjs", '  closes: "#865 — shared doctrine",'), [],
+    "a string literal was flagged");
+});
