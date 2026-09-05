@@ -96,22 +96,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # A VERSION WITH NO TAG HAS NOT BEEN RELEASED. That is the whole test, and it is a fact about the
-      # repository rather than a guess about which push this is: the version pull request merging is the
-      # only thing that moves the root version, and the publish job below is the only thing that tags it.
+      # A VERSION WITH NO TAG HAS NOT BEEN RELEASED — asked of the COMMIT, never of the working tree.
+      #
+      # The step before this one runs `changeset version` IN PLACE: it rewrites every manifest and the
+      # changelog on disk and hands the result to a pull request for somebody to merge. None of that is on
+      # this branch yet, and the files say otherwise. Reading `package.json` from disk here therefore
+      # reported that a push had cut `0.1.1-beta.0` when main still carried 0.1.0 and nobody had merged
+      # anything — and the publish job started. It failed for an unrelated reason, which is the only thing
+      # that stopped it.
       - name: Did this push cut a version
         id: cut
-        run: |
-          set -euo pipefail
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
-            echo "cut=false" >> "$GITHUB_OUTPUT"
-            echo "v$VERSION is already released — nothing to publish."
-          else
-            echo "cut=true" >> "$GITHUB_OUTPUT"
-            echo "v$VERSION has no tag — this push cut it."
-          fi
+        run: node scripts/release-cut-decision.mjs
 
   publish:
     name: Publish the release to npm
@@ -242,8 +237,12 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       # The tarball scanned above is the one published — not a second pack of the same tree.
+      # `./` IS LOAD-BEARING. Without it npm reads `release-artefacts/clearotron-0.1.0.tgz` as the
+      # `owner/repo` shorthand for a git dependency and refuses: "Refusing to fetch
+      # github:release-artefacts/clearotron-0.1.0.tgz". A relative path with a directory in it is
+      # ambiguous to npm's spec parser and a leading `./` is what makes it a file.
       - name: Publish to npm through Trusted Publishing
-        run: npm publish "${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
+        run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure

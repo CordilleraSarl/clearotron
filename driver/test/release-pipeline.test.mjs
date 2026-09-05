@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
 import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
+import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
 import { refusals as completenessRefusals } from "../../scripts/release-completeness-check.mjs";
 import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
@@ -198,4 +199,48 @@ test("tracker 97 the plain-language gate refuses each kind it exists to refuse",
   }
   assert.deepEqual(findings("- The report complements the search."), [],
     '"complements" contains "implements" — a substring match would refuse this and the gate would be noise');
+});
+
+
+test("tracker 97 the cut decision reads the commit, not the tree the version step just rewrote", () => {
+  // THE DEFECT THIS CLOSES SHIPPED AND FIRED. `changeset version` runs in place: it rewrites every
+  // manifest on disk and hands the result to a pull request for somebody to merge. The decision that
+  // followed it read `package.json` from disk, saw `0.1.1-beta.0`, found no tag for it, and reported
+  // that the push had cut it — on a branch that still carried 0.1.0 with nobody having merged anything.
+  // The publish job started. It failed for an unrelated reason, and that is the only thing that stopped
+  // a publish nobody had authorised.
+  //
+  // So the version comes from the COMMIT. Driven here against a fake git that answers differently for
+  // the tree and the commit, which is exactly the state that produced the failure.
+  const commitVersion = "0.1.0";
+  const treeVersion = "0.1.1-beta.0";
+  const run = (args) => {
+    assert.deepEqual(args.slice(0, 2), ["show", "HEAD:package.json"],
+      "the version must be read out of the commit — reading a file is what caused this");
+    return JSON.stringify({ version: commitVersion });
+  };
+  assert.equal(versionAtHead({ run }), commitVersion,
+    `the decision read ${treeVersion} from disk instead of the commit's version`);
+
+  // And the decision itself: released means tagged.
+  assert.deepEqual(cutDecision({ version: "0.1.0", tags: ["v0.1.0"] }), { version: "0.1.0", cut: false });
+  assert.deepEqual(cutDecision({ version: "0.1.1-beta.0", tags: ["v0.1.0"] }), { version: "0.1.1-beta.0", cut: true });
+
+  // A version it cannot read REFUSES rather than deciding. The safe answer to an unreadable version is
+  // never "publish it".
+  for (const bad of ["", "v0.1.0", "latest", null, undefined]) {
+    assert.throws(() => cutDecision({ version: bad, tags: [] }), /is not a version/);
+  }
+});
+
+test("tracker 97 the published artefact is named as a file, not as a repository", () => {
+  // npm read `release-artefacts/clearotron-0.1.0.tgz` as the `owner/repo` shorthand for a git dependency
+  // and refused the release: "Refusing to fetch github:release-artefacts/clearotron-0.1.0.tgz". A
+  // relative path with a directory in it is ambiguous to npm's spec parser; a leading `./` is what makes
+  // it a file. This is a one-character defect that can only appear on a release.
+  const workflow = read(WORKFLOW);
+  const publishLine = workflow.split("\n").find((l) => /npm publish/.test(l) && !/^\s*#/.test(l));
+  assert.ok(publishLine, "the workflow no longer has a publish command to read");
+  assert.match(publishLine, /npm publish "\.\//,
+    "the tarball is passed to npm without a leading `./`, so npm reads it as a git repository and refuses");
 });
