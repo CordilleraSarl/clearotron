@@ -1,12 +1,17 @@
 {
-  "marks": "VENQORI",
+  "marks": [
+    "VENQORI"
+  ],
   "classes": [
     9,
+    42,
     41
   ],
   "jurisdictions": [
-    "EU"
+    "JP",
+    "KR"
   ],
-  "goods": "downloadable software for water-quality monitoring; online training services",
-  "customer": null
+  "goods": "Downloadable software for water-quality monitoring with online training services attached",
+  "customer": null,
+  "geography": null
 }

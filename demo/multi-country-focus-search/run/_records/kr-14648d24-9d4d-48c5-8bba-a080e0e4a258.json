@@ -1,0 +1,169 @@
+{
+  "uri": "/mark/kr/14648d24-9d4d-48c5-8bba-a080e0e4a258",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "14648d24-9d4d-48c5-8bba-a080e0e4a258",
+  "applicationNumber": "40-2021-0221344",
+  "registrationNumber": "4020404590000",
+  "applicationDate": "2021-11-01",
+  "registrationDate": "2023-06-21",
+  "expiryDate": "2033-06-21",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-06-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ITERO LUMINA",
+  "markTransliteration": "ITERO LUMINA",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "개인 맞춤형 교정치료과정 제작용 컴퓨터 소프트웨어,디지털 치과용 인상(印象)용 소프트웨어,원격의료시스템용 치과 및 치과교정 분야에서 사용되는 통신매체를 통한 의료 디지털 이미지 캡처/저장/검색/전송용 컴퓨터 소프트웨어,원격의료시스템용 치과 및 치과교정 분야에서 사용되는 통신매체를 통한 의료 디지털 이미지 캡처/저장/검색/전송용 컴퓨터 하드웨어,치과전문의용 소프트웨어(개인 치열평가, 치과교정치료계획, 및 치아복원치료에서 크라운 및 브릿지를 준비/피팅하기 위한 소프트웨어임,,치아와 턱의 3d 디지털 모델 준비용 컴퓨터 소프트웨어 3d,치아의 디지털 이미지 캡처용 컴퓨터 스캐닝 소프트웨어,컴퓨터 소프트웨어(제안된 치과교정치료과정 및 이와 관련된 환자 기록을 제공/추적/수정하기 위해 사용되는 것임,,컴퓨터 소프트웨어(치아와 턱의 움직임 및 제안된 치료 계획 설명용 디지털 영상 소프트웨어임,,컴퓨터 워크스테이션(치과기기/보철물 설계 및 환자치료 모니터링을 위해 캡처된 의료용 이미지를 처리하고 표시하기 위한 컴퓨터 하드웨어 및 컴퓨터 소프트웨어로 구성된 것,,휴대용 전자기기용 컴퓨터 소프트웨어 애플리케이션(치과치료 및 치과교정치료 서비스 제공시 치과 진단 및 치료계획 생성을 위해 사용되는 소프트웨어임,",
+      "translation_language": "en",
+      "translation": "Computer software for creating personalized orthodontic treatment courses, software for digital dental impressions, computer software for capturing/storing/retrieval/transmitting medical digital images through telecommunication media used in dentistry and orthodontics for telemedicine systems, Computer hardware for capturing/storing/retrieval/transmission of medical digital images through communication media used in dentistry and orthodontics for telemedicine systems, software for dentists (individual dentition evaluation, orthodontic treatment planning, and crowns in restorative dental treatment) and software for preparing/fitting bridges, 3d computer software for preparing 3d digital models of teeth and jaws, computer scanning software for capturing digital images of teeth, computer software (to record proposed orthodontic treatment procedures and patient records related thereto). computer software (digital imaging software for teeth and jaw movement and description of proposed treatment plans), computer workstations (to design dental devices/prosthetics and monitor patient care for captured data) Consisting of computer hardware and computer software for processing and displaying medical images, computer software applications for portable electronic devices (software used for dental diagnosis and creation of treatment plans in the provision of dental and orthodontic treatment services,"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "원격의료시스템용 치과 및 치과교정 분야에서 사용되는 통신매체를 통한 의료 디지털 이미지 캡처/저장/검색/전송용 구강 내 스캐닝 카메라,치아교정/치과/구강건강관리용 장치 즉 의료용 이미지 캡처용 스캐닝 카메라",
+      "translation_language": "en",
+      "translation": "Intraoral scanning camera for medical digital image capture/storage/retrieval/transmission through communication media used in dentistry and orthodontics for remote medical systems"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "내려받기 불가능한 소프트웨어 온라인 임시사용 제공업(치과교정 및 치과치료서비스용,,디지털 치과/치과교정용 이미지의 인터넷 검색엔진제공업,디지털 치과/치과교정용 이미지의 전자보관업,애플리케이션 서비스제공업(치과교정 및 치과치료 서비스 제공용 소프트웨어와 관련된 것,",
+      "translation_language": "en",
+      "translation": "Providing non-downloadable online temporary use of software (for orthodontic and dental treatment services, providing an internet search engine for digital dental/orthodontic images, electronic archiving of digital dental/orthodontic images, providing application services (for orthodontic and dental treatment services) related to software for providing treatment services"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20210505",
+      "priorityNumber": "90/690,754"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software for creating personalized orthodontic treatment courses, software for digital dental impressions, computer software for capturing/storing/retrieval/transmitting medical digital images through telecommunication media used in dentistry and orthodontics for telemedicine systems, Computer hardware for capturing/storing/retrieval/transmission of medical digital images through communication media used in dentistry and orthodontics for telemedicine systems, software for dentists (individual dentition evaluation, orthodontic treatment planning, and crowns in restorative dental treatment) and software for preparing/fitting bridges, 3d computer software for preparing 3d digital models of teeth and jaws, computer scanning software for capturing digital images of teeth, computer software (to record proposed orthodontic treatment procedures and patient records related thereto). computer software (digital imaging software for teeth and jaw movement and description of proposed treatment plans), computer workstations (to design dental devices/prosthetics and monitor patient care for captured data) Consisting of computer hardware and computer software for processing and displaying medical images, computer software applications for portable electronic devices (software used for dental diagnosis and creation of treatment plans in the provision of dental and orthodontic treatment services,",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "개인 맞춤형 교정치료과정 제작용 컴퓨터 소프트웨어,디지털 치과용 인상(印象)용 소프트웨어,원격의료시스템용 치과 및 치과교정 분야에서 사용되는 통신매체를 통한 의료 디지털 이미지 캡처/저장/검색/전송용 컴퓨터 소프트웨어,원격의료시스템용 치과 및 치과교정 분야에서 사용되는 통신매체를 통한 의료 디지털 이미지 캡처/저장/검색/전송용 컴퓨터 하드웨어,치과전문의용 소프트웨어(개인 치열평가, 치과교정치료계획, 및 치아복원치료에서 크라운 및 브릿지를 준비/피팅하기 위한 소프트웨어임,,치아와 턱의 3d 디지털 모델 준비용 컴퓨터 소프트웨어 3d,치아의 디지털 이미지 캡처용 컴퓨터 스캐닝 소프트웨어,컴퓨터 소프트웨어(제안된 치과교정치료과정 및 이와 관련된 환자 기록을 제공/추적/수정하기 위해 사용되는 것임,,컴퓨터 소프트웨어(치아와 턱의 움직임 및 제안된 치료 계획 설명용 디지털 영상 소프트웨어임,,컴퓨터 워크스테이션(치과기기/보철물 설계 및 환자치료 모니터링을 위해 캡처된 의료용 이미지를 처리하고 표시하기 위한 컴퓨터 하드웨어 및 컴퓨터 소프트웨어로 구성된 것,,휴대용 전자기기용 컴퓨터 소프트웨어 애플리케이션(치과치료 및 치과교정치료 서비스 제공시 치과 진단 및 치료계획 생성을 위해 사용되는 소프트웨어임,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Intraoral scanning camera for medical digital image capture/storage/retrieval/transmission through communication media used in dentistry and orthodontics for remote medical systems",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "원격의료시스템용 치과 및 치과교정 분야에서 사용되는 통신매체를 통한 의료 디지털 이미지 캡처/저장/검색/전송용 구강 내 스캐닝 카메라,치아교정/치과/구강건강관리용 장치 즉 의료용 이미지 캡처용 스캐닝 카메라"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing non-downloadable online temporary use of software (for orthodontic and dental treatment services, providing an internet search engine for digital dental/orthodontic images, electronic archiving of digital dental/orthodontic images, providing application services (for orthodontic and dental treatment services) related to software for providing treatment services",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "내려받기 불가능한 소프트웨어 온라인 임시사용 제공업(치과교정 및 치과치료서비스용,,디지털 치과/치과교정용 이미지의 인터넷 검색엔진제공업,디지털 치과/치과교정용 이미지의 전자보관업,애플리케이션 서비스제공업(치과교정 및 치과치료 서비스 제공용 소프트웨어와 관련된 것,"
+        }
+      ]
+    },
+    "id": "14648d24-9d4d-48c5-8bba-a080e0e4a258",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20210505",
+        "priorityNumber": "90/690,754"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20211101",
+        "applicationNumber": "40-2021-0221344"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330621",
+      "lastPublicationDate": "20230626",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230621",
+        "registrationNumber": "4020404590000"
+      }
+    },
+    "version": "20250625212058",
+    "wordMarkSpecification": {
+      "markTransliteration": "ITERO LUMINA",
+      "markVerbalElementText": "ITERO LUMINA"
+    }
+  },
+  "_uri": "/mark/kr/14648d24-9d4d-48c5-8bba-a080e0e4a258",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.133Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/kr/22f0fadb-4e99-4f46-805c-31d65a5ee7ff",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "22f0fadb-4e99-4f46-805c-31d65a5ee7ff",
+  "applicationNumber": "40-2018-0177605",
+  "registrationNumber": "4015709410000",
+  "applicationDate": "2018-12-18",
+  "registrationDate": "2020-02-04",
+  "expiryDate": "2030-02-04",
+  "renewalDate": null,
+  "lastPublicationDate": "2020-02-10",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "CLINCHECK",
+  "markTransliteration": "CLINCHECK",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "치과 및 치아교정서비스용 내려받기 불가능한 온라인 컴퓨터소프트웨어 제공업,치아 움직임 및 제안된 치료 계획 설명용 내려받기 불가능한 온라인 디지털 영상 소프트웨어 제공업,환자 치료 모니터링용 내려받기 불가능한 온라인 컴퓨터소프트웨어 제공업",
+      "translation_language": "en",
+      "translation": "Non-downloadable online computer software for dental and orthodontic services, non-downloadable online digital image software for explaining tooth movements and proposed treatment plans, and non-downloadable online computer software for patient treatment monitoring"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20180626",
+      "priorityNumber": "88/016,081"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Non-downloadable online computer software for dental and orthodontic services, non-downloadable online digital image software for explaining tooth movements and proposed treatment plans, and non-downloadable online computer software for patient treatment monitoring",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과 및 치아교정서비스용 내려받기 불가능한 온라인 컴퓨터소프트웨어 제공업,치아 움직임 및 제안된 치료 계획 설명용 내려받기 불가능한 온라인 디지털 영상 소프트웨어 제공업,환자 치료 모니터링용 내려받기 불가능한 온라인 컴퓨터소프트웨어 제공업"
+        }
+      ]
+    },
+    "id": "22f0fadb-4e99-4f46-805c-31d65a5ee7ff",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20180626",
+        "priorityNumber": "88/016,081"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20181218",
+        "applicationNumber": "40-2018-0177605"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300204",
+      "lastPublicationDate": "20200210",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20200204",
+        "registrationNumber": "4015709410000"
+      }
+    },
+    "version": "20250625184934",
+    "wordMarkSpecification": {
+      "markTransliteration": "CLINCHECK",
+      "markVerbalElementText": "CLINCHECK"
+    }
+  },
+  "_uri": "/mark/kr/22f0fadb-4e99-4f46-805c-31d65a5ee7ff",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

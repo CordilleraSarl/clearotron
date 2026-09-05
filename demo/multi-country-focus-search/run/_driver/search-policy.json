@@ -16,8 +16,8 @@
   "caseLaw": false,
   "recipeScope": null,
   "deliveryRoute": null,
-  "enqueuedVia": null,
+  "enqueuedVia": "cli/enqueue",
   "enqueuedBy": null,
   "parentRunId": null,
-  "frozenAt": "2026-08-11T06:28:58.748Z"
+  "frozenAt": "2026-09-02T18:14:28.840Z"
 }

@@ -1,0 +1,133 @@
+{
+  "uri": "/mark/kr/75659529-7655-4b1c-b500-bb00caf2fd83",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "75659529-7655-4b1c-b500-bb00caf2fd83",
+  "applicationNumber": "41-2007-0029912",
+  "registrationNumber": "4101791900000",
+  "applicationDate": "2007-11-14",
+  "registrationDate": "2008-12-24",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "CLAEAR ESSENTIALS",
+  "markTransliteration": "CLEAR ESSENTIALS",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치아교정학 관련 교육훈련업,치의학 관련 교육훈련업",
+      "translation_language": "en",
+      "translation": "Education and training related to orthodontics, education and training related to dentistry"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "김창세 (Chang Se Kim)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20070515",
+      "priorityNumber": "77/181858"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training related to orthodontics, education and training related to dentistry",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치아교정학 관련 교육훈련업,치의학 관련 교육훈련업"
+        }
+      ]
+    },
+    "id": "75659529-7655-4b1c-b500-bb00caf2fd83",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20070515",
+        "priorityNumber": "77/181858"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea(FirstLaw P.C.)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김창세 (Chang Se Kim)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20071114",
+        "applicationNumber": "41-2007-0029912"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "20081224",
+        "registrationNumber": "4101791900000"
+      }
+    },
+    "version": "20250625162521",
+    "wordMarkSpecification": {
+      "markTransliteration": "CLEAR ESSENTIALS",
+      "markVerbalElementText": "CLAEAR ESSENTIALS"
+    }
+  },
+  "_uri": "/mark/kr/75659529-7655-4b1c-b500-bb00caf2fd83",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

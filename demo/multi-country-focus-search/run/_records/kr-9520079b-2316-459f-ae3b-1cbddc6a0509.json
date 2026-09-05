@@ -1,0 +1,164 @@
+{
+  "uri": "/mark/kr/9520079b-2316-459f-ae3b-1cbddc6a0509",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "9520079b-2316-459f-ae3b-1cbddc6a0509",
+  "applicationNumber": "40-2022-0030556",
+  "registrationNumber": "4020427970000",
+  "applicationDate": "2022-02-17",
+  "registrationDate": "2023-06-26",
+  "expiryDate": "2033-06-26",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-06-30",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "INVISALIGN SMILE ARCHITECT",
+  "markTransliteration": "INVISALIGN SMILE ARCHITECT",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "데이터 및 정보의 수집/편집/구성/수정/북마크/전송/저장/공유용 내려받기 가능한 컴퓨터 소프트웨어,디지털 영상 및 사진구성 및 감상용 내려받기 가능한 컴퓨터 소프트웨어,디지털 이미지 파일 처리용 내려받기 가능한 컴퓨터 소프트웨어,이동전화기용 내려받기 가능한 컴퓨터 응용소프트웨어(환자의 치아의 이미지 생성/시각화/검색/저장용 소프트웨어임,,치과분야의 소프트웨어개발 및 머신러닝용 인공지능을 이용한 내려받기 가능한 컴퓨터프로그램,치과분야의 정보 접근/판독/추적용 내려받기 가능한 컴퓨터 소프트웨어,환자의료정보 관리용 내려받기 가능한 컴퓨터 소프트웨어,환자치료계획 모델링용 내려받기 가능한 컴퓨터 시뮬레이션 소프트웨어",
+      "translation_language": "en",
+      "translation": "Downloadable computer software for collection/editing/organization/modification/bookmarking/transmission/storage/sharing of data and information, downloadable computer software for organizing and viewing digital images and photos, downloadable computer software for processing digital image files; Downloadable computer application software for mobile phone (software for image creation/visualization/search/storage of patient's teeth, software development in dental field and downloadable computer program using artificial intelligence for machine learning, dental information Downloadable computer software for access/reading/tracking, downloadable computer software for patient medical information management, downloadable computer simulation software for patient treatment plan modeling"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "주문형 컴퓨터 소프트웨어 디자인업,치과 및 치아교정치료 계획용 웹기반 소프트웨어 애플리케이션 임시사용 제공업,치과분야의 컴퓨터 소프트웨어 개발업,치과용 내려받기 불가능한 소프트웨어 온라인제공업,치과용 웹기반 소프트웨어 애플리케이션 임시사용 제공업,치과치료/치과디자인/치과서비스용 내려받기 불가능한 소프트웨어 온라인제공업,치과치료계획용 컴퓨터 애플리케이션을 호스팅하기 위한 정보관리 분야의 애플리케이션 서비스제공업(컴퓨터 서비스업,,컴퓨터 소프트웨어 관련 자문업,컴퓨터 소프트웨어 디자인 및 개발업,컴퓨터 소프트웨어 디자인/개발/설치/관리업,컴퓨터 소프트웨어 디자인업,컴퓨터 소프트웨어 상담업,컴퓨터 소프트웨어에 관한 상담서비스업,컴퓨터 하드웨어 디자인 및 개발업,컴퓨터 하드웨어 및 소프트웨어 디자인업",
+      "translation_language": "en",
+      "translation": "On-demand computer software design business, provision of temporary use of web-based software applications for dental and orthodontic treatment planning, computer software development in the dental field, online provision of non-downloadable software for dentistry, provision of temporary use of web-based software application for dental treatment, dental treatment/ Online provider of non-downloadable software for dental design/dental services, application service provider in information management field for hosting computer applications for dental treatment planning (computer service business, computer software related consulting business, computer software design and development business, computer software design/ Development/installation/management business, computer software design business, computer software consulting business, computer software consulting service business, computer hardware design and development business, computer hardware and software design business"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20210826",
+      "priorityNumber": "90/904,575"
+    },
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20210826",
+      "priorityNumber": "90/904,585"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Downloadable computer software for collection/editing/organization/modification/bookmarking/transmission/storage/sharing of data and information, downloadable computer software for organizing and viewing digital images and photos, downloadable computer software for processing digital image files; Downloadable computer application software for mobile phone (software for image creation/visualization/search/storage of patient's teeth, software development in dental field and downloadable computer program using artificial intelligence for machine learning, dental information Downloadable computer software for access/reading/tracking, downloadable computer software for patient medical information management, downloadable computer simulation software for patient treatment plan modeling",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "데이터 및 정보의 수집/편집/구성/수정/북마크/전송/저장/공유용 내려받기 가능한 컴퓨터 소프트웨어,디지털 영상 및 사진구성 및 감상용 내려받기 가능한 컴퓨터 소프트웨어,디지털 이미지 파일 처리용 내려받기 가능한 컴퓨터 소프트웨어,이동전화기용 내려받기 가능한 컴퓨터 응용소프트웨어(환자의 치아의 이미지 생성/시각화/검색/저장용 소프트웨어임,,치과분야의 소프트웨어개발 및 머신러닝용 인공지능을 이용한 내려받기 가능한 컴퓨터프로그램,치과분야의 정보 접근/판독/추적용 내려받기 가능한 컴퓨터 소프트웨어,환자의료정보 관리용 내려받기 가능한 컴퓨터 소프트웨어,환자치료계획 모델링용 내려받기 가능한 컴퓨터 시뮬레이션 소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "On-demand computer software design business, provision of temporary use of web-based software applications for dental and orthodontic treatment planning, computer software development in the dental field, online provision of non-downloadable software for dentistry, provision of temporary use of web-based software application for dental treatment, dental treatment/ Online provider of non-downloadable software for dental design/dental services, application service provider in information management field for hosting computer applications for dental treatment planning (computer service business, computer software related consulting business, computer software design and development business, computer software design/ Development/installation/management business, computer software design business, computer software consulting business, computer software consulting service business, computer hardware design and development business, computer hardware and software design business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "주문형 컴퓨터 소프트웨어 디자인업,치과 및 치아교정치료 계획용 웹기반 소프트웨어 애플리케이션 임시사용 제공업,치과분야의 컴퓨터 소프트웨어 개발업,치과용 내려받기 불가능한 소프트웨어 온라인제공업,치과용 웹기반 소프트웨어 애플리케이션 임시사용 제공업,치과치료/치과디자인/치과서비스용 내려받기 불가능한 소프트웨어 온라인제공업,치과치료계획용 컴퓨터 애플리케이션을 호스팅하기 위한 정보관리 분야의 애플리케이션 서비스제공업(컴퓨터 서비스업,,컴퓨터 소프트웨어 관련 자문업,컴퓨터 소프트웨어 디자인 및 개발업,컴퓨터 소프트웨어 디자인/개발/설치/관리업,컴퓨터 소프트웨어 디자인업,컴퓨터 소프트웨어 상담업,컴퓨터 소프트웨어에 관한 상담서비스업,컴퓨터 하드웨어 디자인 및 개발업,컴퓨터 하드웨어 및 소프트웨어 디자인업"
+        }
+      ]
+    },
+    "id": "9520079b-2316-459f-ae3b-1cbddc6a0509",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20210826",
+        "priorityNumber": "90/904,575"
+      },
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20210826",
+        "priorityNumber": "90/904,585"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "Dongwon F&B Building, Mabang-Ro, Seocho-Ku, Seoul Korea",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220217",
+        "applicationNumber": "40-2022-0030556"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330626",
+      "lastPublicationDate": "20230630",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230626",
+        "registrationNumber": "4020427970000"
+      }
+    },
+    "version": "20250625213025",
+    "wordMarkSpecification": {
+      "markTransliteration": "INVISALIGN SMILE ARCHITECT",
+      "markVerbalElementText": "INVISALIGN SMILE ARCHITECT"
+    }
+  },
+  "_uri": "/mark/kr/9520079b-2316-459f-ae3b-1cbddc6a0509",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

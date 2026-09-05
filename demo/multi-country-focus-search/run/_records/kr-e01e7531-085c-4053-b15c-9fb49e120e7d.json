@@ -1,0 +1,203 @@
+{
+  "uri": "/mark/kr/e01e7531-085c-4053-b15c-9fb49e120e7d",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "e01e7531-085c-4053-b15c-9fb49e120e7d",
+  "applicationNumber": "45-2005-0003603",
+  "registrationNumber": "4500188410000",
+  "applicationDate": "2005-08-29",
+  "registrationDate": "2007-02-05",
+  "expiryDate": "2027-02-05",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "INVISALIGN",
+  "markTransliteration": "INVISALIGN",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10,
+    41,
+    44
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "치아교정과정과환자데이터 및 관련정보를 제공/추적/변경하는데 쓰이는컴퓨터소프트웨어,치아치료에 사용되는 디지털 영상소프트웨어",
+      "translation_language": "en",
+      "translation": "Computer software used to provide / track / modify patient data and related information, digital imaging software used in dental care"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "충전용 기구,치아교정기계기구",
+      "translation_language": "en",
+      "translation": "Filling instrument, orthodontic appliance"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "ko",
+      "description": "치아교정기계기구사용에 관한 교육훈련업",
+      "translation_language": "en",
+      "translation": "Education and training on the use of orthodontic appliances"
+    },
+    {
+      "classes": [
+        44
+      ],
+      "language": "ko",
+      "description": "치과업,치아교정업",
+      "translation_language": "en",
+      "translation": "Dentistry, Orthodontics"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "김창세 (Chang Se Kim)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20050228",
+      "priorityNumber": "0000000"
+    },
+    {
+      "priorityCountryCode": "CA",
+      "priorityCountryName": "Canada",
+      "priorityDate": "20050518",
+      "priorityNumber": "0000000"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 산 호세 오차드 파크웨이",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer software used to provide / track / modify patient data and related information, digital imaging software used in dental care",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치아교정과정과환자데이터 및 관련정보를 제공/추적/변경하는데 쓰이는컴퓨터소프트웨어,치아치료에 사용되는 디지털 영상소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Filling instrument, orthodontic appliance",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "충전용 기구,치아교정기계기구"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training on the use of orthodontic appliances",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치아교정기계기구사용에 관한 교육훈련업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dentistry, Orthodontics",
+          "intClassNumber": "44",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과업,치아교정업"
+        }
+      ]
+    },
+    "id": "e01e7531-085c-4053-b15c-9fb49e120e7d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20050228",
+        "priorityNumber": "0000000"
+      },
+      {
+        "priorityCountryCode": "CA",
+        "priorityCountryName": "Canada",
+        "priorityDate": "20050518",
+        "priorityNumber": "0000000"
+      }
+    ],
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "(FirstLaw P.C.)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김창세 (Chang Se Kim)"
+      },
+      {
+        "representativeAddress": "(Y.S.CHANG & ASSOCIATES)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "안상배 (AHN, Sang Bae)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20050829",
+        "applicationNumber": "45-2005-0003603"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20270205",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20070205",
+        "registrationNumber": "4500188410000"
+      }
+    },
+    "version": "20250625160058",
+    "wordMarkSpecification": {
+      "markTransliteration": "INVISALIGN",
+      "markVerbalElementText": "INVISALIGN"
+    }
+  },
+  "_uri": "/mark/kr/e01e7531-085c-4053-b15c-9fb49e120e7d",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

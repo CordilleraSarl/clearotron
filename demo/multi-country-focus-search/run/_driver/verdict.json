@@ -1,21 +1,23 @@
 {
-  "ts": "2026-08-11T09:00:18.585Z",
+  "ts": "2026-09-02T19:47:58.943Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Narrow the class-9 wording to downloadable water-quality monitoring software rather than filing for computer software at large."
+    "Clear the Japanese Ｖｅｎｋｕｒｉ registration before filing class 9 in Japan for measuring or monitoring apparatus.",
+    "Take a Korean attorney's view on whether enqor and VENQORI are confusingly similar before filing in Korea.",
+    "Check Vencora's own filings through its corporate records or local counsel, including any Japanese or Korean styling."
   ],
   "kinds": {
     "legalActions": true
   },
-  "tier": "Manageable",
-  "badge": "l2",
-  "gaugeIndex": 1,
+  "tier": "Moderate",
+  "badge": "l3",
+  "gaugeIndex": 2,
   "maxComposite": 0,
   "band": {
-    "label": "Manageable",
-    "rankFromTop": 4,
+    "label": "Moderate",
+    "rankFromTop": 3,
     "scale": 4
   },
-  "statement": "Manageable — conditional on: A live EU class-9 registration for QORI, the applied-for mark's second element, stands on the register searched.",
+  "statement": "Moderate — conditional on: No consent, coexistence or cancellation touching the Ｖｅｎｋｕｒｉ registration appears on the record searched (and 2 more).",
   "stance": "conditional"
 }

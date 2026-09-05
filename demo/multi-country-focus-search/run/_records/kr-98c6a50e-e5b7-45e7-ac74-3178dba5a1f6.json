@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/kr/98c6a50e-e5b7-45e7-ac74-3178dba5a1f6",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "98c6a50e-e5b7-45e7-ac74-3178dba5a1f6",
+  "applicationNumber": "40-2012-0066886",
+  "registrationNumber": null,
+  "applicationDate": "2012-10-29",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ORTHOCAD",
+  "markTransliteration": "ORTHOCAD",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    10
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "디지털 이미지 소프트웨어(치아 및 턱의 움직임과 제안된 치료계획을 묘사하는 데에 사용되는 것임), 원격진료용 카메라(구강내 스캔카메라로 구성되고 무선통신망을 이용한 치과 및 치아교정 분야의 의료용 디지털 이미지 캡쳐/저장/검색/전송용임, , 원격진료용 컴퓨터(무선통신망을 이용한 치과 및 치아교정 분야의 의료용 디지털 이미지 캡쳐/저장/검색/전송용임, , 치과 의치용 디지털 소프트웨어 , 치과 전문의용 소프트웨어(개인 치열평가/치아교정치료계획/치아복원/치관 준비 및 교정/치과 복원치료에 사용되는 것임, , 컴퓨터 소프트웨어(개인 맞춤형 치아교정 치료과정을 제작하는 데에 사용되는 것임), 컴퓨터 소프트웨어(제안된 치아교정 치료과정 및 환자 기록을 제공/추적/수정하는 데에 사용되는 것임), 컴퓨터 소프트웨어(치아 및 턱의 3차원 디지털 모형을 준비하는 데에 사용되는 것임), 컴퓨터 스캐닝 소프트웨어",
+      "translation_language": "en",
+      "translation": "Digital imaging software (used to depict tooth and jaw movements and proposed treatment plans), Telemedicine camera (consisting of an intraoral scan camera and used for capturing/storing/retrieving/transmitting medical digital images in the fields of dentistry and orthodontics using a wireless communication network,, Telemedicine computer (used for capturing/storing/retrieving/transmitting medical digital images in the field of dentistry and orthodontics using a wireless communication network),, Dental Digital software for dentures, Software for dental professionals (used for personal orthodontic evaluation/orthodontic treatment planning/tooth restoration/crown preparation and orthodontics/dental restorative treatment), Computer software (used to create personalized orthodontic treatment courses), Computer software (used to provide/track/edit proposed orthodontic treatment courses and patient records), Computer software (used to prepare three-dimensional digital models of teeth and jaws) used), computer scanning software"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "외과수술용 기기, 의료기기(치과용은 제외), 의료용 스캔카메라(치과용 제외한 의료용 영상 캡쳐용임, , 의치 , 치과용 스캔카메라(의료용 영상 캡쳐용임, , 치과용 장치, 치아교정용 장치, 치아교정용 디지털 스캔장치",
+      "translation_language": "en",
+      "translation": "Surgical devices, medical devices (excluding dental devices), medical scan cameras (for medical image capture, excluding dental devices), dentures, dental scan cameras (for medical image capture), dental devices, orthodontic devices, orthodontic digital scanning devices"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 ** 산 호세 오차드 파크웨이 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Digital imaging software (used to depict tooth and jaw movements and proposed treatment plans), Telemedicine camera (consisting of an intraoral scan camera and used for capturing/storing/retrieving/transmitting medical digital images in the fields of dentistry and orthodontics using a wireless communication network,, Telemedicine computer (used for capturing/storing/retrieving/transmitting medical digital images in the field of dentistry and orthodontics using a wireless communication network),, Dental Digital software for dentures, Software for dental professionals (used for personal orthodontic evaluation/orthodontic treatment planning/tooth restoration/crown preparation and orthodontics/dental restorative treatment), Computer software (used to create personalized orthodontic treatment courses), Computer software (used to provide/track/edit proposed orthodontic treatment courses and patient records), Computer software (used to prepare three-dimensional digital models of teeth and jaws) used), computer scanning software",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "디지털 이미지 소프트웨어(치아 및 턱의 움직임과 제안된 치료계획을 묘사하는 데에 사용되는 것임), 원격진료용 카메라(구강내 스캔카메라로 구성되고 무선통신망을 이용한 치과 및 치아교정 분야의 의료용 디지털 이미지 캡쳐/저장/검색/전송용임, , 원격진료용 컴퓨터(무선통신망을 이용한 치과 및 치아교정 분야의 의료용 디지털 이미지 캡쳐/저장/검색/전송용임, , 치과 의치용 디지털 소프트웨어 , 치과 전문의용 소프트웨어(개인 치열평가/치아교정치료계획/치아복원/치관 준비 및 교정/치과 복원치료에 사용되는 것임, , 컴퓨터 소프트웨어(개인 맞춤형 치아교정 치료과정을 제작하는 데에 사용되는 것임), 컴퓨터 소프트웨어(제안된 치아교정 치료과정 및 환자 기록을 제공/추적/수정하는 데에 사용되는 것임), 컴퓨터 소프트웨어(치아 및 턱의 3차원 디지털 모형을 준비하는 데에 사용되는 것임), 컴퓨터 스캐닝 소프트웨어"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Surgical devices, medical devices (excluding dental devices), medical scan cameras (for medical image capture, excluding dental devices), dentures, dental scan cameras (for medical image capture), dental devices, orthodontic devices, orthodontic digital scanning devices",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "외과수술용 기기, 의료기기(치과용은 제외), 의료용 스캔카메라(치과용 제외한 의료용 영상 캡쳐용임, , 의치 , 치과용 스캔카메라(의료용 영상 캡쳐용임, , 치과용 장치, 치아교정용 장치, 치아교정용 디지털 스캔장치"
+        }
+      ]
+    },
+    "id": "98c6a50e-e5b7-45e7-ac74-3178dba5a1f6",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260515",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 마방로 ** (양재동, 동원F&B빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20121029",
+        "applicationNumber": "40-2012-0066886"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260515020125",
+    "wordMarkSpecification": {
+      "markTransliteration": "ORTHOCAD",
+      "markVerbalElementText": "ORTHOCAD"
+    }
+  },
+  "_uri": "/mark/kr/98c6a50e-e5b7-45e7-ac74-3178dba5a1f6",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/kr/8b522b6b-e396-46d1-9c0d-b6bfa21842d2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "8b522b6b-e396-46d1-9c0d-b6bfa21842d2",
+  "applicationNumber": "40-2007-0011394",
+  "registrationNumber": null,
+  "applicationDate": "2007-03-02",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "CLINADVISOR",
+  "markTransliteration": "CLINADVISOR",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "ko",
+      "description": "개인치아상태(치열) 점검 및 치아교정에 사용되는 치과용 소프트웨어 , 소프트웨어",
+      "translation_language": "en",
+      "translation": "Dental software, software used to check personal teeth condition (dentition) and orthodontic treatment"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "김창세 (Chang Se Kim)",
+  "priorities": [
+    {
+      "priorityCountryCode": "US",
+      "priorityCountryName": "United States of America",
+      "priorityDate": "20060906",
+      "priorityNumber": "78/967,962"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 ** 산 호세 오차드 파크웨이 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental software, software used to check personal teeth condition (dentition) and orthodontic treatment",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "개인치아상태(치열) 점검 및 치아교정에 사용되는 치과용 소프트웨어 , 소프트웨어"
+        }
+      ]
+    },
+    "id": "8b522b6b-e396-46d1-9c0d-b6bfa21842d2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityCountryCode": "US",
+        "priorityCountryName": "United States of America",
+        "priorityDate": "20060906",
+        "priorityNumber": "78/967,962"
+      }
+    ],
+    "recordLastUpdated": "20260609",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 마방로 ** (양재동, 동원F&B빌딩)(제일특허법인(유))",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "김창세 (Chang Se Kim)"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20070302",
+        "applicationNumber": "40-2007-0011394"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "REJECTED"
+    },
+    "version": "20260609020319",
+    "wordMarkSpecification": {
+      "markTransliteration": "CLINADVISOR",
+      "markVerbalElementText": "CLINADVISOR"
+    }
+  },
+  "_uri": "/mark/kr/8b522b6b-e396-46d1-9c0d-b6bfa21842d2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.131Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

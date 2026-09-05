@@ -1,0 +1,199 @@
+{
+  "uri": "/mark/kr/21e67f38-5f11-4c81-b394-8e67747806d2",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "21e67f38-5f11-4c81-b394-8e67747806d2",
+  "applicationNumber": "40-2025-0144689",
+  "registrationNumber": null,
+  "applicationDate": "2025-08-07",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "CUBICURE",
+  "markTransliteration": "CUBICURE",
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    7,
+    10,
+    17,
+    40,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1
+      ],
+      "language": "ko",
+      "description": "감광재료용 현상액 , 강화 폴리머 , 고분자 중간체 , 공업용 폴리머 , 과학에서 참고표준으로 사용되는 폴리머 , 물흡수성 폴리머 , 미가공 폴리머수지 , 미가공 합성폴리머 , 방염폴리머 제조용 화학제 , 불소화 폴리머 , 산업에서 참고표준으로 사용되는 폴리머 , 수성 선형 폴리머 겔 , 수성 폴리머 분산제 , 양성 포토레지스트용 현상액 , 양이온 폴리머 , 연기 억제 폴리머 제조용 화학제 , 인조수지 중합용 광개시제 , 제조용 폴리머 화합물 , 제조용 폴리머비즈 , 중합용 화학제 , 중합플라스틱 , 천연폴리머용 가소제(可塑劑, , 폴리머 분산제 , 폴리머 용액 , 폴리머 제조용 화학합성물 , 폴리머 특성 개질용 화학제 , 폴리머용 광경화성 화학조성물 , 폴리머용 화학첨가제 , 폴리아미드 , 플라스틱 산업용 유기화합물 중합을 위한 화학조성물 , 합성폴리머용 가소제(可塑劑,",
+      "translation_language": "en",
+      "translation": "A phenomenon for photosensitive materials, reinforced polymer, polymer intermediate, polymer, industrial polymer, polymer, water absorbent polymer, micrococated polymer resin, micrococated polymer, fluorescent polymer, fluoride polymer Polymer gel, aqueous polymer dispersant, positive photoresist phenomenon, cationic polymer, smoke inhibitory polymer manufacturing chemicals, artificial resin polymer totors, polymer compounds for manufacturing, polymer beads, polymerization chemicals, polymerization plastic, natural polymer plasticizer (塑 塑,,,,,,,,,,, Polymer dispersant, polymer solution, polymer chemical compound, polymer characteristic reforming agent, polymer's photocurable chemical composition, polymer chemical additives"
+    },
+    {
+      "classes": [
+        7
+      ],
+      "language": "ko",
+      "description": "3d 프린터(3d",
+      "translation_language": "en",
+      "translation": "3d printer (3d"
+    },
+    {
+      "classes": [
+        10
+      ],
+      "language": "ko",
+      "description": "치과용 중합장치",
+      "translation_language": "en",
+      "translation": "Dental polymerization"
+    },
+    {
+      "classes": [
+        17
+      ],
+      "language": "ko",
+      "description": "3d 프린팅용 반가공 열가소성 필라멘트 3d , 반가공 폴리머수지 , 반가공 합성 폴리머 수지 , 엘라스토머 폴리머 , 전자회로 제조용 폴리머 필름 , 제조공정용 폴리머필름 , 폴리머 수지 섬유(직물용 제외,",
+      "translation_language": "en",
+      "translation": "Half -collaborative filament 3D for 3D printing, half -processed polymer resin, anti -processing synthetic polymer resin, elastomer polymer, electronic circuit polymer film, polymer film for manufacturing process, polymer resin fiber (excluding fabrics,"
+    },
+    {
+      "classes": [
+        40
+      ],
+      "language": "ko",
+      "description": "3d 복제업(3d , 3d 프린터 임대업 3d , 중합 서비스업",
+      "translation_language": "en",
+      "translation": "3D replica (3D, 3D printer rental 3D, polymerization service business"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ko",
+      "description": "검사 및 분석방법 설계 및 개발업 , 검사 방법 개발업 , 검사방법 개발서비스업 , 공산품 개발업 , 공산품 디자인 및 개발업 , 공정 개발업 , 공학 제품 디자인 및 개발업 , 과학 연구 개발업 , 과학기술 개발 분야 상담서비스업 , 기계기술개발업 , 산업공정 개발업 , 산업용 기계 개발업 , 소비자 제품 디자인 및 개발업 , 소프트웨어 설계 및 개발업 , 신기술 개발대행업 , 신기술 설계 및 개발 대행업 , 신제품 개발업 , 신제품 개발에관한 설계 및 시험업 , 신제품 디자인 및 개발업 , 신제품 연구개발대행업 , 신제품 연구개발업 , 신제품 연구업 , 엔지니어링 분야 연구 및 개발업 , 연구개발서비스업 , 의료기술 설계 및 개발업 , 인쇄기용 소프트웨어 디자인업 , 전기식 작동제어 및 구동모듈용 제어프로그램 제작업 , 제품 디자인 및 개발업 , 제품 연구개발업 , 측정 및 검사 방법 개발업 , 플라스틱 재료 분야 신제품 연구개발대행업 , 화학분야 연구개발업 , 화학제품 생산방법 개발 및 검사업",
+      "translation_language": "en",
+      "translation": "Inspection and analysis method design and development business, inspection method development business, inspection method development service, industrial product development business, industrial product design and development business, process development business, engineering product design and development business, scientific research and development business, science and technology development counseling service, mechanical technology development business, industrial machinery development, consumer product design and development business, software design and development business Design and testing business, new product development, new product development, new product development, new product research and development agency, new product research and development business, engineering research and development business, research and development service business Designing control program for driving modules, product design and development business, product research and development business, measurement and inspection method development, plastic materials new product R & D agency, chemical research and development business, chemical product production method development and inspection business"
+    }
+  ],
+  "owner": "Align Technology, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "제일특허법인(유) (FirstLaw P.C.)",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "미국 캘리포니아 ** 산 호세 오차드 파크웨이 *",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressCountryName": "United States of America",
+        "applicantName": "Align Technology, Inc.",
+        "applicantNativeName": "얼라인 테크널러지, 인크."
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "A phenomenon for photosensitive materials, reinforced polymer, polymer intermediate, polymer, industrial polymer, polymer, water absorbent polymer, micrococated polymer resin, micrococated polymer, fluorescent polymer, fluoride polymer Polymer gel, aqueous polymer dispersant, positive photoresist phenomenon, cationic polymer, smoke inhibitory polymer manufacturing chemicals, artificial resin polymer totors, polymer compounds for manufacturing, polymer beads, polymerization chemicals, polymerization plastic, natural polymer plasticizer (塑 塑,,,,,,,,,,, Polymer dispersant, polymer solution, polymer chemical compound, polymer characteristic reforming agent, polymer's photocurable chemical composition, polymer chemical additives",
+          "intClassNumber": "01",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "감광재료용 현상액 , 강화 폴리머 , 고분자 중간체 , 공업용 폴리머 , 과학에서 참고표준으로 사용되는 폴리머 , 물흡수성 폴리머 , 미가공 폴리머수지 , 미가공 합성폴리머 , 방염폴리머 제조용 화학제 , 불소화 폴리머 , 산업에서 참고표준으로 사용되는 폴리머 , 수성 선형 폴리머 겔 , 수성 폴리머 분산제 , 양성 포토레지스트용 현상액 , 양이온 폴리머 , 연기 억제 폴리머 제조용 화학제 , 인조수지 중합용 광개시제 , 제조용 폴리머 화합물 , 제조용 폴리머비즈 , 중합용 화학제 , 중합플라스틱 , 천연폴리머용 가소제(可塑劑, , 폴리머 분산제 , 폴리머 용액 , 폴리머 제조용 화학합성물 , 폴리머 특성 개질용 화학제 , 폴리머용 광경화성 화학조성물 , 폴리머용 화학첨가제 , 폴리아미드 , 플라스틱 산업용 유기화합물 중합을 위한 화학조성물 , 합성폴리머용 가소제(可塑劑,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "3d printer (3d",
+          "intClassNumber": "07",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "3d 프린터(3d"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Dental polymerization",
+          "intClassNumber": "10",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "치과용 중합장치"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Half -collaborative filament 3D for 3D printing, half -processed polymer resin, anti -processing synthetic polymer resin, elastomer polymer, electronic circuit polymer film, polymer film for manufacturing process, polymer resin fiber (excluding fabrics,",
+          "intClassNumber": "17",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "3d 프린팅용 반가공 열가소성 필라멘트 3d , 반가공 폴리머수지 , 반가공 합성 폴리머 수지 , 엘라스토머 폴리머 , 전자회로 제조용 폴리머 필름 , 제조공정용 폴리머필름 , 폴리머 수지 섬유(직물용 제외,"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "3D replica (3D, 3D printer rental 3D, polymerization service business",
+          "intClassNumber": "40",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "3d 복제업(3d , 3d 프린터 임대업 3d , 중합 서비스업"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Inspection and analysis method design and development business, inspection method development business, inspection method development service, industrial product development business, industrial product design and development business, process development business, engineering product design and development business, scientific research and development business, science and technology development counseling service, mechanical technology development business, industrial machinery development, consumer product design and development business, software design and development business Design and testing business, new product development, new product development, new product development, new product research and development agency, new product research and development business, engineering research and development business, research and development service business Designing control program for driving modules, product design and development business, product research and development business, measurement and inspection method development, plastic materials new product R & D agency, chemical research and development business, chemical product production method development and inspection business",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "검사 및 분석방법 설계 및 개발업 , 검사 방법 개발업 , 검사방법 개발서비스업 , 공산품 개발업 , 공산품 디자인 및 개발업 , 공정 개발업 , 공학 제품 디자인 및 개발업 , 과학 연구 개발업 , 과학기술 개발 분야 상담서비스업 , 기계기술개발업 , 산업공정 개발업 , 산업용 기계 개발업 , 소비자 제품 디자인 및 개발업 , 소프트웨어 설계 및 개발업 , 신기술 개발대행업 , 신기술 설계 및 개발 대행업 , 신제품 개발업 , 신제품 개발에관한 설계 및 시험업 , 신제품 디자인 및 개발업 , 신제품 연구개발대행업 , 신제품 연구개발업 , 신제품 연구업 , 엔지니어링 분야 연구 및 개발업 , 연구개발서비스업 , 의료기술 설계 및 개발업 , 인쇄기용 소프트웨어 디자인업 , 전기식 작동제어 및 구동모듈용 제어프로그램 제작업 , 제품 디자인 및 개발업 , 제품 연구개발업 , 측정 및 검사 방법 개발업 , 플라스틱 재료 분야 신제품 연구개발대행업 , 화학분야 연구개발업 , 화학제품 생산방법 개발 및 검사업"
+        }
+      ]
+    },
+    "id": "21e67f38-5f11-4c81-b394-8e67747806d2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260512",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "representatives": [
+      {
+        "representativeAddress": "서울특별시 서초구 마방로 ** (양재동, 동원F&B빌딩)",
+        "representativeAddressCountryCode": "KR",
+        "representativeAddressCountryName": "South Korea",
+        "representativeName": "제일특허법인(유) (FirstLaw P.C.)"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250807",
+        "applicationNumber": "40-2025-0144689"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLIED"
+    },
+    "version": "20260512020216",
+    "wordMarkSpecification": {
+      "markTransliteration": "CUBICURE",
+      "markVerbalElementText": "CUBICURE"
+    }
+  },
+  "_uri": "/mark/kr/21e67f38-5f11-4c81-b394-8e67747806d2",
+  "_receipt": {
+    "fetched_at": "2026-09-02T18:22:13.132Z",
+    "context": "prelim-tmpdemo2014multicountryfocussearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}
