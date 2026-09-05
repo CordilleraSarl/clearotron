@@ -251,7 +251,14 @@ test("tracker issue 191 — no shipped unit pins a value a box can legitimately 
   // A LITERAL, NOT A NAME. `PATH` is a list of paths and stays; `CLEAROTRON_NO_ENV_FILE=1` is a
   // statement about how this process is launched, not a value a deployment differs on. What is refused
   // is an address or a port written into a unit, which is what a second install collides with.
+  // TWO SHAPES, AND THE SECOND WAS FOUND BY A PLANT. The first version matched the VALUE only —
+  // an IP, `localhost`, or a `:port` suffix — which caught the three lines this issue was filed
+  // about and sailed straight past `Environment=PORTAL_SERVICE_PORT=18820` planted in a different
+  // unit. A bare port number is the commoner shape and it has no colon in it. So the NAME is asked
+  // too: a variable whose name says port, host, address or URL is a deployment value wherever it
+  // appears, whatever its value happens to look like.
   const ADDRESSY = /(\b\d{1,3}(?:\.\d{1,3}){3}\b|\blocalhost\b|:\d{2,5}\b)/;
+  const DEPLOYMENT_NAME = /(_PORT|_HOST|_HOSTS|_ADDR|_ADDRESS|_URL|_ORIGIN)$/;
   const offenders = [];
   for (const row of startupCensus()) {
     const text = readFileSync(join(REPO, "driver", "systemd", row.unit), "utf8");
@@ -260,7 +267,7 @@ test("tracker issue 191 — no shipped unit pins a value a box can legitimately 
       const [name, ...rest] = line.slice("Environment=".length).split("=");
       const value = rest.join("=");
       if (name === "PATH") continue;
-      if (ADDRESSY.test(value)) offenders.push(`${row.unit}: ${line.trim()}`);
+      if (ADDRESSY.test(value) || DEPLOYMENT_NAME.test(name)) offenders.push(`${row.unit}: ${line.trim()}`);
     }
   }
   assert.deepEqual(offenders, [],
