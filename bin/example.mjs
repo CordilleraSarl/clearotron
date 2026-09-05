@@ -6,7 +6,8 @@
 //   npx clearotron demo                    replay demo into ~/trademark-demo and open the portal
 //   npx clearotron demo --run-dir <dir>    replay a frozen example from somewhere else
 //   npx clearotron demo --base <dir>       put the whole demo somewhere else (remove it with one rm -rf)
-//   npx clearotron demo --port 9000        serve on another port
+//   npx clearotron demo --port 9000        serve on another port (the demo opens three doors:
+//                                          9000, 9001 and 9002)
 //   npx clearotron demo --no-open          do not try to open a browser
 //   npm run example -- --once              publish and exit; do not open the portal
 //   npm run example -- --once --pool <dir> publish somewhere else; only valid with --once
