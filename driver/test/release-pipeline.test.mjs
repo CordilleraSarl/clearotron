@@ -420,12 +420,33 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   assert.deepEqual(parkedAlone.blocked, ["CI"]);
   assert.match(parkedAlone.reason, /fork-pull-request approval policy/);
 
+  // AND THE REFUSAL CAN BE ACTED ON WITHOUT A HUNT. This fires on every version pull request, and is
+  // read by whoever is on shift rather than by whoever built it. The run id is the only thing not
+  // already in the sentence, so the sentence carries it and the command that clears it.
+  const actionable = checksVerdict({
+    checkRuns: [],
+    workflowRuns: [{ name: "CI", status: "action_required", conclusion: null, id: 33978066181 }],
+    repo: "CordilleraSarl/clearotron",
+  });
+  assert.match(actionable.reason,
+    /gh api -X POST repos\/CordilleraSarl\/clearotron\/actions\/runs\/33978066181\/approve/,
+    "the refusal names the park but not the one command that clears it");
+
+  // And with nothing to name it says nothing rather than printing half a command.
+  assert.ok(!/gh api/.test(parkedAlone.reason),
+    "a command was composed from a run with no id, which would print a broken instruction");
+
   // THE POLICY IS READ, NOT REMEMBERED. It was changed three times on 2026-09-05 — all external
   // contributors, then first-time contributors, then first-time contributors new to GitHub — and the bot
   // parked under two of them. A guard naming a stale value sends the next reader to check a setting that
   // has already moved, which is worse than naming none.
   assert.match(checksVerdict({ ...parkedAlone_input, policy: "first_time_contributors_new_to_github" }).reason,
-    /currently `first_time_contributors_new_to_github`/);
+    /policy is `first_time_contributors_new_to_github`/);
+  // And it no longer sends the reader off to tune that setting: it is already at its narrowest value and
+  // the bot parked under every one of the three tried. Naming the setting is useful; naming it as the
+  // fix is the afternoon this arm exists to save.
+  assert.match(checksVerdict({ ...parkedAlone_input, policy: "first_time_contributors_new_to_github" }).reason,
+    /Narrowing it further is not available/);
   // And when it cannot be read, it says so rather than quoting a value it does not have.
   assert.match(parkedAlone.reason, /could not be read from here/);
 
@@ -440,6 +461,41 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   });
   assert.equal(parkedBeside.state, WAITING_FOR_A_PERSON);
   assert.deepEqual(parkedBeside.blocked, ["Release"]);
+
+  // ── AND PARKED BESIDE A GREEN RUN OF THE SAME WORKFLOW, WHICH LOOKS LIKE A RESCUE AND IS NOT ─────
+  // The version job dispatches `ci.yml` on the version branch, because a dispatch is not a fork event
+  // and needs no approval. Its run turns both required checks green on the pull request's head commit.
+  // It reads like the park has been routed around, and this arm exists because it was read that way and
+  // the exemption was built.
+  //
+  // MEASURED ON PULL REQUEST 32, 2026-09-05, AND THE TWO SURFACES DISAGREE:
+  //
+  //   commits/{sha}/check-runs   both required checks, success, 16:37:29Z
+  //   the pull request's rollup  EMPTY
+  //   mergeStateStatus           BLOCKED, unchanged for four minutes
+  //
+  // Then the parked run was approved by hand and the rollup filled with the same two names. One
+  // intervention between two readings of the same pull request at the same commit. A dispatched run's
+  // checks are not credited to the pull request; only the `pull_request` run's are, and that is the run
+  // sitting parked. The commit that claimed otherwise checked `check-runs` and never opened the
+  // pull request.
+  //
+  // So a park is a refusal whatever else is green on the commit, and this arm pins the shape that
+  // argued otherwise so the next reader finds the measurement instead of rebuilding the reasoning.
+  const parkedBesideItsOwnWorkflow = checksVerdict({
+    checkRuns: [
+      { name: "Lint, licences, tokens and the built bundle", status: "completed", conclusion: "success" },
+      { name: "The offline suites", status: "completed", conclusion: "success" },
+    ],
+    workflowRuns: [
+      { name: "CI", status: "completed", conclusion: "success" },
+      { name: "CI", status: "completed", conclusion: "action_required" },
+    ],
+  });
+  assert.equal(parkedBesideItsOwnWorkflow.state, WAITING_FOR_A_PERSON,
+    "a dispatched run of the same workflow going green does not unblock the pull request — its checks "
+    + "never enter the rollup that auto-merge reads, which was measured on pull request 32");
+  assert.deepEqual(parkedBesideItsOwnWorkflow.blocked, ["CI"]);
 
   // A check RUN can carry it too, and the verdict reads both surfaces rather than trusting one.
   assert.equal(checksVerdict({
