@@ -123,9 +123,26 @@ function alreadyApplied(step) {
  * about the bus. Anything else gets the command to read the real one, which is the honest answer when
  * this process cannot diagnose it.
  */
+/**
+ * Does this failure say the SESSION BUS is missing, rather than anything about the unit?
+ *
+ * ONE AUTHORITY, because two readers now ask it (tracker issue 130, criterion 3). The failure text
+ * below offers the bus remedy on a yes, and the health reader refuses to translate a yes into "the door
+ * is not open" — that mistranslation is the defect, and a second copy of this test is how the two would
+ * come to disagree about which failures are bus failures.
+ */
+export function looksLikeBusFailure(said) {
+  return /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(String(said ?? ""));
+}
+
+/** What a failed `systemctl` said, preferring its own stderr over Node's wrapper message. */
+export function systemdSaid(e) {
+  return `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
+}
+
 export function systemdFailure(e, { step, unit = null } = {}) {
-  const said = `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
-  const looksLikeBus = /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(said);
+  const said = systemdSaid(e);
+  const looksLikeBus = looksLikeBusFailure(said);
   const remedy = looksLikeBus
     ? busRemedy()
     : `That is not a missing session bus, so the two exports will not help. Read what systemd itself says:\n`
@@ -239,13 +256,12 @@ function portOwnerOf(port, bound) {
   // Something holds it. Ask systemd whether the holder is our own door, rather than inferring from the
   // port number — the port answering was never proof of whose process it is, which is the whole lesson
   // of the incident this check was written for.
-  let state;
-  try {
-    const out = execFileSync("systemctl",
-      ["--user", "show", CLIENT_DOOR_UNIT, "-p", "ActiveState", "-p", "SubState"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
-    state = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
-  } catch { return "unknown"; }
+  const { fields: state, error } = showUnit(CLIENT_DOOR_UNIT, ["ActiveState", "SubState"]);
+  // "unknown" IS this function's could-not-look and it keeps that meaning here: the caller already
+  // treats it as "do not decide", which is the right answer whether the bus was missing or systemd
+  // simply had nothing to say. What changed is that it is no longer reached by a shell that HAD a
+  // derivable bus and was never given it.
+  if (error) return "unknown";
   if (!state || state.ActiveState === undefined) return "unknown";
   const up = state.ActiveState === "active" && state.SubState === "running";
   if (!up) return "stranger";
@@ -256,6 +272,63 @@ function portOwnerOf(port, bound) {
   const configured = clientDoorPort(running.env);
   if (!running.known) return "unknown";
   return configured === port ? "ours" : "stranger";
+}
+
+/**
+ * Read properties off a user unit — the ONE place this file asks systemd anything read-only.
+ *
+ * ── WHY IT EXISTS (tracker issue 130, criterion 3) ───────────────────────────────────────────────────
+ *
+ * Two readers here called `systemctl --user show` directly and neither did what the WRITERS in this
+ * same file already do: neither passed `userBusEnv()`, so both failed in exactly the shell tracker issue
+ * 121 was filed about, and neither captured stderr, so systemd's own "Failed to connect to bus" went
+ * straight past the reader with no remedy beside it.
+ *
+ * The writers were fixed and these were missed, which made the product WORSE on this path rather than
+ * better: the message used to name systemd and now it named the door. Driven on a real box by the test
+ * lane — the door was `active` and `connect` said it was not open.
+ *
+ * `error` is carried out rather than swallowed, so each caller decides what its own could-not-look
+ * means. Collapsing that into the caller's ordinary negative answer is the entire defect.
+ */
+export function showUnit(name, props, { run = execFileSync } = {}) {
+  const args = ["--user", "show", name];
+  for (const p of props) args.push("-p", p);
+  try {
+    const out = run("systemctl", args,
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: userBusEnv() });
+    return { fields: Object.fromEntries(out.trim().split("\n").map((l) => l.split("="))), error: null };
+  } catch (e) { return { fields: null, error: e }; }
+}
+
+/**
+ * Run `fn` with the signing secret in the environment when this shell did not carry one.
+ *
+ * PUT BACK AFTERWARDS, INCLUDING ON A THROW. A secret left in `process.env` outlives the one call that
+ * needed it and reaches every child this process spawns from then on — and `connect` spawns systemctl.
+ */
+/**
+ * The signing secret to mint with when this shell does not carry one — read from the install's env file.
+ *
+ * Returns "" when the shell already has one (nothing to supply) and "" when the file has none either.
+ * The value is never logged and never returned to a caller that prints; its one use is the environment
+ * of a single `mintToken` call.
+ */
+export function secretForMint({ shellEnv = process.env, envPath, read = readFileSync, exists = existsSync } = {}) {
+  if (String(shellEnv?.TRADEMARK_MCP_TOKEN_SECRET ?? "").trim()) return "";
+  if (!envPath || !exists(envPath)) return "";
+  const m = /^[ \t]*TRADEMARK_MCP_TOKEN_SECRET[ \t]*=[ \t]*(\S.*)$/m.exec(String(read(envPath, "utf8")));
+  if (!m) return "";
+  return m[1].trim().replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
+}
+
+export function withSecret(value, fn, { env = process.env } = {}) {
+  if (!value) return fn();
+  const had = Object.hasOwn(env, "TRADEMARK_MCP_TOKEN_SECRET");
+  const saved = env.TRADEMARK_MCP_TOKEN_SECRET;
+  env.TRADEMARK_MCP_TOKEN_SECRET = value;
+  try { return fn(); }
+  finally { if (had) env.TRADEMARK_MCP_TOKEN_SECRET = saved; else delete env.TRADEMARK_MCP_TOKEN_SECRET; }
 }
 
 /** A blocking pause, so the health check below asks about a door that has had time to fail. */
@@ -288,15 +361,25 @@ const settle = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0,
  * with `CLIENT_DOOR_UNIT` — a `Type=simple` door. If a second caller ever passes a member of
  * `SERVER_INSTALL_SET`, this needs the unit's declared type, not this default.
  */
-function unitIsHealthy(name) {
-  settle(3000);
-  try {
-    const out = execFileSync("systemctl",
-      ["--user", "show", name, "-p", "ActiveState", "-p", "SubState", "-p", "NRestarts"],
-      { encoding: "utf8" });
-    const f = Object.fromEntries(out.trim().split("\n").map((l) => l.split("=")));
-    return unitHealthVerdict({ activeState: f.ActiveState, subState: f.SubState, nRestarts: f.NRestarts }).ok;
-  } catch { return false; }
+export function unitIsHealthy(name, { show = showUnit, pause = settle } = {}) {
+  pause(3000);
+  const { fields: f, error } = show(name, ["ActiveState", "SubState", "NRestarts"]);
+  if (error) {
+    // ── A BUS THAT COULD NOT BE REACHED IS NOT A DOOR THAT IS DOWN (tracker issue 130) ────────────
+    //
+    // Returning false here is what made the operator worse off than before tracker issue 121's fix.
+    // The caller renders false as "the door is not open, so no key was issued" — a confident, wrong,
+    // client-facing sentence about a door that is `active`, with the real cause discarded. And it is
+    // reachable on the ordinary path: a box whose door is already installed and running never calls
+    // daemon-reload or enable, so THESE two reads are the only things that touch the bus, and the
+    // writers' remedy never fires.
+    //
+    // So a bus failure is raised with the remedy the writers already give, and everything else keeps
+    // the old answer — a unit systemd knows about and calls dead is genuinely not healthy.
+    if (looksLikeBusFailure(systemdSaid(error))) throw systemdFailure(error, { step: "health-check", unit: name });
+    return false;
+  }
+  return unitHealthVerdict({ activeState: f.ActiveState, subState: f.SubState, nRestarts: f.NRestarts }).ok;
 }
 
 /** Turn the door on. Only reached because the chosen assistant cannot work without it. */
@@ -311,6 +394,20 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
   try { granted = accountsForEmail(identity, loadGrants()); } catch { granted = undefined; }
   // The env file the UNIT reads, not this shell — found by the drive: a shell-exported secret passed
   // every plan check while the door died at birth reading an env file that lacked it.
+  // ── THE PLAN CHECKED THE FILE AND THE MINT READ THE SHELL (tracker issue 130) ─────────────────────
+  //
+  // `unitEnvHasSecret` below asks the UNIT'S ENV FILE, which is the right question for the DOOR: a
+  // process reads its environment at start, so a secret that is only in this shell is one the door
+  // never sees. But the MINT happens in this process, and `mintToken` reads `process.env` — so on a
+  // hosted install, where the installer wrote the secret to the file and the operator's shell has
+  // never exported it, `connect` planned perfectly and then died with "TRADEMARK_MCP_TOKEN_SECRET
+  // unset" about a secret that IS set. Two authorities for one value, and the failure lands after the
+  // units are placed.
+  //
+  // So the mint takes the union: this shell if it has one, else the file the plan just read. The value
+  // is never printed and never leaves this process — it goes into the environment for the length of
+  // one mint and is put back.
+  const fileSecret = secretForMint({ shellEnv: process.env, envPath: ENV_PATH });
   const unitEnvHasSecret = existsSync(ENV_PATH)
     ? /^[ \t]*TRADEMARK_MCP_TOKEN_SECRET[ \t]*=[ \t]*\S/m.test(readFileSync(ENV_PATH, "utf8"))
     : false;
@@ -358,7 +455,7 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     },
     unitIsHealthy,
     // Minted in-process so the credential never crosses a shell, an argv or a pipe on its way back.
-    mint: (spec) => mintToken({ ...spec, ttlSec: 90 * 24 * 3600 }),
+    mint: (spec) => withSecret(fileSecret, () => mintToken({ ...spec, ttlSec: 90 * 24 * 3600 })),
   });
 
   // ── THE LEDGER LINE: the id is written down, the key never is ─────────────
@@ -374,7 +471,15 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
     recordNote = "This key's id could not be read, so it was NOT recorded — `clearotron disconnect` cannot revoke it; it dies only at its own expiry.";
   } else {
     try {
+      // ── THE TRUE CAUSE, NOT WHATEVER THREW (tracker issue 130) ─────────────────────────────────
+      //
+      // With no grants file configured this reached `atomicWrite(undefined, …)` and the reader got a
+      // raw Node type error inside a client-facing sentence — a live key, outside `disconnect`'s
+      // reach, explained by a stack-trace fragment. The setting is the cause and it has a name.
       const grantsPath = envFrom(process.env, "CLEAROTRON_ACCESS_FILE");
+      if (!grantsPath) {
+        throw new Error("CLEAROTRON_ACCESS_FILE is not set, so this install has no file to record it in");
+      }
       const g = loadGrants();
       atomicWrite(grantsPath, JSON.stringify(
         recordConnectKey(g ?? { tenants: {} }, { jti: id.jti, sub: identity, client, exp: id.exp }),

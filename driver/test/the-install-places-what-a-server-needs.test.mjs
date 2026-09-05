@@ -220,6 +220,7 @@ test("2128 mergeEnvFile still never writes an empty value, and still names its w
 // The ruling forbids exactly that outcome in its own words: "never a unit failing at boot."
 
 import { enablePlan } from "../../shared/client-door.mjs";
+import { signingSecretIfAbsent } from "../../shared/lane-address.mjs";
 
 /** The env file as the installer left it, parsed the way systemd reads it. */
 function appliedEnv(envBody = STARTED_ENV) {
@@ -319,6 +320,48 @@ test("2148 the signing secret is generated, announced, and never printed", () =>
   const secret = values.TRADEMARK_MCP_TOKEN_SECRET;
   assert.match(secret ?? "", /^[0-9a-f]{64}$/, "no 32-byte signing secret was written, so the door cannot verify a key");
   assert.ok(!out.includes(secret), "the signing secret was printed to stdout");
+});
+
+test("tracker issue 122 — the portal's secret is generated too, and the portal cannot start without it", () => {
+  // THE SAME FAMILY, ONE DOOR ALONG. `PORTAL_SECRET` is 32 random bytes minted by `bin/start.mjs` and by
+  // nothing else, and driver/portal-service.mjs REFUSES TO START without it. So a box installed strictly
+  // from the hosted document got a portal unit that exited at boot, and the only route to a working one
+  // was running the local-install command the instructions say a server does not need.
+  //
+  // Naming the variable in a warning does not help here, which is what tracker issue 122 is about: there
+  // is no action behind the name, because the reader cannot invent 32 random bytes the portal accepts.
+  const { out, values } = appliedEnv();
+  assert.match(out, /GENERATED the portal's secret/, "the installer minted the portal secret without saying so");
+  const secret = values.PORTAL_SECRET;
+  assert.match(secret ?? "", /^[0-9a-f]{64}$/,
+    "no portal secret was written, so the portal unit this installer just placed exits at boot");
+  assert.ok(!out.includes(secret), "the portal secret was printed to stdout");
+  // Two secrets, not one value used twice — sharing them would make either rotation void the other.
+  assert.notEqual(secret, values.TRADEMARK_MCP_TOKEN_SECRET,
+    "the portal secret and the signing secret are the same value, so rotating one silently voids the other");
+});
+
+test("tracker issue 122 — a live portal secret is never replaced, and TWO things stop it", () => {
+  // Replacing it signs everybody out and voids every outstanding confirmation token.
+  //
+  // WHAT THIS ARM DOES AND DOES NOT GUARD, stated because I checked. Driving the whole apply path here
+  // holds the PROPERTY, and the property is enforced twice: the mint returns nothing for a live value,
+  // and `mergeEnvFile` is add-only and refuses to overwrite an existing row. Add-only alone is enough,
+  // so this half stays green even if the mint is broken — measured, by planting exactly that.
+  //
+  // So the decision at the call site gets its own assertion below. An arm that only drove the path would
+  // be named for a guarantee it does not reach, which is the shape this bundle keeps finding.
+  const mine = "b".repeat(64);
+  const { values } = appliedEnv(`${STARTED_ENV}PORTAL_SECRET=${mine}\n`);
+  assert.equal(values.PORTAL_SECRET, mine,
+    "the installer replaced a live portal secret, signing out every session and voiding open confirmations");
+
+  // The mint's own contract, driven directly: a live value yields nothing to write.
+  assert.equal(signingSecretIfAbsent(mine, { randomBytes: () => Buffer.alloc(32, 7) }), null,
+    "the mint offered a replacement for a live secret — add-only is then the only thing standing between "
+    + "an upgrade and every session on the box being signed out");
+  assert.match(signingSecretIfAbsent("", { randomBytes: () => Buffer.alloc(32, 7) }) ?? "", /^0{0,}7*$|^[0-9a-f]{64}$/,
+    "the mint returned nothing for an ABSENT secret, so a fresh install writes no portal secret at all");
 });
 
 test("2148 a live secret is never replaced — every key already issued is signed with it", () => {
