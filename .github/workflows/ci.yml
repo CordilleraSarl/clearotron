@@ -51,6 +51,16 @@ on:
   push:
     branches: [main]
   pull_request:
+  # DISPATCHABLE SO THE VERSION PULL REQUEST CAN CHECK ITSELF. `github-actions[bot]` authors that pull
+  # request, and every fork-approval policy this repository has tried counts it as a contributor needing
+  # approval — its run is created `action_required` and produces no check runs at all, so auto-merge
+  # waits on checks that never start. A dispatch is not a fork event and needs no approval; its check
+  # runs land on the same head SHA under the same job names, which is what branch protection matches on.
+  #
+  # BOTH JOBS RUN ON A DISPATCH, and that was measured rather than assumed: nothing here is gated on
+  # `github.event_name`. On the repository this one grew out of, a dispatch ran one tier alone and made a
+  # run that verified nothing — a warning worth checking before building on it, and it does not carry.
+  workflow_dispatch:
 
 # LEAST PRIVILEGE, and it matters more here than it does on a private repository: a public repository
 # takes pull requests from forks, and a workflow with write scope is a workflow a stranger's branch can
