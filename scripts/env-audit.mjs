@@ -681,11 +681,26 @@ export function auditCatalogue(root = ROOT) {
   // two-file count under the one-file name — "232 row(s) in .env.example" for a file holding 42 — so
   // every progress reading on the issue said the surface had never split. The field is gone rather than
   // corrected: a label that can drift away from what was counted is the defect, not the value it held.
+  // ── A CONTRACT FILE THAT IS NOT THERE IS A FINDING, NOT A SMALLER CORPUS ────────────────────────
+  //
+  // This filtered the corpus by `existsSync` and said nothing, so a missing half of the catalogue was
+  // skipped in silence and the report read clean over the file that remained. The comment directly
+  // above warns of exactly that failure — "a check that read one of them would report the other's 200
+  // rows as absent while looking correct" — and the filter is what made it happen.
+  //
+  // It is not hypothetical: `.env.deployment.example` is withheld from the public tree by the cut, so
+  // on THIS tree the audit has been reporting on one of its two contract files. That is a fine state
+  // to be in and a terrible state to be in silently: every governance number this script prints is
+  // computed over half the catalogue, and nothing said so.
+  //
+  // So the absence is carried out with the result and named by the reporter. Nothing here fails — an
+  // audit that refused to run on the public tree would just stop being run.
+  const absent = CONTRACT_FILES.filter((f) => !existsSync(join(root, f)));
   const perFile = CONTRACT_FILES
     .filter((f) => existsSync(join(root, f)))
     .map((f) => ({ file: f, rows: catalogueRows(readFileSync(join(root, f), "utf8")) }));
   const rows = perFile.flatMap((e) => e.rows);
-  return { files: perFile.map((e) => e.file), perFile, rows, mentioned, orphans: orphanRows(rows, mentioned), duplicates: duplicateLiveRows(rows) };
+  return { files: perFile.map((e) => e.file), perFile, absent, rows, mentioned, orphans: orphanRows(rows, mentioned), duplicates: duplicateLiveRows(rows) };
 }
 
 if (isEntrypoint(import.meta.url)) {
@@ -739,6 +754,16 @@ if (isEntrypoint(import.meta.url)) {
     const declared = c.rows.filter((r) => r.external);
     const split = c.perFile.map((e) => `${e.rows.length} in ${e.file}`).join(" + ");
     console.log(`  ${split} = ${c.rows.length} catalogue row(s), of which ${declared.length} declare an external consumer.`);
+    // NAMED BEFORE THE NUMBERS ARE READ, not after. Every figure below is computed over the files
+    // that were present, and a reader who does not know one was missing will take them as the whole
+    // catalogue — which is precisely how this went unnoticed.
+    if (c.absent?.length) {
+      console.log(`\n  COULD NOT READ ${c.absent.length} of ${c.absent.length + c.perFile.length} contract file(s), so every count in this section is PARTIAL:`);
+      for (const f of c.absent) console.log(`    ${f} — not on this tree`);
+      console.log(`  This is expected on the public tree, where the deployment half of the catalogue is`);
+      console.log(`  withheld. It is stated rather than skipped: a partial audit that reads as a whole one`);
+      console.log(`  is worse than no audit.`);
+    }
     console.log(`  ${c.orphans.length} row(s) name a variable nothing in this tree mentions:`);
     for (const n of c.orphans) console.log(`    ${n}`);
     console.log(`  ${c.duplicates.length} name(s) carry more than one LIVE row (a last-wins assignment):`);
