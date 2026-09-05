@@ -76,7 +76,7 @@ remote MCP server's auth server). For CourtListener that's
 # Run this block from the repository root so BRIDGE resolves; the steps below cd away.
 SERVER="courtlistener"
 AUTH_BASE="https://www.courtlistener.com/o"
-RESOURCE="https://mcp.courtlistener.com"
+RESOURCE_ORIGIN="https://mcp.courtlistener.com"
 SVC_USER="$(id -un)"
 SVC_HOME="$HOME"
 CREDS_DIR="$SVC_HOME/.config/trademark-oauth-mcp"
@@ -85,6 +85,17 @@ SCOPES="openid api"            # discoverable at ${AUTH_BASE}/.well-known/openid
 REDIRECT="http://127.0.0.1:8765/callback"   # any unused port; browser will fail to connect, you paste the URL back manually
 
 mkdir -p /tmp/cl-oauth && cd /tmp/cl-oauth
+
+# 0. READ the resource indicator from the server. NEVER compose it by hand.
+#    RFC 8707 binds a token family to a resource, and the SDK sends that value on every
+#    token request INCLUDING the refresh. A value that differs from the server's own by
+#    one character fails exactly like an absent one — and CourtListener publishes
+#    `https://mcp.courtlistener.com/`, with a trailing slash its own serverUrl lacks.
+#    This line used to be a hand-written constant, and that is the whole defect: sign-in
+#    succeeded, every check passed, and the credential died at its first refresh.
+RESOURCE=$(curl -sS "${RESOURCE_ORIGIN}/.well-known/oauth-protected-resource" | jq -r .resource)
+[ -n "$RESOURCE" ] && [ "$RESOURCE" != "null" ] || { echo "no resource indicator published — stop here and find out why"; exit 1; }
+echo "resource indicator, as the server states it: $RESOURCE"
 
 # 1. Dynamic Client Registration — explicit confidential client.
 DCR=$(curl -sS -X POST "${AUTH_BASE}/register/" -H 'Content-Type: application/json' \
@@ -107,27 +118,40 @@ CLIENT_ID=$(echo "$DCR" | jq -r .client_id)
 CLIENT_SECRET=$(echo "$DCR" | jq -r .client_secret)
 
 # 3. Build authorize URL — paste it into a real browser and click Authorize.
+#    `resource` rides here AND on the exchange below. Both, or the family is bound to
+#    nothing and the first refresh presents a resource it was never issued for.
+#
+#    STAGE STEP 5 BEFORE YOU HAND THIS URL TO ANYONE. An authorization code is
+#    short-lived: Django OAuth Toolkit, which CourtListener runs, expires it in 60 seconds.
+#    If the exchange is not already typed and waiting, the first callback is dead on
+#    arrival and you go round again.
 SCOPE_ENC=$(printf '%s' "$SCOPES" | sed 's/ /+/g')
 REDIRECT_ENC=$(printf '%s' "$REDIRECT" | jq -sRr @uri)
-echo "https://${AUTH_BASE#https://}/authorize/?response_type=code&client_id=${CLIENT_ID}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256&redirect_uri=${REDIRECT_ENC}&state=${STATE}&scope=${SCOPE_ENC}"
+RESOURCE_ENC=$(printf '%s' "$RESOURCE" | jq -sRr @uri)
+echo "https://${AUTH_BASE#https://}/authorize/?response_type=code&client_id=${CLIENT_ID}&code_challenge=${CODE_CHALLENGE}&code_challenge_method=S256&redirect_uri=${REDIRECT_ENC}&state=${STATE}&scope=${SCOPE_ENC}&resource=${RESOURCE_ENC}"
 
 # 4. Browser will fail to connect to 127.0.0.1:8765 — fine. Copy the full
 #    `http://127.0.0.1:8765/callback?code=...&state=...` URL from the
 #    address bar and extract the code.
 CODE="<paste code from callback URL>"
 
-# 5. Exchange code for tokens.
+# 5. Exchange code for tokens. `resource` again — the authorize step alone does not bind it.
 TOKENS=$(curl -sS -X POST "${AUTH_BASE}/token/" \
   --data-urlencode "grant_type=authorization_code" \
   --data-urlencode "code=$CODE" \
   --data-urlencode "redirect_uri=$REDIRECT" \
   --data-urlencode "client_id=$CLIENT_ID" \
   --data-urlencode "client_secret=$CLIENT_SECRET" \
+  --data-urlencode "resource=$RESOURCE" \
   --data-urlencode "code_verifier=$CODE_VERIFIER")
 echo "$TOKENS" | jq '{has_access:(.access_token!=null), has_refresh:(.refresh_token!=null), expires_in, scope}'
 
 # 6. Assemble bridge cache file in the shape bridge.mjs expects.
-jq -n --argjson dcr "$DCR" --argjson tokens "$TOKENS" --arg server "$SERVER" --arg url "$RESOURCE" --arg scope "$SCOPES" --arg ts "$(date -u +%FT%TZ)" '{
+#    `serverUrl` is the ORIGIN the bridge connects to, NOT the resource indicator — those are
+#    two different strings here and the difference is the trailing slash. The SDK re-derives
+#    the indicator from this URL's own protected-resource metadata at refresh time, so writing
+#    the indicator in as serverUrl would point the transport at a URL nobody serves.
+jq -n --argjson dcr "$DCR" --argjson tokens "$TOKENS" --arg server "$SERVER" --arg url "$RESOURCE_ORIGIN" --arg scope "$SCOPES" --arg ts "$(date -u +%FT%TZ)" '{
   serverName:$server, serverUrl:$url, scope:$scope,
   clientInfo:$dcr, tokens:$tokens, bootstrappedAt:$ts
 }' > "${SERVER}.json"
@@ -140,12 +164,44 @@ sudo install -o "$SVC_USER" -g "$SVC_USER" -m 600 "${SERVER}.json" "$CREDS_DIR/$
 shred -u ./*.json 2>/dev/null; rm -f ./*.json; cd / && rmdir /tmp/cl-oauth
 ```
 
-Verify with the bridge directly:
+### Verify by forcing a REFRESH, because a sign-in cannot fail for the reason that matters
+
+A `tools/list` against fresh tokens is not a verification of this recipe. It passes on a
+credential bound to no resource — that is exactly the state that shipped, and every surface
+we had said `enrolled` while the connector was already dead. The refresh is the only step
+that exercises what the bootstrap got wrong, so the check has to reach it.
+
+**In place, with a backup, and restore on failure.** A copy proves the token family *can*
+refresh; it does not leave the file the engine reads holding the rotated token, so a passing
+copy-test can still leave a deployment that dies. In place is both the truer test and the
+state you want to end in — and the rollback makes a failure cost nothing.
 
 ```bash
-sudo -u "$SVC_USER" bash -c '(printf "%s\n" "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"probe\",\"version\":\"0.1\"}}}"; sleep 2; printf "%s\n" "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"; sleep 1; printf "%s\n" "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}"; sleep 8) | node '"$BRIDGE"' --server '"$SERVER"
-# Expect: a JSON-RPC response with a tools/list result containing the remote tools.
+CRED="$CREDS_DIR/${SERVER}.json"
+sudo -u "$SVC_USER" cp -p "$CRED" "$CRED.bak"
+OLD_REFRESH=$(sudo -u "$SVC_USER" jq -r .tokens.refresh_token "$CRED")
+
+# Blank the ACCESS token only. The bridge must now refresh before it can answer.
+sudo -u "$SVC_USER" bash -c "jq '.tokens.access_token = \"\"' '$CRED' > '$CRED.tmp' && mv '$CRED.tmp' '$CRED'"
+
+sudo -u "$SVC_USER" bash -c '(printf "%s\n" "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"probe\",\"version\":\"0.1\"}}}"; sleep 2; printf "%s\n" "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"; sleep 1; printf "%s\n" "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}"; sleep 8) | node '"$BRIDGE"' --server '"$SERVER"' 2>/tmp/refresh-probe.err
+
+NEW_REFRESH=$(sudo -u "$SVC_USER" jq -r .tokens.refresh_token "$CRED")
+grep -q 'tokens refreshed' /tmp/refresh-probe.err \
+  && [ "$NEW_REFRESH" != "$OLD_REFRESH" ] \
+  && echo "REFRESH OK — token rotated on disk" \
+  || { echo "REFRESH FAILED — restoring"; sudo -u "$SVC_USER" mv "$CRED.bak" "$CRED"; sed -n '1,40p' /tmp/refresh-probe.err; }
 ```
+
+All three must hold, and each catches something the others do not: `tokens refreshed` in
+stderr says the refresh path ran at all, a populated `tools/list` result says the new token
+works against the server, and **the refresh token changed on disk** says the rotation was
+persisted — the half whose absence bricks the next spawn on a server that revokes a reused
+family. `InvalidTargetError: resource does not match refresh token` in that stderr means the
+indicator is wrong or missing: go back to step 0 and read it from the server rather than
+typing it.
+
+Remove `$CRED.bak` once the check passes; it holds a working refresh token.
 
 ### Why there is no scripted bootstrap
 
