@@ -87,6 +87,38 @@ test('409 splits: the confirmation gate is rendered verbatim, a version conflict
   assert.equal(conflict.kind, 'conflict', 'an optimistic-concurrency clash is a save problem, not a gate refusal')
 })
 
+test('409 written as `errors[]` reaches the reader — the demo refusal is the one they meet first', async () => {
+  // tracker issue 94, F14. The server writes this refusal under `errors[]`; most others use `error`.
+  // Reading only the singular threw away three sentences telling a first-time visitor exactly where they
+  // were, and handed them "This action could not be completed." instead — under a title saying their
+  // clearance had failed. Owner, driving the demo, met this one.
+  const demo = await withFetch(
+    409,
+    { ok: false, errors: [
+      'This demo does not carry a finished knockout search to show you yet. Nothing was started and '
+      + 'nothing was charged — every search here resolves to a report that already exists, and this one '
+      + 'has not been captured. Pick a search the demo has a report for.',
+    ] },
+    () => api.runs('demo-brand-owner'),
+  )
+  assert.equal(demo.kind, 'gate', 'a demo refusal is a gate — nothing was started and nothing conflicts')
+  const message = demo.kind === 'gate' ? demo.message : ''
+  assert.match(message, /^This demo does not carry a finished knockout search/,
+    'the reader got the fallback sentence instead of what the server actually said')
+  assert.match(message, /Nothing was started and nothing was charged/,
+    'the half that tells them they have not been billed did not survive');
+  assert.notEqual(message, 'This action could not be completed.')
+})
+
+test('409 with neither spelling still says something, and says it once', async () => {
+  // The fallback is the last resort, not the first. A body carrying no refusal at all must not render
+  // empty — an empty gate message is a dialog with a title and nothing in it.
+  const bare = await withFetch(409, { ok: false }, () => api.runs('demo-brand-owner'))
+  assert.equal(bare.kind, 'gate')
+  const msg = bare.kind === 'gate' ? bare.message : ''
+  assert.ok(msg.length > 0, 'a 409 with no refusal text rendered nothing at all')
+})
+
 test('a staff identity granted everything is not a client with no accounts', async () => {
   // The wire sends "*" — not a list, and not something to silently coerce to []. A sidebar that read
   // an empty array here would tell a Cordillera lawyer they have no brand owners.

@@ -1153,7 +1153,15 @@ function decodeStatus<T>(status: number, body: Record<string, unknown>): Result<
       if (asString(body['error']) === 'config_surface_unavailable') return { kind: 'surfaceUnavailable' }
       return { kind: 'notFound' }
     case 409: {
-      const msg = asString(body['error']) ?? 'This action could not be completed.'
+      // ── READ BOTH SPELLINGS (tracker issue 94, finding F14) ────────────────────────────────────────
+      //
+      // The server writes a refusal under `error` in most places and under `errors[]` in others, and
+      // this branch read only the singular — so the one 409 a first-time visitor is most likely to meet,
+      // the demo being asked for a search it carries no report for, arrived as "This action could not be
+      // completed." The server had written three sentences explaining exactly where they were and what
+      // to pick instead, and the screen threw them away. `errorsOf` is the reader every other branch
+      // here already uses; its own fallback is the last resort rather than the first.
+      const msg = errorsOf(body)[0] ?? 'This action could not be completed.'
       return /version|conflict/i.test(msg) && !/confirmation|plan again|re-confirm/i.test(msg)
         ? { kind: 'conflict', message: msg }
         : { kind: 'gate', message: msg }
