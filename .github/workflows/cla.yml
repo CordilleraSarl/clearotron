@@ -1,0 +1,73 @@
+# Contributor Licence Agreement — records that a contributor accepted the terms, and blocks the merge
+# until it has. Tracker issue 82.
+#
+# WHY A BOT AND NOT A REGISTER. Owner ruling 2026-09-02: whatever costs him least. A register somebody
+# has to remember to update is not a gate — the failure is silent, a change merges with no agreement,
+# and nobody finds out until it matters. The alternative that was considered and rejected is recorded
+# on the issue: a Developer Certificate of Origin is lighter, but it grants no right to distribute a
+# contribution under any licence other than the inbound one, which is the whole reason a CLA is wanted.
+#
+# WHY IT CANNOT WAIT. Accept one contribution without an agreement and that contributor keeps rights in
+# their part; every later relicensing decision then needs their consent, individually, forever.
+# Retrofitting means finding every past contributor and asking.
+#
+# ── WHO CAN PASS THIS WITHOUT SIGNING, STATED RATHER THAN DISCOVERED ─────────────────────────────────
+#
+# The issue asks for this explicitly, and the answer is: the accounts in `allowlist` below, plus anyone
+# who can dismiss a failing check on a protected branch (a repository admin). The allowlist holds bots
+# and the accounts whose work is already covered by employment terms — not a convenience list, and
+# every name on it is a claim that somebody's contributions are owned by the company already.
+#
+# The check is only a GATE if the branch protection rule requires it. That is a repository setting, not
+# a file, so it cannot be asserted here: until "CLA" is a required status check on the default branch,
+# this workflow reports and does not block. Whoever turns branch protection on should add it.
+
+name: CLA
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+# `pull_request_target` runs with a token that can write to this repository, so it is scoped to the two
+# things the action actually needs and nothing else.
+permissions:
+  actions: write
+  contents: write        # the signature file is committed to this repo
+  pull-requests: write   # the bot comments on the PR and updates its status
+  statuses: write
+
+jobs:
+  cla:
+    runs-on: ubuntu-latest
+    # Only the comment that is the signature, or a pull request. Without this every comment on every
+    # issue in the repository would start a job.
+    if: >
+      (github.event.issue.pull_request && contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA'))
+      || github.event_name == 'pull_request_target'
+    steps:
+      # Pinned to the SHA of v2.6.1, not to the tag: a tag can be moved to point at different code, and
+      # this action runs with write access to the repository.
+      - name: Check or record the contributor's agreement
+        uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: cla-signatures
+          path-to-signatures: signatures/cla.json
+          path-to-document: https://github.com/CordilleraSarl/clearotron/blob/main/CLA-INDIVIDUAL.md
+          # The exact sentence a contributor comments to sign. It is quoted in the bot's own message,
+          # so it does not need to be memorable — it needs to be unambiguous.
+          custom-pr-sign-comment: 'I have read the CLA Document and I hereby sign the CLA'
+          custom-notsigned-prcomment: |
+            Thanks for this. Before it can be merged we need your agreement to the contribution terms —
+            it applies to every contribution, not only substantial ones, and you keep copyright in what
+            you wrote. The agreement is a licence, not an assignment.
+
+            Read [CLA-INDIVIDUAL.md](https://github.com/CordilleraSarl/clearotron/blob/main/CLA-INDIVIDUAL.md),
+            then reply on this pull request with exactly:
+          custom-allsigned-prcomment: 'All contributors have signed the CLA.'
+          # Employees and bots. Every entry is a claim that this account's contributions are already
+          # covered — by employment terms, or by not being a person.
+          allowlist: kwizzlek,dependabot[bot],dependabot-preview[bot],github-actions[bot]

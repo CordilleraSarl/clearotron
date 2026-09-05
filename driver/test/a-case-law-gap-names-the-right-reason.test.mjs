@@ -36,7 +36,14 @@ import { CASELAW_BRIDGES } from "../engine/mcp/gather-config.mjs";
 // The same enrolment mechanism the product uses: a one-time OAuth exchange writes <id>.json.
 const withCreds = (enrolled) => {
   const dir = mkdtempSync(join(tmpdir(), "caselaw-creds-"));
-  for (const id of enrolled) writeFileSync(join(dir, `${id}.json`), "{}");
+  // A CREDENTIAL, NOT AN EMPTY FILE. This wrote `"{}"`, which modelled enrolment as "a file exists" —
+  // the very test tracker issue 173 replaced, because a zero-byte or contentless file read as an
+  // enrolled source and made a delivered report disclose an outage that never happened. What a
+  // one-time OAuth exchange actually writes is a token pair, and `tokens.refresh_token` is the part
+  // that makes the credential usable, so that is what a fixture standing in for one has to carry.
+  for (const id of enrolled) {
+    writeFileSync(join(dir, `${id}.json`), JSON.stringify({ tokens: { access_token: "fixture", refresh_token: "fixture" } }));
+  }
   return { OAUTH_BRIDGE_CREDS_DIR: dir };
 };
 const noCreds = () => ({ OAUTH_BRIDGE_CREDS_DIR: mkdtempSync(join(tmpdir(), "caselaw-none-")) });
