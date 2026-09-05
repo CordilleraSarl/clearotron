@@ -791,7 +791,7 @@
         },
         "browser-check-membership.test.mjs": {
           "tests": 4,
-          "asserts": 10,
+          "asserts": 12,
           "skips": 4,
           "todos": 0
         },
@@ -4057,6 +4057,12 @@
           "tests": 4,
           "asserts": 14,
           "skips": 0,
+          "todos": 0
+        },
+        "the-executable-bits-survive-the-cut.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 3,
           "todos": 0
         },
         "the-family-tag-is-writable-and-sweeps-contains.test.mjs": {

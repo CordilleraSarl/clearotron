@@ -34,9 +34,39 @@ const CI = readFileSync(join(ROOT, CI_PATH), "utf8");
 
 // `git ls-files`, not readdirSync, for the reason shared/tracked-files.mjs gives: a directory walk
 // lists a contributor's scratch file and an editor backup too, and the claim here is about what ships.
+//
+// TWO POPULATIONS, UNIONED, AND THE SECOND ONE IS WHY. The first draft of this file enumerated
+// `scripts/*-check.mjs` alone — a NAMING CONVENTION standing in for a property. `report-screenshot.mjs`
+// drives a real browser and is not named `-check`, so it sat outside the population entirely: it ran
+// nowhere, carried no exemption, and this arm reported green over it. The gap was invisible from inside
+// the file, because the arm's own subject was defined by the thing that excluded it.
+//
+// So the population is also derived from what a script DOES — it spawns the browser binary — and the
+// two lists are unioned. Union rather than replacement, because the property matcher can only see a
+// literal call site: a check that reached a browser through a helper module would drop out of the
+// property list, and swapping one for the other would SHRINK the population while staying green. That
+// is the same failure this file exists to catch, one level up. Both halves carry their own floor below.
+const CHECK_BY_NAME = ["scripts/*-check.mjs"];
+
+// A CALL, not a mention. `render-check.mjs` says "Needs `google-chrome` on PATH" in a comment, and
+// several others discuss it in prose; matching the bare string would pull in anything that merely
+// talks about the browser. The binary has to appear as the first argument to a spawning function.
+const DRIVES_A_BROWSER = /(?:spawn|spawnSync|exec|execSync|execFile|execFileSync)\s*\(\s*["'`]google-chrome["'`]/;
+
+const populations = () => {
+  const byName = trackedFiles(GUARD, { root: ROOT, pathspec: CHECK_BY_NAME });
+  const allScripts = trackedFiles(GUARD, { root: ROOT, pathspec: ["scripts/*.mjs"] });
+  if (byName === null || allScripts === null) return null;
+  const byProperty = allScripts.filter((f) => {
+    try { return DRIVES_A_BROWSER.test(readFileSync(join(ROOT, f), "utf8")); } catch { return false; }
+  });
+  const union = [...new Set([...byName, ...byProperty])].sort();
+  return { byName: byName.slice().sort(), byProperty: byProperty.slice().sort(), union };
+};
+
 const checkScripts = () => {
-  const files = trackedFiles(GUARD, { root: ROOT, pathspec: ["scripts/*-check.mjs"] });
-  return files === null ? null : files.slice().sort();
+  const p = populations();
+  return p === null ? null : p.union;
 };
 
 // Invocations, from NON-COMMENT lines only. The comments in build-and-verify discuss these scripts by
@@ -55,6 +85,15 @@ const invoked = () => {
 // the check rather than a preference. Anything that could run and simply is not wired up belongs in
 // the workflow instead — that is what #968 was about.
 const CANNOT_RUN_IN_CI = [
+  {
+    path: "scripts/report-screenshot.mjs",
+    why: "it ASSERTS NOTHING, so there is no verdict for CI to fail on. It takes the path of a report "
+      + "the demo publisher has already rendered and captures one frame of it for the README — there is "
+      + "no such path in a fresh checkout, and nothing about the picture it writes is a pass or a fail. "
+      + "It also allows network and loads the brand webfonts ON PURPOSE, which is the exact opposite of "
+      + "the render checks: those block DNS so a layout fails the way CI fails, in fallback fonts. Two "
+      + "intents, and wiring this one into the browser job would break the other's reason for existing.",
+  },
   {
     path: "scripts/live-surface-check.mjs",
     why: "it interrogates a RUNNING DEPLOYMENT — the processes, the environment they were started in, "
@@ -139,7 +178,17 @@ test("#968 the enumeration and the invocation parse both have floors — a broke
   // An absence is a finding. Zero matched scripts, or zero parsed invocations, is the shape in which
   // this whole file silently stops asserting anything while reporting the same green.
   assert.ok(scripts.length >= 9,
-    `only ${scripts.length} scripts/*-check.mjs matched — the glob is broken, not the tree`);
+    `only ${scripts.length} script(s) in the union — the enumeration is broken, not the tree`);
+  // AND A FLOOR ON EACH HALF SEPARATELY. A union floors at the size of whichever half still works, so
+  // one matcher can break completely while the total stays above the line. These two are what make a
+  // broken glob and a broken property matcher name themselves instead of hiding behind each other.
+  const pop = populations();
+  assert.ok(pop.byName.length > 3,
+    `only ${pop.byName.length} matched ${CHECK_BY_NAME.join(", ")} — the name glob is broken, not the tree`);
+  assert.ok(pop.byProperty.length > 3,
+    `only ${pop.byProperty.length} script(s) matched as driving a browser — the property matcher is broken, `
+    + `not the tree. It looks for the binary as the first argument to a spawn, so a refactor behind a helper `
+    + `module would empty it silently`);
   const ci = invoked();
   const checks = [...ci].filter((p) => /-check\.mjs$/.test(p));
   assert.ok(checks.length >= 7,
