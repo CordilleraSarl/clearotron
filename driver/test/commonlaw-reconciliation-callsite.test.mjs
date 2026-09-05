@@ -81,8 +81,18 @@ test("the walk reached the ratchet rather than short-circuiting before it", () =
 test("the repaired catch reports DURABLY — a stderr-only report is what bought #914 two months", () => {
   // note() writes to stderr (log.mjs:61). Nothing that reads artifacts can see it. The catch must put a
   // row in run.jsonl whichever branch it takes, or the next non-fatal failure is equally invisible.
+  //
+  // RE-ANCHORED ON PROSE, AND A MISSING ANCHOR REFUSES. This located the catch by a heading opening
+  // with an issue number, which the public tree does not carry — the reference strip took it. `indexOf`
+  // then answered -1 and the slice handed back a window from the END of the file, so all three
+  // assertions below reported on text that has nothing to do with this catch. An arm that cannot find
+  // its subject must say so; it must never report on whatever it found instead.
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  const block = src.slice(src.indexOf("#1039 — THIS CATCH BOUGHT"), src.indexOf("#1039 — THIS CATCH BOUGHT") + 2200);
+  const at = src.indexOf("THIS CATCH BOUGHT TWO MONTHS OF SILENCE, TWO WAYS");
+  assert.notEqual(at, -1,
+    "the catch's heading is gone from driver/pipeline.mjs, so this arm has nothing to read — it does "
+    + "not fall back to a window of some other part of the file");
+  const block = src.slice(at, at + 2200);
   assert.ok(/runLog\(P\.runDir, \{[\s\S]*?event: bug \? "commonlaw-reconciliation-bug" : "commonlaw-reconciliation-failed"/.test(block),
     "the catch must runLog a durable row on BOTH branches");
   assert.ok(/const bug = e instanceof ReferenceError;/.test(block),
