@@ -253,6 +253,15 @@ jobs:
       - run: node scripts/ai-page-render-check.mjs
       - run: node scripts/portal-lifecycle-check.mjs
 
+      # ARRIVED WITH THE PORTAL-MAJORS MERGE AND RAN NOWHERE. Every other check above drives a screen
+      # once, on a fresh document; this one leaves a screen and comes back, and COUNTS the requests the
+      # remount issues. The defect it is built for is a redundant request against a 120/min per-person
+      # budget — a screen that fetches twice paints perfectly, so no paint check and no human can see it.
+      # It was committed with no invocation, which is the same failure one level up: an instrument that
+      # exists and never runs reports nothing and reads as coverage. browser-check-membership caught it
+      # the moment that arm came back onto the tree.
+      - run: node scripts/revisit-render-check.mjs
+
       # Every relative markdown link in the tracked tree resolves to something on disk. No browser, but
       # the same family: a broken link in the docs is invisible to every other check in this file.
       - run: node scripts/markdown-link-check.mjs
