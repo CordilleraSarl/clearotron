@@ -270,9 +270,14 @@ jobs:
       # to publish, which is the wrong moment to hear the answer: by then the file list has changed, the
       # author has moved on, and the correction is a second pull request. Asked here it reaches the
       # person still holding the change.
+      # `--pack-destination` does NOT create the directory it is given: npm opens the tarball path for
+      # writing and fails ENOENT if the parent is missing. A fresh checkout never has ./packed, so this
+      # step failed on its first real run — ported from the private tree, where the directory happened
+      # to exist, and never exercised until here. `mkdir -p` and nothing else.
       - name: What a stranger installs is complete
         run: |
           set -euo pipefail
+          mkdir -p ./packed
           TARBALL=$(npm pack --pack-destination ./packed | tail -1)
           node scripts/release-completeness-check.mjs --tarball "./packed/${TARBALL}"
 
