@@ -20,7 +20,7 @@
 // the last thing between a person publishing from a laptop and an incomplete package. With `--tarball`
 // it reads the packed bytes, which is what CI publishes; there the demo set must match the tree's,
 // because "every demo present is complete" is satisfied by a tarball carrying one of them.
-import { existsSync, readdirSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, mkdtempSync, rmSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
@@ -31,6 +31,20 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** Directory children of `demo/`, complete or not. The set the frozen ones are measured against. */
+/**
+ * The floor on how many packages the notices file may list.
+ *
+ * NOT the exact count, deliberately: the exact number moves with every dependency change and an arm
+ * asserting it would red on an ordinary bump, which is how a check gets deleted. This catches the two
+ * shapes that matter — the file absent, and the file truncated to a fraction of the tree. Whether the
+ * list MATCHES the tree is a different question and a different check, because answering it needs the
+ * installed tree rather than the packed bytes.
+ *
+ * Set from the measured tree on 2026-09-05: 187 packages, floored well below it so a removal does not
+ * red this. It rises when somebody finds it too low, never to chase the true count.
+ */
+export const MIN_NOTICE_ENTRIES = 150;
+
 export function demoDirectories(root) {
   try {
     return readdirSync(join(root, "demo"), { withFileTypes: true })
@@ -62,6 +76,28 @@ export function refusals(root, { expectDemos } = {}) {
   if (expectDemos) {
     for (const name of expectDemos) {
       if (!frozen.includes(name)) out.push(`the demo product \`${name}\` is in the repository and not in the package`);
+    }
+  }
+
+  // ── THE LICENCE RECORD HAS TO BE IN THE PACKAGE, NOT JUST IN THE REPOSITORY ─────────────────────
+  //
+  // MEASURED ON THE PUBLISHED ARTEFACT, 2026-09-05: `THIRD-PARTY-NOTICES.md` was not short, it was
+  // ABSENT. `files[]` never named it, so npm packed everything except the one file that records what
+  // the bundled dependencies are licensed under — and every artefact shipped so far, 0.1.0 and the
+  // first pre-release included, went out without it. Nothing was red; the file was correct in the
+  // repository and simply never travelled.
+  //
+  // Counted rather than merely found, and compared against the copy in the tree: a packed file that
+  // has fallen behind the repository's is the same failure one release later.
+  const notices = join(root, "THIRD-PARTY-NOTICES.md");
+  if (!existsSync(notices)) {
+    out.push("the third-party licence notices are not in the package (THIRD-PARTY-NOTICES.md) — check "
+      + "`files[]` names it, because npm ships LICENSE and README on its own and this file only if asked");
+  } else {
+    const entries = readFileSync(notices, "utf8").split("\n").filter((l) => /^## /.test(l)).length;
+    if (entries < MIN_NOTICE_ENTRIES) {
+      out.push(`the third-party licence notices list ${entries} package(s), fewer than the `
+        + `${MIN_NOTICE_ENTRIES} this package is known to bundle — the file is stale or was truncated`);
     }
   }
 

@@ -125,3 +125,8 @@ jobs:
       # Line citations still point where they say. See the note at the top: this compares against the
       # count recorded in this repository, so it works here at whatever size this tree happens to be.
       - run: node scripts/citation-line-check.mjs
+
+      # A RELEASE NOTE IS CHECKED WHERE IT IS WRITTEN. The release workflow checks them too, but that is
+      # the wrong moment to find out: by then the note is on `main`, the author has moved on, and the
+      # correction is a second pull request. Here it is one edit away from the person holding it.
+      - run: node scripts/release-notes-lint.mjs

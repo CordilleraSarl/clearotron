@@ -45,6 +45,15 @@ on:
   # is the one thing the publishing design forbids. So nothing waits for that push. Every five minutes,
   # `pending` asks main a question instead — is there a version here with no tag — and answers it with
   # the same function the push path uses.
+  #
+  # AND AS OF 2026-09-05 THIS CRON HAS NEVER FIRED ON THIS REPOSITORY. Not once, across several hours
+  # and many intervals, with the trigger confirmed present on `main` and the workflow `active`. Every
+  # release so far has gone out on the push path, because a person merged something. Two causes are
+  # consistent with that and neither is distinguishable from here: GitHub takes its time registering a
+  # newly added schedule, and `*/5` on a public repository is delayed or dropped under load.
+  #
+  # So do not rely on this as the recovery for a self-merged version until you have SEEN a `schedule`
+  # run publish one. Until then it is a mechanism we have written, not one we have.
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
@@ -82,6 +91,18 @@ jobs:
       # `actions/runs`, which is the only surface that carries `action_required`.
       checks: read
       actions: read
+      #
+      # THERE IS NO `administration: read` HERE AND THERE CANNOT BE. The guard reads the repository's
+      # current fork-pull-request approval policy so it can NAME the setting rather than quote a
+      # remembered one — and that endpoint wants repository-administration scope, which is not one of the
+      # permissions a job may request. Adding it does not fail the job: GitHub refuses to PARSE THE WHOLE
+      # WORKFLOW, and says so as a run named after this file with no jobs and no log. Measured
+      # 2026-09-05, on a branch, which is the only reason it was not measured on main with the release
+      # stopped and nothing legible to say why.
+      #
+      # So the policy read is best-effort by design. It fails soft and the finding says the policy could
+      # not be read from here and names it as the setting to look at, which is still better than a value
+      # this file remembers and the repository has changed.
     outputs:
       cut: ${{ steps.cut.outputs.cut }}
       version: ${{ steps.cut.outputs.version }}
@@ -98,6 +119,13 @@ jobs:
 
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
+
+      # BEFORE THE VERSION STEP, because after it the notes are gone. `changeset version` consumes them
+      # into the changelog; a note that should never have been written is then a line in a file a customer
+      # reads, and taking it out means rewriting a published release. The owner's contract is in
+      # `.changeset/README.md`; this is the half that cannot be forgotten.
+      - name: Every release note is written for the person who reads it
+        run: node scripts/release-notes-lint.mjs
 
       # `version:` is our wrapper, and it is not optional: `changeset version` moves the four WORKSPACE
       # packages and leaves the root package — `clearotron`, the one thing a user installs — where it
@@ -154,11 +182,25 @@ jobs:
       # idempotent — measured twice against the live pull request on 2026-09-05, exit 0 both times. If
       # that ever stops being true, this step fails the version job and the release stops, which is the
       # direction to fail in.
+      #
+      # THE MESSAGE IS WRITTEN HERE, NOT LEFT TO GITHUB. An auto-merge with no subject takes GitHub's
+      # default, which appends `(#23)` to the headline — the bare `#NNN` this project bans from commit
+      # messages, written by our own automation into public history. Measured 2026-09-05 on the first
+      # version pull request that merged itself.
+      #
+      # The version comes from the WORKING TREE here, and that is correct where reading it for the cut
+      # decision is not: `changeset version` has just written it, and this commit is the one carrying it.
       - name: Let it merge itself once its checks pass
         if: steps.changesets.outputs.pr-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge "${{ steps.changesets.outputs.pr-number }}" --squash --auto
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
+          gh pr merge "${{ steps.changesets.outputs.pr-number }}" --squash --auto \
+            --subject "Release $VERSION" \
+            --body "$NOTES"
 
       # AND THE CHECKS IT WAITS FOR HAVE TO EXIST. Auto-merge waits for required checks; a check that
       # never starts is not a check that failed, and the pull request simply sits there. That happened
