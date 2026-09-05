@@ -69,13 +69,13 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 /**
  * Manifest keys that are meaningful in THIS repo and meaningless-or-fatal in a consumer's tree.
  *
- * `private` is here for the same reason and NOT because the repo should stop being private. The repo
- * manifest's `"private": true` is a live guard — `release-no-publish-check` refuses when it is gone, and
- * it is what stops an accidental `npm publish` from this tree. A tarball is the other direction: the
- * artefact exists to be installed, and npm refuses to publish a manifest carrying the flag, so a pack
- * that ships it produces a tarball that cannot become a package. Strip it from the PUBLISHED copy and
- * leave the repo's alone — which is exactly what this function does, and the refusal below proves the
- * repo manifest still has both keys on every pack.
+ * `private` STAYED ON THIS LIST AFTER THE MANIFEST STOPPED CARRYING IT. It was a live guard while
+ * publishing was a human act: the repository manifest said `"private": true`, npm refuses to publish a
+ * manifest carrying the flag, and the pack stripped it from the published copy alone. The owner's
+ * rulings of 2026-09-04 and 2026-09-05 moved publishing into CI through Trusted Publishing, and a
+ * package published from the tree cannot carry a flag that forbids publishing it — so the key is gone
+ * from the manifest and this entry now strips nothing. It is kept because the list is the policy: a
+ * tree that reintroduces the flag must still produce a publishable tarball.
  */
 export const STRIP_KEYS = ["overrides", "private"];
 
