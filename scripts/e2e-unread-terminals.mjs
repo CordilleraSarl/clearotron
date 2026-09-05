@@ -240,7 +240,7 @@ export function classify(doors, names, now, probe = runStateProbe) {
       // dropped off this list while remaining exactly as unclosed as the ones that were never opened —
       // so reading a round was enough to make it stop being counted, whatever the read found.
       //
-      // The harness already knows this. previousRoundNotice in e2e.mjs:2210 says the round closes on
+      // The harness already knows this. previousRoundNotice in e2e.mjs:2256 says the round closes on
       // `reportedState === "settled"`, NEVER on `reportedAt != null`, and gives the incident that
       // taught it. This lister was the last reader keying on the weaker field.
       if (String(r?.reportedState ?? "") === "settled") continue;

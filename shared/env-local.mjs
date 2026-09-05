@@ -385,7 +385,18 @@ export function activeEnvPath({ repoRoot = REPO_ROOT, home = homedir(), location
  * logged: this file is where the credentials are.
  */
 export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = defaultNote,
-                              home = homedir(), location = ENV_LOCAL_LOCATION } = {}) {
+                              home = homedir(), location = ENV_LOCAL_LOCATION, file = null } = {}) {
+  // ── `file` NAMES A FILE OUTRIGHT, AND EXISTS BECAUSE A CALLER COULD NOT (tracker issue 179) ────────
+  //
+  // `readEnvFile(path)` in the wizard means "tell me what THIS file holds". It could only ask by handing
+  // over `repoRoot: dirname(path)` and hoping the resolution below landed there — and it did, by
+  // accident: the chosen location is `xdg-config`, so the given directory was reached only through the
+  // LEGACY fallback, and only while the real `~/.config/clearotron/.env` did not exist. The moment a
+  // developer configured an install by hand, that same call read THEIR file instead and reported its
+  // contents as the answer about a completely different one.
+  //
+  // Resolution is for a process asking "which file configures me". A caller that already knows the file
+  // was never asking that question, and making it phrase its request as a repoRoot was the defect.
   // `home` is here for the same reason as `location`, and it was missing: the chosen candidate resolves
   // under the home directory, so without it every arm about the file in force would be driven against
   // the developer's own `~/.config/clearotron/.env` — reading a real machine's state and calling it a
@@ -399,8 +410,8 @@ export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = d
   // AN INSTALL CONFIGURED BEFORE THE MOVE KEEPS WORKING, and is told once where to put the file. The
   // old location is read, never written: copying it here would put a second copy of somebody's
   // credentials on disk without being asked, and leaving both in place is how two files disagree.
-  const inForce = envLocalPath({ repoRoot, home, location });
-  const path = activeEnvPath({ repoRoot, home, location });
+  const inForce = file ?? envLocalPath({ repoRoot, home, location });
+  const path = file ?? activeEnvPath({ repoRoot, home, location });
   const fromLegacy = path !== inForce;
   if (optedOut(env)) return { path, applied: [], skipped: [], reason: "opted-out" };
   if (serviceManaged(env)) {

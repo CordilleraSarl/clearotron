@@ -173,6 +173,7 @@ import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutra
 import { findRuleShapeFlags } from "./rule-shape.mjs";
 import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule } from "./repairs.mjs";
 import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
+import { caseLawSourceRows } from "./case-law-sources.mjs";  // one author for the shape the stage is handed
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { RunCancelled, isCancelled } from "./cancel.mjs";   // stop-by-user: a distinct class, never classified as a failure; isCancelled is the resume door's own refusal (2155)
@@ -11811,9 +11812,12 @@ async function pipelineInner(job, opts = {}) {
     // an inventory that cannot be read hands the stage nothing, and the dictation then says nothing about
     // sources rather than asserting a readiness nobody measured.
     try {
-      ctx.caseLawSources = caseLawInventory(process.env)
-        .filter((r) => r?.key === "caselaw")
-        .map((r) => ({ label: r.providerLabel ?? r.provider, enrolment: r.enrolment ?? null, available: r.configured === true }));
+      // COMPOSED BY THE MODULE THAT READS IT (tracker issue 173). This mapping used to be inline here
+      // and rebuilt by hand in an arm — two authors for one shape, and the arm's copy went stale the
+      // moment this one gained a field, while still passing. `caseLawSourceRows` is now the only place
+      // it is written, and it carries `checked` so an UNREADABLE credential reaches the composer as a
+      // could-not-look rather than as a source this deployment does not have.
+      ctx.caseLawSources = caseLawSourceRows(caseLawInventory(process.env));
     } catch { ctx.caseLawSources = []; }
     const [caseLawRes, firstRef] = await Promise.all([
       needCaseLaw ? stage("case-law", ctx) : Promise.resolve(null),   // non-fatal: a citation gap degrades, not blocks

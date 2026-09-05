@@ -55,6 +55,7 @@ import { atomicWrite } from "../driver/progress.mjs";
 // BACKGROUND_UNITS; taken from shared/ so this verb does not reach into another bin/ entry point.
 import { SERVER_INSTALL_SET, unitHealthVerdict } from "../shared/server-units.mjs";
 import { unitEnvironment, unitValue, couldNotDetermine } from "../driver/unit-environment.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 /**
@@ -81,8 +82,55 @@ function busRemedy() {
   return `systemctl --user needs a login session's bus, and this shell has none — which is what \`su\` and \`sudo -u\` leave you with.\n`
     + `Either log in as this user properly (\`machinectl shell\`, or ssh as them), or export the two the bus is found through:\n`
     + `  export XDG_RUNTIME_DIR=/run/user/${uid}\n`
-    + `  export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/bus\n`
-    + `Nothing you have done is lost: the env file and the denylist were written before this step.`;
+    + `  export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/bus`;
+}
+
+/**
+ * What a half-finished connect has ALREADY written by the time `step` failed — tracker issue 121.
+ *
+ * The reader's problem is not only that a step failed; it is not knowing whether to run `connect` again,
+ * run `disconnect` first, or leave it alone. A message that names a command and stops leaves a
+ * half-applied install looking like one that never began.
+ *
+ * Stated by STAGE rather than as one sentence, because the true answer changes between them: at
+ * `daemon-reload` the units are on disk and nothing is enabled; by `enable --now` both are placed and the
+ * one being started may be enabled already. The old text said "the env file and the denylist were
+ * written" at BOTH points, which was true and incomplete at the first and misleading at the second.
+ */
+function alreadyApplied(step) {
+  const common = "  · the settings file and the token denylist were written\n";
+  if (step === "daemon-reload") {
+    return `Nothing is lost, and this install is now HALF APPLIED:\n${common}`
+      + `  · both unit files were copied into place, and neither has been enabled\n`
+      + `Re-running \`clearotron connect\` from a shell that has a bus finishes it. \`clearotron disconnect\` undoes it.`;
+  }
+  return `Nothing is lost, and this install is now HALF APPLIED:\n${common}`
+    + `  · both unit files were copied into place, and the door's unit may be enabled but is not running\n`
+    + `Re-run \`clearotron connect\` to finish it, or \`clearotron disconnect\` to undo it. `
+    + `\`clearotron doctor\` reports which half stands.`;
+}
+
+/**
+ * A systemd failure, said in the reader's terms — the REASON first, then the remedy that fits it.
+ *
+ * TWO DEFECTS, ONE SITE (tracker issue 121). The calls ran with `stdio: "ignore"`, so systemd's own
+ * explanation was thrown away before anyone could read it and the whole output was `connect: Command
+ * failed: systemctl --user daemon-reload`. And the bus remedy was appended to EVERY failure, so a unit
+ * that would not start — a bound port, a bad ExecStart — told the reader to export XDG_RUNTIME_DIR: a
+ * confident remedy for a cause that was not theirs, which costs more than no remedy at all.
+ *
+ * So the reason is captured and printed, and the bus advice is offered only when the error is actually
+ * about the bus. Anything else gets the command to read the real one, which is the honest answer when
+ * this process cannot diagnose it.
+ */
+export function systemdFailure(e, { step, unit = null } = {}) {
+  const said = `${e?.stderr ?? ""}`.trim() || `${e?.message ?? e}`.trim();
+  const looksLikeBus = /Failed to connect to( the)? bus|DBUS_SESSION_BUS_ADDRESS|XDG_RUNTIME_DIR|No medium found/i.test(said);
+  const remedy = looksLikeBus
+    ? busRemedy()
+    : `That is not a missing session bus, so the two exports will not help. Read what systemd itself says:\n`
+      + `  systemctl --user status ${unit ?? ""}`.trimEnd() + `\n  journalctl --user -u ${unit ?? "<unit>"} -n 50 --no-pager`;
+  return new Error(`${said}\n\n${remedy}\n\n${alreadyApplied(step)}`);
 }
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
@@ -297,14 +345,16 @@ function enableTheDoor({ have, identity, client = null, dryRun, portFree, portOw
       // The runtime dir is derivable, so derive it rather than asking: /run/user/<uid> is where the bus
       // lives when a session exists at all. If it does not, say the two exports by name — that is the
       // whole remedy, and printing it costs nothing next to a reader who has to find it.
-      try { execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: "ignore", env: userBusEnv() }); }
-      catch (e) { throw new Error(`${e?.message ?? e}\n\n${busRemedy()}`); }
+      // stderr is CAPTURED, not discarded. `stdio: "ignore"` threw away systemd's own explanation, which
+      // is the whole reason this printed a command name and nothing a reader could act on.
+      try { execFileSync("systemctl", ["--user", "daemon-reload"], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", env: userBusEnv() }); }
+      catch (e) { throw systemdFailure(e, { step: "daemon-reload" }); }
     },
     // The same bus, for the same reason — a connect that reloads and then dies on enable has moved the
     // failure one line without helping anybody.
     startUnit: (name) => {
-      try { execFileSync("systemctl", ["--user", "enable", "--now", name], { stdio: "ignore", env: userBusEnv() }); }
-      catch (e) { throw new Error(`${e?.message ?? e}\n\n${busRemedy()}`); }
+      try { execFileSync("systemctl", ["--user", "enable", "--now", name], { stdio: ["ignore", "ignore", "pipe"], encoding: "utf8", env: userBusEnv() }); }
+      catch (e) { throw systemdFailure(e, { step: "enable", unit: name }); }
     },
     unitIsHealthy,
     // Minted in-process so the credential never crosses a shell, an argv or a pipe on its way back.
@@ -517,4 +567,13 @@ async function main() {
   return await render(whatItNeeds(chosen, have), have, { dryRun, running });
 }
 
-main().then((code) => process.exit(code ?? 0), (e) => { console.error(`connect: ${e.message}`); process.exit(2); });
+// THE DISPATCH RUNS ONLY WHEN THIS FILE IS THE COMMAND (tracker issue 121). Without the guard, importing
+// this module to drive one of its message helpers RUNS THE WHOLE VERB — the arm for the half-applied
+// failure path opened an interactive prompt and hung the suite. `bin/clearotron.mjs` carries the same
+// guard for the same reason, written up there: "importing it to read the verb table would DISPATCH".
+//
+// Ten other files under bin/ still lack it. That is a class, filed as tracker issue 183 rather than
+// swept in here — each one needs verifying that it still runs as a command.
+if (isEntrypoint(import.meta.url)) {
+  main().then((code) => process.exit(code ?? 0), (e) => { console.error(`connect: ${e.message}`); process.exit(2); });
+}

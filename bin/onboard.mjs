@@ -692,10 +692,22 @@ export function engineOptions() {
  * WRITES the file, and a wizard that had already loaded the .env it is about to replace would be
  * reporting the old file's values as the new ones.
  */
-export function readEnvFile(path) {
+export function readEnvFile(path, { home = homedir() } = {}) {
   if (!existsSync(path)) return {};
   const env = {};
-  loadEnvLocal({ env, repoRoot: dirname(path), note: () => {} });
+  // NAMED, NOT INFERRED (tracker issue 179). This passed `repoRoot: dirname(path)` and relied on the
+  // loader's resolution happening to land back on the same directory. It did — through the LEGACY
+  // fallback, and only while the reader had no `~/.config/clearotron/.env` of their own. With one, this
+  // function returned THAT file's contents for any path it was given, including a temporary fixture.
+  //
+  // `home` IS INJECTED SO THIS FUNCTION CAN BE DRIVEN, and it earns its place by a second miss rather
+  // than the first. The arm written for the fix above tested the LOADER — it passed `file` and asserted
+  // the loader honoured it, and never called this function at all. So the caller could go back to
+  // inferring a directory and that arm stayed green, which is the same gap one level out: a guard whose
+  // name promises something it does not reach. With `home` here, an arm can plant a home that HAS a
+  // settings file, ask THIS function for a different one, and fail on any machine if the inference
+  // returns. It is not a knob — no caller passes it.
+  loadEnvLocal({ env, file: path, home, note: () => {} });
   return env;
 }
 
