@@ -74,6 +74,7 @@ import { delimiter } from "node:path";
 import { Writable } from "node:stream";
 
 import { envLocalPath, loadEnvLocal } from "../shared/env-local.mjs";
+import { bundleFreshness, newestMtimeUnder, distGateInTree, gitStanding } from "../shared/bundle-freshness.mjs";
 import {
   USPTO_ARCHIVE_GB, USPTO_INDEX_GB, USPTO_INGEST_GB_PER_HOUR, USPTO_DAILY_TOPUP_MB,
   usptoBuildHours, usptoProvisionGB,
@@ -264,73 +265,10 @@ const prose = (...parts) => { for (const l of wrapProse(parts.join(" "), proseWi
  *
  * @returns {"no-sources"|"unbuilt"|"unversioned"|"guarded"|"tracked-unguarded"|"unmeasured"|"current"|"stale"}
  */
-export function bundleFreshness({ srcPresent, distPresent, isGitCheckout, distTracked, distGated, distMtime, newestSrcMtime }) {
-  // ✕ ABSENT COMES FIRST, AND IT USED TO COME SECOND. The route rows below all describe a bundle that
-  // EXISTS; asking which route we are on before asking whether there is anything to serve meant a tree
-  // with neither a bundle nor sources — a packaged install missing its own dist, and the fixture that
-  // drives doctor's absent-bundle branch — answered "no sources, so the bundle ships with them" and
-  // printed a tick over an empty directory. It lost the one condition that stops /portal rendering,
-  // which is the finding this whole cell exists to carry. Nothing to serve is the strongest fact about
-  // a bundle and it is reported before anything else is decided.
-  if (!distPresent) return "unbuilt";
-  if (!srcPresent) return "no-sources";
-  if (!isGitCheckout) return "unversioned";
-  if (distTracked) return distGated ? "guarded" : "tracked-unguarded";
-  // A COULD-NOT-LOOK IS NOT A PASS, and it is not a stale bundle either. Both trees are here and one of
-  // them read back no timestamp at all — an unreadable directory, or one whose every stat threw. Ticking
-  // would be absence-as-pass on the one branch this cell exists to answer; calling it stale would send an
-  // operator to rebuild a bundle nobody has shown to be old. It is reported as what it is, which is the
-  // same treatment the catch around this whole section already gives a bundle it cannot read.
-  if (!(distMtime > 0) || !(newestSrcMtime > 0)) return "unmeasured";
-  return newestSrcMtime > distMtime ? "stale" : "current";
-}
-
-/** Newest mtime under `dir`, or 0. Best-effort: an unreadable tree answers 0, and 0 makes no claim. */
-function newestMtimeUnder(dir, exists = existsSync) {
-  if (!exists(dir)) return 0;
-  let newest = 0;
-  const walk = (d) => {
-    let entries;
-    try { entries = readdirSync(d, { withFileTypes: true }); } catch { return; }
-    for (const e of entries) {
-      const full = join(d, e.name);
-      if (e.isDirectory()) { walk(full); continue; }
-      try { newest = Math.max(newest, statSync(full).mtimeMs); } catch { /* raced or unreadable */ }
-    }
-  };
-  walk(dir);
-  return newest;
-}
-
-/**
- * Does a workflow IN THIS TREE rebuild the bundle and refuse on a difference?
- *
- * Measured by the gate's own refusal text, not by the presence of `.github/workflows/ci.yml`: a tree can
- * carry a workflow of that name that does something else entirely, and what this cell goes on to claim
- * to the reader is specifically that a difference would be caught. A missing directory answers false,
- * which is the exported tree's state and the correct answer for it.
- */
-function distGateInTree(repo) {
-  const dir = join(repo, ".github", "workflows");
-  let entries;
-  try { entries = readdirSync(dir); } catch { return false; }
-  for (const name of entries) {
-    if (!/\.ya?ml$/.test(name)) continue;
-    try {
-      if (readFileSync(join(dir, name), "utf8").includes("portal-ui/dist does not match a fresh build")) return true;
-    } catch { /* unreadable — it certifies nothing, so it is not the gate */ }
-  }
-  return false;
-}
-
-/** Is `repo` a git checkout, and is `rel` tracked in it? Two questions because they mean different things. */
-function gitStanding(rel, repo) {
-  const git = (args) => {
-    try { execFileSync("git", ["-C", repo, ...args], { stdio: "ignore" }); return true; } catch { return false; }
-  };
-  if (!git(["rev-parse", "--is-inside-work-tree"])) return { isGitCheckout: false, tracked: false };
-  return { isGitCheckout: true, tracked: git(["ls-files", "--error-unmatch", "--", rel]) };
-}
+// `bundleFreshness` and its three readers moved to `shared/bundle-freshness.mjs` when `/portal/health`
+// became a second caller (tracker issue 160): health answered `ui: "built", ok: true` over a tree this
+// command refuses at rc 1, because the two surfaces each had their own idea of what a usable bundle is.
+// One definition, both readers, so they cannot disagree again.
 
 /**
  * The five directories the wizard creates for the data plane, relative to the base it asks for.

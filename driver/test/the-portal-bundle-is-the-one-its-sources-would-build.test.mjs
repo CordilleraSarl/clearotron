@@ -38,7 +38,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { bundleFreshness } from "../../bin/onboard.mjs";
+import { bundleFreshness } from "../../shared/bundle-freshness.mjs";   // moved there when /portal/health became its second reader (tracker issue 160)
 import { hermeticInstallRoot } from "./hermetic-install-root.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
