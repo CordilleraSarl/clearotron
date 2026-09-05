@@ -67,15 +67,22 @@ test("the tracked tree names no sentinel", (ctx) => {
   }
   const read = (f) => { try { return readFileSync(join(ROOT, f), "utf8"); } catch { return null; } };
   const swept = files.filter((f) => !DECLARES_THEM.includes(f));
+  // AND A FLOOR ON WHAT SURVIVES THE EXEMPTION, not just on what the tree offered. The floor above is
+  // measured before the two paths come out; an exemption that grew to cover the tree would pass it and
+  // then sweep nothing.
+  assert.ok(swept.length > 100,
+    `the exemption leaves only ${swept.length} file(s) to sweep — it has grown to cover the tree`);
   assert.deepEqual(scanCorpus(swept, read, opts), [],
     "a synthetic sentinel appears in the tracked tree — it was invented for the two files above and "
     + "should be nowhere else, so either somebody used it as a fixture name or the table has drifted "
     + "into real use");
 });
 
-test("CONTROL — the exemption is two paths, and the sweep still reads everything else", (ctx) => {
-  const files = trackedFiles(GUARD, { root: ROOT });
-  if (files === null) return ctx.skip(skipReason(GUARD));
+// THIS CONTROL DOES NOT SKIP, AND THAT IS THE POINT OF IT. The arm above skips when the tree cannot be
+// listed, and a control that skipped on the same condition would be absent from exactly the run where
+// the arm went quiet — reporting the same green as one that checked. Everything below reads the two
+// paths directly, so it needs no file listing and runs everywhere the suite does.
+test("CONTROL — the exemption is two paths, and both of them really do carry sentinels", () => {
   assert.equal(DECLARES_THEM.length, 2,
     "the sentinel exemption has grown past the table and its own test — every path added here is a file "
     + "the sweep no longer reads, and that is the failure this whole file exists to catch");
@@ -85,8 +92,6 @@ test("CONTROL — the exemption is two paths, and the sweep still reads everythi
   assert.ok(scanCorpus(DECLARES_THEM, read, opts).length > 0,
     "the exempted files name no sentinel — the exemption is pointed at the wrong files, and the ones "
     + "that do carry them are being swept or are gone");
-  assert.ok(files.filter((f) => !DECLARES_THEM.includes(f)).length > 100,
-    "the exemption now removes most of the tree from the sweep");
 });
 
 test("the sentinel table is not empty, and every row is a pair", () => {
