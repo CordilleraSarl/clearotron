@@ -30,6 +30,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { VERBS } from "../../bin/clearotron.mjs";
+import { pidAlive } from "./platform-caps.mjs";
 
 const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const SHIM = join(ROOT, "bin", "clearotron.mjs");
@@ -57,8 +58,14 @@ setInterval(() => {}, 1e9);
 writeFileSync(process.env.STUB_OUT, JSON.stringify({ verb: process.pid, grand: grand.pid }));
 `;
 
-/** Liveness by /proc, not by `kill -0`: this box has read a live pid as exited through the signal path. */
-const alive = (pid) => existsSync(`/proc/${pid}`);
+// LIVENESS THROUGH pidAlive, WHICH ANSWERS IN THREE VALUES. Reading the process table under /proc is
+// Linux's alone and would make every arm here blind on the macOS tier — caught by 2178's class guard,
+// which is the reason that reader is shared rather than written per file. It also settles the
+// cross-user case this box's runbook warns about: EPERM means a process exists and is not ours to
+// signal, and a reader that scores that as death is reading the permission, not the process.
+//
+// `null` is a COULD-NOT-LOOK and is never collapsed into either answer below. Folding it into "dead"
+// would let the control pass on a probe that saw nothing, which is this file's own failure mode.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function until(predicate, ms = 5000) {
@@ -105,18 +112,21 @@ async function driveAndKillTheVisiblePid({ forwarding }) {
     });
     assert.ok(await until(() => existsSync(out)), "the staged shim never started its verb, so nothing was driven");
     pids = JSON.parse(readFileSync(out, "utf8"));
-    assert.ok(alive(pids.grand), "the grandchild was gone before anything was signalled");
+    assert.equal(pidAlive(pids.grand), true, "the grandchild was gone before anything was signalled");
 
     // THE READER'S ACTION, EXACTLY: one kill, on the one pid `ps` shows them.
     process.kill(shim.pid, "SIGTERM");
 
-    const goneVerb = await until(() => !alive(pids.verb));
-    const goneGrand = await until(() => !alive(pids.grand));
-    return { goneVerb, goneGrand };
+    // Waits for a DEFINITE death. A probe that cannot look never satisfies this, so the wait runs out
+    // and the caller is handed the `null` rather than a timeout dressed up as a verdict.
+    await until(() => pidAlive(pids.verb) === false);
+    await until(() => pidAlive(pids.grand) === false);
+    return { verb: pidAlive(pids.verb), grand: pidAlive(pids.grand) };
   } finally {
-    // By recorded pid only, and never a name.
+    // By recorded pid only, and never a name. `=== true` because a could-not-look is not a licence to
+    // send SIGKILL at a number this arm may no longer own.
     for (const pid of [pids?.grand, pids?.verb, shim?.pid]) {
-      if (pid && alive(pid)) { try { process.kill(pid, "SIGKILL"); } catch { /* already gone */ } }
+      if (pid && pidAlive(pid) === true) { try { process.kill(pid, "SIGKILL"); } catch { /* already gone */ } }
     }
     rmSync(dir, { recursive: true, force: true });
   }
@@ -125,16 +135,18 @@ async function driveAndKillTheVisiblePid({ forwarding }) {
 test("tracker issue 176 — the control: without forwarding, killing the visible pid orphans everything", async () => {
   // THE ORACLE. If this passes, the harness above cannot see an orphan and the subject arm below means
   // nothing. It is the shim as it shipped in 0.1.1, driven the way the stranger drove it.
-  const { goneGrand } = await driveAndKillTheVisiblePid({ forwarding: false });
-  assert.equal(goneGrand, false,
-    "the UNPATCHED shim tore its grandchild down, so this arm cannot detect the defect it exists to "
-    + "detect — the drive is measuring something other than what it claims");
+  const { grand } = await driveAndKillTheVisiblePid({ forwarding: false });
+  // `true`, not "not dead": a could-not-look must fail this arm rather than satisfy it, because the
+  // whole job of the control is to prove the probe can SEE an orphan.
+  assert.equal(grand, true,
+    "the UNPATCHED shim's grandchild is not measurably alive, so this arm cannot detect the defect it "
+    + "exists to detect — the drive is measuring something other than what it claims");
 });
 
 test("tracker issue 176 — killing the visible pid tears down the verb and what the verb started", async () => {
-  const { goneVerb, goneGrand } = await driveAndKillTheVisiblePid({ forwarding: true });
-  assert.equal(goneVerb, true, "the verb the shim dispatched to survived the signal and reparented to init");
-  assert.equal(goneGrand, true,
+  const { verb, grand } = await driveAndKillTheVisiblePid({ forwarding: true });
+  assert.equal(verb, false, "the verb the shim dispatched to survived the signal and reparented to init");
+  assert.equal(grand, false,
     "the verb's own child is still running — on a real install these are the engine, client and portal "
     + "doors, still bound on a machine the operator believes they have stopped");
 });
