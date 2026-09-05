@@ -195,6 +195,11 @@ const arrivalProbe = (expect) => `(async () => {
     // name-based test could not tell a served Claude from an unserved one.
     operatorWordingOnPage: /incomplete|install it again/i.test(text),
     questionShown: !!screen.querySelector('.ai-where-q'),
+    // TWO CONTROLS IN ONE GROUP MUST BE TELLABLE APART. Every other check on this page asks about ROWS,
+    // and the rows are correct for whichever segment happens to be selected — so a group offering the
+    // same words twice passes everything and is unreadable to a person. Suggested by role-e2e after
+    // driving the staff decks and finding exactly that.
+    segLabels: [...screen.querySelectorAll('.ai-seg-btn')].map((b) => flat(b.innerText)),
     // Nothing is expanded on arrival: the slot holds its empty line, not a panel.
     panelsOnArrival: [...screen.querySelectorAll('.ai-panel')].length,
     slotPresent: !!screen.querySelector('.ai-slot'),
@@ -345,9 +350,12 @@ for (const state of Object.keys(STATES)) {
   //
   // Grouped by route now, so the arriving deck shows the DEFAULT route's rows: the one that needs
   // nothing leads where the deployment has it.
-  const routes = [...new Set(served.map((o) => o.route ?? 'public-http'))]
-  const lead = routes.includes('disk') ? 'disk' : routes[0]
-  const onLead = served.filter((o) => (o.route ?? 'public-http') === lead)
+  // `either` is not a place — a generic row accepts both, so it belongs to whichever the reader picks.
+  // Mirrors the page's own placesOf/servesPlace, and the label arm below is what keeps the two honest.
+  const routes = [...new Set(served.map((o) => o.route ?? 'public-http'))].filter((r) => r !== 'either')
+  const places = routes.length ? routes : (served.length ? ['disk'] : [])
+  const lead = places.includes('disk') ? 'disk' : places[0]
+  const onLead = served.filter((o) => (o.route ?? 'public-http') === lead || (o.route ?? '') === 'either')
   ok(sameMembers(r.destNames, onLead.map((o) => o.name)),
     `a destination renders EXACTLY for each assistant this deck serves on the leading route `
     + `(saw ${JSON.stringify(r.destNames)}; the resolver says ${JSON.stringify(onLead.map((o) => o.name))})`)
@@ -365,9 +373,16 @@ for (const state of Object.keys(STATES)) {
     `no extra row rendered beyond what the resolver serves (${r.destCount} rendered, ${onLead.length} served)`)
 
   // ── THE PAGE ASKS AS MANY QUESTIONS AS THE DEPLOYMENT LEAVES OPEN ───────────────────────────────
-  ok(r.questionShown === (routes.length > 1),
+  ok(r.questionShown === (places.length > 1),
     `the "where does your assistant run?" question renders iff the served offers span more than one `
-    + `route (routes: ${JSON.stringify(routes)}, question shown: ${r.questionShown})`)
+    + `place (places: ${JSON.stringify(places)}, question shown: ${r.questionShown})`)
+  // AND ITS ANSWERS MUST BE DISTINGUISHABLE. A group answering one question with the same words twice is
+  // unreadable to a person while every row-level check passes, because the rows are right for whichever
+  // one is selected. This is "a name is not an identifier" applied to what a reader sees.
+  ok(new Set(r.segLabels).size === r.segLabels.length,
+    `the answers to one question are distinct (saw ${JSON.stringify(r.segLabels)})`)
+  ok(r.segLabels.length === (places.length > 1 ? places.length : 0),
+    `one control per place, and none for a place that does not exist (${r.segLabels.length} control(s), ${places.length} place(s))`)
 
   ok(r.panelsOnArrival === 0, `nothing is expanded on arrival (saw ${r.panelsOnArrival} panel(s))`)
   // The slot exists only where there is something to select. A deployment serving nothing renders one

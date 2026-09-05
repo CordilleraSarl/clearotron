@@ -74,8 +74,35 @@ const COPIED_MS = 2600
  */
 const WHERE: Record<string, string> = {
   disk: 'On this computer',
-  either: 'On this computer',
   'public-http': 'Somewhere else',
+}
+
+/**
+ * `either` IS NOT A THIRD PLACE, AND MUST NOT BECOME A THIRD SEGMENT.
+ *
+ * The generic row — an assistant we do not have a table entry for — resolves `route: "either"` because
+ * it can take a command OR an address. That is a statement about what it ACCEPTS, not about where it
+ * runs, and the reader's question is where it runs.
+ *
+ * Treating it as its own route produced a defect a reader meets rather than an arm: on a staff deck it
+ * rendered a SECOND segment also labelled "On this computer", because `either` was mapped to the same
+ * words as `disk`. The question was answered twice, identically, and pressing the wrong one silently
+ * changed what got copied. Found by role-e2e driving the staff decks.
+ *
+ * A distinct label would be the wrong fix — the owner ruled TWO groups and a third to accommodate one
+ * row is sorting by vendor again. So an `either` offer belongs to BOTH groups: whichever place the
+ * reader says their assistant runs, this row can serve it.
+ */
+const EITHER = 'either'
+const placesOf = (offers: readonly ConnectOffer[]): readonly string[] => {
+  const named = [...new Set(offers.map((o) => o.route ?? 'public-http'))].filter((r) => r !== EITHER)
+  // Only generic rows served: it can go either way, so ask nothing and lead with the route that needs
+  // nothing. Asking a question whose two answers offer the identical row is worse than not asking.
+  return named.length ? named : (offers.length ? ['disk'] : [])
+}
+const servesPlace = (o: ConnectOffer, place: string): boolean => {
+  const r = o.route ?? 'public-http'
+  return r === place || r === EITHER
 }
 
 // A REFUSAL IS A VALUE, NEVER A SWALLOWED EXCEPTION. The one-time reveal below is reachable only if a
@@ -187,10 +214,10 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
   // RULING 3, APPLIED TO THE DATA BEFORE ANYTHING REASONS ABOUT IT. Everything below sees served rows
   // only, so no later branch can render an unserved one by accident.
   const served = offers.filter((o) => o.served)
-  const routes = [...new Set(served.map((o) => o.route ?? 'public-http'))]
+  const routes = placesOf(served)
   // The route that needs nothing leads, where this deployment has it.
   const active = route ?? (routes.includes('disk') ? 'disk' : routes[0] ?? null)
-  const here = served.filter((o) => (o.route ?? 'public-http') === active)
+  const here = served.filter((o) => active !== null && servesPlace(o, active))
   const chosen = here.find((o) => o.id === picked) ?? null
 
   const press = async (offer: ConnectOffer) => {
