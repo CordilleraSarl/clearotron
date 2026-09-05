@@ -23,6 +23,7 @@
 import { STAGES, STAGE_ORDER, stageOrdinal, REGISTER_AXES, axisTier, resolveModel, config, deriveSlug } from "./driver.mjs";
 import { readCapped } from "./util.mjs";
 import { join, basename } from "node:path";
+import { readFileSync } from "node:fs";   // tracker issue 135 — the canonical run's frozen profile
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 // — the SHARED eligibility composer. A leaf module (fs/path/crypto only), so a
 // static import here costs the read-only surface nothing and buys the one thing three copies of this
@@ -192,6 +193,32 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
   if (deriveSlug(job) !== run.slug)
     throw new Error(`whatIfRun: cannot reconstruct the job for ${runId} (derived slug "${deriveSlug(job)}" != "${run.slug}"). status.json lacks the original ref/markName.`);
 
+  // ── THE RATING AUTHORITY TRAVELS WITH THE JOB (tracker issue 135) ──────────────────────────────
+  //
+  // The reconstruction above carries six fields and resolveProfile keys on none of them. It reads
+  // `job.profileKey` first, then falls back to `job.forwarderDomain`; the job has `forwarder` but not
+  // `forwarderDomain`, and no profileKey at all. So BOTH resolution routes were dead here and every
+  // what-if silently resolved to the house `generic` profile. Measured on a petcary run:
+  // {"event":"profile-mismatch","sidecar":"petcary","resolved":"generic"} — while the client-facing
+  // result reported ok:true and "Sandboxed re-run complete" and said nothing.
+  //
+  // WHY THAT IS WORSE THAN A WRONG LABEL. A what-if changes ONE thing and reads the difference. This
+  // changed two — the client's instruction AND the rating authority the risk is assessed under — so the
+  // diff handed back attributed to the instruction whatever the framework substitution also moved, and
+  // no reader could separate them. The canonical profile carried platforms 6, floor 7, batch 2; the
+  // house default carries none of it.
+  //
+  // The fix is to read the CANONICAL run's frozen `_driver/profile.json` — the record of what that run
+  // actually rated under, never a fresh resolve, which is the same discipline the pipeline applies to
+  // the sidecar itself. Carrying the key makes refusal automatic rather than something to remember:
+  // resolveProfile THROWS `profile_key_unknown` on a named key it cannot find, so a what-if against a
+  // store that no longer holds the customer now refuses instead of substituting one.
+  const canonicalProfileKey = (() => {
+    try { return JSON.parse(readFileSync(driverDir(run.runDir, "profile.json"), "utf8"))?.profileKey ?? null; }
+    catch { return null; }
+  })();
+  if (canonicalProfileKey) job.profileKey = canonicalProfileKey;
+
   const runExperiment = deps.runExperiment ?? (await import("../../driver/pipeline.mjs")).runExperiment;
   const compareCmd = deps.compareCmd ?? (await import("./driver.mjs")).compareCmd;
 
@@ -217,6 +244,12 @@ export async function whatIfRun({ confirmationToken } = {}, deps = {}) {
     shadowDir: basename(r.shadowDir), output: r.output ? basename(r.output) : null,
     completeness: comp.level, honestyNote: comp.note,
     diff, telemetryDelta,
+    // tracker issue 135 — the rating authority this diff was produced under, on the client-facing
+    // result. The engine KNEW (it wrote a profile-mismatch row) and the surface said nothing, which is
+    // the one case where the evidence exists on disk and the reader cannot reach it. Null means the
+    // canonical run froze no profile — a pre-profile run, where `generic` is the right answer rather
+    // than a substitution — and null says that rather than implying a customer was matched.
+    ratedUnder: canonicalProfileKey,
     note: WHAT_IF_NOTE,
   };
 }
