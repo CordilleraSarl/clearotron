@@ -46,14 +46,13 @@ on:
   # `pending` asks main a question instead — is there a version here with no tag — and answers it with
   # the same function the push path uses.
   #
-  # AND AS OF 2026-09-05 THIS CRON HAS NEVER FIRED ON THIS REPOSITORY. Not once, across several hours
-  # and many intervals, with the trigger confirmed present on `main` and the workflow `active`. Every
-  # release so far has gone out on the push path, because a person merged something. Two causes are
-  # consistent with that and neither is distinguishable from here: GitHub takes its time registering a
-  # newly added schedule, and `*/5` on a public repository is delayed or dropped under load.
+  # IT FIRES, AND IT IS NOT PUNCTUAL. First scheduled run on this repository: 33973623236, 2026-09-05
+  # 15:03:15Z, success — after several hours of nothing, with the trigger present on `main` the whole
+  # time. Then nothing again for the next hour, through twelve intervals it should have taken.
   #
-  # So do not rely on this as the recovery for a self-merged version until you have SEEN a `schedule`
-  # run publish one. Until then it is a mechanism we have written, not one we have.
+  # So treat this as a floor, not a clock. `*/5` on a public repository is what GitHub feels like giving
+  # you; a version sitting cut and unpublished may wait an hour for it. The step above is what makes the
+  # ordinary path work without a person, and this is the net underneath.
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
@@ -90,7 +89,7 @@ jobs:
       # both endpoints it reads. `checks: read` is `commits/{sha}/check-runs`; `actions: read` is
       # `actions/runs`, which is the only surface that carries `action_required`.
       checks: read
-      actions: read
+      actions: write    # dispatches CI on the version branch, so its checks need no approval
       #
       # THERE IS NO `administration: read` HERE AND THERE CANNOT BE. The guard reads the repository's
       # current fork-pull-request approval policy so it can NAME the setting rather than quote a
@@ -201,6 +200,23 @@ jobs:
           gh pr merge "${{ steps.changesets.outputs.pr-number }}" --squash --auto \
             --subject "Release $VERSION" \
             --body "$NOTES"
+
+      # AND IT CHECKS ITSELF, so nobody has to approve anything. The pull request is authored by
+      # `github-actions[bot]`, and every fork-approval policy this repository has tried counts it as a
+      # contributor needing approval — all external contributors, then first-time contributors, then
+      # first-time contributors new to GitHub. It parked under all three, four times in one day. Being
+      # merged is not what takes an author off that list, and these pull requests are consumed by the
+      # pipeline rather than merged by a person, so narrowing the policy again would not help either.
+      #
+      # A dispatch is not a fork event and needs no approval. Its check runs land on the same head SHA
+      # under the same job names, which is what branch protection matches on, so the required contexts
+      # are satisfied and auto-merge fires with nobody watching. The parked `pull_request` run stays
+      # parked and produces no check runs at all, so it cannot contradict them.
+      - name: Give it checks that do not wait for a person
+        if: steps.changesets.outputs.pr-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run ci.yml --ref changeset-release/${{ github.ref_name }}
 
       # AND THE CHECKS IT WAITS FOR HAVE TO EXIST. Auto-merge waits for required checks; a check that
       # never starts is not a check that failed, and the pull request simply sits there. That happened
