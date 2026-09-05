@@ -3179,7 +3179,7 @@ const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<"
 // mentioned. A colour literal reappearing in this function is what
 // `driver/test/door-pages-take-their-colours-from-brand.test.mjs` fails on.
 //
-// The dark ground moved with that change: the block this page used to carry had guessed #17150f/#ece5d8,
+// The dark ground moved with that change: the block this page used to carry had guessed tracker issue 17150f/#ece5d8,
 // and brand pack §01 fixes dark at #0f0e0c near-black + #f0e8d8 parchment. The pack wins.
 export function loginPage({ email, error = null, signedIn = false }) {
   const title = signedIn ? "Signed in" : "Sign in";

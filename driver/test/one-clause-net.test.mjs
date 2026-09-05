@@ -103,7 +103,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
   });
   assert.match(msg, /THE FINDING SENTENCE/);
   assert.match(msg, /NEVER AN ACTION PRESCRIPTION/);
-  // #469 — the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
+  // tracker issue 469 — the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
   // the consequence after '→'"), so rewriting synthesis-rules.md alone would have left the prompt
   // teaching the shape the parser now refuses. These pin the join, not the wording of the section.
   assert.match(msg, /IT IS A CONCLUSION, NOT A CHAIN/);
@@ -115,7 +115,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
     "the budget was never the validator's and is no longer the renderer's — nothing asks the model to be brief");
 });
 
-// ── #469 — the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
+// ── tracker issue 469 — the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────
 //
 // The contract these pin was a CHAIN by mandate until 2026-08-06: synthesis-rules.md required a
 // semicolon-chained rights → facts → consequence sentence and render.mjs folded the result at 240
@@ -123,7 +123,7 @@ test("item 9a / #469 — the stage that writes it is told what it is, and told N
 // as the answer to one question. Two arms, and the split is the point:
 //   · the PARSER refuses the chain at schema_version 7, so it rides the corrective ladder and is repaired;
 //   · the LINT names it version-independently, for the lenient/quarantine parse and the down-level file.
-// The parser arm was inert until FINDINGS_SCHEMA_VERSION reached 7, which #470 armed on 2026-08-06.
+// The parser arm was inert until FINDINGS_SCHEMA_VERSION reached 7, which tracker issue 470 armed on 2026-08-06.
 // These tests drive it by declaring the version directly, so they held before the bump and hold after
 // it — and they still pin the DOWN-LEVEL half, which is the half that never changes.
 const parseAt = (version, over) => parseFindingsJson(JSON.stringify({

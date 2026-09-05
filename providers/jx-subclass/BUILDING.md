@@ -43,7 +43,7 @@ Then the evidence, which is the point of the directory:
 node verify-relations.mjs      # relation typing vs the hand-checked answer key
 node verify-overlap.mjs        # a machine read vs a human read, on pages both cover
 node coverage-demo.mjs         # read-and-empty and never-read answer DIFFERENTLY
-node score-truth.mjs           # the 63-item key from #1210
+node score-truth.mjs           # the 63-item key from tracker issue 1210
 ```
 
 ## What a build needs that this repo does not carry

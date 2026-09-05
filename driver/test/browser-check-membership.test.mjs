@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// #968 — WHERE EACH CHECK RUNS, as data rather than as prose.
+// tracker issue 968 — WHERE EACH CHECK RUNS, as data rather than as prose.
 //
 // The browser checks in scripts/ are the only things in this repository that can observe a scrollbar,
 // a sticky header, a frame two pixels shorter than its contents, or a control meant to be clicked
@@ -17,7 +17,7 @@
 // reason it cannot be. Both halves are asserted, and so is the enumeration itself — a glob that stops
 // matching would otherwise report the same green as full coverage.
 //
-// This is what #705 and #1000 were routed behind. Their acceptance criteria are browser behaviours no
+// This is what tracker issue 705 and tracker issue 1000 were routed behind. Their acceptance criteria are browser behaviours no
 // clearance round touches, and certifying them by hand-clicking is not certifying them.
 
 import { test } from "node:test";
@@ -83,7 +83,7 @@ const invoked = () => {
 
 // A check that CANNOT run in CI says so here, with the reason, and the reason has to be a property of
 // the check rather than a preference. Anything that could run and simply is not wired up belongs in
-// the workflow instead — that is what #968 was about.
+// the workflow instead — that is what tracker issue 968 was about.
 const CANNOT_RUN_IN_CI = [
   {
     path: "scripts/report-screenshot.mjs",
@@ -148,8 +148,8 @@ test("#1489 render-check is INVOKED by CI, and the exemption that kept it out is
   if (scripts === null) return ctx.skip(skipReason(GUARD));
   assert.ok(scripts.includes("scripts/render-check.mjs"), "the script this issue is about must still exist");
 
-  // This arm REPLACES "#968 render-check is DECLARED …", which asserted the opposite and was correct
-  // until #1489. It is a replacement rather than a deletion because the property worth guarding never
+  // This arm REPLACES "tracker issue 968 render-check is DECLARED …", which asserted the opposite and was correct
+  // until tracker issue 1489. It is a replacement rather than a deletion because the property worth guarding never
   // changed: the only check that measures a report INSIDE the portal's iframe must not fall out of this
   // file silently. What changed is which side of the ledger it belongs on.
   assert.ok(invoked().has("scripts/render-check.mjs"),

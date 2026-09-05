@@ -77,7 +77,7 @@ export function inlineMd(s) {
     .replace(/(^|[^*])\*([^*]+)\*/g, '$1<i>$2</i>')
     .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
 }
-// #1934 / #2056 — BLOCKS, NOT ONLY PARAGRAPHS.
+// tracker issue 1934 / tracker issue 2056 — BLOCKS, NOT ONLY PARAGRAPHS.
 //
 // The writer emits sub-headers and bullets inside the summary now (owner ruling 2026-08-31: "keep the
 // length, add the structure"). This function read exactly two shapes — a blank line as a paragraph
@@ -118,7 +118,7 @@ function bandStop(framework, band) {
 
 const DEGRADED_NOTE = 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.';
 
-// #760 — THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
+// tracker issue 760 — THE QUALIFIER, IN WORDS. It rendered as a bare grey token under the band chip — `low`, no
 // label, no border, nothing on the page saying what it qualified. A reader met one word of a private
 // vocabulary and had to guess whether it described the risk, the confidence or the search.
 //
@@ -248,13 +248,13 @@ function glanceSection(marks, framework, registerCounts) {
       </div>
     </div>`;
   }).join('');
-  // #761 — THE FRAMEWORK IS NAMED BESIDE THE CHIPS IT EXPLAINS. Every `.ko-band` chip below speaks one
+  // tracker issue 761 — THE FRAMEWORK IS NAMED BESIDE THE CHIPS IT EXPLAINS. Every `.ko-band` chip below speaks one
   // word out of a framework's vocabulary, and that framework was named exactly once on this page: in the
   // footer, under everything it governs. This is ATTRIBUTION AND NOTHING ELSE — the same "Rated under
   // <name>" the footer prints, moved to where the words it licenses are actually read.
   //
   // NO LADDER HERE. Spelling the band scale out beside the chips would be new furniture on a client
-  // deliverable, and #765 rules that a rung buys depth, never furniture. If the knockout reader needs the
+  // deliverable, and tracker issue 765 rules that a rung buys depth, never furniture. If the knockout reader needs the
   // scale, that is its own decision on its own merits, not a rider on this one.
   //
   // No framework ⇒ NOTHING. A run this render was given no manifest for gets no attribution invented for
@@ -278,7 +278,7 @@ function glanceSection(marks, framework, registerCounts) {
 // There is ONE figure per predicate per row, at ONE scope, and the table says which. A second
 // all-classes figure alongside a class-scoped one would be a second count — one more provider call per
 // mark per predicate, billable on Corsearch — and that is a spend the owner has not ruled on. Raised as
-// a follow-up rather than assumed here (#717).
+// a follow-up rather than assumed here (tracker issue 717).
 function countsSection(marks, registerCounts) {
   const head = COUNT_PREDICATES.map((p) => `<th>${esc(p.label)}</th>`).join('');
   const rows = marks.map((m) => {
@@ -316,7 +316,7 @@ function countsSection(marks, registerCounts) {
 </div>`;
 }
 
-// #706 part 5 — the filings behind the narrow numbers, as a compact appendix under the counts.
+// tracker issue 706 part 5 — the filings behind the narrow numbers, as a compact appendix under the counts.
 //
 // FIRST N ROWS, then the workbook. The full list is capped at 100 per name and a hundred rows of
 // register data on a triage document would bury the page it is an appendix to; the workbook is where a

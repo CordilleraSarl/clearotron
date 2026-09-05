@@ -53,7 +53,7 @@ test("report and warm :root agree on every shared brand colour", () => {
   assert.equal(w["--h-amber"], p(PALETTE.ochre));
   assert.equal(w["--h-grey"], p(PALETTE.warmGrey));
   // The risk ramp is NOT the palette. It aliased it until the 2026-07-19 portal recolor (--high was
-  // #860F09 == --accent, so a High risk dot was pixel-identical to the primary button). The band family
+  // tracker issue 860F09 == --accent, so a High risk dot was pixel-identical to the primary button). The band family
   // is now independent, and this assertion exists to stop it drifting back.
   assert.notEqual(r["--high"], p(PALETTE.crimson), "--high must stay distinct from the accent");
   assert.notEqual(r["--severe"], p(PALETTE.crimsonDeep), "--severe must stay distinct from deep crimson");

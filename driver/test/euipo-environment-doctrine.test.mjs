@@ -65,7 +65,7 @@ test("#1393 NO doctrine file asks for the environment in the findings — the wh
 });
 
 test("#1393 every doc that carries the doctrine says the SAME thing — half a fix is what regressed", () => {
-  // KEYED ON THE DOCTRINE, NOT ON A CITATION OF IT. This used to find carriers by `body.includes("#1393")`
+  // KEYED ON THE DOCTRINE, NOT ON A CITATION OF IT. This used to find carriers by `body.includes("tracker issue 1393")`
   // — the issue number was the index. The owner ruled the numbers out of the skill files on 2026-09-03
   // ("we just remove the actual issue number"), and a guard that indexes on one is a guard that goes
   // quiet the moment the rule it protects is tidied. The prohibition itself is the stable key: it is the

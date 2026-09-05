@@ -355,7 +355,7 @@ table.data td {
   vertical-align: top;
 }
 
-/* #276 — THE GRID IS DECLARED, NOT EMERGENT.
+/* tracker issue 276 — THE GRID IS DECLARED, NOT EMERGENT.
    Without `table-layout: fixed` a table's columns are sized by their content, so every cell in every row
    is a vote on where the columns sit. That is why opening a row on Clearances could re-flow the parent
    table and truncate the `Updated` header to `Upd`, and why the alignment of an expanded read was
@@ -367,7 +367,7 @@ table.data.fixed {
   table-layout: fixed;
 }
 
-/* #280 — THE FIXED TABLE HAS NO FLOOR OF ITS OWN.
+/* tracker issue 280 — THE FIXED TABLE HAS NO FLOOR OF ITS OWN.
    `table.data` sets `min-width: 760px` so a content-sized table cannot collapse into unreadable slivers.
    Under fixed layout that floor is not a safety net, it is the thing that overflows: the columns are
    already declared as percentages of the container, so the table has a shape at any width, and a floor
@@ -378,7 +378,7 @@ table.data.fixed {
   min-width: 0;
 }
 
-/* #280 — THE HEADER MUST BE ALLOWED TO WRAP, or the font decides whether the table scrolls.
+/* tracker issue 280 — THE HEADER MUST BE ALLOWED TO WRAP, or the font decides whether the table scrolls.
    `table.data th` sets `white-space: nowrap`, which is right for a content-sized table and wrong here:
    under fixed layout the cells can shrink (overflow-wrap: anywhere) but the header cannot, so the
    letterspaced caps alone set an unshrinkable floor. When the brand webfont is unavailable — no network,
@@ -427,7 +427,7 @@ table.data tr.read-row > td {
   background: var(--surface-sunken);
 }
 
-/* #278 — the whole read row opens its report.
+/* tracker issue 278 — the whole read row opens its report.
    The affordance is on the thing you can click, across the WHOLE row, which is the point: the only way
    in used to be a text button at the far right edge, furthest from the run title the reader has just
    read, on a row with `cursor: auto` and no hover state at all. People concluded there was no report.
@@ -466,7 +466,7 @@ table.data tr.row {
   cursor: pointer;
 }
 
-/* #284 — the row disclosure is a real button.
+/* tracker issue 284 — the row disclosure is a real button.
    It was a bare span with aria-hidden, inside a <tr onClick>: silent to a screen reader AND with no
    keyboard path to open a row at all. The button carries the name and the state; these rules make it
    look exactly as the span did, so the fix is behavioural rather than visual.
@@ -495,7 +495,7 @@ button.twisty:focus-visible {
   outline-offset: 1px;
 }
 
-/* #281 — the grouping toggle. In the toolbar, beside the other view controls, so its state is visible
+/* tracker issue 281 — the grouping toggle. In the toolbar, beside the other view controls, so its state is visible
    WITHOUT opening a menu: a toggle whose state you have to go looking for is a toggle that explains
    nothing about why the sort looked wrong. */
 .group-toggle {
@@ -513,7 +513,7 @@ table.data tr.row:hover td {
   background: var(--surface-sunken);
 }
 
-/* #277 — A SECTION HEADER, not a decorative divider.
+/* tracker issue 277 — A SECTION HEADER, not a decorative divider.
    Brand owner is the organising principle of the whole list, and a reader had to work it out: the name
    was set in the smallest, lowest-contrast, most letterspaced type on the page, which reads as a rule
    BETWEEN rows rather than as "everything below this belongs to Aurora Interactive".
@@ -665,7 +665,7 @@ table.data tr.group-head ~ tr.row > td:first-child {
   border-left-color: var(--border-strong);
 }
 
-/* #282 — A TRANSIENT SURFACE, which this codebase did not have one of.
+/* tracker issue 282 — A TRANSIENT SURFACE, which this codebase did not have one of.
    The selection bar used `.notice`. That treatment is not a one-off: it is what the error and empty
    states on the same screen use — which is exactly why it was wrong here. A notice is a persistent
    thing you READ; a selection bar is a transient thing you ACT on, and it appears and vanishes as you
@@ -691,7 +691,7 @@ table.data tr.group-head ~ tr.row > td:first-child {
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* #282 — THE CHECKBOX, in the palette, in every state.
+/* tracker issue 282 — THE CHECKBOX, in the palette, in every state.
    It rendered in the browser default blue: the only blue on an otherwise warm and maroon page, and the
    single clearest sign that a control had been dropped in and never dressed.
    `accent-color` handles unchecked and checked in one property. Focus and disabled are separate because
@@ -1922,7 +1922,7 @@ input.filter {
 }
 .home2-stop:disabled, .home2-cancel:disabled, .home2-ack:disabled { opacity: 0.55; cursor: default; }
 
-/* ── #613: acknowledged, behind a count ──────────────────────────────────────────────────────────
+/* ── tracker issue 613: acknowledged, behind a count ──────────────────────────────────────────────────────────
    Quiet on purpose. These are runs the reader has already dealt with, and the whole point of the
    feature is that they stop competing with live work for attention — a panel styled like the queue
    would put them back in the fight it just took them out of. */

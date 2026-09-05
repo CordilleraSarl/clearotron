@@ -2200,7 +2200,7 @@ function queueOutcomes(ref, queueDir = QUEUE_DIR, knownRuns = []) {
   return out;
 }
 
-// ── #514 · HAS THIS ROUND FINISHED, AND IS THAT KNOWN? ───────────────────────────────────────────────
+// ── tracker issue 514 · HAS THIS ROUND FINISHED, AND IS THAT KNOWN? ───────────────────────────────────────────────
 //
 // THE ONLY PLACE SETTLEDNESS IS DECIDED. Both the launch pre-flight and `report`'s stamp call this, so
 // they can never disagree about whether the previous round is done — which is the disagreement that

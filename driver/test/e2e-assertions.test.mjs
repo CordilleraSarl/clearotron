@@ -39,7 +39,7 @@ import { evalAssertion, investigate, runLedger, secs } from "../../scripts/e2e.m
 // From an E2E-R1 run, verbatim: the lane was routed and frozen, then the fold degraded because the
 // driver env carried no API key. Note `accepted: []` — the run still DELIVERS (never-kill), so nothing
 // else in the pipeline reports a problem. This artifact is the only evidence the lane produced nothing.
-// PRE-#858, and kept verbatim as such: `lanes.zh.executes` and its origin suffix are no longer minted
+// PRE-tracker issue 858, and kept verbatim as such: `lanes.zh.executes` and its origin suffix are no longer minted
 // (they asserted at freeze time that slices 2–3 do not exist). Nothing in this file asserts on them.
 const JX_DEGRADED = {
   schema: 1,
@@ -113,7 +113,7 @@ test("a DEGRADED zh lane is caught: accepted is empty and degraded carries the c
   });
 });
 
-// RENAMED at #525 (was: "a HEALTHY zh lane has no degraded key, so the falsy guard passes"). The old
+// RENAMED at tracker issue 525 (was: "a HEALTHY zh lane has no degraded key, so the falsy guard passes"). The old
 // name described the DEFECT — the lane wrote no key at all — and it stayed green through the fix
 // because `falsy` accepts `false` just as happily as absent. A test whose name states the bug it was
 // meant to catch is worse than no test: it reads as coverage.
@@ -127,7 +127,7 @@ test("a HEALTHY zh lane states degraded:false, and the falsy guard still passes 
 });
 
 test("#525 OPS.falsy CANNOT tell `false` from absent — the assert layer stays blind where the printed line no longer is", () => {
-  // Named so nobody reads a green scenario as proof #525 is closed. A scenario asserting `falsy` on
+  // Named so nobody reads a green scenario as proof tracker issue 525 is closed. A scenario asserting `falsy` on
   // fold.lanes.zh.degraded passes on a healthy lane AND on a run whose fold never happened. Moving the
   // scenario to `equals: false` is the fix, and those files live in the config repo — a handover item.
   withRun({ "_driver/jx-lanes.json": JX_HEALTHY }, (dir) => {
@@ -176,7 +176,7 @@ test("delivery-settled: handoff with NO packet written FAILS — strictly more t
   });
 });
 
-// #1014 — THIS ARM ASSERTED THE OTHER MODE AND IS INVERTED, not deleted. It used to set
+// tracker issue 1014 — THIS ARM ASSERTED THE OTHER MODE AND IS INVERTED, not deleted. It used to set
 // `CLEAROTRON_DELIVERY=email` and require `sendPending === false`, because under a mode that sent directly
 // a run still marked pending had genuinely not been delivered. There is no such mode: the variable is
 // retired and the assertion no longer reads it, so a stale value in a harness environment must not be
@@ -227,7 +227,7 @@ test("no-wildcard-exact-pair catches the F1 shape and passes a correctly compile
   });
 });
 
-// ── #324: the same op, made lane-aware ────────────────────────────────────────────────────────────────
+// ── tracker issue 324: the same op, made lane-aware ────────────────────────────────────────────────────────────────
 //
 // The knockout lane freezes no register plan, so the check above reported `[FAIL] register-plan.json
 // absent` on EVERY knockout run — a tripwire that is red every day is one nobody reads. It now declines
@@ -314,7 +314,7 @@ test("#324: the knockout lane provably writes no register-plan.json — the prem
   }
 });
 
-// ── #324 fix 3: the report asserts nothing it did not examine ─────────────────────────────────────────
+// ── tracker issue 324 fix 3: the report asserts nothing it did not examine ─────────────────────────────────────────
 
 test("#324: names-configured-depth passes a surface naming the configured depth and fails one naming another", () => {
   withRun({ "_driver/search-policy.json": POLICY_KNOCKOUT, "status.json": { ...STATUS_HANDOFF, stageLabel: "Knockout search" } }, (dir) => {
@@ -331,7 +331,7 @@ test("#324: names-configured-depth passes a surface naming the configured depth 
   });
 });
 
-// #463 — THE OP READS THE FIELD THE DOCUMENT PRINTS.
+// tracker issue 463 — THE OP READS THE FIELD THE DOCUMENT PRINTS.
 //
 // Both halves of this op derived from `.stageLabel` while every renderer moved to `.identity`
 // (render.mjs, render-knockout.mjs). For the four orderable products the two are equal, so the op
@@ -348,7 +348,7 @@ const POLICY_RETIRED_KO = { ...POLICY_KNOCKOUT, level: "knockout", stageLabel: "
 const POLICY_RETIRED_KOREG = { ...POLICY_KNOCKOUT, level: "knockout-register", stageLabel: "Depth 2" };
 
 test("#463: names-configured-depth checks the name the renderers print, on a retired row too", () => {
-  // The line the knockout renderer actually emits for this level — `.identity`, no rung (#463).
+  // The line the knockout renderer actually emits for this level — `.identity`, no rung (tracker issue 463).
   withRun({ "_driver/search-policy.json": POLICY_RETIRED_KO, "report.html": "<b>Knockout review</b> — screens each name" }, (dir) => {
     const r = evalAssertion({ op: "names-configured-depth", path: "report.html" }, dir);
     assert.equal(r.ok, true, r.saw);
@@ -552,7 +552,7 @@ test("a degraded lane and a non-delivered terminal state are each flagged", () =
     st: { state: "failed", failedStage: "knockout-frame", reason: "status_overloaded" },
     attempts: [{ stage: "knockout-frame", attempt: 1, wall: 206, fail: "status_overloaded" }],
     // rows now name their own KIND — units degrade for different reasons than lanes do, so the
-    // "lane degraded —" prefix investigate() used to hardcode would mislabel every unit row (#525)
+    // "lane degraded —" prefix investigate() used to hardcode would mislabel every unit row (tracker issue 525)
     degraded: ['lane zh: ANTHROPIC_API_KEY absent from driver env (accepted 0)'],
   });
   assert.ok(flags.some((f) => /degraded — lane zh/.test(f)));
@@ -641,7 +641,7 @@ test("queueOutcomes matches by PREFIX and returns EVERY door — an exact match 
   // `run` appends the door to the ref for a multi-door case. Matching E2E-R0a exactly would miss both of
   // these, and returning only the first would hide the other door, which is the entire point of R0.
   //
-  // #428 — THE FIXTURE IS UNCHANGED, and the second door's answer moved instead. `opsmcp-ms1.failed` has
+  // tracker issue 428 — THE FIXTURE IS UNCHANGED, and the second door's answer moved instead. `opsmcp-ms1.failed` has
   // no sidecar beside it, and `.failed` means "refused at intake" when no run started and "the run broke"
   // when one did. The harness now says UNDETERMINED for that rather than picking the intake reading, so
   // this row reads `undetermined`. Inventing an `opsmcp-ms1.failed.reason` to keep the old word would be
@@ -677,7 +677,7 @@ test("a refusal reason keeps the rule it fired on, which is what reasonMatches c
 // flags the admitting door as a defect — a false positive in the one report that has to be trusted.
 import { dedupeAcrossDoors } from "../../scripts/e2e.mjs";
 
-// #428 widened the return: `undetermined` and `inFlight` are counted separately, because the old
+// tracker issue 428 widened the return: `undetermined` and `inFlight` are counted separately, because the old
 // `admitted = t !== "duplicate" && t !== "clarify"` counted a job still `.processing`, and a terminal that
 // could not be read, as admissions — and two of those under one ref read as "2 doors ADMITTED the same
 // matter", an engine defect that never happened. See e2e-state-not-shape.test.mjs.
@@ -701,9 +701,9 @@ test("a clarify is neither an admission nor a park — a refused door says nothi
   assert.equal(d.ranMoreThanOnce, false);
 });
 
-// ── post-merge audit of #172, problem 7: the harness's own rationale must stay TRUE ────────────────────
+// ── post-merge audit of tracker issue 172, problem 7: the harness's own rationale must stay TRUE ────────────────────
 // The `no-stage-retried` deletion note is the only record of why that assertion is gone, and it opened
-// with a mechanical claim — "run.jsonl carries no `attempt` field" — that #172 made false in the very file
+// with a mechanical claim — "run.jsonl carries no `attempt` field" — that tracker issue 172 made false in the very file
 // the PR body promised to keep working. A rationale whose stated premise is provably wrong is an invitation
 // to re-add the assertion "now that the data is there", which is exactly the wrong conclusion: the reason
 // it was deleted is that a retry is a JUDGMENT, not a pass/fail, and that reason did not change.
@@ -711,7 +711,7 @@ test("the deleted-assertion rationale in scripts/e2e.mjs does not carry a claim 
   const src = readFileSync(new URL("../../scripts/e2e.mjs", import.meta.url), "utf8");
   assert.doesNotMatch(src, /run\.jsonl carries no `attempt` field/,
     "run.jsonl HAS carried per-dispatch `attempt` rows since #172 — the note must not say otherwise");
-  // ANCHORED ON THE PROSE. This used to look for the literal "SINCE #172", and the note now opens
+  // ANCHORED ON THE PROSE. This used to look for the literal "SINCE tracker issue 172", and the note now opens
   // "SINCE (AD-4)" — the cut rewrites a bare issue reference in a comment into a token. Matching either
   // spelling would pin the arm to the rewrite table rather than to the sentence, so it matches the claim
   // itself, which is what the arm is actually about.
@@ -802,7 +802,7 @@ test("a measured cost always states a wall, so `run` can never print an empty nu
   const { readFileSync, readdirSync } = await import("node:fs");
   const dir = new URL("../e2e/", import.meta.url);
   const cases = readdirSync(dir).filter((x) => x.endsWith(".json"));
-  // #1010 FOUND THIS: `driver/e2e/` carries a README and no JSON in the product tree, so this loop has
+  // tracker issue 1010 FOUND THIS: `driver/e2e/` carries a README and no JSON in the product tree, so this loop has
   // been walking an empty set and reporting a green over zero files. A SKIP is not a pass — it is
   // visible in the run and countable — and it is the honest state until the fixtures are here or the
   // guard is retired. Silently iterating nothing is the one option that is not on the table.
@@ -841,7 +841,7 @@ test("settled-before-placement: passes only when the decision precedes placement
   assert.equal(never.ok, false);
   assert.match(never.saw, /never decided/);
 
-  // #428 — a scenario that never reaches placement is NOT PROBED, not FAIL. It must still not pass
+  // tracker issue 428 — a scenario that never reaches placement is NOT PROBED, not FAIL. It must still not pass
   // silently, and the third state is what makes that possible: the check declines out loud, is counted
   // and printed under NOT PROBED, and never enters INVESTIGATE. It used to return `ok: false` with a
   // message that said in its own words that the assert did not belong there, which scored an ordering
@@ -884,7 +884,7 @@ test("no-attempt-fail-token: a stage that logged nothing fails, and a real faile
   rmSync(dir, { recursive: true, force: true });
 });
 
-// ── #354 · the run's own stamped URL ──────────────────────────────────────────────────────────────────
+// ── tracker issue 354 · the run's own stamped URL ──────────────────────────────────────────────────────────────────
 //
 // R4 delivered with `…/tmpe2er4-arbora-…/report.html` in its meta and its handoff packet, and that URL
 // returned 404 on the only instance the suite may run on, while the identical shape worked on prod. The
@@ -948,7 +948,7 @@ test("#354: an unusable URL says so rather than throwing mid-report", async () =
   assert.equal(r.status, undefined);
 });
 
-// ── #356 — R0's probes must not leave fake product on the staff surface ──────────────────────────
+// ── tracker issue 356 — R0's probes must not leave fake product on the staff surface ──────────────────────────
 //
 // R0d's first submission MUST admit so the second can be caught as a duplicate, and R0e's expected
 // terminal is `delivered`. Admitting means publishing, so every round adds two reports titled
@@ -991,7 +991,7 @@ test("#356: a preservation that cannot run REPORTS why and never claims success 
   } finally { rmSync(tmp, { recursive: true, force: true }); }
 });
 
-// ── #508: A DOOR REFUSAL LEAVES NOTHING ON DISK, AND IS NOT NOTHING KNOWN ────────────────────────────
+// ── tracker issue 508: A DOOR REFUSAL LEAVES NOTHING ON DISK, AND IS NOT NOTHING KNOWN ────────────────────────────
 //
 // `enqueue` refuses before a queue file is written — earlier than the claimAndPrep refusal, which at
 // least leaves `.failed` + `.reason`. So `findRunsByRef` and the marker sweep both come back empty for a
@@ -1045,7 +1045,7 @@ test("#508: ordering an ADMISSION and getting a refusal is still a defect, howev
     assert.equal(doorRefusal(REFUSED("x"), "E2E-R0h", { terminal: want }).orderedAdmission, false, want);
 });
 
-// ── absent (#519's config half) ───────────────────────────────────────────────────────────────────────
+// ── absent (tracker issue 519's config half) ───────────────────────────────────────────────────────────────────────
 // The one op where a missing file is PASS, because absence is the asserted contract: an enforced
 // never-produce (a case-law artifact on a non-Full-country run). Everywhere else absence stays a
 // failure; these pins hold both directions so the op can never drift into a general missing-file pass.
@@ -1074,7 +1074,7 @@ test("absent: field ops on a missing file still FAIL — the op does not leak ab
   });
 });
 
-// ── #516: the op that watched two label rows and reported "none mispaired" ─────────────────────────
+// ── tracker issue 516: the op that watched two label rows and reported "none mispaired" ─────────────────────────
 //
 // R2b's plan carried 145 rows, two of them the common-law sweep's own section headings under
 // `predicate=default`. This assertion ran over it and reported `144 entries, none mispaired` — true of
@@ -1117,7 +1117,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   });
 });
 
-// ── #757: THE 429 THAT INDICTED THE DOOR THAT BEHAVED ───────────────────────────────────────────────
+// ── tracker issue 757: THE 429 THAT INDICTED THE DOOR THAT BEHAVED ───────────────────────────────────────────────
 //
 // Round finding F1, 2026-08-12, R0e anthropic arm. The `cli` door accepted; the `ops-mcp` door answered
 // `MCP initialize refused (429): ops principal rate limit exceeded`. The #98 asymmetry rule fired and
@@ -1179,11 +1179,11 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
     assert.equal(v.reducedCoverage, false, "nothing was lost here — both doors judged the case");
   });
 
-  // ── #1865: A DOOR THAT IS NOT CONFIGURED WAS NEVER ASKED ────────────────────────────────────────
+  // ── tracker issue 1865: A DOOR THAT IS NOT CONFIGURED WAS NEVER ASKED ────────────────────────────────────────
   //
   // R0, 2026-08-25, rebuilt box. The MCP face is not installed, so every ops-MCP submission answered
   // `no TRADEMARK_MCP_HTTP_PORT in scope`. That is the harness saying it could not reach the door, and
-  // it was recorded as a verdict. #757 built the exclusion for a door that died MID-REQUEST; this is the
+  // it was recorded as a verdict. tracker issue 757 built the exclusion for a door that died MID-REQUEST; this is the
   // same fact one step earlier, before any request goes out, and it was the one transport failure the
   // rule did not reach.
   //
@@ -1247,7 +1247,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
       "nothing judged this case, so calling it 'refused at the door' would be the original defect at full strength");
   });
 
-  // ── #1865, SECOND HALF: THE PORT IS RIGHT AND NOTHING IS LISTENING ─────────────────────────────
+  // ── tracker issue 1865, SECOND HALF: THE PORT IS RIGHT AND NOTHING IS LISTENING ─────────────────────────────
   //
   // The first half covered a door that was never configured — env unset, first run on a fresh box. The
   // operational case is the other one: the port is correct and the face behind it crashed, or was not
@@ -1358,7 +1358,7 @@ test("#516 a parenthesised OWNER row still passes — the harness inherits the b
   });
 }
 
-// ── #1561 — A DELIVERY CONTRACT A RUN NEVER ENTERED ──────────────────────────────────────────────────
+// ── tracker issue 1561 — A DELIVERY CONTRACT A RUN NEVER ENTERED ──────────────────────────────────────────────────
 //
 // `sendPending` is written on the delivery paths only — measured 25 of 25 delivered runs, 0 of 29 failed,
 // parked or cancelled. So this assertion, run against a failed round, compared behaviour to a contract

@@ -40,23 +40,23 @@ test("2070: CLAUDE_CODE_OAUTH_TOKEN RIDES THROUGH under subscription — the hea
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MOCK = join(HERE, "mock-claude.mjs");
 
-/** #1780 — the most recent turn, so a timing arm's failure can carry the specimen. */
+/** tracker issue 1780 — the most recent turn, so a timing arm's failure can carry the specimen. */
 let lastRun = null;
 
 async function run(opts, env = {}) {
   const all = { CLEAROTRON_CLAUDE_PATH: MOCK, ...env };
   const saved = {};
   for (const k of Object.keys(all)) { saved[k] = process.env[k]; pinEnv(process.env, k, all[k]); }
-  // #1780 — the last turn is remembered so `timedTest` can attach the specimen to ANY failure in a
+  // tracker issue 1780 — the last turn is remembered so `timedTest` can attach the specimen to ANY failure in a
   // timing arm. Sound because node:test runs the subtests of one file sequentially (verified, not
-  // assumed: `--test-concurrency=1` was dropped at the FILE level in #179, not within a file).
+  // assumed: `--test-concurrency=1` was dropped at the FILE level in tracker issue 179, not within a file).
   try { return (lastRun = await anthropicAgentEngine.runTurn(opts)); }
   finally { for (const k of Object.keys(all)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); } }
 }
 
-// ── #1780 — THE SPECIMEN GOES IN EVERY TIMING ARM'S MESSAGE, NOT ONE OF THEM ───────────────────────
+// ── tracker issue 1780 — THE SPECIMEN GOES IN EVERY TIMING ARM'S MESSAGE, NOT ONE OF THEM ───────────────────────
 //
-// #1782 put `firstByteMs` in the engine's no-progress stderr and in arm 449's assertion message. Then a
+// tracker issue 1782 put `firstByteMs` in the engine's no-progress stderr and in arm 449's assertion message. Then a
 // real failure landed on main (34d160ec, run 32672060149) in arm 449's SIBLINGS — and carried none of
 // it, because each arm writes its own message. A fix at one site missing the sibling that keeps its own
 // copy is a shape this repo has been bitten by before, and the instrument built for this very failure
@@ -115,7 +115,7 @@ test("thinking → effort remap", () => {
   assert.equal(effortFor(undefined), "medium");
 });
 
-// #238 corruption 4a — `off` mapped to `low` here and `minimal` on codex, so at the bottom of the ladder
+// tracker issue 238 corruption 4a — `off` mapped to `low` here and `minimal` on codex, so at the bottom of the ladder
 // the two engines were a whole rung apart and a cross-engine effort comparison at `off` was off by one.
 // This is the drift test that keeps them one table: the same duplicate-plus-pin discipline
 // engine.common.test.mjs uses for WRITE_DISCIPLINE, because anthropic-agent.mjs deliberately imports
@@ -264,7 +264,7 @@ test("E2BIG regression: a >128 KB prompt runs (prompt rides stdin, not a `-p` ar
   assert.equal(r.code, 0);
 });
 
-// #1014 — A TEST FOR A SECOND ARGV BUILDER USED TO SIT HERE, and it is deleted with the builder. It
+// tracker issue 1014 — A TEST FOR A SECOND ARGV BUILDER USED TO SIT HERE, and it is deleted with the builder. It
 // pinned that the comms one-shots' args carried no `--add-dir` and no skill absolutization, which was
 // the whole difference between them and a compute turn. There are no comms one-shots: every
 // requester-facing event is an outbox packet written by code, so there is exactly ONE argv builder in
@@ -312,7 +312,7 @@ test("C2 GROUP KILL: the stall kill reaps a SIGTERM-ignoring grandchild (MCP-ser
     while (Date.now() - t0 < ms) { if (!alive(pid)) return true; await new Promise((r) => setTimeout(r, 25)); }
     return !alive(pid);
   };
-  // #1847 — this arm reaped NOTHING: it asserts the fixtures are dead, which is true whenever the code
+  // tracker issue 1847 — this arm reaped NOTHING: it asserts the fixtures are dead, which is true whenever the code
   // under test works, and leaves a SIGTERM-immune tree plus its grandchild orphaned to init on the day
   // it does not. Registered before the fixture can start; the assertions below are unchanged, because
   // whether the ESCALATION reaps them is the subject.
@@ -389,7 +389,7 @@ test("no hang when timeoutSec is omitted: the stall-watchdog still terminates a 
 test("engine registry: CLEAROTRON_AI selects a provider adapter; a second adapter plugs in without touching runStage", () => {
   const saved = process.env.CLEAROTRON_AI;
   try {
-    // #696 — SELECTION IS PROCESS-WIDE. This loop used to pass a stage name and read as a per-stage
+    // tracker issue 696 — SELECTION IS PROCESS-WIDE. This loop used to pass a stage name and read as a per-stage
     // lookup; the argument was ignored, so it asserted a routing that did not exist. It now says the
     // true thing, which is stronger: every stage of every job in this activation gets the SAME engine,
     // including the (handoff-only) comms stages.
@@ -438,7 +438,7 @@ test("NO-PROGRESS watchdog: byte-alive junk chatter is killed on the no-progress
   assert.equal(isTimeout({ killed: r.killed, code: r.code, wall: r.wall, stderr: r.stderr, timeoutSec: 60 }), true);
 }));
 
-// ── #1624 — THE CEILING SITE ITSELF, NOT THE FUNCTION IT CALLS ──────────────────────────────────────
+// ── tracker issue 1624 — THE CEILING SITE ITSELF, NOT THE FUNCTION IT CALLS ──────────────────────────────────────
 //
 // The change moved the hard ceiling off ELAPSED and onto ACTIVE time. It shipped with three arms on
 // `activeElapsedMs` as a PURE FUNCTION and none on the site that calls it — so reverting the single line
@@ -505,13 +505,13 @@ test("#1624 the ceiling site CALLS activeElapsedMs — a pure function nothing d
 });
 
 test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed (#1624)", timed(async () => {
-  // THE CLAIM THAT MAKES #1624 SAFE, AS AN ARM. That change moved the hard ceiling off ELAPSED and onto
+  // THE CLAIM THAT MAKES tracker issue 1624 SAFE, AS AN ARM. That change moved the hard ceiling off ELAPSED and onto
   // ACTIVE time, so a turn waiting on a slow register call no longer dies for waiting. The reason that
   // is not a ceiling REMOVAL is this watchdog: only a COMPLETED tool result resets the progress clock
   // (`progress()` fires on the `user` event, never on an outstanding ask), so a call that never returns
   // cannot hold the turn open — and it is bounded TIGHTER here than the elapsed ceiling ever bounded it.
   //
-  // Nothing exercised that before this arm. #1624's own file covers the tiling identity, which is
+  // Nothing exercised that before this arm. tracker issue 1624's own file covers the tiling identity, which is
   // instrumentation, not the kill — a change to the kill path whose safety argument no test touches.
   const t0 = Date.now();
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
@@ -523,7 +523,7 @@ test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed
   // The ask MUST be outstanding, or this is the junk-chatter arm above wearing a different name.
   assert.equal(r.toolCalls >= 1 || r.toolWaitMs > 0, true,
     "the fixture never opened a tool ask, so this proves nothing about an unreturned call. "
-    // #1780 — THE SPECIMEN, IN THE FAILURE MESSAGE. This arm has reddened `main` twice on exactly this
+    // tracker issue 1780 — THE SPECIMEN, IN THE FAILURE MESSAGE. This arm has reddened `main` twice on exactly this
     // check and neither ambient load nor a full-suite run reproduces it here, so the next natural
     // failure has to carry its own diagnosis: firstByteMs=null means the child never spoke and the
     // 2000ms grace was exceeded; a NUMBER means it spoke and the ask never reached toolCalls.
@@ -531,10 +531,10 @@ test("NO-PROGRESS watchdog: a turn whose TOOL CALL NEVER RETURNS is still killed
     + `killed=${r.killed} noProgress=${r.signals?.noProgress}]`);
 }));
 
-// ── #1692 — A STARVED SPAWN IS NOT A FINDING ABOUT THE TURN ────────────────────────────────────────
+// ── tracker issue 1692 — A STARVED SPAWN IS NOT A FINDING ABOUT THE TURN ────────────────────────────────────────
 // The two arms above failed under full-suite load and passed alone, three times in one day on diffs that
 // could not reach a watchdog. The cause was not the arms: every clock in this engine started at SPAWN, so
-// on a loaded box they timed process startup and killed before the child had emitted a byte. #1703 fixed
+// on a loaded box they timed process startup and killed before the child had emitted a byte. tracker issue 1703 fixed
 // exactly this for the byte-stall in common.mjs, which this engine does not use — it spawns its own child.
 //
 // MOCK_CLAUDE_BOOT_MS makes that deterministic: the mock blocks before ANY output, which is what a starved
@@ -631,8 +631,8 @@ test("#1692 the grace does NOT survive first contact — a tight ceiling still b
 }));
 
 test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte STARTS it, not just releases it", timed(async () => {
-  // The cause of #1780, and of the red on #1810's run 32680317129 (an arm above, on a diff that cannot
-  // reach this engine). #1692 widened the pre-first-byte DEADLINE but never moved the clock's ORIGIN, so
+  // The cause of tracker issue 1780, and of the red on tracker issue 1810's run 32680317129 (an arm above, on a diff that cannot
+  // reach this engine). tracker issue 1692 widened the pre-first-byte DEADLINE but never moved the clock's ORIGIN, so
   // the startup interval stayed on the meter: at the instant the grace stopped protecting the turn,
   // progIdle already WAS the whole boot, and any NOPROG shorter than startup was expired before the child
   // had been observed at all. The kill then landed on the very next tick — before the ask reached
@@ -665,11 +665,11 @@ test("#1780 STARTUP DEBT is not charged to the progress clock — the first byte
 }));
 
 test("#1813 an early STDERR byte does not end the grace — the protocol is on stdout, and that is what starting means", timed(async () => {
-  // Found while reading the #1780 fix, filed rather than folded into it, and this is the arm it wanted.
+  // Found while reading the tracker issue 1780 fix, filed rather than folded into it, and this is the arm it wanted.
   //
   // The child writes ONE line to stderr and then does its real startup on stdout. A node warning or a CLI
   // deprecation notice is exactly that shape. Before this fix the stderr byte set the first-output clock,
-  // which ends the grace AND (since #1780) becomes the progress clock's origin — so a turn that had said
+  // which ends the grace AND (since tracker issue 1780) becomes the progress clock's origin — so a turn that had said
   // nothing in its protocol was measured as having started, and the no-progress ceiling then expired in
   // the middle of its boot.
   //
@@ -705,7 +705,7 @@ test("#1813 THE FAIL-SAFE: a child that writes ONLY stderr is still bounded, by 
 }));
 
 test("#1692 the grace has ONE source: this engine derives it from common.mjs, never a second literal", () => {
-  // Why this issue existed. #1703 set the grace in common.mjs and stopped there; openai-agent reaches that
+  // Why this issue existed. tracker issue 1703 set the grace in common.mjs and stopped there; openai-agent reaches that
   // watchdog through runStreamingChild, anthropic-agent spawns directly and did not. A second copy of the
   // number here would let the two engines drift apart again, silently, exactly as they already did once.
   const src = readFileSync(join(HERE, "../engine/anthropic-agent.mjs"), "utf8");
@@ -738,10 +738,10 @@ test("NO-PROGRESS watchdog: an artifact write on the stage's own expected output
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }));
 
-// #616 — THE STALL WINDOW WAS RACING THE MOCK IT WAS MEASURING.
+// tracker issue 616 — THE STALL WINDOW WAS RACING THE MOCK IT WAS MEASURING.
 //
 // This ran at CLEAROTRON_STALL_MS: 300 and failed intermittently: `r.usage` null, the kill landing before
-// the usage event it exists to assert had been reconstructed. #616 filed it as load-sensitive and asked
+// the usage event it exists to assert had been reconstructed. tracker issue 616 filed it as load-sensitive and asked
 // the right question — a real race in the kill path's usage capture, or a tolerance too tight for a
 // loaded box. Measured, running this test ALONE on an idle worktree:
 //
@@ -776,7 +776,7 @@ test("startup-class death: a CLI exit with NO stream events carries the noStream
   // `sh -c 'exit 7'` stands in for the CLI failing at startup (bad arg/auth/MCP). The tuple must name
   // the startup class so the journal's stderrTail is never read as a mid-turn provider fault.
   //
-  // #820 — the stand-in is BUILT, not borrowed from the filesystem. This read `/bin/false` and the
+  // tracker issue 820 — the stand-in is BUILT, not borrowed from the filesystem. This read `/bin/false` and the
   // comment above already described something else, which is the tell: /bin/false is GNU coreutils and
   // sits at /usr/bin/false on macOS, where /bin holds only the base utilities. Spawning a path that is
   // not there raises ENOENT, anthropic-agent.mjs answers on its `child.on("error")` branch, and
@@ -853,7 +853,7 @@ test("reads gauge: a turn with no Read calls records [] — present, never omitt
   assert.equal(r.readsTruncated, false, "…and the list is complete — 'complete', not 'not recorded'");
 });
 
-// ── post-merge audit of #172 ──────────────────────────────────────────────────────────────────────────
+// ── post-merge audit of tracker issue 172 ──────────────────────────────────────────────────────────────────────────
 // The gauge is capped at 500 distinct paths so a pathological turn cannot bloat telemetry. Capping is fine;
 // capping SILENTLY is the same defect the package retires everywhere else — a truncated list reads exactly
 // like a complete one, and every consumer that derives "this file was not opened" from it derives a lie.
@@ -886,7 +886,7 @@ test("AUDIT #172/3 — a truthy NON-ITERABLE message.content cannot throw out of
   assert.equal(r.signals?.thought, false, "the thinking gauge's own guard is likewise unmoved");
 });
 
-// ── #1780 — THE BIT THAT DISCRIMINATES THE CAUSE, PINNED ────────────────────────────────────────────
+// ── tracker issue 1780 — THE BIT THAT DISCRIMINATES THE CAUSE, PINNED ────────────────────────────────────────────
 // `firstByteMs` is RECORDING ONLY: nothing in the engine branches on it. A recording field is protected
 // by a test or by nothing — deleting it left an earlier one reporting 7103/7101/0/2 and nobody noticed —
 // so these two arms exist to make its removal red something. They are also the known-answer cases for
@@ -953,12 +953,12 @@ test("#1780 a STARVED SPAWN's specimen says NEVER — the branch that routes the
 }));
 
 test("#1780 every arm that budgets in milliseconds carries the specimen in its message", () => {
-  // THE CLASS, NOT THE TWO SITES. #1782 wired the bit into arm 449 and a real failure landed in its
+  // THE CLASS, NOT THE TWO SITES. tracker issue 1782 wired the bit into arm 449 and a real failure landed in its
   // siblings, which carried none of it. Widening those two by hand would repeat the same mistake one
   // arm further out, so this decides the population mechanically: any arm whose fixture pins a clock is
   // an arm that can fail for timing reasons, and every one of them must say what it saw.
   //
-  // COMMENTS ARE STRIPPED FIRST. #1795 was an assertion satisfied by the prose explaining it; a guard
+  // COMMENTS ARE STRIPPED FIRST. tracker issue 1795 was an assertion satisfied by the prose explaining it; a guard
   // that reads its own subject's source has to remove the prose or it can be argued into passing.
   const src = readFileSync(new URL("engine.anthropic.test.mjs", import.meta.url), "utf8")
     .split("\n").filter((l) => !/^\s*\/\//.test(l)).join("\n");

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// #1269 — A SUITE RUN'S FIXTURE TRAFFIC MUST NOT LAND IN THE BOX'S REAL CALL LEDGER.
+// tracker issue 1269 — A SUITE RUN'S FIXTURE TRAFFIC MUST NOT LAND IN THE BOX'S REAL CALL LEDGER.
 //
-// The call ledger is box-global by design (#743): the billing tally reads it across runs, and it is the
+// The call ledger is box-global by design (tracker issue 743): the billing tally reads it across runs, and it is the
 // independent witness that a run made record fetches at all. The cost nobody had costed is that a
 // full-suite run appended MOCK calls to that same file. Measured on this box before the fix — 2,005
 // rows, 1,280 corsearch and 725 uspto-local, and ZERO of them carrying anything that marked them as
@@ -66,7 +66,7 @@ test("#1269 a suite run gets NO legacy notice — it is not writing to the machi
 test("#1269 an empty or whitespace suite dir is NOT a redirect — it falls through to the ladder", () => {
   // `X=` in an EnvironmentFile means "not configured". An empty string reaching a join() would send
   // every ledger to a relative "register-calls.jsonl" in whatever the cwd happens to be, which is the
-  // #1216 defect shape: a value that looks set and resolves to somewhere nobody chose.
+  // tracker issue 1216 defect shape: a value that looks set and resolves to somewhere nobody chose.
   for (const v of ["", "   "]) {
     const r = resolveLedger("call", { [SUITE_TELEMETRY_DIR_ENV]: v });
     assert.notEqual(r.source, "suite");

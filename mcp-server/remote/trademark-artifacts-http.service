@@ -34,7 +34,7 @@ RestartSec=10
 # Hardening: this process only reads run-dirs + serves HTTP on loopback.
 NoNewPrivileges=true
 ProtectSystem=strict
-# #774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
+# tracker issue 774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
 # by existence (providers/_shared/ledger-path.mjs, mcp-server/lib/audit.mjs): a box that already has
 # a ledger or an access log under the old path keeps appending to it and needs it writable, while a
 # fresh box writes to the new one. `-` on both so a missing directory does not fail the unit to

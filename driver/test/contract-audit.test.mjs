@@ -347,7 +347,7 @@ test("#1211: a cited site is a MINT, never a sentence about the code", () => {
     "a token's cited site is a comment line, so any ruling written from it cites a sentence about the "
     + "code rather than the line that mints it");
   // The line number moves whenever anything above it in coverage-form.mjs does — it shifted +8 when the
-  // park fields were added to `parseCoverageForm`'s projection (#1239). What the arm PINS is not the
+  // park fields were added to `parseCoverageForm`'s projection (tracker issue 1239). What the arm PINS is not the
   // number but the property: the cited site must be the line that WRITES `reason: "no_status"`, not the
   // JSDoc `@returns` seventeen lines above it, which is where it used to point.
   const noStatusSite = ex.get("no_status");
@@ -362,17 +362,17 @@ test("#1211: a cited site is a MINT, never a sentence about the code", () => {
 });
 
 test("#1211: every citation lands on the line that MINTS the code, not near it", () => {
-  // THIS ARM EXISTS BECAUSE IT ALREADY FIRED. #1265 landed in connotation-search.mjs while this was being
+  // THIS ARM EXISTS BECAUSE IT ALREADY FIRED. tracker issue 1265 landed in connotation-search.mjs while this was being
   // built and moved every mint in that file down 31 lines; all eleven citations into it then pointed at
   // comments and unrelated code, and nothing would have said so. A line number in prose is a claim that
   // decays on somebody else's merge, so it is checked rather than maintained.
   //
-  // #1211's condition is "each decision cites the site that mints it". A ruling that cites a sentence
+  // tracker issue 1211's condition is "each decision cites the site that mints it". A ruling that cites a sentence
   // three functions away is not a worse ruling than one citing nothing — it is a more convincing one,
   // which is worse.
   // THE FAILURE OUTPUT IS THE PATCH. A message that says "re-derive the line numbers" hands the next
   // agent — who has the repo and nothing else — a chore with no tool, so this finds the right line and
-  // prints it. #1263 is open against connotation-search.mjs as this lands, and whoever merges second
+  // prints it. tracker issue 1263 is open against connotation-search.mjs as this lands, and whoever merges second
   // trips this arm; what they need is the corrected citation, not an instruction to go and look.
   // The MINT shape, not any mention: `reason: "<code>"` is how every one of these is written. Matching a
   // bare quoted occurrence would call the closed-list declarations (CONNOTATION_REASONS,

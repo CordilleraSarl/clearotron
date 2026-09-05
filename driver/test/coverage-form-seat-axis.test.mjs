@@ -138,7 +138,7 @@ function skillExamples() {
 const SKILL_EXAMPLES = skillExamples();
 
 test("HALF 2 — the skill's worked examples are THREE, and every axis it teaches is in the vocabulary", () => {
-  // digest.md named FOUR until #1203: the per-jurisdiction reconciliation, the ⭐-floor sweep, the
+  // digest.md named FOUR until tracker issue 1203: the per-jurisdiction reconciliation, the ⭐-floor sweep, the
   // cross-class merch check, the counted dominant-element crowd. Three of the four were refused when this
   // was written. The ⭐-floor sweep's row is GONE with the mechanism — a worked example teaching a seat to
   // author a shape whose marker no code reads is an invitation to type a character into free text and

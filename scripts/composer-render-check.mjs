@@ -194,7 +194,7 @@ const SCRIPT = `
     return false;
   };
   const txt = () => document.body.innerText;
-  // #1809 — A MISS THROWS, NAMING WHAT IT MISSED. This returned undefined, and the thirteen sites below
+  // tracker issue 1809 — A MISS THROWS, NAMING WHAT IT MISSED. This returned undefined, and the thirteen sites below
   // that dereference it immediately turned a missing button into "Cannot read properties of undefined
   // (reading 'click')" — a message naming no selector, no screen and no step. It was intermittent, so it
   // read as a flaky suite rather than as a driver that could not say what it had not found.
@@ -303,7 +303,7 @@ const SCRIPT = `
 
   // ...and the segmented toggle switches back, persistently.
   findByText('button', /Set it up myself/).click();
-  // #1809 — THIS WAIT WAS DEAD. It watched for the text "Start point", which the composer stopped
+  // tracker issue 1809 — THIS WAIT WAS DEAD. It watched for the text "Start point", which the composer stopped
   // rendering; the only "Start point" left in the tree is a COMMENT in NewClearance.tsx. Because settle
   // returned false silently, it degraded into a flat 6-second sleep and the check still reported
   // "render check passed" — making the wait loud is what surfaced it. Waits on the picker the manual
@@ -388,7 +388,7 @@ const SCRIPT = `
   out.knockoutTier = /Knockout search/.test(tierText() || '');
   out.knockoutSweep = /1 broad sweep per name/.test(txt());
   out.nativeHiddenOnKnockout = !maybeByText('button', /Native-language investigation/);
-  // #706 — the copy changed and the assertion follows it. The OLD string ("not searched; filing counts
+  // tracker issue 706 — the copy changed and the assertion follows it. The OLD string ("not searched; filing counts
   // only") led with the absence and then contradicted it in the same clause; what a Knockout buys at the
   // register is three counts per name in the classes named, and what it does not buy is a reading of the
   // filings behind them. This measures the same thing the ok() below claims: that the card states the
@@ -732,7 +732,7 @@ const SCRIPT = `
     // assertion to touch a missing key blew up with a TypeError instead. out.steps says how far it got.
     out.fatal = String(e && e.message ? e.message : e);
     out.raw = 'driver threw after: ' + out.steps.join(' -> ');
-    // #1809 — the named throw says WHAT was missing; this says what was on screen instead. Without it a
+    // tracker issue 1809 — the named throw says WHAT was missing; this says what was on screen instead. Without it a
     // diagnostic fix still loses the diagnosis, which is the whole complaint this change answers.
     out.body = txt().slice(0, 900);
     return out;

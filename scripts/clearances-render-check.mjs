@@ -191,7 +191,7 @@ const MEASURE = `(async () => {
   });
 
   // Does the NAME wrap? Same method as the date: rendered height against line height. The Name cell is
-  // the one #280 says must not wrap for a single mark of ordinary length, and counting characters
+  // the one tracker issue 280 says must not wrap for a single mark of ordinary length, and counting characters
   // cannot answer that — only the layout engine can.
   const nameIdx = headText.findIndex(t => /^NAME/i.test(t));
   const nameLines = [...table.querySelectorAll('tbody tr.row')].map(tr => {
@@ -206,7 +206,7 @@ const MEASURE = `(async () => {
 
   // Header widths as a share of the table, so a regression reads as "Status is 47% again".
   const total = table.getBoundingClientRect().width;
-  // Keyed by INDEX as well as text: #282 left two headers with no text (the twisty and the checkbox
+  // Keyed by INDEX as well as text: tracker issue 282 left two headers with no text (the twisty and the checkbox
   // column), and keying on text alone silently collapsed them into one entry. Concatenation, not a
   // template literal — this whole block IS a template literal, so a backtick here closes it.
   const share = Object.fromEntries(head.map((h, i) => [i + ':' + (headText[i] || '(unnamed)'), Math.round(h.getBoundingClientRect().width / total * 1000) / 10]));
@@ -231,7 +231,7 @@ const MEASURE = `(async () => {
     headText, headLeft, reads, dateLines, nameLines, share, readLabels,
     openedRows: rows.length,
     readRows: reads.length,
-    // The scrollbar #280 is about: does the table overflow its own wrapper?
+    // The scrollbar tracker issue 280 is about: does the table overflow its own wrapper?
     // AGAINST THE BORDER BOX, not clientWidth.
     //
     // clientWidth excludes a rendered scrollbar, so on a classic-scrollbar platform it is already 19px

@@ -30,7 +30,7 @@ Environment=CLIENT_MCP_HTTP_HOST=127.0.0.1
 # to avoid a port collision. The CF Tunnel route for clients-mcp.example.com must point at this port.
 #
 # ── AND ON A BOX THAT ALSO RUNS A TEST OR DEV INSTANCE, THE SECOND INSTANCE MUST NOT TAKE THIS. ────
-# Measured 2026-08-18 (#1147): the deployment box had 18811 and 18812 held by production client faces
+# Measured 2026-08-18 (tracker issue 1147): the deployment box had 18811 and 18812 held by production client faces
 # and no client face for the test instance at all. `http-server-client.mjs` DEFAULTS to 18811, so a
 # second instance started without an explicit port does not merely collide — on a day production is
 # down it SUCCEEDS, binds the port production is about to want, and a CLIENT surface ends up pointed at
@@ -59,7 +59,7 @@ RestartSec=10
 # Hardening: this process only reads run-dirs + serves HTTP on loopback (mirrors trademark-artifacts-http).
 NoNewPrivileges=true
 ProtectSystem=strict
-# #774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
+# tracker issue 774 — the telemetry default moved to %h/trademark/telemetry. BOTH are listed because resolution is
 # by existence (providers/_shared/ledger-path.mjs, mcp-server/lib/audit.mjs): a box that already has
 # a ledger or an access log under the old path keeps appending to it and needs it writable, while a
 # fresh box writes to the new one. `-` on both so a missing directory does not fail the unit to

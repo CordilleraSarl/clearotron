@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// #1117 — the FLOOR DUTY reconciler.
+// tracker issue 1117 — the FLOOR DUTY reconciler.
 //
 // The floors are the one uncapped obligation in placement-inquiry's doctrine and nothing checked them.
 // Measured on two delivered runs (2026-08-20): 45 of 207 floor rows on one and 99 of 225 on the
@@ -215,7 +215,7 @@ test("#1117 the derivation is disclosure-only — it cannot gate, re-tier or sen
   }
 });
 
-// ── #1955 — THE DUTY BECAME A DELIVERY FLOOR, AND THESE ARE THE ARMS THAT LET IT BE ONE ─────────────
+// ── tracker issue 1955 — THE DUTY BECAME A DELIVERY FLOOR, AND THESE ARE THE ARMS THAT LET IT BE ONE ─────────────
 //
 // The posture arm above still stands and is still correct: `deriveFloorDuty` cannot gate, re-tier or
 // send a followup. That was NOT loosened. Enforcement lives at the pre-verdict floor, where a throw

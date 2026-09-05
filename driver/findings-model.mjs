@@ -539,7 +539,7 @@ export function sentenceCaseLead(s) {
   return str.slice(0, m[1].length) + m[2].toUpperCase() + str.slice(m[1].length + m[2].length);
 }
 
-// ── #601 — THE ONE BOUND AN ASK STILL HAS, AND THE ONLY ONE ─────────────────────────────────────────
+// ── tracker issue 601 — THE ONE BOUND AN ASK STILL HAS, AND THE ONLY ONE ─────────────────────────────────────────
 // The verdict statement renders in index cells, run status, the report hero, the email headline and the
 // xlsx Verdict row — one row each, so an unbounded first condition would swallow the row. This is the
 // last surface in the product that shortens an ask, and it is the honest one: `clipClause` marks the cut

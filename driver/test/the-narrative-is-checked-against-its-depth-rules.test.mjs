@@ -150,7 +150,7 @@ test("#1503 the rank is ORDINAL against the run's own manifest — a five-band f
   assert.match(writeUpMessage(alien.violations[0]), /not on this run's manifest/);
 });
 
-// ── #1503: A GRADED RUN THE CHECK COULD NOT READ IS NOT A COMPLIANT ONE ──────────────────────────────
+// ── tracker issue 1503: A GRADED RUN THE CHECK COULD NOT READ IS NOT A COMPLIANT ONE ──────────────────────────────
 //
 // Measured over 28 preserved runs: where the check can see a narrative it works (16 runs, 1-33
 // violations each). On 6 of 22 GRADED runs — 5 of 12 multi-country, 42% — the narrative carries no

@@ -7,7 +7,7 @@
 #
 # Refuses to act while a run is in flight: restarting services mid-run is how you turn a clearance into
 # a stranded one, and the whole point of this instance is to observe runs to completion.
-# ── #1381: THIS FILE IS THE MASTER COPY, AND UNTIL NOW THERE WAS NOT ONE ────────────────────────────
+# ── tracker issue 1381: THIS FILE IS THE MASTER COPY, AND UNTIL NOW THERE WAS NOT ONE ────────────────────────────
 #
 # This script runs the test instance's only automatic deployment, hourly, and it was tracked in no
 # repository at all. What stood in for version control was four backup files beside it, each from a
@@ -19,14 +19,14 @@
 #     deploy-test.sh.bak-ud2-20260819                129 lines
 #
 # Four editors, no history, no review, and no diff anybody can read after the fact — while the file
-# encodes decisions that were expensive to learn: the in-flight refusal (#375), the store sync running
-# before the early exit (#405), the arrival gate (#1217), the detached-HEAD refusal and the ERR trap
-# (#1353). None of that survives a VM rebuild or a home-directory restore, and one lane overwriting
+# encodes decisions that were expensive to learn: the in-flight refusal (tracker issue 375), the store sync running
+# before the early exit (tracker issue 405), the arrival gate (tracker issue 1217), the detached-HEAD refusal and the ERR trap
+# (tracker issue 1353). None of that survives a VM rebuild or a home-directory restore, and one lane overwriting
 # another announces itself only as the deploy behaving differently.
 #
 # ── WHY THE PATHS ARE PARAMETERS AND NOT THE LITERALS THE BOX RUNS ───────────────────────────────────
 #
-# The live copy names `/home/testuser` in four places. #644 forbids exactly that in tracked code — it is
+# The live copy names `/home/testuser` in four places. tracker issue 644 forbids exactly that in tracked code — it is
 # wrong under every other service account and in every public clone — and the only reason its guard did
 # not already refuse this file is that the guard's walker reads .mjs/.js/.ts/.yml/.service and had never
 # needed to read .sh. Tracking this verbatim would have put an operator's home into the repository
@@ -38,11 +38,11 @@
 #
 # ── THE BOX RUNS A COPY DEPLOYED FROM THIS ONE, AND WHY IT IS A COPY ─────────────────────────────────
 #
-# #1381 asks for two things that turn out to conflict: the box running "a copy deployed from the repo
+# tracker issue 1381 asks for two things that turn out to conflict: the box running "a copy deployed from the repo
 # rather than the master copy", and ExecStart pointing "at the tracked path". Step 5 does the first.
 # The second cannot be done, and the reason is a hazard rather than a preference — see step 5.
 #
-# The precondition the first half of #1381 wrote for this step — "after the drift check has been quiet
+# The precondition the first half of tracker issue 1381 wrote for this step — "after the drift check has been quiet
 # for a few ticks" — was UNSATISFIABLE and is withdrawn. The check ships in this file; the box ran the
 # untracked copy, which never carried it. It had not run once in eight ticks, and its silence read
 # exactly like agreement. A precondition only measurable after the act it gates is not a gate. What
@@ -55,7 +55,7 @@
 
 set -euo pipefail
 
-# The three locations this script needs, none of them naming an account (#644/#1381). Defaults are off
+# The three locations this script needs, none of them naming an account (tracker issue 644/tracker issue 1381). Defaults are off
 # $HOME so the timer's own service account supplies them; override to run it anywhere else.
 REPO_DIR="${DEPLOY_TEST_REPO:-$HOME/clearotron}"
 QUEUE="${DEPLOY_TEST_QUEUE:-$HOME/trademark-test/queue}"
@@ -65,7 +65,7 @@ cd "$REPO_DIR"
 
 log() { echo "[deploy-test] $*"; }
 
-# A FAILED TICK SAYS SO, IN THIS SCRIPT'S VOICE (#1353). Without this, `set -e` exits silently and the
+# A FAILED TICK SAYS SO, IN THIS SCRIPT'S VOICE (tracker issue 1353). Without this, `set -e` exits silently and the
 # only thing separating a red tick from a healthy SKIP is the unit's exit code, which nobody reads.
 #
 # The premise the issue was filed on was WRONG and the correction matters: the failing command's stderr
@@ -81,14 +81,14 @@ log() { echo "[deploy-test] $*"; }
 arm_err() { trap 'rc=$?; log "FAILED at line $LINENO (rc=$rc): ${BASH_COMMAND}"; log "        that command'"'"'s own error is in the journal just above, under the child PID"; exit $rc' ERR; }
 arm_err
 
-# 5 — INSTALL THIS COPY AS THE ONE THE BOX RUNS NEXT TICK (#1381). Defined here, called from the two
+# 5 — INSTALL THIS COPY AS THE ONE THE BOX RUNS NEXT TICK (tracker issue 1381). Defined here, called from the two
 #     places a tick can succeed: the "already current" exit and the end of a healthy deploy.
 #
 #     WHY ExecStart POINTS AT A DEPLOYED COPY AND NOT AT THIS FILE. Bash reads a running script LAZILY,
 #     by byte offset. A `git pull` that rewrites the file bash is executing makes it resume at its old
 #     offset inside the NEW bytes. Measured 2026-08-20 in a sandbox: the run executed a fragment of a
 #     line (`ho: command not found`) and then a whole line the original file never contained. A unit
-#     pointed at this path would be one deploy away from running spliced commands, so #1381's row asking
+#     pointed at this path would be one deploy away from running spliced commands, so tracker issue 1381's row asking
 #     for exactly that is refused on evidence. What that row WANTED — "so the two cannot silently
 #     diverge" — is this step plus the drift check at step 0, which is the honest way to get it.
 #
@@ -131,7 +131,7 @@ say_install_failed() {
   log "                     that will keep saying so is the drift check at step 0 of the next tick"
 }
 
-# 0 — AM I THE SCRIPT THE REPOSITORY THINKS I AM? (#1381)
+# 0 — AM I THE SCRIPT THE REPOSITORY THINKS I AM? (tracker issue 1381)
 #
 #     Reported, never enforced and never reconciled. A deploy that refuses because its own source drifted
 #     is a deploy that cannot be hotfixed in an incident, and one that silently copies either file over
@@ -149,7 +149,7 @@ if [ -f scripts/deploy-drift-check.mjs ]; then
   while IFS= read -r l; do [ -n "$l" ] && log "$l"; done <<< "$(node scripts/deploy-drift-check.mjs --deployed "${DEPLOY_TEST_SELF:-$0}" 2>&1 || true)"
 fi
 
-# 1 — never mid-run. The driver decides what "live" means, not a grep in this file (#375).
+# 1 — never mid-run. The driver decides what "live" means, not a grep in this file (tracker issue 375).
 #     This counted .json and .processing and NOT .postponed, so it refused correctly twice while R1 was
 #     executing on 2026-08-04, then deployed ten seconds after the run PARKED — the count went to zero, the
 #     services restarted, and the run resumed 110 seconds later on a different commit. One clearance spanning
@@ -181,7 +181,7 @@ if [ "$INFLIGHT" != "0" ]; then
   exit 0
 fi
 
-# 2a — the E2E CONFIG STORE (#405). It moves independently of this repo and nothing pulled it, and it is
+# 2a — the E2E CONFIG STORE (tracker issue 405). It moves independently of this repo and nothing pulled it, and it is
 #      what decides what a round MEASURES: every scenario's assertions and every gold set live there.
 #      An out-of-date PRODUCT checkout fails loudly; an out-of-date CONFIG store fails as an assertion
 #      that quietly does not exist, which reads exactly like an assertion nobody wrote.
@@ -209,7 +209,7 @@ fi
 
 # 2 — never a merge. --ff-only means a diverged clone fails loudly instead of inventing a merge commit
 #     (the #81 divergence trap: prod once carried three commits that existed in no repo).
-# 2z — ON A BRANCH AT ALL (#1353). The divergence guard below asks "has my clone diverged" and the
+# 2z — ON A BRANCH AT ALL (tracker issue 1353). The divergence guard below asks "has my clone diverged" and the
 #      arrival gate asks "how did the tip get there". NEITHER asks whether this checkout is on a branch,
 #      and a detached HEAD passes both: `merge-base --is-ancestor` is happy, and then `git pull` refuses
 #      with "You are not currently on a branch."
@@ -230,7 +230,7 @@ if ! git merge-base --is-ancestor HEAD origin/main; then
   log "REFUSING — this clone is not an ancestor of origin/main. It has diverged; a human should look."
   exit 1
 fi
-# 2b — HOW THE TIP ARRIVED (#1217). `--ff-only` and the ancestor check above both ask the same question,
+# 2b — HOW THE TIP ARRIVED (tracker issue 1217). `--ff-only` and the ancestor check above both ask the same question,
 #      "has MY CLONE diverged", and neither asks how origin/main's tip got there. On 2026-08-18 a feature
 #      branch was pushed AS main: ungated engine and provider files, and a clean fast-forward from where
 #      this box sat. Both guards would have waved it through; a manual timer stop is the only reason they
@@ -262,7 +262,7 @@ else
   log "note: scripts/head-arrived-gated.mjs not in this checkout yet — how the tip arrived was NOT checked this tick"
 fi
 
-# MERGE THE REF THIS TICK ALREADY DECIDED ON — never a second fetch (#1486).
+# MERGE THE REF THIS TICK ALREADY DECIDED ON — never a second fetch (tracker issue 1486).
 #
 # This was `git pull --ff-only`, and a pull is fetch-then-merge. That second fetch cost two things:
 #

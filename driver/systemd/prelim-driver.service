@@ -8,7 +8,7 @@ Documentation=https://github.com/CordilleraSarl/Clearotron/blob/main/driver/READ
 # No gateway dependency: compute runs on the standalone engine and delivery defaults to handoff
 # (outbox packets) — see docs/DELIVERY.md. Nothing here needs OpenClaw.
 # Type=oneshot fired by prelim-driver.path: if the runner fails its preflight on every retrigger
-# (exit 3 — no longer reachable since #1014 deleted the gateway preflight; kept because the
+# (exit 3 — no longer reachable since tracker issue 1014 deleted the gateway preflight; kept because the
 # start-limit interaction below is a property of Type=oneshot, not of that preflight), the default
 # start-limit (5 failures in 10s) locks the service out and can drive the .path unit's TriggerLimit
 # (200/2s) into a permanently failed state. Never rate-limit starts (Type=oneshot, no Restart= —

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright 2026 Cordillera Sàrl
 #
-# #1839 item 3 — WITHOUT THIS, THE WAY WE LEARN ABOUT A VULNERABLE DEPENDENCY ON A PUBLIC REPO IS A
+# tracker issue 1839 item 3 — WITHOUT THIS, THE WAY WE LEARN ABOUT A VULNERABLE DEPENDENCY ON A PUBLIC REPO IS A
 # STRANGER OPENING AN ISSUE ABOUT IT. The tree carries 334 packages.
 #
 # GROUPED, and the grouping is the part that decides whether this survives. Ungrouped, a four-workspace

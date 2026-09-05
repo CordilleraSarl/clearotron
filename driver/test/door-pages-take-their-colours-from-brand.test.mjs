@@ -5,7 +5,7 @@
 // `loginPage` and `denialPage` are rendered by driver/portal-service.mjs with no bundle, no stylesheet
 // and no script — a door has to render when the rest of the portal will not. That self-containment is
 // why they carried their own palette, and why each had independently guessed a DARK one: five values,
-// written twice, against a ground (#17150f) that is not the brand pack's (#0f0e0c). left it in
+// written twice, against a ground (tracker issue 17150f) that is not the brand pack's (#0f0e0c). left it in
 // place deliberately and said so in the code; this is the follow-up it named.
 //
 // WHY THE ARM READS THE EMITTED HTML AND NOT THE SOURCE FILE. Scanning portal-service.mjs for
@@ -81,7 +81,7 @@ test("#1892 — the dark scheme is tokens only: it cannot restyle a selector the
 
 test("#1892 — the dark ground and text are the brand pack's, not the doors' guesses", () => {
   // brand pack §01: Dark BG #0f0e0c near-black, Parchment #f0e8d8 dark text/mark. The doors had
-  // guessed #17150f/#ece5d8 independently, twice. Pinned so a future edit has to argue with the pack.
+  // guessed tracker issue 17150f/#ece5d8 independently, twice. Pinned so a future edit has to argue with the pack.
   assert.equal(PALETTE_DARK.ground, "#0f0e0c");
   assert.equal(PALETTE_DARK.ink, "#f0e8d8");
   for (const guess of ["#17150f", "#ece5d8", "#1f1c15", "#a89b87", "#332e24"])

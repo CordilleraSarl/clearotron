@@ -93,7 +93,7 @@ test("the parse has a floor — a diff that adds lines must yield lines", () => 
 // `isProse` read `#` as a comment for YAML alone. The same sentence was therefore refused in a .yml file
 // and waved through in .env.example, a systemd unit or a shell script — and those comments are exactly
 // as publicly visible as a `//` one. Measured while sizing the retirement pass: the guard flagged 359
-// tokens on the tree, and `# REQUIRED — #774 removed the code default` was sitting in .env.example the
+// tokens on the tree, and `# REQUIRED — tracker issue 774 removed the code default` was sitting in .env.example the
 // whole time with the guard reporting clean.
 //
 // The arms below pin BOTH directions, because widening a classifier is the kind of change that quietly

@@ -76,7 +76,7 @@ product and will not be published. Its absence weakens nothing you can run — t
 the machinery, and the scenario suite covers the answers. The validation ladder, from the $0 offline
 suite to a paid live run, is [docs/E2E.md](docs/E2E.md).
 
-**Some comments cite issues you cannot open** — `(#324)` and the like, against the private tracker this
+**Some comments cite issues you cannot open** — `(tracker issue 324)` and the like, against the private tracker this
 repository was cut from. They are being removed rather than preserved.
 [ADR-0005](docs/decisions/0005-comments-carry-reasoning.md) is the ruling and states what a new comment
 has to meet; read it there rather than from a summary here. New work cites this repository's issues
