@@ -291,3 +291,16 @@ child.on("exit", (code, signal) => process.exit(signal ? 1 : (code ?? 0)));
 // Ctrl-C reaches the child through the shared terminal; this process waits for it to finish tearing
 // down rather than exiting first and orphaning it.
 process.on("SIGINT", () => {});
+// ── AND SIGTERM, WHICH DOES NOT REACH THE CHILD ─────────────────────────────────────────────────
+//
+// SIGINT is delivered to the whole foreground process group by the terminal, so the no-op above is
+// enough: `start.mjs` gets its own copy and tears its services down. A SIGTERM sent to THIS pid is
+// delivered to this process alone. With no handler, node's default terminated the wrapper instantly
+// and left `start.mjs` — and all three of its doors — running, orphaned.
+//
+// Measured on the 0.1.1 stranger drive: killing the one pid a reader can see left 18860, 18861 and
+// 18862 bound, on a machine they believed they had stopped. The banner promises that closing the
+// window stops everything the demo started, and for the obvious `kill` that promise was false.
+//
+// Forward it and let the child's own shutdown run; the `exit` handler above still carries its status.
+process.on("SIGTERM", () => { try { child.kill("SIGTERM"); } catch { /* already gone */ } });
