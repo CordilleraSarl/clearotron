@@ -18,7 +18,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync } from "node:f
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { credentialState, caseLawInventory } from "../config-inventory.mjs";
-import { caseLawSourceLines } from "../case-law-sources.mjs";
+import { caseLawSourceLines, caseLawSourceRows } from "../case-law-sources.mjs";
 
 const scratch = () => mkdtempSync(join(tmpdir(), "caselaw-cred-"));
 
@@ -103,10 +103,9 @@ test("tracker issue 173 — an unusable credential reaches the STAGE as a source
     assert.equal(cl.credential.state, "unusable");
     assert.equal(cl.configured, false, "an unusable credential still read as configured");
 
-    // Composed exactly as driver/pipeline.mjs composes it before handing it to the case-law stage.
-    const sources = rows
-      .filter((r) => r?.key === "caselaw")
-      .map((r) => ({ label: r.providerLabel ?? r.provider, enrolment: r.enrolment ?? null, available: r.configured === true }));
+    // Composed by the FUNCTION the pipeline calls, not by a hand-built copy of it. The copy that used
+    // to live here is why this arm kept passing when the real mapping gained a field.
+    const sources = caseLawSourceRows(rows);
     const said = caseLawSourceLines(sources).join("\n");
     const line = said.split("\n").find((l) => l.includes("CourtListener"));
     assert.match(line, /NOT SET UP ON THIS DEPLOYMENT/,
@@ -127,4 +126,65 @@ test("tracker issue 173 — a usable credential is still reported as enrolled", 
     assert.equal(cl.configured, true);
     assert.equal(cl.remedy, null);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker issue 173 — a credential that CANNOT BE READ reaches the stage as a could-not-look", () => {
+  // THE OWNER'S RULING, 2026-09-05, driven at the surface it was made about. The four states landed in
+  // this issue and `doctor` honoured them; the sentence handed to the stage did not, because the caller
+  // flattened them into one boolean first. An unreadable credential was described to the stage as one
+  // that "was never enrolled here" — a definite negative asserted from a could-not-look, inside the list
+  // case-law-sources.mjs calls "the ground truth". A `chmod 000` could make a delivered report tell a
+  // client this deployment does not have US federal case law.
+  const dir = scratch();
+  const file = join(dir, "courtlistener.json");
+  try {
+    writeFileSync(file, JSON.stringify({ tokens: { access_token: "x", refresh_token: "y" } }));
+    chmodSync(file, 0o000);
+    const rows = caseLawInventory({ OAUTH_BRIDGE_CREDS_DIR: dir });
+    const cl = rows.find((r) => r.provider === "courtlistener");
+    // THE INSTRUMENT FIRST. Running as root reads a 000 file happily, and this arm would then be
+    // driving `usable` while claiming to drive `unreadable` — a pass that measured the wrong state.
+    if (cl.credential.state !== "unreadable") {
+      assert.equal(cl.credential.state, "usable", "an unexpected state — this arm no longer knows what it drove");
+      return;   // root, or a filesystem that ignores the mode: not a result either way
+    }
+
+    const line = caseLawSourceLines(caseLawSourceRows(rows)).join("\n")
+      .split("\n").find((l) => l.includes("CourtListener"));
+
+    assert.match(line, /COULD NOT BE CHECKED ON THIS DEPLOYMENT/,
+      "an unreadable credential is still described to the stage as an answer");
+    assert.doesNotMatch(line, /NOT SET UP ON THIS DEPLOYMENT/,
+      "the stage is still told this deployment does not have a source nobody could check");
+    assert.doesNotMatch(line, /IS an outage/,
+      "the stage is being told to report an outage for a source nobody could check");
+    // The ruling's two prohibitions, in its own terms, asserted as text the stage receives.
+    assert.match(line, /could not be confirmed/, "the reader is not told what to report instead");
+  } finally { try { chmodSync(file, 0o600); } catch { /* already gone */ } rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("tracker issue 173 — the composer's three states stay three, and none borrows another's sentence", () => {
+  // THE CLASS, not the one state. Driven on rows built by hand so every branch is exercised on this box
+  // regardless of what its filesystem permits, and asserted as three DISTINCT sentences: a shared
+  // sentence is exactly how the defect arrived, and a future edit that collapses two would pass an arm
+  // that only checked the one state it was written for.
+  const rows = [
+    { label: "Enrolled", enrolment: "oauth", available: true, checked: true },
+    { label: "Broken", enrolment: "oauth", available: false, checked: true },
+    { label: "Unknown", enrolment: "oauth", available: false, checked: false },
+  ];
+  const said = caseLawSourceLines(rows).join("\n").split("\n");
+  const of = (name) => said.find((l) => l.includes(name));
+
+  assert.match(of("Enrolled"), /IS an outage/);
+  assert.match(of("Broken"), /NOT SET UP ON THIS DEPLOYMENT/);
+  assert.match(of("Unknown"), /COULD NOT BE CHECKED/);
+
+  const three = new Set([of("Enrolled"), of("Broken"), of("Unknown")]);
+  assert.equal(three.size, 3, "two states share a sentence, which is the defect this issue is about");
+
+  // The residue the test lane named: "it was never enrolled here" is false about a credential somebody
+  // DID enrol, and `unusable` is exactly that case.
+  assert.doesNotMatch(of("Broken"), /never enrolled here/,
+    "a credential somebody enrolled is still described as one that was never enrolled");
 });

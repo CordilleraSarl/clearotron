@@ -14,7 +14,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readdirSync, existsSync, statSync, rmSync, readFileSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, relative } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { wrapProse, proseWidth, composeEnvBody } from "../../bin/onboard.mjs";
 import { preflightSkillsStore } from "../skills-store-provenance.mjs";
@@ -298,19 +298,125 @@ test("every provider this wizard offers is one the driver actually has an adapte
   );
 });
 
+/**
+ * Two environments agree — asserted WITHOUT EVER PUTTING A VALUE IN THE FAILURE MESSAGE.
+ *
+ * `assert.deepEqual` on two env objects prints both of them when it fails, and an env object is the one
+ * shape in this repo whose values are secrets. On a PUBLIC repository a red arm's log is world-readable,
+ * so the assertion that fires on the bad day must not be the one that publishes `PORTAL_SECRET`.
+ *
+ * The contract is unchanged and still exact — the same keys, and the same value under every key. Only
+ * the REPORT is narrowed: a mismatch names the keys that differ and stops there, which is what a reader
+ * needs in order to fix it anyway.
+ */
+function sameEnv(actual, expected, message) {
+  assert.deepEqual(Object.keys(actual).sort(), Object.keys(expected).sort(), `${message} — different keys`);
+  const differing = Object.keys(actual).filter((k) => actual[k] !== expected[k]).sort();
+  assert.deepEqual(differing, [], `${message} — same keys, different values under: ${differing.join(", ")}`);
+}
+
 test("readEnvFile reports what the ENGINE'S loader would apply, not what a second parser thinks", () => {
   // The point of routing through shared/env-local.mjs rather than a regex: `--check` must agree
   // with the thing that actually reads the file. Two parsers that differ on quoting means the check
   // reports a value the run does not use.
+  //
+  // ── `home` IS PINNED, AND WITHOUT IT THIS ARM READ THE DEVELOPER'S OWN CREDENTIALS ────────────────
+  //
+  // The file in force resolves to `<home>/.config/clearotron/.env` and IGNORES `repoRoot`, so passing a
+  // temporary `repoRoot` pinned nothing: `loadEnvLocal` defaulted `home` to `homedir()` and filled
+  // `theirs` from the real machine. On a box where that file exists this arm failed — a three-key
+  // fixture against somebody's actual settings — and printed both sides. env-local.mjs's own header says
+  // the parameter exists for exactly this ("without it every arm about the file in force would be driven
+  // against the developer's own ~/.config/clearotron/.env"); this was the one caller not passing it.
+  // Found by another lane's suite run on their box, not by this arm going red on mine.
   const dir = mkdtempSync(join(tmpdir(), "onboard-env-"));
+  const home = mkdtempSync(join(tmpdir(), "onboard-home-"));
   assert.deepEqual(readEnvFile(join(dir, ".env")), {}, "an absent file is empty, not an error");
   writeFileSync(join(dir, ".env"), '# a comment\nA=1\nB="two"\nC=three\n');
   const mine = readEnvFile(join(dir, ".env"));
   const theirs = {};
-  loadEnvLocal({ env: theirs, repoRoot: dir, note: () => {} });
-  assert.deepEqual(mine, theirs, "the check reads exactly what the loader applies");
-  assert.deepEqual(mine, { A: "1", B: "two", C: "three" });
+  loadEnvLocal({ env: theirs, repoRoot: dir, home, location: "project-root", note: () => {} });
+  sameEnv(mine, theirs, "the check reads exactly what the loader applies");
+  sameEnv(mine, { A: "1", B: "two", C: "three" }, "the shared parser's own answer changed");
   rmSync(dir, { recursive: true, force: true });
+  rmSync(home, { recursive: true, force: true });
+});
+
+test("tracker issue 179 — readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
+  // ── WHY THIS SPAWNS, WHEN EVERY OTHER GUARD TODAY INJECTED ────────────────────────────────────────
+  //
+  // Injection cannot catch this one, and finding that out took two wrong guards.
+  //
+  // The first tested `loadEnvLocal` and never called `readEnvFile` at all, so the caller could go back
+  // to inferring a directory and it stayed green. The second gave `readEnvFile` an injectable `home` —
+  // the pattern that made the drain check and the connect failure drivable — and it ALSO stayed green,
+  // because the regression IS the caller dropping what it was handed. An argument the caller stops
+  // passing cannot be planted through.
+  //
+  // `HOME` is the one lever the caller cannot drop: `homedir()` reads it whatever the call site does. So
+  // the arm spawns a child with a planted HOME containing a settings file, asks `readEnvFile` for a
+  // DIFFERENT file there, and reads back which one it answered about. That fails on any machine, with
+  // the caller reverted or the loader reverted, which is the property the other two only claimed.
+  const home = mkdtempSync(join(tmpdir(), "onboard-realhome-"));
+  const asked = mkdtempSync(join(tmpdir(), "onboard-asked-"));
+  try {
+    mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+    writeFileSync(join(home, ".config", "clearotron", ".env"), "FROM_THE_HOME_FILE=1\n");
+    writeFileSync(join(asked, ".env"), "FROM_THE_FILE_ASKED_FOR=1\n");
+
+    const out = execFileSync(process.execPath, ["--input-type=module", "-e",
+      `import { readEnvFile } from ${JSON.stringify(pathToFileURL(join(REPO, "bin", "onboard.mjs")).href)};`
+      + `console.log(JSON.stringify(Object.keys(readEnvFile(${JSON.stringify(join(asked, ".env"))}))));`,
+    ], { encoding: "utf8", env: { ...process.env, HOME: home }, stdio: ["ignore", "pipe", "pipe"] });
+
+    assert.deepEqual(JSON.parse(out.trim()), ["FROM_THE_FILE_ASKED_FOR"],
+      "readEnvFile was given one path and answered about another — it is inferring a directory and "
+      + "reaching this machine's own settings file instead of the file it was asked for");
+  } finally {
+    rmSync(home, { recursive: true, force: true });
+    rmSync(asked, { recursive: true, force: true });
+  }
+});
+
+test("tracker issue 179 — the loader honours a file it is handed, whatever the home says", () => {
+  // The loader's own contract, held separately: two promises, and either can break without the other.
+  const home = mkdtempSync(join(tmpdir(), "onboard-loaderhome-"));
+  const asked = mkdtempSync(join(tmpdir(), "onboard-loaderasked-"));
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"), "FROM_THE_HOME_FILE=1\n");
+  writeFileSync(join(asked, ".env"), "FROM_THE_FILE_ASKED_FOR=1\n");
+  const seen = {};
+  loadEnvLocal({ env: seen, file: join(asked, ".env"), home, note: () => {} });
+  assert.deepEqual(Object.keys(seen), ["FROM_THE_FILE_ASKED_FOR"],
+    "the loader was told a file outright and read a different one");
+  rmSync(home, { recursive: true, force: true });
+  rmSync(asked, { recursive: true, force: true });
+});
+
+test("tracker issue 179 — an arm cannot reach the real home, and a failure names no value", () => {
+  // TWO PLANTS, because the fix has two halves that fail in different ways.
+  //
+  // ONE — the pin. A file is planted in a home that is not this machine's. A reader still resolving
+  // through `homedir()` cannot see it, so this drives the pin positively rather than asserting that
+  // something did not happen.
+  const home = mkdtempSync(join(tmpdir(), "onboard-realhome-"));
+  const repoRoot = mkdtempSync(join(tmpdir(), "onboard-repo-"));
+  mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
+  writeFileSync(join(home, ".config", "clearotron", ".env"), "PORTAL_SECRET=planted-not-a-real-secret\n");
+  const seen = {};
+  loadEnvLocal({ env: seen, repoRoot, home, note: () => {} });
+  assert.deepEqual(Object.keys(seen), ["PORTAL_SECRET"],
+    "the loader did not read the PINNED home, so pinning it proves nothing about which file an arm reads");
+
+  // TWO — the reporter. Driven through a real mismatch: the message must name the KEY and never the
+  // value. This is the property that matters on the day it goes red in a world-readable log.
+  let msg = "";
+  try { sameEnv({ PORTAL_SECRET: "aaa" }, { PORTAL_SECRET: "bbb" }, "control"); }
+  catch (e) { msg = String(e.message); }
+  assert.match(msg, /PORTAL_SECRET/, "a mismatch must name the key, or nobody can act on it");
+  assert.doesNotMatch(msg, /aaa|bbb/, "the failure message carried the values — that is the leak itself");
+  rmSync(home, { recursive: true, force: true });
+  rmSync(repoRoot, { recursive: true, force: true });
 });
 
 test("reading a .env for the report does not APPLY it — --check must not configure the process it inspects", () => {
