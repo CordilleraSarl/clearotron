@@ -51,8 +51,24 @@ on:
   # time. Then nothing again for the next hour, through twelve intervals it should have taken.
   #
   # So treat this as a floor, not a clock. `*/5` on a public repository is what GitHub feels like giving
-  # you; a version sitting cut and unpublished may wait an hour for it. The step above is what makes the
-  # ordinary path work without a person, and this is the net underneath.
+  # you; a version sitting cut and unpublished may wait an hour for it.
+  #
+  # AND THE NET HAS NOT CAUGHT ANYTHING YET. Two stable releases have gone out and NEITHER was published
+  # by this cron: 0.1.1 by a merge of an unrelated pull request at 16:17Z, 0.1.2 by another at 17:14Z.
+  # Both times the cut sat on main until somebody pushed with their own credentials, and both times the
+  # publish then worked first try. The cron's whole record on 2026-09-05 is one run, 33973623236 at
+  # 15:03:15Z, which found nothing to do.
+  #
+  # SO THE HONEST DESCRIPTION OF THIS PIPELINE IS THREE ACTS AND TWO OF THEM ARE A PERSON'S: a merge
+  # opens the version pull request; somebody approves its parked run, once per version branch; and
+  # somebody's NEXT push to main is what publishes it. Read the paragraph above as what SHOULD make the
+  # ordinary path work without a person rather than what does, and do not plan a release around the
+  # cron arriving.
+  #
+  # The fix worth building, for whoever takes it: `pending` is already the right mechanism and is
+  # reachable only on the cron. A dispatch path into it — where a dispatch on main publishes rather than
+  # rehearsing — replaces the push with a button. That is a change to the publish gate, which is the
+  # most safety-critical part of this file, and it belongs in a change of its own.
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
