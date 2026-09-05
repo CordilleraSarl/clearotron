@@ -19,8 +19,26 @@ no gateway, no platform, and nothing about your matters reaches us.
 
 ## Install
 
-**Install from source.** The `clearotron` name on npm is currently a placeholder that carries no code,
-so `npm install -g clearotron` will not give you the command yet.
+**See it work first, with nothing checked out.**
+
+```bash
+npx clearotron demo
+```
+
+That fetches the published package — it will ask once before downloading — then replays a finished
+clearance into a local pool and opens the report in your browser. No account, no credentials, no network
+calls to us.
+
+**Then install it.**
+
+```bash
+npm install -g clearotron
+```
+
+Node 22 or newer, on macOS, Linux, or Windows via WSL2. That puts `clearotron` on your `PATH`; every
+command below works in that short form.
+
+**Or run it from source**, which is what you want if you intend to change it:
 
 ```bash
 git clone https://github.com/CordilleraSarl/Clearotron
@@ -29,12 +47,7 @@ npm install                    # every workspace
 npm run build -w portal-ui     # the browser bundle is not committed — build it once
 ```
 
-Node 22 or newer, on macOS, Linux, or Windows via WSL2. Everything below is `npx clearotron …`, run
-from that directory; the bare `clearotron` command arrives with the published package.
-
-```bash
-npm install -g clearotron      # once 0.1.0 is on the registry
-```
+From a clone the commands are `npx clearotron …`, run from that directory.
 
 That puts `clearotron` on your `PATH`, and from then on you can stop typing `npx` — the same commands
 in their short form:

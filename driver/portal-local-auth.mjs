@@ -147,6 +147,27 @@ export function credentialPathFor(env = process.env, home = null) {
 }
 
 /**
+ * The command that recovers a lost passphrase FOR THIS INSTALL — qualified when the credential is not
+ * where the verb looks by default.
+ *
+ * THE PRINTED LINE HAS TO RUN AS PRINTED. The demo keeps its credential inside its own base, and the
+ * recovery line said `clearotron passphrase --reset` — which resolves the SHARED default, finds nothing
+ * there, and exits 1 with "no credential exists yet" while the credential sits in the demo's directory
+ * being read happily by the portal. Measured by the test lane, running the line exactly as the demo
+ * printed it.
+ *
+ * The verb keeps one rule — the environment variable — and the printer, which knows where it put the
+ * file, names it. That also covers an operator who set `PORTAL_LOCAL_CREDENTIAL` themselves, who had
+ * the same broken line and no demo in sight.
+ */
+export function passphraseResetCommand({ prefix = "", credentialPath = null, env = process.env, home = null } = {}) {
+  const base = `${prefix}clearotron passphrase --reset`;
+  const path = credentialPath ?? env.PORTAL_LOCAL_CREDENTIAL ?? null;
+  if (!path || path === credentialPathFor({}, home)) return base;
+  return `PORTAL_LOCAL_CREDENTIAL=${path} ${base}`;
+}
+
+/**
  * A new passphrase — the ONE place the entropy decision is made.
  *
  * 18 bytes to 24 base64url characters, no padding and no ambiguous punctuation: readable off a terminal,

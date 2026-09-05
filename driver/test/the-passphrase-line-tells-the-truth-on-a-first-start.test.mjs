@@ -71,6 +71,7 @@ test("both sentences still exist, and the first-run one names how to recover", (
   const branchBlock = SRC.slice(SRC.indexOf("if (mintedPassphrase)"), SRC.indexOf("if (mintedPassphrase)") + 1400);
   assert.equal((branchBlock.match(/\$\{reset\}/g) ?? []).length, 2,
     "a branch stopped naming the reset command — a reader who lost the value is left with nothing to do");
-  assert.match(SRC, /const reset = `\$\{invocationPrefix\(\)\}clearotron passphrase --reset`/,
-    "and `reset` must be that command, or both branches now name something else");
+  assert.match(SRC, /const reset = passphraseResetCommand\(\{/,
+    "and `reset` must be composed by the one function that knows when the credential needs naming — the "
+    + "bare command, run as the demo printed it, exits 1 over a credential that is sitting there");
 });
