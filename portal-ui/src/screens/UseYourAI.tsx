@@ -367,6 +367,15 @@ export function UseYourAI({ ctx }: { readonly ctx: ShellContext }) {
             <em> &ldquo;why did you rate that one high?&rdquo;</em> — and it will do the same work you
             would do on these screens.
           </p>
+          {/* KEPT VERBATIM. Approved copy line 14 is "the existing fold and its link to the full technical
+              instructions, KEPT", and this paragraph is part of that fold. I had dropped it while
+              rewriting the page around it — an unsanctioned deletion of client-facing copy, which is the
+              exact class of change the sign-off criterion on this issue exists for. Restored to main's
+              wording, character for character. */}
+          <p>
+            If a press does not finish, the most common reason is that your assistant runs somewhere
+            this service cannot be reached from. The team who set this up can tell you in a sentence.
+          </p>
           <p className="ai-help-doc">
             <a href="/portal/connect-help" target="_blank" rel="noreferrer">The full technical
             instructions</a> — written for an engineer, or for an assistant reading on your behalf.
