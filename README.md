@@ -49,14 +49,6 @@ npm run build -w portal-ui     # the browser bundle is not committed — build i
 
 From a clone the commands are `npx clearotron …`, run from that directory.
 
-That puts `clearotron` on your `PATH`, and from then on you can stop typing `npx` — the same commands
-in their short form:
-
-```bash
-clearotron doctor
-clearotron start
-```
-
 ## Quick start
 
 Check the install before it does anything. `doctor` only reads — it writes nothing, calls nobody, and
