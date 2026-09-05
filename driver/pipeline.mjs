@@ -171,7 +171,7 @@ import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs";
 import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
-import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource } from "./repairs.mjs";
+import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule } from "./repairs.mjs";
 import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -14786,7 +14786,25 @@ async function pipelineInner(job, opts = {}) {
       // is precisely what `recoveryResumesAt` means. So a weather park writes `recoveryResumesAt` like
       // any other recovery park, still leaves `resetsAt` null, and the record says WHICH lane bought
       // the wait in `recoveryLane` instead of implying a provider clock that does not exist.
-      const recoveryResumesAt = new Date(Date.now() + backoffMin * 60000).toISOString();
+      // tracker issue 103 — A CAP PARK IS NOT A STAGE FAILING, and the 2/15/60 ladder cannot survive one.
+      // A cap that classifies `rate_limited` already takes the postpone path and waits for its stated
+      // reset. One that does NOT lands here, where two things used to go wrong: the provider's own reset
+      // hint was dropped even though StageFailure carries it all the way to this site, and the ladder
+      // topped out at 60 minutes, so six probes covered ~3 hours and a daily cap outlived every one of
+      // them. Cap parks now ride their own ladder (15/30/60/120/240) and a STATED reset time beats it.
+      const capResetHint = (e instanceof StageFailure && e.resetsAt) || null;
+      const capPark = isCapPark(reason, capResetHint);
+      const capSchedule = capPark
+        ? capParkSchedule({ resetsAt: capResetHint, attempts: decision.sigAttempts ?? (attempt - 1) })
+        : null;
+      const recoveryResumesAt = capSchedule
+        ? capSchedule.resumesAt
+        : new Date(Date.now() + backoffMin * 60000).toISOString();
+      // What the wait was bought on: "provider" = its own clock said so, "ladder" = our guess. Same
+      // honesty rule the adapters apply to resetsAtBasis — a reader must be able to tell a stated fact
+      // from an inference, or the record quietly upgrades one into the other.
+      const recoveryWaitBasis = capSchedule ? capSchedule.basis : "ladder";
+      const recoveryWaitMin = capSchedule ? capSchedule.waitMin : backoffMin;
       const lane = decision.lane;
       const laneAttempt = (decision.laneAttempts ?? 0) + 1;
       const laneLabel = lane === "weather" ? "upstream weather" : "defect";
@@ -14796,7 +14814,7 @@ async function pipelineInner(job, opts = {}) {
         weather: { attempts: laneCounts.weather + (lane === "weather" ? 1 : 0), ceiling: weatherCeiling },
         defect: { attempts: laneCounts.defect + (lane === "defect" ? 1 : 0), ceiling: recoveryMax },
       };
-      note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${backoffMin}min; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
+      note(`[pipeline] RECOVERABLE failure in ${run.codename} at ${failedStage} — parking for AUTO-RECOVERY, ${laneLabel} lane ${laneAttempt}/${decision.laneCeiling} (defect budget ${recoveryLanes.defect.attempts}/${recoveryMax} spent; resumes ~${recoveryWaitMin}min${capSchedule ? ` on the ${recoveryWaitBasis === "provider" ? "provider's stated reset" : "cap ladder"}` : ""}; valid stages skip on resume): ${String(reason).slice(0, 160)}`);
       // no fromStage: the failed-stage label can be decorated ("synthesis(blocking)") and is not a
       // resume key — plain idempotent resume re-runs exactly the invalid/missing outputs.
       try { sentinel(run.runDir, ".postponed", { kind: "recovery", recoveryResumesAt, postponedAt: new Date().toISOString(), codename: run.codename, job, agent, attempt, reason: String(reason).slice(0, 300), sig: failSig.sig, class: failClass, lane }); } catch { /* best-effort */ }
@@ -14827,7 +14845,12 @@ async function pipelineInner(job, opts = {}) {
         // this field and was never measured, which is a different fact from a row that says "no gap".
         recoveryHistory: [...recoveryHistory, { sig: failSig.sig, stage: failedStage, class: failClass, lane, attempt, quantity, quantityToken: failSig.quantityToken ?? null, kindToken: failSig.kindToken ?? null, classSource, ts: new Date().toISOString() }] });
       rollupStatus(run.studioRoot);
-      runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass });
+      runLog(run.runDir, { event: "auto-recovery-parked", stage: failedStage, attempt, of: recoveryMax, lane, laneAttempt, laneOf: decision.laneCeiling, recoveryResumesAt, reason: String(reason).slice(0, 200), sig: failSig.sig, class: failClass,
+        // tracker issue 103 — a cap park has to be legible in the record, or the next reader diagnosing
+        // "why did this wait 21 hours" cannot tell a provider's stated reset from our own ladder guess.
+        // Absent on a non-cap park rather than false: a row that says nothing is honest about not having
+        // looked, while `capPark: false` would read as "we checked and it was not one".
+        ...(capSchedule ? { capPark: true, recoveryWaitBasis, recoveryWaitMin, capResetHint: capResetHint ?? null } : {}) });
       logTurnaroundReconciliation(run.runDir, ctx?.quote, "recovery-parked");
       recordRunConsumption(ctx, { phase: "recovery-park", tokens: stampTokenRollup(run.runDir, "recovery-park") });
       // the return's `resetsAt` is the runner's due-clock contract (parkPostponed meta / postponedDueAt),
