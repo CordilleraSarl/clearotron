@@ -37,10 +37,17 @@ const LINKED = ["shared", "driver", "providers", "mcp-server", "scripts", "porta
  *
  * @param {Record<string,string>|null} envFile lines to write into `<repo>/.env`; null writes no file at
  *   all, which is the "nothing is configured" state a hermetic runner used to get by accident.
- * @returns {{ root: string, onboard: string }}
+ * @param {{packaged?: boolean}} shape — `packaged: true` puts the root at
+ *   `<project>/node_modules/clearotron` instead of directly in the temp directory. That is the ONE
+ *   thing that distinguishes a tree npm owns and replaces from a checkout it never touches, and three
+ *   branches now read it: `standFrom`, `globalBinDirFrom` and doctor's upgrade discriminator. An arm
+ *   that could only build a checkout could not reach any of them.
+ * @returns {{ root: string, project: string, onboard: string }}
  */
-export function hermeticInstallRoot(envFile = null) {
-  const root = mkdtempSync(join(tmpdir(), "hermetic-repo-"));
+export function hermeticInstallRoot(envFile = null, { packaged = false } = {}) {
+  const project = mkdtempSync(join(tmpdir(), "hermetic-repo-"));
+  const root = packaged ? join(project, "node_modules", "clearotron") : project;
+  if (packaged) mkdirSync(root, { recursive: true });
   mkdirSync(join(root, "bin"), { recursive: true });
   cpSync(join(REAL_REPO, "bin"), join(root, "bin"), { recursive: true });
   for (const entry of LINKED) {
@@ -51,5 +58,5 @@ export function hermeticInstallRoot(envFile = null) {
     writeFileSync(join(root, ".env"),
       Object.entries(envFile).map(([k, v]) => `${k}=${v}\n`).join(""), "utf8");
   }
-  return { root, onboard: join(root, "bin", "onboard.mjs") };
+  return { root, project, onboard: join(root, "bin", "onboard.mjs") };
 }

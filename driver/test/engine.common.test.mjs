@@ -220,15 +220,37 @@ const lateSpeaker = (quietMs, endMs) =>
   + `setTimeout(()=>{clearInterval(i);process.stdout.write('{"type":"done"}');process.exit(0)},${endMs - quietMs})},${quietMs})`;
 
 test("#1752 a slow spawn is not charged to the hard wall", async () => {
-  // Quiet until 700ms, then alive until 2200ms — 1.5s of turn against a 1.5s ceiling it only just fits.
-  // Measured from spawn, the ceiling expires at 1500ms with the child mid-heartbeat and the run dies
-  // having been given 800ms of actual turn. Measured from the first byte, it survives to its own exit.
-  const r = await withHardPin("1500", () => runNode(lateSpeaker(700, 2200), { stallSec: 1.0 }));
+  // Quiet until 1000ms, then alive until 2500ms. Measured from spawn, the ceiling expires at 2000ms with
+  // the child mid-heartbeat and the run dies having been given 1000ms of actual turn. Measured from the
+  // first byte, it survives to its own exit.
+  //
+  // ── ✕ THE NUMBERS ARE PINNED BY TWO BOUNDS, AND THE ARM USED TO SIT ON ONE OF THEM ──
+  //
+  // The wall starts at the child's first OUTPUT (driver/engine/common.mjs:224 — `Date.now() -
+  // firstOutputAt >= hardMs`), so the child's life after that byte is what the ceiling is measured
+  // against. Two bounds are live at once:
+  //
+  //     turn < hardMs                 or this arm reds on a CORRECT implementation
+  //     hardMs < quietMs + turn       or this arm passes on the DEFECT it was written for
+  //
+  // The window is therefore `turn ∈ (hardMs - quietMs, hardMs)` and it is exactly `quietMs` wide, which
+  // is why the ceiling cannot simply be widened: raising hardMs alone crosses the second bound and the
+  // arm silently stops catching anything.
+  //
+  // It used to be pinned at 1500 with `lateSpeaker(700, 2200)` — a turn of 2200-700 = 1500ms against a
+  // 1500ms ceiling. The child's own `process.exit(0)` and the watchdog's kill were scheduled for the SAME
+  // INSTANT on every run, and which landed first was a race between a timer in the child and a poll in
+  // the parent. It was not flaky under load; it was a coin flip that load biased. The old comment called
+  // that "only just fits", describing a zero-margin budget as though it were a design.
+  //
+  // 1000/2500 against a 2000ms ceiling puts the turn at 1500ms, which is 500ms clear of BOTH bounds —
+  // the most margin the window allows, and the window was widened to buy it (quietMs 700 → 1000).
+  const r = await withHardPin("2000", () => runNode(lateSpeaker(1000, 2500), { stallSec: 1.0 }));
   assert.equal(r.killed, false,
-    `killed after ${r.wall}s with a 1.5s ceiling — startup is being charged to a clock that is supposed `
+    `killed after ${r.wall}s with a 2s ceiling — startup is being charged to a clock that is supposed `
     + "to measure the turn");
   assert.equal(r.hardWall, false);
-  assert.ok(r.wall > 1.5, `the run lasted ${r.wall}s — it has to outlive the ceiling for this arm to see anything`);
+  assert.ok(r.wall > 2.0, `the run lasted ${r.wall}s — it has to outlive the ceiling for this arm to see anything`);
   assert.deepEqual(r.lines.at(-1), '{"type":"done"}', "the child did not reach its own ending");
 });
 

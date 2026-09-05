@@ -43,7 +43,9 @@ import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseEnv } from "node:util";
+import { homedir } from "node:os";
 import { warnRetiredEnv } from "./env-aliases.mjs";
+import { standFrom } from "./invocation.mjs";   // the project root, derived once
 
 /** The repo root — this file lives at <repo>/shared/env-local.mjs. */
 const REPO_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -119,11 +121,29 @@ export const CLI_ENTRIES = Object.freeze([
  * new spellings set: `REGISTER_PROVIDER` came back null — which makes a run refuse by name — and the
  * store fell back to the bundled default. The fact was translated; the ordering was not.
  *
+ * ── — AND A FILE THAT IMPORTS A NAMED HELPER BELONGS HERE TOO ──────────────
+ *
+ * The list was written for the bare `import "…"` form, because until 2208 that was the only form the
+ * guard over it could see: its grep excluded a literal `n` where it meant to exclude a newline, so every
+ * named import of this module was invisible and `bin/onboard.mjs` sat outside both lists on main without
+ * anything noticing. The property the list actually declares has nothing to do with import syntax — it
+ * is "needs the rename, must not have `<repo>/.env` applied to its process" — and a named import gets
+ * exactly the same two things a bare one does, because an ESM import runs the module body either way.
+ *
  * ADDING A NAME HERE IS NOT A WAY TO GET `.env`. It is the opposite: it is a declaration that this file
  * must NOT get it. The two services below carry a production ruling to that effect ( — "every
  * value arrives named"), and a test fails if either is moved into CLI_ENTRIES.
  */
 export const NO_DOTFILE = Object.freeze([
+  // ── THE WIZARD, WHICH REPORTS THE FILE RATHER THAN OBEYING IT ───────────
+  // `doctor` is the one command whose job is to describe an install, and it would be useless if the file
+  // it exists to report on had already been folded into its own environment: every value would read as
+  // "set in the environment" and the question "where did this come from" could not be answered. So it
+  // calls `loadEnvLocal` itself, with a throwaway env object and its own `repoRoot`, and prints what it
+  // found. That is a READ, deliberately, and it is not the same thing as the module applying the file to
+  // this process — which is what membership here refuses. `driver/test/hermetic-install-root.mjs` records
+  // the same seam from the fixtures' side.
+  "bin/onboard.mjs",
   // Services. Both are long-running, both are started by systemd with every value named in the unit.
   "driver/portal-service.mjs",
   "driver/profile-service.mjs",
@@ -248,6 +268,69 @@ const realOrSelf = (p) => { try { return realpathSync(p); } catch { return p; } 
 const SHELL_EXPANSION = /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/;
 
 /**
+ * ── WHERE THIS INSTALL'S `.env` LIVES —, awaiting the ruling on 2177 ─────────
+ *
+ * NOTHING IS DECIDED HERE, AND THAT IS THE POINT. On a packaged install the wizard writes `.env` to the
+ * package root, which is `<project>/node_modules/clearotron` — a directory npm owns and any `npm install`
+ * in that project may replace, destroying the configuration silently. Where it should live instead is a
+ * product decision with three measured candidates and real costs on each; it is the owner's call on
+ * and it is deliberately NOT taken in this file.
+ *
+ * What this file does is make the answer ONE LINE. Before it, nine sites each computed the path
+ * themselves — four on the package root, five on `~/.env` — and a move that changed the writer without
+ * the reader would have lost an operator's configuration while every command still exited 0. That
+ * failure is silent, which is why the resolver exists ahead of the decision rather than after it.
+ *
+ * ✕ IT IS NOT A KNOB, AND MUST NOT BECOME ONE. No env var reads it, no flag sets it, and it is not
+ * documented to operators. A user-facing setting for this WOULD BE the 2177 decision — made by giving
+ * every operator a fourth answer and a support burden, which is the one outcome nobody asked for.
+ * Flipping the constant below is the whole change.
+ *
+ * The three candidates are Grogu's, measured on the 2177 thread against the resolution sites, not
+ * invented here:
+ *
+ *   "package-root"   <install>/.env                   TODAY. Option 3 — no code change, hazard documented.
+ *   "project-root"   <project>/.env                   Option 1 — survives npm; keeps the two-file split
+ *                                                     the door-divergence guard reasons about; on a git
+ *                                                     clone `standFrom` returns the checkout, so this
+ *                                                     spelling is IDENTICAL to today's there.
+ *   "xdg-config"     ~/.config/clearotron/.env        Option 2b — survives npm and project deletion;
+ *                                                     diverges from the clone shape everywhere.
+ *
+ * Option 2a — merging into the services' `~/.env` — is NOT wired, on purpose. It is the only candidate
+ * that changes what a running service can be configured by, collapsing two deliberately disjoint files
+ * into one and deleting the door-divergence guard's whole subject. Offering it as a one-line flip beside
+ * three path changes would misrepresent it as the same size of decision. If the owner picks it, it is a
+ * separate piece of work with that guard in scope.
+ *
+ * WHOEVER FLIPS THIS: `doorDivergence` in `bin/onboard.mjs` compares this file against `~/.env` by name,
+ * and it reads the same resolver — so the pair it compares follows the flip. That is the check Grogu
+ * named as part of the work rather than an afterthought; it is wired, not left.
+ */
+export const ENV_LOCAL_LOCATION = "package-root";
+
+/**
+ * The path `.env` is read from and written to, for every site on the CLI's side of the split.
+ *
+ * `~/.env` — the file the systemd services load — is a DIFFERENT file and is not resolved here. The two
+ * are disjoint by design; see the door-divergence note in `bin/onboard.mjs`.
+ *
+ * PURE and fully parameterised so an arm can drive a candidate that is not the one in force. A switch
+ * whose unchosen branches are never executed is wiring that asserts itself.
+ */
+export function envLocalPath({ repoRoot = REPO_ROOT, home = homedir(), location = ENV_LOCAL_LOCATION } = {}) {
+  switch (location) {
+    case "package-root": return join(repoRoot, ".env");
+    case "project-root": return join(standFrom(repoRoot), ".env");
+    case "xdg-config": return join(home, ".config", "clearotron", ".env");
+    // An unknown location REFUSES rather than falling back to today's. A silent fallback would let a
+    // typo in the flip read as "the ruling landed and nothing moved", which is the state this whole
+    // block exists to make impossible to reach quietly.
+    default: throw new Error(`ENV_LOCAL_LOCATION names no candidate: ${JSON.stringify(location)}`);
+  }
+}
+
+/**
  * Is `argv1` one of CLI_ENTRIES? Compared by real path so a symlinked checkout, a relative
  * invocation and an absolute one all answer the same.
  */
@@ -267,8 +350,14 @@ export function isCliEntry(argv1, repoRoot = REPO_ROOT) {
  * Returns {path, applied[], skipped[], reason} — names only. Values are never returned and never
  * logged: this file is where the credentials are.
  */
-export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = defaultNote } = {}) {
-  const path = join(repoRoot, ".env");
+export function loadEnvLocal({ env = process.env, repoRoot = REPO_ROOT, note = defaultNote,
+                              location = ENV_LOCAL_LOCATION } = {}) {
+  // `location` is here SO AN ARM CAN DRIVE A CANDIDATE NOBODY HAS CHOSEN. Today every candidate but one
+  // is unreachable, and `package-root` happens to resolve to the same string the nine sites used to
+  // compose by hand — so an arm asserting that the reader follows the resolver would be true by
+  // construction and would keep being true after a flip broke it. It is not a knob: no caller passes it,
+  // and the note on ENV_LOCAL_LOCATION above says why it must not become one.
+  const path = envLocalPath({ repoRoot, location });
   if (optedOut(env)) return { path, applied: [], skipped: [], reason: "opted-out" };
   if (serviceManaged(env)) {
     // Loud ONLY when there is a file to ignore. A service with no .env beside it is the normal case on
