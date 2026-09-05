@@ -90,13 +90,30 @@ test("#1269 the test wrapper exports the suite dir, UNCONDITIONALLY and inside i
     + "which is the one setting this exists to override");
 });
 
-test("#1269 the #743 design comment says what the code does — they cannot disagree", () => {
+test("the design comment says what the code does — they cannot disagree", () => {
   // Acceptance 3. The block said "The CALL ledger does NOT move", flat, and that is now true only of a
   // real run. A design comment that describes the behaviour before the change is worse than none: it is
   // the sentence the next reader trusts instead of reading the ladder.
+  //
+  // RE-ANCHORED ON PROSE, AND THE ANCHOR IS NOW A REFUSAL WHEN IT IS GONE. This arm located the block by
+  // a heading that opened with an issue number and asked whether a second issue number appeared inside
+  // it. The public tree carries neither: the reference strip took both, so `indexOf` answered -1,
+  // `slice(-1)` handed back the file's last character, and the arm reported that the block does not
+  // mention the redirect — true of a one-character string, and nothing to do with the block. It read as
+  // a finding about the comment when it was a finding about the anchor.
+  //
+  // So it anchors on the heading's WORDS, and asserts the SENTENCES rather than the numbers that used to
+  // stand in for them. That is the same rule this repository already applies to line citations — cite
+  // the symbol, because a number is not checkable — and it is what makes this arm survive a tree where
+  // the numbers are gone.
   const src = readFileSync(join(ROOT, "providers", "_shared", "ledger-path.mjs"), "utf8");
-  const block = src.slice(src.indexOf("#743 — THE RECORD LOG'S ADDRESS"));
-  assert.match(block, /#1269/, "the #743 block never mentions the suite redirect that qualifies it");
+  const at = src.indexOf("THE RECORD LOG'S ADDRESS IS THE RUN, NOT THE HOME DIRECTORY");
+  assert.notEqual(at, -1,
+    "the design block's heading is gone from providers/_shared/ledger-path.mjs, so this arm has nothing "
+    + "to read — a missing anchor is a refusal here, never an empty block that quietly matches nothing");
+  const block = src.slice(at);
+  assert.match(block, /a SUITE run redirects both ledgers into its/,
+    "the block never mentions the suite redirect that qualifies its flat claim about the call ledger");
   assert.match(block, /does NOT move, for a REAL run/,
     "the flat 'the CALL ledger does NOT move' is back, and a suite run now contradicts it");
 });
