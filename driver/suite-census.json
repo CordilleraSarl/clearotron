@@ -3957,6 +3957,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-bundle-ships-no-commentary.test.mjs": {
+          "tests": 2,
+          "asserts": 3,
+          "skips": 2,
+          "todos": 0
+        },
         "the-bundled-roster-is-read-not-remembered.test.mjs": {
           "tests": 8,
           "asserts": 11,
@@ -4090,8 +4096,8 @@
           "todos": 0
         },
         "the-identifier-sweep-fires-on-its-sentinels.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 6,
+          "asserts": 15,
           "skips": 1,
           "todos": 0
         },
