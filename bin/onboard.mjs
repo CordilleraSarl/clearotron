@@ -1588,6 +1588,52 @@ export async function runCheck() {
     blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
   }
 
+  // ── THE TRIGGER KEY, AND THE DEADLINE NOBODY WAS COUNTING (tracker issue 161) ────────────────────
+  //
+  // A `--background` install stores the portal's trigger key in `~/.env`, the file the units load, and
+  // it is minted with a thirty-day life. Nothing counted it down. Thirty days after an install, on a
+  // server nobody has touched, every Start stops — and the portal reports the refusal as an upstream
+  // fault, which reads like a broken engine rather than an expired key card. `doctor` printed nothing
+  // about it at all: no line, no expiry, rc 0.
+  //
+  // READ FROM `~/.env` BY NAME, because that file is deliberately not the one this command loads. The
+  // CLI reads its own `.env`; the units read theirs; the two are disjoint, so `process.env` here would
+  // answer about the wrong file and, on a foreground install, about nothing at all.
+  //
+  // NAMES AND DATES, NEVER THE TOKEN. This output goes to a terminal, into a paste, into an issue.
+  say("\n  Portal trigger key");
+  {
+    const homeEnvPath = join(homedir(), ".env");
+    const stored = existsSync(homeEnvPath) ? (readEnvFile(homeEnvPath).PORTAL_OPS_TOKEN ?? "") : "";
+    if (!stored) {
+      // NOT A PROBLEM, and not a tick either. A foreground install has no stored key by design — the
+      // launcher hands it to the children in memory. Saying which case this is beats silence, which is
+      // what the reader used to get whether or not they had one.
+      info(`none in ${homeEnvPath} — this install runs in the foreground, where the key is minted per start and never stored`);
+    } else {
+      const { opsTokenPosture } = await import("../driver/portal-service.mjs");
+      const posture = opsTokenPosture(stored);
+      if (!posture.readable) {
+        problem(`the trigger key in ${homeEnvPath} cannot be read as one — the portal will refuse every Start with "invalid access key: malformed token"`);
+        info(`re-mint it by running the launcher again: ${invoke("start --background")}`);
+      } else if (posture.expired) {
+        problem(`the trigger key expired ${posture.expiresAt} — every Start is refused, and the portal reports it as an upstream fault`);
+        info(`re-mint it by running the launcher again: ${invoke("start --background")}`);
+      } else if (posture.expiresAt === null) {
+        // An unreadable deadline is not a good one. `implausibleExp` separates a broken claim from none.
+        blocking(`the trigger key in ${homeEnvPath} carries ${posture.implausibleExp ? "an expiry that makes no sense" : "no expiry"}, so how long it has cannot be read`);
+      } else if (posture.daysLeft <= 7) {
+        // REFUSED NEAR IT, not only after. A key with days left is a booked outage: the reader who runs
+        // `doctor` this week can re-mint it in one command; the one who finds out at expiry is reading
+        // an engine fault that is not one.
+        problem(`the trigger key expires in ${posture.daysLeft} day(s), on ${posture.expiresAt}`);
+        info(`re-mint it now, before it lapses: ${invoke("start --background")}`);
+      } else {
+        ok(`the trigger key is good for ${posture.daysLeft} more day(s), until ${posture.expiresAt}`);
+      }
+    }
+  }
+
   say("\n  Portal door");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");

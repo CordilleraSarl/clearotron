@@ -142,6 +142,28 @@ export const SERVER_UNITS = Object.freeze([
  * depend on whether a service happened to be running, which is the kind of moving answer that produced
  * the defect above. It is also one fewer subprocess in a command that is about to spawn two.
  */
+/**
+ * Names in the units' `~/.env` that THIS FILE mints, and therefore rewrites on every background start.
+ *
+ * The list is the policy, and it is short on purpose. Add-only is right for every value the launcher
+ * merely collects — an operator's credentials and paths — and a launcher that rewrote those is a
+ * launcher that can lose them. It is wrong for every value the launcher generates, because a minted
+ * value written once ages to expiry on a working server while every start goes on reporting success.
+ */
+export const LAUNCHER_MINTED = Object.freeze(["PORTAL_OPS_TOKEN"]);
+
+/**
+ * The units' `~/.env`, after a background start: collected values added once, minted values re-minted.
+ *
+ * Extracted so the policy can be DRIVEN rather than read. The background path itself cannot be run in
+ * the suite — it installs and starts systemd units — so without this the only arm possible would be one
+ * that reads this file's source and reasons about it, and reverting the call site would leave every arm
+ * green. It did, once, before this existed.
+ */
+export function homeEnvUpdate(homeText, union) {
+  return mergeEnvFile(homeText, union, { refresh: LAUNCHER_MINTED });
+}
+
 export function installedUnits(dir = UNIT_DIR, exists = existsSync) {
   return SERVER_UNITS.filter((u) => exists(join(dir, u)));
 }
@@ -874,7 +896,14 @@ if (isMain) {
     // TWO walls, by construction. The key names the verbs it may use and the accounts it may start for,
     // so the portal's own principal check is not the only thing bounding a trigger. Capped to the roster
     // THIS install can see — the same list the face validates `profileKey` against, so the cap and the
-    // validation cannot disagree. Minted fresh every start: never written down, never near expiry.
+    // validation cannot disagree.
+    //
+    // MINTED FRESH EVERY START, AND WHAT THAT IS WORTH DEPENDS ON THE PATH. In the foreground it is
+    // never written down: `childEnv` hands it to the children in memory and it dies with them. The
+    // background path DOES write it down, into `~/.env`, which is the file the units load — so "never
+    // near expiry" is true there only because the merge below re-mints it on every `--background`. It
+    // was not: that merge was add-only, the first start's key stayed, and thirty days later every Start
+    // on a working server stopped.
     opsToken = mintToken({ scope: "ops", sub: "portal", verbs: ["start_run", "stop_run"], accounts: roster.length ? roster : null, ttlSec: 30 * 24 * 3600 });
   } catch (e) { fatal(`could not mint the trigger key (${String(e?.message ?? e)}).`); }
   if (!roster.length) err("  WARNING: no customer profiles were found, so the trigger key is NOT account-capped.");
@@ -1031,12 +1060,21 @@ if (isMain) {
 
     let homeText = "";
     try { homeText = readFileSync(HOME_ENV, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${HOME_ENV} exists but could not be read (${e.code}).`); }
-    const merged = mergeEnvFile(homeText, union);
-    if (merged.added.length) {
+    // THE TRIGGER KEY IS MINTED HERE, SO IT IS REWRITTEN HERE. Everything else in this union is
+    // collected — the operator's credentials, their paths — and add-only is what stops a launcher from
+    // losing them. The trigger key is the opposite: this process mints it, thirty days at a time, and a
+    // value written once and never again runs down to expiry on a server nobody has touched. When it
+    // lapses every Start stops, and the failure arrives as an upstream refusal that reads like an engine
+    // fault rather than an expired key card.
+    const merged = homeEnvUpdate(homeText, union);
+    if (merged.added.length || merged.refreshed.length) {
       const tmp = `${HOME_ENV}.tmp-${process.pid}`;
       writeFileSync(tmp, merged.text, { mode: 0o600 });
       renameSync(tmp, HOME_ENV);
-      say(`  ✓ ${HOME_ENV} — ${merged.added.length} value(s) added (existing lines untouched)`);
+      const parts = [];
+      if (merged.added.length) parts.push(`${merged.added.length} value(s) added`);
+      if (merged.refreshed.length) parts.push(`${merged.refreshed.join(", ")} re-minted`);
+      say(`  ✓ ${HOME_ENV} — ${parts.join(", ")} (every other line untouched)`);
     } else say(`  ✓ ${HOME_ENV} already carries everything the units need`);
     // ── TWO ENV FILES, AND SAYING SO ( — F33) ──────────────────────────────
     //

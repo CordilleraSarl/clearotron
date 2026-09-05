@@ -24,8 +24,17 @@
  *                             rather than the rule. `by` names the writer in the file's own comments, so a reader can tell
  *                             which command put a line there. Defaults to the launcher, which is who
  *                             wrote every such line before this moved.
+ * @param {string[]} opts.refresh  names this call MINTS rather than collects, which are replaced in
+ *                             place when already present. Add-only is right for everything a person
+ *                             typed and wrong for everything the launcher generates: a minted value
+ *                             that is never rewritten is a value that ages to expiry on a working
+ *                             server while every start reports success. The portal's trigger key did
+ *                             exactly that — thirty days after the first `start --background`, every
+ *                             Start stopped, and the failure arrived as an upstream refusal that reads
+ *                             like an engine fault. Names here must be values this code MINTS; putting
+ *                             a credential a reader supplied in this list would delete their work.
  */
-export function mergeEnvFile(text, additions, { by = "`npm start` (bin/start.mjs)", notes = {} } = {}) {
+export function mergeEnvFile(text, additions, { by = "`npm start` (bin/start.mjs)", notes = {}, refresh = [] } = {}) {
   const body = typeof text === "string" ? text : "";
   const present = new Set();
   for (const line of body.split("\n")) {
@@ -36,12 +45,22 @@ export function mergeEnvFile(text, additions, { by = "`npm start` (bin/start.mjs
   // ships `PORTAL_MCP_URL=` empty on purpose, so a body already carrying that name is "present" and is
   // left alone — writing the derived origin under it would put two assignments in one file and let the
   // last one win silently.
-  const add = Object.entries(additions).filter(([k, v]) => !present.has(k) && v != null && v !== "");
-  if (!add.length) return { text: body, added: [] };
-  const header = body.trim().length ? "" : `# Written by ${by}. Environment variables always win over this file.\n`
+  const refreshable = new Set(refresh);
+  const usable = ([, v]) => v != null && v !== "";
+  const add = Object.entries(additions).filter(([k, v]) => !present.has(k) && usable([k, v]));
+  // REPLACED IN PLACE, not appended: two assignments of one name in a `.env` is a file whose meaning
+  // depends on which reader you ask, and the line keeps its position and whatever comment sits above it.
+  const renew = Object.entries(additions).filter(([k, v]) => present.has(k) && refreshable.has(k) && usable([k, v]));
+  let out = body;
+  for (const [k, v] of renew) {
+    out = out.split("\n").map((line) => (new RegExp(`^\\s*${k}\\s*=`).test(line) ? `${k}=${v}` : line)).join("\n");
+  }
+  if (!add.length) return { text: out, added: [], refreshed: renew.map(([k]) => k) };
+  const bodyForAppend = out;
+  const header = bodyForAppend.trim().length ? "" : `# Written by ${by}. Environment variables always win over this file.\n`
     + "# It holds secrets: keep it at mode 600, and out of git (.gitignore already covers it).\n";
-  const gap = body.length && !body.endsWith("\n") ? "\n" : "";
+  const gap = bodyForAppend.length && !bodyForAppend.endsWith("\n") ? "\n" : "";
   const block = `\n# Added by ${by}. Delete a line to have it generated afresh.\n`
     + add.map(([k, v]) => (notes[k] ? `# ${k}: ${notes[k]}\n` : "") + `${k}=${v}\n`).join("");
-  return { text: header + body + gap + block, added: add.map(([k]) => k) };
+  return { text: header + bodyForAppend + gap + block, added: add.map(([k]) => k), refreshed: renew.map(([k]) => k) };
 }
