@@ -21,7 +21,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { findings, BANNED_WORDS } from "../../scripts/changelog-plain-language.mjs";
-import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS } from "../../scripts/release-publish-guard.mjs";
+import { refusals as publishRefusals, WORKFLOW, CREDENTIAL_TOKENS, REPOSITORY } from "../../scripts/release-publish-guard.mjs";
 import { distTag, isPrerelease, preModeFrom, STABLE, UNNAMED_PRERELEASE } from "../../scripts/release-dist-tag.mjs";
 import { cutDecision, versionAtHead } from "../../scripts/release-cut-decision.mjs";
 import { checksVerdict, waitForChecks, RUNNING, NOTHING_STARTED, WAITING_FOR_A_PERSON } from "../../scripts/release-version-pr-checks.mjs";
@@ -702,4 +702,50 @@ test("tracker 97 the action and the CLI agree about what a pre-release has alrea
   // behaviour v1 had, and it is stated rather than left to a default that changed under us.
   assert.match(executable, /push-with-git-cli: true/,
     "the push method is left to v2's new default, which is a second change riding on this one");
+});
+
+test("tracker 97 the manifest names the repository provenance will be attested for", () => {
+  // MEASURED 2026-09-05, at the most expensive moment available. The OIDC exchange succeeded, provenance
+  // was generated, the tarball was built and scanned and checked — and the registry refused the PUT:
+  //
+  //   npm error 422 Unprocessable Entity - PUT https://registry.npmjs.org/clearotron
+  //   Error verifying sigstore provenance bundle: Failed to validate repository information:
+  //   package.json: "repository.url" is "", expected to match "https://github.com/CordilleraSarl/clearotron"
+  //
+  // `--provenance` makes npm attest the repository the build came from, and the registry checks that
+  // attestation against the manifest. The field was simply absent, and nothing anywhere looked at it.
+  const pkg = rootPkg();
+  const workflow = read(WORKFLOW);
+
+  assert.ok(pkg.repository, "the root package names no repository, and the registry refuses a provenance "
+    + "bundle it cannot match against the manifest");
+  const url = typeof pkg.repository === "string" ? pkg.repository : pkg.repository.url;
+  assert.ok(url, "`repository` is present but names no url");
+  assert.equal(/github\.com[/:]([^/]+\/[^/.]+)/.exec(url)?.[1], REPOSITORY,
+    "the manifest's repository is not the one the workflow publishes from");
+
+  // The workflow gates on the same repository. Two spellings of one fact drift; this asserts they agree.
+  assert.ok(workflow.includes(`github.repository == '${REPOSITORY}'`),
+    "the workflow's repository guard and the manifest's repository no longer name the same thing");
+
+  // THE GUARD REFUSES EACH SHAPE, and refuses them BEFORE anything is built rather than after
+  // everything is. Driven, not asserted: each of these is a manifest the registry would 422.
+  const withField = publishRefusals({ workflow, rootPkg: pkg });
+  assert.deepEqual(withField, [], withField.join("\n"));
+  const { repository, ...absent } = pkg;
+  assert.match(publishRefusals({ workflow, rootPkg: absent }).join("\n"), /names no `repository.url`/);
+  assert.match(
+    publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: "git+https://github.com/someone/else.git" } } }).join("\n"),
+    /names someone\/else/);
+  assert.match(
+    publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: "" } } }).join("\n"),
+    /names no `repository.url`/);
+  // npm accepts the bare-string form too, and a guard that refused it would refuse a correct manifest.
+  assert.deepEqual(publishRefusals({ workflow, rootPkg: { ...pkg, repository: `https://github.com/${REPOSITORY}` } }), []);
+  // As do the `.git` suffix and the ssh spelling: the comparison is on owner/name, not on the string.
+  assert.deepEqual(publishRefusals({ workflow, rootPkg: { ...pkg, repository: { type: "git", url: `git@github.com:${REPOSITORY}.git` } } }), []);
+
+  // And what a reader of the package page gets, which is the other half of the same field.
+  assert.match(pkg.homepage ?? "", new RegExp(REPOSITORY), "the package page links nowhere");
+  assert.match(pkg.bugs?.url ?? "", new RegExp(REPOSITORY), "the package page offers nowhere to report a bug");
 });

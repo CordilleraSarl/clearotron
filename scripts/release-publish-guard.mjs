@@ -26,6 +26,9 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const WORKFLOW = ".github/workflows/release.yml";
 
+/** The repository npm attests provenance for. It is in the workflow's job conditions too. */
+export const REPOSITORY = "CordilleraSarl/clearotron";
+
 /** Credential spellings that would let this repository publish without the OIDC exchange. */
 export const CREDENTIAL_TOKENS = Object.freeze([
   "NPM_TOKEN",
@@ -68,6 +71,33 @@ export function refusals({ workflow, rootPkg }) {
   // The last thing that runs before a publish from a working tree. It is not what protects CI — CI
   // publishes a tarball and npm runs no lifecycle script for one — it is what a laptop still hits.
   if (!rootPkg.scripts?.prepublishOnly) add("the root package has lost its `prepublishOnly` guard");
+
+  // ── THE MANIFEST HAS TO NAME WHERE THE PACKAGE COMES FROM ───────────────────────────────────────
+  //
+  // `--provenance` makes npm attest the repository the build came from, and the registry then checks
+  // that attestation AGAINST `repository.url` in the manifest. A missing or mismatched field is a 422 at
+  // the registry — after the OIDC exchange has succeeded, after the tarball is built and scanned, at the
+  // last possible moment and from the one place no local check looks. Measured 2026-09-05:
+  //
+  //   npm error 422 Unprocessable Entity - PUT https://registry.npmjs.org/clearotron
+  //   Error verifying sigstore provenance bundle: Failed to validate repository information:
+  //   package.json: "repository.url" is "", expected to match "https://github.com/CordilleraSarl/clearotron"
+  //
+  // Everything else in the release was correct, including the trusted publisher. This is here so the
+  // next empty field is a refusal before anything is built rather than a rejection after everything is.
+  const repoUrl = typeof rootPkg.repository === "string" ? rootPkg.repository : rootPkg.repository?.url;
+  if (!repoUrl) {
+    add("the root package names no `repository.url`, and `--provenance` makes the registry refuse a "
+      + "manifest whose repository does not match the one it attested");
+  } else {
+    // Compared the way npm compares it: the scheme, the `git+` prefix and a `.git` suffix are all
+    // spellings of the same repository, so the check is on owner/name rather than on the string.
+    const slug = /github\.com[/:]([^/]+\/[^/.]+)/.exec(repoUrl)?.[1];
+    if (slug !== REPOSITORY) {
+      add(`the root package's \`repository.url\` names ${slug ?? "no GitHub repository"}, and provenance `
+        + `will be attested for ${REPOSITORY} — the registry refuses that mismatch`);
+    }
+  }
 
   return out;
 }
