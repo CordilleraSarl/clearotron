@@ -430,16 +430,66 @@ test("tracker 97 a version pull request whose checks never started is a refusal,
   assert.match(parkedAlone.reason, /could not be read from here/);
 
   // And parked BESIDE green ones — the second run of a two-workflow repository — is still a refusal.
-  // This is the member a count-based arm passes cleanly: the count is not zero.
+  // This is the member a count-based arm passes cleanly: the count is not zero. It is also the member
+  // the exemption below must not swallow: a parked `Release` beside a green `CI` means nothing is
+  // producing `Release`'s contexts, and auto-merge waits for them forever.
   const parkedBeside = checksVerdict({
     checkRuns: [{ name: "Lint", status: "completed", conclusion: "success" }],
     workflowRuns: [
-      { name: "CI", status: "completed", conclusion: "success" },
-      { name: "Release", status: "completed", conclusion: "action_required" },
+      { name: "CI", status: "completed", conclusion: "success", workflowId: 1 },
+      { name: "Release", status: "completed", conclusion: "action_required", workflowId: 2 },
     ],
   });
   assert.equal(parkedBeside.state, WAITING_FOR_A_PERSON);
   assert.deepEqual(parkedBeside.blocked, ["Release"]);
+
+  // ── AND THE PARK THE DISPATCH MAKES INERT, WHICH THIS GUARD REFUSED ON ITS FIRST REAL RUN ────────
+  // MEASURED, run 33978047936 at 16:30:18Z. The version job had already dispatched `ci.yml` on the
+  // version branch and that run had already turned one required check green. The parked `pull_request`
+  // run for the same branch was still sitting on the same commit, as it always will — a dispatch does
+  // not un-park it, it goes around it. This read that park and reported that the release was waiting
+  // for somebody to approve it, on a commit where nobody needed to approve anything. The release job
+  // went red with the mechanism working underneath it.
+  //
+  // So the question is not "is something else running" — it is "is something else running THIS". The
+  // two runs are the same workflow under two events, so they publish the same check names on the same
+  // commit, which is what branch protection matches on.
+  const parkedButSuperseded = checksVerdict({
+    checkRuns: [
+      { name: "Lint, licences, tokens and the built bundle", status: "completed", conclusion: "success" },
+      { name: "The offline suites", status: "in_progress", conclusion: null },
+    ],
+    workflowRuns: [
+      { name: "CI", status: "in_progress", conclusion: null, workflowId: 1 },
+      { name: "CI", status: "completed", conclusion: "action_required", workflowId: 1 },
+    ],
+  });
+  assert.equal(parkedButSuperseded.state, RUNNING,
+    "the parked pull_request run is on the same commit as the dispatched run that is doing its work, "
+    + "so it blocks nothing — this is the shape that reddened the release job on its first real run");
+  assert.deepEqual(parkedButSuperseded.blocked, []);
+
+  // The exemption is by WORKFLOW, not by "something non-parked exists". Same shape, different workflow
+  // doing the running: nothing is producing the parked workflow's contexts, so it still refuses.
+  assert.equal(checksVerdict({
+    checkRuns: [{ name: "Lint", status: "completed", conclusion: "success" }],
+    workflowRuns: [
+      { name: "Release", status: "in_progress", conclusion: null, workflowId: 2 },
+      { name: "CI", status: "completed", conclusion: "action_required", workflowId: 1 },
+    ],
+  }).state, WAITING_FOR_A_PERSON,
+  "a different workflow running is not evidence that the parked one's checks will ever arrive");
+
+  // And a superseded park where the superseding run has produced NOTHING yet is still not a person's
+  // problem — it is "nothing started", which polls. Calling it an approval sends the reader to a
+  // setting that is not the cause.
+  assert.equal(checksVerdict({
+    checkRuns: [],
+    workflowRuns: [
+      { name: "CI", status: "queued", conclusion: null, workflowId: 1 },
+      { name: "CI", status: "completed", conclusion: "action_required", workflowId: 1 },
+    ],
+  }).state, NOTHING_STARTED);
 
   // A check RUN can carry it too, and the verdict reads both surfaces rather than trusting one.
   assert.equal(checksVerdict({
