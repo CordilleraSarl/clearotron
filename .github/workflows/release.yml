@@ -106,13 +106,34 @@ jobs:
       #
       # `publish:` is absent because changesets publishes workspace packages, and the artefact is the
       # root package, which is not one of them. Publishing is the job below.
+      # @v2, AND THE VERSION IS THE WHOLE POINT OF THIS STEP. `@v1` decides which release notes a
+      # pre-release has already consumed by reading `preState.changesets` — a key `@changesets/cli@3.0.1`
+      # NO LONGER WRITES. Its `enterPre` writes `{mode, tag}` and nothing else, and its `migratePreState`
+      # deletes that key and MOVES the consumed notes into `.changeset/pre/`. So on the first push after a
+      # pre-release cut, `@v1` finds seven notes it believes are still pending and its reader treats the
+      # leftover `.changeset/pre/` directory as an old-format changeset, opening a `changes.md` that has
+      # never existed there. Measured here 2026-09-05: the version job died on that ENOENT and took the
+      # publish with it.
+      #
+      # `@v2` does it the new way — `changesets.filter(c => !c.id.startsWith("pre/"))` — so the consumed
+      # notes are recognised as consumed and the run reaches the cut decision. Nothing in `.changeset/`
+      # needs repairing; the state there is what the tool wrote and is current.
+      #
+      # THE OUTPUT AND THE INPUTS ARE RENAMED WITH IT. `pullRequestNumber` is `pr-number`, and the inputs
+      # take their new spellings; @v2 shims the old input names, which is exactly why using them would
+      # leave the next reader thinking the version did not matter. `push-with-git-cli: true` keeps @v1's
+      # behaviour rather than taking @v2's new default, because one variable moves at a time.
       - name: Open or update the standing version pull request
         id: changesets
-        uses: changesets/action@v1
+        # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
+        # at all (measured 2026-09-05), so `@v2` is whatever was last pushed to that branch. This is the
+        # step that opens a pull request against `main` with a token; it does not float.
+        uses: changesets/action@8488615a623b1b9c987934bb89eae8af6a946ac1   # v2
         with:
-          version: node scripts/release-version.mjs
-          title: 'Release: the next version, and everything in it'
-          commit: 'Cut a version'
+          version-script: node scripts/release-version.mjs
+          pr-title: 'Release: the next version, and everything in it'
+          commit-message: 'Cut a version'
+          push-with-git-cli: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -134,10 +155,10 @@ jobs:
       # that ever stops being true, this step fails the version job and the release stops, which is the
       # direction to fail in.
       - name: Let it merge itself once its checks pass
-        if: steps.changesets.outputs.pullRequestNumber != ''
+        if: steps.changesets.outputs.pr-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge "${{ steps.changesets.outputs.pullRequestNumber }}" --squash --auto
+        run: gh pr merge "${{ steps.changesets.outputs.pr-number }}" --squash --auto
 
       # AND THE CHECKS IT WAITS FOR HAVE TO EXIST. Auto-merge waits for required checks; a check that
       # never starts is not a check that failed, and the pull request simply sits there. That happened
@@ -145,10 +166,10 @@ jobs:
       # contributor, the run was created in `action_required`, and the pull request carried zero check
       # runs. Nothing was red. This refuses instead, and says which of the two shapes it found.
       - name: The checks it waits for actually started
-        if: steps.changesets.outputs.pullRequestNumber != ''
+        if: steps.changesets.outputs.pr-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node scripts/release-version-pr-checks.mjs "${{ steps.changesets.outputs.pullRequestNumber }}"
+        run: node scripts/release-version-pr-checks.mjs "${{ steps.changesets.outputs.pr-number }}"
 
       # A VERSION WITH NO TAG HAS NOT BEEN RELEASED — asked of the COMMIT, never of the working tree.
       #
