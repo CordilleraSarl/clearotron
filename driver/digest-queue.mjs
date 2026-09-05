@@ -101,6 +101,56 @@ export function markFlushed(queue, ids, flushedAt) {
   };
 }
 
+// ── THE FUNNEL'S DECLARED EXEMPTIONS ───────────────────────────────────────────────────────────────
+//
+// The header above says the queue is the ONLY path to a non-fresh re-digest. That was written as an
+// unqualified invariant and it is not one: `enforceRecallReconciliation` (pipeline.mjs) has always
+// fired its own pass. An invariant with an undeclared violation is worse than a narrower invariant
+// stated honestly, because the next reader trusts the wrong one — so the exemption is DECLARED here,
+// with the reason, and an arm censuses every dispatch site against this list. Silence between an
+// invariant and a violation is the defect (tracker issue 116).
+//
+// WHY RECALL-RECONCILE CANNOT MINT — measured on the tree, not reasoned from the design:
+//
+//  1. ORDERING MAKES QUEUEING STRICTLY WORSE. Reconcile runs from inside `runDigest`, after EVERY
+//     pass. `flushDigestQueue` calls `runDigest`, so the LAST flush's own pass re-enters reconcile —
+//     and that flush is guarded by `ctx.digestSettled`, which is set true immediately after it, with
+//     no `flushDigestQueue` call anywhere below it. An item minted there has no flush left to carry
+//     it. Today the correction fires late; queued, it would never fire at all. `markFlushed` receipts
+//     only the items captured BEFORE the pass, so the orphan would sit pending and silent.
+//  2. IT IS NOT THE COST THE FUNNEL BOUNDS. The funnel exists to stop N cold opus passes each
+//     invalidating the back half. Reconcile sends a WARM followup on the digest's own live session
+//     (`sessionKey: r.sessionKey`) — the same class of cheap unit-level work the header already
+//     exempts for escalation/envelope/screen-gate, not the cold pass it forbids.
+//  3. ITS DURABILITY IS SOLVED ELSEWHERE, NOT MISSING. A queued item survives a crash; so does this,
+//     by a different mechanism — the followup receipt rides the recall-reconciliation artifact
+//     (`carryRecallFollowup`), bounded per unended-set signature by RECALL_FOLLOWUP_MAX, and the
+//     re-derive runs after every pass RAN OR SKIPPED, so a resume re-arms it.
+//
+// Each entry names the enclosing function that dispatches, and the reason it is not funnel work.
+// Adding a site without adding an entry fails the census arm; adding an entry without a site fails it
+// too — a stale exemption is the same silence in the other direction.
+export const DIGEST_OWN_PASS_EXEMPTIONS = Object.freeze([
+  Object.freeze({
+    fn: "enforceRecallReconciliation",
+    reason: "warm followup on the digest's own live session, re-derived after every pass; queueing it "
+      + "would orphan the mint the last flush's own pass makes, because digestSettled closes the queue "
+      + "immediately after that flush",
+  }),
+  Object.freeze({
+    fn: "checkLateBind",
+    reason: "customer late-bind re-classification — a warm followup on the digest session driven by an "
+      + "external answer arriving mid-run, not by a findings-level trigger; the requester has already "
+      + "been acked that the bind landed, so it cannot wait for a settlement flush",
+  }),
+  Object.freeze({
+    fn: "UPSTREAM_STALE_REPAIR",
+    reason: "the generic stage-freshness repair, one entry in a map that refreshes any upstream-stale "
+      + "stage in place; it re-runs a stage whose declared inputs moved rather than correcting findings, "
+      + "so it is not the cost the funnel bounds and has no trigger to mint",
+  }),
+]);
+
 // ── the consolidated settlement followup ───────────────────────────────────────────────────────────
 
 // The standard digest-resume preamble every warm re-digest opens with (verbatim from the legacy

@@ -23,6 +23,7 @@ import {
 } from "../../scripts/release-notes-lint.mjs";
 import { group, writeRootChangelog, GROUPS as CHANGELOG_GROUPS } from "../../scripts/release-version.mjs";
 import { refusals as completenessRefusals, MIN_NOTICE_ENTRIES } from "../../scripts/release-completeness-check.mjs";
+import { notesFor } from "../../scripts/release-notes-for.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
@@ -31,8 +32,51 @@ const note = (body, fm = '"prelim-driver": patch') => `---\n${fm}\n---\n\n${body
 const offences = (body, fm) => findings(note(body, fm)).map((f) => f.offending);
 
 test("tracker 97 every release note in the tree is written for a reader who has never opened this repository", () => {
-  // THE POPULATION, not a sample. An arm that checked one note would pass over six bad ones.
-  const paths = nonEmpty(notePaths(ROOT), "the release notes under .changeset/");
+  // ONE TREE HAS NO NOTES AND IS CORRECT: the one `changeset version` has just produced. It consumes
+  // every note into the changelog and deletes the files, so on the version pull request this set is
+  // legitimately empty — and this arm, wrapped in `nonEmpty`, refused it and blocked the release. It was
+  // right to refuse an unexplained absence; what it lacked was the explanation.
+  //
+  // SO THE ABSENCE HAS TO BE ACCOUNTED FOR, not waved through. Empty is a pass only where the notes have
+  // demonstrably BECOME something: a changelog section for the version this tree carries. Anything else
+  // — no notes and no section — is the shape where the notes were lost, and stays a refusal. Declaring
+  // this `EMPTY_IS_THE_PASS` outright would have made the arm green on that tree too.
+  const paths = notePaths(ROOT);
+  if (!paths.length) {
+    // The notes have become the changelog, so the changelog is what gets linted — the same contract
+    // against the same function, on the text a customer actually reads. Asserting merely that a section
+    // EXISTS would have been an absence dressed as evidence.
+    const changelog = join(ROOT, "CHANGELOG.md");
+    assert.ok(existsSync(changelog),
+      "there are no release notes under .changeset/ and no CHANGELOG.md either. Notes are consumed into "
+      + "the changelog by the version step, so one of those two has to hold them.");
+    const version = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).version;
+    // Cut out by the same function the GitHub release body uses. A hand-rolled range regex here got the
+    // section empty on the first try — `(?=^## |\s*$)` in multiline mode ends at the first line break —
+    // which is the exact shape `release-notes-for.mjs` carries a comment about. One owner, one answer.
+    const section = notesFor(version, readFileSync(changelog, "utf8"));
+    assert.ok(section,
+      `there are no release notes under .changeset/ and the changelog has no section for ${version}, so `
+      + "they were not consumed into it — they are simply gone");
+
+    // Every bullet, put back into the shape a note has, and refused on the same rules.
+    let group = null;
+    const lines = nonEmpty(
+      section.split("\n").filter((l) => /^### |^- /.test(l)),
+      `the ${version} section of the changelog`);
+    const bad = [];
+    for (const line of lines) {
+      const heading = /^### (.+)$/.exec(line);
+      if (heading) { group = heading[1].trim(); continue; }
+      assert.ok(group, `a changelog bullet sits under no group heading: ${line.slice(0, 60)}`);
+      const asNote = `---\n"prelim-driver": patch\n---\n\n${group}: ${line.replace(/^- /, "")}\n`;
+      for (const f of findings(asNote, { file: `CHANGELOG.md (${version})` })) {
+        bad.push(`CHANGELOG.md ${version}: ${f.rule}\n    ${f.offending}`);
+      }
+    }
+    assert.deepEqual(bad, [], bad.join("\n"));
+    return;
+  }
   const bad = [];
   for (const p of paths) {
     for (const f of findings(readFileSync(p, "utf8"), { file: p })) bad.push(`${p}:${f.line}  ${f.rule}`);

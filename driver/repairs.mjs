@@ -553,6 +553,71 @@ export function countRecoveryLanes(history, { total = 0 } = {}) {
   return { weather, defect: defect + shortfall };
 }
 
+// ── CAP PARKS: A PROVIDER SAYING "NOT YET" IS NOT A STAGE FAILING (tracker issue 103) ──────────────
+//
+// Owner, watching indigo-falcon spend 4 of its 6 recovery parks against one subscription cap:
+//
+//   "surely it can work out when the cap expires and try after that time and not just keep trying
+//    and then die."
+//
+// The run died on "exhausted retries" when the true state was "blocked until the provider's clock
+// ticks" — a temporary condition translated into a terminal one, which is the deliver-always
+// principle inverted.
+//
+// WHAT WAS ALREADY BUILT, so this does not rebuild it. A cap classified `rate_limited` carries its
+// resetsAt into the RATE-LIMIT POSTPONE path, which already waits for the stated time and auto-resumes.
+// The adapters already parse a reset hint out of provider prose (openai-agent's parseResetHint, stamped
+// `resetsAtBasis: "text-parsed"`), and the weather lane already gives upstream conditions a budget
+// separate from the run's own defects.
+//
+// WHAT WAS NOT. A cap that does NOT classify as `rate_limited` falls through to the generic recovery
+// park, and that ladder is 2 → 15 → 60 minutes, repeating the last rung. Two things go wrong there and
+// both are this function:
+//   1. The parsed reset hint is DROPPED. StageFailure carries resetsAt all the way to the park site and
+//      the schedule never reads it, so a provider that said "try again at 09:06" is probed at 2 minutes.
+//   2. Sixty minutes is the ceiling of the ladder, so six probes cover about three hours. A daily or
+//      weekly cap outlives that with room to spare, and every probe inside the window is one that
+//      cannot succeed.
+//
+// So: cap parks get their own ladder, and a stated reset time always wins over it.
+export const CAP_BACKOFF_MIN = [15, 30, 60, 120, 240];   // ~11h across five rungs; the last repeats
+
+// A cap is recognised by the provider TELLING us when to come back, or by the reason naming a quota
+// rather than an outage. Deliberately not OUTAGE_RE: an overloaded provider recovers in minutes and
+// should keep the short ladder — conflating the two is what made 60 minutes the ceiling for both.
+export const CAP_REASON_RE = /\b(usage limit|quota|cap reached|capped|out of credit|credit balance|plan limit|monthly limit|weekly limit|daily limit|subscription limit)\b/i;
+
+export function isCapPark(reason, resetsAt = null) {
+  return Boolean(resetsAt) || CAP_REASON_RE.test(String(reason ?? ""));
+}
+
+/**
+ * When should a parked run next probe?
+ *
+ * `resetsAt`  a provider-stated reset time, if one was parsed. It WINS over the ladder — that is the
+ *             whole of the owner's ask — but never schedules a probe in the past, and never inside
+ *             `floorMin`, so a stale or malformed hint cannot produce a hot loop.
+ * `attempts`  parks already spent on this signature; indexes the ladder.
+ *
+ * Returns { resumesAt, basis, waitMin }. `basis` is "provider" when the provider's own clock decided
+ * it and "ladder" when we did — the same honesty rule the adapters apply to resetsAtBasis, because a
+ * reader has to be able to tell a fact from our guess. PURE: `now` is injected.
+ */
+export function capParkSchedule({ resetsAt = null, attempts = 0, now = Date.now(), ladder = CAP_BACKOFF_MIN, floorMin = 1 } = {}) {
+  const rung = ladder[Math.min(Math.max(0, Number(attempts) || 0), ladder.length - 1)];
+  const floorMs = now + Math.max(0, floorMin) * 60000;
+  const hintMs = (() => {
+    if (!resetsAt) return null;
+    const t = Date.parse(resetsAt);
+    return Number.isFinite(t) ? t : null;      // unparseable hint is no hint, never a crash
+  })();
+  if (hintMs !== null && hintMs > floorMs) {
+    return { resumesAt: new Date(hintMs).toISOString(), basis: "provider", waitMin: Math.round((hintMs - now) / 60000) };
+  }
+  const ms = Math.max(now + rung * 60000, floorMs);
+  return { resumesAt: new Date(ms).toISOString(), basis: "ladder", waitMin: Math.round((ms - now) / 60000) };
+}
+
 // ── the recovery decision ────────────────────────────────────────────────────────────────────────
 
 // Pure decision core for the run-level catch. Park budgets BY CLASS:

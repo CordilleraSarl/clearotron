@@ -17,10 +17,10 @@
 //
 //   D1 verify.mjs:898   fail(`connotation_${reason}:…`)      — reason iterates the table at line 894
 //   D2 verify.mjs:704   fail(String(e.message))              — parseFindingsJson throws token-first
-//   D3 verify.mjs:1065   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
+//   D3 verify.mjs:1123   checkJson: fail(String(e.message))   — FIVE parsers reach this one site
 //   D4 verify.mjs:1603  parseCoverageLedgerJson, same shape
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
-//   D6 verify.mjs:1509  fail(`${violations[0].token}…`)      — register-plan.mjs:1395,1399
+//   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — register-plan.mjs:1395,1399
 //   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs:1996
 //   D8 verify.mjs:1692  fail(caseLawLedgerFail(…))           — token built in case-law-ledger.mjs:204
 //
@@ -93,7 +93,7 @@ export const VOCABULARY = [
   { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs:706" },
   { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:713" },
   { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:715" },
-  { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:721" },
+  { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs:779" },
   { token: "finding_use_check_missing", stages: ["synthesis"], site: "driver/verify.mjs:729" },
   { token: "intake_ask_unanswered", stages: ["synthesis"], site: "driver/verify.mjs:1636" },
   { token: "coverage_recommendation", stages: ["synthesis"], site: "driver/verify.mjs:1648" },
@@ -109,8 +109,8 @@ export const VOCABULARY = [
   { token: "coverage_form_empty", stages: ["register-digest"], site: "driver/verify.mjs:1449" },
   { token: "coverage_status_offenum", stages: ["register-digest"], site: "driver/verify.mjs:1940" },
   { token: "coverage_deferred_unaccounted", stages: ["register-digest"], site: "driver/verify.mjs:1504", family: "driver/register-plan.mjs:1620 (token on a data row)", dynamic: "D5" },
-  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs:1509", family: "driver/register-plan.mjs:1395", dynamic: "D6" },
-  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs:1509", family: "driver/register-plan.mjs:1744", dynamic: "D6" },
+  { token: "coverage_clean_unexecuted", stages: ["register-digest"], site: "driver/verify.mjs:1567", family: "driver/register-plan.mjs:1395", dynamic: "D6" },
+  { token: "coverage_clean_skipped", stages: ["register-digest"], site: "driver/verify.mjs:1567", family: "driver/register-plan.mjs:1744", dynamic: "D6" },
   { token: "coverage_clean_unverified_incomplete", stages: ["register-digest"], site: "driver/verify.mjs:1558", family: "driver/register-plan.mjs:1996", dynamic: "D7" },
   { token: "coverage_clean_tainted", stages: ["register-digest"], site: "driver/verify.mjs:1578" },
   { token: "coverage_ledger_", stages: ["register-digest"], site: "driver/verify.mjs:1603", family: "driver/coverage-ledger.mjs (parseCoverageLedgerJson token-first throws)", dynamic: "D4" },
@@ -124,12 +124,12 @@ export const VOCABULARY = [
   { token: "stagecontracts_invalid", stages: ["matter-frame", "prelim-variants", "placement-inquiry", "case-law"], site: "driver/verify.mjs:1539, 1170, 1366, 1677" },
   { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1103" },
   { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
-  { token: "variantmodel_romanization_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1179" },
+  { token: "variantmodel_romanization_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1237" },
   { token: "variantmodel_family_incomplete", stages: ["prelim-variants"], site: "driver/verify.mjs:1196" },
-  { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs:1205" },
+  { token: "variantmodel_term_markup", stages: ["prelim-variants"], site: "driver/verify.mjs:1263" },
   { token: "variantmodel_missing", stages: ["prelim-variants"], site: "driver/verify.mjs:1153, 1212" },
   // Recovered during E2 authoring, absent from the draft census: variant-manifest.json is strict-parsed
-  // through checkSiblingJson (verify.mjs:1078) → checkJson (:742), so the WHOLE variantmodel_* family
+  // through checkSiblingJson (verify.mjs:1136) → checkJson (:742), so the WHOLE variantmodel_* family
   // reaches prelim-variants, not just the four literal tokens above.
   // CONVERSION 3 widened this family's SOURCE without widening its prefix. `acceptPrelimVariants` raises
   // `variantmodel_scope_layer_invalid`, `_scope_status_invalid`, `_scope_item_missing` and `_scope_pipe`
@@ -169,7 +169,7 @@ export const VOCABULARY = [
 
   // ── register-unit ──────────────────────────────────────────────────────────────────────────────────
   { token: "declared_not_executed", stages: ["register-unit"], site: "driver/verify.mjs:1236" },
-  { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs:1730" },
+  { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs:1788" },
   { token: "named_band_missing", stages: ["register-unit"], site: "driver/verify.mjs:1731" },
   { token: "named_band_invalid", stages: ["register-unit"], site: "driver/verify.mjs:1736" },
   { token: "named_band_collapsed", stages: ["register-unit"], site: "driver/verify.mjs:1747" },
@@ -182,10 +182,10 @@ export const VOCABULARY = [
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
   { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs:1682, 1685" },
-  { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs:1687" },
+  { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs:1745" },
   { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs:1692", family: "driver/case-law-ledger.mjs:204 (census reasons)", dynamic: "D8" },
-  { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs:1696" },
-  { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs:1713" },
+  { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs:1754" },
+  { token: "plan_audit_missing", stages: ["narrative-refutation"], site: "driver/verify.mjs:1771" },
 
   // ── delivery ───────────────────────────────────────────────────────────────────────────────────────
   // EMPTY SINCE, and that is the finding rather than an omission: the only delivery-side token was
@@ -472,10 +472,10 @@ export const INNER_CODES = Object.freeze([
   // ── coverage-form.mjs ─────────────────────────────────────────────────────────────────────────────
   //
   // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs:1169 peels the
-  // `axis_invalid` cause into its own family before verify.mjs:1178 counts the rest. A ruling naming only
+  // `axis_invalid` cause into its own family before verify.mjs:1236 counts the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
   { code: "no_status", mints: ["driver/coverage-form.mjs:836"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
-    why: "Two composites, split on the record's `cause`: verify.mjs:1172 for cause `axis_invalid`, verify.mjs:1205 for the rest. NOT cited at coverage-form.mjs:810 — that is the JSDoc @returns annotation, not the mint." },
+    why: "Two composites, split on the record's `cause`: verify.mjs:1172 for cause `axis_invalid`, verify.mjs:1263 for the rest. NOT cited at coverage-form.mjs:810 — that is the JSDoc @returns annotation, not the mint." },
   { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:826"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced at verify.mjs:1165; the bare code names a row, never a stage." },
 
