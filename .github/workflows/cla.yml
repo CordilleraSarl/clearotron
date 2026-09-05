@@ -13,10 +13,12 @@
 #
 # ── WHO CAN PASS THIS WITHOUT SIGNING, STATED RATHER THAN DISCOVERED ─────────────────────────────────
 #
-# The issue asks for this explicitly, and the answer is: the accounts in `allowlist` below, plus anyone
-# who can dismiss a failing check on a protected branch (a repository admin). The allowlist holds bots
-# and the accounts whose work is already covered by employment terms — not a convenience list, and
-# every name on it is a claim that somebody's contributions are owned by the company already.
+# The issue asks for this explicitly, and the answer is, in order: anyone pushing a branch to THIS
+# repository, because the job below does not run at all outside a fork; then the accounts in `allowlist`
+# below; then anyone who can dismiss a failing check on a protected branch (a repository admin). The
+# allowlist holds bots and the accounts whose work is already covered by employment terms — not a
+# convenience list, and every name on it is a claim that somebody's contributions are owned by the
+# company already.
 #
 # The check is only a GATE if the branch protection rule requires it. That is a repository setting, not
 # a file, so it cannot be asserted here: until "CLA" is a required status check on the default branch,
@@ -56,11 +58,32 @@ permissions:
 jobs:
   cla:
     runs-on: ubuntu-latest
-    # Only the comment that is the signature, or a pull request. Without this every comment on every
-    # issue in the repository would start a job.
+    # ── IT ASKS CONTRIBUTIONS FROM OUTSIDE, AND ONLY THOSE ──────────────────────────────────────────
+    #
+    # A branch on THIS repository is the organisation's own work and needs no signature. A pull request
+    # from a FORK is the case this agreement exists for, and it is the only case that runs.
+    #
+    # This is not a convenience. The check ran against same-repo branches for one afternoon and failed
+    # every one of them, for a reason nobody on a branch could act on: commits made on the build box are
+    # authored under an address GitHub resolves to NO ACCOUNT. The allowlist matches logins, so an
+    # unlinked committer can never match it — and cannot sign either, because a signature is recorded
+    # against a login. The result was a permanently red check that no author could clear, on work the
+    # agreement was never meant to cover. Made a required check, it would have stopped every branch at
+    # once.
+    #
+    # The comparison is head repo against base repo, because that is what "outside" means here — not the
+    # author's name, which is exactly the thing that proved unreliable.
+    #
+    # The signature comment keeps its own path: somebody signing says so on their fork's pull request,
+    # and that comment arrives as an `issue_comment` carrying no head-repository field to test. It is
+    # already narrow — it fires only on the exact sentence — and a comment on a same-repo branch that
+    # happens to contain it costs one job that finds nothing to do.
     if: >
-      (github.event.issue.pull_request && contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA'))
-      || github.event_name == 'pull_request_target'
+      (github.event_name == 'issue_comment'
+        && github.event.issue.pull_request
+        && contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA'))
+      || (github.event_name == 'pull_request_target'
+        && github.event.pull_request.head.repo.full_name != github.repository)
     steps:
       # Pinned to the SHA of v2.6.1, not to the tag: a tag can be moved to point at different code, and
       # this action runs with write access to the repository.
